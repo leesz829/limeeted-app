@@ -20,7 +20,10 @@ export type StackParamList = {
 	Login: undefined;
 	Title00: undefined;
 	Signup0: undefined;
-	Signup1: undefined;
+	Signup1: {
+		id: string;
+		name: string;
+	};
 	SignupPopUp: undefined;
 	Signup02: undefined;
 	Signup03: undefined;

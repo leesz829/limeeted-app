@@ -6,9 +6,20 @@ import SpaceView from 'component/SpaceView';
 import * as React from 'react';
 import { View, Image, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { ICON } from 'utils/imageUtils';
-import { ColorType } from '@types';
+import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
+import { RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-export const Signup1 = () => {
+interface Props {
+	//navigation : StackNavigationProp<StackParamList, 'Signup1'>;
+	route : RouteProp<StackParamList, 'Signup1'>;
+}
+
+export const Signup1 = (props : Props) => {
+	//const navigation = useNavigation<ScreenNavigationProp>();
+
+	const {name} = props.route.params;
+
 	return (
 		<>
 			<CommonHeader title={'프로필 2차 인증'} />
@@ -16,7 +27,7 @@ export const Signup1 = () => {
 				<SpaceView mb={24}>
 					<CommonText>
 						아래 버튼 선택 후 인증 뱃지를 등록할 수 있습니다.{'\n'}
-						뱃지를 추가하여 자신을 어필해보세요.
+						뱃지를 추가하여 자신을 어필해보세요.  {name}
 					</CommonText>
 				</SpaceView>
 
@@ -119,7 +130,7 @@ export const Signup1 = () => {
 
 									<SpaceView mb={8}>
 										<View style={[layoutStyle.row, layoutStyle.alignCenter]}>
-											<CommonText>직업</CommonText>
+											<CommonText>SNS</CommonText>
 											<Image source={ICON.arrRight} style={styles.iconSize} />
 										</View>
 									</SpaceView>
@@ -153,12 +164,16 @@ export const Signup1 = () => {
 						</View>
 					</SpaceView>
 				</SpaceView>
+
 				<SpaceView mb={24}>
 					<CommonBtn 
 							value={'다음 (2/4)'} 
 							type={'primary'} 
 							onPress={() => {
-
+								navigation.navigate('Signup1', { 
+									id : id,
+									name : 'lsz'
+								});
 							}}
 					/>
 				</SpaceView>

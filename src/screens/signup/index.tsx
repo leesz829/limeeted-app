@@ -93,8 +93,11 @@ export const Signup0 = ({}) => {
 
 									var daslkd = {};
 
-									navigation.navigate('Signup1', daslkd);
-									//navigation.navigate('Signup1', { REQ_NO : "asdas" });
+									//navigation.navigate('Signup1', daslkd);
+									navigation.navigate('Signup1', { 
+										id : id,
+										name : 'lsz'
+									});
 								}}
 					/>
 				</SpaceView>
