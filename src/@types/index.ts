@@ -19,10 +19,19 @@ export type StackParamList = {
 	StartPage: undefined;
 	Login: undefined;
 	Title00: undefined;
-	Signup0: undefined;
+	Signup0: {
+		id: string;
+		name: string;
+		age: string;
+		gender: string;
+		hp: string;
+	};
 	Signup1: {
 		id: string;
 		name: string;
+		age: string;
+		gender: string;
+		hp: string;
 	};
 	SignupPopUp: undefined;
 	Signup02: undefined;

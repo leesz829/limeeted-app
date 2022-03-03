@@ -14,11 +14,11 @@ import { ICON } from 'utils/imageUtils';
 export const Signup0 = ({}) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 
-	const [id, setId] = React.useState('');
-	const [name, setName] = React.useState('');
-	const [age, setAge] = React.useState('');
-	const [gender, setGender] = React.useState('');
-	const [hp, setHp] = React.useState('');
+	const [id, setId] = React.useState('tester');
+	const [name, setName] = React.useState('테스터');
+	const [age, setAge] = React.useState('33');
+	const [gender, setGender] = React.useState('M');
+	const [hp, setHp] = React.useState('01051079809');
 
 	return (
 		<>
@@ -88,15 +88,12 @@ export const Signup0 = ({}) => {
 					<CommonBtn value={'다음 (2/4)'} 
 								type={'primary'} 
 								onPress={() => {
-
-									Alert.alert(id);
-
-									var daslkd = {};
-
-									//navigation.navigate('Signup1', daslkd);
 									navigation.navigate('Signup1', { 
 										id : id,
-										name : 'lsz'
+										name : name,
+										age : age,
+										gender : gender,
+										hp : hp
 									});
 								}}
 					/>

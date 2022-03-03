@@ -3,22 +3,29 @@ import { CommonBtn } from 'component/CommonBtn';
 import CommonHeader from 'component/CommonHeader';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
-import * as React from 'react';
+import React, { useRef } from 'react';
 import { View, Image, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { ICON } from 'utils/imageUtils';
 import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
-import { RouteProp } from '@react-navigation/native';
+import { RouteProp, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+//import SignupPopUp from 'screens/commonpopup/SignupPopUp';
 
 interface Props {
-	//navigation : StackNavigationProp<StackParamList, 'Signup1'>;
+	navigation : StackNavigationProp<StackParamList, 'Signup1'>;
 	route : RouteProp<StackParamList, 'Signup1'>;
 }
 
 export const Signup1 = (props : Props) => {
-	//const navigation = useNavigation<ScreenNavigationProp>();
+	const navigation = useNavigation<ScreenNavigationProp>();
 
+	const {id}  = props.route.params;
 	const {name} = props.route.params;
+	const {age}  = props.route.params;
+	const {gender}  = props.route.params;
+	const {hp}  = props.route.params;
+
+	const modalPopup = useRef();
 
 	return (
 		<>
@@ -27,14 +34,19 @@ export const Signup1 = (props : Props) => {
 				<SpaceView mb={24}>
 					<CommonText>
 						아래 버튼 선택 후 인증 뱃지를 등록할 수 있습니다.{'\n'}
-						뱃지를 추가하여 자신을 어필해보세요.  {name}
+						뱃지를 추가하여 자신을 어필해보세요.
 					</CommonText>
 				</SpaceView>
 
 				<SpaceView mb={24}>
 					<SpaceView mb={16}>
 						<View style={styles.halfContainer}>
-							<TouchableOpacity style={styles.halfItemLeft}>
+							<TouchableOpacity style={styles.halfItemLeft} 
+												onPress={() => {
+													//modalPopup.current.onOpen();
+												}}
+							>
+
 								<View style={styles.badgeBox}>
 									<SpaceView mb={16}>
 										<Image source={ICON.job} style={styles.iconSize40} />
@@ -170,10 +182,7 @@ export const Signup1 = (props : Props) => {
 							value={'다음 (2/4)'} 
 							type={'primary'} 
 							onPress={() => {
-								navigation.navigate('Signup1', { 
-									id : id,
-									name : 'lsz'
-								});
+								
 							}}
 					/>
 				</SpaceView>
