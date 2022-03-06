@@ -1,7 +1,8 @@
-import { styles, layoutStyle } from 'assets/styles/Styles';
+import { styles, layoutStyle, modalStyle } from 'assets/styles/Styles';
 import { CommonBtn } from 'component/CommonBtn';
 import CommonHeader from 'component/CommonHeader';
 import { CommonText } from 'component/CommonText';
+import { CommonInput } from 'component/CommonInput';
 import SpaceView from 'component/SpaceView';
 import React, { useRef } from 'react';
 import { View, Image, ScrollView, TouchableOpacity, Alert } from 'react-native';
@@ -9,7 +10,7 @@ import { ICON } from 'utils/imageUtils';
 import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
 import { RouteProp, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-//import SignupPopUp from 'screens/commonpopup/SignupPopUp';
+import { Modalize } from 'react-native-modalize';
 
 interface Props {
 	navigation : StackNavigationProp<StackParamList, 'Signup1'>;
@@ -25,12 +26,21 @@ export const Signup1 = (props : Props) => {
 	const {gender}  = props.route.params;
 	const {hp}  = props.route.params;
 
-	const modalPopup = useRef();
+
+	const modalizeRef = useRef<Modalize>(null);
+	const onOpen = () => {
+		modalizeRef.current?.open();
+	};
+
+	const onClose = () => {
+		modalizeRef.current?.close();
+	};
 
 	return (
 		<>
 			<CommonHeader title={'프로필 2차 인증'} />
 			<ScrollView contentContainerStyle={[styles.scrollContainer]}>
+
 				<SpaceView mb={24}>
 					<CommonText>
 						아래 버튼 선택 후 인증 뱃지를 등록할 수 있습니다.{'\n'}
@@ -42,9 +52,7 @@ export const Signup1 = (props : Props) => {
 					<SpaceView mb={16}>
 						<View style={styles.halfContainer}>
 							<TouchableOpacity style={styles.halfItemLeft} 
-												onPress={() => {
-													//modalPopup.current.onOpen();
-												}}
+												onPress={onOpen}
 							>
 
 								<View style={styles.badgeBox}>
@@ -187,6 +195,61 @@ export const Signup1 = (props : Props) => {
 					/>
 				</SpaceView>
 			</ScrollView>
+			
+			{/* #############################
+					직업 인증 팝업 
+			############################## */}
+			<Modalize
+				ref={modalizeRef}
+				adjustToContentHeight={true}
+				handleStyle={modalStyle.modalHandleStyle}
+				modalStyle={modalStyle.modalContainer}
+			>
+				<View style={modalStyle.modalHeaderContainer}>
+					<CommonText type={'h3'}>직업 인증</CommonText>
+					<TouchableOpacity onPress={onClose}>
+						<Image source={ICON.xBtn} style={styles.iconSize24} />
+					</TouchableOpacity>
+				</View>
+
+				<View style={modalStyle.modalBody}>
+					<View>
+						<SpaceView mb={32}>
+							<CommonInput label="직업" placeholder={'직업을 입력해주세요. (예 : 프로그래머)'} />
+						</SpaceView>
+					</View>
+
+					<SpaceView mb={24}>
+						<SpaceView mb={16}>
+							<View style={styles.dotTextContainer}>
+								<View style={styles.dot} />
+								<CommonText color={ColorType.gray6666}>
+									자신의 커리어를 증명할 수 있는 명함 또는 증명서를 올려주세요.
+								</CommonText>
+							</View>
+						</SpaceView>
+
+						<SpaceView>
+							<View style={styles.dotTextContainer}>
+								<View style={styles.dot} />
+								<CommonText color={ColorType.gray6666}>
+									허용 증명서 : 재직증명서, 건강보험자격득실확인서, 직업라이센스
+								</CommonText>
+							</View>
+						</SpaceView>
+					</SpaceView>
+
+					<SpaceView mb={24}>
+						<CommonBtn value={'등록 및 수정'} height={48} type={'white'} icon={ICON.plus} />
+					</SpaceView>
+
+					<SpaceView mb={16}>
+						<CommonBtn value={'확인'} type={'primary'} />
+					</SpaceView>
+				</View>
+			</Modalize>
+
+
 		</>
 	);
 };
