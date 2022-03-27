@@ -27,7 +27,7 @@ export const Signup0 = ({}) => {
 				<SpaceView mb={24}>
 					<CommonText>
 						본인 인증을 기반으로 회원님의 정보가{'\n'}
-						자동입력됩니다.
+						자동입력됩니다..
 					</CommonText>
 				</SpaceView>
 
