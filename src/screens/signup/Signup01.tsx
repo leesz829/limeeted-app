@@ -190,7 +190,7 @@ export const Signup1 = (props : Props) => {
 							value={'다음 (2/4)'} 
 							type={'primary'} 
 							onPress={() => {
-								
+								 
 							}}
 					/>
 				</SpaceView>
