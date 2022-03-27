@@ -197,7 +197,7 @@ export const Signup1 = (props : Props) => {
 			</ScrollView>
 			
 			{/* #############################
-					직업 인증 팝업 1
+					직업 인증 팝업
 			############################## */}
 			<Modalize
 				ref={modalizeRef}
