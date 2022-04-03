@@ -1,11 +1,13 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { View, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Image, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { ICON } from 'utils/imageUtils';
 import type { FC } from 'react';
 import { CommonText } from './CommonText';
 import SpaceView from './SpaceView';
 import { Color } from 'assets/styles/Color';
+
+const { width, height } = Dimensions.get('window');
 
 interface Props {
 	title: string;
@@ -43,35 +45,54 @@ export const ToolTip: FC<Props> = (props) => {
 			break;
 	}
 	return (
-		<View style={styles.tooltipWrap}>
-			<TouchableOpacity
-				activeOpacity={0.3}
-				style={styles.tooltipTextContainer}
-				onPress={() => setIsVisible(!isVisible)}
-			>
-				<CommonText>{props.title}</CommonText>
-				<SpaceView ml={4}>
-					<Image source={ICON.tooltip} style={styles.tooltipIcon} />
-				</SpaceView>
-			</TouchableOpacity>
-
+		<>
 			{isVisible && (
-				<View style={[styles.tooltipDescContainer, { ...descPositon }]}>
-					<TouchableOpacity
-						activeOpacity={0.3}
-						style={styles.tooptipCloseBtnContainer}
-						onPress={() => setIsVisible(false)}
-					>
-						<Image source={ICON.xBtn} style={styles.tooltipIcon} />
-					</TouchableOpacity>
-					<CommonText>{props.desc}</CommonText>
-				</View>
+				<TouchableOpacity
+					activeOpacity={0}
+					onPress={() => setIsVisible(false)}
+					style={styles.tooltipBackground}
+				/>
 			)}
-		</View>
+			<View style={styles.tooltipWrap}>
+				<TouchableOpacity
+					activeOpacity={0.3}
+					style={styles.tooltipTextContainer}
+					onPress={() => setIsVisible(!isVisible)}
+				>
+					<CommonText fontWeight={'500'}>{props.title}</CommonText>
+					<SpaceView ml={4}>
+						<Image source={ICON.tooltip} style={styles.tooltipIcon} />
+					</SpaceView>
+				</TouchableOpacity>
+
+				{isVisible && (
+					<>
+						<View style={[styles.tooltipDescContainer, { ...descPositon }]}>
+							<TouchableOpacity
+								activeOpacity={0.3}
+								style={styles.tooptipCloseBtnContainer}
+								onPress={() => setIsVisible(false)}
+							>
+								<Image source={ICON.xBtn} style={styles.tooltipIcon} />
+							</TouchableOpacity>
+							<CommonText>{props.desc}</CommonText>
+						</View>
+					</>
+				)}
+			</View>
+		</>
 	);
 };
 
 const styles = StyleSheet.create({
+	tooltipBackground: {
+		width,
+		height,
+		position: 'absolute',
+		left: 0,
+		top: 0,
+		zIndex: 10,
+	},
 	tooltipWrap: {
 		overflow: 'visible',
 	},

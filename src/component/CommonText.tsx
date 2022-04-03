@@ -2,7 +2,7 @@ import React from 'react';
 import type { FC } from 'react';
 import { Text, StyleSheet } from 'react-native';
 import type { TextStyle, StyleProp } from 'react-native';
-import { ColorType } from '@types';
+import { ColorType, WeightType } from '@types';
 import { Color } from 'assets/styles/Color';
 
 type TextType = 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
@@ -10,25 +10,36 @@ export type TextProps = {
 	textStyle?: StyleProp<TextStyle>;
 	type?: TextType;
 	color?: ColorType;
+	fontWeight?: WeightType;
 };
 /**
  * 공통 인풋박스
  * @param {string} label 인풋 라벨
  * @param {TextType} type h2(24) ~ h6(12) 까지 폰트 사이즈 설정, default 16
  * @param {ColorType} color 폰트 색 여부
+ * @param {WeightType} fontWeight 폰트 굵기
  * @param {StyleProp<TextStyle>} textStyle 텍스트 스타일이 있을 시
  *
  *
  */
 export const CommonText: FC<TextProps> = (props) => {
-	const { textStyle, type, color, children } = props;
-	const style = styles({ type, color });
+	const { textStyle, type, color, fontWeight, children } = props;
+	const style = styles({ type, color, fontWeight });
 
 	return <Text style={[style.textStyle, textStyle]}>{children}</Text>;
 };
 
-const styles = ({ type, color }: { type?: string; color?: ColorType }) => {
+const styles = ({
+	type,
+	color,
+	fontWeight,
+}: {
+	type?: string;
+	color?: ColorType;
+	fontWeight?: WeightType;
+}) => {
 	let fontSize = 16;
+	let fontFamily = 'AppleSDGothicNeoR';
 	switch (type) {
 		case 'h2':
 			fontSize = 24;
@@ -47,13 +58,24 @@ const styles = ({ type, color }: { type?: string; color?: ColorType }) => {
 			break;
 	}
 
+	switch (fontWeight) {
+		case '300':
+			fontFamily = 'AppleSDGothicNeoT';
+			break;
+		case '500':
+			fontFamily = 'AppleSDGothicNeoM';
+			break;
+		case '700':
+			fontFamily = 'AppleSDGothicNeoB';
+			break;
+	}
+
 	return StyleSheet.create({
 		textStyle: {
-			fontFamily: 'RIDIBatang',
 			lineHeight: fontSize + 8,
-			fontWeight: '700',
 			color: color ? color : Color.black2222,
 			fontSize,
+			fontFamily,
 		},
 	});
 };

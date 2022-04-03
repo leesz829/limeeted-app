@@ -20,7 +20,9 @@ export const Matching = () => {
 				<SpaceView pt={48} viewStyle={styles.container}>
 					<SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
 						<View>
-							<CommonText type={'h3'}>프로필 2차 인증</CommonText>
+							<CommonText fontWeight={'700'} type={'h3'}>
+								프로필 2차 인증
+							</CommonText>
 						</View>
 
 						<View style={[layoutStyle.rowBetween]}>
@@ -72,7 +74,9 @@ export const Matching = () => {
 
 					<SpaceView mb={54}>
 						<SpaceView mb={16}>
-							<CommonText type={'h3'}>프로필 활동지수</CommonText>
+							<CommonText fontWeight={'700'} type={'h3'}>
+								프로필 활동지수
+							</CommonText>
 						</SpaceView>
 
 						<MainProfileSlider />
@@ -81,7 +85,9 @@ export const Matching = () => {
 					<SpaceView mb={24}>
 						<SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
 							<View>
-								<CommonText type={'h3'}>인터뷰</CommonText>
+								<CommonText fontWeight={'700'} type={'h3'}>
+									인터뷰
+								</CommonText>
 							</View>
 
 							<View style={[layoutStyle.rowBetween]}>
@@ -89,7 +95,10 @@ export const Matching = () => {
 									<Image source={ICON.info} style={styles.iconSize} />
 								</SpaceView>
 								<CommonText type={'h5'}>
-									<CommonText type={'h5'}>15개의 질의</CommonText>가 등록되어있어요
+									<CommonText fontWeight={'700'} type={'h5'}>
+										15개의 질의
+									</CommonText>
+									가 등록되어있어요
 								</CommonText>
 							</View>
 						</SpaceView>

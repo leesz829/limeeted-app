@@ -33,7 +33,9 @@ export const Board1 = () => {
 				modalStyle={modalStyle.modalContainer}
 			>
 				<View style={modalStyle.modalHeaderContainer}>
-					<CommonText type={'h3'}>이용약관</CommonText>
+					<CommonText fontWeight={'700'} type={'h3'}>
+						이용약관
+					</CommonText>
 					<TouchableOpacity onPress={onClose}>
 						<Image source={ICON.xBtn} style={styles.iconSize24} />
 					</TouchableOpacity>

@@ -37,7 +37,7 @@ export const EventRow: FC<Props> = (props) => {
 						</CommonText>
 					</View>
 					<View style={[styles.titleContainer, openRow && styles.active]}>
-						<CommonText>{props.title}</CommonText>
+						<CommonText fontWeight={'500'}>{props.title}</CommonText>
 					</View>
 				</TouchableOpacity>
 

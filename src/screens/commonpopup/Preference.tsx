@@ -32,7 +32,9 @@ export const Preference = () => {
 				modalStyle={modalStyle.modalContainer}
 			>
 				<View style={modalStyle.modalHeaderContainer}>
-					<CommonText type={'h3'}>내 선호 이성</CommonText>
+					<CommonText fontWeight={'700'} type={'h3'}>
+						내 선호 이성
+					</CommonText>
 					<TouchableOpacity onPress={onClose}>
 						<Image source={ICON.xBtn} style={styles.iconSize24} />
 					</TouchableOpacity>
@@ -41,7 +43,9 @@ export const Preference = () => {
 				<ScrollView contentContainerStyle={modalStyle.modalBody}>
 					<SpaceView mb={32}>
 						<SpaceView mb={16}>
-							<CommonText type={'h4'}>나이</CommonText>
+							<CommonText fontWeight={'700'} type={'h4'}>
+								나이
+							</CommonText>
 						</SpaceView>
 
 						<SpaceView viewStyle={styles.halfContainer}>
@@ -57,7 +61,9 @@ export const Preference = () => {
 
 					<SpaceView mb={32}>
 						<SpaceView mb={16}>
-							<CommonText type={'h4'}>거리</CommonText>
+							<CommonText fontWeight={'700'} type={'h4'}>
+								거리
+							</CommonText>
 						</SpaceView>
 
 						<SpaceView viewStyle={styles.halfContainer}>
@@ -73,7 +79,9 @@ export const Preference = () => {
 
 					<SpaceView mb={32}>
 						<SpaceView mb={16}>
-							<CommonText type={'h4'}>직업</CommonText>
+							<CommonText fontWeight={'700'} type={'h4'}>
+								직업
+							</CommonText>
 						</SpaceView>
 						<SpaceView mb={24} viewStyle={styles.halfContainer}>
 							<View style={styles.halfItemLeft}>
@@ -106,7 +114,9 @@ export const Preference = () => {
 
 					<SpaceView mb={40}>
 						<SpaceView mb={16}>
-							<CommonText type={'h4'}>인상</CommonText>
+							<CommonText fontWeight={'700'} type={'h4'}>
+								인상
+							</CommonText>
 						</SpaceView>
 						<SpaceView mb={24}>
 							<CommonSelect label={'인상'} />

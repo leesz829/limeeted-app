@@ -14,7 +14,6 @@ type Props = {
 /**
  * 공통 인풋박스
  * @param {string} label 인풋 라벨
- * @param {string} name 인풋 이름
  * @param {string} placeholder 인풋 플레이스 홀더
  * @param {boolean} rightPen 오른쪽 펜 모양 여부
  *
@@ -62,9 +61,8 @@ const styles = StyleSheet.create({
 	labelStyle: {
 		fontSize: 14,
 		lineHeight: 20,
-		fontFamily: 'RIDIBatang',
+		fontFamily: 'AppleSDGothicNeoR',
 		color: Color.gray6666,
-		fontWeight: 'bold',
 	},
 	inputContainer: {
 		paddingBottom: 8,
@@ -75,9 +73,8 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		lineHeight: 24,
 		color: Color.black2222,
-		fontFamily: 'RIDIBatang',
 		padding: 0,
 		margin: 0,
-		fontWeight: 'bold',
+		fontFamily: 'AppleSDGothicNeoM',
 	},
 });

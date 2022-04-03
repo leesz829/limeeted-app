@@ -42,7 +42,9 @@ export const Profile1 = () => {
 					</SpaceView>
 					<SpaceView mb={54}>
 						<SpaceView mb={16}>
-							<CommonText type={'h3'}>내 프로필 평점</CommonText>
+							<CommonText fontWeight={'700'} type={'h3'}>
+								내 프로필 평점
+							</CommonText>
 						</SpaceView>
 
 						<SpaceView>
@@ -53,7 +55,9 @@ export const Profile1 = () => {
 					<SpaceView>
 						<SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
 							<View>
-								<CommonText type={'h3'}>인터뷰</CommonText>
+								<CommonText fontWeight={'700'} type={'h3'}>
+									인터뷰
+								</CommonText>
 							</View>
 
 							<View style={[layoutStyle.rowBetween]}>
@@ -61,7 +65,10 @@ export const Profile1 = () => {
 									<Image source={ICON.info} style={styles.iconSize} />
 								</SpaceView>
 								<CommonText type={'h5'}>
-									<CommonText type={'h5'}>15개의 질의</CommonText>가 등록되어있어요
+									<CommonText fontWeight={'700'} type={'h5'}>
+										15개의 질의
+									</CommonText>
+									가 등록되어있어요
 								</CommonText>
 							</View>
 						</SpaceView>

@@ -16,13 +16,13 @@ import { ColorType } from '@types';
 import { EventRow } from './EventRow';
 import { MainProfileSlider, ProfileItem } from './MainProfileSlider';
 import RatingStar from './RatingStar';
-import { RowCheckBox } from './RowCheckBox';
 import TopNavigation from './TopNavigation';
 import { ToolTip } from './Tooltip';
-import { ViualSlider } from './ViualSlider';
 import { Modalize } from 'react-native-modalize';
 import LinearGradient from 'react-native-linear-gradient';
 import { Color } from 'assets/styles/Color';
+import { RadioCheckBox } from './RadioCheckBox';
+import { ImagePicker } from './ImagePicker';
 
 const Component = () => {
 	const [popup1, setPopup1] = React.useState(false);
@@ -47,7 +47,6 @@ const Component = () => {
 				<SpaceView mb={24}>
 					<BarGrap score={8} />
 				</SpaceView>
-
 				{/* 프로파일 뱃지 */}
 				<SpaceView mb={16}>
 					<View style={styles.halfContainer}>
@@ -59,7 +58,7 @@ const Component = () => {
 
 								<SpaceView mb={8}>
 									<View style={[layoutStyle.row, layoutStyle.alignCenter]}>
-										<CommonText>소득</CommonText>
+										<CommonText fontWeight={'700'}>소득</CommonText>
 										<Image source={ICON.arrRight} style={styles.iconSize} />
 									</View>
 								</SpaceView>
@@ -79,7 +78,7 @@ const Component = () => {
 
 								<SpaceView mb={8}>
 									<View style={[layoutStyle.row, layoutStyle.alignCenter]}>
-										<CommonText>자산</CommonText>
+										<CommonText fontWeight={'700'}>자산</CommonText>
 										<Image source={ICON.arrRight} style={styles.iconSize} />
 									</View>
 								</SpaceView>
@@ -92,7 +91,6 @@ const Component = () => {
 						</TouchableOpacity>
 					</View>
 				</SpaceView>
-
 				{/* 메인 프로파일 뱃지 */}
 				<SpaceView mb={48}>
 					<View style={[layoutStyle.rowBetween]}>
@@ -113,7 +111,6 @@ const Component = () => {
 						</View>
 					</View>
 				</SpaceView>
-
 				{/* 임시 박스 */}
 				<SpaceView mb={48} viewStyle={styles.halfContainer}>
 					<View style={styles.halfItemLeft}>
@@ -140,7 +137,14 @@ const Component = () => {
 						</SpaceView>
 					</View>
 				</SpaceView>
-
+				{/* 이미지 추가 박스 큰것 */}
+				<SpaceView mb={24}>
+					<ImagePicker isBig={true} />
+				</SpaceView>
+				{/* 이미지 추가 박스 작은 것 */}
+				<SpaceView mb={24}>
+					<ImagePicker isBig={false} />
+				</SpaceView>
 				{/* 스크롤 박스 */}
 				<SpaceView mb={40}>
 					<ScrollView horizontal={true}>
@@ -164,7 +168,6 @@ const Component = () => {
 						</SpaceView>
 					</ScrollView>
 				</SpaceView>
-
 				{/* 스크롤 서클 박스 */}
 				<SpaceView mb={40}>
 					<ScrollView horizontal={true}>
@@ -179,7 +182,6 @@ const Component = () => {
 						<SpaceView viewStyle={styles.circleBox} />
 					</ScrollView>
 				</SpaceView>
-
 				{/* 1자 rowStyle */}
 				<SpaceView mb={40}>
 					<TouchableOpacity style={styles.rowStyle}>
@@ -199,7 +201,6 @@ const Component = () => {
 						<CommonSwich />
 					</View>
 				</SpaceView>
-
 				{/* favorite box */}
 				<SpaceView mb={16} viewStyle={styles.halfContainer}>
 					<View style={styles.halfItemLeft}>
@@ -215,7 +216,9 @@ const Component = () => {
 								end={{ x: 1, y: 1 }}
 							/>
 							<View style={styles.posBottomLeft}>
-								<CommonText color={ColorType.white}>D-1</CommonText>
+								<CommonText fontWeight={'700'} color={ColorType.white}>
+									D-1
+								</CommonText>
 							</View>
 						</View>
 					</View>
@@ -232,12 +235,13 @@ const Component = () => {
 								end={{ x: 1, y: 1 }}
 							/>
 							<View style={styles.posBottomLeft}>
-								<CommonText color={ColorType.white}>D-2</CommonText>
+								<CommonText fontWeight={'700'} color={ColorType.white}>
+									D-2
+								</CommonText>
 							</View>
 						</View>
 					</View>
 				</SpaceView>
-
 				{/* status 버튼 */}
 				<SpaceView mb={40} viewStyle={layoutStyle.row}>
 					<View style={styles.statusBtn}>
@@ -246,25 +250,30 @@ const Component = () => {
 						</CommonText>
 					</View>
 				</SpaceView>
-
 				{/* purple box */}
 				<SpaceView viewStyle={[styles.purpleContainer, layoutStyle.rowBetween]} mb={48}>
 					<View>
-						<CommonText color={ColorType.white}>추천 패키지</CommonText>
+						<CommonText fontWeight={'700'} color={ColorType.white}>
+							추천 패키지
+						</CommonText>
 						<CommonText>300 패스 + 10 로얄패스</CommonText>
 					</View>
 					<View style={layoutStyle.rowCenter}>
 						<SpaceView viewStyle={styles.whiteCircleBox30} mr={8}>
-							<CommonText textStyle={styles.lineHeight16} type={'h6'} color={ColorType.white}>
+							<CommonText
+								fontWeight={'700'}
+								textStyle={styles.lineHeight16}
+								type={'h6'}
+								color={ColorType.white}
+							>
 								D.C {'\n'}30%
 							</CommonText>
 						</SpaceView>
-						<CommonText color={ColorType.white} type={'h4'}>
+						<CommonText fontWeight={'700'} color={ColorType.white} type={'h4'}>
 							₩9,900
 						</CommonText>
 					</View>
 				</SpaceView>
-
 				{/* gray dot text */}
 				<SpaceView mb={60}>
 					<SpaceView viewStyle={styles.dotTextContainer}>
@@ -272,12 +281,13 @@ const Component = () => {
 						<CommonText color={ColorType.gray6666}>모든 상품은 VAT 포함된 가격입니다.</CommonText>
 					</SpaceView>
 				</SpaceView>
-
 				{/* 프로필 star box */}
 				<SpaceView mb={16} viewStyle={styles.halfContainer}>
 					<View style={[styles.halfItemLeft, styles.profileContainer, layoutStyle.alignCenter]}>
 						<SpaceView mb={4}>
-							<CommonText type={'h2'}>7.5</CommonText>
+							<CommonText fontWeight={'700'} type={'h2'}>
+								7.5
+							</CommonText>
 						</SpaceView>
 
 						<SpaceView mb={24} viewStyle={layoutStyle.rowCenter}>
@@ -292,7 +302,9 @@ const Component = () => {
 
 					<View style={[styles.halfItemRight, styles.profileContainer, layoutStyle.alignCenter]}>
 						<SpaceView mb={4}>
-							<CommonText type={'h2'}>7.5</CommonText>
+							<CommonText fontWeight={'700'} type={'h2'}>
+								7.5
+							</CommonText>
 						</SpaceView>
 
 						<SpaceView mb={24} viewStyle={layoutStyle.rowCenter}>
@@ -305,7 +317,6 @@ const Component = () => {
 						<ToolTip position={'bottomRight'} title={'프로필 평점'} desc={'프로필 평점'} />
 					</View>
 				</SpaceView>
-
 				{/* questioncontainer */}
 				<SpaceView viewStyle={layoutStyle.rowCenter} mb={32}>
 					<SpaceView viewStyle={styles.questionContainer} mr={16}>
@@ -316,7 +327,6 @@ const Component = () => {
 					</SpaceView>
 					<Image source={ICON.refreshDark} style={styles.iconSize24} />
 				</SpaceView>
-
 				{/* 인터뷰 서치 인풋 */}
 				<SpaceView viewStyle={layoutStyle.rowBetween} mb={24}>
 					<SpaceView viewStyle={styles.searchInputContainer} mr={16}>
@@ -343,7 +353,6 @@ const Component = () => {
 						</CommonText>
 					</View>
 				</SpaceView>
-
 				<SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
 					<SpaceView viewStyle={styles.questionItemTextContainer}>
 						<CommonText>새 질문1에 대답해주세요</CommonText>
@@ -353,7 +362,6 @@ const Component = () => {
 						<CommonSwich />
 					</View>
 				</SpaceView>
-
 				<SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
 					<SpaceView viewStyle={styles.questionItemTextContainer}>
 						<CommonText>새 질문1에 대답해주세요</CommonText>
@@ -363,7 +371,6 @@ const Component = () => {
 						<Image source={ICON.align} style={styles.iconSize24} />
 					</View>
 				</SpaceView>
-
 				{/* 공통 버튼 */}
 				<SpaceView mb={24}>
 					<SpaceView mb={8}>
@@ -391,17 +398,14 @@ const Component = () => {
 						/>
 					</SpaceView>
 				</SpaceView>
-
 				{/* 공통 체크박스 */}
 				<SpaceView mb={24}>
 					<CommonCheckBox label={'체크박스'} />
 				</SpaceView>
-
 				{/* 공통 데이트 피커 */}
 				<SpaceView mb={24}>
 					<CommonDatePicker />
 				</SpaceView>
-
 				{/* 공통 인풋 */}
 				<SpaceView mb={24}>
 					<SpaceView mb={16}>
@@ -409,20 +413,26 @@ const Component = () => {
 					</SpaceView>
 					<CommonInput label={'with pen'} rightPen={true} />
 				</SpaceView>
-
 				{/* 공통 select */}
 				<SpaceView mb={24}>
 					<CommonSelect label={'셀릭트 라벨'} />
 				</SpaceView>
-
 				{/* 공통 swich */}
 				<SpaceView mb={24}>
 					<CommonSwich />
 				</SpaceView>
-
 				{/* 공통 텍스트 */}
 				<SpaceView mb={24}>
+					<CommonText type={'h2'} color={ColorType.primary} fontWeight={'300'}>
+						공통 텍스트
+					</CommonText>
 					<CommonText type={'h2'} color={ColorType.primary}>
+						공통 텍스트
+					</CommonText>
+					<CommonText type={'h2'} color={ColorType.primary} fontWeight={'500'}>
+						공통 텍스트
+					</CommonText>
+					<CommonText type={'h2'} color={ColorType.primary} fontWeight={'700'}>
 						공통 텍스트
 					</CommonText>
 					<CommonText type={'h3'} color={ColorType.black2222}>
@@ -438,12 +448,10 @@ const Component = () => {
 						공통 텍스트
 					</CommonText>
 				</SpaceView>
-
 				{/* 이벤트 페이지 행 */}
 				<SpaceView mb={24}>
 					<EventRow label={'라벨'} title={'타이틀'} desc={'디스크립션'} />
 				</SpaceView>
-
 				{/* 이벤트 페이지 행 */}
 				<SpaceView mb={24}>
 					<SpaceView mb={24}>
@@ -451,28 +459,38 @@ const Component = () => {
 					</SpaceView>
 					<ProfileItem isOnlyProfileItem={true} />
 				</SpaceView>
-
 				{/* 별점 */}
 				<SpaceView mb={24}>
 					<RatingStar />
 				</SpaceView>
-
-				{/* 체크박스 일자형 */}
-				<SpaceView mb={24}>
-					<RowCheckBox label={'일자형 체크박스'} />
-				</SpaceView>
-
+				{/* 라디오박스 일자형 */}
+				<RadioCheckBox
+					items={[
+						{ label: '라디오박스', value: 'value' },
+						{ label: '라디오박스2', value: 'value2' },
+						{ label: '라디오박스3', value: 'value3' },
+						{ label: '라디오박스4', value: 'value4' },
+						{ label: '라디오박스5', value: 'value5' },
+					]}
+				/>
 				{/* 클릭 시 나오는 툴팁 */}
-				<SpaceView mb={24}>
+				<SpaceView mb={124}>
 					<ToolTip title={'타이틀'} desc={'설명'} />
 					<ToolTip title={'아래 왼쪽'} desc={'설명'} position={'bottomLeft'} />
 					<ToolTip title={'아래 오른쪽'} desc={'설명'} position={'bottomRight'} />
 					<ToolTip title={'상단 왼쪽'} desc={'설명'} position={'topLeft'} />
 					<ToolTip title={'상단 오른쪽'} desc={'설명'} position={'topRight'} />
 				</SpaceView>
+				<SpaceView mb={24}>
+					<CommonBtn value={'모달라이즈 열기'} onPress={onOpen} type={'primary'} />
+				</SpaceView>
+
+				<SpaceView mb={124}>
+					<CommonBtn value={'모달 열기'} onPress={() => setPopup1(true)} type={'primary'} />
+				</SpaceView>
 
 				{/* 메인 비쥬얼 슬라이드 */}
-				<SpaceView mb={120}>
+				{/* <SpaceView mb={120}>
 					<SpaceView mb={40}>
 						<ViualSlider />
 					</SpaceView>
@@ -488,14 +506,7 @@ const Component = () => {
 					<SpaceView mb={40}>
 						<ViualSlider isNew={true} status={'end'} />
 					</SpaceView>
-
-					<SpaceView mb={24}>
-						<CommonBtn value={'모달라이즈 열기'} onPress={onOpen} type={'primary'} />
-					</SpaceView>
-
-					<CommonBtn value={'모달 열기'} onPress={() => setPopup1(true)} type={'primary'} />
-				</SpaceView>
-
+				</SpaceView> */}
 				{/* 모달라이즈 */}
 				<Modalize
 					ref={modalizeRef}
@@ -532,7 +543,6 @@ const Component = () => {
 						</SpaceView>
 					</View>
 				</Modalize>
-
 				{/* 팝업 */}
 				<Modal visible={popup1} transparent={true}>
 					<View style={modalStyle.modalBackground}>

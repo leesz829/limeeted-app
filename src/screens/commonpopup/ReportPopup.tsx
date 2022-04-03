@@ -32,7 +32,9 @@ export const ReportPopup = () => {
 				modalStyle={modalStyle.modalContainer}
 			>
 				<View style={modalStyle.modalHeaderContainer}>
-					<CommonText type={'h3'}>사용자 신고하기</CommonText>
+					<CommonText fontWeight={'700'} type={'h3'}>
+						사용자 신고하기
+					</CommonText>
 					<TouchableOpacity onPress={onClose}>
 						<Image source={ICON.xBtn} style={styles.iconSize24} />
 					</TouchableOpacity>

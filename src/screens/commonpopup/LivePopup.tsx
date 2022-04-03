@@ -33,7 +33,9 @@ export const LivePopup = () => {
 				modalStyle={modalStyle.modalContainer}
 			>
 				<View style={modalStyle.modalHeaderContainer}>
-					<CommonText type={'h3'}>프로필 평가</CommonText>
+					<CommonText fontWeight={'700'} type={'h3'}>
+						프로필 평가
+					</CommonText>
 					<TouchableOpacity onPress={onClose}>
 						<Image source={ICON.xBtn} style={styles.iconSize24} />
 					</TouchableOpacity>
@@ -41,7 +43,11 @@ export const LivePopup = () => {
 
 				<View style={modalStyle.modalBody}>
 					<SpaceView mb={16} viewStyle={modalStyle.textContainer}>
-						<CommonText color={ColorType.primary} textStyle={layoutStyle.textCenter}>
+						<CommonText
+							fontWeight={'700'}
+							color={ColorType.primary}
+							textStyle={layoutStyle.textCenter}
+						>
 							봄같은 분위기{'\n'}
 							싱그러운
 						</CommonText>

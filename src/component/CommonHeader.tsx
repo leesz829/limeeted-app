@@ -57,8 +57,7 @@ const styles = StyleSheet.create({
 		height: 24,
 	},
 	titleStyle: {
-		fontFamily: 'RIDIBatang',
-		fontWeight: 'bold',
+		fontFamily: 'AppleSDGothicNeoB',
 		fontSize: 20,
 		lineHeight: 32,
 		color: Color.black2222,

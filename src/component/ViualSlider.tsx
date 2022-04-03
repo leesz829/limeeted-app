@@ -2,12 +2,12 @@ import * as React from 'react';
 import { View, Image, StyleSheet, Dimensions } from 'react-native';
 import type { FC } from 'react';
 import SpaceView from './SpaceView';
-import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { useState } from 'react';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import { CommonText } from './CommonText';
 import { ColorType } from '@types';
 import { layoutStyle } from 'assets/styles/Styles';
+import Carousel from 'react-native-reanimated-carousel';
 
 const { width } = Dimensions.get('window');
 interface Props {
@@ -42,83 +42,82 @@ export const ViualSlider: FC<Props> = (props) => {
 			</View>
 
 			<View style={styles.pagingContainer}>
-				<Pagination
-					containerStyle={styles.pagingContainerStyle}
-					dotContainerStyle={styles.dotContainerStyle}
-					dotsLength={data.length}
-					activeDotIndex={currentIndex}
-					inactiveDotScale={1}
-					dotStyle={styles.pagingDotStyle}
-				/>
+				{data.map((_, index) => (
+					<View style={styles.dotContainerStyle} key={'dot' + index}>
+						<View style={[styles.pagingDotStyle, index === currentIndex && styles.activeDot]} />
+					</View>
+				))}
 			</View>
+			<View>
+				<Carousel
+					onScrollEnd={(_, current) => setCurrentIndex(current)}
+					loop={false}
+					data={data}
+					width={width}
+					height={480}
+					renderItem={() => <RenderItem />}
+				/>
+				<View style={styles.viusalDescContainer}>
+					<SpaceView mb={8} viewStyle={[layoutStyle.row, layoutStyle.alignCenter]}>
+						<CommonText fontWeight={'700'} type={'h3'} color={ColorType.white}>
+							회원닉네임, 31
+						</CommonText>
 
-			<Carousel
-				data={data}
-				renderItem={() => <RenderItem isNew={props.isNew} onlyImg={props.onlyImg} />}
-				sliderWidth={width}
-				itemWidth={width}
-				onSnapToItem={(index) => setCurrentIndex(index)}
-			/>
+						{props.isNew && (
+							<SpaceView ml={8}>
+								<Image source={ICON.new} style={styles.iconSize40} />
+							</SpaceView>
+						)}
+					</SpaceView>
+
+					<SpaceView mb={16}>
+						<View style={layoutStyle.row}>
+							<CommonText color={ColorType.white}>15km</CommonText>
+							<Image source={ICON.distance} style={styles.iconSize} />
+						</View>
+
+						{props.onlyImg ? (
+							<></>
+						) : (
+							<CommonText color={ColorType.white}>한줄 소개 내용이 출력됩니다</CommonText>
+						)}
+					</SpaceView>
+
+					{props.onlyImg ? (
+						<></>
+					) : (
+						<View style={layoutStyle.rowBetween}>
+							<View style={styles.useActionBoxSmall}>
+								<Image source={ICON.close} style={[styles.iconSize32]} />
+							</View>
+							<View style={styles.useActionBox}>
+								<SpaceView mr={4}>
+									<Image source={ICON.royalpass} style={styles.iconSize32} />
+								</SpaceView>
+								<CommonText fontWeight={'700'} type={'h6'} color={ColorType.white}>
+									찐심
+								</CommonText>
+							</View>
+							<View style={styles.useActionBox}>
+								<SpaceView mr={4}>
+									<Image source={ICON.like} style={styles.iconSize32} />
+								</SpaceView>
+								<CommonText fontWeight={'700'} type={'h6'} color={ColorType.white}>
+									관심
+								</CommonText>
+							</View>
+						</View>
+					)}
+				</View>
+			</View>
 		</SpaceView>
 	);
 };
 
-const RenderItem = ({ isNew, onlyImg }: { isNew?: boolean; onlyImg?: boolean }) => {
+const RenderItem = () => {
 	return (
 		<View>
 			<Image source={IMAGE.main} style={styles.visualImage} />
-			<View style={styles.viusalDescContainer}>
-				<SpaceView mb={8} viewStyle={[layoutStyle.row, layoutStyle.alignCenter]}>
-					<CommonText type={'h3'} color={ColorType.white}>
-						회원닉네임, 31
-					</CommonText>
-
-					{isNew && (
-						<SpaceView ml={8}>
-							<Image source={ICON.new} style={styles.iconSize40} />
-						</SpaceView>
-					)}
-				</SpaceView>
-
-				<SpaceView mb={16}>
-					<View style={layoutStyle.row}>
-						<CommonText color={ColorType.white}>15km</CommonText>
-						<Image source={ICON.distance} style={styles.iconSize} />
-					</View>
-
-					{onlyImg ? (
-						<></>
-					) : (
-						<CommonText color={ColorType.white}>한줄 소개 내용이 출력됩니다</CommonText>
-					)}
-				</SpaceView>
-
-				{onlyImg ? (
-					<></>
-				) : (
-					<View style={layoutStyle.rowBetween}>
-						<View style={styles.useActionBoxSmall}>
-							<Image source={ICON.close} style={[styles.iconSize32]} />
-						</View>
-						<View style={styles.useActionBox}>
-							<SpaceView mr={4}>
-								<Image source={ICON.royalpass} style={styles.iconSize32} />
-							</SpaceView>
-							<CommonText type={'h6'} color={ColorType.white}>
-								찐심
-							</CommonText>
-						</View>
-						<View style={styles.useActionBox}>
-							<SpaceView mr={4}>
-								<Image source={ICON.like} style={styles.iconSize32} />
-							</SpaceView>
-							<CommonText type={'h6'} color={ColorType.white}>
-								관심
-							</CommonText>
-						</View>
-					</View>
-				)}
-			</View>
 		</View>
 	);
 };
@@ -152,23 +151,29 @@ const styles = StyleSheet.create({
 		height: 480,
 	},
 	pagingContainer: {
-		top: 0,
 		position: 'absolute',
 		zIndex: 10,
 		alignItems: 'center',
 		width,
+		flexDirection: 'row',
+		justifyContent: 'center',
+		top: 10,
 	},
 	pagingDotStyle: {
-		width: 16,
+		width: 12,
 		height: 2,
+		backgroundColor: 'rgba(255,255,255,0.3)',
+		borderRadius: 4,
+	},
+	activeDot: {
 		backgroundColor: 'white',
 	},
 	pagingContainerStyle: {
 		paddingTop: 16,
 	},
 	dotContainerStyle: {
-		marginRight: 2,
-		marginLeft: 2,
+		marginRight: 4,
+		marginLeft: 4,
 	},
 	iconSize: {
 		width: 24,

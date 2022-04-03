@@ -30,7 +30,7 @@ export const CommonCheckBox: FC<Props> = (props) => {
 				<Image source={check ? ICON.checkOn : ICON.checkOff} style={styles.iconStyle} />
 			</View>
 			<SpaceView ml={8}>
-				<CommonText>{props.label}</CommonText>
+				<CommonText fontWeight={'500'}>{props.label}</CommonText>
 			</SpaceView>
 		</TouchableOpacity>
 	);

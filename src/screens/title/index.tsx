@@ -1,4 +1,3 @@
-import { ColorType } from '@types';
 import { layoutStyle, styles } from 'assets/styles/Styles';
 import { CommonBtn } from 'component/CommonBtn';
 import { CommonText } from 'component/CommonText';
@@ -12,12 +11,7 @@ export const Title00 = () => {
 		<View style={[styles.container, layoutStyle.justifyCenter]}>
 			<View style={layoutStyle.alignCenter}>
 				<SpaceView mb={8}>
-					<CommonText color={ColorType.grayAAAA} type={'h5'}>
-						LIMIT + MEET
-					</CommonText>
-				</SpaceView>
-				<SpaceView mb={8}>
-					<Image source={IMAGE.logo} style={styles.logo} />
+					<Image source={IMAGE.logo} style={styles.logo} resizeMode={'contain'} />
 				</SpaceView>
 				<SpaceView>
 					<CommonText>믿음가는 사람들의 인연</CommonText>

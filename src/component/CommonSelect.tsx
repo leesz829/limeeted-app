@@ -57,10 +57,9 @@ const styles = StyleSheet.create({
 	labelStyle: {
 		fontSize: 14,
 		lineHeight: 20,
-		fontFamily: 'RIDIBatang',
+		fontFamily: 'AppleSDGothicNeoR',
 		color: Color.gray6666,
 		marginBottom: 8,
-		fontWeight: 'bold',
 	},
 	inputContainer: {
 		paddingBottom: 8,
@@ -79,17 +78,15 @@ const pickerSelectStyles = StyleSheet.create({
 		fontSize: 16,
 		lineHeight: 24,
 		color: Color.black2222,
-		fontFamily: 'RIDIBatang',
+		fontFamily: 'AppleSDGothicNeoM',
 		padding: 0,
 		marginTop: 8,
-		fontWeight: 'bold',
 	},
 	inputAndroid: {
 		fontSize: 16,
 		lineHeight: 24,
 		color: Color.black2222,
-		fontFamily: 'RIDIBatang',
+		fontFamily: 'AppleSDGothicNeoM',
 		padding: 0,
-		fontWeight: 'bold',
 	},
 });

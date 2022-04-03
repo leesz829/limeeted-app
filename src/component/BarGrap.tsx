@@ -15,47 +15,45 @@ export const BarGrap: FC<Props> = (props) => {
 	const { score } = props;
 
 	return (
-		<View>
-			<View style={styles.barContainer}>
-				<View style={styles.iconContainer}>
-					<View style={[styles.iconPos, { left: score * 10 + '%' }]}>
-						<Image source={ICON.like} style={styles.iconSize} />
-					</View>
+		<View style={styles.barContainer}>
+			<View style={styles.iconContainer}>
+				<View style={[styles.iconPos, { left: score * 10 + '%' }]}>
+					<Image source={ICON.like} style={styles.iconSize} />
 				</View>
-
-				<View
-					style={[styles.line, styles.first, { width: score - 2 >= 0 ? '20%' : score * 10 + '%' }]}
-				/>
-				<View
-					style={[
-						styles.line,
-						styles.seconde,
-						{ width: score - 4 >= 0 ? '20%' : (score - 2) * 10 + '%' },
-					]}
-				/>
-				<View
-					style={[
-						styles.line,
-						styles.third,
-						{ width: score - 6 >= 0 ? '20%' : (score - 4) * 10 + '%' },
-					]}
-				/>
-				<View
-					style={[
-						styles.line,
-						styles.fourth,
-						{ width: score - 8 >= 0 ? '20%' : (score - 6) * 10 + '%' },
-					]}
-				/>
-				<View
-					style={[
-						styles.line,
-						styles.fifth,
-						{ width: score - 10 >= 0 ? '20%' : (score - 8) * 10 + '%' },
-						score - 10 >= 0 ? { borderTopRightRadius: 20, borderBottomRightRadius: 20 } : {},
-					]}
-				/>
 			</View>
+
+			<View
+				style={[styles.line, styles.first, { width: score - 2 >= 0 ? '20%' : score * 10 + '%' }]}
+			/>
+			<View
+				style={[
+					styles.line,
+					styles.seconde,
+					{ width: score - 4 >= 0 ? '20%' : (score - 2) * 10 + '%' },
+				]}
+			/>
+			<View
+				style={[
+					styles.line,
+					styles.third,
+					{ width: score - 6 >= 0 ? '20%' : (score - 4) * 10 + '%' },
+				]}
+			/>
+			<View
+				style={[
+					styles.line,
+					styles.fourth,
+					{ width: score - 8 >= 0 ? '20%' : (score - 6) * 10 + '%' },
+				]}
+			/>
+			<View
+				style={[
+					styles.line,
+					styles.fifth,
+					{ width: score - 10 >= 0 ? '20%' : (score - 8) * 10 + '%' },
+					score - 10 >= 0 ? { borderTopRightRadius: 20, borderBottomRightRadius: 20 } : {},
+				]}
+			/>
 		</View>
 	);
 };

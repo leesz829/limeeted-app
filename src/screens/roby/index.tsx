@@ -16,7 +16,9 @@ export const Roby = () => {
 			<TopNavigation currentPath={''} />
 			<ScrollView contentContainerStyle={styles.scrollContainer}>
 				<SpaceView mb={16}>
-					<CommonText type={'h3'}>내 정보</CommonText>
+					<CommonText fontWeight={'700'} type={'h3'}>
+						내 정보
+					</CommonText>
 				</SpaceView>
 
 				<SpaceView mb={48} viewStyle={layoutStyle.alignCenter}>
@@ -28,7 +30,9 @@ export const Roby = () => {
 					</SpaceView>
 
 					<SpaceView mb={4}>
-						<CommonText type={'h4'}>회원닉네임, 31</CommonText>
+						<CommonText fontWeight={'700'} type={'h4'}>
+							회원닉네임, 31
+						</CommonText>
 					</SpaceView>
 					<SpaceView mb={16} viewStyle={styles.levelContainer}>
 						<CommonText color={ColorType.gray6666} type={'h6'}>
@@ -39,55 +43,72 @@ export const Roby = () => {
 					<CommonText color={ColorType.gray6666}>한줄 소개 내용이 출력됩니다</CommonText>
 				</SpaceView>
 
-				<SpaceView mb={16} viewStyle={styles.halfContainer}>
-					<View style={[styles.halfItemLeft, styles.profileContainer, layoutStyle.alignCenter]}>
-						<SpaceView mb={4}>
-							<CommonText type={'h2'}>7.5</CommonText>
-						</SpaceView>
+				<View>
+					<SpaceView mb={16}>
+						<TouchableOpacity style={[layoutStyle.row, layoutStyle.alignCenter]}>
+							<CommonText type={'h3'} fontWeight={'700'}>
+								프로필 관리
+							</CommonText>
+							<Image source={ICON.arrRight} style={styles.iconSize} />
+						</TouchableOpacity>
+					</SpaceView>
 
-						<SpaceView mb={24} viewStyle={layoutStyle.rowCenter}>
-							<Image source={ICON.star} style={styles.iconSize24} />
-							<Image source={ICON.star} style={styles.iconSize24} />
-							<Image source={ICON.star} style={styles.iconSize24} />
-							<Image source={ICON.starHalf} style={styles.iconSize24} />
-							<Image source={ICON.starEmpty} style={styles.iconSize24} />
-						</SpaceView>
-						<ToolTip title={'기여 평점'} desc={'프로필 평점'} position={'bottomLeft'} />
-					</View>
+					<SpaceView mb={16} viewStyle={styles.halfContainer}>
+						<View style={[styles.halfItemLeft, styles.profileContainer, layoutStyle.alignCenter]}>
+							<SpaceView mb={4}>
+								<CommonText fontWeight={'700'} type={'h2'}>
+									7.5
+								</CommonText>
+							</SpaceView>
 
-					<View style={[styles.halfItemRight, styles.profileContainer, layoutStyle.alignCenter]}>
-						<SpaceView mb={4}>
-							<CommonText type={'h2'}>7.5</CommonText>
-						</SpaceView>
+							<SpaceView mb={24} viewStyle={layoutStyle.rowCenter}>
+								<Image source={ICON.star} style={styles.iconSize24} />
+								<Image source={ICON.star} style={styles.iconSize24} />
+								<Image source={ICON.star} style={styles.iconSize24} />
+								<Image source={ICON.starHalf} style={styles.iconSize24} />
+								<Image source={ICON.starEmpty} style={styles.iconSize24} />
+							</SpaceView>
+							<ToolTip title={'기여 평점'} desc={'프로필 평점'} position={'bottomLeft'} />
+						</View>
 
-						<SpaceView mb={24} viewStyle={layoutStyle.rowCenter}>
-							<Image source={ICON.star} style={styles.iconSize24} />
-							<Image source={ICON.star} style={styles.iconSize24} />
-							<Image source={ICON.star} style={styles.iconSize24} />
-							<Image source={ICON.starHalf} style={styles.iconSize24} />
-							<Image source={ICON.starEmpty} style={styles.iconSize24} />
-						</SpaceView>
-						<ToolTip position={'bottomRight'} title={'프로필 평점'} desc={'프로필 평점'} />
-					</View>
-				</SpaceView>
+						<View style={[styles.halfItemRight, styles.profileContainer, layoutStyle.alignCenter]}>
+							<SpaceView mb={4}>
+								<CommonText fontWeight={'700'} type={'h2'}>
+									7.5
+								</CommonText>
+							</SpaceView>
 
-				<SpaceView mb={48}>
-					<CommonBtn
-						type="purple"
-						value="프로필 재심사"
-						icon={ICON.refresh}
-						iconSize={24}
-						iconPosition={'right'}
-					/>
-				</SpaceView>
+							<SpaceView mb={24} viewStyle={layoutStyle.rowCenter}>
+								<Image source={ICON.star} style={styles.iconSize24} />
+								<Image source={ICON.star} style={styles.iconSize24} />
+								<Image source={ICON.star} style={styles.iconSize24} />
+								<Image source={ICON.starHalf} style={styles.iconSize24} />
+								<Image source={ICON.starEmpty} style={styles.iconSize24} />
+							</SpaceView>
+							<ToolTip position={'bottomRight'} title={'프로필 평점'} desc={'프로필 평점'} />
+						</View>
+					</SpaceView>
+
+					<SpaceView mb={48}>
+						<CommonBtn
+							type="purple"
+							value="프로필 재심사"
+							icon={ICON.refresh}
+							iconSize={24}
+							iconPosition={'right'}
+						/>
+					</SpaceView>
+				</View>
 
 				<SpaceView mb={48}>
 					<SpaceView mb={16}>
 						<SpaceView mb={16}>
-							<CommonText type={'h3'}>보관함</CommonText>
+							<CommonText fontWeight={'700'} type={'h3'}>
+								보관함
+							</CommonText>
 						</SpaceView>
 						<View style={styles.rowStyle}>
-							<CommonText>
+							<CommonText fontWeight={'500'}>
 								새 관심
 								<CommonText color={ColorType.primary}> 8</CommonText>건
 							</CommonText>
@@ -109,7 +130,7 @@ export const Roby = () => {
 					</SpaceView>
 
 					<View style={styles.rowStyle}>
-						<CommonText>
+						<CommonText fontWeight={'500'}>
 							새 매칭
 							<CommonText color={ColorType.primary}> 8</CommonText>건
 						</CommonText>
@@ -132,11 +153,13 @@ export const Roby = () => {
 
 				<SpaceView mb={48}>
 					<SpaceView mb={16}>
-						<CommonText type={'h3'}>매칭 설정</CommonText>
+						<CommonText fontWeight={'700'} type={'h3'}>
+							매칭 설정
+						</CommonText>
 					</SpaceView>
 
 					<TouchableOpacity style={styles.rowStyle}>
-						<CommonText>내 선호 이성</CommonText>
+						<CommonText fontWeight={'500'}>내 선호 이성</CommonText>
 						<Image source={ICON.arrRight} style={styles.iconSize} />
 					</TouchableOpacity>
 
@@ -153,22 +176,24 @@ export const Roby = () => {
 
 				<SpaceView mb={40}>
 					<SpaceView mb={16}>
-						<CommonText type={'h3'}>그 외</CommonText>
+						<CommonText fontWeight={'700'} type={'h3'}>
+							그 외
+						</CommonText>
 					</SpaceView>
 					<TouchableOpacity style={styles.rowStyle}>
-						<CommonText>최근 소식</CommonText>
+						<CommonText fontWeight={'500'}>최근 소식</CommonText>
 						<Image source={ICON.arrRight} style={styles.iconSize} />
 					</TouchableOpacity>
 					<TouchableOpacity style={styles.rowStyle}>
-						<CommonText>내 계정 정보</CommonText>
+						<CommonText fontWeight={'500'}>내 계정 정보</CommonText>
 						<Image source={ICON.arrRight} style={styles.iconSize} />
 					</TouchableOpacity>
 					<TouchableOpacity style={styles.rowStyle}>
-						<CommonText>이용약관</CommonText>
+						<CommonText fontWeight={'500'}>이용약관</CommonText>
 						<Image source={ICON.arrRight} style={styles.iconSize} />
 					</TouchableOpacity>
 					<TouchableOpacity style={styles.rowStyle}>
-						<CommonText>개인정보 취급방침</CommonText>
+						<CommonText fontWeight={'500'}>개인정보 취급방침</CommonText>
 						<Image source={ICON.arrRight} style={styles.iconSize} />
 					</TouchableOpacity>
 				</SpaceView>

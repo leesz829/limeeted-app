@@ -31,7 +31,7 @@ export const CommonDatePicker = () => {
 		<View>
 			<TouchableOpacity onPress={showDatePicker} style={styles.datepickerContainer}>
 				<SpaceView mr={8}>
-					<CommonText>2021-08-29</CommonText>
+					<CommonText fontWeight={'500'}>2021-08-29</CommonText>
 				</SpaceView>
 				<Image source={ICON.arrRight} style={styles.iconSize} />
 			</TouchableOpacity>

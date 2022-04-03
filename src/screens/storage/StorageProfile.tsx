@@ -30,22 +30,28 @@ export const StorageProfile = () => {
 						<SpaceView mb={8}>
 							<Image source={ICON.wait} style={styles.iconSize48} />
 						</SpaceView>
-						<CommonText>매칭 대기중</CommonText>
-						<CommonText color={ColorType.gray6666}>
+						<CommonText fontWeight={'700'}>매칭 대기중</CommonText>
+						<CommonText
+							fontWeight={'500'}
+							color={ColorType.gray6666}
+							textStyle={layoutStyle.textCenter}
+						>
 							상대방이 회원님의 관심을 두고 고민 중인가봐요.
 						</CommonText>
 					</SpaceView>
 
 					<SpaceView mb={48}>
 						<SpaceView mb={8}>
-							<CommonText type={'h3'}>인사말 건네기</CommonText>
+							<CommonText fontWeight={'700'} type={'h3'}>
+								인사말 건네기
+							</CommonText>
 						</SpaceView>
 						<SpaceView mb={16}>
 							<CommonText>상대 이성에게 반가운 인사말을 건내보세요.</CommonText>
 						</SpaceView>
 						<SpaceView mb={8} viewStyle={styles.textContainer}>
-							<CommonText>카카오톡 ID</CommonText>
-							<CommonText type={'h5'}>
+							<CommonText fontWeight={'500'}>카카오톡 ID</CommonText>
+							<CommonText type={'h5'} textStyle={layoutStyle.textCenter}>
 								영역을 터치하면 상대 이성의 카카오톡 ID가 복사됩니다
 							</CommonText>
 						</SpaceView>
@@ -55,7 +61,9 @@ export const StorageProfile = () => {
 
 					<SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
 						<View>
-							<CommonText type={'h3'}>프로필 2차 인증</CommonText>
+							<CommonText fontWeight={'700'} type={'h3'}>
+								프로필 2차 인증
+							</CommonText>
 						</View>
 
 						<View style={[layoutStyle.rowBetween]}>

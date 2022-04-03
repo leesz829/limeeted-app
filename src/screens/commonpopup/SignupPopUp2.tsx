@@ -32,7 +32,9 @@ export const SignupPopUp2 = () => {
 				modalStyle={modalStyle.modalContainer}
 			>
 				<View style={modalStyle.modalHeaderContainer}>
-					<CommonText type={'h3'}>관심사 등록</CommonText>
+					<CommonText fontWeight={'700'} type={'h3'}>
+						관심사 등록
+					</CommonText>
 					<TouchableOpacity onPress={onClose}>
 						<Image source={ICON.xBtn} style={styles.iconSize24} />
 					</TouchableOpacity>
@@ -41,7 +43,7 @@ export const SignupPopUp2 = () => {
 				<View style={modalStyle.modalBody}>
 					<SpaceView mb={24}>
 						<SpaceView mb={16}>
-							<CommonText>문화생활</CommonText>
+							<CommonText fontWeight={'500'}>문화생활</CommonText>
 						</SpaceView>
 
 						<View style={[layoutStyle.row, layoutStyle.justifyBetween]}>
@@ -53,7 +55,10 @@ export const SignupPopUp2 = () => {
 								return (
 									<SpaceView mr={index % 3 !== 2 ? 8 : 0} key={index + 'reg'}>
 										<TouchableOpacity style={[styles.interestBox, i.isActive && styles.boxActive]}>
-											<CommonText color={i.isActive ? ColorType.primary : ColorType.gray8888}>
+											<CommonText
+												fontWeight={'500'}
+												color={i.isActive ? ColorType.primary : ColorType.gray8888}
+											>
 												{i.text}
 											</CommonText>
 										</TouchableOpacity>
@@ -65,7 +70,7 @@ export const SignupPopUp2 = () => {
 
 					<SpaceView mb={24}>
 						<SpaceView mb={16}>
-							<CommonText>영화</CommonText>
+							<CommonText fontWeight={'500'}>영화</CommonText>
 						</SpaceView>
 
 						<View style={[layoutStyle.row, layoutStyle.justifyBetween]}>
@@ -77,7 +82,10 @@ export const SignupPopUp2 = () => {
 								return (
 									<SpaceView mr={index % 3 !== 2 ? 8 : 0} key={index + 'movie'}>
 										<TouchableOpacity style={[styles.interestBox, i.isActive && styles.boxActive]}>
-											<CommonText color={i.isActive ? ColorType.primary : ColorType.gray8888}>
+											<CommonText
+												fontWeight={'500'}
+												color={i.isActive ? ColorType.primary : ColorType.gray8888}
+											>
 												{i.text}
 											</CommonText>
 										</TouchableOpacity>
@@ -89,7 +97,7 @@ export const SignupPopUp2 = () => {
 
 					<SpaceView mb={24}>
 						<SpaceView mb={16}>
-							<CommonText>스타일</CommonText>
+							<CommonText fontWeight={'500'}>스타일</CommonText>
 						</SpaceView>
 
 						<View style={[layoutStyle.row, layoutStyle.justifyBetween]}>
@@ -101,7 +109,10 @@ export const SignupPopUp2 = () => {
 								return (
 									<SpaceView mr={index % 3 !== 2 ? 8 : 0} key={index + 'style'}>
 										<TouchableOpacity style={[styles.interestBox, i.isActive && styles.boxActive]}>
-											<CommonText color={i.isActive ? ColorType.primary : ColorType.gray8888}>
+											<CommonText
+												fontWeight={'500'}
+												color={i.isActive ? ColorType.primary : ColorType.gray8888}
+											>
 												{i.text}
 											</CommonText>
 										</TouchableOpacity>
@@ -113,7 +124,7 @@ export const SignupPopUp2 = () => {
 
 					<SpaceView mb={24}>
 						<SpaceView mb={16}>
-							<CommonText>음식</CommonText>
+							<CommonText fontWeight={'500'}>음식</CommonText>
 						</SpaceView>
 
 						<View style={[layoutStyle.row, layoutStyle.justifyBetween]}>
@@ -125,7 +136,10 @@ export const SignupPopUp2 = () => {
 								return (
 									<SpaceView mr={index % 3 !== 2 ? 8 : 0} key={index + 'food'}>
 										<TouchableOpacity style={[styles.interestBox, i.isActive && styles.boxActive]}>
-											<CommonText color={i.isActive ? ColorType.primary : ColorType.gray8888}>
+											<CommonText
+												fontWeight={'500'}
+												color={i.isActive ? ColorType.primary : ColorType.gray8888}
+											>
 												{i.text}
 											</CommonText>
 										</TouchableOpacity>

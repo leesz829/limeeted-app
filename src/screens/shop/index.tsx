@@ -13,7 +13,9 @@ export const Shop = () => {
 			<TopNavigation currentPath={''} />
 			<ScrollView style={styles.scrollContainer}>
 				<SpaceView mb={16}>
-					<CommonText type={'h3'}>보유 재화</CommonText>
+					<CommonText fontWeight={'700'} type={'h3'}>
+						보유 재화
+					</CommonText>
 				</SpaceView>
 
 				<SpaceView viewStyle={styles.halfContainer} mb={16}>
@@ -23,7 +25,9 @@ export const Shop = () => {
 								<CommonText>보유 패스</CommonText>
 							</SpaceView>
 							<Image source={ICON.pass} style={styles.iconSize32} />
-							<CommonText type={'h2'}>999,999</CommonText>
+							<CommonText fontWeight={'700'} type={'h2'}>
+								999,999
+							</CommonText>
 						</View>
 					</View>
 					<View style={styles.halfItemRight}>
@@ -32,23 +36,32 @@ export const Shop = () => {
 								<CommonText>보유 로얄패스</CommonText>
 							</SpaceView>
 							<Image source={ICON.royalpass} style={styles.iconSize32} />
-							<CommonText type={'h2'}>1,000</CommonText>
+							<CommonText fontWeight={'700'} type={'h2'}>
+								1,000
+							</CommonText>
 						</View>
 					</View>
 				</SpaceView>
 
 				<SpaceView viewStyle={[styles.purpleContainer, layoutStyle.rowBetween]} mb={48}>
 					<View>
-						<CommonText color={ColorType.white}>추천 패키지</CommonText>
+						<CommonText fontWeight={'700'} color={ColorType.white}>
+							추천 패키지
+						</CommonText>
 						<CommonText>300 패스 + 10 로얄패스</CommonText>
 					</View>
 					<View style={layoutStyle.rowCenter}>
 						<SpaceView viewStyle={styles.whiteCircleBox30} mr={8}>
-							<CommonText textStyle={styles.lineHeight16} type={'h6'} color={ColorType.white}>
+							<CommonText
+								fontWeight={'700'}
+								textStyle={styles.lineHeight16}
+								type={'h6'}
+								color={ColorType.white}
+							>
 								D.C {'\n'}30%
 							</CommonText>
 						</SpaceView>
-						<CommonText color={ColorType.white} type={'h4'}>
+						<CommonText fontWeight={'700'} color={ColorType.white} type={'h4'}>
 							₩9,900
 						</CommonText>
 					</View>
@@ -56,93 +69,97 @@ export const Shop = () => {
 
 				<SpaceView mb={48}>
 					<SpaceView mb={16}>
-						<CommonText type={'h3'}>보유 재화</CommonText>
+						<CommonText fontWeight={'700'} type={'h3'}>
+							패스
+						</CommonText>
 					</SpaceView>
 					<View style={styles.rowStyle}>
 						<SpaceView mr={4} viewStyle={layoutStyle.rowCenter}>
 							<Image source={ICON.pass} style={styles.iconSize32} />
-							<CommonText>10</CommonText>
+							<CommonText fontWeight={'500'}>10</CommonText>
 						</SpaceView>
 						<View>
-							<CommonText>₩9,900</CommonText>
+							<CommonText fontWeight={'700'}>₩9,900</CommonText>
 						</View>
 					</View>
 					<View style={styles.rowStyle}>
 						<SpaceView mr={4} viewStyle={layoutStyle.rowCenter}>
 							<Image source={ICON.pass} style={styles.iconSize32} />
-							<CommonText>30</CommonText>
+							<CommonText fontWeight={'500'}>30</CommonText>
 						</SpaceView>
 						<View>
-							<CommonText>₩19,900</CommonText>
+							<CommonText fontWeight={'700'}>₩19,900</CommonText>
 						</View>
 					</View>
 					<View style={styles.rowStyle}>
 						<SpaceView mr={4} viewStyle={layoutStyle.rowCenter}>
 							<Image source={ICON.pass} style={styles.iconSize32} />
-							<CommonText>70(+10)</CommonText>
+							<CommonText fontWeight={'500'}>70(+10)</CommonText>
 						</SpaceView>
 						<View>
-							<CommonText>₩39,900</CommonText>
+							<CommonText fontWeight={'700'}>₩39,900</CommonText>
 						</View>
 					</View>
 					<View style={styles.rowStyle}>
 						<SpaceView mr={4} viewStyle={layoutStyle.rowCenter}>
 							<Image source={ICON.pass} style={styles.iconSize32} />
-							<CommonText>120(+20)</CommonText>
+							<CommonText fontWeight={'500'}>120(+20)</CommonText>
 						</SpaceView>
 						<View>
-							<CommonText>₩79,900</CommonText>
+							<CommonText fontWeight={'700'}>₩79,900</CommonText>
 						</View>
 					</View>
 					<View style={styles.rowStyle}>
 						<SpaceView mr={4} viewStyle={layoutStyle.rowCenter}>
 							<Image source={ICON.pass} style={styles.iconSize32} />
-							<CommonText>200(+50)</CommonText>
+							<CommonText fontWeight={'500'}>200(+50)</CommonText>
 						</SpaceView>
 						<View>
-							<CommonText>₩149,900</CommonText>
+							<CommonText fontWeight={'700'}>₩149,900</CommonText>
 						</View>
 					</View>
 					<View style={styles.rowStyle}>
 						<SpaceView mr={4} viewStyle={layoutStyle.rowCenter}>
 							<Image source={ICON.pass} style={styles.iconSize32} />
-							<CommonText>500(+100)</CommonText>
+							<CommonText fontWeight={'500'}>500(+100)</CommonText>
 						</SpaceView>
 						<View>
-							<CommonText>₩299,900</CommonText>
+							<CommonText fontWeight={'700'}>₩299,900</CommonText>
 						</View>
 					</View>
 				</SpaceView>
 
 				<SpaceView mb={48}>
 					<SpaceView mb={16}>
-						<CommonText type={'h3'}>로얄패스</CommonText>
+						<CommonText fontWeight={'700'} type={'h3'}>
+							로얄패스
+						</CommonText>
 					</SpaceView>
 					<View style={styles.rowStyle}>
 						<SpaceView mr={4} viewStyle={layoutStyle.rowCenter}>
 							<Image source={ICON.royalpass} style={styles.iconSize32} />
-							<CommonText>5</CommonText>
+							<CommonText fontWeight={'500'}>5</CommonText>
 						</SpaceView>
 						<View>
-							<CommonText>₩9,900</CommonText>
+							<CommonText fontWeight={'700'}>₩9,900</CommonText>
 						</View>
 					</View>
 					<View style={styles.rowStyle}>
 						<SpaceView mr={4} viewStyle={layoutStyle.rowCenter}>
 							<Image source={ICON.pass} style={styles.iconSize32} />
-							<CommonText>10</CommonText>
+							<CommonText fontWeight={'500'}>10</CommonText>
 						</SpaceView>
 						<View>
-							<CommonText>₩19,900</CommonText>
+							<CommonText fontWeight={'700'}>₩19,900</CommonText>
 						</View>
 					</View>
 					<View style={styles.rowStyle}>
 						<SpaceView mr={4} viewStyle={layoutStyle.rowCenter}>
 							<Image source={ICON.pass} style={styles.iconSize32} />
-							<CommonText>20</CommonText>
+							<CommonText fontWeight={'500'}>20</CommonText>
 						</SpaceView>
 						<View>
-							<CommonText>₩39,900</CommonText>
+							<CommonText fontWeight={'700'}>₩39,900</CommonText>
 						</View>
 					</View>
 				</SpaceView>

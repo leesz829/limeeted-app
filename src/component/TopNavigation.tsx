@@ -70,8 +70,7 @@ const styles = StyleSheet.create({
 		fontSize: 20,
 		lineHeight: 32,
 		color: Color.grayAAAA,
-		fontFamily: 'RIDIBatang',
-		fontWeight: 'bold',
+		fontFamily: 'AppleSDGothicNeoB',
 	},
 	tabTextActive: {
 		color: Color.black2222,

@@ -33,7 +33,9 @@ export const SignupPopUp = () => {
 				modalStyle={modalStyle.modalContainer}
 			>
 				<View style={modalStyle.modalHeaderContainer}>
-					<CommonText type={'h3'}>직업 인증</CommonText>
+					<CommonText fontWeight={'700'} type={'h3'}>
+						직업 인증
+					</CommonText>
 					<TouchableOpacity onPress={onClose}>
 						<Image source={ICON.xBtn} style={styles.iconSize24} />
 					</TouchableOpacity>

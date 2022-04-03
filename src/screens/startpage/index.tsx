@@ -3,6 +3,7 @@ import * as React from 'react';
 import { IMAGE, START_IMAGE } from 'utils/imageUtils';
 import { useNavigation } from '@react-navigation/native';
 import { ScreenNavigationProp } from '@types';
+import { Color } from 'assets/styles/Color';
 
 const { width } = Dimensions.get('window');
 const Startpage = () => {
@@ -221,7 +222,7 @@ const style = StyleSheet.create({
 	},
 	title: {
 		fontSize: 12,
-		fontFamily: 'RIDIBatang',
-		fontWeight: 'bold',
+		fontFamily: 'AppleSDGothicNeoM',
+		color: Color.black2222,
 	},
 });

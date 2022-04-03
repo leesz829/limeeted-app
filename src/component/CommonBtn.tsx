@@ -105,8 +105,7 @@ const styles = (props: Props) => {
 			fontSize: 16,
 			lineHeight: 26,
 			color: textColor,
-			fontFamily: 'RIDIBatang',
-			fontWeight: '700',
+			fontFamily: 'AppleSDGothicNeoM',
 		},
 		iconStyle: {
 			width: 16,

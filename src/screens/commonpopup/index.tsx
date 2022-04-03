@@ -23,7 +23,9 @@ export const CommonPopup = () => {
 				<View style={modalStyle.modalBackground}>
 					<View style={modalStyle.modalStyle1}>
 						<SpaceView mb={16} viewStyle={layoutStyle.alignCenter}>
-							<CommonText type={'h4'}>찐심</CommonText>
+							<CommonText fontWeight={'700'} type={'h4'}>
+								찐심
+							</CommonText>
 						</SpaceView>
 
 						<SpaceView viewStyle={layoutStyle.alignCenter}>
@@ -32,11 +34,15 @@ export const CommonPopup = () => {
 
 						<View style={modalStyle.modalBtnContainer}>
 							<TouchableOpacity style={modalStyle.modalBtn} onPress={() => setPopup1(false)}>
-								<CommonText color={ColorType.gray8888}>취소</CommonText>
+								<CommonText fontWeight={'500'} color={ColorType.gray8888}>
+									취소
+								</CommonText>
 							</TouchableOpacity>
 							<View style={modalStyle.modalBtnline} />
 							<TouchableOpacity style={modalStyle.modalBtn}>
-								<CommonText color={ColorType.primary}>구매</CommonText>
+								<CommonText fontWeight={'500'} color={ColorType.primary}>
+									구매
+								</CommonText>
 							</TouchableOpacity>
 						</View>
 					</View>
@@ -47,7 +53,9 @@ export const CommonPopup = () => {
 				<View style={modalStyle.modalBackground}>
 					<View style={modalStyle.modalStyle1}>
 						<SpaceView mb={16} viewStyle={layoutStyle.alignCenter}>
-							<CommonText type={'h4'}>사용자 신고하기</CommonText>
+							<CommonText fontWeight={'700'} type={'h4'}>
+								사용자 신고하기
+							</CommonText>
 						</SpaceView>
 
 						<SpaceView viewStyle={layoutStyle.alignCenter}>
@@ -56,11 +64,13 @@ export const CommonPopup = () => {
 
 						<View style={modalStyle.modalBtnContainer}>
 							<TouchableOpacity style={modalStyle.modalBtn} onPress={() => setPopup2(false)}>
-								<CommonText>취소</CommonText>
+								<CommonText fontWeight={'500'}>취소</CommonText>
 							</TouchableOpacity>
 							<View style={modalStyle.modalBtnline} />
 							<TouchableOpacity style={modalStyle.modalBtn}>
-								<CommonText color={ColorType.red}>신고</CommonText>
+								<CommonText fontWeight={'500'} color={ColorType.red}>
+									신고
+								</CommonText>
 							</TouchableOpacity>
 						</View>
 					</View>

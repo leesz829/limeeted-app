@@ -11,14 +11,20 @@ import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
 import { RouteProp, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Modalize } from 'react-native-modalize';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 
 interface Props {
 	navigation : StackNavigationProp<StackParamList, 'Signup1'>;
 	route : RouteProp<StackParamList, 'Signup1'>;
 }
 
+
 export const Signup1 = (props : Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
+
+	const state = {
+		avatar : ''
+	}
 
 	const {id}  = props.route.params;
 	const {name} = props.route.params;
@@ -26,15 +32,39 @@ export const Signup1 = (props : Props) => {
 	const {gender}  = props.route.params;
 	const {hp}  = props.route.params;
 
+	// 직업 Pop
+	const job_modalizeRef = useRef<Modalize>(null);
+	const job_onOpen = () => { job_modalizeRef.current?.open(); };
+	const job_onClose = () => {	job_modalizeRef.current?.close(); };
 
-	const modalizeRef = useRef<Modalize>(null);
-	const onOpen = () => {
-		modalizeRef.current?.open();
-	};
+	// 학위 Pop
+	const deg_modalizeRef = useRef<Modalize>(null);
+	const deg_onOpen = () => { deg_modalizeRef.current?.open(); };
+	const deg_onClose = () => {	deg_modalizeRef.current?.close(); };
 
-	const onClose = () => {
-		modalizeRef.current?.close();
-	};
+
+	const showImage = () => {
+
+		const options = {
+			noData: true,
+			mediaType: 'photo' as const
+		}
+
+		launchImageLibrary(options, (response) => {
+	
+			if(response.assets) {
+				const imageArray = response.assets[0].uri;
+				console.warn(imageArray);
+			}
+		})
+
+		/*launchCamera({mediaType:'photo'}, response => {
+			console.warn(response);
+		});*/
+
+	
+	  }
+
 
 	return (
 		<>
@@ -52,9 +82,8 @@ export const Signup1 = (props : Props) => {
 					<SpaceView mb={16}>
 						<View style={styles.halfContainer}>
 							<TouchableOpacity style={styles.halfItemLeft} 
-												onPress={onOpen}
+												onPress={job_onOpen}
 							>
-
 								<View style={styles.badgeBox}>
 									<SpaceView mb={16}>
 										<Image source={ICON.job} style={styles.iconSize40} />
@@ -74,7 +103,9 @@ export const Signup1 = (props : Props) => {
 								</View>
 							</TouchableOpacity>
 
-							<TouchableOpacity style={styles.halfItemRight}>
+							<TouchableOpacity style={styles.halfItemRight}
+												onPress={deg_onOpen}
+							>
 								<View style={styles.badgeBox}>
 									<SpaceView mb={16}>
 										<Image source={ICON.degree} style={styles.iconSize40} />
@@ -190,24 +221,86 @@ export const Signup1 = (props : Props) => {
 							value={'다음 (2/4)'} 
 							type={'primary'} 
 							onPress={() => {
-								 
+								navigation.navigate('Signup02');
 							}}
 					/>
 				</SpaceView>
 			</ScrollView>
+
+
 			
-			{/* #############################
-					직업 인증 팝업
-			############################## */}
+			{/* ###############################################
+								직업 인증 팝업
+			############################################### */}
 			<Modalize
-				ref={modalizeRef}
+				ref={job_modalizeRef}
 				adjustToContentHeight={true}
 				handleStyle={modalStyle.modalHandleStyle}
 				modalStyle={modalStyle.modalContainer}
 			>
 				<View style={modalStyle.modalHeaderContainer}>
 					<CommonText type={'h3'}>직업 인증</CommonText>
-					<TouchableOpacity onPress={onClose}>
+					<TouchableOpacity onPress={job_onClose}>
+						
+						<Image source={ICON.xBtn} style={styles.iconSize24} />
+					</TouchableOpacity>
+				</View>
+
+				<View style={modalStyle.modalBody}>
+					<View>
+						<SpaceView mb={32}>
+							<CommonInput label="직업" placeholder={'직업을 입력해주세요. (예 : 프로그래머)'} />
+						</SpaceView>
+					</View>
+
+					<SpaceView mb={24}>
+						<SpaceView mb={16}>
+							<View style={styles.dotTextContainer}>
+								<View style={styles.dot} />
+								<CommonText color={ColorType.gray6666}>
+									자신의 커리어를 증명할 수 있는 명함 또는 증명서를 올려주세요.
+								</CommonText>
+							</View>
+						</SpaceView>
+
+						<SpaceView>
+							<View style={styles.dotTextContainer}>
+								<View style={styles.dot} />
+								<CommonText color={ColorType.gray6666}>
+									허용 증명서 : 재직증명서, 건강보험자격득실확인서, 직업라이센스
+								</CommonText>
+							</View>
+						</SpaceView>
+					</SpaceView>
+
+					<SpaceView mb={24}>
+						<CommonBtn value={'등록 및 수정'} 
+									height={48} 
+									type={'white'} 
+									icon={ICON.plus}
+									onPress={() => {
+										showImage();
+									}} />
+					</SpaceView>
+
+					<SpaceView mb={16}>
+						<CommonBtn value={'확인'} type={'primary'} />
+					</SpaceView>
+				</View>
+			</Modalize>
+
+			{/* ###############################################
+								학위 인증 팝업
+			############################################### */}
+			<Modalize
+				ref={deg_modalizeRef}
+				adjustToContentHeight={true}
+				handleStyle={modalStyle.modalHandleStyle}
+				modalStyle={modalStyle.modalContainer}
+			>
+				<View style={modalStyle.modalHeaderContainer}>
+					<CommonText type={'h3'}>학위 인증</CommonText>
+					<TouchableOpacity onPress={deg_onClose}>
 						<Image source={ICON.xBtn} style={styles.iconSize24} />
 					</TouchableOpacity>
 				</View>
