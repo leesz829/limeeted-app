@@ -1,4 +1,4 @@
-import { ColorType } from '@types';
+import { ColorType, StackParamList, BottomParamList, ScreenNavigationProp} from '@types';
 import { layoutStyle, styles } from 'assets/styles/Styles';
 import { CommonBtn } from 'component/CommonBtn';
 import { CommonSwich } from 'component/CommonSwich';
@@ -8,9 +8,24 @@ import { ToolTip } from 'component/Tooltip';
 import TopNavigation from 'component/TopNavigation';
 import * as React from 'react';
 import { Image, ScrollView, View, TouchableOpacity } from 'react-native';
-import { ICON, IMAGE } from 'utils/imageUtils';
+import { ICON, IMAGE, PROFILE_IMAGE } from 'utils/imageUtils';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RouteProp, useNavigation } from '@react-navigation/native';
 
-export const Roby = () => {
+/* ################################################################################################################
+###################################################################################################################
+###### 로비
+###################################################################################################################
+################################################################################################################ */
+
+interface Props {
+	navigation : StackNavigationProp<BottomParamList, 'Roby'>;
+	route : RouteProp<BottomParamList, 'Roby'>;
+}
+
+export const Roby = (props : Props) => {
+	const navigation = useNavigation<ScreenNavigationProp>();
+
 	return (
 		<>
 			<TopNavigation currentPath={''} />
@@ -23,29 +38,46 @@ export const Roby = () => {
 
 				<SpaceView mb={48} viewStyle={layoutStyle.alignCenter}>
 					<SpaceView mb={8}>
-						<Image source={IMAGE.main} style={styles.profileImg} />
+						<Image source={PROFILE_IMAGE.profileM1} style={styles.profileImg} />
+						{/* <Image source={{uri : props.route.params.mstImg}} style={styles.profileImg} /> */}
 						<View style={styles.profilePenContainer}>
-							<Image source={ICON.pen} style={styles.iconSize24} />
+
+							<TouchableOpacity onPress={() => {
+													navigation.navigate('Introduce', {
+														memberSeq : props.route.params.memberSeq
+														, comment: props.route.params.comment
+														, jobName: props.route.params.jobName
+														, height: props.route.params.height
+													});
+												}}>
+								<Image source={ICON.pen} style={styles.iconSize24} />
+							</TouchableOpacity>
 						</View>
 					</SpaceView>
 
 					<SpaceView mb={4}>
 						<CommonText fontWeight={'700'} type={'h4'}>
-							회원닉네임, 31
+							{/* {props.route.params.name}, {props.route.params.age} */}
+							정진우, 31
 						</CommonText>
 					</SpaceView>
 					<SpaceView mb={16} viewStyle={styles.levelContainer}>
 						<CommonText color={ColorType.gray6666} type={'h6'}>
-							LV.6
+							LV.1
 						</CommonText>
 					</SpaceView>
 
-					<CommonText color={ColorType.gray6666}>한줄 소개 내용이 출력됩니다</CommonText>
+					<CommonText color={ColorType.gray6666}>{props.route.params.comment}</CommonText>
 				</SpaceView>
 
 				<View>
 					<SpaceView mb={16}>
-						<TouchableOpacity style={[layoutStyle.row, layoutStyle.alignCenter]}>
+						<TouchableOpacity style={[layoutStyle.row, layoutStyle.alignCenter]}
+											onPress={() => {
+												navigation.navigate('Main', { 
+													screen: 'Profile1'
+												});
+											}}>
 							<CommonText type={'h3'} fontWeight={'700'}>
 								프로필 관리
 							</CommonText>
@@ -57,16 +89,22 @@ export const Roby = () => {
 						<View style={[styles.halfItemLeft, styles.profileContainer, layoutStyle.alignCenter]}>
 							<SpaceView mb={4}>
 								<CommonText fontWeight={'700'} type={'h2'}>
-									7.5
+									5
 								</CommonText>
 							</SpaceView>
 
 							<SpaceView mb={24} viewStyle={layoutStyle.rowCenter}>
-								<Image source={ICON.star} style={styles.iconSize24} />
+								{/* <Image source={ICON.star} style={styles.iconSize24} />
 								<Image source={ICON.star} style={styles.iconSize24} />
 								<Image source={ICON.star} style={styles.iconSize24} />
 								<Image source={ICON.starHalf} style={styles.iconSize24} />
-								<Image source={ICON.starEmpty} style={styles.iconSize24} />
+								<Image source={ICON.starEmpty} style={styles.iconSize24} /> */}
+
+								<Image source={ICON.star} style={styles.iconSize24} />
+								<Image source={ICON.star} style={styles.iconSize24} />
+								<Image source={ICON.star} style={styles.iconSize24} />
+								<Image source={ICON.star} style={styles.iconSize24} />
+								<Image source={ICON.star} style={styles.iconSize24} />
 							</SpaceView>
 							<ToolTip title={'기여 평점'} desc={'프로필 평점'} position={'bottomLeft'} />
 						</View>
@@ -74,7 +112,7 @@ export const Roby = () => {
 						<View style={[styles.halfItemRight, styles.profileContainer, layoutStyle.alignCenter]}>
 							<SpaceView mb={4}>
 								<CommonText fontWeight={'700'} type={'h2'}>
-									7.5
+									4
 								</CommonText>
 							</SpaceView>
 
@@ -82,7 +120,7 @@ export const Roby = () => {
 								<Image source={ICON.star} style={styles.iconSize24} />
 								<Image source={ICON.star} style={styles.iconSize24} />
 								<Image source={ICON.star} style={styles.iconSize24} />
-								<Image source={ICON.starHalf} style={styles.iconSize24} />
+								<Image source={ICON.star} style={styles.iconSize24} />
 								<Image source={ICON.starEmpty} style={styles.iconSize24} />
 							</SpaceView>
 							<ToolTip position={'bottomRight'} title={'프로필 평점'} desc={'프로필 평점'} />
@@ -110,7 +148,7 @@ export const Roby = () => {
 						<View style={styles.rowStyle}>
 							<CommonText fontWeight={'500'}>
 								새 관심
-								<CommonText color={ColorType.primary}> 8</CommonText>건
+								<CommonText color={ColorType.primary}> 0</CommonText>건
 							</CommonText>
 
 							<Image source={ICON.arrRight} style={styles.iconSize} />
@@ -132,7 +170,7 @@ export const Roby = () => {
 					<View style={styles.rowStyle}>
 						<CommonText fontWeight={'500'}>
 							새 매칭
-							<CommonText color={ColorType.primary}> 8</CommonText>건
+							<CommonText color={ColorType.primary}> 0</CommonText>건
 						</CommonText>
 
 						<Image source={ICON.arrRight} style={styles.iconSize} />

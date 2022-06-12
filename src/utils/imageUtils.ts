@@ -48,6 +48,7 @@ export const ICON = {
 	searchGray: require('assets/icon/icon-search-gray.png'),
 	wait: require('assets/icon/icon-wait.png'),
 	pass: require('assets/icon/icon-pass.png'),
+	purplePlus: require('assets/icon/icon-purple-plus.png'),
 };
 
 export const IMAGE = {
@@ -84,4 +85,14 @@ export const START_IMAGE = {
 	view24: require('assets/startimg/view24.png'),
 	view25: require('assets/startimg/view25.png'),
 	view26: require('assets/startimg/view26.png'),
+};
+
+export const PROFILE_IMAGE = {
+	maleTmp1: require('assets/img/tmp/profile_m_01.jpg'),
+	maleTmp2: require('assets/img/tmp/profile_m_02.jpg'),
+	maleTmp3: require('assets/img/tmp/profile_m_03.jpg'),
+	maleTmp4: require('assets/img/tmp/profile_m_04.jpg'),
+	maleTmp5: require('assets/img/tmp/profile_m_05.jpg'),
+	maleTmp6: require('assets/img/tmp/profile_m_06.jpg'),
+	profileM1: require('assets/img/tmp/robby_tmp.jpg'),
 };

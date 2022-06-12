@@ -27,7 +27,10 @@ const TopNavigation: FC<Props> = (props) => {
 			<TouchableOpacity
 				style={[styles.tab]}
 				onPress={() => {
-					navigation.navigate('StartPage');
+					//navigation.navigate('StartPage');
+					navigation.navigate('Main', { 
+						screen: 'Matching'
+					});
 				}}
 			>
 				<Text style={[styles.tabText, currentNavi === 'LIMEETED' && styles.tabTextActive]}>

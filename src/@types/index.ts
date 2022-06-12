@@ -20,36 +20,47 @@ export type StackParamList = {
 	Login: undefined;
 	Title00: undefined;
 	Signup0: {
-		id: string;
+		kakaoId: string;
 		name: string;
-		age: string;
-		gender: string;
-		hp: string;
 	};
 	Signup1: {
-		id: string;
-		name: string;
-		age: string;
-		gender: string;
-		hp: string;
+		memberSeq: Number;
 	};
 	SignupPopUp: undefined;
-	Signup02: undefined;
-	Signup03: undefined;
+	Signup02: {
+		memberSeq: Number;
+	};
+	Signup03: {
+		memberSeq: Number;
+	};
 	Approval: undefined;
 	SignupPopUp2: undefined;
 	CommonPopup: undefined;
 	ReportPopup: undefined;
 	LivePopup: undefined;
-	Introduce: undefined;
+	Introduce: {
+		memberSeq: Number;
+		comment: String;
+		jobName: String;
+		height: String;
+	};
 	Board0: undefined;
 	Board1: undefined;
 	Preference: undefined;
 	Profile: undefined;
+	Sample: undefined
 };
 
 export type BottomParamList = {
-	Roby: undefined;
+	Roby: {
+		memberSeq: Number;
+		name: String;
+		age: Number;
+		comment : String;
+		jobName: String;
+		height: String;
+		mstImg: undefined;
+	};
 	Mailbox: undefined;
 	Cashshop: undefined;
 	Storage: undefined;

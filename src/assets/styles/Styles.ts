@@ -224,6 +224,13 @@ export const styles = StyleSheet.create({
 		height: 104,
 		borderRadius: 52,
 	},
+
+	profileTmpImg: {
+		width: 140,
+		height: 140,
+		borderRadius: 20,
+	},
+
 	profilePenContainer: {
 		position: 'absolute',
 		bottom: 0,

@@ -14,6 +14,7 @@ interface Props {
 	isNew?: boolean;
 	status?: string;
 	onlyImg?: boolean;
+	num: number;
 }
 
 /**
@@ -24,8 +25,25 @@ interface Props {
  * @returns
  */
 export const ViualSlider: FC<Props> = (props) => {
-	const [data] = useState([{}, {}, {}, {}, {}, {}]);
+
+	console.log("props.num1111 :::: " + props.num);
+
+	let name = "김설현";
+	let age = "27";
+
+	if(props.num == 1) {
+		name = "김설현";
+		age = "27";
+	} else {
+		name = "조보아";
+		age = "30";
+	}
+
+
+	//const [data] = useState([{}, {}, {}, {}, {}, {}]);
+	const [data] = useState([{}]);
 	const [currentIndex, setCurrentIndex] = useState(0);
+
 
 	return (
 		<SpaceView>
@@ -55,12 +73,12 @@ export const ViualSlider: FC<Props> = (props) => {
 					data={data}
 					width={width}
 					height={480}
-					renderItem={() => <RenderItem />}
+					renderItem={() => <RenderItem num={props.num} />}
 				/>
 				<View style={styles.viusalDescContainer}>
 					<SpaceView mb={8} viewStyle={[layoutStyle.row, layoutStyle.alignCenter]}>
 						<CommonText fontWeight={'700'} type={'h3'} color={ColorType.white}>
-							회원닉네임, 31
+							{name}, {age}
 						</CommonText>
 
 						{props.isNew && (
@@ -114,10 +132,23 @@ export const ViualSlider: FC<Props> = (props) => {
 	);
 };
 
-const RenderItem = () => {
+const RenderItem = (props : Props) => {
+
+	let imgUrl = "http://211.104.55.151:8080/uploads/profile/rn_image_picker_lib_temp_588375c0-b878-4887-993a-39ce54a84b40.jpg";
+	console.log("props.num :::: " + props.num);
+
+	if(props.num == 1) {
+		imgUrl = "http://211.104.55.151:8080/uploads/profile/rn_image_picker_lib_temp_588375c0-b878-4887-993a-39ce54a84b40.jpg";
+	} else {
+		imgUrl = "http://211.104.55.151:8080/uploads/profile/rn_image_picker_lib_temp_c82a4d9a-30eb-4196-9bac-fe86757a7c37.jpg";
+	}
+
 	return (
+
 		<View>
-			<Image source={IMAGE.main} style={styles.visualImage} />
+			{/* <Image source={IMAGE.main} style={styles.visualImage} /> */}
+			<Image source={{uri : imgUrl}} style={styles.visualImage} />
+			{/* <Image source={{uri : 'http://211.104.55.151:8080/uploads/profile/rn_image_picker_lib_temp_6813179b-95c7-416c-84da-51ab9ca0dbc1.jpg'}} style={styles.visualImage} /> */}			
 		</View>
 	);
 };

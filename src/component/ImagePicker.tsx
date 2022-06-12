@@ -3,7 +3,8 @@ import React from 'react';
 import { Image, TouchableOpacity } from 'react-native';
 import { launchImageLibrary, ImageLibraryOptions } from 'react-native-image-picker';
 import { ICON } from 'utils/imageUtils';
-import type { FC } from 'react';
+import type { FC, useState, useEffect } from 'react';
+import RNFetchBlob from 'rn-fetch-blob';
 
 interface Action {
 	title: string;
@@ -13,6 +14,12 @@ interface Action {
 
 interface Props {
 	isBig: boolean;
+	callbackFn: (
+			uri:string
+			, fileName:string
+			, fileSize: number
+			, type: string
+	) => void;
 }
 
 const includeExtra = true;
@@ -33,6 +40,18 @@ export const ImagePicker: FC<Props> = (props) => {
 	const onButtonPress = React.useCallback(() => {
 		launchImageLibrary(options, setResponse);
 	}, []);
+
+	React.useEffect(() => {
+		console.log(response);
+
+		props.callbackFn(
+				response?.assets[0].uri
+				, response?.assets[0].fileName
+				, response?.assets[0].fileSize
+				, response?.assets[0].type
+		);
+
+	});
 
 	return (
 		<TouchableOpacity

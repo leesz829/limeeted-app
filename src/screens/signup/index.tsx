@@ -1,24 +1,36 @@
-import { NavigationContainer } from '@react-navigation/native';
-import { useNavigation } from '@react-navigation/native';
-import { ColorType, ScreenNavigationProp } from '@types';
+import { NavigationContainer, useNavigation, RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
 import { styles } from 'assets/styles/Styles';
 import { CommonBtn } from 'component/CommonBtn';
 import CommonHeader from 'component/CommonHeader';
 import { CommonInput } from 'component/CommonInput';
 import { CommonText } from 'component/CommonText';
+import { CommonSelect } from 'component/CommonSelect';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
-import { View, Image, ScrollView, Alert } from 'react-native';
+import { View, Image, ScrollView, Alert, StyleSheet, Text } from 'react-native';
 import { ICON } from 'utils/imageUtils';
+import axios from 'axios';
+import { Color } from 'assets/styles/Color';
+import RNPickerSelect from 'react-native-picker-select';
 
-export const Signup0 = ({}) => {
+interface Props {
+	navigation : StackNavigationProp<StackParamList, 'Signup0'>;
+	route : RouteProp<StackParamList, 'Signup0'>;
+}
+
+export const Signup0 = (props : Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 
-	const [id, setId] = React.useState('tester');
-	const [name, setName] = React.useState('테스터');
-	const [age, setAge] = React.useState('33');
-	const [gender, setGender] = React.useState('M');
-	const [hp, setHp] = React.useState('01051079809');
+	console.log("kakaoId ::: " + props.route.params.kakaoId);
+
+	const [id, setId] = React.useState(props.route.params.kakaoId);
+	//const [name, setName] = React.useState(props.route.params.name);
+	const [name, setName] = React.useState('');
+	const [age, setAge] = React.useState('');
+	const [gender, setGender] = React.useState('');
+	const [hp, setHp] = React.useState('');
 
 	return (
 		<>
@@ -31,11 +43,10 @@ export const Signup0 = ({}) => {
 					</CommonText>
 				</SpaceView>
 
-				<CommonInput 
+				{/* <CommonInput 
 						label="아이디" 
 						value={id} 
-						onChangeText={id => setId(id)} 
-				/>
+						onChangeText={id => setId(id)} />
 
 				<View style={styles.infoContainer}>
 					<SpaceView mt={4}>
@@ -48,14 +59,13 @@ export const Signup0 = ({}) => {
 							이용하실 수 있습니다.
 						</CommonText>
 					</SpaceView>
-				</View>
+				</View> */}
 
 				<SpaceView mb={24}>
 					<CommonInput 
 							label="이름" 
 							value={name} 
-							onChangeText={name => setName(name)} 
-					 />
+							onChangeText={name => setName(name)} />
 				</SpaceView>
 
 				<SpaceView mb={24}>
@@ -63,16 +73,38 @@ export const Signup0 = ({}) => {
 						<View style={styles.halfItemLeft}>
 							<CommonInput 
 									label="나이" 
-									value={age} 
-									onChangeText={name => setAge(age)} 
-							/>
+									value={age}
+									onChangeText={age => setAge(age)} />
 						</View>
 						<View style={styles.halfItemRight}>
-							<CommonInput 
+							{/* <CommonInput 
 									label="성별" 
 									value={gender} 
-									onChangeText={gender => setGender(gender)} 
-							/>
+									onChangeText={gender => setGender(gender)} /> */}
+							{/* <CommonSelect label={'성별'}  /> */}
+
+							<View style={selectStyles.selectContainer}>
+								<View>
+									<Text style={selectStyles.labelStyle}>성별</Text>
+									<View style={selectStyles.inputContainer}>
+										<RNPickerSelect
+											style={pickerSelectStyles}
+											useNativeAndroidPickerStyle={false}
+											onValueChange={gender => setGender(gender)}
+											value={'M'}
+											items={[
+												/* { label: '선택', value: '' }, */
+												{ label: '남자', value: 'M' },
+												{ label: '여자', value: 'F' }
+											]}
+										/>
+									</View>
+								</View>
+								<View style={selectStyles.selectImgContainer}>
+									<Image source={ICON.arrRight} style={selectStyles.icon} />
+								</View>
+							</View>
+
 						</View>
 					</View>
 				</SpaceView>
@@ -85,16 +117,32 @@ export const Signup0 = ({}) => {
 				/>
 				</SpaceView>
 				<SpaceView mb={24}>
-					<CommonBtn value={'다음 (2/4)'} 
+					<CommonBtn value={'다음 (1/4)'} 
 								type={'primary'} 
 								onPress={() => {
-									navigation.navigate('Signup1', { 
-										id : id,
-										name : name,
+
+									axios.post('http://211.104.55.151:8080/member/insertMemberInfo/', {
+										kakao_id : id,
+										nickname: name,
+										name: name,
 										age : age,
 										gender : gender,
-										hp : hp
+										phone_number : hp
+									})
+									.then(function (response) {
+										console.log(response.data.result_code);
+
+										if(response.data.result_code == "0000") {
+											navigation.navigate('Signup1', {
+												memberSeq : response.data.memberSeq
+											});
+										}
+									})
+									.catch(function (error) {
+										console.log(error);
 									});
+
+									//navigation.navigate('Signup1');
 								}}
 					/>
 				</SpaceView>
@@ -102,3 +150,52 @@ export const Signup0 = ({}) => {
 		</>
 	);
 };
+
+
+const selectStyles = StyleSheet.create({
+	selectImgContainer: {
+		position: 'absolute',
+		height: '100%',
+		justifyContent: 'center',
+		right: 16,
+	},
+	selectContainer: {},
+	labelContainer: {
+		marginBottom: 8,
+	},
+	labelStyle: {
+		fontSize: 14,
+		lineHeight: 20,
+		fontFamily: 'AppleSDGothicNeoR',
+		color: Color.gray6666,
+		marginBottom: 8,
+	},
+	inputContainer: {
+		paddingBottom: 8,
+		borderBottomWidth: 1,
+		borderBottomColor: Color.grayDDDD,
+	},
+	icon: {
+		width: 16,
+		height: 16,
+		transform: [{ rotate: '90deg' }],
+	},
+});
+
+const pickerSelectStyles = StyleSheet.create({
+	inputIOS: {
+		fontSize: 16,
+		lineHeight: 24,
+		color: Color.black2222,
+		fontFamily: 'AppleSDGothicNeoM',
+		padding: 0,
+		marginTop: 8,
+	},
+	inputAndroid: {
+		fontSize: 16,
+		lineHeight: 24,
+		color: Color.black2222,
+		fontFamily: 'AppleSDGothicNeoM',
+		padding: 0,
+	},
+});

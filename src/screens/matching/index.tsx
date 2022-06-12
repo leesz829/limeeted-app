@@ -5,17 +5,34 @@ import { ICON } from 'utils/imageUtils';
 import { layoutStyle, styles } from 'assets/styles/Styles';
 import SpaceView from 'component/SpaceView';
 import { CommonText } from 'component/CommonText';
-import { ColorType } from '@types';
+import { ColorType, BottomParamList } from '@types';
 import { ViualSlider } from 'component/ViualSlider';
 import { MainProfileSlider } from 'component/MainProfileSlider';
 import { CommonBtn } from 'component/CommonBtn';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RouteProp, useNavigation } from '@react-navigation/native';
 
-export const Matching = () => {
+/* ################################################################################################################
+###################################################################################################################
+###### 매칭
+###################################################################################################################
+################################################################################################################ */
+
+interface Props {
+	navigation : StackNavigationProp<BottomParamList, 'Roby'>;
+	route : RouteProp<BottomParamList, 'Roby'>;
+}
+
+export const Matching = (props : Props) => {
+
+	const randomNum = Math.floor(Math.random() * (2 - 1 + 1)) + 1;
+	console.log("randomNum ::: " + randomNum);
+
 	return (
 		<>
 			<TopNavigation currentPath={'LIMEETED'} />
 			<ScrollView>
-				<ViualSlider />
+				<ViualSlider num={randomNum} />
 
 				<SpaceView pt={48} viewStyle={styles.container}>
 					<SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>

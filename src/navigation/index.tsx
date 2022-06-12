@@ -20,6 +20,7 @@ import { Board1 } from 'screens/commonpopup/Board1';
 import { Preference } from 'screens/commonpopup/Preference';
 import { Profile } from 'screens/profile/Profile';
 import { Approval } from 'screens/signup/Approval';
+import { Sample } from 'screens/sample/sample';
 import Component from 'component';
 
 const Stack = createStackNavigator<StackParamList>();
@@ -163,6 +164,14 @@ const StackNavigation = () => {
 			<Stack.Screen
 				name="Approval"
 				component={Approval}
+				options={{
+					headerShown: false,
+				}}
+			/>
+
+			<Stack.Screen
+				name="Sample"
+				component={Sample}
 				options={{
 					headerShown: false,
 				}}
