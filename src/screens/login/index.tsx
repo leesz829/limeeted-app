@@ -23,7 +23,7 @@ export const Login = () => {
 	const signInWithKakao = async () => {
 
 		//const profile11 = await getKakaoProfile();
-		//console.log(profile11);
+		//console.log(profile11); 
 
 		// 테스트 버전
 		const profile = {
