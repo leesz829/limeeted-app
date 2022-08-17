@@ -15,26 +15,21 @@ import {
 	logout,
 	unlink,
 } from '@react-native-seoul/kakao-login';
+import { DocumentDirectoryPath } from 'react-native-fs';
 
 export const Login = () => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 
 	const [kakaoResult, setKakaoResult] = React.useState('');
 	
-
-
-	
 	const signInWithKakao = async () => {
 
-<<<<<<< HEAD
 		const profile11 = await getKakaoProfile();
 		// console.log(profile11);
 		//const profile11 = await getKakaoProfile();
 		//console.log(profile11); 
-=======
 		// const profile11 = awaitg etKakaoProfile();
 		// console.log(profile11);
->>>>>>> a754f06e258bf2acd5f2b5bb9efe7d9f05257958
 
 		// 테스트 버전
 		const profile = {
@@ -69,11 +64,23 @@ export const Login = () => {
 					memberSeq : 39
 				});
 
-			}else if(resultCode == "0002"){
+			} else if(resultCode == "0002"){
 				console.log('alert 추가!!!!! 로그인 실패');
 			} else {
+				// token set
+				AsyncStorage.setItem('jwt-token', response.data.token_param.jwt_token);
+
 				navigation.navigate('Main', { 
 					screen: 'Roby'
+					, params : {
+						memberSeq : response.data.member_seq
+						, name : response.data.name
+						, age : response.data.age
+						, comment : response.data.comment
+						, jobName: response.data.job_name
+						, height : response.data.height
+						, mstImg : response.data.mst_img_path
+					}
 				});
 			}
 		})
