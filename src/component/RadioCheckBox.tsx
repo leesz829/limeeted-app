@@ -22,8 +22,8 @@ export const RadioCheckBox: FC<Props> = (props) => {
 						<TouchableOpacity
 							style={[styles.checkWrap, index === checkIndex && styles.wrapActive]}
 							onPress={() => setCheckIndex(index)}
-							activeOpacity={0.3}
-						>
+							activeOpacity={0.3} >
+								
 							<SpaceView>
 								<CommonText>{item.label}</CommonText>
 							</SpaceView>
