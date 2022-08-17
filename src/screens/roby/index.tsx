@@ -1,4 +1,5 @@
 import { ColorType, StackParamList, BottomParamList, ScreenNavigationProp} from '@types';
+import { useState, useEffect} from 'react';
 import { layoutStyle, styles } from 'assets/styles/Styles';
 import { CommonBtn } from 'component/CommonBtn';
 import { CommonSwich } from 'component/CommonSwich';
@@ -11,11 +12,12 @@ import { Image, ScrollView, View, TouchableOpacity } from 'react-native';
 import { ICON, IMAGE, PROFILE_IMAGE } from 'utils/imageUtils';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp, useNavigation } from '@react-navigation/native';
+import { UserInfo } from '@types';
+import { jwt_token } from 'utils/properties';
+import axios from 'axios';
 
 /* ################################################################################################################
-###################################################################################################################
 ###### 로비
-###################################################################################################################
 ################################################################################################################ */
 
 interface Props {
@@ -25,6 +27,40 @@ interface Props {
 
 export const Roby = (props : Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
+
+	// 회원정보
+	const [userInfo, setUserInfo] = useState(UserInfo);
+
+	const getUserInfo = async () => {
+		const result = await axios.post('http://192.168.35.131:8080/member/selectMemberInfo', {
+			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
+		}
+		, {
+			headers: {
+				'jwt-token' : String(await jwt_token())
+			}
+		})
+		.then(function (response) {
+			
+			if(response.data.result_code != '0000'){
+				console.log(response.data.result_msg);
+				return false;
+			}
+
+			setUserInfo(response.data.result)
+		})
+		.catch(function (error) {
+			console.log('error ::: ' , error);
+		});
+	}
+
+
+	// 첫 렌더링 때 fetchNews() 한 번 실행
+	useEffect(() => {
+		// 유저 정보
+		getUserInfo()
+	}, []);
+
 
 	return (
 		<>
@@ -73,11 +109,11 @@ export const Roby = (props : Props) => {
 				<View>
 					<SpaceView mb={16}>
 						<TouchableOpacity style={[layoutStyle.row, layoutStyle.alignCenter]}
-											onPress={() => {
-												navigation.navigate('Main', { 
-													screen: 'Profile1'
-												});
-											}}>
+															onPress={() => {
+																navigation.navigate('Main', { 
+																	screen: 'Profile1'
+																});
+															}}>
 							<CommonText type={'h3'} fontWeight={'700'}>
 								프로필 관리
 							</CommonText>
@@ -92,18 +128,7 @@ export const Roby = (props : Props) => {
 									5
 								</CommonText>
 							</SpaceView>
-
 							<SpaceView mb={24} viewStyle={layoutStyle.rowCenter}>
-								{/* <Image source={ICON.star} style={styles.iconSize24} />
-								<Image source={ICON.star} style={styles.iconSize24} />
-								<Image source={ICON.star} style={styles.iconSize24} />
-								<Image source={ICON.starHalf} style={styles.iconSize24} />
-								<Image source={ICON.starEmpty} style={styles.iconSize24} /> */}
-
-								<Image source={ICON.star} style={styles.iconSize24} />
-								<Image source={ICON.star} style={styles.iconSize24} />
-								<Image source={ICON.star} style={styles.iconSize24} />
-								<Image source={ICON.star} style={styles.iconSize24} />
 								<Image source={ICON.star} style={styles.iconSize24} />
 							</SpaceView>
 							<ToolTip title={'기여 평점'} desc={'프로필 평점'} position={'bottomLeft'} />
@@ -118,10 +143,6 @@ export const Roby = (props : Props) => {
 
 							<SpaceView mb={24} viewStyle={layoutStyle.rowCenter}>
 								<Image source={ICON.star} style={styles.iconSize24} />
-								<Image source={ICON.star} style={styles.iconSize24} />
-								<Image source={ICON.star} style={styles.iconSize24} />
-								<Image source={ICON.star} style={styles.iconSize24} />
-								<Image source={ICON.starEmpty} style={styles.iconSize24} />
 							</SpaceView>
 							<ToolTip position={'bottomRight'} title={'프로필 평점'} desc={'프로필 평점'} />
 						</View>

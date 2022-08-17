@@ -3,6 +3,7 @@ import BottomNavigation from './BottomNavigation';
 import StartPage from 'screens/startpage';
 import { StackParamList } from '@types';
 import { Login } from 'screens/login';
+import { NiceAuth } from 'screens/login/niceAuth';
 import { Title00 } from 'screens/title';
 import { Signup0 } from 'screens/signup';
 import { Signup1 } from 'screens/signup/Signup01';
@@ -172,6 +173,14 @@ const StackNavigation = () => {
 			<Stack.Screen
 				name="Sample"
 				component={Sample}
+				options={{
+					headerShown: false,
+				}}
+			/>
+			
+			<Stack.Screen
+				name="NiceAuth"
+				component={NiceAuth}
 				options={{
 					headerShown: false,
 				}}

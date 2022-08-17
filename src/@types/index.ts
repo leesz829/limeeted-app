@@ -14,7 +14,7 @@ export type RootParamList = {
 };
 
 export type StackParamList = {
-	Component: undefined;
+	Component: undefined; 
 	Main: NavigatorScreenParams<BottomParamList>;
 	StartPage: undefined;
 	Login: undefined;
@@ -23,6 +23,8 @@ export type StackParamList = {
 		kakaoId: string;
 		name: string;
 	};
+	NiceAuth: undefined;
+
 	Signup1: {
 		memberSeq: Number;
 	};
@@ -102,3 +104,70 @@ export type WeightType =
 	| '700'
 	| '800'
 	| '900';
+
+export const LabelObj= {
+	label : ''
+	, value : ''
+}	
+	
+
+
+export const CommonCode= {
+	common_code : ''
+	, group_code : ''
+	, code_name : ''
+	, code_memo : ''
+	, order_seq : ''
+	, use_yn : ''
+}	
+
+	
+export const Interview = {
+	code_name : ''
+	, answer : ''
+	, order_seq : ''
+}
+
+export const UserInfo = {
+	member_seq  : ''
+	, kakao_id : ''
+	, nickname : ''
+	, name : ''
+	, comment : ''
+	, status : ''
+	, admin_yn : ''
+	, age : ''
+	, gender : ''
+	, phone_number : ''
+	, profile_tier : ''
+	, member_auth_seq : ''
+	, birthday : ''
+	, join_appr_dt : ''
+	, join_dt : ''
+	, match_yn : ''
+	, local_seq1 : ''
+	, local_seq2 : ''
+	, inactive_dt : ''
+	, rank : ''
+	, business : ''
+	, job : ''
+	, job_name : ''
+	, birth_local : ''
+	, active_local : ''
+	, height : ''
+	, form_body : ''
+	, religion : ''
+	, drinking : ''
+	, smoking : ''
+}
+
+
+export const ProfileImg= {
+	member_seq : ''
+	, join_dt : ''
+	, age : ''
+	, comment : ''
+	, file_path : ''
+	, gender : ''
+}	
+

@@ -7,6 +7,7 @@ import * as React from 'react';
 import { View, Image, Alert } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import { useNavigation } from '@react-navigation/native';
+import { AsyncStorage } from 'react-native';
 import axios from 'axios';
 import {
 	getProfile as getKakaoProfile,
@@ -14,16 +15,17 @@ import {
 	logout,
 	unlink,
 } from '@react-native-seoul/kakao-login';
+import { DocumentDirectoryPath } from 'react-native-fs';
 
 export const Login = () => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 
 	const [kakaoResult, setKakaoResult] = React.useState('');
-
+	
 	const signInWithKakao = async () => {
 
-		const profile11 = await getKakaoProfile();
-		console.log(profile11);
+		// const profile11 = awaitg etKakaoProfile();
+		// console.log(profile11);
 
 		// 테스트 버전
 		const profile = {
@@ -31,22 +33,23 @@ export const Login = () => {
 			nickname : "테스트"
 		};
 
+		console.log('profile :: ' , profile);
+
 		// 실버전
 		/* const profile = await getKakaoProfile();
 		console.log(profile); */
 
 		//setKakaoResult(JSON.stringify(token));
 
-		axios.post('http://211.104.55.151:8080/member/getKakaoIdchk/', {
+		axios.post('http://192.168.35.131:8080/member/getKakaoIdchk/', {
 			kakaoId : profile.id
 		})
 		.then(function (response) {
-			console.log(response.data.result_code);
-
 			const resultCode = response.data.result_code;
 			const status = response.data.status;
 
 			if(resultCode == "0000" || (resultCode == "0001" && status == "PROCEED")) {
+
 				/* navigation.navigate('Signup0', { 
 					kakaoId : profile.id
 					, name : profile.nickname
@@ -55,7 +58,13 @@ export const Login = () => {
 				navigation.navigate('Signup03', { 
 					memberSeq : 39
 				});
+
+			}else if(resultCode == "0002"){
+				console.log('alert 추가!!!!! 로그인 실패');
 			} else {
+				// token set
+				AsyncStorage.setItem('jwt-token', response.data.token_param.jwt_token);
+
 				navigation.navigate('Main', { 
 					screen: 'Roby'
 					, params : {
@@ -126,6 +135,16 @@ export const Login = () => {
 								//navigation.navigate('Signup0');
 							}}
 				/>
+
+
+				<CommonBtn value={'본인인증'} 
+							iconSize={24} 
+							onPress={() => {
+								console.log('test');
+								
+							}}
+				/>
+
 			</SpaceView>
 		</View>
 	);

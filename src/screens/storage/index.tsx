@@ -9,11 +9,24 @@ import { Image, ScrollView, View, TouchableOpacity } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import LinearGradient from 'react-native-linear-gradient';
 import { useState } from 'react';
+import { jwt_token } from 'utils/properties';
+import axios from 'axios';
+
 
 export const Storage = () => {
 	const [btnStatus, setBtnStatus] = useState(true);
 	const [btnStatus1, setBtnStatus1] = useState(true);
 	const [btnStatus2, setBtnStatus2] = useState(true);
+
+
+	// 내가받은 괌심
+	const [userInfo, setUserInfo] = useState();
+
+	// 내가보낸 괌심
+
+
+
+
 	return (
 		<>
 			<TopNavigation currentPath={''} />
@@ -48,10 +61,11 @@ export const Storage = () => {
 										<CommonText fontWeight={'700'} color={ColorType.white}>
 											D-1
 										</CommonText>
+
 									</View>
 								</View>
 							</View>
-							<View style={styles.halfItemRight}>
+							<View style={styles.halfItemLeft}>
 								<View style={styles.favoriteBox}>
 									<View style={styles.posTopRight}>
 										<Image source={ICON.like} style={styles.iconSize32} />
@@ -65,48 +79,9 @@ export const Storage = () => {
 									/>
 									<View style={styles.posBottomLeft}>
 										<CommonText fontWeight={'700'} color={ColorType.white}>
-											D-2
+											D-1
 										</CommonText>
-									</View>
-								</View>
-							</View>
-						</SpaceView>
-						<SpaceView mb={16} viewStyle={styles.halfContainer}>
-							<View style={styles.halfItemLeft}>
-								<View style={styles.favoriteBox}>
-									<View style={styles.posTopRight}>
-										<Image source={ICON.royalpass} style={styles.iconSize32} />
-									</View>
-									<Image source={IMAGE.main} style={styles.favoriteImg} />
-									<LinearGradient
-										colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.4)']}
-										style={styles.dim}
-										start={{ x: 0, y: 0 }}
-										end={{ x: 1, y: 1 }}
-									/>
-									<View style={styles.posBottomLeft}>
-										<CommonText fontWeight={'700'} color={ColorType.white}>
-											D-3
-										</CommonText>
-									</View>
-								</View>
-							</View>
-							<View style={styles.halfItemRight}>
-								<View style={styles.favoriteBox}>
-									<View style={styles.posTopRight}>
-										<Image source={ICON.royalpass} style={styles.iconSize32} />
-									</View>
-									<Image source={IMAGE.main} style={styles.favoriteImg} />
-									<LinearGradient
-										colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.4)']}
-										style={styles.dim}
-										start={{ x: 0, y: 0 }}
-										end={{ x: 1, y: 1 }}
-									/>
-									<View style={styles.posBottomLeft}>
-										<CommonText fontWeight={'700'} color={ColorType.white}>
-											D-4
-										</CommonText>
+
 									</View>
 								</View>
 							</View>
