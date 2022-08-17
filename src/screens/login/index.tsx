@@ -15,7 +15,6 @@ import {
 	logout,
 	unlink,
 } from '@react-native-seoul/kakao-login';
-import { DocumentDirectoryPath } from 'react-native-fs';
 
 export const Login = () => {
 	const navigation = useNavigation<ScreenNavigationProp>();
@@ -24,17 +23,15 @@ export const Login = () => {
 	
 	const signInWithKakao = async () => {
 
-<<<<<<< HEAD
-		// const profile11 = awaitg etKakaoProfile();
+		const profile11 = await getKakaoProfile();
 		// console.log(profile11);
-=======
 		//const profile11 = await getKakaoProfile();
 		//console.log(profile11); 
->>>>>>> 0f35120694ff4aa009aec04ff9a36ddb0c85c852
 
 		// 테스트 버전
 		const profile = {
 			id : "test1",
+			//id : "2233743623",
 			nickname : "테스트"
 		};
 
@@ -46,7 +43,7 @@ export const Login = () => {
 
 		//setKakaoResult(JSON.stringify(token));
 
-		axios.post('http://192.168.35.131:8080/member/getKakaoIdchk/', {
+		axios.post('http://211.104.55.151:8080/member/getKakaoIdchk/', {
 			kakaoId : profile.id
 		})
 		.then(function (response) {
@@ -67,20 +64,8 @@ export const Login = () => {
 			}else if(resultCode == "0002"){
 				console.log('alert 추가!!!!! 로그인 실패');
 			} else {
-				// token set
-				AsyncStorage.setItem('jwt-token', response.data.token_param.jwt_token);
-
 				navigation.navigate('Main', { 
 					screen: 'Roby'
-					, params : {
-						memberSeq : response.data.member_seq
-						, name : response.data.name
-						, age : response.data.age
-						, comment : response.data.comment
-						, jobName: response.data.job_name
-						, height : response.data.height
-						, mstImg : response.data.mst_img_path
-					}
 				});
 			}
 		})

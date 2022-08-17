@@ -1,5 +1,4 @@
 import { ColorType, StackParamList, BottomParamList, ScreenNavigationProp} from '@types';
-import { useState, useEffect} from 'react';
 import { layoutStyle, styles } from 'assets/styles/Styles';
 import { CommonBtn } from 'component/CommonBtn';
 import { CommonSwich } from 'component/CommonSwich';
@@ -15,6 +14,7 @@ import { RouteProp, useNavigation } from '@react-navigation/native';
 import { UserInfo } from '@types';
 import { jwt_token } from 'utils/properties';
 import axios from 'axios';
+import AsyncStorage from '@react-native-community/async-storage';
 
 /* ################################################################################################################
 ###### 로비
@@ -60,7 +60,21 @@ export const Roby = (props : Props) => {
 		// 유저 정보
 		getUserInfo()
 	}, []);
+	
+	let [memberSeq, setMemberSeq] = React.useState('');
+	let [name, setName] = React.useState('');
+	let [age, setAge] = React.useState('');
+	let [comment, setComment] = React.useState('');
 
+	AsyncStorage.getItem('member_info', (err, result) => {
+		const member = JSON.parse(result);
+		console.log('아이디는 ' + member.name);
+
+		setMemberSeq(member.memberSeq);
+		setName(member.name);
+		setAge(member.age);
+		setComment(member.comment);
+	});
 
 	return (
 		<>
@@ -79,12 +93,7 @@ export const Roby = (props : Props) => {
 						<View style={styles.profilePenContainer}>
 
 							<TouchableOpacity onPress={() => {
-													navigation.navigate('Introduce', {
-														memberSeq : props.route.params.memberSeq
-														, comment: props.route.params.comment
-														, jobName: props.route.params.jobName
-														, height: props.route.params.height
-													});
+													navigation.navigate('Introduce');
 												}}>
 								<Image source={ICON.pen} style={styles.iconSize24} />
 							</TouchableOpacity>
@@ -93,8 +102,7 @@ export const Roby = (props : Props) => {
 
 					<SpaceView mb={4}>
 						<CommonText fontWeight={'700'} type={'h4'}>
-							{/* {props.route.params.name}, {props.route.params.age} */}
-							정진우, 31
+							{name}, {age}
 						</CommonText>
 					</SpaceView>
 					<SpaceView mb={16} viewStyle={styles.levelContainer}>
@@ -103,7 +111,7 @@ export const Roby = (props : Props) => {
 						</CommonText>
 					</SpaceView>
 
-					<CommonText color={ColorType.gray6666}>{props.route.params.comment}</CommonText>
+					<CommonText color={ColorType.gray6666}>{comment}</CommonText>
 				</SpaceView>
 
 				<View>

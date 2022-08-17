@@ -40,12 +40,7 @@ export type StackParamList = {
 	CommonPopup: undefined;
 	ReportPopup: undefined;
 	LivePopup: undefined;
-	Introduce: {
-		memberSeq: Number;
-		comment: String;
-		jobName: String;
-		height: String;
-	};
+	Introduce: undefined;
 	Board0: undefined;
 	Board1: undefined;
 	Preference: undefined;
@@ -54,15 +49,7 @@ export type StackParamList = {
 };
 
 export type BottomParamList = {
-	Roby: {
-		memberSeq: Number;
-		name: String;
-		age: Number;
-		comment : String;
-		jobName: String;
-		height: String;
-		mstImg: undefined;
-	};
+	Roby: undefined;
 	Mailbox: undefined;
 	Cashshop: undefined;
 	Storage: undefined;

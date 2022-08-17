@@ -13,7 +13,7 @@ interface Props {
 	items: { label: string; value: string }[];
 }
 
-export const RadioCheckBox: FC<Props> = (props) => {
+export const RadioCheckBox_2: FC<Props> = (props) => {
 	const [checkIndex, setCheckIndex] = useState(-1);
 
 	return props.items ? (
