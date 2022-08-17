@@ -21,12 +21,20 @@ export const Login = () => {
 
 	const [kakaoResult, setKakaoResult] = React.useState('');
 	
+
+
+	
 	const signInWithKakao = async () => {
 
+<<<<<<< HEAD
 		const profile11 = await getKakaoProfile();
 		// console.log(profile11);
 		//const profile11 = await getKakaoProfile();
 		//console.log(profile11); 
+=======
+		// const profile11 = awaitg etKakaoProfile();
+		// console.log(profile11);
+>>>>>>> a754f06e258bf2acd5f2b5bb9efe7d9f05257958
 
 		// 테스트 버전
 		const profile = {
