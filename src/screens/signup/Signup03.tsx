@@ -5,13 +5,14 @@ import CommonHeader from 'component/CommonHeader';
 import { CommonInput } from 'component/CommonInput';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { View, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { ICON } from 'utils/imageUtils';
 import { Modalize } from 'react-native-modalize';
 import { RouteProp, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import axios from 'axios';
+import { RadioCheckBox_2 } from 'component/RadioCheckBox_2';
 
 
 /* ################################################################################################################
@@ -31,11 +32,28 @@ export const Signup03 = (props : Props) => {
 	const [nickname, setNickname] = React.useState('');
 	const [comment, setComment] = React.useState('');
 
-	console.log(props.route.params.memberSeq);
-
 	const int_modalizeRef = useRef<Modalize>(null);
 	const int_onOpen = () => { int_modalizeRef.current?.open(); };
 	const int_onClose = () => {	int_modalizeRef.current?.close(); };
+
+	// 관심사 적용 변수
+	let apply_int = new Array();
+
+	// 관심사 설정 변수
+	const [checkIntValue_01, setCheckIntValue_01] = useState('');	// 문화생활
+	const [checkIntValue_03, setCheckIntValue_03] = useState('');	// 음식문화
+	const [checkIntValue_05, setCheckIntValue_05] = useState('');	// 사교활동
+	const [checkIntValue_09, setCheckIntValue_09] = useState('');	// 음악/예술
+
+	const int_confirm = () => {
+		apply_int = new Array();
+		let int_json = { key: "", value: "" }
+		if(checkIntValue_01 != "") { int_json = { key: "CONCERN_01", value: checkIntValue_01 }; apply_int.push(int_json); }
+		if(checkIntValue_03 != "") { int_json = { key: "CONCERN_03", value: checkIntValue_03 }; apply_int.push(int_json); }
+		if(checkIntValue_05 != "") { int_json = { key: "CONCERN_05", value: checkIntValue_05 }; apply_int.push(int_json); }
+		if(checkIntValue_09 != "") { int_json = { key: "CONCERN_09", value: checkIntValue_09 }; apply_int.push(int_json); }
+		int_modalizeRef.current?.close();
+	};
 
 	return (
 		<>
@@ -107,11 +125,13 @@ export const Signup03 = (props : Props) => {
 								onPress={() => {
 
 									console.log("nickname :::: " + nickname);
+									console.log(JSON.parse(JSON.stringify(apply_int)));
 
 									axios.post('http://211.104.55.151:8080/member/insertMember04/', {
 										memberSeq : props.route.params.memberSeq,
 										nickname : nickname,
-										comment: comment
+										comment: comment,
+										interestList : apply_int
 									})
 									.then(function (response) {
 										console.log(response.data.result_code);
@@ -130,10 +150,9 @@ export const Signup03 = (props : Props) => {
 			</ScrollView>
 
 
-
-			{/* ###############################################
-							관심사 설정 팝업
-			############################################### */}
+			{/* #############################################################################
+											관심사 설정 팝업
+			############################################################################# */}
 
 			<Modalize
 				ref={int_modalizeRef}
@@ -151,6 +170,7 @@ export const Signup03 = (props : Props) => {
 				</View>
 
 				<View style={modalStyle.modalBody}>
+					
 					<SpaceView mb={24}>
 						<SpaceView mb={16}>
 							<CommonText fontWeight={'500'}>문화생활</CommonText>
@@ -158,19 +178,17 @@ export const Signup03 = (props : Props) => {
 
 						<View style={[layoutStyle.row, layoutStyle.justifyBetween]}>
 							{[
-								{ text: '스타일1', isActive: true },
-								{ text: '해외축구', isActive: false },
-								{ text: '영화1', isActive: false },
+								{ text: '여행', value: 'CONC_01_00', isActive: true },
+								{ text: '새로운 것 도전', value: 'CONC_01_01', isActive: false },
+								{ text: '사진', value: 'CONC_01_02', isActive: false }
 							].map((i, index) => {
 								return (
 									<SpaceView mr={index % 3 !== 2 ? 8 : 0} key={index + 'reg'}>
-										<TouchableOpacity style={[styles.interestBox, i.isActive && styles.boxActive]}
-															onPress={() => {
-																console.log('ddd ::: ' + i.text);
-															}} >
+										<TouchableOpacity style={[styles.interestBox, i.value === checkIntValue_01 && styles.boxActive]}
+															onPress={() => { setCheckIntValue_01(i.value); }} >
 											<CommonText
 												fontWeight={'500'}
-												color={i.isActive ? ColorType.primary : ColorType.gray8888} >
+												color={i.value === checkIntValue_01 ? ColorType.primary : ColorType.gray8888} >
 												{i.text}
 											</CommonText>
 										</TouchableOpacity>
@@ -182,22 +200,22 @@ export const Signup03 = (props : Props) => {
 
 					<SpaceView mb={24}>
 						<SpaceView mb={16}>
-							<CommonText fontWeight={'500'}>영화</CommonText>
+							<CommonText fontWeight={'500'}>음식문화</CommonText>
 						</SpaceView>
 
 						<View style={[layoutStyle.row, layoutStyle.justifyBetween]}>
 							{[
-								{ text: '영화1', isActive: true },
-								{ text: '영화2', isActive: false },
-								{ text: '영화3', isActive: false },
+								{ text: '맛집', value: 'CONC_03_00', isActive: true },
+								{ text: '한강에서 치맥', value: 'CONC_03_01', isActive: false },
+								{ text: '베이킹', value: 'CONC_03_02', isActive: false }
 							].map((i, index) => {
 								return (
-									<SpaceView mr={index % 3 !== 2 ? 8 : 0} key={index + 'movie'}>
-										<TouchableOpacity style={[styles.interestBox, i.isActive && styles.boxActive]}>
+									<SpaceView mr={index % 3 !== 2 ? 8 : 0} key={index + 'reg'}>
+										<TouchableOpacity style={[styles.interestBox, i.value === checkIntValue_03 && styles.boxActive]}
+															onPress={() => { setCheckIntValue_03(i.value); }} >
 											<CommonText
 												fontWeight={'500'}
-												color={i.isActive ? ColorType.primary : ColorType.gray8888}
-											>
+												color={i.value === checkIntValue_03 ? ColorType.primary : ColorType.gray8888} >
 												{i.text}
 											</CommonText>
 										</TouchableOpacity>
@@ -209,22 +227,22 @@ export const Signup03 = (props : Props) => {
 
 					<SpaceView mb={24}>
 						<SpaceView mb={16}>
-							<CommonText fontWeight={'500'}>스타일</CommonText>
+							<CommonText fontWeight={'500'}>사교활동</CommonText>
 						</SpaceView>
 
 						<View style={[layoutStyle.row, layoutStyle.justifyBetween]}>
 							{[
-								{ text: '스타일1', isActive: true },
-								{ text: '스타일2', isActive: false },
-								{ text: '스타일3', isActive: false },
+								{ text: '노래방', value: 'CONC_05_01', isActive: true },
+								{ text: '술 한 잔', value: 'CONC_05_02', isActive: false },
+								{ text: '코인 노래방', value: 'CONC_05_06', isActive: false }
 							].map((i, index) => {
 								return (
-									<SpaceView mr={index % 3 !== 2 ? 8 : 0} key={index + 'style'}>
-										<TouchableOpacity style={[styles.interestBox, i.isActive && styles.boxActive]}>
+									<SpaceView mr={index % 3 !== 2 ? 8 : 0} key={index + 'reg'}>
+										<TouchableOpacity style={[styles.interestBox, i.value === checkIntValue_05 && styles.boxActive]}
+															onPress={() => { setCheckIntValue_05(i.value); }} >
 											<CommonText
 												fontWeight={'500'}
-												color={i.isActive ? ColorType.primary : ColorType.gray8888}
-											>
+												color={i.value === checkIntValue_05 ? ColorType.primary : ColorType.gray8888} >
 												{i.text}
 											</CommonText>
 										</TouchableOpacity>
@@ -236,22 +254,22 @@ export const Signup03 = (props : Props) => {
 
 					<SpaceView mb={24}>
 						<SpaceView mb={16}>
-							<CommonText fontWeight={'500'}>음식</CommonText>
+							<CommonText fontWeight={'500'}>음악/예술</CommonText>
 						</SpaceView>
 
 						<View style={[layoutStyle.row, layoutStyle.justifyBetween]}>
 							{[
-								{ text: '음식', isActive: true },
-								{ text: '음식2', isActive: false },
-								{ text: '음식3', isActive: false },
+								{ text: 'K-POP', value: 'CONC_09_00', isActive: true },
+								{ text: '댄스', value: 'CONC_09_01', isActive: false },
+								{ text: '예술', value: 'CONC_09_02', isActive: false }
 							].map((i, index) => {
 								return (
-									<SpaceView mr={index % 3 !== 2 ? 8 : 0} key={index + 'food'}>
-										<TouchableOpacity style={[styles.interestBox, i.isActive && styles.boxActive]}>
+									<SpaceView mr={index % 3 !== 2 ? 8 : 0} key={index + 'reg'}>
+										<TouchableOpacity style={[styles.interestBox, i.value === checkIntValue_09 && styles.boxActive]}
+															onPress={() => { setCheckIntValue_09(i.value); }} >
 											<CommonText
 												fontWeight={'500'}
-												color={i.isActive ? ColorType.primary : ColorType.gray8888}
-											>
+												color={i.value === checkIntValue_09 ? ColorType.primary : ColorType.gray8888} >
 												{i.text}
 											</CommonText>
 										</TouchableOpacity>
@@ -262,7 +280,9 @@ export const Signup03 = (props : Props) => {
 					</SpaceView>
 
 					<SpaceView mb={16}>
-						<CommonBtn value={'확인'} type={'primary'} />
+						<CommonBtn value={'확인'} 
+									type={'primary'}
+									onPress={int_confirm}/>
 					</SpaceView>
 				</View>
 			</Modalize>
