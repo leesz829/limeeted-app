@@ -7,7 +7,7 @@ import * as React from 'react';
 import { View, Image, Alert } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import { useNavigation } from '@react-navigation/native';
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from 'react-native';
 import axios from 'axios';
 import {
 	getProfile as getKakaoProfile,
