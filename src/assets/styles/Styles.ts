@@ -11,6 +11,7 @@ export const styles = StyleSheet.create({
 		height: 40,
 	},
 	logo: { width: 220, height: 90 },
+	logoMark: { width: 80, height: 80 },
 	rotate90: { transform: [{ rotate: '90deg' }] },
 	rotateN90: { transform: [{ rotate: '-90deg' }] },
 	rotate180: { transform: [{ rotate: '180deg' }] },

@@ -5,11 +5,11 @@ import { StackParamList } from '@types';
 import { Login } from 'screens/login';
 import { NiceAuth } from 'screens/login/niceAuth';
 import { Title00 } from 'screens/title';
-import { Signup0 } from 'screens/signup';
-import { Signup1 } from 'screens/signup/Signup01';
+import { Signup00 } from 'screens/signup';
+import { Signup01 } from 'screens/signup/Signup01';
 import { Signup02 } from 'screens/signup/Signup02';
 import { Signup03 } from 'screens/signup/Signup03';
-import { SignupPopUp } from 'screens/commonpopup/SignupPopUp';
+import { SecondAuthPopup } from 'screens/commonpopup/SecondAuthPopup';
 import { SignupPopUp2 } from 'screens/commonpopup/SignupPopUp2';
 import { ReportPopup } from 'screens/commonpopup/ReportPopup';
 import { LivePopup } from 'screens/commonpopup/LivePopup';
@@ -65,22 +65,22 @@ const StackNavigation = () => {
 				}}
 			/>
 			<Stack.Screen
-				name="Signup0"
-				component={Signup0}
+				name="Signup00"
+				component={Signup00}
 				options={{
 					headerShown: false,
 				}}
 			/>
 			<Stack.Screen
-				name="Signup1"
-				component={Signup1}
+				name="Signup01"
+				component={Signup01}
 				options={{
 					headerShown: false,
 				}}
 			/>
 			<Stack.Screen
-				name="SignupPopUp"
-				component={SignupPopUp}
+				name="SecondAuthPopup"
+				component={SecondAuthPopup}
 				options={{
 					headerShown: false,
 				}}

@@ -1,4 +1,5 @@
 import { ColorType, StackParamList, BottomParamList, ScreenNavigationProp} from '@types';
+import { useState, useEffect} from 'react';
 import { layoutStyle, styles } from 'assets/styles/Styles';
 import { CommonBtn } from 'component/CommonBtn';
 import { CommonSwich } from 'component/CommonSwich';
@@ -7,14 +8,16 @@ import SpaceView from 'component/SpaceView';
 import { ToolTip } from 'component/Tooltip';
 import TopNavigation from 'component/TopNavigation';
 import * as React from 'react';
-import { Image, ScrollView, View, TouchableOpacity } from 'react-native';
+import { Image, ScrollView, View, TouchableOpacity, ImagePropTypes } from 'react-native';
 import { ICON, IMAGE, PROFILE_IMAGE } from 'utils/imageUtils';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp, useNavigation } from '@react-navigation/native';
-import { UserInfo } from '@types';
-import { jwt_token } from 'utils/properties';
+import { MemberData } from '@types';
+import * as properties from 'utils/properties';
 import axios from 'axios';
-import AsyncStorage from '@react-native-community/async-storage';
+//import AsyncStorage from '@react-native-community/async-storage';
+import { AsyncStorage } from 'react-native';
+import { api_domain } from 'utils/properties';
 
 /* ################################################################################################################
 ###### 로비
@@ -28,53 +31,91 @@ interface Props {
 export const Roby = (props : Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 
-	// 회원정보
-	const [userInfo, setUserInfo] = useState(UserInfo);
+	// 회원 번호
+	const [memberSeq, setMemberSeq] = React.useState('');
 
-	const getUserInfo = async () => {
-		const result = await axios.post('http://192.168.35.131:8080/member/selectMemberInfo', {
+	// 회원 정보
+	const [memberInfo, setMemberInfo] = React.useState<any>(MemberData);
+	const [memberInfo2, setMemberInfo2] = React.useState({
+		nickname : String,
+		gender : String,
+		age : String,
+		comment : '',
+		mst_img_path : ImagePropTypes,
+		profile_tier : String
+	});
+
+	const getMemberInfo = async () => {
+		AsyncStorage.getItem('member_info', (err, result) => {
+			const member = JSON.parse(result);
+			//console.log('member ::: ', member);
+
+			setMemberInfo(member);
+			setMemberInfo2({
+				nickname : member.nickname,
+				gender : member.gender,
+				age : member.age,
+				comment : member.comment,
+				mst_img_path : member.mst_img_path,
+				profile_tier : member.profile_tier
+			})
+		});
+	}
+
+	// 첫 렌더링 때 fetchNews() 한 번 실행
+	React.useEffect(() => {
+		console.log('aslkdmsalkdmaslkdmalsdmsakdml');
+
+		//getMemberInfo();
+		selectMemberInfo();
+		
+	}, []);
+
+	// 회원 정보 조회
+	const selectMemberInfo = async () => {
+
+		const result = await axios.post('http://211.104.55.151:8080/member/selectMemberInfo', {
 			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
+			, 'member_seq' : String(await properties.get_json_data('member_seq'))
 		}
 		, {
 			headers: {
-				'jwt-token' : String(await jwt_token())
+				'jwt-token' : String(await properties.jwt_token())
 			}
 		})
 		.then(function (response) {
+			console.log("selectMemberInfo :::: ", response.data.resLikeList);
 			
 			if(response.data.result_code != '0000'){
 				console.log(response.data.result_msg);
 				return false;
+			} else {
+				const member = JSON.parse(JSON.stringify(response.data));
+
+				AsyncStorage.clear();
+				AsyncStorage.setItem('jwt-token', response.data.token_param.jwt_token);
+				AsyncStorage.setItem('member_seq', String(response.data.member_seq));
+				AsyncStorage.setItem('member_info', JSON.stringify(response.data), (err)=> {
+					if(err){
+						console.log("an error");
+						throw err;
+					}
+					console.log("success");
+				}).catch((err)=> {
+					console.log("error is: " + err);
+				});
+
+				setMemberInfo(member);
 			}
 
-			setUserInfo(response.data.result)
+			//setUserInfo(response.data.result);
 		})
 		.catch(function (error) {
 			console.log('error ::: ' , error);
 		});
 	}
 
-
-	// 첫 렌더링 때 fetchNews() 한 번 실행
-	useEffect(() => {
-		// 유저 정보
-		getUserInfo()
-	}, []);
-	
-	let [memberSeq, setMemberSeq] = React.useState('');
-	let [name, setName] = React.useState('');
-	let [age, setAge] = React.useState('');
-	let [comment, setComment] = React.useState('');
-
-	AsyncStorage.getItem('member_info', (err, result) => {
-		const member = JSON.parse(result);
-		console.log('아이디는 ' + member.name);
-
-		setMemberSeq(member.memberSeq);
-		setName(member.name);
-		setAge(member.age);
-		setComment(member.comment);
-	});
+	//console.log('age1111 ::: ', String(properties.get_json_data('age')));
 
 	return (
 		<>
@@ -88,12 +129,23 @@ export const Roby = (props : Props) => {
 
 				<SpaceView mb={48} viewStyle={layoutStyle.alignCenter}>
 					<SpaceView mb={8}>
-						<Image source={PROFILE_IMAGE.profileM1} style={styles.profileImg} />
+						<Image source={{ uri : memberInfo.mst_img_path }} style={styles.profileImg} />
+						{/* <Image source={PROFILE_IMAGE.profileM1} style={styles.profileImg} /> */}
 						{/* <Image source={{uri : props.route.params.mstImg}} style={styles.profileImg} /> */}
 						<View style={styles.profilePenContainer}>
-
 							<TouchableOpacity onPress={() => {
-													navigation.navigate('Introduce');
+													navigation.navigate('Introduce', {
+														member_seq : memberInfo.member_seq
+														, introduce_comment : memberInfo.introduce_comment
+														, business : memberInfo.business
+														, job : memberInfo.job
+														, job_name : memberInfo.job_name
+														, height : memberInfo.height
+														, form_body : memberInfo.form_body
+														, religion : memberInfo.religion
+														, drinking : memberInfo.drinking
+														, smoking : memberInfo.smoking
+													});
 												}}>
 								<Image source={ICON.pen} style={styles.iconSize24} />
 							</TouchableOpacity>
@@ -102,26 +154,26 @@ export const Roby = (props : Props) => {
 
 					<SpaceView mb={4}>
 						<CommonText fontWeight={'700'} type={'h4'}>
-							{name}, {age}
+							{memberInfo.nickname}, {memberInfo.age}
 						</CommonText>
 					</SpaceView>
 					<SpaceView mb={16} viewStyle={styles.levelContainer}>
 						<CommonText color={ColorType.gray6666} type={'h6'}>
-							LV.1
+							LV.{memberInfo.profile_tier != null ? memberInfo.profile_tier : 0}
 						</CommonText>
 					</SpaceView>
 
-					<CommonText color={ColorType.gray6666}>{comment}</CommonText>
+					<CommonText color={ColorType.gray6666}>{memberInfo.introduce_comment}</CommonText>
 				</SpaceView>
 
 				<View>
 					<SpaceView mb={16}>
 						<TouchableOpacity style={[layoutStyle.row, layoutStyle.alignCenter]}
-															onPress={() => {
-																navigation.navigate('Main', { 
-																	screen: 'Profile1'
-																});
-															}}>
+											onPress={() => {
+												navigation.navigate('Main', { 
+													screen: 'Profile1'
+												});
+											}}>
 							<CommonText type={'h3'} fontWeight={'700'}>
 								프로필 관리
 							</CommonText>
@@ -133,7 +185,7 @@ export const Roby = (props : Props) => {
 						<View style={[styles.halfItemLeft, styles.profileContainer, layoutStyle.alignCenter]}>
 							<SpaceView mb={4}>
 								<CommonText fontWeight={'700'} type={'h2'}>
-									5
+									0
 								</CommonText>
 							</SpaceView>
 							<SpaceView mb={24} viewStyle={layoutStyle.rowCenter}>
@@ -145,7 +197,7 @@ export const Roby = (props : Props) => {
 						<View style={[styles.halfItemRight, styles.profileContainer, layoutStyle.alignCenter]}>
 							<SpaceView mb={4}>
 								<CommonText fontWeight={'700'} type={'h2'}>
-									4
+									0
 								</CommonText>
 							</SpaceView>
 
