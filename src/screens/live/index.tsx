@@ -156,7 +156,7 @@ export const Live = () => {
 		// 프로필 이미지 정보
 		getLiveProfileImg();
 		
-		// 인상정보
+		/////////// 인상정보
 		getFaceType();
 	}, []);
 	
