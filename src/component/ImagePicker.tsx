@@ -20,6 +20,7 @@ interface Props {
 			, fileSize: number
 			, type: string
 	) => void;
+	uriParam?: string;
 }
 
 const includeExtra = true;
@@ -42,33 +43,45 @@ export const ImagePicker: FC<Props> = (props) => {
 	}, []);
 
 	React.useEffect(() => {
-		console.log(response);
+		console.log("image response :: ", response);
 
-		props.callbackFn(
-				response?.assets[0].uri
-				, response?.assets[0].fileName
-				, response?.assets[0].fileSize
-				, response?.assets[0].type
-		);
-
+		if(null != response && !response.didCancel) {
+			props.callbackFn(
+					response?.assets[0].uri
+					, response?.assets[0].fileName
+					, response?.assets[0].fileSize
+					, response?.assets[0].type
+			);
+		}
 	});
 
 	return (
 		<TouchableOpacity
 			onPress={onButtonPress}
-			style={props.isBig ? styles.tempBoxBig : styles.tempBoxSmall}
-		>
+			style={props.isBig ? styles.tempBoxBig : styles.tempBoxSmall} >
 			{response?.assets ? (
 				response?.assets.map(({ uri }: { uri: any }) => (
 					<Image
 						resizeMode="cover"
 						resizeMethod="scale"
 						style={props.isBig ? styles.tempBoxBig : styles.tempBoxSmall}
+						key={uri}
 						source={{ uri }}
 					/>
 				))
 			) : (
-				<Image source={ICON.purplePlus} style={styles.boxPlusIcon} />
+				(props.uriParam != null ? (
+					<Image
+						resizeMode="cover"
+						resizeMethod="scale"
+						style={props.isBig ? styles.tempBoxBig : styles.tempBoxSmall}
+						key={props.uriParam}
+						source={{ uri: props.uriParam }}
+					/>
+				) : (
+					<Image source={ICON.purplePlus} style={styles.boxPlusIcon} />
+					)
+				)
 			)}
 		</TouchableOpacity>
 	);
