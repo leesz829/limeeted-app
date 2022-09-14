@@ -2,6 +2,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { CompositeNavigationProp, NavigatorScreenParams } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { Image, ScrollView, View, TouchableOpacity, ImagePropTypes } from 'react-native';
 
 export type ScreenNavigationProp = CompositeNavigationProp<
 	StackNavigationProp<StackParamList>,
@@ -19,16 +20,17 @@ export type StackParamList = {
 	StartPage: undefined;
 	Login: undefined;
 	Title00: undefined;
-	Signup0: {
+	NiceAuth: undefined;
+	Signup00: {
 		kakaoId: string;
 		name: string;
+		gender: string;
+		age: string;
+		hp: string;
 	};
-	NiceAuth: undefined;
-
-	Signup1: {
+	Signup01: {
 		memberSeq: Number;
 	};
-	SignupPopUp: undefined;
 	Signup02: {
 		memberSeq: Number;
 	};
@@ -36,11 +38,23 @@ export type StackParamList = {
 		memberSeq: Number;
 	};
 	Approval: undefined;
+	SecondAuthPopup: undefined;	// 2차 인증 팝업
 	SignupPopUp2: undefined;
 	CommonPopup: undefined;
 	ReportPopup: undefined;
 	LivePopup: undefined;
-	Introduce: undefined;
+	Introduce: {
+		member_seq : Number;
+		introduce_comment : string;
+		business : string;
+		job : string;
+		job_name : string;
+		height : string;
+		form_body : string;
+		religion : string;
+		drinking : string;
+		smoking : string;
+	};
 	Board0: undefined;
 	Board1: undefined;
 	Preference: undefined;
@@ -115,7 +129,7 @@ export const Interview = {
 	, order_seq : ''
 }
 
-export const UserInfo = {
+export const MemberData = {
 	member_seq  : ''
 	, kakao_id : ''
 	, nickname : ''
@@ -136,6 +150,7 @@ export const UserInfo = {
 	, local_seq2 : ''
 	, inactive_dt : ''
 	, rank : ''
+	, introduce_comment : ''
 	, business : ''
 	, job : ''
 	, job_name : ''
@@ -146,6 +161,7 @@ export const UserInfo = {
 	, religion : ''
 	, drinking : ''
 	, smoking : ''
+	, mst_img_path : ImagePropTypes
 }
 
 
