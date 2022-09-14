@@ -11,3 +11,7 @@ export const jwt_token = () => {
 		}
 	});
 }
+
+export const JWTdomain = () => {
+	return 'http://192.168.1.2:8080';
+}

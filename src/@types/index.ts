@@ -108,7 +108,7 @@ export type WeightType =
 export const LabelObj= {
 	label : ''
 	, value : ''
-}	
+}
 	
 
 
@@ -162,12 +162,24 @@ export const UserInfo = {
 }
 
 
-export const ProfileImg= {
+export const FileInfo= {
 	member_seq : ''
-	, join_dt : ''
-	, age : ''
+	, name : ''
+	, profile_type : ''
 	, comment : ''
-	, file_path : ''
 	, gender : ''
+	, age : ''
+	, file_seq : ''
+	, file_path : ''
+	, file_name : ''
 }	
+
+export const ProfileImg= {
+	url: ''
+	, member_seq : ''
+	, name : ''
+	, age : ''
+	, comment : '' 
+	, profile_type : ''
+}
 
