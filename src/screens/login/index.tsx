@@ -7,7 +7,7 @@ import * as React from 'react';
 import { View, Image, Alert } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import { useNavigation } from '@react-navigation/native';
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from 'react-native';
 import axios from 'axios';
 import {
 	getProfile as getKakaoProfile,
@@ -22,17 +22,19 @@ export const Login = () => {
 
 	const [kakaoResult, setKakaoResult] = React.useState('');
 	
-
-
-	
 	const signInWithKakao = async () => {
 
+		const profile11 = await getKakaoProfile();
+		// console.log(profile11);
+		//const profile11 = await getKakaoProfile();
+		//console.log(profile11); 
 		// const profile11 = awaitg etKakaoProfile();
 		// console.log(profile11);
 
 		// 테스트 버전
 		const profile = {
 			id : "test1",
+			//id : "2233743623",
 			nickname : "테스트"
 		};
 
@@ -44,7 +46,7 @@ export const Login = () => {
 
 		//setKakaoResult(JSON.stringify(token));
 
-		axios.post('http://192.168.35.131:8080/member/getKakaoIdchk/', {
+		axios.post('http://211.104.55.151:8080/member/getKakaoIdchk/', {
 			kakaoId : profile.id
 		})
 		.then(function (response) {
@@ -62,7 +64,7 @@ export const Login = () => {
 					memberSeq : 39
 				});
 
-			}else if(resultCode == "0002"){
+			} else if(resultCode == "0002"){
 				console.log('alert 추가!!!!! 로그인 실패');
 			} else {
 				// token set
