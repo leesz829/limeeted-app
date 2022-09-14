@@ -16,21 +16,26 @@ import { Color } from 'assets/styles/Color';
 import RNPickerSelect from 'react-native-picker-select';
 
 interface Props {
-	navigation : StackNavigationProp<StackParamList, 'Signup0'>;
-	route : RouteProp<StackParamList, 'Signup0'>;
+	navigation : StackNavigationProp<StackParamList, 'Signup00'>;
+	route : RouteProp<StackParamList, 'Signup00'>;
 }
 
-export const Signup0 = (props : Props) => {
+export const Signup00 = (props : Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 
-	console.log("kakaoId ::: " + props.route.params.kakaoId);
-
 	const [id, setId] = React.useState(props.route.params.kakaoId);
-	//const [name, setName] = React.useState(props.route.params.name);
-	const [name, setName] = React.useState('');
-	const [age, setAge] = React.useState('');
-	const [gender, setGender] = React.useState('');
-	const [hp, setHp] = React.useState('');
+	const [name, setName] = React.useState(props.route.params.name);
+	const [age, setAge] = React.useState(props.route.params.age);
+	const [gender, setGender] = React.useState(props.route.params.gender);
+	const [hp, setHp] = React.useState(props.route.params.hp);
+
+	// 성별 항목 목록
+	const genderItemList = [
+		{label: '남자', value: 'M' },
+		{label: '여자', value: 'W' }
+	];
+
+	const genderCallbackFn = (value : string) => { setGender(value); };
 
 	return (
 		<>
@@ -65,7 +70,8 @@ export const Signup0 = (props : Props) => {
 					<CommonInput 
 							label="이름" 
 							value={name} 
-							onChangeText={name => setName(name)} />
+							onChangeText={name => setName(name)}
+							maxLength={5} />
 				</SpaceView>
 
 				<SpaceView mb={24}>
@@ -73,8 +79,10 @@ export const Signup0 = (props : Props) => {
 						<View style={styles.halfItemLeft}>
 							<CommonInput 
 									label="나이" 
-									value={age}
-									onChangeText={age => setAge(age)} />
+									value={age} 
+									keyboardType="number-pad"
+									onChangeText={age => setAge(age)}
+									maxLength={2} />
 						</View>
 						<View style={styles.halfItemRight}>
 							{/* <CommonInput 
@@ -85,7 +93,9 @@ export const Signup0 = (props : Props) => {
 
 							<View style={selectStyles.selectContainer}>
 								<View>
-									<Text style={selectStyles.labelStyle}>성별</Text>
+									<CommonSelect label={'성별'} items={genderItemList} selectValue={gender} callbackFn={genderCallbackFn} />
+
+									{/* <Text style={selectStyles.labelStyle}>성별</Text>
 									<View style={selectStyles.inputContainer}>
 										<RNPickerSelect
 											style={pickerSelectStyles}
@@ -93,12 +103,11 @@ export const Signup0 = (props : Props) => {
 											onValueChange={gender => setGender(gender)}
 											value={'M'}
 											items={[
-												/* { label: '선택', value: '' }, */
 												{ label: '남자', value: 'M' },
 												{ label: '여자', value: 'F' }
 											]}
 										/>
-									</View>
+									</View> */}
 								</View>
 								<View style={selectStyles.selectImgContainer}>
 									<Image source={ICON.arrRight} style={selectStyles.icon} />
@@ -114,6 +123,8 @@ export const Signup0 = (props : Props) => {
 							label="전화번호" 
 							value={hp} 
 							onChangeText={hp => setHp(hp)} 
+							keyboardType="number-pad"
+							maxLength={13}
 				/>
 				</SpaceView>
 				<SpaceView mb={24}>
@@ -121,7 +132,7 @@ export const Signup0 = (props : Props) => {
 								type={'primary'} 
 								onPress={() => {
 
-									axios.post('http://211.104.55.151:8080/member/insertMemberInfo/', {
+									axios.post('http://211.104.55.151:8080/join/insertMemberInfo/', {
 										kakao_id : id,
 										nickname: name,
 										name: name,
@@ -133,7 +144,7 @@ export const Signup0 = (props : Props) => {
 										console.log(response.data.result_code);
 
 										if(response.data.result_code == "0000") {
-											navigation.navigate('Signup1', {
+											navigation.navigate('Signup01', {
 												memberSeq : response.data.memberSeq
 											});
 										}

@@ -13,6 +13,7 @@ import { RouteProp, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import axios from 'axios';
 import { RadioCheckBox_2 } from 'component/RadioCheckBox_2';
+import { api_domain } from 'utils/properties';
 
 
 /* ################################################################################################################
@@ -32,28 +33,67 @@ export const Signup03 = (props : Props) => {
 	const [nickname, setNickname] = React.useState('');
 	const [comment, setComment] = React.useState('');
 
+	const [interestJsonArr, setInterestJsonArr] = React.useState([{ code_name: "", common_code: "", group_code: "" }]);
+
 	const int_modalizeRef = useRef<Modalize>(null);
 	const int_onOpen = () => { int_modalizeRef.current?.open(); };
 	const int_onClose = () => {	int_modalizeRef.current?.close(); };
 
-	// 관심사 적용 변수
-	let apply_int = new Array();
-
 	// 관심사 설정 변수
-	const [checkIntValue_01, setCheckIntValue_01] = useState('');	// 문화생활
-	const [checkIntValue_03, setCheckIntValue_03] = useState('');	// 음식문화
-	const [checkIntValue_05, setCheckIntValue_05] = useState('');	// 사교활동
-	const [checkIntValue_09, setCheckIntValue_09] = useState('');	// 음악/예술
+	const [checkIntValue_01, setCheckIntValue_01] = React.useState({ code_name: "", common_code: "", group_code: "" });	// 문화생활
+	const [checkIntValue_03, setCheckIntValue_03] = React.useState({ code_name: "", common_code: "", group_code: "" });	// 음식문화
+	const [checkIntValue_05, setCheckIntValue_05] = React.useState({ code_name: "", common_code: "", group_code: "" });	// 사교활동
+	const [checkIntValue_09, setCheckIntValue_09] = React.useState({ code_name: "", common_code: "", group_code: "" });	// 음악/예술
 
+	// 관심사 등록 확인 함수
 	const int_confirm = () => {
-		apply_int = new Array();
-		let int_json = { key: "", value: "" }
-		if(checkIntValue_01 != "") { int_json = { key: "CONCERN_01", value: checkIntValue_01 }; apply_int.push(int_json); }
-		if(checkIntValue_03 != "") { int_json = { key: "CONCERN_03", value: checkIntValue_03 }; apply_int.push(int_json); }
-		if(checkIntValue_05 != "") { int_json = { key: "CONCERN_05", value: checkIntValue_05 }; apply_int.push(int_json); }
-		if(checkIntValue_09 != "") { int_json = { key: "CONCERN_09", value: checkIntValue_09 }; apply_int.push(int_json); }
+		let tmpIntApplyList = new Array();
+		
+		if(checkIntValue_01.code_name != "") { tmpIntApplyList.push(checkIntValue_01); }
+		if(checkIntValue_03.code_name != "") { tmpIntApplyList.push(checkIntValue_03); }
+		if(checkIntValue_05.code_name != "") { tmpIntApplyList.push(checkIntValue_05); }
+		if(checkIntValue_09.code_name != "") { tmpIntApplyList.push(checkIntValue_09); }
+
+		setInterestJsonArr(tmpIntApplyList);
 		int_modalizeRef.current?.close();
 	};
+
+	/*
+	 * 최초 실행
+	 */
+	React.useEffect(() => {
+
+		// 회원 관심사 정보 조회
+		axios.post(api_domain + '/join/selectMemberIntro/', {
+			member_seq : props.route.params.memberSeq
+		})
+		.then(function (response) {
+			console.log("response ::: " + JSON.stringify(response.data));
+
+			if(null != response.data.member) {
+				setNickname(response.data.member.nickname);
+				setComment(response.data.member.comment);
+			}
+
+			if(null != response.data.intList) {
+				let tmpIntApplyList = new Array();
+				response.data?.intList?.map(({ group_code, common_code, code_name }: { group_code: any, common_code: any, code_name: any }) => {
+					let dataJson = {group_code: group_code, common_code: common_code, code_name: code_name};
+					if(group_code == "CONCERN_01") { setCheckIntValue_01(dataJson) }
+					if(group_code == "CONCERN_03") { setCheckIntValue_03(dataJson) }
+					if(group_code == "CONCERN_05") { setCheckIntValue_05(dataJson) }
+					if(group_code == "CONCERN_09") { setCheckIntValue_09(dataJson) }
+					tmpIntApplyList.push(dataJson);
+				});
+
+				setInterestJsonArr(tmpIntApplyList);
+			}
+		})
+		.catch(function (error) {
+			console.log(error);
+		});
+		
+	}, []);
 
 	return (
 		<>
@@ -69,12 +109,14 @@ export const Signup03 = (props : Props) => {
 				<SpaceView mb={24}>
 					<CommonInput label="닉네임" 
 									placeholder={'회원명'}
+									value={nickname}
 									onChangeText={nickname => setNickname(nickname)}  />
 				</SpaceView>
 
 				<SpaceView mb={48}>
 					<CommonInput label="한줄 소개" 
 									placeholder={'서울사람'}
+									value={comment}
 									onChangeText={comment => setComment(comment)} />
 				</SpaceView>
 
@@ -119,19 +161,35 @@ export const Signup03 = (props : Props) => {
 					})}
 				</SpaceView> */}
 
+				<SpaceView mb={40} mt={15} viewStyle={[layoutStyle.row, layoutStyle.wrap]}>
+					{interestJsonArr.map((i, index) => {
+						return (
+							i.code_name != "" ? (
+								<SpaceView mr={index % 3 !== 2 ? 8 : 0} key={index + 'reg'}>
+									<TouchableOpacity style={[styles.interestBox]}>
+										<CommonText color={ColorType.gray8888}>
+											{i.code_name}
+										</CommonText>
+									</TouchableOpacity>
+								</SpaceView>
+							) : null
+						);
+					})}
+				</SpaceView>
+
 				<SpaceView mb={24}>
 					<CommonBtn value={'다음 (4/4)'} 
 								type={'primary'}
 								onPress={() => {
 
-									console.log("nickname :::: " + nickname);
-									console.log(JSON.parse(JSON.stringify(apply_int)));
+									console.log("nickname :::: ", nickname);
+									console.log("interestJsonArr :::: ", interestJsonArr);
 
-									axios.post('http://211.104.55.151:8080/member/insertMember04/', {
-										memberSeq : props.route.params.memberSeq,
+									axios.post('http://211.104.55.151:8080/join/insertMemberIntro/', {
+										member_seq : props.route.params.memberSeq,
 										nickname : nickname,
-										comment: comment,
-										interestList : apply_int
+										introduce_comment: comment,
+										interestList : interestJsonArr
 									})
 									.then(function (response) {
 										console.log(response.data.result_code);
@@ -178,18 +236,18 @@ export const Signup03 = (props : Props) => {
 
 						<View style={[layoutStyle.row, layoutStyle.justifyBetween]}>
 							{[
-								{ text: '여행', value: 'CONC_01_00', isActive: true },
-								{ text: '새로운 것 도전', value: 'CONC_01_01', isActive: false },
-								{ text: '사진', value: 'CONC_01_02', isActive: false }
+								{ code_name: '여행', common_code: 'CONC_01_00', group_code: 'CONCERN_01', isActive: false },
+								{ code_name: '새로운 것 도전', common_code: 'CONC_01_01', group_code: 'CONCERN_01', isActive: false },
+								{ code_name: '사진', common_code: 'CONC_01_02', group_code: 'CONCERN_01', isActive: false }
 							].map((i, index) => {
 								return (
 									<SpaceView mr={index % 3 !== 2 ? 8 : 0} key={index + 'reg'}>
-										<TouchableOpacity style={[styles.interestBox, i.value === checkIntValue_01 && styles.boxActive]}
-															onPress={() => { setCheckIntValue_01(i.value); }} >
+										<TouchableOpacity style={[styles.interestBox, i.common_code === checkIntValue_01.common_code && styles.boxActive]}
+															onPress={() => { setCheckIntValue_01(i); }} >
 											<CommonText
 												fontWeight={'500'}
-												color={i.value === checkIntValue_01 ? ColorType.primary : ColorType.gray8888} >
-												{i.text}
+												color={i.common_code === checkIntValue_01.common_code ? ColorType.primary : ColorType.gray8888} >
+												{i.code_name}
 											</CommonText>
 										</TouchableOpacity>
 									</SpaceView>
@@ -205,18 +263,18 @@ export const Signup03 = (props : Props) => {
 
 						<View style={[layoutStyle.row, layoutStyle.justifyBetween]}>
 							{[
-								{ text: '맛집', value: 'CONC_03_00', isActive: true },
-								{ text: '한강에서 치맥', value: 'CONC_03_01', isActive: false },
-								{ text: '베이킹', value: 'CONC_03_02', isActive: false }
+								{ code_name: '맛집', common_code: 'CONC_03_00', group_code: 'CONCERN_03', isActive: false },
+								{ code_name: '한강에서 치맥', common_code: 'CONC_03_01', group_code: 'CONCERN_03', isActive: false },
+								{ code_name: '베이킹', common_code: 'CONC_03_02', group_code: 'CONCERN_03', isActive: false }
 							].map((i, index) => {
 								return (
 									<SpaceView mr={index % 3 !== 2 ? 8 : 0} key={index + 'reg'}>
-										<TouchableOpacity style={[styles.interestBox, i.value === checkIntValue_03 && styles.boxActive]}
-															onPress={() => { setCheckIntValue_03(i.value); }} >
+										<TouchableOpacity style={[styles.interestBox, i.common_code === checkIntValue_03.common_code && styles.boxActive]}
+															onPress={() => { setCheckIntValue_03(i); }} >
 											<CommonText
 												fontWeight={'500'}
-												color={i.value === checkIntValue_03 ? ColorType.primary : ColorType.gray8888} >
-												{i.text}
+												color={i.common_code === checkIntValue_03.common_code ? ColorType.primary : ColorType.gray8888} >
+												{i.code_name}
 											</CommonText>
 										</TouchableOpacity>
 									</SpaceView>
@@ -232,18 +290,18 @@ export const Signup03 = (props : Props) => {
 
 						<View style={[layoutStyle.row, layoutStyle.justifyBetween]}>
 							{[
-								{ text: '노래방', value: 'CONC_05_01', isActive: true },
-								{ text: '술 한 잔', value: 'CONC_05_02', isActive: false },
-								{ text: '코인 노래방', value: 'CONC_05_06', isActive: false }
+								{ code_name: '노래방', common_code: 'CONC_05_01', group_code: 'CONCERN_05', isActive: false },
+								{ code_name: '술 한 잔', common_code: 'CONC_05_02', group_code: 'CONCERN_05', isActive: false },
+								{ code_name: '코인 노래방', common_code: 'CONC_05_06', group_code: 'CONCERN_05', isActive: false }
 							].map((i, index) => {
 								return (
 									<SpaceView mr={index % 3 !== 2 ? 8 : 0} key={index + 'reg'}>
-										<TouchableOpacity style={[styles.interestBox, i.value === checkIntValue_05 && styles.boxActive]}
-															onPress={() => { setCheckIntValue_05(i.value); }} >
+										<TouchableOpacity style={[styles.interestBox, i.common_code === checkIntValue_05.common_code && styles.boxActive]}
+															onPress={() => { setCheckIntValue_05(i); }} >
 											<CommonText
 												fontWeight={'500'}
-												color={i.value === checkIntValue_05 ? ColorType.primary : ColorType.gray8888} >
-												{i.text}
+												color={i.common_code === checkIntValue_05.common_code ? ColorType.primary : ColorType.gray8888} >
+												{i.code_name}
 											</CommonText>
 										</TouchableOpacity>
 									</SpaceView>
@@ -259,18 +317,18 @@ export const Signup03 = (props : Props) => {
 
 						<View style={[layoutStyle.row, layoutStyle.justifyBetween]}>
 							{[
-								{ text: 'K-POP', value: 'CONC_09_00', isActive: true },
-								{ text: '댄스', value: 'CONC_09_01', isActive: false },
-								{ text: '예술', value: 'CONC_09_02', isActive: false }
+								{ code_name: 'K-POP', common_code: 'CONC_09_00', group_code: 'CONCERN_09', isActive: false },
+								{ code_name: '댄스', common_code: 'CONC_09_01', group_code: 'CONCERN_09', isActive: false },
+								{ code_name: '예술', common_code: 'CONC_09_02', group_code: 'CONCERN_09', isActive: false }
 							].map((i, index) => {
 								return (
 									<SpaceView mr={index % 3 !== 2 ? 8 : 0} key={index + 'reg'}>
-										<TouchableOpacity style={[styles.interestBox, i.value === checkIntValue_09 && styles.boxActive]}
-															onPress={() => { setCheckIntValue_09(i.value); }} >
+										<TouchableOpacity style={[styles.interestBox, i.common_code === checkIntValue_09.common_code && styles.boxActive]}
+															onPress={() => { setCheckIntValue_09(i); }} >
 											<CommonText
 												fontWeight={'500'}
-												color={i.value === checkIntValue_09 ? ColorType.primary : ColorType.gray8888} >
-												{i.text}
+												color={i.common_code === checkIntValue_09.common_code ? ColorType.primary : ColorType.gray8888} >
+												{i.code_name}
 											</CommonText>
 										</TouchableOpacity>
 									</SpaceView>

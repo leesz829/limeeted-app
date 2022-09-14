@@ -9,6 +9,9 @@ import { ICON } from 'utils/imageUtils';
 type Props = {
 	label?: string;
 	placeholder?: string;
+	items: { label: string; value: string }[];
+	selectValue: string;
+	callbackFn: (value: string) => void;
 } & StyleProp<TextInputProps>;
 
 /**
@@ -16,8 +19,89 @@ type Props = {
  *
  */
 
-export const CommonSelect: FC<Props> = (props) => {
-	return (
+export const CommonSelect : FC<Props> = (props) => {
+	const [response, setResponse] = React.useState<any>(null);
+	const [value, setValue] = React.useState<any>(null);
+
+	React.useEffect(() => {
+		if(value != null && null != props.callbackFn) {
+			props.callbackFn(value);
+		}
+	}, [value]);
+
+	return props.items ? (
+		<>
+			<View style={styles.selectContainer}>
+				<View>
+					<Text style={styles.labelStyle}>{props.label}</Text>
+					<View style={styles.inputContainer}>
+						<RNPickerSelect
+							style={pickerSelectStyles}
+							useNativeAndroidPickerStyle={false}
+							/* onValueChange={(value) => console.log('value ::: ', value)} */
+							onValueChange={value => setValue(value)}
+							value={props.selectValue}
+							items={props.items}
+						/>
+					</View>
+				</View>
+				<View style={styles.selectImgContainer}>
+					<Image source={ICON.arrRight} style={styles.icon} />
+				</View>
+			</View>
+
+
+
+			{/* {props.items.map((item, index) => {
+				return (
+					<View style={styles.selectContainer}>
+						<View>
+							<Text style={styles.labelStyle}>{props.label}</Text>
+							<View style={styles.inputContainer}>
+								<RNPickerSelect
+									style={pickerSelectStyles}
+									useNativeAndroidPickerStyle={false}
+									onValueChange={(value) => console.log('value ::: ', value)}
+									value={props.selectValue}
+									items={props.items} />
+							</View>
+						</View>
+						<View style={styles.selectImgContainer}>
+							<Image source={ICON.arrRight} style={styles.icon} />
+						</View>
+					</View>
+					
+				);
+			})} */}
+		</>
+	) : (
+		<>
+			<View style={styles.selectContainer}>
+				<View>
+					<Text style={styles.labelStyle}>{props.label}</Text>
+					<View style={styles.inputContainer}>
+						<RNPickerSelect
+							style={pickerSelectStyles}
+							useNativeAndroidPickerStyle={false}
+							onValueChange={(value) => console.log(value)}
+							value={''}
+							items={[
+								{ label: '선택', value: '' },
+								{ label: '축구', value: '축구' },
+								{ label: 'Baseball', value: 'baseball' },
+								{ label: 'Hockey', value: 'hockey' },
+							]}
+						/>
+					</View>
+				</View>
+				<View style={styles.selectImgContainer}>
+					<Image source={ICON.arrRight} style={styles.icon} />
+				</View>
+			</View>
+		</>
+	);
+
+	/* return (
 		<View style={styles.selectContainer}>
 			<View>
 				<Text style={styles.labelStyle}>{props.label}</Text>
@@ -40,7 +124,7 @@ export const CommonSelect: FC<Props> = (props) => {
 				<Image source={ICON.arrRight} style={styles.icon} />
 			</View>
 		</View>
-	);
+	); */
 };
 
 const styles = StyleSheet.create({

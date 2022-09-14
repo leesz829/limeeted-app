@@ -2,19 +2,22 @@ import * as React from 'react';
 import { View, Image, StyleSheet, Dimensions } from 'react-native';
 import type { FC } from 'react';
 import SpaceView from './SpaceView';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import { CommonText } from './CommonText';
-import { ColorType } from '@types';
+import { ColorType} from '@types';
 import { layoutStyle } from 'assets/styles/Styles';
 import Carousel from 'react-native-reanimated-carousel';
 
 const { width } = Dimensions.get('window');
 interface Props {
+	imgUrls?: {url: string}[];
+	profileName?: string;
+	age?: string;
 	isNew?: boolean;
 	status?: string;
 	onlyImg?: boolean;
-	num: number;
+	num?: number;
 }
 
 /**
@@ -25,25 +28,12 @@ interface Props {
  * @returns
  */
 export const ViualSlider: FC<Props> = (props) => {
-
-	console.log("props.num1111 :::: " + props.num);
-
-	let name = "김설현";
-	let age = "27";
-
-	if(props.num == 1) {
-		name = "김설현";
-		age = "27";
-	} else {
-		name = "조보아";
-		age = "30";
-	}
-
-
-	//const [data] = useState([{}, {}, {}, {}, {}, {}]);
-	const [data] = useState([{}]);
+	
 	const [currentIndex, setCurrentIndex] = useState(0);
 
+	useEffect(() => {
+		console.log('props ::: ' , props);
+	}, []);
 
 	return (
 		<SpaceView>
@@ -60,25 +50,31 @@ export const ViualSlider: FC<Props> = (props) => {
 			</View>
 
 			<View style={styles.pagingContainer}>
-				{data.map((_, index) => (
+				{
+				props.imgUrls &&
+				props.imgUrls.map((item, index) => (
 					<View style={styles.dotContainerStyle} key={'dot' + index}>
 						<View style={[styles.pagingDotStyle, index === currentIndex && styles.activeDot]} />
 					</View>
 				))}
 			</View>
 			<View>
-				<Carousel
-					onScrollEnd={(_, current) => setCurrentIndex(current)}
-					loop={false}
-					data={data}
-					width={width}
-					height={480}
-					renderItem={() => <RenderItem num={props.num} />}
-				/>
+				{
+					props.imgUrls &&
+					<Carousel
+						onScrollEnd={(_, current) => setCurrentIndex(current)}
+						loop={false}
+						data={props.imgUrls}
+						width={width}
+						height={480}
+						renderItem={(data) => <RenderItem imgUrl={data} />}
+					/>
+				}
+				
 				<View style={styles.viusalDescContainer}>
 					<SpaceView mb={8} viewStyle={[layoutStyle.row, layoutStyle.alignCenter]}>
 						<CommonText fontWeight={'700'} type={'h3'} color={ColorType.white}>
-							{name}, {age}
+							{props.profileName}, {props.age}
 						</CommonText>
 
 						{props.isNew && (
@@ -132,22 +128,17 @@ export const ViualSlider: FC<Props> = (props) => {
 	);
 };
 
-const RenderItem = (props : Props) => {
-
-	let imgUrl = "http://211.104.55.151:8080/uploads/profile/rn_image_picker_lib_temp_588375c0-b878-4887-993a-39ce54a84b40.jpg";
-	console.log("props.num :::: " + props.num);
-
-	if(props.num == 1) {
-		imgUrl = "http://211.104.55.151:8080/uploads/profile/rn_image_picker_lib_temp_588375c0-b878-4887-993a-39ce54a84b40.jpg";
-	} else {
-		imgUrl = "http://211.104.55.151:8080/uploads/profile/rn_image_picker_lib_temp_c82a4d9a-30eb-4196-9bac-fe86757a7c37.jpg";
-	}
+const RenderItem = (imgObj:any) => {
 
 	return (
-
 		<View>
 			{/* <Image source={IMAGE.main} style={styles.visualImage} /> */}
-			<Image source={{uri : imgUrl}} style={styles.visualImage} />
+			{
+				!imgObj.imgUrl.item.url ?
+				<Image source={{uri : 'http://211.104.55.151:8080/uploads/profile/rn_image_picker_lib_temp_6813179b-95c7-416c-84da-51ab9ca0dbc1.jpg'}} style={styles.visualImage} />
+				: <Image source={{uri : imgObj.imgUrl.item.url}} style={styles.visualImage} />
+			}
+			
 			{/* <Image source={{uri : 'http://211.104.55.151:8080/uploads/profile/rn_image_picker_lib_temp_6813179b-95c7-416c-84da-51ab9ca0dbc1.jpg'}} style={styles.visualImage} /> */}			
 		</View>
 	);

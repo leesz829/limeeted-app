@@ -11,12 +11,8 @@ import { MainProfileSlider } from 'component/MainProfileSlider';
 import { CommonBtn } from 'component/CommonBtn';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp, useNavigation } from '@react-navigation/native';
-import { jwt_token } from 'utils/properties';
-import { ColorType
-	, BottomParamList
-	, Interview
-	, UserInfo
-} from '@types';
+import { jwt_token, JWTdomain} from 'utils/properties';
+import { ColorType, BottomParamList, Interview, UserInfo, ProfileImg, FileInfo} from '@types';
 import axios from 'axios';
 
 /* ################################################################################################################
@@ -29,13 +25,12 @@ interface Props {
 }
 
 export const Matching = (props : Props) => {
-
-	const randomNum = Math.floor(Math.random() * (2 - 1 + 1)) + 1;
-
 	// 인터뷰 정보
 	const [interviews, setInterviews] = useState([Interview]);
 	// 회원정보
 	const [userInfo, setUserInfo] = useState(UserInfo);
+	// 회원 인상 정보
+	const [profileImgList, setProfileImgList] = useState([ProfileImg]);
 
 	const getUserInfo = async () => {
 		const result = await axios.post('http://192.168.35.131:8080/token/decode', {
@@ -56,6 +51,45 @@ export const Matching = (props : Props) => {
 		})
 		.catch(function (error) {
 			console.log('error ::: ' , error);
+		});
+	}
+
+	const getMatchProfileImg = async () => {
+		const result = await axios.post(JWTdomain() + '/file/selectLiveProfileImg', {
+			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
+		}
+		, { 
+			headers: {
+				'jwt-token' : String(await jwt_token())
+			}
+		})
+		.then(function (response) {
+			if(response.data.result_code != '0000'){	
+				return false;
+			}
+
+			let tmpProfileImgList = [ProfileImg];
+			let fileInfoList = [FileInfo]
+			fileInfoList = response.data.result;
+			
+			// CommonCode
+			fileInfoList.map(fileInfo => {
+				tmpProfileImgList.push({
+									url : JWTdomain() + fileInfo.file_path
+									, member_seq : fileInfo.member_seq
+									, name : fileInfo.name
+									, comment : fileInfo.comment
+									, age : fileInfo.age
+									, profile_type : fileInfo.profile_type
+				})
+
+				
+			});
+			tmpProfileImgList = tmpProfileImgList.filter(x => x.url);
+			setProfileImgList(tmpProfileImgList);
+		})
+		.catch(function (error) {
+			console.log('getFaceType error ::: ', error);
 		});
 	}
 
@@ -87,6 +121,9 @@ export const Matching = (props : Props) => {
 		// 유저 정보
 		getUserInfo()
 
+		// 프로필 이미지 정보
+		getMatchProfileImg();
+
 		// 인터뷰
 		setMemberInterview();
 	}, []);
@@ -97,7 +134,7 @@ export const Matching = (props : Props) => {
 		<>
 			<TopNavigation currentPath={'LIMEETED'} />
 			<ScrollView>
-				<ViualSlider num={randomNum} />
+				<ViualSlider isNew={true} onlyImg={true} imgUrls={profileImgList} profileName={profileImgList[0].name} age={profileImgList[0].age}/>
 
 				<SpaceView pt={48} viewStyle={styles.container}>
 					<SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>

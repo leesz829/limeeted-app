@@ -5,6 +5,9 @@ import { Color } from 'assets/styles/Color';
 import type { FC } from 'react';
 import { ScreenNavigationProp } from '@types';
 import { useNavigation } from '@react-navigation/native';
+import { Image, Alert } from 'react-native';
+import { ICON, IMAGE } from 'utils/imageUtils';
+
 
 interface Props {
 	currentPath: string;
@@ -36,6 +39,9 @@ const TopNavigation: FC<Props> = (props) => {
 				<Text style={[styles.tabText, currentNavi === 'LIMEETED' && styles.tabTextActive]}>
 					LIMEETED
 				</Text>
+
+				{/* <Image source={IMAGE.logoText} style={styles.logo1} resizeMode='contain' /> */}
+
 				{currentNavi === 'LIMEETED' && <View style={styles.activeDot} />}
 			</TouchableOpacity>
 			<TouchableOpacity
@@ -58,6 +64,7 @@ const TopNavigation: FC<Props> = (props) => {
 export default TopNavigation;
 
 const styles = StyleSheet.create({
+	logo1: { width: 105, height: 29 },
 	tabContainer: {
 		flexDirection: 'row',
 		paddingBottom: 16,

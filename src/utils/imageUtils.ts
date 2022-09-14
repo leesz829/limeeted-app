@@ -53,6 +53,8 @@ export const ICON = {
 
 export const IMAGE = {
 	logo: require('assets/img/logo.png'),
+	logoText: require('assets/img/logo_txt.png'),
+	logoMark: require('assets/img/logo_mark.png'),
 	kakaoBtn: require('assets/img/kakao-btn.png'),
 	main: require('assets/img/main.png'),
 	common: require('assets/img/common.png'),

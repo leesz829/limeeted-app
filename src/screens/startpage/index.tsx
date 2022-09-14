@@ -19,11 +19,11 @@ const Startpage = () => {
 				<Image style={style.pageImg} source={START_IMAGE.view1} resizeMode={'contain'} />
 				<Text style={style.title}>TITLE_00</Text>
 			</TouchableOpacity>
-			<TouchableOpacity style={style.pages} onPress={() => navigation.navigate('Signup0')}>
+			<TouchableOpacity style={style.pages} onPress={() => navigation.navigate('Signup00')}>
 				<Image style={style.pageImg} source={START_IMAGE.view2} resizeMode={'contain'} />
 				<Text style={style.title}>signUP_00</Text>
 			</TouchableOpacity>
-			<TouchableOpacity style={style.pages} onPress={() => navigation.navigate('Signup1')}>
+			<TouchableOpacity style={style.pages} onPress={() => navigation.navigate('Signup01')}>
 				<Image style={style.pageImg} source={START_IMAGE.view3} resizeMode={'contain'} />
 				<Text style={style.title}>signUP_01</Text>
 			</TouchableOpacity>

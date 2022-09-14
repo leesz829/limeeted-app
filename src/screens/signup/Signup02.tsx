@@ -29,6 +29,12 @@ interface Props {
 export const Signup02 = (props : Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 
+	const [orgImgUrl01, setOrgImgUrl01] = React.useState<any>(null);
+	const [orgImgUrl02, setOrgImgUrl02] = React.useState<any>(null);
+	const [orgImgUrl03, setOrgImgUrl03] = React.useState<any>(null);
+	const [orgImgUrl04, setOrgImgUrl04] = React.useState<any>(null);
+	const [orgImgUrl05, setOrgImgUrl05] = React.useState<any>(null);
+
 	const imgFileData01 = { uri : "", fileName : "", type : "" }
 	const imgFileData02 = { uri : "", fileName : "", type : "" }
 	const imgFileData03 = { uri : "", fileName : "", type : "" }
@@ -67,6 +73,43 @@ export const Signup02 = (props : Props) => {
 		imgFileData05.uri = uri; imgFileData05.fileName = fileName;	imgFileData05.type = type;
 	};
 
+
+
+	/*
+	 * 최초 실행
+	 */
+	React.useEffect(() => {
+
+		// 회원 이미지 정보 조회
+		axios.post('http://211.104.55.151:8080/join/selectMemberImage/', {
+			member_seq : props.route.params.memberSeq
+		})
+		.then(function (response) {
+			console.log("response ::: " + JSON.stringify(response.data));
+	
+			if(null != response.data.imgList) {
+				console.log("imgList ::: ", response.data.imgList);
+	
+				response.data?.imgList?.map(({ order_seq, file_name, file_path }: { order_seq: any, file_name: any, file_path: any }) => {
+					console.log("file_name ::: ", file_name);
+					console.log("file_path ::: ", file_path);
+
+					const localDomain = 'http://211.104.55.151:8080/uploads';
+
+					if(order_seq == '1') { setOrgImgUrl01(localDomain + file_path + file_name); }
+					else if(order_seq == '2') { setOrgImgUrl02(localDomain + file_path + file_name); }
+					else if(order_seq == '3') { setOrgImgUrl03(localDomain + file_path + file_name); }
+					else if(order_seq == '4') { setOrgImgUrl04(localDomain + file_path + file_name); }
+					else if(order_seq == '5') { setOrgImgUrl05(localDomain + file_path + file_name); }
+				});
+			}
+		})
+		.catch(function (error) {
+			console.log(error);
+		});
+
+	}, []);
+
 	return (
 		<>
 			<CommonHeader title={'근사한 프로필 만들기'} />
@@ -80,25 +123,25 @@ export const Signup02 = (props : Props) => {
 
 				<SpaceView mb={48} viewStyle={styles.halfContainer}>
 					<View style={styles.halfItemLeft}>
-						<ImagePicker isBig={true} callbackFn={fileCallBack1} />
+						<ImagePicker isBig={true} callbackFn={fileCallBack1} uriParam={orgImgUrl01} />
 					</View>
 
 					<View style={styles.halfItemRight}>
 						<SpaceView mb={16} viewStyle={layoutStyle.row}>
 							<SpaceView mr={8}>
-								<ImagePicker isBig={false} callbackFn={fileCallBack2} />
+								<ImagePicker isBig={false} callbackFn={fileCallBack2} uriParam={orgImgUrl02} />
 							</SpaceView>
 							<SpaceView ml={8}>
-								<ImagePicker isBig={false} callbackFn={fileCallBack2} />
+								<ImagePicker isBig={false} callbackFn={fileCallBack3} uriParam={orgImgUrl03} />
 							</SpaceView>
 						</SpaceView>
 
 						<SpaceView viewStyle={layoutStyle.row}>
 							<SpaceView mr={8}>
-								<ImagePicker isBig={false} callbackFn={fileCallBack2} />
+								<ImagePicker isBig={false} callbackFn={fileCallBack4} uriParam={orgImgUrl04} />
 							</SpaceView>
 							<SpaceView ml={8}>
-								<ImagePicker isBig={false} callbackFn={fileCallBack2} />
+								<ImagePicker isBig={false} callbackFn={fileCallBack5} uriParam={orgImgUrl05} />
 							</SpaceView>
 						</SpaceView>
 					</View>
@@ -169,9 +212,9 @@ export const Signup02 = (props : Props) => {
 									if(imgFileData04.uri != "" && typeof imgFileData04.uri != "undefined") {	data.append("file04", file04); }
 									if(imgFileData05.uri != "" && typeof imgFileData05.uri != "undefined") {	data.append("file05", file05); }
 
-									console.log(data);
+									console.log("data :::: ", data);
 
-									fetch('http://211.104.55.151:8080/member/insertMemberProfile/', {
+									fetch('http://211.104.55.151:8080/join/insertMemberProfile/', {
 										method: 'POST',
 										body: data,
 									})
