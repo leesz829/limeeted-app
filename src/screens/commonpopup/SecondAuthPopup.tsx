@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
+import type { FC, useState, useEffect } from 'react';
 import { Image, TouchableOpacity, View } from 'react-native';
 import { Modalize } from 'react-native-modalize';
-import type { FC, useState, useEffect } from 'react';
 import CommonHeader from 'component/CommonHeader';
 import { layoutStyle, modalStyle, styles } from 'assets/styles/Styles';
 import { CommonText } from 'component/CommonText';

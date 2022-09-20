@@ -93,10 +93,11 @@ export const styles = StyleSheet.create({
 	halfItemLeft4: { flex: 1, marginRight: 4, overflow: 'visible', zIndex: 1 },
 	halfItemRight4: { flex: 1, marginLeft: 4, overflow: 'visible', zIndex: 2 },
 	halfItemLeft: {
-		flex: 1,
+		//flex: 1,
 		marginRight: 8,
 		overflow: 'visible',
 		zIndex: 1,
+		width: (width - 40) / 2
 	},
 	halfItemRight: {
 		flex: 1,
@@ -258,6 +259,11 @@ export const styles = StyleSheet.create({
 		height: 64,
 		borderRadius: 32,
 		backgroundColor: Color.grayEEEE,
+	},
+	circleBoxImg: {
+		width: 64,
+		height: 64,
+		borderRadius: 32,
 	},
 	whiteCircleBox30: {
 		backgroundColor: 'rgba(255,255,255,0.3)',

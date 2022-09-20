@@ -41,12 +41,23 @@ export const Roby = (props : Props) => {
 		gender : String,
 		age : String,
 		comment : '',
-		mst_img_path : ImagePropTypes,
+		mst_img_path : '',
 		profile_tier : String
 	});
 
+	// 새 관심 목록
+	const [resLikeCnt, setResLikeCnt] = React.useState<any>();
+	const [resLikeList, setResLikeList] = React.useState([{
+		req_member_seq : String,
+		img_path : ''
+	}]);
+
+
+
+
+
 	const getMemberInfo = async () => {
-		AsyncStorage.getItem('member_info', (err, result) => {
+		AsyncStorage.getItem('member_info', (err, result : any) => {
 			const member = JSON.parse(result);
 			//console.log('member ::: ', member);
 
@@ -64,7 +75,6 @@ export const Roby = (props : Props) => {
 
 	// 첫 렌더링 때 fetchNews() 한 번 실행
 	React.useEffect(() => {
-		console.log('aslkdmsalkdmaslkdmalsdmsakdml');
 
 		//getMemberInfo();
 		selectMemberInfo();
@@ -74,7 +84,7 @@ export const Roby = (props : Props) => {
 	// 회원 정보 조회
 	const selectMemberInfo = async () => {
 
-		const result = await axios.post('http://211.104.55.151:8080/member/selectMemberInfo', {
+		const result = await axios.post(api_domain + '/member/selectMemberInfo', {
 			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
 			, 'member_seq' : String(await properties.get_json_data('member_seq'))
 		}
@@ -84,7 +94,7 @@ export const Roby = (props : Props) => {
 			}
 		})
 		.then(function (response) {
-			console.log("selectMemberInfo :::: ", response.data.resLikeList);
+			console.log("resLikeList :::: ", response.data.resLikeList);
 			
 			if(response.data.result_code != '0000'){
 				console.log(response.data.result_msg);
@@ -106,16 +116,29 @@ export const Roby = (props : Props) => {
 				});
 
 				setMemberInfo(member);
-			}
 
-			//setUserInfo(response.data.result);
+				// 관심 목록 셋팅
+				let resLikeDataList = new Array();
+				response.data?.resLikeList?.map(({ req_member_seq, file_name, file_path }: { req_member_seq: any, file_name: any, file_path: any }) => {
+					console.log("req_member_seq ::: ", req_member_seq);
+
+					const img_path = properties.api_domain + '/uploads' + file_path + file_name;
+					const resLikeDataJson = { req_member_seq : String, img_path : '' };
+
+					resLikeDataJson.req_member_seq(req_member_seq);
+					resLikeDataJson.img_path = img_path;
+
+					resLikeDataList.push(resLikeDataJson);
+				});
+				setResLikeList(resLikeDataList);
+				setResLikeCnt(resLikeDataList.length);
+
+			}
 		})
 		.catch(function (error) {
 			console.log('error ::: ' , error);
 		});
 	}
-
-	//console.log('age1111 ::: ', String(properties.get_json_data('age')));
 
 	return (
 		<>
@@ -226,25 +249,27 @@ export const Roby = (props : Props) => {
 								보관함
 							</CommonText>
 						</SpaceView>
+
 						<View style={styles.rowStyle}>
 							<CommonText fontWeight={'500'}>
 								새 관심
-								<CommonText color={ColorType.primary}> 0</CommonText>건
+								<CommonText color={ColorType.primary}> {resLikeCnt}</CommonText>건
 							</CommonText>
-
-							<Image source={ICON.arrRight} style={styles.iconSize} />
+							<TouchableOpacity onPress={() => {
+													navigation.navigate('Main', { 
+														screen: 'Storage'
+													});
+												}}>
+								<Image source={ICON.arrRight} style={styles.iconSize} />
+							</TouchableOpacity>						
 						</View>
 
 						<ScrollView horizontal={true}>
-							<SpaceView viewStyle={styles.circleBox} mr={16} />
-							<SpaceView viewStyle={styles.circleBox} mr={16} />
-							<SpaceView viewStyle={styles.circleBox} mr={16} />
-							<SpaceView viewStyle={styles.circleBox} mr={16} />
-							<SpaceView viewStyle={styles.circleBox} mr={16} />
-							<SpaceView viewStyle={styles.circleBox} mr={16} />
-							<SpaceView viewStyle={styles.circleBox} mr={16} />
-							<SpaceView viewStyle={styles.circleBox} mr={16} />
-							<SpaceView viewStyle={styles.circleBox} />
+							{resLikeList.map(({ img_path }: { img_path: string }) => (
+								<SpaceView viewStyle={styles.circleBox} mr={16}>
+									<Image source={{ uri: img_path !== "" ? img_path : undefined }} style={styles.circleBoxImg} />
+								</SpaceView>
+							))}
 						</ScrollView>
 					</SpaceView>
 
