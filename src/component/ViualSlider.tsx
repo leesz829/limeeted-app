@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Image, StyleSheet, Dimensions } from 'react-native';
+import { View, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import type { FC } from 'react';
 import SpaceView from './SpaceView';
 import { useState, useEffect } from 'react';
@@ -14,10 +14,12 @@ interface Props {
 	imgUrls?: {url: string}[];
 	profileName?: string;
 	age?: string;
-	isNew?: boolean;
 	status?: string;
+	comment?: string;
+	isNew?: boolean;
 	onlyImg?: boolean;
 	num?: number;
+	callBackFunction?: (activeType:string) => void;
 }
 
 /**
@@ -31,9 +33,11 @@ export const ViualSlider: FC<Props> = (props) => {
 	
 	const [currentIndex, setCurrentIndex] = useState(0);
 
-	useEffect(() => {
-		console.log('props ::: ' , props);
-	}, []);
+	const callBackFunction = (activeType:string) => {
+		console.log('activeType ::: ', activeType);
+
+		props.callBackFunction && props.callBackFunction(activeType);
+	}
 
 	return (
 		<SpaceView>
@@ -93,7 +97,7 @@ export const ViualSlider: FC<Props> = (props) => {
 						{props.onlyImg ? (
 							<></>
 						) : (
-							<CommonText color={ColorType.white}>한줄 소개 내용이 출력됩니다</CommonText>
+							<CommonText color={ColorType.white}>{props.comment}</CommonText>
 						)}
 					</SpaceView>
 
@@ -101,12 +105,16 @@ export const ViualSlider: FC<Props> = (props) => {
 						<></>
 					) : (
 						<View style={layoutStyle.rowBetween}>
-							<View style={styles.useActionBoxSmall}>
-								<Image source={ICON.close} style={[styles.iconSize32]} />
+							<View style={styles.useActionBoxSmall} >
+								<TouchableOpacity onPress={() => callBackFunction('pass')}>
+									<Image source={ICON.close} style={[styles.iconSize32]} />
+								</TouchableOpacity>
 							</View>
 							<View style={styles.useActionBox}>
 								<SpaceView mr={4}>
-									<Image source={ICON.royalpass} style={styles.iconSize32} />
+									<TouchableOpacity onPress={() => callBackFunction('sincere')}>
+										<Image source={ICON.royalpass} style={styles.iconSize32} />
+									</TouchableOpacity>
 								</SpaceView>
 								<CommonText fontWeight={'700'} type={'h6'} color={ColorType.white}>
 									찐심
@@ -114,7 +122,9 @@ export const ViualSlider: FC<Props> = (props) => {
 							</View>
 							<View style={styles.useActionBox}>
 								<SpaceView mr={4}>
-									<Image source={ICON.like} style={styles.iconSize32} />
+									<TouchableOpacity onPress={() => callBackFunction('interest')}>
+										<Image source={ICON.like} style={styles.iconSize32} />
+									</TouchableOpacity>
 								</SpaceView>
 								<CommonText fontWeight={'700'} type={'h6'} color={ColorType.white}>
 									관심

@@ -11,71 +11,176 @@ import { MainProfileSlider } from 'component/MainProfileSlider';
 import { CommonBtn } from 'component/CommonBtn';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp, useNavigation } from '@react-navigation/native';
-import { jwt_token, JWTdomain} from 'utils/properties';
-import { ColorType, BottomParamList, Interview, UserInfo, ProfileImg, FileInfo} from '@types';
+import { jwt_token, api_domain} from 'utils/properties';
+import { ColorType, BottomParamList, Interview, ProfileImg, FileInfo, MemberData} from '@types';
 import axios from 'axios';
 
 /* ################################################################################################################
 매칭
 ###################ttt############################################################################################# */
-
 interface Props {
 	navigation : StackNavigationProp<BottomParamList, 'Roby'>;
 	route : RouteProp<BottomParamList, 'Roby'>;
 }
 
 export const Matching = (props : Props) => {
+	
+	// 매치 회원 정보
+	const [matchMemberData, setMatchMemberData] = useState(MemberData);
 	// 인터뷰 정보
-	const [interviews, setInterviews] = useState([Interview]);
-	// 회원정보
-	const [userInfo, setUserInfo] = useState(UserInfo);
+	const [interviewList, setInterviewList] = useState([Interview]);
+	// 2차인증 정보 
+	const [secondAuthList, setSecondAuthList] = useState([{'second_auth_code':''}]);
 	// 회원 인상 정보
 	const [profileImgList, setProfileImgList] = useState([ProfileImg]);
 
-	const getUserInfo = async () => {
-		const result = await axios.post('http://192.168.35.131:8080/token/decode', {
+	// 관심 여부 체크
+	const profileCallbackFn = (activeType:string) => {
+		// pass : 거부, sincere : 찐심, interest : 관심
+		console.log('profileCallbackFn ::: ', activeType);
+
+		insertMatchInfo(activeType);
+	}
+
+	const insertMatchInfo = async (activeType:string) => {
+		const result = await axios.post(api_domain + '/match/selectMatchProfileInfo', {
 			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
 		}
 		, {
 			headers: {
-				'jwt-token' : String(await jwt_token())
+				'jwt-token' : String(await jwt_token()) 
 			}
 		})
 		.then(function (response) {
-			console.log('response ::: ', response);
-			
 			if(response.data.result_code != '0000'){
 				console.log(response.data.result_msg);
 				return false;
 			}
+
+			// 1. 매칭 회원 정보
+			setMatchMemberData(response.data.result.match_memeber_info);
+
 		})
 		.catch(function (error) {
-			console.log('error ::: ' , error);
+			console.log('getMatchProfileInfo error ::: ' , error);
 		});
 	}
 
-	const getMatchProfileImg = async () => {
-		const result = await axios.post(JWTdomain() + '/file/selectLiveProfileImg', {
+	const createSecondAuthListBody = () => {
+		console.log('createSecondAuthListBody secondAuthList ::: ' ,secondAuthList);
+
+		// 자산
+		let asset = false;
+		// 학업
+		let edu = false;
+		// 소득
+		let income = false;
+		// 직업
+		let job = false;
+		// sns
+		let sns = false;
+		// 차량
+		let vehice = false;
+
+		secondAuthList.forEach((e, i) => {
+
+			console.log(i, e);
+
+			switch(e.second_auth_code) {
+				case 'ASSET':
+					asset = true;
+					break;
+				case 'EDU':
+					edu = true;
+					break;
+				case 'INCOME':
+					income = true;
+					break;
+				case 'JOB':
+					job = true;
+					break;
+				case 'SNS':
+					sns = true;
+					break;
+				case 'VEHICE':
+					vehice = true;
+					break;
+			}
+		})
+
+		return (
+			<SpaceView mb={48}>
+				<SpaceView viewStyle={[layoutStyle.rowBetween]} mb={16}>
+					<View style={styles.profileBox}>
+						<Image source={ICON.job} style={styles.iconSize48} />
+						<CommonText type={'h5'}>직업</CommonText>
+						{!asset && <View style={styles.disabled} />} 
+					</View>
+					<View style={styles.profileBox}>
+						<Image source={ICON.degree} style={styles.iconSize48} />
+						<CommonText type={'h5'}>학위</CommonText>
+						{!edu && <View style={styles.disabled} />} 
+					</View>
+					<View style={styles.profileBox}>
+						<Image source={ICON.income} style={styles.iconSize48} />
+						<CommonText type={'h5'}>소득</CommonText>
+						{!income && <View style={styles.disabled} />} 
+					</View>
+				</SpaceView>
+
+				<View style={[layoutStyle.rowBetween]}>
+					<View style={styles.profileBox}>
+						<Image source={ICON.asset} style={styles.iconSize48} />
+						<CommonText type={'h5'}>자산</CommonText>
+						{!job && <View style={styles.disabled} />} 
+					</View>
+					<View style={styles.profileBox}>
+						<Image source={ICON.sns} style={styles.iconSize48} />
+						<CommonText type={'h5'}>SNS</CommonText>
+						{!sns && <View style={styles.disabled} />} 
+					</View>
+					<View style={styles.profileBox}>
+						<Image source={ICON.vehicle} style={styles.iconSize48} />
+						<CommonText type={'h5'}>차량</CommonText>
+						{!vehice && <View style={styles.disabled} />} 
+					</View>
+				</View>
+			</SpaceView>
+		);
+	}
+
+	const getMatchProfileInfo = async () => {
+
+		console.log('interviewList 11 ::: ' ,interviewList);
+
+		const result = await axios.post(api_domain + '/match/selectMatchProfileInfo', {
 			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
 		}
-		, { 
+		, {
 			headers: {
-				'jwt-token' : String(await jwt_token())
+				'jwt-token' : String(await jwt_token()) 
 			}
 		})
 		.then(function (response) {
-			if(response.data.result_code != '0000'){	
+			if(response.data.result_code != '0000'){
+				console.log(response.data.result_msg);
 				return false;
 			}
 
+			// 1. 매칭 회원 정보
+			setMatchMemberData(response.data.result.match_memeber_info);
+
+			// 2. 프로필 이미지
+			// match_profile_img
+			console.log('profile_img_list ::: ', response.data.result.profile_img_list);
 			let tmpProfileImgList = [ProfileImg];
 			let fileInfoList = [FileInfo]
-			fileInfoList = response.data.result;
+			fileInfoList = response.data.result.profile_img_list;
 			
 			// CommonCode
 			fileInfoList.map(fileInfo => {
 				tmpProfileImgList.push({
-									url : JWTdomain() + fileInfo.file_path
+									url : api_domain + fileInfo.file_path
 									, member_seq : fileInfo.member_seq
 									, name : fileInfo.name
 									, comment : fileInfo.comment
@@ -87,45 +192,24 @@ export const Matching = (props : Props) => {
 			});
 			tmpProfileImgList = tmpProfileImgList.filter(x => x.url);
 			setProfileImgList(tmpProfileImgList);
+
+			// 2차인증
+			setSecondAuthList(response.data.result.second_auth_list);
+			
+			// 인터뷰 
+			setInterviewList(response.data.result.interview_list);
+			
+			console.log('interviewList 22 ::: ' ,interviewList);
 		})
 		.catch(function (error) {
-			console.log('getFaceType error ::: ', error);
+			console.log('getMatchProfileInfo error ::: ' , error);
 		});
 	}
 
-		
-	const setMemberInterview = async () => {
-		// interview param
-		const result = await axios.post('http://192.168.35.131:8080/member/interview', {
-			'api-key' : 'U0FNR09CX01FTUJFUl8wMw=='
-		}
-		, {
-			headers: {
-				'jwt-token' : String(await jwt_token())
-			}
-		})
-		.then(function (response) {
-			if(response.data.result_code != '0000'){
-				console.log('오류... TODO: 오류 팝업 확인 필요');
-				return false;
-			}
-			setInterviews(response.data.result);
-		})
-		.catch(function (error) {
-			console.log('error ::: ' , error);
-		});
-	}
-
-	// 첫 렌더링 때 fetchNews() 한 번 실행
+	// 첫 렌더링
 	useEffect(() => {
-		// 유저 정보
-		getUserInfo()
-
-		// 프로필 이미지 정보
-		getMatchProfileImg();
-
-		// 인터뷰
-		setMemberInterview();
+		// 프로필 정보 조회
+		getMatchProfileInfo();
 	}, []);
 
 
@@ -134,7 +218,14 @@ export const Matching = (props : Props) => {
 		<>
 			<TopNavigation currentPath={'LIMEETED'} />
 			<ScrollView>
-				<ViualSlider isNew={true} onlyImg={true} imgUrls={profileImgList} profileName={profileImgList[0].name} age={profileImgList[0].age}/>
+				{profileImgList.length && <ViualSlider 
+											isNew={profileImgList[0].profile_type=='NEW'?true:false} 
+											onlyImg={false}
+											imgUrls={profileImgList}
+											profileName={profileImgList[0].name}
+											age={profileImgList[0].age}
+											comment={profileImgList[0].comment}
+											callBackFunction={profileCallbackFn} />}
 
 				<SpaceView pt={48} viewStyle={styles.container}>
 					<SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
@@ -146,49 +237,14 @@ export const Matching = (props : Props) => {
 						<View style={[layoutStyle.rowBetween]}>
 							<View style={styles.statusBtn}>
 								<CommonText type={'h6'} color={ColorType.white}>
-									TIER 4
+									TIER {secondAuthList && secondAuthList.length}
 								</CommonText>
 							</View>
 							<Image source={ICON.medalAll} style={styles.iconSize32} />
 						</View>
 					</SpaceView>
 
-					<SpaceView mb={48}>
-						<SpaceView viewStyle={[layoutStyle.rowBetween]} mb={16}>
-							<View style={styles.profileBox}>
-								<Image source={ICON.job} style={styles.iconSize48} />
-								<CommonText type={'h5'}>직업</CommonText>
-							</View>
-
-							<View style={styles.profileBox}>
-								<Image source={ICON.degree} style={styles.iconSize48} />
-								<CommonText type={'h5'}>학위</CommonText>
-							</View>
-
-							<View style={styles.profileBox}>
-								<Image source={ICON.income} style={styles.iconSize48} />
-								<CommonText type={'h5'}>소득</CommonText>
-							</View>
-						</SpaceView>
-
-						<View style={[layoutStyle.rowBetween]}>
-							<View style={styles.profileBox}>
-								<Image source={ICON.asset} style={styles.iconSize48} />
-								<CommonText type={'h5'}>자산</CommonText>
-							</View>
-
-							<View style={styles.profileBox}>
-								<Image source={ICON.sns} style={styles.iconSize48} />
-								<CommonText type={'h5'}>SNS</CommonText>
-								<View style={styles.disabled} />
-							</View>
-
-							<View style={styles.profileBox}>
-								<Image source={ICON.vehicle} style={styles.iconSize48} />
-								<CommonText type={'h5'}>차량</CommonText>
-							</View>
-						</View>
-					</SpaceView>
+					{secondAuthList && createSecondAuthListBody()}
 
 					<SpaceView mb={54}>
 						<SpaceView mb={16}>
@@ -214,10 +270,10 @@ export const Matching = (props : Props) => {
 								</SpaceView>
 								<CommonText type={'h5'}>
 									{
-										interviews != null? 
+										interviewList.length? 
 											<>
 											<CommonText fontWeight={'700'} type={'h5'}>
-												{interviews.length}개의 질의
+												{interviewList.length}개의 질의
 											</CommonText>
 											가 등록되어있어요
 											</>
@@ -234,8 +290,33 @@ export const Matching = (props : Props) => {
 						</SpaceView>
 						<View style={styles.interviewContainer}>
 							{
-							interviews != null ?
-								interviews.map(interview => (
+								interviewList.length ?
+									interviewList.map(interview => (
+										<>
+										<SpaceView mb={32} viewStyle={layoutStyle.row}>
+											<SpaceView mr={16}>
+												<Image source={ICON.manage} style={styles.iconSize40} />
+											</SpaceView>
+
+											<View style={styles.interviewLeftTextContainer}>
+												<CommonText type={'h5'}>
+													{interview.code_name}
+												</CommonText>
+											</View>
+										</SpaceView>
+
+										<SpaceView mb={32} viewStyle={[layoutStyle.row, layoutStyle.selfEnd]}>
+											<SpaceView viewStyle={styles.interviewRightTextContainer} mr={16}>
+												<CommonText type={'h5'} color={ColorType.white}>
+													{interview.answer}
+												</CommonText>
+											</SpaceView>
+											<SpaceView>
+												<Image source={ICON.boy} style={styles.iconSize40} />
+											</SpaceView>
+										</SpaceView>
+										</>
+									)) :
 									<>
 									<SpaceView mb={32} viewStyle={layoutStyle.row}>
 										<SpaceView mr={16}>
@@ -244,36 +325,11 @@ export const Matching = (props : Props) => {
 
 										<View style={styles.interviewLeftTextContainer}>
 											<CommonText type={'h5'}>
-												{interview.code_name}
+												질문을 등록해주세요
 											</CommonText>
 										</View>
 									</SpaceView>
-
-									<SpaceView mb={32} viewStyle={[layoutStyle.row, layoutStyle.selfEnd]}>
-										<SpaceView viewStyle={styles.interviewRightTextContainer} mr={16}>
-											<CommonText type={'h5'} color={ColorType.white}>
-												{interview.answer}
-											</CommonText>
-										</SpaceView>
-										<SpaceView>
-											<Image source={ICON.boy} style={styles.iconSize40} />
-										</SpaceView>
-									</SpaceView>
 									</>
-								)) :
-								<>
-								<SpaceView mb={32} viewStyle={layoutStyle.row}>
-									<SpaceView mr={16}>
-										<Image source={ICON.manage} style={styles.iconSize40} />
-									</SpaceView>
-
-									<View style={styles.interviewLeftTextContainer}>
-										<CommonText type={'h5'}>
-											질문을 등록해주세요
-										</CommonText>
-									</View>
-								</SpaceView>
-								</>
 							}
 						</View>
 					</SpaceView>

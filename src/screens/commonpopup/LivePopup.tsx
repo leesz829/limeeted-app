@@ -41,7 +41,6 @@ export const LivePopup: FC<Props> = (props) => {
 		<Modalize
 			ref={modalizeRef}
 			adjustToContentHeight={true}
-			overlayStyle = {modalStyle.modalOverlayStyle}
 			handleStyle={modalStyle.modalHandleStyle}
 			modalStyle={modalStyle.modalContainer}
 			closeOnOverlayTap={false}

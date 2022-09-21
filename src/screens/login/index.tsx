@@ -8,6 +8,7 @@ import { View, Image, Alert } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import { useNavigation } from '@react-navigation/native';
 import { AsyncStorage } from 'react-native';
+import { api_domain } from 'utils/properties';
 //import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 import {
@@ -25,9 +26,8 @@ export const Login = () => {
 	const [kakaoResult, setKakaoResult] = React.useState('');
 	
 	const signInWithKakao = async () => {
-
 		/* ### 실 버전 */
-		//const profile11 = await getKakaoProfile();
+		// const profile11 = await getKakaoProfile();
 		// console.log(profile11);
 
 		/* ### 테스트 버전 */
@@ -40,16 +40,14 @@ export const Login = () => {
 			hp : '010-1234-5678'
 		};
 
-		console.log('profile :: ' , profile);
-
+		console.log('profile11  :: ' , profile);
 		//setKakaoResult(JSON.stringify(token));
 
-		axios.post('http://211.104.55.151:8080/join/getKakaoIdchk/', {
+		axios.post(api_domain + '/join/getKakaoIdchk/', {
 			kakaoId : profile.id
 		})
 		.then(function (response) {
 			console.log("response.data ::: ", response.data);
-
 			const resultCode = response.data.result_code;
 			const status = response.data.status;
 
