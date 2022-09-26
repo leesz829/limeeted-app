@@ -70,7 +70,7 @@ export const Profile1 = (props : Props) => {
 	// 회원 이미지 정보 조회
 	const getMemberImage = async () => {
 
-		const result = await axios.post('http://211.104.55.151:8080/join/selectMemberImage', {
+		const result = await axios.post(properties.api_domain + '/join/selectMemberImage', {
 			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
 			, 'member_seq' : String(await properties.get_json_data('member_seq'))
 		}
@@ -89,7 +89,7 @@ export const Profile1 = (props : Props) => {
 					console.log("file_name ::: ", file_name);
 					console.log("file_path ::: ", file_path);
 
-					const localDomain = 'http://211.104.55.151:8080/uploads';
+					const localDomain = properties.api_domain + '/uploads';
 
 					if(order_seq == '1') { setOrgImgUrl01(localDomain + file_path + file_name); }
 					else if(order_seq == '2') { setOrgImgUrl02(localDomain + file_path + file_name); }
@@ -125,7 +125,7 @@ export const Profile1 = (props : Props) => {
 
 		console.log("data :::: ", data);
 
-		const result = await fetch('http://211.104.55.151:8080/join/insertMemberProfile/', {
+		const result = await fetch(properties.api_domain + '/join/insertMemberProfile/', {
 			method: 'POST',
 			body: data,
 		})
