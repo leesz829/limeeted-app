@@ -1,23 +1,25 @@
 import { ColorType, StackParamList, BottomParamList, ScreenNavigationProp} from '@types';
 import { useState, useEffect} from 'react';
-import { layoutStyle, styles } from 'assets/styles/Styles';
+import { layoutStyle, modalStyle, styles } from 'assets/styles/Styles';
 import { CommonBtn } from 'component/CommonBtn';
 import { CommonSwich } from 'component/CommonSwich';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import { ToolTip } from 'component/Tooltip';
 import TopNavigation from 'component/TopNavigation';
-import * as React from 'react';
+import React, { useRef } from 'react';
 import { Image, ScrollView, View, TouchableOpacity, ImagePropTypes } from 'react-native';
 import { ICON, IMAGE, PROFILE_IMAGE } from 'utils/imageUtils';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { Modalize } from 'react-native-modalize';
 import { RouteProp, useNavigation } from '@react-navigation/native';
 import { MemberData } from '@types';
 import * as properties from 'utils/properties';
 import axios from 'axios';
-//import AsyncStorage from '@react-native-community/async-storage';
 import { AsyncStorage } from 'react-native';
 import { api_domain } from 'utils/properties';
+import { Preference } from 'screens/commonpopup/Preference';
+
 
 /* ################################################################################################################
 ###### 로비
@@ -31,54 +33,24 @@ interface Props {
 export const Roby = (props : Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 
-	// 회원 번호
-	const [memberSeq, setMemberSeq] = React.useState('');
-
-	// 회원 정보
-	const [memberInfo, setMemberInfo] = React.useState<any>(MemberData);
-	const [memberInfo2, setMemberInfo2] = React.useState({
-		nickname : String,
-		gender : String,
-		age : String,
-		comment : '',
-		mst_img_path : '',
-		profile_tier : String
+	// 회원 데이터
+	const [member, setMember] = React.useState({
+		base : MemberData
+		, resLikeCnt : Number
+		, resLikeList : [{
+			req_member_seq : String,
+			img_path : ''
+		}]
+		, matchCnt : Number
+		, matchList : [{
+			trgt_member_seq : String,
+			img_path : ''
+		}]
 	});
 
-	// 새 관심 목록
-	const [resLikeCnt, setResLikeCnt] = React.useState<any>();
-	const [resLikeList, setResLikeList] = React.useState([{
-		req_member_seq : String,
-		img_path : ''
-	}]);
-
-
-
-
-
-	const getMemberInfo = async () => {
-		AsyncStorage.getItem('member_info', (err, result : any) => {
-			const member = JSON.parse(result);
-			//console.log('member ::: ', member);
-
-			setMemberInfo(member);
-			setMemberInfo2({
-				nickname : member.nickname,
-				gender : member.gender,
-				age : member.age,
-				comment : member.comment,
-				mst_img_path : member.mst_img_path,
-				profile_tier : member.profile_tier
-			})
-		});
-	}
-
-	// 첫 렌더링 때 fetchNews() 한 번 실행
+	// ###### 첫 렌더링 때 fetchNews() 한 번 실행
 	React.useEffect(() => {
-
-		//getMemberInfo();
 		selectMemberInfo();
-		
 	}, []);
 
 	// 회원 정보 조회
@@ -94,7 +66,7 @@ export const Roby = (props : Props) => {
 			}
 		})
 		.then(function (response) {
-			console.log("resLikeList :::: ", response.data.resLikeList);
+			console.log("response.data :::: ", response.data);
 			
 			if(response.data.result_code != '0000'){
 				console.log(response.data.result_msg);
@@ -102,6 +74,7 @@ export const Roby = (props : Props) => {
 			} else {
 				const member = JSON.parse(JSON.stringify(response.data));
 
+				// 회원 데이터 AsyncStorage 저장
 				AsyncStorage.clear();
 				AsyncStorage.setItem('jwt-token', response.data.token_param.jwt_token);
 				AsyncStorage.setItem('member_seq', String(response.data.member_seq));
@@ -115,30 +88,132 @@ export const Roby = (props : Props) => {
 					console.log("error is: " + err);
 				});
 
-				setMemberInfo(member);
-
 				// 관심 목록 셋팅
 				let resLikeDataList = new Array();
 				response.data?.resLikeList?.map(({ req_member_seq, file_name, file_path }: { req_member_seq: any, file_name: any, file_path: any }) => {
 					console.log("req_member_seq ::: ", req_member_seq);
 
 					const img_path = properties.api_domain + '/uploads' + file_path + file_name;
-					const resLikeDataJson = { req_member_seq : String, img_path : '' };
+					const dataJson = { req_member_seq : String, img_path : '' };
 
-					resLikeDataJson.req_member_seq(req_member_seq);
-					resLikeDataJson.img_path = img_path;
+					dataJson.req_member_seq(req_member_seq);
+					dataJson.img_path = img_path;
 
-					resLikeDataList.push(resLikeDataJson);
+					resLikeDataList.push(dataJson);
 				});
-				setResLikeList(resLikeDataList);
-				setResLikeCnt(resLikeDataList.length);
+				
+				// 매칭 목록 셋팅
+				let matchDataList = new Array();
+				response.data?.matchTrgtList?.map(({ trgt_member_seq, file_name, file_path }: { trgt_member_seq: any, file_name: any, file_path: any }) => {
+					console.log("trgt_member_seq ::: ", trgt_member_seq);
 
+					const img_path = properties.api_domain + '/uploads' + file_path + file_name;
+					const dataJson = { trgt_member_seq : String, img_path : '' };
+
+					dataJson.trgt_member_seq(trgt_member_seq);
+					dataJson.img_path = img_path;
+
+					matchDataList.push(dataJson);
+				});
+
+
+				setMember((value) => {
+					return {
+						...member
+						, base: member
+						, resLikeCnt: resLikeDataList.length
+						, resLikeList: resLikeDataList
+						, matchCnt: matchDataList.length
+						, matchList: matchDataList
+					}
+				});
+
+				/* setMember({
+					...member
+					, base: member
+					, resLikeCnt: resLikeDataList.length
+					, resLikeList: resLikeDataList
+					, matchCnt: matchDataList.length
+					, matchList: matchDataList
+				});
+ */
 			}
 		})
 		.catch(function (error) {
 			console.log('error ::: ' , error);
 		});
 	}
+
+
+	this.setMember({
+
+	});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	// 회원 정보 수정
+	const updateMemberInfo = async (type:string, value:string) => {
+
+		let matchYnParam = '';
+		let friendMatchParam = '';
+
+		let dataJson = {};
+
+		/*
+		 * 01 : 내 프로필 공개 
+		 * 02 : 아는 사람 소개
+		 */
+		if(type == '01') {
+			matchYnParam = value;
+			friendMatchParam = member.base.friend_match_yn;
+
+			dataJson = {
+				'api-key' : 'U0FNR09CX1RPS0VOXzAx'
+				, 'member_seq' : String(await properties.get_json_data('member_seq'))
+				, 'match_yn' : matchYnParam
+			}
+		} else {
+			matchYnParam = member.base.match_yn;
+			friendMatchParam = value;
+
+			dataJson = {
+				'api-key' : 'U0FNR09CX1RPS0VOXzAx'
+				, 'member_seq' : String(await properties.get_json_data('member_seq'))
+				, 'friend_match_yn' : friendMatchParam
+			}
+		}
+
+		const result = await axios.post(api_domain + '/member/updateMemberBase', dataJson
+		, {
+			headers: {
+				'jwt-token' : String(await properties.jwt_token())
+			}
+		})
+		.then(function (response) {
+			console.log("response.data :::: ", response.data);
+		})
+		.catch(function (error) {
+			console.log('error ::: ' , error);
+		});
+	}
+
+	// 내 선호 이성 Pop
+	const ideal_modalizeRef = useRef<Modalize>(null);
+	const ideal_onOpen = () => { ideal_modalizeRef.current?.open(); };
+	const ideal_onClose = () => {	ideal_modalizeRef.current?.close(); };
+
 
 	return (
 		<>
@@ -152,22 +227,24 @@ export const Roby = (props : Props) => {
 
 				<SpaceView mb={48} viewStyle={layoutStyle.alignCenter}>
 					<SpaceView mb={8}>
-						<Image source={{ uri : memberInfo.mst_img_path }} style={styles.profileImg} />
+						<Image source={{ uri : member.base.mst_img_path }} style={styles.profileImg} />
 						{/* <Image source={PROFILE_IMAGE.profileM1} style={styles.profileImg} /> */}
 						{/* <Image source={{uri : props.route.params.mstImg}} style={styles.profileImg} /> */}
 						<View style={styles.profilePenContainer}>
 							<TouchableOpacity onPress={() => {
+													selectMemberInfo();
+
 													navigation.navigate('Introduce', {
-														member_seq : memberInfo.member_seq
-														, introduce_comment : memberInfo.introduce_comment
-														, business : memberInfo.business
-														, job : memberInfo.job
-														, job_name : memberInfo.job_name
-														, height : memberInfo.height
-														, form_body : memberInfo.form_body
-														, religion : memberInfo.religion
-														, drinking : memberInfo.drinking
-														, smoking : memberInfo.smoking
+														member_seq : member.base.member_seq
+														, introduce_comment : member.base.introduce_comment
+														, business : member.base.business
+														, job : member.base.job
+														, job_name : member.base.job_name
+														, height : member.base.height
+														, form_body : member.base.form_body
+														, religion : member.base.religion
+														, drinking : member.base.drinking
+														, smoking : member.base.smoking
 													});
 												}}>
 								<Image source={ICON.pen} style={styles.iconSize24} />
@@ -177,16 +254,16 @@ export const Roby = (props : Props) => {
 
 					<SpaceView mb={4}>
 						<CommonText fontWeight={'700'} type={'h4'}>
-							{memberInfo.nickname}, {memberInfo.age}
+							{member.base.nickname}, {member.base.age}
 						</CommonText>
 					</SpaceView>
 					<SpaceView mb={16} viewStyle={styles.levelContainer}>
 						<CommonText color={ColorType.gray6666} type={'h6'}>
-							LV.{memberInfo.profile_tier != null ? memberInfo.profile_tier : 0}
+							LV.{member.base.profile_tier != null ? member.base.profile_tier : 0}
 						</CommonText>
 					</SpaceView>
 
-					<CommonText color={ColorType.gray6666}>{memberInfo.introduce_comment}</CommonText>
+					<CommonText color={ColorType.gray6666}>{member.base.introduce_comment}</CommonText>
 				</SpaceView>
 
 				<View>
@@ -253,7 +330,7 @@ export const Roby = (props : Props) => {
 						<View style={styles.rowStyle}>
 							<CommonText fontWeight={'500'}>
 								새 관심
-								<CommonText color={ColorType.primary}> {resLikeCnt}</CommonText>건
+								<CommonText color={ColorType.primary}> {member.resLikeCnt}</CommonText>건
 							</CommonText>
 							<TouchableOpacity onPress={() => {
 													navigation.navigate('Main', { 
@@ -265,7 +342,7 @@ export const Roby = (props : Props) => {
 						</View>
 
 						<ScrollView horizontal={true}>
-							{resLikeList.map(({ img_path }: { img_path: string }) => (
+							{member.resLikeList.map(({ img_path }: { img_path: string }) => (
 								<SpaceView viewStyle={styles.circleBox} mr={16}>
 									<Image source={{ uri: img_path !== "" ? img_path : undefined }} style={styles.circleBoxImg} />
 								</SpaceView>
@@ -276,22 +353,23 @@ export const Roby = (props : Props) => {
 					<View style={styles.rowStyle}>
 						<CommonText fontWeight={'500'}>
 							새 매칭
-							<CommonText color={ColorType.primary}> 0</CommonText>건
+							<CommonText color={ColorType.primary}> {member.matchCnt}</CommonText>건
 						</CommonText>
-
-						<Image source={ICON.arrRight} style={styles.iconSize} />
+						<TouchableOpacity onPress={() => {
+												navigation.navigate('Main', { 
+													screen: 'Storage'
+												});
+											}}>
+							<Image source={ICON.arrRight} style={styles.iconSize} />
+						</TouchableOpacity>			
 					</View>
 
 					<ScrollView horizontal={true}>
-						<SpaceView viewStyle={styles.circleBox} mr={16} />
-						<SpaceView viewStyle={styles.circleBox} mr={16} />
-						<SpaceView viewStyle={styles.circleBox} mr={16} />
-						<SpaceView viewStyle={styles.circleBox} mr={16} />
-						<SpaceView viewStyle={styles.circleBox} mr={16} />
-						<SpaceView viewStyle={styles.circleBox} mr={16} />
-						<SpaceView viewStyle={styles.circleBox} mr={16} />
-						<SpaceView viewStyle={styles.circleBox} mr={16} />
-						<SpaceView viewStyle={styles.circleBox} />
+						{member.matchList.map(({ img_path }: { img_path: string }) => (
+							<SpaceView viewStyle={styles.circleBox} mr={16}>
+								<Image source={{ uri: img_path !== "" ? img_path : undefined }} style={styles.circleBoxImg} />
+							</SpaceView>
+						))}
 					</ScrollView>
 				</SpaceView>
 
@@ -302,19 +380,25 @@ export const Roby = (props : Props) => {
 						</CommonText>
 					</SpaceView>
 
-					<TouchableOpacity style={styles.rowStyle}>
+					<TouchableOpacity style={styles.rowStyle} onPress={() => { navigation.navigate('Preference'); }}>
 						<CommonText fontWeight={'500'}>내 선호 이성</CommonText>
 						<Image source={ICON.arrRight} style={styles.iconSize} />
 					</TouchableOpacity>
 
 					<View style={styles.rowStyle}>
-						<ToolTip title={'내 프로필 공개'} desc={'내 프로필 공개'} />
-						<CommonSwich />
+						<ToolTip title={'내 프로필 공개'} desc={'내 프로필을 이성들에게 공개할지 설정하는 기능입니다.'} />
+						<CommonSwich callbackFn={(value:boolean) => { 
+										updateMemberInfo('01', value ? 'Y' : 'N');
+									}} 
+						 			isOn={member.base.match_yn == 'Y' ? true : false} />
 					</View>
 
 					<View style={styles.rowStyle}>
-						<ToolTip title={'아는 사람 소개'} desc={'아는 사람 소개'} />
-						<CommonSwich />
+						<ToolTip title={'아는 사람 소개'} desc={'아는 사람에게 내 프로필을 공개할지 설정할지 하는 기능입니다.'} />
+						<CommonSwich callbackFn={(value:boolean) => { 
+										updateMemberInfo('02', value ? 'Y' : 'N');
+									}}  
+									isOn={member.base.friend_match_yn == 'Y' ? true : false} />
 					</View>
 				</SpaceView>
 
@@ -342,6 +426,19 @@ export const Roby = (props : Props) => {
 					</TouchableOpacity>
 				</SpaceView>
 			</ScrollView>
+
+
+			{/* ###############################################
+							내 선호 이성 팝업
+			############################################### */}
+			<Modalize
+				ref={ideal_modalizeRef}
+				adjustToContentHeight={true}
+				handleStyle={modalStyle.modalHandleStyle}
+				modalStyle={modalStyle.modalContainer}>
+
+				{/* <Preference type={'VEHICE'} onCloseFn={vehice_onClose} callbackFn={vehiceFileCallBack} orgFileUrl={orgVehiceFileUrl} /> */}
+			</Modalize>
 		</>
 	);
 };

@@ -178,11 +178,13 @@ export const Introduce = (props : Props) => {
 				console.log(response.data.result_msg);
 				return false;
 			} else {
+
+				
+
 				navigation.navigate('Main', {
 					screen: 'Roby'
 				});
 			}
-			
 		})
 		.catch(function (error) {
 			console.log('error ::: ' , error);
