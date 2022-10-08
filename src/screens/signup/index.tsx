@@ -14,6 +14,7 @@ import { ICON } from 'utils/imageUtils';
 import axios from 'axios';
 import { Color } from 'assets/styles/Color';
 import RNPickerSelect from 'react-native-picker-select';
+import * as properties from 'utils/properties';
 
 interface Props {
 	navigation : StackNavigationProp<StackParamList, 'Signup00'>;
@@ -132,7 +133,7 @@ export const Signup00 = (props : Props) => {
 								type={'primary'} 
 								onPress={() => {
 
-									axios.post('http://211.104.55.151:8080/join/insertMemberInfo/', {
+									axios.post(properties.api_domain + '/join/insertMemberInfo/', {
 										kakao_id : id,
 										nickname: name,
 										name: name,

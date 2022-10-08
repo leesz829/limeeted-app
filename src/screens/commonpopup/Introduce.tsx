@@ -2,7 +2,7 @@ import { styles } from 'assets/styles/Styles';
 import CommonHeader from 'component/CommonHeader';
 import { CommonInput } from 'component/CommonInput';
 import SpaceView from 'component/SpaceView';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, View, AsyncStorage } from 'react-native';
 import * as React from 'react';
 import { FC, useState, useEffect } from 'react';
 import { CommonSelect } from 'component/CommonSelect';
@@ -11,7 +11,6 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp, useNavigation } from '@react-navigation/native';
 import { ColorType, StackParamList, BottomParamList, ScreenNavigationProp} from '@types';
 import axios from 'axios';
-import { AsyncStorage } from 'react-native';
 import * as properties from 'utils/properties';
 
 /* ################################################################################################################
@@ -178,11 +177,15 @@ export const Introduce = (props : Props) => {
 				console.log(response.data.result_msg);
 				return false;
 			} else {
+				//props.route.params.callbackFn();
 
-				
+				AsyncStorage.setItem('memberBase', JSON.stringify(response.data.memberBase));
 
 				navigation.navigate('Main', {
-					screen: 'Roby'
+					screen: 'Roby',
+					params: {
+						memberBase: response.data.memberBase
+					}
 				});
 			}
 		})

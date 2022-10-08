@@ -20,6 +20,8 @@ import { Board0 } from 'screens/commonpopup/Board0';
 import { Board1 } from 'screens/commonpopup/Board1';
 import { Preference } from 'screens/commonpopup/Preference';
 import { Profile } from 'screens/profile/Profile';
+import { Profile1 } from 'screens/profile/Profile1';
+import { SecondAuth } from 'screens/profile/SecondAuth';
 import { Approval } from 'screens/signup/Approval';
 import { Sample } from 'screens/sample/sample';
 import Component from 'component';
@@ -162,6 +164,23 @@ const StackNavigation = () => {
 					headerShown: false,
 				}}
 			/>
+
+			<Stack.Screen
+				name="Profile1"
+				component={Profile1}
+				options={{
+					headerShown: false,
+				}}
+			/>
+
+			<Stack.Screen
+				name="SecondAuth"
+				component={SecondAuth}
+				options={{
+					headerShown: false,
+				}}
+			/>
+
 			<Stack.Screen
 				name="Approval"
 				component={Approval}

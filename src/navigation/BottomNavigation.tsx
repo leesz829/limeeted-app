@@ -43,7 +43,7 @@ const BottomNavigation = () => {
 			/>
 			<Tab.Screen
 				name="Mailbox"
-				component={Matching}
+				component={Shop}
 				options={{
 					tabBarLabel: '우편함',
 					headerShown: false,
@@ -52,7 +52,7 @@ const BottomNavigation = () => {
 			/>
 			<Tab.Screen
 				name="Cashshop"
-				component={Matching}
+				component={Shop}
 				options={{
 					tabBarLabel: '아이템',
 					headerShown: false,
@@ -80,13 +80,7 @@ const BottomNavigation = () => {
 					headerShown: false,
 				}}
 			/>
-			<Stack.Screen
-				name="Profile1"
-				component={Profile1}
-				options={{
-					headerShown: false,
-				}}
-			/>
+			
 			<Stack.Screen
 				name="Profile2"
 				component={Profile2}

@@ -38,7 +38,6 @@ export const CommonSelect : FC<Props> = (props) => {
 						<RNPickerSelect
 							style={pickerSelectStyles}
 							useNativeAndroidPickerStyle={false}
-							/* onValueChange={(value) => console.log('value ::: ', value)} */
 							onValueChange={value => setValue(value)}
 							value={props.selectValue}
 							items={props.items}

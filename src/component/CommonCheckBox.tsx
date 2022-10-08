@@ -9,6 +9,8 @@ import SpaceView from './SpaceView';
 
 interface Props {
 	label: string;
+	value?: string;
+	callBackFunction?: (value:string, check:boolean) => void;
 }
 
 /**
@@ -20,10 +22,18 @@ interface Props {
 export const CommonCheckBox: FC<Props> = (props) => {
 	const [check, setIsCheck] = useState(false);
 
+	const callBackFunction = (value:string) =>{
+		setIsCheck(!check);
+		props.callBackFunction && props.callBackFunction(value, !check);
+	}
+
+
 	return (
 		<TouchableOpacity
 			style={styles.checkWrap}
-			onPress={() => setIsCheck(!check)}
+			onPress={() => 
+				callBackFunction(props.value?props.value:'')
+			}
 			activeOpacity={0.3}
 		>
 			<View style={[styles.checkContainer, check && styles.active]}>

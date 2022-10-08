@@ -44,7 +44,7 @@ export type StackParamList = {
 	ReportPopup: undefined;
 	LivePopup: undefined;
 	Introduce: {
-		member_seq : Number;
+		member_seq : string;
 		introduce_comment : string;
 		business : string;
 		job : string;
@@ -57,20 +57,54 @@ export type StackParamList = {
 	};
 	Board0: undefined;
 	Board1: undefined;
-	Preference: undefined;
-	Profile: undefined;
-	Sample: undefined
+	Preference: {
+		ideal_type_seq: string;
+		want_local1: string;
+		want_local2: string;
+		want_age_min: string;
+		want_age_max: string;
+		want_business1: string;
+		want_business2: string;
+		want_business3: string;
+		want_job1: string;
+		want_job2: string;
+		want_job3: string;
+		want_person1: string;
+		want_person2: string;
+		want_person3: string;
+	};
+	PreferencePopup: undefined;
+	Profile: {
+		nickname : string;
+		name: string;
+		gender: string;
+		age: string;
+		phone_number: string;
+	};
+	Sample: undefined;
+	Profile1: {
+		imgList: [{
+			order_seq: Number
+			, file_name: String
+			, file_path: String
+		}];
+		authList: [{
+			second_auth_code: string
+		}];
+	};
+	SecondAuth: undefined;
 };
 
 export type BottomParamList = {
-	Roby: undefined;
+	Roby: {
+		memberBase: {}
+	};
 	Mailbox: undefined;
 	Cashshop: undefined;
 	Storage: undefined;
 	Live: undefined;
 	LiveSearch: undefined;
 	Matching: undefined;
-	Profile1: undefined;
 	Profile2: undefined;
 	Shop: undefined;
 	StorageProfile: undefined;
@@ -129,7 +163,7 @@ export const Interview = {
 	, order_seq : ''
 }
 
-export const MemberData = {
+export const MemberBaseData = {
 	member_seq  : ''
 	, kakao_id : ''
 	, nickname : ''
@@ -162,8 +196,10 @@ export const MemberData = {
 	, drinking : ''
 	, smoking : ''
 	, mst_img_path : ImagePropTypes
+	, friend_match_yn : ''
+	, profile_score : ''
+	, grade_score : ''
 }
-
 
 export const FileInfo= {
 	member_seq : ''
@@ -186,3 +222,20 @@ export const ProfileImg= {
 	, profile_type : ''
 }
 
+export const MemberIdealTypeData = {
+	ideal_type_seq: ''
+	, member_seq: ''
+	, want_local1: ''
+	, want_local2: ''
+	, want_age_min: ''
+	, want_age_max: ''
+	, want_business1: ''
+	, want_business2: ''
+	, want_business3: ''
+	, want_job1: ''
+	, want_job2: ''
+	, want_job3: ''
+	, want_person1: ''
+	, want_person2: ''
+	, want_person3: ''
+}

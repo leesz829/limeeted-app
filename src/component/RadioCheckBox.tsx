@@ -1,8 +1,6 @@
 import { View, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { BottomParamList } from '@types';
 import * as React from 'react';
-import type { FC } from 'react';
-import { useState, useEffect} from 'react';
+import { FC, useState, useEffect} from 'react';
 import { ICON } from 'utils/imageUtils';
 import { Color } from 'assets/styles/Color';
 import { CommonText } from './CommonText';
@@ -17,9 +15,13 @@ export const RadioCheckBox: FC<Props> = (props) => {
 	const [checkIndex, setCheckIndex] = useState(-1);
 
 	const onPressFn = (index:number,  value:string) => {
-		setCheckIndex(index)
+		// setCheckIndex(index)
+		setCheckIndex(-1)
 		props.callBackFunction(true, value, '');
 	}
+	
+
+
 	
 	return props.items ? (
 		<>
@@ -33,7 +35,7 @@ export const RadioCheckBox: FC<Props> = (props) => {
 							onPress={() => 
 								onPressFn(index, item.value)
 							}
-							activeOpacity={0.3} >
+							>
 								
 							<SpaceView>
 								<CommonText>{item.label}</CommonText>

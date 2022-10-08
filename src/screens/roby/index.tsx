@@ -48,7 +48,38 @@ export const Roby = (props : Props) => {
 		}]
 	});
 
+<<<<<<< HEAD
 	// ###### 첫 렌더링 때 fetchNews() 한 번 실행
+=======
+	// 새 관심 목록
+	const [resLikeCnt, setResLikeCnt] = React.useState<any>();
+	const [resLikeList, setResLikeList] = React.useState([{
+		req_member_seq : String,
+		img_path : ''
+	}]);
+
+
+
+
+
+	const getMemberInfo = async () => {
+		AsyncStorage.getItem('member_info', (err, result : any) => {
+			const member = JSON.parse(result);
+
+			setMemberInfo(member);
+			setMemberInfo2({
+				nickname : member.nickname,
+				gender : member.gender,
+				age : member.age,
+				comment : member.comment,
+				mst_img_path : member.mst_img_path,
+				profile_tier : member.profile_tier
+			})
+		});
+	}
+
+	// 첫 렌더링 때 fetchNews() 한 번 실행
+>>>>>>> 599b79112e5c9bae3f54b696919ee89ca7534df4
 	React.useEffect(() => {
 		selectMemberInfo();
 	}, []);

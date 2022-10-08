@@ -53,7 +53,7 @@ export const ImagePicker: FC<Props> = (props) => {
 					, response?.assets[0].type
 			);
 		}
-	});
+	}, [response]);
 
 	return (
 		<TouchableOpacity
@@ -70,7 +70,7 @@ export const ImagePicker: FC<Props> = (props) => {
 					/>
 				))
 			) : (
-				(props.uriParam != null ? (
+				(props.uriParam != null && props.uriParam != '' ? (
 					<Image
 						resizeMode="cover"
 						resizeMethod="scale"

@@ -36,12 +36,10 @@ interface Props {
 			, item: string
 	) => void;
 	orgFileUrl: string;
+	itemTxt: string;
 }
 
 export const SecondAuthPopup : FC<Props> = (props) => {
-
-	console.log("orgFileUrl :::: ", props.orgFileUrl);
-
 	const type = props.type;
 	let title = "";
 	let itemNm = "";
@@ -50,7 +48,7 @@ export const SecondAuthPopup : FC<Props> = (props) => {
 	let etcTxt02 = "";
 
 	const fileInfo = { uri : "", fileName : "", fileSize : 0, type : "" }
-	const [item, setItem] = React.useState('');
+	const [item, setItem] = React.useState(props.itemTxt);
 
 	if(type == "JOB") {
 		title = "직업";
@@ -77,7 +75,7 @@ export const SecondAuthPopup : FC<Props> = (props) => {
 		placeholderTxt = "인스타그램 ID를 입력해주세요.";
 		etcTxt01 = "자신의 인스타 계정을 연동시켜주세요. 팔로워 수 10000명 이상이 되면 프로필 2차 인증이 승인됩니다.";
 		etcTxt02 = "ID를 정확히 입력해주셔야 인증 승인이 가능합니다.";
-	} else if(type == "VEHICE") {
+	} else if(type == "VEHICLE") {
 		title = "차량";
 		itemNm = "모델명";
 		placeholderTxt = "소유중인 차량 모델을 입력해주세요. (예 : 제네시스 G80)";
@@ -105,7 +103,10 @@ export const SecondAuthPopup : FC<Props> = (props) => {
 				{itemNm != "" ? (
 					<View>
 						<SpaceView mb={32}>
-							<CommonInput label={itemNm} placeholder={placeholderTxt} onChangeText={item => setItem(item)} />
+							<CommonInput label={itemNm} 
+											placeholder={placeholderTxt} 
+											onChangeText={item => setItem(item)}
+											value={item} />
 						</SpaceView>
 					</View>
 				) : null}

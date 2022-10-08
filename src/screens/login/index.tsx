@@ -34,9 +34,9 @@ export const Login = () => {
 		const profile = {
 			id : "test2",
 			//id : "2233743623",
-			name : "정희은",
-			gender : "W",
-			age : '29',
+			name : "김연우",
+			gender : "M",
+			age : '34',
 			hp : '010-1234-5678'
 		};
 
@@ -48,16 +48,16 @@ export const Login = () => {
 			kakaoId : profile.id
 		})
 		.then(function (response) {
-			console.log("response.data ::: ", response.data);
+			console.log("response.data ::: ", response.data.memberImgList);
 
 			const resultCode = response.data.result_code;
 			const status = response.data.status;
 
 			/*
 			 * ## 인증 결과 코드 정의
-			 * 0000 : 미가입
-			 * 0001 : 가입진행중
-			 * 0002 : 인증실패
+			 * 0000 : 회원미존재
+			 * 0001 : 회원존재
+			 * 0002 : 에러
 			 */
 			if(resultCode == "0000" || (resultCode == "0001" && (status == "PROCEED" || status == "APROVAL"))) {
 
@@ -97,10 +97,27 @@ export const Login = () => {
 			
 				// token set
 				AsyncStorage.setItem('jwt-token', response.data.token_param.jwt_token);
-				AsyncStorage.setItem('member_seq', String(response.data.member_seq));
+				AsyncStorage.setItem('member_seq', String(response.data.base.member_seq));
+				AsyncStorage.setItem('memberBase', JSON.stringify(response.data.base));
+				AsyncStorage.setItem('memberImgList', JSON.stringify(response.data.memberImgList));
+				AsyncStorage.setItem('memberSndAuthList', JSON.stringify(response.data.memberSndAuthList));
+				AsyncStorage.setItem('memberIdealType', JSON.stringify(response.data.memberIdealType));
+
+				/* AsyncStorage.setItem('memberBase', JSON.stringify(response.data.base), (err)=> {
+					if(err){
+						console.log("an error");
+						throw err;
+					}
+					console.log("success");
+				}).catch((err)=> {
+					console.log("error is: " + err);
+				}); */
 
 				navigation.navigate('Main', {
-					screen: 'Roby'
+					screen: 'Roby', 
+					params: {
+						memberBase : response.data.base
+					}
 				});
 			}
 		})

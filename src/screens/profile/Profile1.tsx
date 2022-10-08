@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
-import { Image, ScrollView, TextInput, View } from 'react-native';
+import { Image, ScrollView, TextInput, View, TouchableOpacity } from 'react-native';
 import { RouteProp, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ICON } from 'utils/imageUtils';
@@ -13,6 +13,7 @@ import CommonHeader from 'component/CommonHeader';
 import { CommonBtn } from 'component/CommonBtn';
 import axios from 'axios';
 import * as properties from 'utils/properties';
+import { AsyncStorage } from 'react-native';
 
 /* ################################################################################################################
 ###################################################################################################################
@@ -21,50 +22,119 @@ import * as properties from 'utils/properties';
 ################################################################################################################ */
 
 interface Props {
-	navigation : StackNavigationProp<StackParamList, 'Signup02'>;
-	route : RouteProp<StackParamList, 'Signup02'>;
+	navigation : StackNavigationProp<StackParamList, 'Profile1'>;
+	route : RouteProp<StackParamList, 'Profile1'>;
 }
 
 export const Profile1 = (props : Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 
+	const [imgData, setImgData] = React.useState({
+		orgImgUrl01: ''
+		, orgImgUrl02: ''
+		, orgImgUrl03: ''
+		, orgImgUrl04: ''
+		, orgImgUrl05: ''
+		, imgFile01: { uri : "", name : "", type : ""	}
+		, imgFile02: { uri : "", name : "", type : ""	}
+		, imgFile03: { uri : "", name : "", type : ""	}
+		, imgFile04: { uri : "", name : "", type : ""	}
+		, imgFile05: { uri : "", name : "", type : ""	}
+	});
+
+	// 프로필 사진
 	const [orgImgUrl01, setOrgImgUrl01] = React.useState<any>(null);
 	const [orgImgUrl02, setOrgImgUrl02] = React.useState<any>(null);
 	const [orgImgUrl03, setOrgImgUrl03] = React.useState<any>(null);
 	const [orgImgUrl04, setOrgImgUrl04] = React.useState<any>(null);
 	const [orgImgUrl05, setOrgImgUrl05] = React.useState<any>(null);
 
-	const imgFileData01 = { uri : "", fileName : "", type : "" }
-	const imgFileData02 = { uri : "", fileName : "", type : "" }
-	const imgFileData03 = { uri : "", fileName : "", type : "" }
-	const imgFileData04 = { uri : "", fileName : "", type : "" }
-	const imgFileData05 = { uri : "", fileName : "", type : "" }
+	// 프로필 2차 인증 여부
+	const [isJob, setIsJob] = React.useState<any>(false);
+	const [isEdu, setIsEdu] = React.useState<any>(false);
+	const [isIncome, setIsIncome] = React.useState<any>(false);
+	const [isAsset, setIsAsset] = React.useState<any>(false);
+	const [isSns, setIsSns] = React.useState<any>(false);
+	const [isVehicle, setIsVehicle] = React.useState<any>(false);
 
-	const imgFileJson = {
-		uri : "",
-		fileName : "",
-		type : ""
-	}
+	// 인증 갯수
+	const [authCnt, setAuthCnt] = React.useState(0);
 
 	const fileCallBack1 = (uri:string, fileName:string, fileSize: number, type: string) => {
-		imgFileData01.uri = uri; imgFileData01.fileName = fileName;	imgFileData01.type = type;
+		if(uri != null && uri != '') {
+			setImgData({
+				...imgData
+				, imgFile01 : {uri: uri, name: fileName, type: type}
+			})
+		}
 	};
-
 	const fileCallBack2 = (uri:string, fileName:string, fileSize: number, type: string) => {
-		imgFileData02.uri = uri; imgFileData02.fileName = fileName;	imgFileData02.type = type;
+		if(uri != null && uri != '') {
+			setImgData({
+				...imgData
+				, imgFile02 : {uri: uri, name: fileName, type: type}
+			})
+		}
 	};
-
 	const fileCallBack3 = (uri:string, fileName:string, fileSize: number, type: string) => {
-		imgFileData03.uri = uri; imgFileData03.fileName = fileName;	imgFileData03.type = type;
+		if(uri != null && uri != '') {
+			setImgData({
+				...imgData
+				, imgFile03 : {uri: uri, name: fileName, type: type}
+			})
+		}
 	};
-
 	const fileCallBack4 = (uri:string, fileName:string, fileSize: number, type: string) => {
-		imgFileData04.uri = uri; imgFileData04.fileName = fileName;	imgFileData04.type = type;
+		if(uri != null && uri != '') {
+			setImgData({
+				...imgData
+				, imgFile04 : {uri: uri, name: fileName, type: type}
+			})
+		}
+	};
+	const fileCallBack5 = (uri:string, fileName:string, fileSize: number, type: string) => {
+		if(uri != null && uri != '') {
+			setImgData({
+				...imgData
+				, imgFile05 : {uri: uri, name: fileName, type: type}
+			})
+		}
 	};
 
-	const fileCallBack5 = (uri:string, fileName:string, fileSize: number, type: string) => {
-		imgFileData05.uri = uri; imgFileData05.fileName = fileName;	imgFileData05.type = type;
-	};
+	/*
+	 * 최초 실행
+	 */
+	React.useEffect(() => {
+		if(props.route.params.imgList != null) {
+			props.route.params.imgList.map(({ file_name, file_path, order_seq }: { file_name: any, file_path: any, order_seq: any }) => {
+				if(order_seq == 1) { setOrgImgUrl01(properties.img_domain + file_path + file_name);	}
+				if(order_seq == 2) { setOrgImgUrl02(properties.img_domain + file_path + file_name);	}
+				if(order_seq == 3) { setOrgImgUrl03(properties.img_domain + file_path + file_name);	}
+				if(order_seq == 4) { setOrgImgUrl04(properties.img_domain + file_path + file_name);	}
+				if(order_seq == 5) { setOrgImgUrl05(properties.img_domain + file_path + file_name);	}
+			});
+		}
+
+		if(props.route.params.authList != null) {
+			let authCnt = 0;
+			props.route.params.authList.map(({ second_auth_code }: { second_auth_code: any }) => {
+				if(second_auth_code == 'JOB') { setIsJob(true); }
+				if(second_auth_code == 'EDU') { setIsEdu(true); }
+				if(second_auth_code == 'INCOME') { setIsIncome(true); }
+				if(second_auth_code == 'ASSET') { setIsAsset(true); }
+				if(second_auth_code == 'SNS') { setIsSns(true); }
+				if(second_auth_code == 'VEHICLE') { setIsVehicle(true); }
+
+				authCnt++;
+			});
+
+			setAuthCnt(authCnt);
+		}
+
+		// 회원 이미지 정보 조회
+		//getMemberImage();
+
+	}, [props.route]);
 
 
 	// 회원 이미지 정보 조회
@@ -79,16 +149,10 @@ export const Profile1 = (props : Props) => {
 				'jwt-token' : String(await properties.jwt_token())
 			}
 		})
-		.then(function (response) {
-			console.log("response ::: " + JSON.stringify(response.data));
-	
+		.then(function (response) {	
 			if(null != response.data.imgList) {
-				console.log("imgList ::: ", response.data.imgList);
 	
 				response.data?.imgList?.map(({ order_seq, file_name, file_path }: { order_seq: any, file_name: any, file_path: any }) => {
-					console.log("file_name ::: ", file_name);
-					console.log("file_path ::: ", file_path);
-
 					const localDomain = properties.api_domain + '/uploads';
 
 					if(order_seq == '1') { setOrgImgUrl01(localDomain + file_path + file_name); }
@@ -106,36 +170,36 @@ export const Profile1 = (props : Props) => {
 
 	// 프로필 관리 저장
 	const saveMemberProfile = async () => {
-
 		const member_seq = Number(await properties.get_json_data('member_seq'));
 		const data = new FormData();
 
-		const file01 = { uri: imgFileData01.uri, type: imgFileData01.type, name: imgFileData01.fileName };
-		const file02 = { uri: imgFileData02.uri, type: imgFileData02.type, name: imgFileData02.fileName };
-		const file03 = { uri: imgFileData03.uri, type: imgFileData03.type, name: imgFileData03.fileName };
-		const file04 = { uri: imgFileData04.uri, type: imgFileData04.type, name: imgFileData04.fileName };
-		const file05 = { uri: imgFileData05.uri, type: imgFileData05.type, name: imgFileData05.fileName };
-
 		data.append("memberSeq", member_seq);
-		if(imgFileData01.uri != "" && typeof imgFileData01.uri != "undefined") {	data.append("file01", file01); }
-		if(imgFileData02.uri != "" && typeof imgFileData02.uri != "undefined") {	data.append("file02", file02); }
-		if(imgFileData03.uri != "" && typeof imgFileData03.uri != "undefined") {	data.append("file03", file03); }
-		if(imgFileData04.uri != "" && typeof imgFileData04.uri != "undefined") {	data.append("file04", file04); }
-		if(imgFileData05.uri != "" && typeof imgFileData05.uri != "undefined") {	data.append("file05", file05); }
+		if(imgData.imgFile01.uri != "") {	data.append("file01", imgData.imgFile01); }
+		if(imgData.imgFile02.uri != "") {	data.append("file02", imgData.imgFile02); }
+		if(imgData.imgFile03.uri != "") {	data.append("file03", imgData.imgFile03); }
+		if(imgData.imgFile04.uri != "") {	data.append("file04", imgData.imgFile04); }
+		if(imgData.imgFile05.uri != "") {	data.append("file05", imgData.imgFile05); }
 
-		console.log("data :::: ", data);
-
-		const result = await fetch(properties.api_domain + '/join/insertMemberProfile/', {
+		const result = await fetch(properties.api_domain + '/member/saveProfileImage/', {
 			method: 'POST',
+			headers: {
+				"Content-Type": "multipart/form-data",
+				'jwt-token' : String(await properties.jwt_token())
+			},
 			body: data,
 		})
-		.then((response) => response.json())
-		.then((response) => {
-			console.log('response :::: ', response);
+		.then((res) => res.json())
+		.then((res) => {
+			if(res.result_code == "0000") {
 
-			if(response.result_code == "0000") {
+				AsyncStorage.setItem('memberBase', JSON.stringify(res.memberBase));
+				AsyncStorage.setItem('memberImgList', JSON.stringify(res.memberImgList));
+
 				navigation.navigate('Main', {
-					screen: 'Roby'
+					screen: 'Roby',
+					params: {
+						memberBase: res.memberBase
+					}
 				});
 			}
 		})
@@ -145,21 +209,13 @@ export const Profile1 = (props : Props) => {
 	}
 
 
-	/*
-	 * 최초 실행
-	 */
-	React.useEffect(() => {
-
-		// 회원 이미지 정보 조회
-		getMemberImage();
-
-	}, []);
-
 	return (
 		<>
 			<CommonHeader title={'프로필 관리'} />
 			<ScrollView contentContainerStyle={styles.hasFloatingBtnContainer}>
 				<SpaceView viewStyle={styles.container}>
+
+					{/* ########### 프로필 이미지 ########### */}
 					<SpaceView mb={48} viewStyle={styles.halfContainer}>
 
 						<View style={styles.halfItemLeft}>
@@ -188,18 +244,88 @@ export const Profile1 = (props : Props) => {
 
 					</SpaceView>
 
-					{/* <SpaceView mb={54}>
-						<SpaceView mb={16}>
-							<CommonText fontWeight={'700'} type={'h3'}>
-								내 프로필 평점
-							</CommonText>
+					{/* ########### 프로필 2차 인증 ########### */}
+					<SpaceView mb={54}>
+
+						<SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
+							<View>
+								<TouchableOpacity style={[layoutStyle.row, layoutStyle.alignCenter]}
+													onPress={() => {
+														navigation.navigate('SecondAuth');
+													}}>
+									<CommonText type={'h3'} fontWeight={'700'}>
+										프로필 2차 인증
+									</CommonText>
+									<Image source={ICON.arrRight} style={styles.iconSize} />
+								</TouchableOpacity>
+							</View>
+
+							<View style={[layoutStyle.rowBetween]}>
+								<View style={styles.statusBtn}>
+									<CommonText type={'h6'} color={ColorType.white}>
+										TIER {authCnt}
+									</CommonText>
+								</View>
+								<Image source={ICON.medalAll} style={styles.iconSize32} />
+							</View>
 						</SpaceView>
 
-						<SpaceView>
-							<ProfileItem isOnlyProfileItem={true} />
-						</SpaceView>
-					</SpaceView> */}
+						<SpaceView mb={48}>
+							<SpaceView viewStyle={[layoutStyle.rowBetween]} mb={16}>
+								<View style={styles.profileBox}>
+									<Image source={ICON.job} style={styles.iconSize48} />
+									<CommonText type={'h5'}>직업</CommonText>
+									{!isJob ? (
+										<View style={styles.disabled} />
+									) : null}
+								</View>
 
+								<View style={styles.profileBox}>
+									<Image source={ICON.degree} style={styles.iconSize48} />
+									<CommonText type={'h5'}>학위</CommonText>
+									{!isEdu ? (
+										<View style={styles.disabled} />
+									) : null}
+								</View>
+
+								<View style={styles.profileBox}>
+									<Image source={ICON.income} style={styles.iconSize48} />
+									<CommonText type={'h5'}>소득</CommonText>
+									{!isIncome ? (
+										<View style={styles.disabled} />
+									) : null}
+								</View>
+							</SpaceView>
+
+							<View style={[layoutStyle.rowBetween]}>
+								<View style={styles.profileBox}>
+									<Image source={ICON.asset} style={styles.iconSize48} />
+									<CommonText type={'h5'}>자산</CommonText>
+									{!isAsset ? (
+										<View style={styles.disabled} />
+									) : null}
+								</View>
+
+								<View style={styles.profileBox}>
+									<Image source={ICON.sns} style={styles.iconSize48} />
+									<CommonText type={'h5'}>SNS</CommonText>
+									{!isSns ? (
+										<View style={styles.disabled} />
+									) : null}
+								</View>
+
+								<View style={styles.profileBox}>
+									<Image source={ICON.vehicle} style={styles.iconSize48} />
+									<CommonText type={'h5'}>차량</CommonText>
+									{!isVehicle ? (
+										<View style={styles.disabled} />
+									) : null}
+								</View>
+							</View>
+						</SpaceView>
+					</SpaceView>
+
+					{/* ########### 인터뷰 ########### */}
 					<SpaceView>
 						<SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
 							<View>

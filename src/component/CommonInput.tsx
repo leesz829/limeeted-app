@@ -9,6 +9,7 @@ type Props = {
 	label?: string;
 	placeholder?: string;
 	rightPen?: boolean;
+	disabled?: boolean;
 } & StyleProp<TextInputProps>;
 
 /**
@@ -19,7 +20,7 @@ type Props = {
  *
  *
  */
-export const CommonInput: FC<Props> = (props) => {
+export const CommonInput: FC<Props> = (props:any) => {
 	return (
 		<View>
 			<View style={styles.labelContainer}>
@@ -31,6 +32,7 @@ export const CommonInput: FC<Props> = (props) => {
 					placeholder={props.placeholder || ''}
 					placeholderTextColor={Color.black2222}
 					{...props}
+					editable={props.disabled ? false : true}
 				/>
 			</View>
 
