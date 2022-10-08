@@ -1,7 +1,7 @@
 import { AsyncStorage } from 'react-native';
 
 // api 서버 도메인
-export const api_domain = "http://211.104.55.151:8080";
+export const api_domain = "http://192.168.1.2:8080";
 
 // token 값 
 export const jwt_token = () => {
@@ -13,7 +13,7 @@ export const jwt_token = () => {
 			reject(new Error('Error getting item from AsyncStorage'))
 		}
 	});
-}
+} 
 
 // json 데이터 
 export const get_json_data = (key: string) => {

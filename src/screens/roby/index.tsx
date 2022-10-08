@@ -59,7 +59,6 @@ export const Roby = (props : Props) => {
 	const getMemberInfo = async () => {
 		AsyncStorage.getItem('member_info', (err, result : any) => {
 			const member = JSON.parse(result);
-			//console.log('member ::: ', member);
 
 			setMemberInfo(member);
 			setMemberInfo2({

@@ -111,24 +111,28 @@ export const ViualSlider: FC<Props> = (props) => {
 								</TouchableOpacity>
 							</View>
 							<View style={styles.useActionBox}>
-								<SpaceView mr={4}>
-									<TouchableOpacity onPress={() => callBackFunction('sincere')}>
+								<TouchableOpacity onPress={() => callBackFunction('sincere')}>
+									<SpaceView mr={4}>
 										<Image source={ICON.royalpass} style={styles.iconSize32} />
-									</TouchableOpacity>
-								</SpaceView>
-								<CommonText fontWeight={'700'} type={'h6'} color={ColorType.white}>
-									찐심
-								</CommonText>
+									</SpaceView>
+								</TouchableOpacity>
+								<TouchableOpacity onPress={() => callBackFunction('sincere')}>
+									<CommonText fontWeight={'700'} type={'h6'} color={ColorType.white}>
+										찐심
+									</CommonText>
+								</TouchableOpacity>
 							</View>
 							<View style={styles.useActionBox}>
-								<SpaceView mr={4}>
-									<TouchableOpacity onPress={() => callBackFunction('interest')}>
+								<TouchableOpacity onPress={() => callBackFunction('interest')}>
+									<SpaceView mr={4}>
 										<Image source={ICON.like} style={styles.iconSize32} />
-									</TouchableOpacity>
-								</SpaceView>
-								<CommonText fontWeight={'700'} type={'h6'} color={ColorType.white}>
-									관심
-								</CommonText>
+									</SpaceView>
+								</TouchableOpacity>
+								<TouchableOpacity onPress={() => callBackFunction('interest')}>
+									<CommonText fontWeight={'700'} type={'h6'} color={ColorType.white}>
+										관심
+									</CommonText>
+								</TouchableOpacity>
 							</View>
 						</View>
 					)}

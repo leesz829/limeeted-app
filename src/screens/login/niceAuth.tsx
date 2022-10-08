@@ -1,31 +1,85 @@
-import { ColorType, ScreenNavigationProp } from '@types';
-import { layoutStyle, styles } from 'assets/styles/Styles';
-import { CommonBtn } from 'component/CommonBtn';
-import { CommonText } from 'component/CommonText';
-import SpaceView from 'component/SpaceView';
 import * as React from 'react';
-import { View, Image, Alert } from 'react-native';
-import { ICON, IMAGE } from 'utils/imageUtils';
+import {ScreenNavigationProp } from '@types';
+import { jwt_token, api_domain} from 'utils/properties';
 import { useNavigation } from '@react-navigation/native';
 import { WebView } from 'react-native-webview'; 
 import axios from 'axios';
 
 export const NiceAuth = () => {
 
-	return (
+	const navigation = useNavigation<ScreenNavigationProp>();
+	
+	const [niceWebViewBody, setNiceWebViewBody] = React.useState(String);
+
+	const tt = () => {
+		navigation.navigate('Main', { 
+			screen: 'Storage'
+		});
+	}
+
+	 /* web -> native */
+	const webToNative = (e:string) => {
+		console.log('webToNative :::: ', e);
+		navigation.navigate('Main', { 
+			screen: 'Storage'
+		});
+	}
+
+	const createNiceWebViewBody = async () => {
+
+		const result = await axios.post(api_domain + '/nice/authtoken', {
+			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
+		}
+		, {
+			headers: {
+				'jwt-token' : String(await jwt_token())
+			}
+		})
+		.then(function (response) {
+
+			console.log('createNiceWebViewBody ::: ' , response.data);
+
+			if(response.data.result_code != '0000'){	
+				return false;
+			}
+
+			let webViewBody = '<form id="frm" name="frm"  method="post" action="https://nice.checkplus.co.kr/CheckPlusSafeModel/service.cb" accept-charset="euc-kr">'
+							+	'<input type="hidden" id="m" name="m" value="service" />'
+							+	'<input type="hidden" id="token_version_id" name="token_version_id" value="'+ response.data.token_version_id +'" />'
+							+	'<input type="hidden" id="enc_data" name="enc_data" value="'+ response.data.enc_data +'" />'
+							+	'<input type="hidden" id="integrity_value" name="integrity_value" value="'+ response.data.integrity_value +'" />'
+							+ '</form>'
+							+ '<script>'
+							+ 'document.getElementById("frm").submit()'
+							+ '</script>'
+							
+			console.log('webViewBody :::: ' , webViewBody);
+
+			setNiceWebViewBody(webViewBody);
+		})
+		.catch(function (error) {
+			console.log('createNiceWebViewBody error ::: ' , error);
+		});
+	}
+
+	// 첫 렌더링 때 fetchNews() 한 번 실행
+	React.useEffect(() => {
+		createNiceWebViewBody();
+	}, []);
+
+	return ( 
 		<WebView
 			originWhitelist={['*']}
-			source={{ html: 
-					'<form id="form" name="form"  method="post" action="https://nice.checkplus.co.kr/CheckPlusSafeModel/service.cb" accept-charset="euc-kr">'
-					+	'<input type="text" id="m" name="m" value="service" />'
-					
-					+ '<input type="text" id="token_version_id" name="token_version_id" value="202206222253149E-NC70BX701-F55DE-E27092FDH7" />'
-					+ '<input type="text" id="enc_data" name="enc_data" value="A2cxP+YOQPTAUxqlnJcw0Y3Ynd37ruxvX07M64S5lrtw86xwTc9Ydz8NVKqL5ydaTYCi3tcAnWnfcwepeepLa/cm/6gJRkmVCnZXj20JTsrkwMrZTI+GztTWfvgVmtSA10Sh3Pp4ze+DyVDHKXeIEzhTG4RIX9aYTZpuhius+B5MAWeVWL56XN+PRhR+eCeuBgtpTOJv+r1XzY1tyL+XRo9xHcgbdjAK7lej1hWv4mzaojEirBXebgtF0Tp1xeM4" />'
-					+ '<input type="text" id="integrity_value" name="integrity_value" value="RkrMdEugYB9nQVesuRXrSLWsLty57vsJzMglqWl218I=" />'
-
-					+	'<input type="submit" value="누르시오">'
-					+ '</form>'
+			source={{ html: niceWebViewBody }}
+			onMessage={(event) => {
+				//받은 데이터(React) :
+				webToNative(event.nativeEvent.data)
 			}}
+
+
 		/>
 	);
+
+
+
 };

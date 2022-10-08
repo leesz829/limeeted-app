@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { useState, useEffect} from 'react';
-import { Image, ScrollView, View } from 'react-native';
+import { useState, useEffect, useRef} from 'react';
+import { Image, ScrollView, View, TouchableOpacity, Alert} from 'react-native';
 import TopNavigation from 'component/TopNavigation';
 import { ICON } from 'utils/imageUtils';
-import { layoutStyle, styles } from 'assets/styles/Styles';
+import { layoutStyle, styles, modalStyle} from 'assets/styles/Styles';
 import SpaceView from 'component/SpaceView';
 import { CommonText } from 'component/CommonText';
 import { ViualSlider } from 'component/ViualSlider';
@@ -12,7 +12,9 @@ import { CommonBtn } from 'component/CommonBtn';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp, useNavigation } from '@react-navigation/native';
 import { jwt_token, api_domain} from 'utils/properties';
-import { ColorType, BottomParamList, Interview, ProfileImg, FileInfo, MemberData} from '@types';
+import { ColorType, BottomParamList, Interview, ProfileImg, FileInfo, MemberData, CommonCode, LabelObj} from '@types';
+import { Modalize } from 'react-native-modalize';
+import { CommonCheckBox } from 'component/CommonCheckBox';
 import axios from 'axios';
 
 /* ################################################################################################################
@@ -33,18 +35,72 @@ export const Matching = (props : Props) => {
 	const [secondAuthList, setSecondAuthList] = useState([{'second_auth_code':''}]);
 	// 회원 인상 정보
 	const [profileImgList, setProfileImgList] = useState([ProfileImg]);
+	// 신고목록
+	const [reportTypeList, setReportTypeList] = useState([{text: '', value: ''}]);
+	// 선택된 신고하기 타입
+	const [checkReportType, setCheckReportType] = useState(['']);
+	
+
+	// 신고 Pop
+	const report_modalizeRef = useRef<Modalize>(null);
+	const report_onOpen = () => { report_modalizeRef.current?.open(); };
+	const report_onClose = () => {	report_modalizeRef.current?.close(); };
 
 	// 관심 여부 체크
 	const profileCallbackFn = (activeType:string) => {
 		// pass : 거부, sincere : 찐심, interest : 관심
-		console.log('profileCallbackFn ::: ', activeType);
-
 		insertMatchInfo(activeType);
 	}
 
-	const insertMatchInfo = async (activeType:string) => {
-		const result = await axios.post(api_domain + '/match/selectMatchProfileInfo', {
+	// 신고 여부 체크
+	const reportCallbackFn = (reportType:string, check:boolean) => {
+		if(check){
+			checkReportType.push(reportType);
+			setCheckReportType(checkReportType.filter((e, index) => checkReportType.indexOf(e) === index && e));
+			
+		}else{			
+			setCheckReportType(checkReportType.filter((e) => e != reportType && e));
+		}
+	}
+
+	const insertReportCheck = () => {
+
+		console.log(insertReportCheck, checkReportType.join());
+
+		if(!checkReportType.length){
+			Alert.alert('신고항목을 선택해주세요.')
+			return false;
+		}else{
+			Alert.alert(
+				"사용자 신고하기",
+				"신고하시겠습니까?",
+				[
+				  // The "Yes" button
+				  {
+					text: "취소",
+					onPress: () => {
+						return false;
+					},
+				  },
+				  // The "No" button
+				  // Does nothing but dismiss the dialog when tapped
+				  {
+					text: "확인",
+					onPress: () => {insertReport()},
+				  },
+				]
+			);
+		}
+	}
+
+	const insertReport = async () => {
+
+		console.log('insertReport');
+
+		const result = await axios.post(api_domain + '/match/insertReport', {
 			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
+			, 'report_type_code_list' : checkReportType.join()
+			, 'member_seq' : matchMemberData.member_seq
 		}
 		, {
 			headers: {
@@ -57,18 +113,40 @@ export const Matching = (props : Props) => {
 				return false;
 			}
 
-			// 1. 매칭 회원 정보
-			setMatchMemberData(response.data.result.match_memeber_info);
-
+			Alert.alert('신고처리되었습니다.');
+			report_onClose();
+			console.log('insertReport ::: ', response.data);
 		})
 		.catch(function (error) {
-			console.log('getMatchProfileInfo error ::: ' , error);
+			console.log('insertReport error ::: ' , error);
+		});
+	}
+	
+	const insertMatchInfo = async (activeType:string) => {
+		const result = await axios.post(api_domain + '/match/insertMatchInfo', {
+			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
+			, 'active_type' : activeType
+			, 'member_seq' : matchMemberData.member_seq
+		}
+		, {
+			headers: {
+				'jwt-token' : String(await jwt_token()) 
+			}
+		})
+		.then(function (response) {
+			if(response.data.result_code != '0000'){
+				console.log(response.data.result_msg);
+				return false;
+			}
+
+			getMatchProfileInfo();
+		})
+		.catch(function (error) {
+			console.log('insertMatchInfo error ::: ' , error);
 		});
 	}
 
 	const createSecondAuthListBody = () => {
-		console.log('createSecondAuthListBody secondAuthList ::: ' ,secondAuthList);
-
 		// 자산
 		let asset = false;
 		// 학업
@@ -83,9 +161,6 @@ export const Matching = (props : Props) => {
 		let vehice = false;
 
 		secondAuthList.forEach((e, i) => {
-
-			console.log(i, e);
-
 			switch(e.second_auth_code) {
 				case 'ASSET':
 					asset = true;
@@ -149,9 +224,39 @@ export const Matching = (props : Props) => {
 		);
 	}
 
-	const getMatchProfileInfo = async () => {
+	const selectReportCodeList = async () => {
+		
+		const result = await axios.post(api_domain + '/common/selectGroupCodeList/' +jwt_token, {
+			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
+			, 'group_code' : 'DECLAR'
+		}
+		, {
+			headers: {
+				'jwt-token' : String(await jwt_token())
+			}
+		})
+		.then(function (response) {
+			if(response.data.result_code != '0000'){	
+				return false;
+			}
 
-		console.log('interviewList 11 ::: ' ,interviewList);
+			let tmpReportTypeList = [{text: '', value: ''}];
+			let commonCodeList = [CommonCode];
+			commonCodeList = response.data.result;
+			
+			// CommonCode
+			commonCodeList.map(commonCode => {
+				tmpReportTypeList.push({text: commonCode.code_name, value: commonCode.common_code})
+			});
+
+			 setReportTypeList(tmpReportTypeList.filter(x => x.text));
+		})
+		.catch(function (error) {
+			console.log('getFaceType error ::: ' , error);
+		});
+	}
+
+	const getMatchProfileInfo = async () => {
 
 		const result = await axios.post(api_domain + '/match/selectMatchProfileInfo', {
 			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
@@ -172,7 +277,6 @@ export const Matching = (props : Props) => {
 
 			// 2. 프로필 이미지
 			// match_profile_img
-			console.log('profile_img_list ::: ', response.data.result.profile_img_list);
 			let tmpProfileImgList = [ProfileImg];
 			let fileInfoList = [FileInfo]
 			fileInfoList = response.data.result.profile_img_list;
@@ -187,9 +291,8 @@ export const Matching = (props : Props) => {
 									, age : fileInfo.age
 									, profile_type : fileInfo.profile_type
 				})
-
-				
 			});
+
 			tmpProfileImgList = tmpProfileImgList.filter(x => x.url);
 			setProfileImgList(tmpProfileImgList);
 
@@ -198,8 +301,6 @@ export const Matching = (props : Props) => {
 			
 			// 인터뷰 
 			setInterviewList(response.data.result.interview_list);
-			
-			console.log('interviewList 22 ::: ' ,interviewList);
 		})
 		.catch(function (error) {
 			console.log('getMatchProfileInfo error ::: ' , error);
@@ -210,6 +311,9 @@ export const Matching = (props : Props) => {
 	useEffect(() => {
 		// 프로필 정보 조회
 		getMatchProfileInfo();
+
+		// 신고목록 조회
+		selectReportCodeList();
 	}, []);
 
 
@@ -282,9 +386,7 @@ export const Matching = (props : Props) => {
 												등록된 질의가 없습니다.
 											</CommonText>
 										</>
-
 									}
-									
 								</CommonText>
 							</View>
 						</SpaceView>
@@ -335,10 +437,43 @@ export const Matching = (props : Props) => {
 					</SpaceView>
 
 					<SpaceView mb={40}>
-						<CommonBtn value={'신고'} icon={ICON.siren} iconSize={24} />
+						<CommonBtn value={'신고'} icon={ICON.siren} iconSize={24} onPress={() => report_onOpen()}/>
 					</SpaceView>
+
 				</SpaceView>
 			</ScrollView>
+
+			<Modalize
+				ref={report_modalizeRef}
+				adjustToContentHeight={true}
+				handleStyle={modalStyle.modalHandleStyle}
+				modalStyle={modalStyle.modalContainer}
+			>
+				<View style={modalStyle.modalHeaderContainer}>
+					<CommonText fontWeight={'700'} type={'h3'}>
+						사용자 신고하기
+					</CommonText>
+					<TouchableOpacity onPress={report_onClose}>
+						<Image source={ICON.xBtn} style={styles.iconSize24} />
+					</TouchableOpacity>
+				</View>
+
+				<View style={modalStyle.modalBody}>
+					<SpaceView mb={16}>
+						<CommonText>신고 사유를 선택해주세요.</CommonText>
+					</SpaceView>
+
+					<SpaceView mb={24}>
+						{reportTypeList.length && reportTypeList.map((i, index) => (
+							<CommonCheckBox label={i.text} value={i.value} key={index + '_' + i.value} callBackFunction={reportCallbackFn} />
+						))}
+					</SpaceView>
+
+					<SpaceView mb={16}>
+						<CommonBtn value={'신고하기'} onPress={insertReportCheck} type={'primary'} />
+					</SpaceView>
+				</View>
+			</Modalize>
 		</>
 	);
 };

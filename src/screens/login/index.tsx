@@ -173,8 +173,7 @@ export const Login = () => {
 				<CommonBtn value={'본인인증'} 
 							iconSize={24} 
 							onPress={() => {
-								console.log('test');
-								
+								navigation.navigate('NiceAuth');
 							}}
 				/>
 
