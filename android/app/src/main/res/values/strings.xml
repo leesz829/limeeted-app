@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">limeeted</string>
+    <string name="RNCB_VENDOR_NAME">myket</string>
+    <string name="RNCB_VENDOR_PUBLIC_KEY">YOUR_MYKET_PUBLIC_KEY</string>
 </resources>
+

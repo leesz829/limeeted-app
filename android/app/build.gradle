@@ -134,8 +134,9 @@ android {
         applicationId "com.limeeted"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
+        versionCode 66
         versionName "1.0"
+        missingDimensionStrategy ('store', 'play')
     }
     splits {
         abi {
@@ -146,12 +147,20 @@ android {
         }
     }
     signingConfigs {
+         release {
+            storeFile file('your_key_name.keystore')
+            storePassword '!Appsquad1234'
+            keyAlias 'your_key_alias'
+            keyPassword '!Appsquad1234'
+        }
+        /*
         debug {
             storeFile file('debug.keystore')
             storePassword 'android'
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        */
     }
     buildTypes {
         debug {
@@ -165,7 +174,8 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            // signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
@@ -192,8 +202,11 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
-
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+
+    // google play
+    compile project(':react-native-custom-billing')
+
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.fbjni'

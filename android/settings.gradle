@@ -1,4 +1,6 @@
 rootProject.name = 'limeeted'
+include ':react-native-custom-billing'
+project(':react-native-custom-billing').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-custom-billing/android')
 include ':react-native-image-picker'
 project(':react-native-image-picker').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-image-picker/android')
 include ':react-native-linear-gradient'
