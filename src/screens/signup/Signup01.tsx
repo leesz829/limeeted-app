@@ -2,7 +2,6 @@ import { styles, layoutStyle, modalStyle } from 'assets/styles/Styles';
 import { CommonBtn } from 'component/CommonBtn';
 import CommonHeader from 'component/CommonHeader';
 import { CommonText } from 'component/CommonText';
-import { CommonInput } from 'component/CommonInput';
 import SpaceView from 'component/SpaceView';
 import React, { useRef } from 'react';
 import { View, Image, ScrollView, TouchableOpacity, Alert } from 'react-native';
@@ -12,21 +11,19 @@ import { RouteProp, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Modalize } from 'react-native-modalize';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { ImagePicker } from 'component/ImagePicker';
 import { SecondAuthPopup } from 'screens/commonpopup/SecondAuthPopup';
 import axios from 'axios';
+import * as properties from 'utils/properties';
 
 /* ################################################################################################################
 ###################################################################################################################
-###### 2차 인증 정보
+###### 프로필 2차 인증 정보
 ###################################################################################################################
 ################################################################################################################ */
 
 interface Props {
 	navigation : StackNavigationProp<StackParamList, 'Signup01'>;
 	route : RouteProp<StackParamList, 'Signup01'>;
-
-	jobFile: string;
 }
 
 export const Signup01 = (props : Props) => {
@@ -34,30 +31,24 @@ export const Signup01 = (props : Props) => {
 	console.log("## Signup01 memberSeq ::: ", props.route.params.memberSeq);
 	console.log("## Signup01 params ::: ", props.route.params);
 
-	const [orgJobFileUrl, setOrgJobFileUrl] = React.useState<any>(null);
-	const [orgEduFileUrl, setOrgEduFileUrl] = React.useState<any>(null);
-	const [orgIncomeFileUrl, setOrgIncomeFileUrl] = React.useState<any>(null);
-	const [orgAssetFileUrl, setOrgAssetFileUrl] = React.useState<any>(null);
-	const [orgSnsFileUrl, setOrgSnsFileUrl] = React.useState<any>(null);
-	const [orgVehiceFileUrl, setOrgVehiceFileUrl] = React.useState<any>(null);
-
-	let [jobItem, setJobItem] = React.useState('');
-	let [eduItem, setEduItem] = React.useState('');
-	let [snsItem, setSnsItem] = React.useState('');
-	let [vehiceItem, setVehiceItem] = React.useState('');
-
-	let jobFileData = { uri : "", name : "", type : "" }
-	let eduFileData = { uri : "", name : "", type : "" }
-	let incomeFileData = { uri : "", name : "", type : "" }
-	let assetFileData = { uri : "", name : "", type : "" }
-	let snsFileData = { uri : "", name : "", type : "" }
-	let vehiceFileData = { uri : "", name : "", type : "" }
-
-	/* const {id}  = props.route.params;
-	const {name} = props.route.params;
-	const {age}  = props.route.params;
-	const {gender}  = props.route.params;
-	const {hp}  = props.route.params; */
+	const [secondData, setSecondData] = React.useState({
+		orgJobFileUrl: ''
+		, orgEduFileUrl: ''
+		, orgIncomeFileUrl: ''
+		, orgAssetFileUrl: ''
+		, orgSnsFileUrl: ''
+		, orgVehicleFileUrl: ''
+		, jobItem: ''
+		, eduItem: ''
+		, snsItem: ''
+		, vehicleItem: ''
+		, jobFile: { uri : "", name : "", type : ""	}
+		, eduFile: { uri : "", name : "", type : ""	}
+		, incomeFile: { uri : "", name : "", type : ""	}
+		, assetFile: { uri : "", name : "", type : ""	}
+		, snsFile: { uri : "", name : "", type : ""	}
+		, vehicleFile: { uri : "", name : "", type : ""	}
+	});
 
 	// 직업 Pop
 	const job_modalizeRef = useRef<Modalize>(null);
@@ -85,43 +76,73 @@ export const Signup01 = (props : Props) => {
 	const sns_onClose = () => {	sns_modalizeRef.current?.close(); };
 
 	// 차량 Pop
-	const vehice_modalizeRef = useRef<Modalize>(null);
-	const vehice_onOpen = () => { vehice_modalizeRef.current?.open(); };
-	const vehice_onClose = () => {	vehice_modalizeRef.current?.close(); };
+	const vehicle_modalizeRef = useRef<Modalize>(null);
+	const vehicle_onOpen = () => { vehicle_modalizeRef.current?.open(); };
+	const vehicle_onClose = () => {	vehicle_modalizeRef.current?.close(); };
 
 
 	// 직업 파일 callBack 함수
 	const jobFileCallBack = ( uri:string, fileName:string, fileSize: number, type: string, item: string) => {
-		jobFileData.uri = uri; jobFileData.name = fileName;	jobFileData.type = type;
-		setJobItem(item);
+		if((uri != null && uri != '') || item != '') {
+			setSecondData({
+				...secondData
+				, jobItem: item
+				, jobFile: {uri: uri, name: fileName, type: type}
+			});
+		}
 	};
 
 	// 학위 파일 callBack 함수
 	const eduFileCallBack = ( uri:string, fileName:string, fileSize: number, type: string, item: string) => {
-		eduFileData.uri = uri; eduFileData.name = fileName;	eduFileData.type = type;
-		setEduItem(item);
+		if((uri != null && uri != '') || item != '') {
+			setSecondData({
+				...secondData
+				, eduItem: item
+				, eduFile: {uri: uri, name: fileName, type: type}
+			});	
+		}
 	};
 
 	// 소득 파일 callBack 함수
 	const incodeFileCallBack = ( uri:string, fileName:string, fileSize: number, type: string, item: string) => {
-		incomeFileData.uri = uri; incomeFileData.name = fileName; incomeFileData.type = type;
+		if((uri != null && uri != '') || item != '') {
+			setSecondData({
+				...secondData
+				, incomeFile: {uri: uri, name: fileName, type: type}
+			});
+		}
 	};
 
 	// 자산 파일 callBack 함수
 	const assetFileCallBack = ( uri:string, fileName:string, fileSize: number, type: string, item: string) => {
-		assetFileData.uri = uri; assetFileData.name = fileName;	assetFileData.type = type;
+		if((uri != null && uri != '') || item != '') {
+			setSecondData({
+				...secondData
+				, assetFile: {uri: uri, name: fileName, type: type}
+			});
+		}
 	};
 
 	// SNS 파일 callBack 함수
 	const snsFileCallBack = ( uri:string, fileName:string, fileSize: number, type: string, item: string) => {
-		snsFileData.uri = uri; snsFileData.name = fileName;	snsFileData.type = type;
-		setSnsItem(item);
+		if((uri != null && uri != '') || item != '') {
+			setSecondData({
+				...secondData
+				, snsItem: item
+				, snsFile: {uri: uri, name: fileName, type: type}
+			});	
+		}
 	};
 
 	// 차량 파일 callBack 함수
-	const vehiceFileCallBack = ( uri:string, fileName:string, fileSize: number, type: string, item: string) => {
-		vehiceFileData.uri = uri; vehiceFileData.name = fileName;	vehiceFileData.type = type;
-		setVehiceItem(item);
+	const vehicleFileCallBack = ( uri:string, fileName:string, fileSize: number, type: string, item: string) => {
+		if((uri != null && uri != '') || item != '') {
+			setSecondData({
+				...secondData
+				, vehicleItem: item
+				, vehicleFile: {uri: uri, name: fileName, type: type}
+			});	
+		}
 	};
 
 
@@ -129,39 +150,118 @@ export const Signup01 = (props : Props) => {
 	 * 최초 실행
 	 */
 	React.useEffect(() => {
+		getMemberProfileSecondAuth();
+	}, [props.route]);
 
-		// 인증 정보 조회
-		axios.post('http://211.104.55.151:8080/join/selectMemberSecondAuth/', {
-			member_seq : props.route.params.memberSeq
-		})
-		.then(function (response) {
-			console.log("response ::: " + JSON.stringify(response.data));
-	
-			if(null != response.data.authList) {
-				console.log("authList ::: ", response.data.authList);
-	
-				response.data?.authList?.map(({ file_gubun, file_name, file_path }: { file_gubun: any, file_name: any, file_path: any }) => {
-					console.log("file_name ::: ", file_name);
-					console.log("file_path ::: ", file_path);
+	// 프로필 2차 인증 정보 조회 함수
+	const getMemberProfileSecondAuth = async () => {
 
-					const localDomain = 'http://211.104.55.151:8080/uploads';
-
-					if(file_gubun == 'JOB') { setOrgJobFileUrl(localDomain + file_path + file_name); }
-					else if(file_gubun == 'EDU') { setOrgEduFileUrl(localDomain + file_path + file_name); }
-					else if(file_gubun == 'INCOME') { setOrgIncomeFileUrl(localDomain + file_path + file_name); }
-					else if(file_gubun == 'ASSET') { setOrgAssetFileUrl(localDomain + file_path + file_name); }
-					else if(file_gubun == 'SNS') { setOrgSnsFileUrl(localDomain + file_path + file_name); }
-					else if(file_gubun == 'VEHICE') { setOrgVehiceFileUrl(localDomain + file_path + file_name); }
-				});
+		const result = await axios.post(properties.api_domain + '/member/getMemberProfileSecondAuth', {
+			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
+			, 'member_seq' : String(await properties.get_json_data('member_seq'))
+		}
+		, {
+			headers: {
+				'jwt-token' : String(await properties.jwt_token())
 			}
 		})
+		.then(function (response) {
+			console.log("getMemberProfileSecondAuth data :::: ", response.data);
+
+			let jobFileUrl:any = '';
+			let eduFileUrl:any = '';
+			let incomeFileUrl:any = '';
+			let assetFileUrl:any = '';
+			let snsFileUrl:any = '';
+			let vehicleFileUrl:any = '';
+
+			let o_jobItem:any = '';
+			let o_eduItem:any = '';
+			let o_snsItem:any = '';
+			let o_vehicleItem:any = '';
+
+			const imgUrl = properties.api_domain + '/uploads';
+
+			if(null != response.data.authList) {
+				response.data?.authList?.map(({ file_gubun, file_name, file_path }: { file_gubun: any, file_name: any, file_path: any }) => {
+					if(file_gubun == 'F_JOB') { jobFileUrl = imgUrl + file_path + file_name; }
+					else if(file_gubun == 'F_EDU') { eduFileUrl = imgUrl + file_path + file_name; }
+					else if(file_gubun == 'F_INCOME') { incomeFileUrl = imgUrl + file_path + file_name; }
+					else if(file_gubun == 'F_ASSET') { assetFileUrl = imgUrl + file_path + file_name; }
+					else if(file_gubun == 'F_SNS') { snsFileUrl = imgUrl + file_path + file_name; }
+					else if(file_gubun == 'F_VEHICLE') { vehicleFileUrl = imgUrl + file_path + file_name; }
+				});
+			}
+
+			if(null != response.data.addInfo) {
+				o_jobItem = response.data.addInfo.job_name;
+				o_eduItem = response.data.addInfo.edu_ins;
+				o_snsItem = response.data.addInfo.instagram_id;
+				o_vehicleItem = response.data.addInfo.vehicle;
+			}
+
+			setSecondData({
+				...secondData
+				, orgJobFileUrl: jobFileUrl
+				, orgEduFileUrl: eduFileUrl
+				, orgIncomeFileUrl: incomeFileUrl
+				, orgAssetFileUrl: assetFileUrl
+				, orgSnsFileUrl: snsFileUrl
+				, orgVehicleFileUrl: vehicleFileUrl
+				, jobItem: o_jobItem
+				, eduItem: o_eduItem
+				, snsItem: o_snsItem
+				, vehicleItem: o_vehicleItem
+			})
+
+		})
 		.catch(function (error) {
-			console.log(error);
+			console.log('error ::: ' , error);
+		});
+	}
+
+	// 인증 정보 저장 함수
+	const saveSecondAuth = async () => {
+		const data = new FormData();
+
+		let mbrSeq = String(await properties.get_json_data('member_seq'));
+
+		data.append("memberSeq", mbrSeq);
+		data.append("job_name", secondData.jobItem);
+		data.append("edu_ins", secondData.eduItem);
+		data.append("instagram_id", secondData.snsItem);
+		data.append("vehicle", secondData.vehicleItem);
+
+		if(secondData.jobFile.uri != '') 		{ data.append("jobFile", secondData.jobFile); }
+		if(secondData.eduFile.uri != '') 		{ data.append("eduFile", secondData.eduFile); }
+		if(secondData.incomeFile.uri != '') 	{ data.append("incomeFile", secondData.incomeFile); }
+		if(secondData.assetFile.uri != '') 		{ data.append("assetFile", secondData.assetFile); }
+		if(secondData.snsFile.uri != '') 		{ data.append("snsFile", secondData.snsFile); }
+		if(secondData.vehicleFile.uri != '') 	{ data.append("vehicleFile", secondData.vehicleFile); }
+
+		console.log("data ::: ", data);	
+
+		fetch(properties.api_domain  + '/join/insertMemberSecondAuth/', {
+			method: 'POST',
+			headers: {
+				"Content-Type": "multipart/form-data",
+				'jwt-token' : String(await properties.jwt_token())
+			},
+			body: data,
+		})
+		.then((response) => response.json())
+		.then((response) => {
+			console.log('response :::: ', response);
+			navigation.navigate('Signup02', {
+				memberSeq : props.route.params.memberSeq
+				, gender : response.member.gender
+			});
+		})
+		.catch((error) => {
+			console.log('error', error);
 		});
 
-	}, []);
-	
-	
+	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -314,7 +414,7 @@ export const Signup01 = (props : Props) => {
 							</TouchableOpacity>
 
 							<TouchableOpacity style={styles.halfItemRight}
-												onPress={vehice_onOpen}>
+												onPress={vehicle_onOpen}>
 								<View style={styles.badgeBox}>
 									<SpaceView mb={16}>
 										<Image source={ICON.vehicle} style={styles.iconSize40} />
@@ -341,45 +441,7 @@ export const Signup01 = (props : Props) => {
 					<CommonBtn 
 							value={'다음 (2/4)'} 
 							type={'primary'} 
-							onPress={() => {
-								const data = new FormData();
-
-								data.append("memberSeq", props.route.params.memberSeq);
-								data.append("job_name", jobItem);
-								data.append("edu_ins", eduItem);
-								data.append("instagram_id", snsItem);
-								data.append("vehicle", jobItem);
-
-								if(jobFileData.uri != "") {	data.append("jobFile", jobFileData); }
-								if(eduFileData.uri != "") {	data.append("eduFile", eduFileData); }
-								if(incomeFileData.uri != "") {	data.append("incomeFile", incomeFileData); }
-								if(assetFileData.uri != "") {	data.append("assetFile", assetFileData); }
-								if(snsFileData.uri != "") {	data.append("snsFile", snsFileData); }
-								if(vehiceFileData.uri != "") {	data.append("vehiceFile", vehiceFileData); }
-
-								console.log("data ::: ", data);
-
-								fetch('http://211.104.55.151:8080/join/insertMemberSecondAuth/', {
-									method: 'POST',
-									body: data,
-								})
-								.then((response) => response.json())
-								.then((response) => {
-									console.log('response :::: ', response);
-
-									if(response.result_code == "0000") {
-										navigation.navigate('Signup02', {
-											memberSeq : props.route.params.memberSeq
-										});
-									}
-								})
-								.catch((error) => {
-									console.log('error', error);
-								});
-
-
-								//navigation.navigate('Signup02');
-							}}
+							onPress={() => { saveSecondAuth(); }}
 					/>
 				</SpaceView>
 			</ScrollView>
@@ -394,7 +456,7 @@ export const Signup01 = (props : Props) => {
 				handleStyle={modalStyle.modalHandleStyle}
 				modalStyle={modalStyle.modalContainer}>
 
-				<SecondAuthPopup type={'JOB'} onCloseFn={job_onClose} callbackFn={jobFileCallBack} orgFileUrl={orgJobFileUrl} itemTxt={jobItem}  />
+				<SecondAuthPopup type={'JOB'} onCloseFn={job_onClose} callbackFn={jobFileCallBack} orgFileUrl={secondData.orgJobFileUrl} itemTxt={secondData.jobItem}  />
 			</Modalize>
 
 			{/* ###############################################
@@ -406,7 +468,7 @@ export const Signup01 = (props : Props) => {
 				handleStyle={modalStyle.modalHandleStyle}
 				modalStyle={modalStyle.modalContainer}>
 
-				<SecondAuthPopup type={'EDU'} onCloseFn={edu_onClose} callbackFn={eduFileCallBack} orgFileUrl={orgEduFileUrl} itemTxt={eduItem} />
+				<SecondAuthPopup type={'EDU'} onCloseFn={edu_onClose} callbackFn={eduFileCallBack} orgFileUrl={secondData.orgEduFileUrl} itemTxt={secondData.eduItem} />
 			</Modalize>
 
 			{/* ###############################################
@@ -418,7 +480,7 @@ export const Signup01 = (props : Props) => {
 				handleStyle={modalStyle.modalHandleStyle}
 				modalStyle={modalStyle.modalContainer}>
 
-				<SecondAuthPopup type={'INCOME'} onCloseFn={income_onClose} callbackFn={incodeFileCallBack} orgFileUrl={orgIncomeFileUrl} itemTxt={''} />
+				<SecondAuthPopup type={'INCOME'} onCloseFn={income_onClose} callbackFn={incodeFileCallBack} orgFileUrl={secondData.orgIncomeFileUrl} itemTxt={''} />
 			</Modalize>
 
 			{/* ###############################################
@@ -430,7 +492,7 @@ export const Signup01 = (props : Props) => {
 				handleStyle={modalStyle.modalHandleStyle}
 				modalStyle={modalStyle.modalContainer}>
 
-				<SecondAuthPopup type={'ASSET'} onCloseFn={asset_onClose} callbackFn={assetFileCallBack} orgFileUrl={orgAssetFileUrl} itemTxt={''} />
+				<SecondAuthPopup type={'ASSET'} onCloseFn={asset_onClose} callbackFn={assetFileCallBack} orgFileUrl={secondData.orgAssetFileUrl} itemTxt={''} />
 			</Modalize>
 
 			{/* ###############################################
@@ -442,19 +504,19 @@ export const Signup01 = (props : Props) => {
 				handleStyle={modalStyle.modalHandleStyle}
 				modalStyle={modalStyle.modalContainer}>
 
-				<SecondAuthPopup type={'SNS'} onCloseFn={sns_onClose} callbackFn={snsFileCallBack} orgFileUrl={orgSnsFileUrl} itemTxt={snsItem} />
+				<SecondAuthPopup type={'SNS'} onCloseFn={sns_onClose} callbackFn={snsFileCallBack} orgFileUrl={secondData.orgSnsFileUrl} itemTxt={secondData.snsItem} />
 			</Modalize>
 
 			{/* ###############################################
 								차량 인증 팝업
 			############################################### */}
 			<Modalize
-				ref={vehice_modalizeRef}
+				ref={vehicle_modalizeRef}
 				adjustToContentHeight={true}
 				handleStyle={modalStyle.modalHandleStyle}
 				modalStyle={modalStyle.modalContainer}>
 
-				<SecondAuthPopup type={'VEHICE'} onCloseFn={vehice_onClose} callbackFn={vehiceFileCallBack} orgFileUrl={orgVehiceFileUrl} itemTxt={vehiceItem} />
+				<SecondAuthPopup type={'VEHICLE'} onCloseFn={vehicle_onClose} callbackFn={vehicleFileCallBack} orgFileUrl={secondData.orgVehicleFileUrl} itemTxt={secondData.vehicleItem} />
 			</Modalize>
 
 

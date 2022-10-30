@@ -17,6 +17,7 @@ import {
 	unlink,
 } from '@react-native-seoul/kakao-login';
 import { DocumentDirectoryPath } from 'react-native-fs';
+import * as properties from 'utils/properties';
 
 export const Login = () => {
 
@@ -34,24 +35,30 @@ export const Login = () => {
 		const profile = {
 			id : "test2",
 			//id : "2233743623",
-			name : "김연우",
+			name : "손흥민",
 			gender : "M",
-			age : '34',
-			hp : '010-1234-5678'
+			age : '31',
+			hp : '010-1234-5678',
+			birthday : '',
+			ci: ''
 		};
 
 		console.log('profile :: ' , profile);
 
 		//setKakaoResult(JSON.stringify(token));
 
-		axios.post('http://211.104.55.151:8080/join/getKakaoIdchk/', {
+		axios.post(properties.api_domain + '/join/getKakaoIdchk/', {
 			kakaoId : profile.id
 		})
 		.then(function (response) {
-			console.log("response.data ::: ", response.data.memberImgList);
+			console.log("response.data ::: ", response.data);
 
 			const resultCode = response.data.result_code;
-			const status = response.data.status;
+			const status = response.data.base.status;
+			const joinStatus = response.data.base.join_status;
+
+			console.log("resultCode ::: ", response.data.result_code);
+			console.log("status ::: ", response.data.base.status);
 
 			/*
 			 * ## 인증 결과 코드 정의
@@ -66,25 +73,28 @@ export const Login = () => {
 						navigation.navigate('Approval');
 						//navigation.navigate('Signup02', { memberSeq : response.data.member_seq });
 					} else {
-						if(null != response.data.join_status) {
-							if(response.data.join_status == "01") {
-								navigation.navigate('Signup01', { memberSeq : response.data.member_seq });
-							} else if(response.data.join_status == "02") {
-								navigation.navigate('Signup02', { memberSeq : response.data.member_seq });
-							} else if(response.data.join_status == "03") {
-								navigation.navigate('Signup03', { memberSeq : response.data.member_seq });
-							} else if(response.data.join_status == "04") {
+						if(null != response.data.base.join_status) {
+							if(joinStatus == "01") {
+								navigation.navigate('Signup01', { memberSeq : response.data.base.member_seq });
+							} else if(joinStatus == "02") {
+								navigation.navigate('Signup02', { 
+									memberSeq : response.data.base.member_seq
+									, gender : response.data.base.gender
+								});
+							} else if(joinStatus == "03") {
+								navigation.navigate('Signup03', { memberSeq : response.data.base.member_seq });
+							} else if(joinStatus == "04") {
 								navigation.navigate('Approval');
 							}
 						}
 					}
 				} else {
 					navigation.navigate('Signup00', { 
-						kakaoId : profile.id
+						ci : profile.ci
+						, birthday : profile.birthday
 						, name : profile.name
 						, gender : profile.gender
-						, age : profile.age
-						, hp : profile.hp
+						, mobile : profile.hp
 					});
 				}
 
@@ -161,39 +171,25 @@ export const Login = () => {
 				<SpaceView mb={16}>
 					<CommonBtn value={'로그인'} 
 								onPress={() => {
-									//navigation.navigate('Main', { screen: 'Roby' });
+									navigation.navigate('Login01');
 
-									signInWithKakao();
+									//signInWithKakao();
 								}}/>
 				</SpaceView>
-				<CommonBtn value={'카카오로 시작하기'} 
+				{/* <CommonBtn value={'카카오로 시작하기'} 
 							type={'kakao'} 
 							icon={ICON.kakao} 
 							iconSize={24} 
 							onPress={() => {
-
 								signInWithKakao();
-
-								/*axios.post('http://192.168.35.29:8080/member/login/', {
-									kakao_id: 'kakaotestid'
-								})
-								.then(function (response) {
-									console.log(response);
-								})
-								.catch(function (error) {
-									console.log(error);
-								});*/
-
-								//navigation.navigate('Signup0');
 							}}
-				/>
+				/> */}
 
-
-				<CommonBtn value={'본인인증'} 
+				<CommonBtn value={'회원가입'}
+							type={'kakao'} 
 							iconSize={24} 
 							onPress={() => {
-								console.log('test');
-								
+								navigation.navigate('NiceAuth');
 							}}
 				/>
 

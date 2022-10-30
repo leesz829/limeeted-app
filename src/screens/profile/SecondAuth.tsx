@@ -177,16 +177,16 @@ export const SecondAuth = () => {
 			let o_snsItem:any = '';
 			let o_vehicleItem:any = '';
 
-			const localDomain = properties.api_domain + '/uploads';
+			const imgUrl = properties.api_domain + '/uploads';
 
 			if(null != response.data.authList) {
 				response.data?.authList?.map(({ file_gubun, file_name, file_path }: { file_gubun: any, file_name: any, file_path: any }) => {
-					if(file_gubun == 'F_JOB') { jobFileUrl = localDomain + file_path + file_name; }
-					else if(file_gubun == 'F_EDU') { eduFileUrl = localDomain + file_path + file_name; }
-					else if(file_gubun == 'F_INCOME') { incomeFileUrl = localDomain + file_path + file_name; }
-					else if(file_gubun == 'F_ASSET') { assetFileUrl = localDomain + file_path + file_name; }
-					else if(file_gubun == 'F_SNS') { snsFileUrl = localDomain + file_path + file_name; }
-					else if(file_gubun == 'F_VEHICLE') { vehicleFileUrl = localDomain + file_path + file_name; }
+					if(file_gubun == 'F_JOB') { jobFileUrl = imgUrl + file_path + file_name; }
+					else if(file_gubun == 'F_EDU') { eduFileUrl = imgUrl + file_path + file_name; }
+					else if(file_gubun == 'F_INCOME') { incomeFileUrl = imgUrl + file_path + file_name; }
+					else if(file_gubun == 'F_ASSET') { assetFileUrl = imgUrl + file_path + file_name; }
+					else if(file_gubun == 'F_SNS') { snsFileUrl = imgUrl + file_path + file_name; }
+					else if(file_gubun == 'F_VEHICLE') { vehicleFileUrl = imgUrl + file_path + file_name; }
 				});
 			}
 
@@ -219,14 +219,11 @@ export const SecondAuth = () => {
 
 	// 인증 정보 저장 함수
 	const saveSecondAuth = async () => {
-
-		console.log('secondData ::: ', secondData);
-
 		const data = new FormData();
 
-		let mbrNo = String(await properties.get_json_data('member_seq'));
+		let mbrSeq = String(await properties.get_json_data('member_seq'));
 
-		data.append("memberSeq", mbrNo);
+		data.append("memberSeq", mbrSeq);
 		data.append("job_name", secondData.jobItem);
 		data.append("edu_ins", secondData.eduItem);
 		data.append("instagram_id", secondData.snsItem);

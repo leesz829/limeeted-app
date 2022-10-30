@@ -3,6 +3,7 @@ import BottomNavigation from './BottomNavigation';
 import StartPage from 'screens/startpage';
 import { StackParamList } from '@types';
 import { Login } from 'screens/login';
+import { Login01 } from 'screens/login/login';
 import { NiceAuth } from 'screens/login/niceAuth';
 import { Title00 } from 'screens/title';
 import { Signup00 } from 'screens/signup';
@@ -21,6 +22,7 @@ import { Board1 } from 'screens/commonpopup/Board1';
 import { Preference } from 'screens/commonpopup/Preference';
 import { Profile } from 'screens/profile/Profile';
 import { Profile1 } from 'screens/profile/Profile1';
+import { Profile2 } from 'screens/profile/Profile2';
 import { SecondAuth } from 'screens/profile/SecondAuth';
 import { Approval } from 'screens/signup/Approval';
 import { Sample } from 'screens/sample/sample';
@@ -55,6 +57,13 @@ const StackNavigation = () => {
 			<Stack.Screen
 				name="Login"
 				component={Login}
+				options={{
+					headerShown: false,
+				}}
+			/>
+			<Stack.Screen
+				name="Login01"
+				component={Login01}
 				options={{
 					headerShown: false,
 				}}
@@ -164,10 +173,16 @@ const StackNavigation = () => {
 					headerShown: false,
 				}}
 			/>
-
 			<Stack.Screen
 				name="Profile1"
 				component={Profile1}
+				options={{
+					headerShown: false,
+				}}
+			/>
+			<Stack.Screen
+				name="Profile2"
+				component={Profile2}
 				options={{
 					headerShown: false,
 				}}

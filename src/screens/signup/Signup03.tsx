@@ -13,7 +13,7 @@ import { RouteProp, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import axios from 'axios';
 import { RadioCheckBox_2 } from 'component/RadioCheckBox_2';
-import { api_domain } from 'utils/properties';
+import * as properties from 'utils/properties';
 
 
 /* ################################################################################################################
@@ -64,7 +64,7 @@ export const Signup03 = (props : Props) => {
 	React.useEffect(() => {
 
 		// 회원 관심사 정보 조회
-		axios.post(api_domain + '/join/selectMemberIntro/', {
+		axios.post(properties.api_domain + '/join/selectMemberIntro/', {
 			member_seq : props.route.params.memberSeq
 		})
 		.then(function (response) {
@@ -185,7 +185,7 @@ export const Signup03 = (props : Props) => {
 									console.log("nickname :::: ", nickname);
 									console.log("interestJsonArr :::: ", interestJsonArr);
 
-									axios.post('http://211.104.55.151:8080/join/insertMemberIntro/', {
+									axios.post(properties.api_domain + '/join/insertMemberIntro/', {
 										member_seq : props.route.params.memberSeq,
 										nickname : nickname,
 										introduce_comment: comment,

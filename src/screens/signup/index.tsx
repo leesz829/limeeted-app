@@ -24,11 +24,22 @@ interface Props {
 export const Signup00 = (props : Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 
-	const [id, setId] = React.useState(props.route.params.kakaoId);
+	const [ci, setCi] = React.useState(props.route.params.ci);
+	const [id, setId] = React.useState('');
+	const [password, setPassword] = React.useState('');
+	const [passwordChk, setPasswordChk] = React.useState('');
 	const [name, setName] = React.useState(props.route.params.name);
-	const [age, setAge] = React.useState(props.route.params.age);
+	const [age, setAge] = React.useState(function(){
+		let age_d;
+		let today = new Date();
+		let birthDay = props.route.params.birthday;
+		let birthYear = birthDay.substring(0, 4);
+		age_d = Number(today.getFullYear()) - Number(birthYear) + 1;
+		return age_d.toString();
+	});
 	const [gender, setGender] = React.useState(props.route.params.gender);
-	const [hp, setHp] = React.useState(props.route.params.hp);
+	const [mobile, setMobile] = React.useState(props.route.params.mobile);
+	const [birthday, setBirthday] = React.useState(props.route.params.birthday);
 
 	// 성별 항목 목록
 	const genderItemList = [
@@ -45,11 +56,11 @@ export const Signup00 = (props : Props) => {
 				<SpaceView mb={24}>
 					<CommonText>
 						본인 인증을 기반으로 회원님의 정보가{'\n'}
-						자동입력됩니다..
+						자동입력됩니다.
 					</CommonText>
 				</SpaceView>
 
-				{/* <CommonInput 
+				<CommonInput 
 						label="아이디" 
 						value={id} 
 						onChangeText={id => setId(id)} />
@@ -61,18 +72,36 @@ export const Signup00 = (props : Props) => {
 
 					<SpaceView ml={8}>
 						<CommonText color={ColorType.gray6666}>
-							카카오를 통해 로그인하여, 비밀번호 입력없이 편하게{'\n'}
-							이용하실 수 있습니다.
+							아이디는 이메일로 입력해 주세요.
 						</CommonText>
 					</SpaceView>
-				</View> */}
+				</View>
+
+				<SpaceView mb={24}>
+					<CommonInput 
+							label="비밀번호" 
+							value={password} 
+							onChangeText={password => setPassword(password)}
+							isMasking={true}
+							maxLength={20} />
+				</SpaceView>
+
+				<SpaceView mb={24}>
+					<CommonInput 
+							label="비밀번호 확인" 
+							value={passwordChk} 
+							onChangeText={passwordChk => setPasswordChk(passwordChk)}
+							isMasking={true}
+							maxLength={20} />
+				</SpaceView>
 
 				<SpaceView mb={24}>
 					<CommonInput 
 							label="이름" 
 							value={name} 
 							onChangeText={name => setName(name)}
-							maxLength={5} />
+							maxLength={5}
+							disabled={true} />
 				</SpaceView>
 
 				<SpaceView mb={24}>
@@ -83,37 +112,23 @@ export const Signup00 = (props : Props) => {
 									value={age} 
 									keyboardType="number-pad"
 									onChangeText={age => setAge(age)}
+									disabled={true}
 									maxLength={2} />
 						</View>
 						<View style={styles.halfItemRight}>
-							{/* <CommonInput 
+							<CommonInput 
 									label="성별" 
-									value={gender} 
-									onChangeText={gender => setGender(gender)} /> */}
-							{/* <CommonSelect label={'성별'}  /> */}
+									value={gender == "M" ? "남자" : "여자"}
+									disabled={true} />
 
-							<View style={selectStyles.selectContainer}>
+							{/* <View style={selectStyles.selectContainer}>
 								<View>
 									<CommonSelect label={'성별'} items={genderItemList} selectValue={gender} callbackFn={genderCallbackFn} />
-
-									{/* <Text style={selectStyles.labelStyle}>성별</Text>
-									<View style={selectStyles.inputContainer}>
-										<RNPickerSelect
-											style={pickerSelectStyles}
-											useNativeAndroidPickerStyle={false}
-											onValueChange={gender => setGender(gender)}
-											value={'M'}
-											items={[
-												{ label: '남자', value: 'M' },
-												{ label: '여자', value: 'F' }
-											]}
-										/>
-									</View> */}
 								</View>
 								<View style={selectStyles.selectImgContainer}>
 									<Image source={ICON.arrRight} style={selectStyles.icon} />
 								</View>
-							</View>
+							</View> */}
 
 						</View>
 					</View>
@@ -122,10 +137,11 @@ export const Signup00 = (props : Props) => {
 				<SpaceView mb={24}>
 					<CommonInput 
 							label="전화번호" 
-							value={hp} 
-							onChangeText={hp => setHp(hp)} 
+							value={mobile} 
+							onChangeText={mobile => setMobile(mobile)} 
 							keyboardType="number-pad"
 							maxLength={13}
+							disabled={true}
 				/>
 				</SpaceView>
 				<SpaceView mb={24}>
@@ -133,13 +149,35 @@ export const Signup00 = (props : Props) => {
 								type={'primary'} 
 								onPress={() => {
 
+									let chk = false;
+
+									if(id == '') {
+										Alert.alert("알림",	"아이디를 입력해 주세요.",	[{text: "확인"}]);
+										return;
+									}
+									if(password == '') {
+										Alert.alert("알림",	"비밀번호를 입력해 주세요.",	[{text: "확인"}]);
+										return;
+									}
+									if(passwordChk == '') {
+										Alert.alert("알림",	"비밀번호 확인을 입력해 주세요.",	[{text: "확인"}]);
+										return;
+									}
+									if(password != passwordChk) {
+										Alert.alert("알림",	"비밀번호 확인이 맞지 않습니다.",	[{text: "확인"}]);
+										return;
+									}
+
 									axios.post(properties.api_domain + '/join/insertMemberInfo/', {
-										kakao_id : id,
-										nickname: name,
-										name: name,
-										age : age,
-										gender : gender,
-										phone_number : hp
+										kakao_id : id
+										, password : password
+										, nickname : name
+										, name: name
+										, age : age
+										, gender : gender
+										, phone_number : mobile
+										, ci : ci
+										, birthday : birthday
 									})
 									.then(function (response) {
 										console.log(response.data.result_code);
@@ -153,8 +191,6 @@ export const Signup00 = (props : Props) => {
 									.catch(function (error) {
 										console.log(error);
 									});
-
-									//navigation.navigate('Signup1');
 								}}
 					/>
 				</SpaceView>

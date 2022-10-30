@@ -21,18 +21,20 @@ export type StackParamList = {
 	Login: undefined;
 	Title00: undefined;
 	NiceAuth: undefined;
+	Login01: undefined;
 	Signup00: {
-		kakaoId: string;
+		ci: string;
 		name: string;
 		gender: string;
-		age: string;
-		hp: string;
+		mobile: string;
+		birthday: string;
 	};
 	Signup01: {
 		memberSeq: Number;
 	};
 	Signup02: {
 		memberSeq: Number;
+		gender: string;
 	};
 	Signup03: {
 		memberSeq: Number;
@@ -72,6 +74,7 @@ export type StackParamList = {
 		want_person1: string;
 		want_person2: string;
 		want_person3: string;
+		gender: string;
 	};
 	PreferencePopup: undefined;
 	Profile: {
@@ -84,15 +87,23 @@ export type StackParamList = {
 	Sample: undefined;
 	Profile1: {
 		imgList: [{
-			order_seq: Number
+			member_img_seq: Number
+			, order_seq: Number
 			, file_name: String
 			, file_path: String
 		}];
 		authList: [{
 			second_auth_code: string
 		}];
+		interviewList: [{
+			common_code: string
+			, code_name: string
+			, member_interview_seq: string
+			, answer: string
+		}];
 	};
 	SecondAuth: undefined;
+	Profile2: undefined;
 };
 
 export type BottomParamList = {
@@ -101,11 +112,20 @@ export type BottomParamList = {
 	};
 	Mailbox: undefined;
 	Cashshop: undefined;
-	Storage: undefined;
+	Storage: {
+		resLikeList: [
+			[{ req_member_seq : '', img_path : '', dday : Number, special_interest_yn : ''}]
+		];
+		reqLikeList: [
+			[{ req_member_seq : '', img_path : '', dday : Number, special_interest_yn : ''}]
+		];
+		matchTrgtList: [
+			[{ req_member_seq : '', img_path : '', dday : Number, special_interest_yn : ''}]
+		];
+	};
 	Live: undefined;
 	LiveSearch: undefined;
 	Matching: undefined;
-	Profile2: undefined;
 	Shop: undefined;
 	StorageProfile: undefined;
 };

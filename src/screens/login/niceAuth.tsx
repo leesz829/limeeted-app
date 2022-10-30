@@ -4,6 +4,7 @@ import { jwt_token, api_domain} from 'utils/properties';
 import { useNavigation } from '@react-navigation/native';
 import { WebView } from 'react-native-webview'; 
 import axios from 'axios';
+import { Alert } from 'react-native';
 
 export const NiceAuth = () => {
 
@@ -11,18 +12,47 @@ export const NiceAuth = () => {
 	
 	const [niceWebViewBody, setNiceWebViewBody] = React.useState(String);
 
-	const tt = () => {
+	/* const tt = () => {
 		navigation.navigate('Main', { 
 			screen: 'Storage'
 		});
-	}
+	} */
 
 	 /* web -> native */
-	const webToNative = (e:string) => {
-		console.log('webToNative :::: ', e);
-		navigation.navigate('Main', { 
+	const webToNative = (data:any) => {
+		console.log('webToNative data :::: ', data);
+
+		let dataJson = JSON.parse(data)
+
+		if(null != dataJson) {
+			if(dataJson.dupYn == 'Y') {
+				Alert.alert(
+					"알림",
+					"이미 등록된 회원 입니다.",
+					[
+						{
+						text: "확인",
+						onPress: () => { navigation.navigate('Login') },
+						}
+					]
+				);
+			} else {
+				navigation.navigate('Signup00', { 
+					ci : dataJson.ci
+					, name : dataJson.name
+					, gender : dataJson.gender
+					, mobile : dataJson.mobile
+					, birthday : dataJson.birthday
+				});
+			}
+		}
+
+
+
+
+		/* navigation.navigate('Main', { 
 			screen: 'Storage'
-		});
+		}); */
 	}
 
 	const createNiceWebViewBody = async () => {

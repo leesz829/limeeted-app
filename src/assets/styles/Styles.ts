@@ -41,6 +41,14 @@ export const styles = StyleSheet.create({
 		lineHeight: 22,
 		color: Color.black2222,
 	},
+	inputTextStyle_type02: {
+		fontFamily: 'AppleSDGothicNeoM',
+		fontSize: 14,
+		lineHeight: 22,
+		width: width - 150,
+		color: Color.white,
+		flexShrink:1
+	},
 	bottomBtnContainer: {
 		width: width - 32,
 		position: 'absolute',
@@ -228,9 +236,9 @@ export const styles = StyleSheet.create({
 	},
 
 	profileTmpImg: {
-		width: 140,
-		height: 140,
-		borderRadius: 20,
+		width: 160,
+		height: 160,
+		borderRadius: 16,
 	},
 
 	profilePenContainer: {
@@ -364,6 +372,8 @@ export const layoutStyle = StyleSheet.create({
 	textLeft: { textAlign: 'left' },
 	textRight: { textAlign: 'right' },
 	lineFontGray: { textDecorationLine: 'underline' },
+	mb10: { marginBottom: 10},
+	mb20: { marginBottom: 20}
 });
 
 export const modalStyle = StyleSheet.create({

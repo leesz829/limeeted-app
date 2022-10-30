@@ -10,4 +10,5 @@ export const Color = {
 	grayAAAA: '#aaaaaa',
 	paleBlue: '#eff3fe',
 	red: '#ff0000',
+	white : '#fff',
 };

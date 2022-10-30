@@ -11,6 +11,7 @@ import { Roby } from 'screens/roby';
 import { Shop } from 'screens/shop';
 import { Storage } from 'screens/storage';
 import { StorageProfile } from 'screens/storage/StorageProfile';
+import * as busiUtils from 'utils/business';
 
 import CustomTab from './CustomTab';
 
@@ -40,6 +41,13 @@ const BottomNavigation = () => {
 					headerShown: false,
 					tabBarShowLabel: true,
 				}}
+
+				listeners={({navigation}) => ({
+					tabPress: e => {
+						e.preventDefault();
+						//busiUtils.goStoragePage(navigation);
+					}
+				})}
 			/>
 			<Tab.Screen
 				name="Mailbox"
@@ -76,14 +84,6 @@ const BottomNavigation = () => {
 			<Stack.Screen
 				name="Matching"
 				component={Matching}
-				options={{
-					headerShown: false,
-				}}
-			/>
-			
-			<Stack.Screen
-				name="Profile2"
-				component={Profile2}
 				options={{
 					headerShown: false,
 				}}

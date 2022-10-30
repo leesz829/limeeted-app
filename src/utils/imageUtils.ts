@@ -90,11 +90,18 @@ export const START_IMAGE = {
 };
 
 export const PROFILE_IMAGE = {
-	maleTmp1: require('assets/img/tmp/profile_m_01.jpg'),
-	maleTmp2: require('assets/img/tmp/profile_m_02.jpg'),
-	maleTmp3: require('assets/img/tmp/profile_m_03.jpg'),
-	maleTmp4: require('assets/img/tmp/profile_m_04.jpg'),
-	maleTmp5: require('assets/img/tmp/profile_m_05.jpg'),
-	maleTmp6: require('assets/img/tmp/profile_m_06.jpg'),
+	manTmp1: require('assets/img/tmp/profile_m_01.jpg'),
+	manTmp2: require('assets/img/tmp/profile_m_02.jpg'),
+	manTmp3: require('assets/img/tmp/profile_m_03.jpg'),
+	manTmp4: require('assets/img/tmp/profile_m_04.jpg'),
+	manTmp5: require('assets/img/tmp/profile_m_05.jpg'),
+	manTmp6: require('assets/img/tmp/profile_m_06.jpg'),
+	womanTmp1: require('assets/img/tmp/profile_w_01.jpg'),
+	womanTmp2: require('assets/img/tmp/profile_w_02.jpg'),
+	womanTmp3: require('assets/img/tmp/profile_w_03.jpg'),
+	womanTmp4: require('assets/img/tmp/profile_w_04.jpg'),
+	womanTmp5: require('assets/img/tmp/profile_w_05.jpg'),
+	womanTmp6: require('assets/img/tmp/profile_w_06.jpg'),
+	womanTmp7: require('assets/img/tmp/profile_w_07.jpg'),
 	profileM1: require('assets/img/tmp/robby_tmp.jpg'),
 };

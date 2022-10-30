@@ -9,14 +9,12 @@ import { ColorType, StackParamList, BottomParamList, ScreenNavigationProp} from 
 import CommonHeader from 'component/CommonHeader';
 import { layoutStyle, modalStyle, styles } from 'assets/styles/Styles';
 import { CommonText } from 'component/CommonText';
-import { ICON } from 'utils/imageUtils';
 import SpaceView from 'component/SpaceView';
 import { CommonBtn } from 'component/CommonBtn';
 import { CommonSelect } from 'component/CommonSelect';
 import { CommonInput } from 'component/CommonInput';
 import axios from 'axios';
 import * as properties from 'utils/properties';
-import RNPickerSelect from 'react-native-picker-select';
 import { Color } from 'assets/styles/Color';
 
 /* ################################################################################################################
@@ -133,13 +131,9 @@ export const Preference = (props : Props) => {
 						dataList.push(dataMap);
 					});
 
-					if(type == '01') {
-						setJobCdList1(dataList);
-					} else if(type == '02') {
-						setJobCdList2(dataList);
-					} else if(type == '02') {
-						setJobCdList3(dataList);
-					}
+					if(type == '01') { setJobCdList1(dataList);	} 
+					else if(type == '02') { setJobCdList2(dataList); } 
+					else if(type == '03') {	setJobCdList3(dataList); }
 				}
 			}
 		})
@@ -209,16 +203,14 @@ export const Preference = (props : Props) => {
 	const wantPerson3CallbackFn = (value : string) => { setWantPerson3(value); };
 
 	// 첫 렌더링 때 실행
-	/* React.useEffect(() => {
-		if(wantBusiness1 != '') { getJobCodeList('01'); }
-		if(wantBusiness2 != '') { getJobCodeList('02'); }
-		if(wantBusiness3 != '') { getJobCodeList('03'); }
-	}, []); */
+	React.useEffect(() => {
+		console.log('props.route.params.want_person1 ::: ', props.route.params.want_person1);
+	}, []);
 
 	// 업종 상태 관리
 	React.useEffect(() => { if(wantBusiness1 != '' && typeof wantBusiness1 !== 'undefined') { getJobCodeList('01'); } }, [wantBusiness1]);
 	React.useEffect(() => { if(wantBusiness2 != '' && typeof wantBusiness2 !== 'undefined') { getJobCodeList('02'); } }, [wantBusiness2]);
-	React.useEffect(() => { if(wantBusiness3 != '' && typeof wantBusiness3 !== 'undefined') { getJobCodeList('03'); } }, [wantBusiness3]);
+	React.useEffect(() => {  console.log('1212131'); if(wantBusiness3 != '' && typeof wantBusiness3 !== 'undefined') { getJobCodeList('03'); } }, [wantBusiness3]);
 
 	return (
 		<>
@@ -290,7 +282,6 @@ export const Preference = (props : Props) => {
 						<View style={styles.halfItemLeft}>
 							<CommonSelect label={'업종'} items={busiGrpCdList} selectValue={wantBusiness1} callbackFn={busi1CallbackFn} />
 						</View>
-
 						<View style={styles.halfItemRight}>
 							<CommonSelect label={'직업'} items={jobCdList1} selectValue={wantJob1} callbackFn={jobCd1CallbackFn} />
 						</View>
@@ -299,18 +290,16 @@ export const Preference = (props : Props) => {
 						<View style={styles.halfItemLeft}>
 							<CommonSelect label={'업종'} items={busiGrpCdList} selectValue={wantBusiness2} callbackFn={busi2CallbackFn} />
 						</View>
-
 						<View style={styles.halfItemRight}>
-							<CommonSelect label={'직업'} items={jobCdList1} selectValue={wantJob2} callbackFn={jobCd2CallbackFn} />
+							<CommonSelect label={'직업'} items={jobCdList2} selectValue={wantJob2} callbackFn={jobCd2CallbackFn} />
 						</View>
 					</SpaceView>
 					<SpaceView viewStyle={styles.halfContainer}>
 						<View style={styles.halfItemLeft}>
 							<CommonSelect label={'업종'} items={busiGrpCdList} selectValue={wantBusiness3} callbackFn={busi3CallbackFn} />
 						</View>
-
 						<View style={styles.halfItemRight}>
-							<CommonSelect label={'직업'} items={jobCdList1} selectValue={wantJob3} callbackFn={jobCd3CallbackFn} />
+							<CommonSelect label={'직업'} items={jobCdList3} selectValue={wantJob3} callbackFn={jobCd3CallbackFn} />
 						</View>
 					</SpaceView>
 				</SpaceView>
@@ -322,13 +311,13 @@ export const Preference = (props : Props) => {
 						</CommonText>
 					</SpaceView>
 					<SpaceView mb={24}>
-						<CommonSelect label={'인상'} items={gFaceItemList} selectValue={wantPerson1} callbackFn={wantPerson1CallbackFn} />
+						<CommonSelect label={'인상'} items={props.route.params.gender == 'M' ? gFaceItemList : mFaceItemList} selectValue={wantPerson1} callbackFn={wantPerson1CallbackFn} />
 					</SpaceView>
 					<SpaceView mb={24}>
-						<CommonSelect label={'인상'} items={gFaceItemList} selectValue={wantPerson2} callbackFn={wantPerson2CallbackFn} />
+						<CommonSelect label={'인상'} items={props.route.params.gender == 'M' ? gFaceItemList : mFaceItemList} selectValue={wantPerson2} callbackFn={wantPerson2CallbackFn} />
 					</SpaceView>
 					<SpaceView>
-						<CommonSelect label={'인상'} items={gFaceItemList} selectValue={wantPerson3} callbackFn={wantPerson3CallbackFn} />
+						<CommonSelect label={'인상'} items={props.route.params.gender == 'M' ? gFaceItemList : mFaceItemList} selectValue={wantPerson3} callbackFn={wantPerson3CallbackFn} />
 					</SpaceView>
 				</SpaceView>
 

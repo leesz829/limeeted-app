@@ -10,6 +10,7 @@ type Props = {
 	placeholder?: string;
 	rightPen?: boolean;
 	disabled?: boolean;
+	isMasking?: boolean;
 } & StyleProp<TextInputProps>;
 
 /**
@@ -17,7 +18,8 @@ type Props = {
  * @param {string} label 인풋 라벨
  * @param {string} placeholder 인풋 플레이스 홀더
  * @param {boolean} rightPen 오른쪽 펜 모양 여부
- *
+ * @param {boolean} disabled 비활성화 여부
+ * @param {boolean} isMasking 마스킹 처리 여부
  *
  */
 export const CommonInput: FC<Props> = (props:any) => {
@@ -33,6 +35,7 @@ export const CommonInput: FC<Props> = (props:any) => {
 					placeholderTextColor={Color.black2222}
 					{...props}
 					editable={props.disabled ? false : true}
+					secureTextEntry={props.isMasking ? true : false}
 				/>
 			</View>
 

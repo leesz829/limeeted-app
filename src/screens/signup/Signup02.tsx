@@ -13,6 +13,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 import { ICON, PROFILE_IMAGE } from 'utils/imageUtils';
 import axios from 'axios';
 import { Value } from 'react-native-reanimated';
+import * as properties from 'utils/properties';
 
 /* ################################################################################################################
 ###################################################################################################################
@@ -80,8 +81,12 @@ export const Signup02 = (props : Props) => {
 	 */
 	React.useEffect(() => {
 
+		console.log('gender ::::: ', props.route.params.gender);
+
+
+
 		// 회원 이미지 정보 조회
-		axios.post('http://211.104.55.151:8080/join/selectMemberImage/', {
+		axios.post(properties.api_domain + '/join/selectMemberImage/', {
 			member_seq : props.route.params.memberSeq
 		})
 		.then(function (response) {
@@ -94,7 +99,7 @@ export const Signup02 = (props : Props) => {
 					console.log("file_name ::: ", file_name);
 					console.log("file_path ::: ", file_path);
 
-					const localDomain = 'http://211.104.55.151:8080/uploads';
+					const localDomain = properties.img_domain;
 
 					if(order_seq == '1') { setOrgImgUrl01(localDomain + file_path + file_name); }
 					else if(order_seq == '2') { setOrgImgUrl02(localDomain + file_path + file_name); }
@@ -159,36 +164,80 @@ export const Signup02 = (props : Props) => {
 
 				<SpaceView mb={40}>
 					<ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-						<SpaceView mr={16}>
-							<View style={styles.tempBoxMiddle}>
-								<Image source={PROFILE_IMAGE.maleTmp1} style={styles.profileTmpImg} />
-							</View>
-						</SpaceView>
-						<SpaceView mr={16}>
-							<View style={styles.tempBoxMiddle}>
-								<Image source={PROFILE_IMAGE.maleTmp2} style={styles.profileTmpImg} />
-							</View>
-						</SpaceView>
-						<SpaceView mr={16}>
-							<View style={styles.tempBoxMiddle}>
-								<Image source={PROFILE_IMAGE.maleTmp3} style={styles.profileTmpImg} />
-							</View>
-						</SpaceView>
-						<SpaceView mr={16}>
-							<View style={styles.tempBoxMiddle}>
-								<Image source={PROFILE_IMAGE.maleTmp4} style={styles.profileTmpImg} />
-							</View>
-						</SpaceView>
-						<SpaceView mr={16}>
-							<View style={styles.tempBoxMiddle}>
-								<Image source={PROFILE_IMAGE.maleTmp5} style={styles.profileTmpImg} />
-							</View>
-						</SpaceView>
-						<SpaceView mr={16}>
-							<View style={styles.tempBoxMiddle}>
-								<Image source={PROFILE_IMAGE.maleTmp6} style={styles.profileTmpImg} />
-							</View>
-						</SpaceView>
+
+						{props.route.params.gender == 'M' ? (
+							<>
+								<SpaceView mr={16}>
+									<View style={styles.tempBoxMiddle}>
+										<Image source={PROFILE_IMAGE.manTmp1} style={styles.profileTmpImg} />
+									</View>
+								</SpaceView>
+								<SpaceView mr={16}>
+									<View style={styles.tempBoxMiddle}>
+										<Image source={PROFILE_IMAGE.manTmp2} style={styles.profileTmpImg} />
+									</View>
+								</SpaceView>
+								<SpaceView mr={16}>
+									<View style={styles.tempBoxMiddle}>
+										<Image source={PROFILE_IMAGE.manTmp3} style={styles.profileTmpImg} />
+									</View>
+								</SpaceView>
+								<SpaceView mr={16}>
+									<View style={styles.tempBoxMiddle}>
+										<Image source={PROFILE_IMAGE.manTmp4} style={styles.profileTmpImg} />
+									</View>
+								</SpaceView>
+								<SpaceView mr={16}>
+									<View style={styles.tempBoxMiddle}>
+										<Image source={PROFILE_IMAGE.manTmp5} style={styles.profileTmpImg} />
+									</View>
+								</SpaceView>
+								<SpaceView mr={16}>
+									<View style={styles.tempBoxMiddle}>
+										<Image source={PROFILE_IMAGE.manTmp6} style={styles.profileTmpImg} />
+									</View>
+								</SpaceView>
+							</>
+						) : (
+							<>
+								<SpaceView mr={16}>
+									<View style={styles.tempBoxMiddle}>
+										<Image source={PROFILE_IMAGE.womanTmp1} style={styles.profileTmpImg} />
+									</View>
+								</SpaceView>
+								<SpaceView mr={16}>
+									<View style={styles.tempBoxMiddle}>
+										<Image source={PROFILE_IMAGE.womanTmp2} style={styles.profileTmpImg} />
+									</View>
+								</SpaceView>
+								<SpaceView mr={16}>
+									<View style={styles.tempBoxMiddle}>
+										<Image source={PROFILE_IMAGE.womanTmp3} style={styles.profileTmpImg} />
+									</View>
+								</SpaceView>
+								<SpaceView mr={16}>
+									<View style={styles.tempBoxMiddle}>
+										<Image source={PROFILE_IMAGE.womanTmp4} style={styles.profileTmpImg} />
+									</View>
+								</SpaceView>
+								<SpaceView mr={16}>
+									<View style={styles.tempBoxMiddle}>
+										<Image source={PROFILE_IMAGE.womanTmp5} style={styles.profileTmpImg} />
+									</View>
+								</SpaceView>
+								<SpaceView mr={16}>
+									<View style={styles.tempBoxMiddle}>
+										<Image source={PROFILE_IMAGE.womanTmp6} style={styles.profileTmpImg} />
+									</View>
+								</SpaceView>
+								<SpaceView mr={16}>
+									<View style={styles.tempBoxMiddle}>
+										<Image source={PROFILE_IMAGE.womanTmp7} style={styles.profileTmpImg} />
+									</View>
+								</SpaceView>
+							</>
+						)}
+
 					</ScrollView>
 				</SpaceView>
 
