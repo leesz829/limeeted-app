@@ -10,14 +10,15 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "pod": "cd ios && arch -x86_64 pod install",
     "reset": "react-native start --reset-cache",
-    "clean": "cd android/ && ./gradlew clean"
+    "clean": "cd android/ && ./gradlew clean",
+    "all-m1": "watchman watch-del-all && rm -rf package-lock.json && rm -rf yarn.lock && rm -rf node_modules/ && rm -fr $TMPDIR/metro* && yarn install && cd ios && rm -rf Pods && rm -rf Podfile.lock &&  arch -x86_64 pod install && cd .."
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.12.1",
     "@react-native-community/datetimepicker": "^5.1.0",
     "@react-native-masked-view/masked-view": "^0.2.6",
     "@react-native-picker/picker": "^2.2.1",
-    "@react-native-seoul/kakao-login": "^4.0.0",
+    "@react-native-seoul/kakao-login": "^5.2.3",
     "@react-navigation/bottom-tabs": "^6.0.9",
     "@react-navigation/native": "^6.0.6",
     "@react-navigation/native-stack": "^6.2.5",
