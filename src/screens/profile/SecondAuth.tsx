@@ -16,7 +16,7 @@ import { ImagePicker } from 'component/ImagePicker';
 import { SecondAuthPopup } from 'screens/commonpopup/SecondAuthPopup';
 import axios from 'axios';
 import * as properties from 'utils/properties';
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 /* ################################################################################################################
 ###################################################################################################################

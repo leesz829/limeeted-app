@@ -211,7 +211,7 @@ const StackNavigation = () => {
 					headerShown: false,
 				}}
 			/>
-			
+
 			<Stack.Screen
 				name="NiceAuth"
 				component={NiceAuth}

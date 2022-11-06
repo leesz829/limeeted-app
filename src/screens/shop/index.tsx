@@ -1,15 +1,14 @@
 import * as React from 'react';
-import { Image, ScrollView, View, Platform, Alert} from 'react-native';
+import { Image, ScrollView, View, Platform, Alert } from 'react-native';
 import TopNavigation from 'component/TopNavigation';
 import { ICON } from 'utils/imageUtils';
 import { layoutStyle, styles } from 'assets/styles/Styles';
 import SpaceView from 'component/SpaceView';
 import { CommonText } from 'component/CommonText';
 import { ColorType } from '@types';
-import * as RNIap from "react-native-iap";
+import * as RNIap from 'react-native-iap';
 
 export const Shop = () => {
-
 	let purchaseUpdateSubscription: any;
 	let purchaseErrorSubscription: any;
 	const [loading, setLoading] = React.useState(false);
@@ -20,7 +19,7 @@ export const Shop = () => {
 			try {
 				const init = await RNIap.initConnection();
 				const initCompleted = init === true;
-				
+
 				if (initCompleted) {
 					if (Platform.OS === 'android') {
 						await RNIap.flushFailedPurchasesCachedAsPendingAndroid();
@@ -28,33 +27,36 @@ export const Shop = () => {
 						await RNIap.clearTransactionIOS();
 					}
 				}
-				
+
 				// success listener
 				purchaseUpdateSubscription = RNIap.purchaseUpdatedListener(
 					async (purchase: RNIap.ProductPurchase | RNIap.SubscriptionPurchase) => {
-						const receipt = purchase.transactionReceipt ? purchase.transactionReceipt : purchase.purchaseToken;
+						const receipt = purchase.transactionReceipt
+							? purchase.transactionReceipt
+							: purchase.purchaseToken;
 						// type 오류 방지용 변수, 초기값 세팅 필요시 사용
-						const productPurchase:any = null;
+						const productPurchase: any = null;
 
 						if (receipt) {
 							try {
 								setLoading(false);
-									const ackResult = await RNIap.finishTransaction(purchase?purchase:productPurchase);
-								
+								const ackResult = await RNIap.finishTransaction(
+									purchase ? purchase : productPurchase,
+								);
+
 								// 구매이력 저장 및 상태 갱신
 								if (purchase) {
-								
 								}
-							} catch(error) {
+							} catch (error) {
 								console.log('ackError: ', error);
 							}
 						}
-					}
+					},
 				);
-				
+
 				purchaseErrorSubscription = RNIap.purchaseErrorListener((error: RNIap.PurchaseError) => {
 					setLoading(false);
-					
+
 					// 정상적인 에러상황 대응
 					if (error && error.code == RNIap.ErrorCode.E_USER_CANCELLED) {
 						Alert.alert('구매 취소', '구매를 취소하셨습니다.');
@@ -62,11 +64,11 @@ export const Shop = () => {
 						Alert.alert('구매 실패', '구매 중 오류가 발생하였습니다.');
 					}
 				});
-			} catch(error) {
+			} catch (error) {
 				console.log('connection error: ', error);
 			}
-		}
-		
+		};
+
 		connection();
 
 		return () => {
@@ -74,60 +76,49 @@ export const Shop = () => {
 				purchaseUpdateSubscription.remove();
 				purchaseUpdateSubscription = null;
 			}
-			
+
 			if (purchaseErrorSubscription) {
 				purchaseErrorSubscription.remove();
 				purchaseErrorSubscription = null;
 			}
-		
+
 			RNIap.endConnection();
-		}
+		};
 	}
 
-	
 	// 구독상품용 변수
 	const itemSubs: any = Platform.select({
-		ios: [
-			'cash_100'
-		],
-		android: [
-			'cash_100'
-		]
+		ios: ['cash_100'],
+		android: ['cash_100'],
 	});
 
 	// 단일 상품용 변수
 	const itemSkus: any = Platform.select({
-		ios: [
-			'cash_100'
-		],
-		android: [
-			'cash_100'
-		]
+		ios: ['cash_100'],
+		android: ['cash_100'],
 	});
-	
+
 	const getItems = async () => {
 		try {
 			console.log('1');
-			await RNIap.initConnection()
+			await RNIap.initConnection();
 			console.log('2');
-    		const items = await RNIap.getProducts(itemSkus)
+			const items = await RNIap.getProducts(itemSkus);
 			// const items = await RNIap.getProducts(itemSkus);
 			// const items = await RNIap.getProducts(itemSkus);
 			// items 저장
 			Alert.alert('test data .... ' + items);
-			
-		} catch(error) {
+		} catch (error) {
 			Alert.alert('test data error .... ' + error);
 			console.log('get item error: ', error);
 		}
-	}
-
+	};
 
 	React.useEffect(() => {
-		  console.log(4);
-		  getItems();
-		  console.log(5);
-	}, [])
+		console.log(4);
+		getItems();
+		console.log(5);
+	}, []);
 
 	return (
 		<>

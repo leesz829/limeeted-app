@@ -1,3 +1,4 @@
+import { loginWithKakaoAccount } from '@react-native-seoul/kakao-login';
 import { layoutStyle, styles } from 'assets/styles/Styles';
 import { CommonBtn } from 'component/CommonBtn';
 import { CommonText } from 'component/CommonText';

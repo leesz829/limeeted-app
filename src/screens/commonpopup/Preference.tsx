@@ -1,11 +1,11 @@
 import { useRef } from 'react';
-import { Image, ScrollView, TouchableOpacity, View, StyleSheet, Text, AsyncStorage } from 'react-native';
+import { Image, ScrollView, TouchableOpacity, View, StyleSheet, Text } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import type { FC, useState, useEffect } from 'react';
 import * as React from 'react';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp, useNavigation } from '@react-navigation/native';
-import { ColorType, StackParamList, BottomParamList, ScreenNavigationProp} from '@types';
+import { ColorType, StackParamList, BottomParamList, ScreenNavigationProp } from '@types';
 import CommonHeader from 'component/CommonHeader';
 import { layoutStyle, modalStyle, styles } from 'assets/styles/Styles';
 import { CommonText } from 'component/CommonText';
@@ -16,7 +16,7 @@ import { CommonInput } from 'component/CommonInput';
 import axios from 'axios';
 import * as properties from 'utils/properties';
 import { Color } from 'assets/styles/Color';
-
+import AsyncStorage from '@react-native-community/async-storage';
 /* ################################################################################################################
 ###################################################################################################################
 ###### 내 선호 이성
@@ -24,12 +24,11 @@ import { Color } from 'assets/styles/Color';
 ################################################################################################################ */
 
 interface Props {
-	navigation : StackNavigationProp<StackParamList, 'Preference'>;
-	route : RouteProp<StackParamList, 'Preference'>;
+	navigation: StackNavigationProp<StackParamList, 'Preference'>;
+	route: RouteProp<StackParamList, 'Preference'>;
 }
 
-export const Preference = (props : Props) => {
-
+export const Preference = (props: Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 
 	const [idealTypeSeq, setIdealTypeSeq] = React.useState<any>(props.route.params.ideal_type_seq);
@@ -49,26 +48,26 @@ export const Preference = (props : Props) => {
 
 	// 업종 그룹 코드 목록
 	const busiGrpCdList = [
-		{label: '일반', value: 'JOB_00' },
-		{label: '공군/군사', value: 'JOB_01' },
-		{label: '교육/지식/연구', value: 'JOB_02' },
-		{label: '경영/사무', value: 'JOB_03' },
-		{label: '기획/통계', value: 'JOB_04' },
-		{label: '건설/전기', value: 'JOB_05' },
-		{label: '금융/회계', value: 'JOB_06' },
-		{label: '기계/기술', value: 'JOB_07' },
-		{label: '보험/부동산', value: 'JOB_08' },
-		{label: '생활', value: 'JOB_09' },
-		{label: '식음료/여가/오락', value: 'JOB_10' },
-		{label: '법률/행정', value: 'JOB_11' },
-		{label: '생산/제조/가공', value: 'JOB_12' },
-		{label: '영업/판매/관리', value: 'JOB_13' },
-		{label: '운송/유통', value: 'JOB_14' },
-		{label: '예체능/예술/디자인', value: 'JOB_15' },
-		{label: '의료/건강', value: 'JOB_16' },
-		{label: '인터넷/IT', value: 'JOB_17' },
-		{label: '미디어', value: 'JOB_18' },
-		{label: '기타', value: 'JOB_19' },
+		{ label: '일반', value: 'JOB_00' },
+		{ label: '공군/군사', value: 'JOB_01' },
+		{ label: '교육/지식/연구', value: 'JOB_02' },
+		{ label: '경영/사무', value: 'JOB_03' },
+		{ label: '기획/통계', value: 'JOB_04' },
+		{ label: '건설/전기', value: 'JOB_05' },
+		{ label: '금융/회계', value: 'JOB_06' },
+		{ label: '기계/기술', value: 'JOB_07' },
+		{ label: '보험/부동산', value: 'JOB_08' },
+		{ label: '생활', value: 'JOB_09' },
+		{ label: '식음료/여가/오락', value: 'JOB_10' },
+		{ label: '법률/행정', value: 'JOB_11' },
+		{ label: '생산/제조/가공', value: 'JOB_12' },
+		{ label: '영업/판매/관리', value: 'JOB_13' },
+		{ label: '운송/유통', value: 'JOB_14' },
+		{ label: '예체능/예술/디자인', value: 'JOB_15' },
+		{ label: '의료/건강', value: 'JOB_16' },
+		{ label: '인터넷/IT', value: 'JOB_17' },
+		{ label: '미디어', value: 'JOB_18' },
+		{ label: '기타', value: 'JOB_19' },
 	];
 
 	// 직업 그룹 코드 목록
@@ -78,129 +77,168 @@ export const Preference = (props : Props) => {
 
 	// 여자 인상 항목 목록
 	const gFaceItemList = [
-		{label: '다정해보여요', value: 'FACE_G_01'},
-		{label: '웃는게 예뻐요', value: 'FACE_G_02'},
-		{label: '패션 감각이 좋아 보여요', value: 'FACE_G_03'},
-		{label: '피부가 좋아요', value: 'FACE_G_04'},
-		{label: '눈이 예뻐요', value: 'FACE_G_05'},
-		{label: '현모양처상', value: 'FACE_G_06'}
+		{ label: '다정해보여요', value: 'FACE_G_01' },
+		{ label: '웃는게 예뻐요', value: 'FACE_G_02' },
+		{ label: '패션 감각이 좋아 보여요', value: 'FACE_G_03' },
+		{ label: '피부가 좋아요', value: 'FACE_G_04' },
+		{ label: '눈이 예뻐요', value: 'FACE_G_05' },
+		{ label: '현모양처상', value: 'FACE_G_06' },
 	];
 
 	// 남자 인상 항목 목록
 	const mFaceItemList = [
-		{label: '다정해보여요', value: 'FACE_M_01'},
-		{label: '패션 감각이 좋아 보여요', value: 'FACE_M_02'},
-		{label: '피부가 좋아요', value: 'FACE_M_03'},
-		{label: '오똑한 콧날', value: 'FACE_M_04'},
-		{label: '넓은 어깨', value: 'FACE_M_05'},
-		{label: '요섹남', value: 'FACE_M_06'}
+		{ label: '다정해보여요', value: 'FACE_M_01' },
+		{ label: '패션 감각이 좋아 보여요', value: 'FACE_M_02' },
+		{ label: '피부가 좋아요', value: 'FACE_M_03' },
+		{ label: '오똑한 콧날', value: 'FACE_M_04' },
+		{ label: '넓은 어깨', value: 'FACE_M_05' },
+		{ label: '요섹남', value: 'FACE_M_06' },
 	];
 
 	// 직업 코드 목록 조회 함수
-	const getJobCodeList = async (type : string) => {
+	const getJobCodeList = async (type: string) => {
 		let paramBusinessCd = '';
 
-		if(type == '01') {
+		if (type == '01') {
 			paramBusinessCd = wantBusiness1;
-		} else if(type == '02') {
+		} else if (type == '02') {
 			paramBusinessCd = wantBusiness2;
-		} else if(type == '03') {
+		} else if (type == '03') {
 			paramBusinessCd = wantBusiness3;
 		}
 
-		const result = await axios.post(properties.api_domain + '/common/selectGroupCodeList', {
-			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
-			, 'group_code' : paramBusinessCd
-			, 'member_seq' : Number(await properties.get_json_data('member_seq'))
-		}
-		, {
-			headers: {
-				'jwt-token' : String(await properties.jwt_token())
-			}
-		})
-		.then(function (response) {
-			console.log('result ::: ', response.data);
-			if(response.data.result_code != '0000') {
-				console.log('fail ::: ', response.data.result_msg);
-				return false;
-			} else {
-				if(null != response.data.result) {
-					let dataList = new Array();
-					response.data?.result?.map(({ group_code, common_code, code_name }: { group_code: any, common_code: any, code_name: any }) => {
-						let dataMap = {label: code_name, value: common_code};
-						dataList.push(dataMap);
-					});
+		const result = await axios
+			.post(
+				properties.api_domain + '/common/selectGroupCodeList',
+				{
+					'api-key': 'U0FNR09CX1RPS0VOXzAx',
+					group_code: paramBusinessCd,
+					member_seq: Number(await properties.get_json_data('member_seq')),
+				},
+				{
+					headers: {
+						'jwt-token': String(await properties.jwt_token()),
+					},
+				},
+			)
+			.then(function (response) {
+				console.log('result ::: ', response.data);
+				if (response.data.result_code != '0000') {
+					console.log('fail ::: ', response.data.result_msg);
+					return false;
+				} else {
+					if (null != response.data.result) {
+						let dataList = new Array();
+						response.data?.result?.map(
+							({
+								group_code,
+								common_code,
+								code_name,
+							}: {
+								group_code: any;
+								common_code: any;
+								code_name: any;
+							}) => {
+								let dataMap = { label: code_name, value: common_code };
+								dataList.push(dataMap);
+							},
+						);
 
-					if(type == '01') { setJobCdList1(dataList);	} 
-					else if(type == '02') { setJobCdList2(dataList); } 
-					else if(type == '03') {	setJobCdList3(dataList); }
+						if (type == '01') {
+							setJobCdList1(dataList);
+						} else if (type == '02') {
+							setJobCdList2(dataList);
+						} else if (type == '03') {
+							setJobCdList3(dataList);
+						}
+					}
 				}
-			}
-		})
-		.catch(function (error) {
-			console.log('error ::: ' , error);
-		});
-	}
+			})
+			.catch(function (error) {
+				console.log('error ::: ', error);
+			});
+	};
 
 	// 내 선호이성 저장
 	const saveMemberIdealType = async () => {
-		const result = await axios.post(properties.api_domain + '/member/saveMemberIdealType'
-		, {
-			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
-			, 'member_seq' : String(await properties.get_json_data('member_seq'))
-			, 'ideal_type_seq' : idealTypeSeq
-			, 'want_local1' : wantLocal1
-			, 'want_local2' : wantLocal2
-			, 'want_age_min' : wantAgeMin
-			, 'want_age_max' : wantAgeMax
-			, 'want_business1' : wantBusiness1
-			, 'want_business2' : wantBusiness2
-			, 'want_business3' : wantBusiness3
-			, 'want_job1' : wantJob1
-			, 'want_job2' : wantJob2
-			, 'want_job3' : wantJob3
-			, 'want_person1' : wantPerson1
-			, 'want_person2' : wantPerson2
-			, 'want_person3' : wantPerson3
-		}
-		, {
-			headers: {
-				'jwt-token' : String(await properties.jwt_token())
-			}
-		})
-		.then(function (response) {
-			console.log("job code :::: ", response.data);
+		const result = await axios
+			.post(
+				properties.api_domain + '/member/saveMemberIdealType',
+				{
+					'api-key': 'U0FNR09CX1RPS0VOXzAx',
+					member_seq: String(await properties.get_json_data('member_seq')),
+					ideal_type_seq: idealTypeSeq,
+					want_local1: wantLocal1,
+					want_local2: wantLocal2,
+					want_age_min: wantAgeMin,
+					want_age_max: wantAgeMax,
+					want_business1: wantBusiness1,
+					want_business2: wantBusiness2,
+					want_business3: wantBusiness3,
+					want_job1: wantJob1,
+					want_job2: wantJob2,
+					want_job3: wantJob3,
+					want_person1: wantPerson1,
+					want_person2: wantPerson2,
+					want_person3: wantPerson3,
+				},
+				{
+					headers: {
+						'jwt-token': String(await properties.jwt_token()),
+					},
+				},
+			)
+			.then(function (response) {
+				console.log('job code :::: ', response.data);
 
-			if(response.data.result_code != '0000') {
-				console.log(response.data.result_msg);
-				return false;
-			} else {
-				AsyncStorage.setItem('memberBase', JSON.stringify(response.data.memberBase));
-				AsyncStorage.setItem('memberIdealType', JSON.stringify(response.data.memberIdealType));
+				if (response.data.result_code != '0000') {
+					console.log(response.data.result_msg);
+					return false;
+				} else {
+					AsyncStorage.setItem('memberBase', JSON.stringify(response.data.memberBase));
+					AsyncStorage.setItem('memberIdealType', JSON.stringify(response.data.memberIdealType));
 
-				navigation.navigate('Main', {
-					screen: 'Roby',
-					params: {
-						memberBase: response.data.memberBase
-					}
-				});
-			}
-		})
-		.catch(function (error) {
-			console.log('error ::: ' , error);
-		});
-	}
+					navigation.navigate('Main', {
+						screen: 'Roby',
+						params: {
+							memberBase: response.data.memberBase,
+						},
+					});
+				}
+			})
+			.catch(function (error) {
+				console.log('error ::: ', error);
+			});
+	};
 
 	// 셀렉트 박스 콜백 함수
-	const busi1CallbackFn = (value : string) => { setWantBusiness1(value); };
-	const busi2CallbackFn = (value : string) => { setWantBusiness2(value); };
-	const busi3CallbackFn = (value : string) => { setWantBusiness3(value); };
-	const jobCd1CallbackFn = (value : string) => { setWantJob1(value); };
-	const jobCd2CallbackFn = (value : string) => { setWantJob2(value); };
-	const jobCd3CallbackFn = (value : string) => { setWantJob3(value); };
-	const wantPerson1CallbackFn = (value : string) => { setWantPerson1(value); };
-	const wantPerson2CallbackFn = (value : string) => { setWantPerson2(value); };
-	const wantPerson3CallbackFn = (value : string) => { setWantPerson3(value); };
+	const busi1CallbackFn = (value: string) => {
+		setWantBusiness1(value);
+	};
+	const busi2CallbackFn = (value: string) => {
+		setWantBusiness2(value);
+	};
+	const busi3CallbackFn = (value: string) => {
+		setWantBusiness3(value);
+	};
+	const jobCd1CallbackFn = (value: string) => {
+		setWantJob1(value);
+	};
+	const jobCd2CallbackFn = (value: string) => {
+		setWantJob2(value);
+	};
+	const jobCd3CallbackFn = (value: string) => {
+		setWantJob3(value);
+	};
+	const wantPerson1CallbackFn = (value: string) => {
+		setWantPerson1(value);
+	};
+	const wantPerson2CallbackFn = (value: string) => {
+		setWantPerson2(value);
+	};
+	const wantPerson3CallbackFn = (value: string) => {
+		setWantPerson3(value);
+	};
 
 	// 첫 렌더링 때 실행
 	React.useEffect(() => {
@@ -208,9 +246,22 @@ export const Preference = (props : Props) => {
 	}, []);
 
 	// 업종 상태 관리
-	React.useEffect(() => { if(wantBusiness1 != '' && typeof wantBusiness1 !== 'undefined') { getJobCodeList('01'); } }, [wantBusiness1]);
-	React.useEffect(() => { if(wantBusiness2 != '' && typeof wantBusiness2 !== 'undefined') { getJobCodeList('02'); } }, [wantBusiness2]);
-	React.useEffect(() => {  console.log('1212131'); if(wantBusiness3 != '' && typeof wantBusiness3 !== 'undefined') { getJobCodeList('03'); } }, [wantBusiness3]);
+	React.useEffect(() => {
+		if (wantBusiness1 != '' && typeof wantBusiness1 !== 'undefined') {
+			getJobCodeList('01');
+		}
+	}, [wantBusiness1]);
+	React.useEffect(() => {
+		if (wantBusiness2 != '' && typeof wantBusiness2 !== 'undefined') {
+			getJobCodeList('02');
+		}
+	}, [wantBusiness2]);
+	React.useEffect(() => {
+		console.log('1212131');
+		if (wantBusiness3 != '' && typeof wantBusiness3 !== 'undefined') {
+			getJobCodeList('03');
+		}
+	}, [wantBusiness3]);
 
 	return (
 		<>
@@ -225,21 +276,25 @@ export const Preference = (props : Props) => {
 
 					<SpaceView viewStyle={styles.halfContainer}>
 						<View style={styles.halfItemLeft}>
-							<CommonInput label={'최소'} 
-											placeholder={'입력'} 
-											keyboardType="number-pad"
-											value={wantAgeMin}
-											onChangeText={wantAgeMin => setWantAgeMin(wantAgeMin)}
-											maxLength={2} />
+							<CommonInput
+								label={'최소'}
+								placeholder={'입력'}
+								keyboardType="number-pad"
+								value={wantAgeMin}
+								onChangeText={(wantAgeMin) => setWantAgeMin(wantAgeMin)}
+								maxLength={2}
+							/>
 						</View>
 
 						<View style={styles.halfItemRight}>
-							<CommonInput label={'최대'} 
-											placeholder={'입력'}
-											keyboardType="number-pad"
-											value={wantAgeMax}
-											onChangeText={wantAgeMax => setWantAgeMax(wantAgeMax)}
-											maxLength={2} />
+							<CommonInput
+								label={'최대'}
+								placeholder={'입력'}
+								keyboardType="number-pad"
+								value={wantAgeMax}
+								onChangeText={(wantAgeMax) => setWantAgeMax(wantAgeMax)}
+								maxLength={2}
+							/>
 						</View>
 					</SpaceView>
 				</SpaceView>
@@ -253,21 +308,25 @@ export const Preference = (props : Props) => {
 
 					<SpaceView viewStyle={styles.halfContainer}>
 						<View style={styles.halfItemLeft}>
-							<CommonInput label={'최소'} 
-											placeholder={'입력'}
-											keyboardType="number-pad"
-											value={wantLocal1}
-											onChangeText={wantLocal1 => setWantLocal1(wantLocal1)}
-											maxLength={2} />
+							<CommonInput
+								label={'최소'}
+								placeholder={'입력'}
+								keyboardType="number-pad"
+								value={wantLocal1}
+								onChangeText={(wantLocal1) => setWantLocal1(wantLocal1)}
+								maxLength={2}
+							/>
 						</View>
 
 						<View style={styles.halfItemRight}>
-							<CommonInput label={'최대'} 
-											placeholder={'입력'}
-											keyboardType="number-pad"
-											value={wantLocal2}
-											onChangeText={wantLocal2 => setWantLocal2(wantLocal2)}
-											maxLength={2} />
+							<CommonInput
+								label={'최대'}
+								placeholder={'입력'}
+								keyboardType="number-pad"
+								value={wantLocal2}
+								onChangeText={(wantLocal2) => setWantLocal2(wantLocal2)}
+								maxLength={2}
+							/>
 						</View>
 					</SpaceView>
 				</SpaceView>
@@ -280,26 +339,56 @@ export const Preference = (props : Props) => {
 					</SpaceView>
 					<SpaceView mb={24} viewStyle={styles.halfContainer}>
 						<View style={styles.halfItemLeft}>
-							<CommonSelect label={'업종'} items={busiGrpCdList} selectValue={wantBusiness1} callbackFn={busi1CallbackFn} />
+							<CommonSelect
+								label={'업종'}
+								items={busiGrpCdList}
+								selectValue={wantBusiness1}
+								callbackFn={busi1CallbackFn}
+							/>
 						</View>
 						<View style={styles.halfItemRight}>
-							<CommonSelect label={'직업'} items={jobCdList1} selectValue={wantJob1} callbackFn={jobCd1CallbackFn} />
+							<CommonSelect
+								label={'직업'}
+								items={jobCdList1}
+								selectValue={wantJob1}
+								callbackFn={jobCd1CallbackFn}
+							/>
 						</View>
 					</SpaceView>
 					<SpaceView mb={24} viewStyle={styles.halfContainer}>
 						<View style={styles.halfItemLeft}>
-							<CommonSelect label={'업종'} items={busiGrpCdList} selectValue={wantBusiness2} callbackFn={busi2CallbackFn} />
+							<CommonSelect
+								label={'업종'}
+								items={busiGrpCdList}
+								selectValue={wantBusiness2}
+								callbackFn={busi2CallbackFn}
+							/>
 						</View>
 						<View style={styles.halfItemRight}>
-							<CommonSelect label={'직업'} items={jobCdList2} selectValue={wantJob2} callbackFn={jobCd2CallbackFn} />
+							<CommonSelect
+								label={'직업'}
+								items={jobCdList2}
+								selectValue={wantJob2}
+								callbackFn={jobCd2CallbackFn}
+							/>
 						</View>
 					</SpaceView>
 					<SpaceView viewStyle={styles.halfContainer}>
 						<View style={styles.halfItemLeft}>
-							<CommonSelect label={'업종'} items={busiGrpCdList} selectValue={wantBusiness3} callbackFn={busi3CallbackFn} />
+							<CommonSelect
+								label={'업종'}
+								items={busiGrpCdList}
+								selectValue={wantBusiness3}
+								callbackFn={busi3CallbackFn}
+							/>
 						</View>
 						<View style={styles.halfItemRight}>
-							<CommonSelect label={'직업'} items={jobCdList3} selectValue={wantJob3} callbackFn={jobCd3CallbackFn} />
+							<CommonSelect
+								label={'직업'}
+								items={jobCdList3}
+								selectValue={wantJob3}
+								callbackFn={jobCd3CallbackFn}
+							/>
 						</View>
 					</SpaceView>
 				</SpaceView>
@@ -311,27 +400,44 @@ export const Preference = (props : Props) => {
 						</CommonText>
 					</SpaceView>
 					<SpaceView mb={24}>
-						<CommonSelect label={'인상'} items={props.route.params.gender == 'M' ? gFaceItemList : mFaceItemList} selectValue={wantPerson1} callbackFn={wantPerson1CallbackFn} />
+						<CommonSelect
+							label={'인상'}
+							items={props.route.params.gender == 'M' ? gFaceItemList : mFaceItemList}
+							selectValue={wantPerson1}
+							callbackFn={wantPerson1CallbackFn}
+						/>
 					</SpaceView>
 					<SpaceView mb={24}>
-						<CommonSelect label={'인상'} items={props.route.params.gender == 'M' ? gFaceItemList : mFaceItemList} selectValue={wantPerson2} callbackFn={wantPerson2CallbackFn} />
+						<CommonSelect
+							label={'인상'}
+							items={props.route.params.gender == 'M' ? gFaceItemList : mFaceItemList}
+							selectValue={wantPerson2}
+							callbackFn={wantPerson2CallbackFn}
+						/>
 					</SpaceView>
 					<SpaceView>
-						<CommonSelect label={'인상'} items={props.route.params.gender == 'M' ? gFaceItemList : mFaceItemList} selectValue={wantPerson3} callbackFn={wantPerson3CallbackFn} />
+						<CommonSelect
+							label={'인상'}
+							items={props.route.params.gender == 'M' ? gFaceItemList : mFaceItemList}
+							selectValue={wantPerson3}
+							callbackFn={wantPerson3CallbackFn}
+						/>
 					</SpaceView>
 				</SpaceView>
 
 				<SpaceView mb={16}>
-					<CommonBtn value={'저장'} type={'primary'} onPress={() => { saveMemberIdealType(); }} />
+					<CommonBtn
+						value={'저장'}
+						type={'primary'}
+						onPress={() => {
+							saveMemberIdealType();
+						}}
+					/>
 				</SpaceView>
-
 			</ScrollView>
 		</>
 	);
 };
-
-
-
 
 const styles1 = StyleSheet.create({
 	selectImgContainer: {

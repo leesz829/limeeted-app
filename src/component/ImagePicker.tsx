@@ -4,7 +4,6 @@ import { Image, TouchableOpacity } from 'react-native';
 import { launchImageLibrary, ImageLibraryOptions } from 'react-native-image-picker';
 import { ICON } from 'utils/imageUtils';
 import type { FC, useState, useEffect } from 'react';
-import RNFetchBlob from 'rn-fetch-blob';
 
 interface Action {
 	title: string;
@@ -14,12 +13,7 @@ interface Action {
 
 interface Props {
 	isBig: boolean;
-	callbackFn: (
-			uri:string
-			, fileName:string
-			, fileSize: number
-			, type: string
-	) => void;
+	callbackFn: (uri: string, fileName: string, fileSize: number, type: string) => void;
 	uriParam?: string;
 }
 
@@ -43,14 +37,14 @@ export const ImagePicker: FC<Props> = (props) => {
 	}, []);
 
 	React.useEffect(() => {
-		console.log("image response :: ", response);
+		console.log('image response :: ', response);
 
-		if(null != response && !response.didCancel) {
+		if (null != response && !response.didCancel) {
 			props.callbackFn(
-					response?.assets[0].uri
-					, response?.assets[0].fileName
-					, response?.assets[0].fileSize
-					, response?.assets[0].type
+				response?.assets[0].uri,
+				response?.assets[0].fileName,
+				response?.assets[0].fileSize,
+				response?.assets[0].type,
 			);
 		}
 	}, [response]);
@@ -58,7 +52,8 @@ export const ImagePicker: FC<Props> = (props) => {
 	return (
 		<TouchableOpacity
 			onPress={onButtonPress}
-			style={props.isBig ? styles.tempBoxBig : styles.tempBoxSmall} >
+			style={props.isBig ? styles.tempBoxBig : styles.tempBoxSmall}
+		>
 			{response?.assets ? (
 				response?.assets.map(({ uri }: { uri: any }) => (
 					<Image
@@ -69,19 +64,16 @@ export const ImagePicker: FC<Props> = (props) => {
 						source={{ uri }}
 					/>
 				))
+			) : props.uriParam != null && props.uriParam != '' ? (
+				<Image
+					resizeMode="cover"
+					resizeMethod="scale"
+					style={props.isBig ? styles.tempBoxBig : styles.tempBoxSmall}
+					key={props.uriParam}
+					source={{ uri: props.uriParam }}
+				/>
 			) : (
-				(props.uriParam != null && props.uriParam != '' ? (
-					<Image
-						resizeMode="cover"
-						resizeMethod="scale"
-						style={props.isBig ? styles.tempBoxBig : styles.tempBoxSmall}
-						key={props.uriParam}
-						source={{ uri: props.uriParam }}
-					/>
-				) : (
-					<Image source={ICON.purplePlus} style={styles.boxPlusIcon} />
-					)
-				)
+				<Image source={ICON.purplePlus} style={styles.boxPlusIcon} />
 			)}
 		</TouchableOpacity>
 	);
