@@ -6,7 +6,7 @@ import { CommonInput } from 'component/CommonInput';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import React, { useRef, useState } from 'react';
-import { View, Image, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Image, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { ICON } from 'utils/imageUtils';
 import { Modalize } from 'react-native-modalize';
 import { RouteProp, useNavigation } from '@react-navigation/native';
@@ -108,14 +108,16 @@ export const Signup03 = (props : Props) => {
 
 				<SpaceView mb={24}>
 					<CommonInput label="닉네임" 
-									placeholder={'회원명'}
+									placeholder={'닉네임을 입력해 주세요.'}
+									placeholderTextColor={'#c6ccd3'}
 									value={nickname}
 									onChangeText={nickname => setNickname(nickname)}  />
 				</SpaceView>
 
 				<SpaceView mb={48}>
 					<CommonInput label="한줄 소개" 
-									placeholder={'서울사람'}
+									placeholder={'한줄 소개를 입력해 주세요.'}
+									placeholderTextColor={'#c6ccd3'}
 									value={comment}
 									onChangeText={comment => setComment(comment)} />
 				</SpaceView>
@@ -181,14 +183,20 @@ export const Signup03 = (props : Props) => {
 					<CommonBtn value={'다음 (4/4)'} 
 								type={'primary'}
 								onPress={() => {
+									if(nickname == '' || typeof nickname == 'undefined') {
+										Alert.alert("알림",	"닉네임을 입력해 주세요.",	[{text: "확인"}]);
+										return;
+									}
 
-									console.log("nickname :::: ", nickname);
-									console.log("interestJsonArr :::: ", interestJsonArr);
+									if(comment == '' || typeof comment == 'undefined') {
+										Alert.alert("알림",	"한줄 소개를 입력해 주세요.",	[{text: "확인"}]);
+										return;
+									}
 
 									axios.post(properties.api_domain + '/join/insertMemberIntro/', {
 										member_seq : props.route.params.memberSeq,
 										nickname : nickname,
-										introduce_comment: comment,
+										comment: comment,
 										interestList : interestJsonArr
 									})
 									.then(function (response) {

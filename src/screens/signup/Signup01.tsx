@@ -158,7 +158,7 @@ export const Signup01 = (props : Props) => {
 
 		const result = await axios.post(properties.api_domain + '/member/getMemberProfileSecondAuth', {
 			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
-			, 'member_seq' : String(await properties.get_json_data('member_seq'))
+			, 'member_seq' : props.route.params.memberSeq
 		}
 		, {
 			headers: {

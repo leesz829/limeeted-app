@@ -256,12 +256,14 @@ export const SecondAuth = () => {
 
 					const memberImgList:any = await AsyncStorage.getItem('memberImgList');
 					const memberSndAuthList:any = await AsyncStorage.getItem('memberSndAuthList');
+					const memberInterviewList:any = await AsyncStorage.getItem('memberInterviewList');
 
 					if (memberImgList !== null || memberSndAuthList !== null) {
 
 						navigation.navigate('Profile1', {
 							imgList: JSON.parse(memberImgList)
 							, authList: JSON.parse(memberSndAuthList)
+							, interviewList: memberInterviewList
 						});	
 					}
 

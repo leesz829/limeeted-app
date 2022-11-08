@@ -29,6 +29,7 @@ export const Login01 = (props : Props) => {
 	const [id, setId] = React.useState('');
 	const [password, setPassword] = React.useState('');
 
+	console.log('askdlmasldkm ::::: ', properties.api_domain);
 
 	const loginProc = async () => {
 

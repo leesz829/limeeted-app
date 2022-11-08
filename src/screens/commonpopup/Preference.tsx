@@ -108,10 +108,9 @@ export const Preference = (props : Props) => {
 			paramBusinessCd = wantBusiness3;
 		}
 
-		const result = await axios.post(properties.api_domain + '/common/selectGroupCodeList', {
+		const result = await axios.post(properties.api_domain + '/common/selectCommonCodeList', {
 			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
 			, 'group_code' : paramBusinessCd
-			, 'member_seq' : Number(await properties.get_json_data('member_seq'))
 		}
 		, {
 			headers: {
@@ -226,20 +225,22 @@ export const Preference = (props : Props) => {
 					<SpaceView viewStyle={styles.halfContainer}>
 						<View style={styles.halfItemLeft}>
 							<CommonInput label={'최소'} 
-											placeholder={'입력'} 
 											keyboardType="number-pad"
 											value={wantAgeMin}
 											onChangeText={wantAgeMin => setWantAgeMin(wantAgeMin)}
-											maxLength={2} />
+											maxLength={2}
+											placeholder={'ex) 22'}
+											placeholderTextColor={'#c6ccd3'} />
 						</View>
 
 						<View style={styles.halfItemRight}>
 							<CommonInput label={'최대'} 
-											placeholder={'입력'}
 											keyboardType="number-pad"
 											value={wantAgeMax}
 											onChangeText={wantAgeMax => setWantAgeMax(wantAgeMax)}
-											maxLength={2} />
+											maxLength={2}
+											placeholder={'ex) 35'}
+											placeholderTextColor={'#c6ccd3'} />
 						</View>
 					</SpaceView>
 				</SpaceView>
@@ -253,21 +254,23 @@ export const Preference = (props : Props) => {
 
 					<SpaceView viewStyle={styles.halfContainer}>
 						<View style={styles.halfItemLeft}>
-							<CommonInput label={'최소'} 
-											placeholder={'입력'}
+							<CommonInput label={'최소(km)'}
 											keyboardType="number-pad"
 											value={wantLocal1}
 											onChangeText={wantLocal1 => setWantLocal1(wantLocal1)}
-											maxLength={2} />
+											maxLength={2}
+											placeholder={'ex) 1'}
+											placeholderTextColor={'#c6ccd3'} />
 						</View>
 
 						<View style={styles.halfItemRight}>
-							<CommonInput label={'최대'} 
-											placeholder={'입력'}
+							<CommonInput label={'최대(km)'}
 											keyboardType="number-pad"
 											value={wantLocal2}
 											onChangeText={wantLocal2 => setWantLocal2(wantLocal2)}
-											maxLength={2} />
+											maxLength={2}
+											placeholder={'ex) 50'}
+											placeholderTextColor={'#c6ccd3'} />
 						</View>
 					</SpaceView>
 				</SpaceView>

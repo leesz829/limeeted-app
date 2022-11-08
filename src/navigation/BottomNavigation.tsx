@@ -12,6 +12,7 @@ import { Shop } from 'screens/shop';
 import { Storage } from 'screens/storage';
 import { StorageProfile } from 'screens/storage/StorageProfile';
 import * as busiUtils from 'utils/business';
+import { View, Image, ScrollView, Alert, StyleSheet, Text } from 'react-native';
 
 import CustomTab from './CustomTab';
 
@@ -46,6 +47,7 @@ const BottomNavigation = () => {
 					tabPress: e => {
 						e.preventDefault();
 						//busiUtils.goStoragePage(navigation);
+						Alert.alert("알림",	"준비중입니다.",	[{text: "확인"}]);
 					}
 				})}
 			/>
@@ -57,6 +59,13 @@ const BottomNavigation = () => {
 					headerShown: false,
 					tabBarShowLabel: true,
 				}}
+				listeners={({navigation}) => ({
+					tabPress: e => {
+						e.preventDefault();
+						//busiUtils.goStoragePage(navigation);
+						Alert.alert("알림",	"준비중입니다.",	[{text: "확인"}]);
+					}
+				})}
 			/>
 			<Tab.Screen
 				name="Cashshop"

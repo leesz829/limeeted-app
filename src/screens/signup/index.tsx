@@ -148,9 +148,6 @@ export const Signup00 = (props : Props) => {
 					<CommonBtn value={'다음 (1/4)'} 
 								type={'primary'} 
 								onPress={() => {
-
-									let chk = false;
-
 									if(id == '') {
 										Alert.alert("알림",	"아이디를 입력해 주세요.",	[{text: "확인"}]);
 										return;
@@ -171,7 +168,6 @@ export const Signup00 = (props : Props) => {
 									axios.post(properties.api_domain + '/join/insertMemberInfo/', {
 										kakao_id : id
 										, password : password
-										, nickname : name
 										, name: name
 										, age : age
 										, gender : gender
@@ -180,7 +176,7 @@ export const Signup00 = (props : Props) => {
 										, birthday : birthday
 									})
 									.then(function (response) {
-										console.log(response.data.result_code);
+										console.log(response.data);
 
 										if(response.data.result_code == "0000") {
 											navigation.navigate('Signup01', {
