@@ -26,9 +26,9 @@ export const Login = () => {
 
 	const signInWithKakao = async () => {
 		/* ### 실 버전 */
-		const result = await loginWithKakaoAccount();
-		console.log(JSON.stringify(result));
-		return;
+		// const result = await loginWithKakaoAccount();
+		// console.log(JSON.stringify(result));
+		// return;
 
 		//const profile11 = await getKakaoProfile();
 		// console.log(profile11);

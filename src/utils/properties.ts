@@ -30,3 +30,5 @@ export const get_json_data = (key: string) => {
 		}
 	});
 };
+
+export default { api_domain, img_domain, jwt_token, get_json_data };
