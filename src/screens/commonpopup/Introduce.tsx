@@ -121,27 +121,42 @@ export const Introduce = (props: Props) => {
 
 	// 직업 코드 목록 조회 함수
 	const getJobCodeList = async () => {
-		const result = await axios.post(properties.api_domain + '/common/selectCommonCodeList', {
-			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
-			, 'group_code' : business
-		}
-		, {
-			headers: {
-				'jwt-token' : String(await properties.jwt_token())
-			}
-		})
-		.then(function (response) {			
-			if(response.data.result_code != '0000') {
-				console.log(response.data.result_msg);
-				return false;
-			} else {
-				if(null != response.data.result) {
-					let dataList = new Array();
-					response.data?.result?.map(({ group_code, common_code, code_name }: { group_code: any, common_code: any, code_name: any }) => {
-						let dataMap = {label: code_name, value: common_code};
-						dataList.push(dataMap);
-					});
-					setJobCdList(dataList);
+		const result = await axios
+			.post(
+				properties.api_domain + '/common/selectCommonCodeList',
+				{
+					'api-key': 'U0FNR09CX1RPS0VOXzAx',
+					group_code: business,
+				},
+				{
+					headers: {
+						'jwt-token': String(await properties.jwt_token()),
+					},
+				},
+			)
+			.then(function (response) {
+				if (response.data.result_code != '0000') {
+					console.log(response.data.result_msg);
+					return false;
+				} else {
+					if (null != response.data.result) {
+						let dataList = new Array();
+						response.data?.result?.map(
+							({
+								group_code,
+								common_code,
+								code_name,
+							}: {
+								group_code: any;
+								common_code: any;
+								code_name: any;
+							}) => {
+								let dataMap = { label: code_name, value: common_code };
+								dataList.push(dataMap);
+							},
+						);
+						setJobCdList(dataList);
+					}
 				}
 			})
 			.catch(function (error) {
@@ -236,12 +251,13 @@ export const Introduce = (props: Props) => {
 			<CommonHeader title={'내 소개하기'} />
 			<ScrollView contentContainerStyle={styles.scrollContainer}>
 				<SpaceView mb={24}>
-					<CommonInput 
-							label={'한줄 소개'}
-							value={introduce_comment} 
-							onChangeText={introduce_comment => setIntroduce_comment(introduce_comment)}
-							placeholder={'한줄 소개를 입력해 주세요.'}
-							placeholderTextColor={'#c6ccd3'} />
+					<CommonInput
+						label={'한줄 소개'}
+						value={introduce_comment}
+						onChangeText={(introduce_comment) => setIntroduce_comment(introduce_comment)}
+						placeholder={'한줄 소개를 입력해 주세요.'}
+						placeholderTextColor={'#c6ccd3'}
+					/>
 				</SpaceView>
 
 				<SpaceView mb={24} viewStyle={styles.halfContainer}>
@@ -265,12 +281,13 @@ export const Introduce = (props: Props) => {
 				</SpaceView>
 
 				<SpaceView mb={24}>
-					<CommonInput 
-							label={'회사명'} 
-							value={job_name} 
-							onChangeText={jobName => setJob_name(jobName)}
-							placeholder={'회사명을 입력해 주세요.'}
-							placeholderTextColor={'#c6ccd3'} />
+					<CommonInput
+						label={'회사명'}
+						value={job_name}
+						onChangeText={(jobName) => setJob_name(jobName)}
+						placeholder={'회사명을 입력해 주세요.'}
+						placeholderTextColor={'#c6ccd3'}
+					/>
 				</SpaceView>
 
 				{/* <SpaceView mb={24} viewStyle={styles.halfContainer}>
@@ -294,12 +311,13 @@ export const Introduce = (props: Props) => {
 				</SpaceView> */}
 
 				<SpaceView mb={24}>
-					<CommonInput 
-							label={'키'} 
-							value={height} 
-							onChangeText={height => setHeight(height)}
-							placeholder={'키를 입력해 주세요.'}
-							placeholderTextColor={'#c6ccd3'} />
+					<CommonInput
+						label={'키'}
+						value={height}
+						onChangeText={(height) => setHeight(height)}
+						placeholder={'키를 입력해 주세요.'}
+						placeholderTextColor={'#c6ccd3'}
+					/>
 				</SpaceView>
 
 				<SpaceView mb={24}>

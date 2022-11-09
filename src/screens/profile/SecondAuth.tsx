@@ -341,17 +341,19 @@ export const SecondAuth = () => {
 						AsyncStorage.setItem('memberBase', JSON.stringify(response.memberBase));
 						AsyncStorage.setItem('memberSndAuthList', JSON.stringify(response.memberSndAuthList));
 
-					const memberImgList:any = await AsyncStorage.getItem('memberImgList');
-					const memberSndAuthList:any = await AsyncStorage.getItem('memberSndAuthList');
-					const memberInterviewList:any = await AsyncStorage.getItem('memberInterviewList');
+						const memberImgList: any = await AsyncStorage.getItem('memberImgList');
+						const memberSndAuthList: any = await AsyncStorage.getItem('memberSndAuthList');
+						const memberInterviewList: any = await AsyncStorage.getItem('memberInterviewList');
 
-					if (memberImgList !== null || memberSndAuthList !== null) {
-
-						navigation.navigate('Profile1', {
-							imgList: JSON.parse(memberImgList)
-							, authList: JSON.parse(memberSndAuthList)
-							, interviewList: memberInterviewList
-						});	
+						if (memberImgList !== null || memberSndAuthList !== null) {
+							navigation.navigate('Profile1', {
+								imgList: JSON.parse(memberImgList),
+								authList: JSON.parse(memberSndAuthList),
+								interviewList: memberInterviewList,
+							});
+						}
+					} catch (error) {
+						console.log(error);
 					}
 				};
 

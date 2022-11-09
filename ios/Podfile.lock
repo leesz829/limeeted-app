@@ -64,7 +64,7 @@ PODS:
     - FlipperKit/FlipperKitNetworkPlugin
   - fmt (6.2.1)
   - glog (0.3.5)
-  - kakao-login (5.2.3):
+  - kakao-login (5.2.4):
     - KakaoSDKAuth (= 2.11.1)
     - KakaoSDKCommon (= 2.11.1)
     - KakaoSDKUser (= 2.11.1)
@@ -361,7 +361,7 @@ PODS:
     - React-Core
   - RNGestureHandler (2.1.1):
     - React-Core
-  - RNIap (12.4.2):
+  - RNIap (12.4.3):
     - React-Core
   - RNReanimated (2.12.0):
     - DoubleConversion
@@ -595,7 +595,7 @@ SPEC CHECKSUMS:
   FlipperKit: 8a20b5c5fcf9436cac58551dc049867247f64b00
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 5337263514dd6f09803962437687240c5dc39aa4
-  kakao-login: d506fe760be606181e206f89bf42fd082720a068
+  kakao-login: 3ab37ce55e95810b6c39b9bff41bec2aefce175f
   KakaoSDKAuth: bb2dfa7be30daa8403c9cfc8001aa6fde7a5b779
   KakaoSDKCommon: 555e1bb46595b842ded01cf7888cc17bbae4e113
   KakaoSDKUser: 08c0a4f40bebdebdf948a9e3d0e44ed5c2754f99
@@ -633,7 +633,7 @@ SPEC CHECKSUMS:
   RNCPicker: 0bf8ef8f7800524f32d2bb2a8bcadd53eda0ecd1
   RNDateTimePicker: 1dd15d7ed1ab7d999056bc77879a42920d139c12
   RNGestureHandler: e1ad51d31a580755079d5124d3ab66f0fcaa8311
-  RNIap: e17233fe11083a71e0420682b0b09d497861faa1
+  RNIap: 35bf82b69ea1b6da0c48f1fa44ead53f0f69444f
   RNReanimated: f6d11918cc6b85881a5256dcfe68b2cac8832e4d
   RNScreens: 34cc502acf1b916c582c60003dc3089fa01dc66d
   Yoga: e7dc4e71caba6472ff48ad7d234389b91dadc280
