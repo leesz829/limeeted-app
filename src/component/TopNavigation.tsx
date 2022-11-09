@@ -8,7 +8,6 @@ import { useNavigation } from '@react-navigation/native';
 import { Image, Alert } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
 
-
 interface Props {
 	currentPath: string;
 }
@@ -31,8 +30,8 @@ const TopNavigation: FC<Props> = (props) => {
 				style={[styles.tab]}
 				onPress={() => {
 					//navigation.navigate('StartPage');
-					navigation.navigate('Main', { 
-						screen: 'Matching'
+					navigation.navigate('Main', {
+						screen: 'Matching',
 					});
 				}}
 			>
@@ -53,12 +52,13 @@ const TopNavigation: FC<Props> = (props) => {
 				<Text style={[styles.tabText, currentNavi === 'LIVE' && styles.tabTextActive]}>LIVE</Text>
 				{currentNavi === 'LIVE' && <View style={styles.activeDot} />}
 			</TouchableOpacity>
-			<TouchableOpacity 
-				style={[styles.tab]} 
+			<TouchableOpacity
+				style={[styles.tab]}
 				onPress={() => {
-					Alert.alert("알림",	"준비중입니다.",	[{text: "확인"}]);
+					Alert.alert('알림', '준비중입니다.', [{ text: '확인' }]);
 				}}
-				/* onPress={() => setCurrentNavi('STORY')} */>
+				/* onPress={() => setCurrentNavi('STORY')} */
+			>
 				<Text style={[styles.tabText, currentNavi === 'STORY' && styles.tabTextActive]}>STORY</Text>
 				{currentNavi === 'STORY' && <View style={styles.activeDot} />}
 			</TouchableOpacity>
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
 		fontSize: 20,
 		lineHeight: 32,
 		color: Color.grayAAAA,
-		fontFamily: 'AppleSDGothicNeoB',
+		fontFamily: 'AppleSDGothicNeoB00',
 	},
 	tabTextActive: {
 		color: Color.black2222,

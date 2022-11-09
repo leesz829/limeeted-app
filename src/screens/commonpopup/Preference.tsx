@@ -456,7 +456,7 @@ const styles1 = StyleSheet.create({
 	labelStyle: {
 		fontSize: 14,
 		lineHeight: 20,
-		fontFamily: 'AppleSDGothicNeoR',
+		fontFamily: 'AppleSDGothicNeoR00',
 		color: Color.gray6666,
 		marginBottom: 8,
 	},
@@ -477,7 +477,7 @@ const pickerSelectStyles = StyleSheet.create({
 		fontSize: 16,
 		lineHeight: 24,
 		color: Color.black2222,
-		fontFamily: 'AppleSDGothicNeoM',
+		fontFamily: 'AppleSDGothicNeoM00',
 		padding: 0,
 		marginTop: 8,
 	},
@@ -485,7 +485,7 @@ const pickerSelectStyles = StyleSheet.create({
 		fontSize: 16,
 		lineHeight: 24,
 		color: Color.black2222,
-		fontFamily: 'AppleSDGothicNeoM',
+		fontFamily: 'AppleSDGothicNeoM00',
 		padding: 0,
 	},
 });

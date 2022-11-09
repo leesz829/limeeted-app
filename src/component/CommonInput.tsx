@@ -22,7 +22,7 @@ type Props = {
  * @param {boolean} isMasking 마스킹 처리 여부
  *
  */
-export const CommonInput: FC<Props> = (props:any) => {
+export const CommonInput: FC<Props> = (props: any) => {
 	return (
 		<View>
 			<View style={styles.labelContainer}>
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
 	labelStyle: {
 		fontSize: 14,
 		lineHeight: 20,
-		fontFamily: 'AppleSDGothicNeoR',
+		fontFamily: 'AppleSDGothicNeoR00',
 		color: Color.gray6666,
 	},
 	inputContainer: {
@@ -80,6 +80,6 @@ const styles = StyleSheet.create({
 		color: Color.black2222,
 		padding: 0,
 		margin: 0,
-		fontFamily: 'AppleSDGothicNeoM',
+		fontFamily: 'AppleSDGothicNeoM00',
 	},
 });

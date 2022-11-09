@@ -36,18 +36,18 @@ export const styles = StyleSheet.create({
 	whiteBack: { backgroundColor: 'white' },
 	hasFloatingBtnContainer: { paddingBottom: 80, backgroundColor: 'white' },
 	inputTextStyle: {
-		fontFamily: 'AppleSDGothicNeoM',
+		fontFamily: 'AppleSDGothicNeoM00',
 		fontSize: 14,
 		lineHeight: 22,
 		color: Color.black2222,
 	},
 	inputTextStyle_type02: {
-		fontFamily: 'AppleSDGothicNeoM',
+		fontFamily: 'AppleSDGothicNeoM00',
 		fontSize: 14,
 		lineHeight: 22,
 		width: width - 150,
 		color: Color.white,
-		flexShrink:1
+		flexShrink: 1,
 	},
 	bottomBtnContainer: {
 		width: width - 32,
@@ -105,7 +105,7 @@ export const styles = StyleSheet.create({
 		marginRight: 8,
 		overflow: 'visible',
 		zIndex: 1,
-		width: (width - 40) / 2
+		width: (width - 40) / 2,
 	},
 	halfItemRight: {
 		flex: 1,
@@ -340,7 +340,7 @@ export const styles = StyleSheet.create({
 		padding: 0,
 		margin: 0,
 		fontSize: 14,
-		fontFamily: 'AppleSDGothicNeoR',
+		fontFamily: 'AppleSDGothicNeoR00',
 		color: Color.black2222,
 	},
 	textContainer: {
@@ -372,8 +372,8 @@ export const layoutStyle = StyleSheet.create({
 	textLeft: { textAlign: 'left' },
 	textRight: { textAlign: 'right' },
 	lineFontGray: { textDecorationLine: 'underline' },
-	mb10: { marginBottom: 10},
-	mb20: { marginBottom: 20}
+	mb10: { marginBottom: 10 },
+	mb20: { marginBottom: 20 },
 });
 
 export const modalStyle = StyleSheet.create({

@@ -105,7 +105,7 @@ const styles = (props: Props) => {
 			fontSize: 16,
 			lineHeight: 26,
 			color: textColor,
-			fontFamily: 'AppleSDGothicNeoM',
+			fontFamily: 'AppleSDGothicNeoM00',
 		},
 		iconStyle: {
 			width: 16,

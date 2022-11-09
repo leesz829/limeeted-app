@@ -222,7 +222,7 @@ const style = StyleSheet.create({
 	},
 	title: {
 		fontSize: 12,
-		fontFamily: 'AppleSDGothicNeoM',
+		fontFamily: 'AppleSDGothicNeoM00',
 		color: Color.black2222,
 	},
 });

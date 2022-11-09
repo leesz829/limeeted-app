@@ -218,7 +218,7 @@ export const Signup01 = (props: Props) => {
 				properties.api_domain + '/member/getMemberProfileSecondAuth',
 				{
 					'api-key': 'U0FNR09CX1RPS0VOXzAx',
-					member_seq: String(await properties.get_json_data('member_seq')),
+					member_seq: props.route.params.memberSeq,
 				},
 				{
 					headers: {
@@ -229,17 +229,12 @@ export const Signup01 = (props: Props) => {
 			.then(function (response) {
 				console.log('getMemberProfileSecondAuth data :::: ', response.data);
 
-		const result = await axios.post(properties.api_domain + '/member/getMemberProfileSecondAuth', {
-			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
-			, 'member_seq' : props.route.params.memberSeq
-		}
-		, {
-			headers: {
-				'jwt-token' : String(await properties.jwt_token())
-			}
-		})
-		.then(function (response) {
-			console.log("getMemberProfileSecondAuth data :::: ", response.data);
+				let jobFileUrl: any = '';
+				let eduFileUrl: any = '';
+				let incomeFileUrl: any = '';
+				let assetFileUrl: any = '';
+				let snsFileUrl: any = '';
+				let vehicleFileUrl: any = '';
 
 				let o_jobItem: any = '';
 				let o_eduItem: any = '';

@@ -19,12 +19,12 @@ type Props = {
  *
  */
 
-export const CommonSelect : FC<Props> = (props) => {
+export const CommonSelect: FC<Props> = (props) => {
 	const [response, setResponse] = React.useState<any>(null);
 	const [value, setValue] = React.useState<any>(null);
 
 	React.useEffect(() => {
-		if(value != null && null != props.callbackFn) {
+		if (value != null && null != props.callbackFn) {
 			props.callbackFn(value);
 		}
 	}, [value]);
@@ -38,7 +38,7 @@ export const CommonSelect : FC<Props> = (props) => {
 						<RNPickerSelect
 							style={pickerSelectStyles}
 							useNativeAndroidPickerStyle={false}
-							onValueChange={value => setValue(value)}
+							onValueChange={(value) => setValue(value)}
 							value={props.selectValue}
 							items={props.items}
 						/>
@@ -48,8 +48,6 @@ export const CommonSelect : FC<Props> = (props) => {
 					<Image source={ICON.arrRight} style={styles.icon} />
 				</View>
 			</View>
-
-
 
 			{/* {props.items.map((item, index) => {
 				return (
@@ -140,7 +138,7 @@ const styles = StyleSheet.create({
 	labelStyle: {
 		fontSize: 14,
 		lineHeight: 20,
-		fontFamily: 'AppleSDGothicNeoR',
+		fontFamily: 'AppleSDGothicNeoR00',
 		color: Color.gray6666,
 		marginBottom: 8,
 	},
@@ -161,7 +159,7 @@ const pickerSelectStyles = StyleSheet.create({
 		fontSize: 16,
 		lineHeight: 24,
 		color: Color.black2222,
-		fontFamily: 'AppleSDGothicNeoM',
+		fontFamily: 'AppleSDGothicNeoM00',
 		padding: 0,
 		marginTop: 8,
 	},
@@ -169,7 +167,7 @@ const pickerSelectStyles = StyleSheet.create({
 		fontSize: 16,
 		lineHeight: 24,
 		color: Color.black2222,
-		fontFamily: 'AppleSDGothicNeoM',
+		fontFamily: 'AppleSDGothicNeoM00',
 		padding: 0,
 	},
 });

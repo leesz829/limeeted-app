@@ -17,11 +17,11 @@ import RNPickerSelect from 'react-native-picker-select';
 import * as properties from 'utils/properties';
 
 interface Props {
-	navigation : StackNavigationProp<StackParamList, 'Signup00'>;
-	route : RouteProp<StackParamList, 'Signup00'>;
+	navigation: StackNavigationProp<StackParamList, 'Signup00'>;
+	route: RouteProp<StackParamList, 'Signup00'>;
 }
 
-export const Signup00 = (props : Props) => {
+export const Signup00 = (props: Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 
 	const [ci, setCi] = React.useState(props.route.params.ci);
@@ -29,7 +29,7 @@ export const Signup00 = (props : Props) => {
 	const [password, setPassword] = React.useState('');
 	const [passwordChk, setPasswordChk] = React.useState('');
 	const [name, setName] = React.useState(props.route.params.name);
-	const [age, setAge] = React.useState(function(){
+	const [age, setAge] = React.useState(function () {
 		let age_d;
 		let today = new Date();
 		let birthDay = props.route.params.birthday;
@@ -43,11 +43,13 @@ export const Signup00 = (props : Props) => {
 
 	// 성별 항목 목록
 	const genderItemList = [
-		{label: '남자', value: 'M' },
-		{label: '여자', value: 'W' }
+		{ label: '남자', value: 'M' },
+		{ label: '여자', value: 'W' },
 	];
 
-	const genderCallbackFn = (value : string) => { setGender(value); };
+	const genderCallbackFn = (value: string) => {
+		setGender(value);
+	};
 
 	return (
 		<>
@@ -60,10 +62,7 @@ export const Signup00 = (props : Props) => {
 					</CommonText>
 				</SpaceView>
 
-				<CommonInput 
-						label="아이디" 
-						value={id} 
-						onChangeText={id => setId(id)} />
+				<CommonInput label="아이디" value={id} onChangeText={(id) => setId(id)} />
 
 				<View style={styles.infoContainer}>
 					<SpaceView mt={4}>
@@ -71,55 +70,54 @@ export const Signup00 = (props : Props) => {
 					</SpaceView>
 
 					<SpaceView ml={8}>
-						<CommonText color={ColorType.gray6666}>
-							아이디는 이메일로 입력해 주세요.
-						</CommonText>
+						<CommonText color={ColorType.gray6666}>아이디는 이메일로 입력해 주세요.</CommonText>
 					</SpaceView>
 				</View>
 
 				<SpaceView mb={24}>
-					<CommonInput 
-							label="비밀번호" 
-							value={password} 
-							onChangeText={password => setPassword(password)}
-							isMasking={true}
-							maxLength={20} />
+					<CommonInput
+						label="비밀번호"
+						value={password}
+						onChangeText={(password) => setPassword(password)}
+						isMasking={true}
+						maxLength={20}
+					/>
 				</SpaceView>
 
 				<SpaceView mb={24}>
-					<CommonInput 
-							label="비밀번호 확인" 
-							value={passwordChk} 
-							onChangeText={passwordChk => setPasswordChk(passwordChk)}
-							isMasking={true}
-							maxLength={20} />
+					<CommonInput
+						label="비밀번호 확인"
+						value={passwordChk}
+						onChangeText={(passwordChk) => setPasswordChk(passwordChk)}
+						isMasking={true}
+						maxLength={20}
+					/>
 				</SpaceView>
 
 				<SpaceView mb={24}>
-					<CommonInput 
-							label="이름" 
-							value={name} 
-							onChangeText={name => setName(name)}
-							maxLength={5}
-							disabled={true} />
+					<CommonInput
+						label="이름"
+						value={name}
+						onChangeText={(name) => setName(name)}
+						maxLength={5}
+						disabled={true}
+					/>
 				</SpaceView>
 
 				<SpaceView mb={24}>
 					<View style={styles.halfContainer}>
 						<View style={styles.halfItemLeft}>
-							<CommonInput 
-									label="나이" 
-									value={age} 
-									keyboardType="number-pad"
-									onChangeText={age => setAge(age)}
-									disabled={true}
-									maxLength={2} />
+							<CommonInput
+								label="나이"
+								value={age}
+								keyboardType="number-pad"
+								onChangeText={(age) => setAge(age)}
+								disabled={true}
+								maxLength={2}
+							/>
 						</View>
 						<View style={styles.halfItemRight}>
-							<CommonInput 
-									label="성별" 
-									value={gender == "M" ? "남자" : "여자"}
-									disabled={true} />
+							<CommonInput label="성별" value={gender == 'M' ? '남자' : '여자'} disabled={true} />
 
 							{/* <View style={selectStyles.selectContainer}>
 								<View>
@@ -129,72 +127,72 @@ export const Signup00 = (props : Props) => {
 									<Image source={ICON.arrRight} style={selectStyles.icon} />
 								</View>
 							</View> */}
-
 						</View>
 					</View>
 				</SpaceView>
 
 				<SpaceView mb={24}>
-					<CommonInput 
-							label="전화번호" 
-							value={mobile} 
-							onChangeText={mobile => setMobile(mobile)} 
-							keyboardType="number-pad"
-							maxLength={13}
-							disabled={true}
-				/>
+					<CommonInput
+						label="전화번호"
+						value={mobile}
+						onChangeText={(mobile) => setMobile(mobile)}
+						keyboardType="number-pad"
+						maxLength={13}
+						disabled={true}
+					/>
 				</SpaceView>
 				<SpaceView mb={24}>
-					<CommonBtn value={'다음 (1/4)'} 
-								type={'primary'} 
-								onPress={() => {
-									if(id == '') {
-										Alert.alert("알림",	"아이디를 입력해 주세요.",	[{text: "확인"}]);
-										return;
-									}
-									if(password == '') {
-										Alert.alert("알림",	"비밀번호를 입력해 주세요.",	[{text: "확인"}]);
-										return;
-									}
-									if(passwordChk == '') {
-										Alert.alert("알림",	"비밀번호 확인을 입력해 주세요.",	[{text: "확인"}]);
-										return;
-									}
-									if(password != passwordChk) {
-										Alert.alert("알림",	"비밀번호 확인이 맞지 않습니다.",	[{text: "확인"}]);
-										return;
-									}
+					<CommonBtn
+						value={'다음 (1/4)'}
+						type={'primary'}
+						onPress={() => {
+							if (id == '') {
+								Alert.alert('알림', '아이디를 입력해 주세요.', [{ text: '확인' }]);
+								return;
+							}
+							if (password == '') {
+								Alert.alert('알림', '비밀번호를 입력해 주세요.', [{ text: '확인' }]);
+								return;
+							}
+							if (passwordChk == '') {
+								Alert.alert('알림', '비밀번호 확인을 입력해 주세요.', [{ text: '확인' }]);
+								return;
+							}
+							if (password != passwordChk) {
+								Alert.alert('알림', '비밀번호 확인이 맞지 않습니다.', [{ text: '확인' }]);
+								return;
+							}
 
-									axios.post(properties.api_domain + '/join/insertMemberInfo/', {
-										kakao_id : id
-										, password : password
-										, name: name
-										, age : age
-										, gender : gender
-										, phone_number : mobile
-										, ci : ci
-										, birthday : birthday
-									})
-									.then(function (response) {
-										console.log(response.data);
+							axios
+								.post(properties.api_domain + '/join/insertMemberInfo/', {
+									kakao_id: id,
+									password: password,
+									name: name,
+									age: age,
+									gender: gender,
+									phone_number: mobile,
+									ci: ci,
+									birthday: birthday,
+								})
+								.then(function (response) {
+									console.log(response.data);
 
-										if(response.data.result_code == "0000") {
-											navigation.navigate('Signup01', {
-												memberSeq : response.data.memberSeq
-											});
-										}
-									})
-									.catch(function (error) {
-										console.log(error);
-									});
-								}}
+									if (response.data.result_code == '0000') {
+										navigation.navigate('Signup01', {
+											memberSeq: response.data.memberSeq,
+										});
+									}
+								})
+								.catch(function (error) {
+									console.log(error);
+								});
+						}}
 					/>
 				</SpaceView>
 			</ScrollView>
 		</>
 	);
 };
-
 
 const selectStyles = StyleSheet.create({
 	selectImgContainer: {
@@ -210,7 +208,7 @@ const selectStyles = StyleSheet.create({
 	labelStyle: {
 		fontSize: 14,
 		lineHeight: 20,
-		fontFamily: 'AppleSDGothicNeoR',
+		fontFamily: 'AppleSDGothicNeoR00',
 		color: Color.gray6666,
 		marginBottom: 8,
 	},
@@ -231,7 +229,7 @@ const pickerSelectStyles = StyleSheet.create({
 		fontSize: 16,
 		lineHeight: 24,
 		color: Color.black2222,
-		fontFamily: 'AppleSDGothicNeoM',
+		fontFamily: 'AppleSDGothicNeoM00',
 		padding: 0,
 		marginTop: 8,
 	},
@@ -239,7 +237,7 @@ const pickerSelectStyles = StyleSheet.create({
 		fontSize: 16,
 		lineHeight: 24,
 		color: Color.black2222,
-		fontFamily: 'AppleSDGothicNeoM',
+		fontFamily: 'AppleSDGothicNeoM00',
 		padding: 0,
 	},
 });

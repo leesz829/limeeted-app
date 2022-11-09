@@ -39,7 +39,7 @@ const styles = ({
 	fontWeight?: WeightType;
 }) => {
 	let fontSize = 16;
-	let fontFamily = 'AppleSDGothicNeoR';
+	let fontFamily = 'AppleSDGothicNeoR00';
 	switch (type) {
 		case 'h2':
 			fontSize = 24;
@@ -60,13 +60,13 @@ const styles = ({
 
 	switch (fontWeight) {
 		case '300':
-			fontFamily = 'AppleSDGothicNeoT';
+			fontFamily = 'AppleSDGothicNeoT00';
 			break;
 		case '500':
-			fontFamily = 'AppleSDGothicNeoM';
+			fontFamily = 'AppleSDGothicNeoM00';
 			break;
 		case '700':
-			fontFamily = 'AppleSDGothicNeoB';
+			fontFamily = 'AppleSDGothicNeoB00';
 			break;
 	}
 
