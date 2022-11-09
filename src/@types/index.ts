@@ -57,7 +57,14 @@ export type StackParamList = {
 		drinking : string;
 		smoking : string;
 	};
-	Board0: undefined;
+	Board0: {
+		boardList: [{
+			board_seq: Number
+			, board_code: String
+			, title: String
+			, contents: String
+		}];
+	};
 	Board1: undefined;
 	Preference: {
 		ideal_type_seq: string;
@@ -219,6 +226,7 @@ export const MemberBaseData = {
 	, friend_match_yn : ''
 	, profile_score : ''
 	, grade_score : ''
+	, member_level : ''
 }
 
 export const FileInfo= {

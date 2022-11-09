@@ -343,7 +343,7 @@ export const Profile1 = (props: Props) => {
 									{imgData.orgImgUrl02.url != '' && imgData.orgImgUrl02.delYn == 'N' ? (
 										<TouchableOpacity
 											onPress={() => {
-												imgDel_onOpen(imgData.orgImgUrl02.member_img_seq, 1);
+												imgDel_onOpen(imgData.orgImgUrl02.member_img_seq, 2);
 											}}
 										>
 											<Image
@@ -362,7 +362,7 @@ export const Profile1 = (props: Props) => {
 									{imgData.orgImgUrl03.url != '' && imgData.orgImgUrl03.delYn == 'N' ? (
 										<TouchableOpacity
 											onPress={() => {
-												imgDel_onOpen(imgData.orgImgUrl03.member_img_seq, 1);
+												imgDel_onOpen(imgData.orgImgUrl03.member_img_seq, 3);
 											}}
 										>
 											<Image
@@ -384,7 +384,7 @@ export const Profile1 = (props: Props) => {
 									{imgData.orgImgUrl04.url != '' && imgData.orgImgUrl04.delYn == 'N' ? (
 										<TouchableOpacity
 											onPress={() => {
-												imgDel_onOpen(imgData.orgImgUrl04.member_img_seq, 1);
+												imgDel_onOpen(imgData.orgImgUrl04.member_img_seq, 4);
 											}}
 										>
 											<Image
@@ -403,7 +403,7 @@ export const Profile1 = (props: Props) => {
 									{imgData.orgImgUrl05.url != '' && imgData.orgImgUrl05.delYn == 'N' ? (
 										<TouchableOpacity
 											onPress={() => {
-												imgDel_onOpen(imgData.orgImgUrl05.member_img_seq, 1);
+												imgDel_onOpen(imgData.orgImgUrl05.member_img_seq, 5);
 											}}
 										>
 											<Image

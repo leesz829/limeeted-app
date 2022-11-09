@@ -53,7 +53,12 @@ const TopNavigation: FC<Props> = (props) => {
 				<Text style={[styles.tabText, currentNavi === 'LIVE' && styles.tabTextActive]}>LIVE</Text>
 				{currentNavi === 'LIVE' && <View style={styles.activeDot} />}
 			</TouchableOpacity>
-			<TouchableOpacity style={[styles.tab]} onPress={() => setCurrentNavi('STORY')}>
+			<TouchableOpacity 
+				style={[styles.tab]} 
+				onPress={() => {
+					Alert.alert("알림",	"준비중입니다.",	[{text: "확인"}]);
+				}}
+				/* onPress={() => setCurrentNavi('STORY')} */>
 				<Text style={[styles.tabText, currentNavi === 'STORY' && styles.tabTextActive]}>STORY</Text>
 				{currentNavi === 'STORY' && <View style={styles.activeDot} />}
 			</TouchableOpacity>

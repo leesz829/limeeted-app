@@ -25,8 +25,10 @@ interface Props {
 export const Login01 = (props: Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 
-	const [id, setId] = React.useState('test01@naver.com');
-	const [password, setPassword] = React.useState('1234');
+	const [id, setId] = React.useState('');
+	const [password, setPassword] = React.useState('');
+
+	console.log('askdlmasldkm ::::: ', properties.api_domain);
 
 	const loginProc = async () => {
 		console.log(

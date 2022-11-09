@@ -3,33 +3,39 @@ import CommonHeader from 'component/CommonHeader';
 import { EventRow } from 'component/EventRow';
 import * as React from 'react';
 import { ScrollView } from 'react-native';
+import axios from 'axios';
+import * as properties from 'utils/properties';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
+import { RouteProp, useNavigation } from '@react-navigation/native';
 
-export const Board0 = () => {
+/* ################################################################################################################
+###################################################################################################################
+###### 최근 소식
+###################################################################################################################
+################################################################################################################ */
+
+interface Props {
+	navigation : StackNavigationProp<StackParamList, 'Board0'>;
+	route : RouteProp<StackParamList, 'Board0'>;
+}
+
+export const Board0 = (props : Props) => {
+
+	const [noticeList, setnoticeList] = React.useState<any>(props.route.params.boardList);
+
 	return (
 		<>
 			<CommonHeader title={'최근 소식'} />
 			<ScrollView contentContainerStyle={styles.container}>
-				<EventRow
-					label="공지"
-					title="이용안내"
-					desc={`믿음가는 사람들의 인연
-LIMEETED 이용안내입니다.
-해당 게시글에 대한 내용이 출력됩니다.`}
-				/>
-				<EventRow
-					label="이벤트"
-					title="크라운 결제 안내"
-					desc={`믿음가는 사람들의 인연
-LIMEETED 이용안내입니다.
-해당 게시글에 대한 내용이 출력됩니다.`}
-				/>
-				<EventRow
-					label="공지"
-					title="8월 이벤트 당첨자"
-					desc={`믿음가는 사람들의 인연
-LIMEETED 이용안내입니다.
-해당 게시글에 대한 내용이 출력됩니다.`}
-				/>
+				{noticeList.map(({ board_seq, board_code, title, contents } : { board_seq: any, board_code: string, title: string, contents: string }) => (
+					<EventRow
+						key={board_seq}
+						label="공지"
+						title={title}
+						desc={contents}
+					/>
+				))}
 			</ScrollView>
 		</>
 	);

@@ -1,18 +1,19 @@
 import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
-import { layoutStyle, styles } from 'assets/styles/Styles';
+import { layoutStyle, styles, modalStyle } from 'assets/styles/Styles';
 import { CommonBtn } from 'component/CommonBtn';
 import CommonHeader from 'component/CommonHeader';
 import { CommonText } from 'component/CommonText';
 import { ImagePicker } from 'component/ImagePicker';
 import SpaceView from 'component/SpaceView';
-import * as React from 'react';
-import { View, ScrollView, Image } from 'react-native';
+import React, { useRef } from 'react';
+import { View, ScrollView, Image, TouchableOpacity } from 'react-native';
 import { RouteProp, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ICON, PROFILE_IMAGE } from 'utils/imageUtils';
 import axios from 'axios';
 import { Value } from 'react-native-reanimated';
 import * as properties from 'utils/properties';
+import { Modalize } from 'react-native-modalize';
 
 /* ################################################################################################################
 ###################################################################################################################
@@ -28,89 +29,117 @@ interface Props {
 export const Signup02 = (props: Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 
-	const [orgImgUrl01, setOrgImgUrl01] = React.useState<any>(null);
-	const [orgImgUrl02, setOrgImgUrl02] = React.useState<any>(null);
-	const [orgImgUrl03, setOrgImgUrl03] = React.useState<any>(null);
-	const [orgImgUrl04, setOrgImgUrl04] = React.useState<any>(null);
-	const [orgImgUrl05, setOrgImgUrl05] = React.useState<any>(null);
+	// 프로필 사진
+	const [imgData, setImgData] = React.useState<any>({
+		orgImgUrl01: { memer_img_seq : '', url : "", delYn : "" }
+		, orgImgUrl02: { memer_img_seq : '', url : "", delYn : "" }
+		, orgImgUrl03: { memer_img_seq : '', url : "", delYn : "" }
+		, orgImgUrl04: { memer_img_seq : '', url : "", delYn : "" }
+		, orgImgUrl05: { memer_img_seq : '', url : "", delYn : "" }
+		, imgFile01: { uri : "", name : "", type : "" }
+		, imgFile02: { uri : "", name : "", type : "" }
+		, imgFile03: { uri : "", name : "", type : "" }
+		, imgFile04: { uri : "", name : "", type : "" }
+		, imgFile05: { uri : "", name : "", type : "" }
+	});
 
-	const imgFileData01 = { uri: '', fileName: '', type: '' };
-	const imgFileData02 = { uri: '', fileName: '', type: '' };
-	const imgFileData03 = { uri: '', fileName: '', type: '' };
-	const imgFileData04 = { uri: '', fileName: '', type: '' };
-	const imgFileData05 = { uri: '', fileName: '', type: '' };
+	// 프로필 이미지 삭제 시퀀스 문자열
+	const [imgDelSeqStr, setImgDelSeqStr] = React.useState('');
 
-	const imgFileJson = {
-		uri: '',
-		fileName: '',
-		type: '',
+	const fileCallBack1 = (uri:string, fileName:string, fileSize: number, type: string) => {
+		if(uri != null && uri != '') {
+			setImgData({
+				...imgData
+				, imgFile01 : {uri: uri, name: fileName, type: type}
+			})
+		}
 	};
 
-	const fileCallBack1 = (uri: string, fileName: string, fileSize: number, type: string) => {
-		imgFileData01.uri = uri;
-		imgFileData01.fileName = fileName;
-		imgFileData01.type = type;
-
-		/* imgFileJson.uri = uri;
-		imgFileJson.fileName = fileName;
-		imgFileJson.type = type;
-
-		console.log("???? ::: " + Object.values(imgFileJson)[1]); */
+	const fileCallBack2 = (uri:string, fileName:string, fileSize: number, type: string) => {
+		if(uri != null && uri != '') {
+			setImgData({
+				...imgData
+				, imgFile02 : {uri: uri, name: fileName, type: type}
+			})
+		}
 	};
 
-	const fileCallBack2 = (uri: string, fileName: string, fileSize: number, type: string) => {
-		imgFileData02.uri = uri;
-		imgFileData02.fileName = fileName;
-		imgFileData02.type = type;
+	const fileCallBack3 = (uri:string, fileName:string, fileSize: number, type: string) => {
+		if(uri != null && uri != '') {
+			setImgData({
+				...imgData
+				, imgFile03 : {uri: uri, name: fileName, type: type}
+			})
+		}
 	};
 
-	const fileCallBack3 = (uri: string, fileName: string, fileSize: number, type: string) => {
-		imgFileData03.uri = uri;
-		imgFileData03.fileName = fileName;
-		imgFileData03.type = type;
+	const fileCallBack4 = (uri:string, fileName:string, fileSize: number, type: string) => {
+		if(uri != null && uri != '') {
+			setImgData({
+				...imgData
+				, imgFile04 : {uri: uri, name: fileName, type: type}
+			})
+		}
 	};
 
-	const fileCallBack4 = (uri: string, fileName: string, fileSize: number, type: string) => {
-		imgFileData04.uri = uri;
-		imgFileData04.fileName = fileName;
-		imgFileData04.type = type;
+	const fileCallBack5 = (uri:string, fileName:string, fileSize: number, type: string) => {
+		if(uri != null && uri != '') {
+			setImgData({
+				...imgData
+				, imgFile05 : {uri: uri, name: fileName, type: type}
+			})
+		}
 	};
 
-	const fileCallBack5 = (uri: string, fileName: string, fileSize: number, type: string) => {
-		imgFileData05.uri = uri;
-		imgFileData05.fileName = fileName;
-		imgFileData05.type = type;
-	};
+	// 사진삭제 컨트롤 변수
+	const [isDelImgData, setIsDelImgData] = React.useState<any>({
+		img_seq : ''
+		, order_seq : ''
+	});
 
 	/*
 	 * 최초 실행
 	 */
 	React.useEffect(() => {
-		console.log('gender ::::: ', props.route.params.gender);
 
 		// 회원 이미지 정보 조회
-		axios
-			.post(properties.api_domain + '/join/selectMemberImage/', {
-				member_seq: props.route.params.memberSeq,
-			})
-			.then(function (response) {
-				console.log('response ::: ' + JSON.stringify(response.data));
+		axios.post(properties.api_domain + '/join/selectMemberImage/', {
+			member_seq : props.route.params.memberSeq
+		})
+		.then(function (response) {
+			console.log("response ::: " + JSON.stringify(response.data));
+	
+			if(null != response.data.imgList) {
+				console.log("imgList ::: ", response.data.imgList);
 
-				if (null != response.data.imgList) {
-					console.log('imgList ::: ', response.data.imgList);
+				let imgData:any = {
+					orgImgUrl01: { memer_img_seq : '', url : "", delYn : "" }
+					, orgImgUrl02: { memer_img_seq : '', url : "", delYn : "" }
+					, orgImgUrl03: { memer_img_seq : '', url : "", delYn : "" }
+					, orgImgUrl04: { memer_img_seq : '', url : "", delYn : "" }
+					, orgImgUrl05: { memer_img_seq : '', url : "", delYn : "" }
+					, imgFile01: { uri : "", name : "", type : "" }
+					, imgFile02: { uri : "", name : "", type : "" }
+					, imgFile03: { uri : "", name : "", type : "" }
+					, imgFile04: { uri : "", name : "", type : "" }
+					, imgFile05: { uri : "", name : "", type : "" }
+				};
+	
+				response.data?.imgList?.map(({ member_img_seq, file_name, file_path, order_seq } : { member_img_seq: any, file_name: any, file_path: any, order_seq: any }) => {
+					let data = { member_img_seq : member_img_seq, url : properties.img_domain + file_path + file_name, delYn : 'N' }
+					if(order_seq == 1) { imgData.orgImgUrl01 = data; }
+					if(order_seq == 2) { imgData.orgImgUrl02 = data; }
+					if(order_seq == 3) { imgData.orgImgUrl03 = data; }
+					if(order_seq == 4) { imgData.orgImgUrl04 = data; }
+					if(order_seq == 5) { imgData.orgImgUrl05 = data; }
+				});
 
-					response.data?.imgList?.map(
-						({
-							order_seq,
-							file_name,
-							file_path,
-						}: {
-							order_seq: any;
-							file_name: any;
-							file_path: any;
-						}) => {
-							console.log('file_name ::: ', file_name);
-							console.log('file_path ::: ', file_path);
+				setImgData({...imgData, imgData});
+			}
+		})
+		.catch(function (error) {
+			console.log(error);
+		});
 
 							const localDomain = properties.img_domain;
 
@@ -134,6 +163,32 @@ export const Signup02 = (props: Props) => {
 			});
 	}, []);
 
+	// 사진 삭제 팝업
+	const imgDel_modalizeRef = useRef<Modalize>(null);
+	const imgDel_onOpen = (img_seq:any, order_seq:any) => { 
+		setIsDelImgData({
+			img_seq : img_seq
+			, order_seq : order_seq
+		});
+		imgDel_modalizeRef.current?.open(); 
+	};
+	const imgDel_onClose = () => { imgDel_modalizeRef.current?.close(); };
+
+	// 사진 삭제
+	const imgDelProc = () => {
+		if(isDelImgData.order_seq == '1') { setImgData({...imgData, orgImgUrl01 : {member_img_seq: imgData.orgImgUrl01.member_img_seq, url: imgData.orgImgUrl01.url , delYn: 'Y'}}) }
+		if(isDelImgData.order_seq == '2') { setImgData({...imgData, orgImgUrl02 : {...imgData.orgImgUrl02, delYn : 'Y'}}) }
+		if(isDelImgData.order_seq == '3') { setImgData({...imgData, orgImgUrl03 : {...imgData.orgImgUrl03, delYn : 'Y'}}) }
+		if(isDelImgData.order_seq == '4') { setImgData({...imgData, orgImgUrl04 : {...imgData.orgImgUrl04, delYn : 'Y'}}) }
+		if(isDelImgData.order_seq == '5') { setImgData({...imgData, orgImgUrl05 : {...imgData.orgImgUrl05, delYn : 'Y'}}) }
+
+		let delArr = imgDelSeqStr;
+		if(delArr == '') { delArr = isDelImgData.img_seq }
+		else { delArr = ',' + isDelImgData.img_seq}
+		setImgDelSeqStr(delArr);
+		imgDel_onClose();
+	};
+
 	return (
 		<>
 			<CommonHeader title={'근사한 프로필 만들기'} />
@@ -147,25 +202,62 @@ export const Signup02 = (props: Props) => {
 
 				<SpaceView mb={48} viewStyle={styles.halfContainer}>
 					<View style={styles.halfItemLeft}>
-						<ImagePicker isBig={true} callbackFn={fileCallBack1} uriParam={orgImgUrl01} />
+						{imgData.orgImgUrl01.url != '' && imgData.orgImgUrl01.delYn == 'N' ? (
+							<TouchableOpacity 
+								onPress={() => { imgDel_onOpen(imgData.orgImgUrl01.member_img_seq, 1) }}>
+								<Image resizeMode="cover" resizeMethod="scale" style={styles.tempBoxBig} key={imgData.orgImgUrl01.url} source={{ uri: imgData.orgImgUrl01.url }} />
+							</TouchableOpacity>
+						) : (
+							<ImagePicker isBig={true} callbackFn={fileCallBack1} uriParam={''} />
+						)}
+
+						{/* <ImagePicker isBig={true} callbackFn={fileCallBack1} uriParam={orgImgUrl01} /> */}
 					</View>
 
 					<View style={styles.halfItemRight}>
 						<SpaceView mb={16} viewStyle={layoutStyle.row}>
 							<SpaceView mr={8}>
-								<ImagePicker isBig={false} callbackFn={fileCallBack2} uriParam={orgImgUrl02} />
+								{imgData.orgImgUrl02.url != '' && imgData.orgImgUrl02.delYn == 'N' ? (
+									<TouchableOpacity 
+										onPress={() => { imgDel_onOpen(imgData.orgImgUrl02.member_img_seq, 1) }}>
+										<Image resizeMode="cover" resizeMethod="scale" style={styles.tempBoxSmall} key={imgData.orgImgUrl02.url} source={{ uri: imgData.orgImgUrl02.url }} />
+									</TouchableOpacity>
+								) : (
+									<ImagePicker isBig={false} callbackFn={fileCallBack2} uriParam={''} />
+								)}
 							</SpaceView>
 							<SpaceView ml={8}>
-								<ImagePicker isBig={false} callbackFn={fileCallBack3} uriParam={orgImgUrl03} />
+								{imgData.orgImgUrl03.url != '' && imgData.orgImgUrl03.delYn == 'N' ? (
+									<TouchableOpacity 
+										onPress={() => { imgDel_onOpen(imgData.orgImgUrl03.member_img_seq, 1) }}>
+										<Image resizeMode="cover" resizeMethod="scale" style={styles.tempBoxSmall} key={imgData.orgImgUrl03.url} source={{ uri: imgData.orgImgUrl03.url }} />
+									</TouchableOpacity>
+								) : (
+									<ImagePicker isBig={false} callbackFn={fileCallBack3} uriParam={''} />
+								)}
 							</SpaceView>
 						</SpaceView>
 
 						<SpaceView viewStyle={layoutStyle.row}>
 							<SpaceView mr={8}>
-								<ImagePicker isBig={false} callbackFn={fileCallBack4} uriParam={orgImgUrl04} />
+								{imgData.orgImgUrl04.url != '' && imgData.orgImgUrl04.delYn == 'N' ? (
+									<TouchableOpacity 
+										onPress={() => { imgDel_onOpen(imgData.orgImgUrl04.member_img_seq, 1) }}>
+										<Image resizeMode="cover" resizeMethod="scale" style={styles.tempBoxSmall} key={imgData.orgImgUrl04.url} source={{ uri: imgData.orgImgUrl04.url }} />
+									</TouchableOpacity>
+								) : (
+									<ImagePicker isBig={false} callbackFn={fileCallBack4} uriParam={''} />
+								)}
 							</SpaceView>
 							<SpaceView ml={8}>
-								<ImagePicker isBig={false} callbackFn={fileCallBack5} uriParam={orgImgUrl05} />
+								{imgData.orgImgUrl05.url != '' && imgData.orgImgUrl05.delYn == 'N' ? (
+									<TouchableOpacity 
+										onPress={() => { imgDel_onOpen(imgData.orgImgUrl05.member_img_seq, 1) }}>
+										<Image resizeMode="cover" resizeMethod="scale" style={styles.tempBoxSmall} key={imgData.orgImgUrl05.url} source={{ uri: imgData.orgImgUrl05.url }} />
+									</TouchableOpacity>
+								) : (
+									<ImagePicker isBig={false} callbackFn={fileCallBack5} uriParam={''} />
+								)}
 							</SpaceView>
 						</SpaceView>
 					</View>
@@ -291,24 +383,12 @@ export const Signup02 = (props: Props) => {
 								name: imgFileData05.fileName,
 							};
 
-							data.append('memberSeq', props.route.params.memberSeq);
-							if (imgFileData01.uri != '' && typeof imgFileData01.uri != 'undefined') {
-								data.append('file01', file01);
-							}
-							if (imgFileData02.uri != '' && typeof imgFileData02.uri != 'undefined') {
-								data.append('file02', file02);
-							}
-							if (imgFileData03.uri != '' && typeof imgFileData03.uri != 'undefined') {
-								data.append('file03', file03);
-							}
-							if (imgFileData04.uri != '' && typeof imgFileData04.uri != 'undefined') {
-								data.append('file04', file04);
-							}
-							if (imgFileData05.uri != '' && typeof imgFileData05.uri != 'undefined') {
-								data.append('file05', file05);
-							}
-
-							console.log('data :::: ', data);
+									data.append("memberSeq", props.route.params.memberSeq);
+									if(imgData.imgFile01.uri != "") {	data.append("file01", imgData.imgFile01); }
+									if(imgData.imgFile02.uri != "") {	data.append("file02", imgData.imgFile02); }
+									if(imgData.imgFile03.uri != "") {	data.append("file03", imgData.imgFile03); }
+									if(imgData.imgFile04.uri != "") {	data.append("file04", imgData.imgFile04); }
+									if(imgData.imgFile05.uri != "") {	data.append("file05", imgData.imgFile05); }
 
 							fetch('http://211.104.55.151:8080/join/insertMemberProfile/', {
 								method: 'POST',
@@ -318,19 +398,58 @@ export const Signup02 = (props: Props) => {
 								.then((response) => {
 									console.log('response :::: ', response);
 
-									if (response.result_code == '0000') {
-										navigation.navigate('Signup03', {
-											memberSeq: props.route.params.memberSeq,
-										});
-									}
-								})
-								.catch((error) => {
-									console.log('error', error);
-								});
-						}}
+									fetch(properties.api_domain + '/join/insertMemberProfile/', {
+										method: 'POST',
+										body: data,
+									})
+									.then((response) => response.json())
+									.then((response) => {
+										console.log('response :::: ', response);
+
+										if(response.result_code == "0000") {
+											navigation.navigate('Signup03', {
+												memberSeq : props.route.params.memberSeq
+											});
+										}
+									})
+									.catch((error) => {
+										console.log('error', error);
+									});
+
+								}} 
 					/>
 				</SpaceView>
 			</ScrollView>
+
+
+
+			{/* ###############################################
+			사진 삭제 팝업
+			############################################### */}
+			<Modalize
+				ref={imgDel_modalizeRef}
+				adjustToContentHeight={true}
+				handleStyle={modalStyle.modalHandleStyle}
+				modalStyle={modalStyle.modalContainer}
+			>
+				<View style={modalStyle.modalHeaderContainer}>
+					<CommonText fontWeight={'700'} type={'h3'}>
+						프로필 사진 삭제
+					</CommonText>
+					<TouchableOpacity onPress={imgDel_onClose}>
+						<Image source={ICON.xBtn} style={styles.iconSize24} />
+					</TouchableOpacity>
+				</View>
+
+				<View style={[modalStyle.modalBody, layoutStyle.flex1, layoutStyle.mb20]}>
+					<View>
+						<CommonBtn value={'사진 삭제'} type={'primary'} onPress={imgDelProc} />
+						<CommonBtn value={'취소'} type={'primary'} onPress={imgDel_onClose} />
+					</View>
+				</View>
+			</Modalize>
+
+
 		</>
 	);
 };

@@ -397,7 +397,7 @@ export const Roby = (props : Props) => {
                </SpaceView>
                <SpaceView mb={16} viewStyle={styles.levelContainer}>
                   <CommonText color={ColorType.gray6666} type={'h6'}>
-                     LV.{member.base.profile_tier != null ? member.base.profile_tier : 0}
+                     LV.{member.base.member_level != null ? member.base.member_level : 1}
                   </CommonText>
                </SpaceView>
 
@@ -415,11 +415,7 @@ export const Roby = (props : Props) => {
                                           const memberSndAuthList:any = await AsyncStorage.getItem('memberSndAuthList');
                                           const memberInterviewList:any = await AsyncStorage.getItem('memberInterviewList');
 
-                                          console.log('asdsad ::::: ', memberInterviewList);
-
                                           if (memberImgList !== null || memberSndAuthList !== null || memberInterviewList !== null) {
-                                             console.log('memberSndAuthList :::: ', memberSndAuthList);
-
                                              navigation.navigate('Profile1', {
                                                 imgList: JSON.parse(memberImgList)
                                                 , authList: JSON.parse(memberSndAuthList)
@@ -544,8 +540,9 @@ export const Roby = (props : Props) => {
                                  const goPress = async () => {
                                     try {
                                        const memberIdealType = await AsyncStorage.getItem('memberIdealType');
-                                       if (memberIdealType !== null) {
-                                          const jsonData = JSON.parse(memberIdealType);
+                                       console.log("memberIdealType ::: ", memberIdealType);
+                                       if (null != memberIdealType && 'null' != memberIdealType) {
+                                          const jsonData:any = JSON.parse(memberIdealType);
                                           navigation.navigate('Preference', {
                                              ideal_type_seq: jsonData.ideal_type_seq
                                              , want_local1: jsonData.want_local1
@@ -562,7 +559,25 @@ export const Roby = (props : Props) => {
                                              , want_person2: jsonData.want_person2
                                              , want_person3: jsonData.want_person3
                                              , gender: member.base.gender
-                                          });                                 
+                                          });
+                                       } else {
+                                          navigation.navigate('Preference', {
+                                             ideal_type_seq: ''
+                                             , want_local1: ''
+                                             , want_local2: ''
+                                             , want_age_min: ''
+                                             , want_age_max: ''
+                                             , want_business1: ''
+                                             , want_business2: ''
+                                             , want_business3: ''
+                                             , want_job1: ''
+                                             , want_job2: ''
+                                             , want_job3: ''
+                                             , want_person1: ''
+                                             , want_person2: ''
+                                             , want_person3: ''
+                                             , gender: member.base.gender
+                                          });      
                                        }
                                     } catch (e) {
                                        console.log(e);
@@ -594,7 +609,48 @@ export const Roby = (props : Props) => {
                      그 외
                   </CommonText>
                </SpaceView>
-               <TouchableOpacity style={styles.rowStyle} onPress={() => { navigation.navigate('Board0') }}>
+               <TouchableOpacity 
+                  style={styles.rowStyle} 
+                  onPress={() => { 
+
+                     // 실시간성 회원 데이터 조회
+                     const goPage = async () => {
+
+                        const result = await axios.post(properties.api_domain + '/board/selectBoardList', {
+                           'api-key' : 'U0FNR09CX1RPS0VOXzAx'
+                        }
+                        , {
+                           headers: {
+                              'jwt-token' : String(await properties.jwt_token())
+                           }
+                        })
+                        .then(function (response) {
+                           console.log("response.data :::: ", response.data);
+
+                           navigation.navigate('Board0', {
+                              boardList : response.data.boardList
+                           });
+
+                           // 게시판 목록 셋팅
+                           let boardList = new Array();
+                           /* response.data?.boardList?.map(({ board_seq, board_code, title, contents }: { board_seq: any, board_code: any, title: any, contents: any }) => {
+                              const dataJson = { req_member_seq : String, img_path : '' };
+
+                              dataJson.req_member_seq(req_member_seq);
+                              dataJson.img_path = img_path;
+
+                              resLikeDataList.push(dataJson);
+                           }); */
+                           
+                        })
+                        .catch(function (error) {
+                           console.log('error ::: ' , error);
+                        });
+                     }
+
+                     goPage();
+                  }}>
+
                   <CommonText fontWeight={'500'}>최근 소식</CommonText>
                   <Image source={ICON.arrRight} style={styles.iconSize} />
                </TouchableOpacity>

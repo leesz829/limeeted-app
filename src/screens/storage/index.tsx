@@ -123,7 +123,9 @@ export const Storage = (props : Props) => {
 														</View>
 													</View>
 												</View>	
-										) : null
+										) : (
+											<View><CommonText>내가 받은 관심이 없습니다.</CommonText></View>
+										)
 									)}
 								</SpaceView>
 							))}							
@@ -286,7 +288,7 @@ export const Storage = (props : Props) => {
 					<SpaceView mb={16} viewStyle={styles.rowStyle}>
 						<CommonText fontWeight={'500'}>찐심만 보기</CommonText>
 						<CommonSwich
-							callbackFn={(value:boolean) => { specialInterestFn('01', value ? 'Y' : 'N'); }} 
+							callbackFn={(value:boolean) => { specialInterestFn('REQ', value ? 'Y' : 'N'); }} 
 							isOn={false} />
 					</SpaceView>
 
@@ -329,7 +331,9 @@ export const Storage = (props : Props) => {
 													</View>
 												</View>
 											</View>	
-										) : null
+										) : (
+											<View><CommonText>내가 보낸 관심이 없습니다.</CommonText></View>
+										)
 									)}
 								</SpaceView>
 							))}							
@@ -415,7 +419,7 @@ export const Storage = (props : Props) => {
 					<SpaceView mb={16} viewStyle={styles.rowStyle}>
 						<CommonText fontWeight={'500'}>찐심만 보기</CommonText>
 						<CommonSwich
-							callbackFn={(value:boolean) => { specialInterestFn('01', value ? 'Y' : 'N'); }} 
+							callbackFn={(value:boolean) => { specialInterestFn('MATCH', value ? 'Y' : 'N'); }} 
 							isOn={false} />
 					</SpaceView>
 
@@ -459,7 +463,9 @@ export const Storage = (props : Props) => {
 												</View> */}
 											</View>
 										</View>	
-									) : null
+									) : (
+										<View><CommonText>성공 매칭이 없습니다.</CommonText></View>
+									)
 								)}
 							</SpaceView>
 						))}							
