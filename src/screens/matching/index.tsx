@@ -12,7 +12,7 @@ import { CommonBtn } from 'component/CommonBtn';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp, useNavigation } from '@react-navigation/native';
 import { jwt_token, api_domain} from 'utils/properties';
-import { ColorType, BottomParamList, Interview, ProfileImg, FileInfo, MemberData, CommonCode, LabelObj} from '@types';
+import { ColorType, ScreenNavigationProp, BottomParamList, Interview, ProfileImg, FileInfo, MemberBaseData, CommonCode, LabelObj} from '@types';
 import { Modalize } from 'react-native-modalize';
 import { CommonCheckBox } from 'component/CommonCheckBox';
 import axios from 'axios';
@@ -26,9 +26,10 @@ interface Props {
 }
 
 export const Matching = (props : Props) => {
+	const navigation = useNavigation<ScreenNavigationProp>();
 	
 	// 매치 회원 정보
-	const [matchMemberData, setMatchMemberData] = useState(MemberData);
+	const [matchMemberData, setMatchMemberData] = useState(MemberBaseData);
 	// 인터뷰 정보
 	const [interviewList, setInterviewList] = useState([Interview]);
 	// 2차인증 정보 
@@ -49,7 +50,38 @@ export const Matching = (props : Props) => {
 	// 관심 여부 체크
 	const profileCallbackFn = (activeType:string) => {
 		// pass : 거부, sincere : 찐심, interest : 관심
-		insertMatchInfo(activeType);
+
+		let alertTit = '알림';
+		let alertMsg = '이성에게 찐심을 보내시겠습니까?';
+
+		if(activeType == 'interest') { 
+			alertMsg = '이성에게 관심을 보내시겠습니까?';
+		 } else if(activeType == 'pass') {
+			alertMsg = '이성을 거부하시겠습니까?';
+		 }
+
+		Alert.alert(
+			alertTit,
+			alertMsg,
+			[
+			  // The "Yes" button
+			  {
+				text: "취소",
+				onPress: () => {
+					return false;
+				},
+			  },
+			  // The "No" button
+			  // Does nothing but dismiss the dialog when tapped
+			  {
+				text: "확인",
+				onPress: () => { insertMatchInfo(activeType); },
+			  },
+			]
+		);
+
+
+		
 	}
 
 	// 신고 여부 체크
@@ -139,7 +171,15 @@ export const Matching = (props : Props) => {
 				return false;
 			}
 
-			getMatchProfileInfo();
+			navigation.navigate('Main', {
+				screen: 'Roby', 
+				params: {
+					memberBase : response.data.base
+				}
+			});
+
+			// getMatchProfileInfo();
+
 		})
 		.catch(function (error) {
 			console.log('insertMatchInfo error ::: ' , error);
@@ -314,7 +354,7 @@ export const Matching = (props : Props) => {
 
 		// 신고목록 조회
 		selectReportCodeList();
-	}, []);
+	}, [props.route]);
 
 
 
@@ -322,7 +362,7 @@ export const Matching = (props : Props) => {
 		<>
 			<TopNavigation currentPath={'LIMEETED'} />
 			<ScrollView>
-				{profileImgList.length && <ViualSlider 
+				{profileImgList.length > 0 && <ViualSlider 
 											isNew={profileImgList[0].profile_type=='NEW'?true:false} 
 											onlyImg={false}
 											imgUrls={profileImgList}
