@@ -15,7 +15,7 @@ const CustomTab = ({
 	navigation: any;
 }) => {
 	return (
-		<View style={styles.tabContainer} key={Math.random().toString(36).substr(2, 11)}>
+		<View style={styles.tabContainer} key={'CustomTab'}>
 			{state.routes.map((route, index) => {
 				const { options } = descriptors[route.key];
 				const label =

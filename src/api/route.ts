@@ -1,1 +1,1 @@
-export const MY_ACCOUNT = '/me';
+export const MY_ACCOUNT = '/member/selectMemberInfo';

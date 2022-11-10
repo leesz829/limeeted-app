@@ -18,7 +18,7 @@ export const Send = (
 	new Promise(async (resolve) => {
 		try {
 			const endPoint = api_domain + url;
-			const token = await AsyncStorage.getItem('accessToken');
+			const token = await AsyncStorage.getItem('jwt-token');
 			let config: AxiosRequestConfig = {
 				url: endPoint,
 				method: method,
@@ -32,7 +32,7 @@ export const Send = (
 				config = {
 					...config,
 					headers: {
-						Authorization: `Bearer ${JSON.parse(token)}`,
+						'jwt-token': token,
 						'Content-Type': 'application/json',
 					},
 				};
@@ -44,15 +44,7 @@ export const Send = (
 				console.log(`보내는 데이터 : ${JSON.stringify(config)}`);
 			}
 
-			const result = await YahooClient(config).catch((e) => {
-				console.error(`${endPoint} : ${e.message}`);
-
-				resolve({
-					success: false,
-					message: e?.message,
-					error: true,
-				});
-			});
+			const result = await YahooClient(config);
 
 			if (result && result.data) {
 				if (isConsole) {
@@ -67,14 +59,14 @@ export const Send = (
 					resolve({
 						success: true,
 						message: '',
-						data: result.data.data,
-						metadata: result.data.metadata,
+						data: result.data,
 					});
 				}
 			} else {
-				resolve({ success: false, message: '일시적인 오류가 발생했습니다.' });
+				resolve({ success: false, message: '일시적인 오류가 발생했습니다.', data: undefined });
 			}
 		} catch (error) {
-			resolve({ success: false, message: '일시적인 오류가 발생했습니다.' });
+			console.log('에러 error : ', error);
+			resolve({ success: false, message: '일시적인 오류가 발생했습니다.', data: undefined });
 		}
 	});

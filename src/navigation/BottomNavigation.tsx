@@ -11,8 +11,7 @@ import { Roby } from 'screens/roby';
 import { Shop } from 'screens/shop';
 import { Storage } from 'screens/storage';
 import { StorageProfile } from 'screens/storage/StorageProfile';
-import * as busiUtils from 'utils/business';
-import { View, Image, ScrollView, Alert, StyleSheet, Text } from 'react-native';
+import { Alert } from 'react-native';
 
 import CustomTab from './CustomTab';
 
@@ -23,7 +22,7 @@ const BottomNavigation = () => {
 		<Tab.Navigator
 			backBehavior={'history'}
 			initialRouteName={'Live'}
-			tabBar={(props) => <CustomTab key={Math.random().toString(36).substr(2, 11)} {...props} />}
+			tabBar={(props) => <CustomTab {...props} />}
 		>
 			<Tab.Screen
 				name="Roby"
@@ -42,13 +41,12 @@ const BottomNavigation = () => {
 					headerShown: false,
 					tabBarShowLabel: true,
 				}}
-
-				listeners={({navigation}) => ({
-					tabPress: e => {
+				listeners={({ navigation }) => ({
+					tabPress: (e) => {
 						e.preventDefault();
 						//busiUtils.goStoragePage(navigation);
-						Alert.alert("알림",	"준비중입니다.",	[{text: "확인"}]);
-					}
+						Alert.alert('알림', '준비중입니다.', [{ text: '확인' }]);
+					},
 				})}
 			/>
 			<Tab.Screen
@@ -59,12 +57,12 @@ const BottomNavigation = () => {
 					headerShown: false,
 					tabBarShowLabel: true,
 				}}
-				listeners={({navigation}) => ({
-					tabPress: e => {
+				listeners={({ navigation }) => ({
+					tabPress: (e) => {
 						e.preventDefault();
 						//busiUtils.goStoragePage(navigation);
-						Alert.alert("알림",	"준비중입니다.",	[{text: "확인"}]);
-					}
+						Alert.alert('알림', '준비중입니다.', [{ text: '확인' }]);
+					},
 				})}
 			/>
 			<Tab.Screen

@@ -28,9 +28,15 @@ import { Approval } from 'screens/signup/Approval';
 import { Sample } from 'screens/sample/sample';
 import Component from 'component';
 
+import { useDispatch } from 'react-redux';
+import { myProfile } from 'redux/reducers/authReducer';
 const Stack = createStackNavigator<StackParamList>();
 
 const StackNavigation = () => {
+	const dispatch = useDispatch();
+	React.useEffect(() => {
+		dispatch(myProfile());
+	}, []);
 	return (
 		<Stack.Navigator initialRouteName="Login">
 			<Stack.Screen

@@ -47,7 +47,7 @@ interface Props {
 
 export const Roby = (props: Props) => {
 	const temp = useUserInfo();
-	console.log(temp);
+
 	const navigation = useNavigation<ScreenNavigationProp>();
 
 	const [profileReAprPopup, setProfileReAprPopup] = useState(false); // 프로필 재심사 팝업
