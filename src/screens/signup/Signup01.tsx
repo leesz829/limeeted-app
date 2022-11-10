@@ -156,14 +156,9 @@ export const Signup01 = (props : Props) => {
 	// 프로필 2차 인증 정보 조회 함수
 	const getMemberProfileSecondAuth = async () => {
 
-		const result = await axios.post(properties.api_domain + '/member/getMemberProfileSecondAuth', {
+		const result = await axios.post(properties.api_domain + '/join/selectMemberSecondAuth', {
 			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
 			, 'member_seq' : props.route.params.memberSeq
-		}
-		, {
-			headers: {
-				'jwt-token' : String(await properties.jwt_token())
-			}
 		})
 		.then(function (response) {
 			console.log("getMemberProfileSecondAuth data :::: ", response.data);
@@ -224,9 +219,7 @@ export const Signup01 = (props : Props) => {
 	const saveSecondAuth = async () => {
 		const data = new FormData();
 
-		let mbrSeq = String(await properties.get_json_data('member_seq'));
-
-		data.append("memberSeq", mbrSeq);
+		data.append("memberSeq", props.route.params.memberSeq);
 		data.append("job_name", secondData.jobItem);
 		data.append("edu_ins", secondData.eduItem);
 		data.append("instagram_id", secondData.snsItem);
@@ -239,23 +232,23 @@ export const Signup01 = (props : Props) => {
 		if(secondData.snsFile.uri != '') 		{ data.append("snsFile", secondData.snsFile); }
 		if(secondData.vehicleFile.uri != '') 	{ data.append("vehicleFile", secondData.vehicleFile); }
 
-		console.log("data ::: ", data);	
+		console.log("data ::: ", data);
 
 		fetch(properties.api_domain  + '/join/insertMemberSecondAuth/', {
 			method: 'POST',
-			headers: {
-				"Content-Type": "multipart/form-data",
-				'jwt-token' : String(await properties.jwt_token())
-			},
 			body: data,
 		})
 		.then((response) => response.json())
 		.then((response) => {
 			console.log('response :::: ', response);
-			navigation.navigate('Signup02', {
-				memberSeq : props.route.params.memberSeq
-				, gender : response.member.gender
-			});
+
+			if(response.code != '0000') {
+				navigation.navigate('Signup02', {
+					memberSeq : props.route.params.memberSeq
+					, gender : response.member.gender
+				});
+			}
+			
 		})
 		.catch((error) => {
 			console.log('error', error);
