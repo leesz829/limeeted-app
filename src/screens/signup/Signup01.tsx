@@ -214,27 +214,19 @@ export const Signup01 = (props: Props) => {
 	// 프로필 2차 인증 정보 조회 함수
 	const getMemberProfileSecondAuth = async () => {
 		const result = await axios
-			.post(
-				properties.api_domain + '/member/getMemberProfileSecondAuth',
-				{
-					'api-key': 'U0FNR09CX1RPS0VOXzAx',
-					member_seq: props.route.params.memberSeq,
-				},
-				{
-					headers: {
-						'jwt-token': String(await properties.jwt_token()),
-					},
-				},
-			)
+			.post(properties.api_domain + '/join/selectMemberSecondAuth', {
+				'api-key': 'U0FNR09CX1RPS0VOXzAx',
+				member_seq: props.route.params.memberSeq,
+			})
 			.then(function (response) {
 				console.log('getMemberProfileSecondAuth data :::: ', response.data);
 
-		const result = await axios.post(properties.api_domain + '/join/selectMemberSecondAuth', {
-			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
-			, 'member_seq' : props.route.params.memberSeq
-		})
-		.then(function (response) {
-			console.log("getMemberProfileSecondAuth data :::: ", response.data);
+				let jobFileUrl: any = '';
+				let eduFileUrl: any = '';
+				let incomeFileUrl: any = '';
+				let assetFileUrl: any = '';
+				let snsFileUrl: any = '';
+				let vehicleFileUrl: any = '';
 
 				let o_jobItem: any = '';
 				let o_eduItem: any = '';
@@ -301,11 +293,11 @@ export const Signup01 = (props: Props) => {
 	const saveSecondAuth = async () => {
 		const data = new FormData();
 
-		data.append("memberSeq", props.route.params.memberSeq);
-		data.append("job_name", secondData.jobItem);
-		data.append("edu_ins", secondData.eduItem);
-		data.append("instagram_id", secondData.snsItem);
-		data.append("vehicle", secondData.vehicleItem);
+		data.append('memberSeq', props.route.params.memberSeq);
+		data.append('job_name', secondData.jobItem);
+		data.append('edu_ins', secondData.eduItem);
+		data.append('instagram_id', secondData.snsItem);
+		data.append('vehicle', secondData.vehicleItem);
 
 		if (secondData.jobFile.uri != '') {
 			data.append('jobFile', secondData.jobFile);
@@ -326,29 +318,27 @@ export const Signup01 = (props: Props) => {
 			data.append('vehicleFile', secondData.vehicleFile);
 		}
 
-		console.log("data ::: ", data);
+		console.log('data ::: ', data);
 
 		fetch(properties.api_domain + '/join/insertMemberSecondAuth/', {
 			method: 'POST',
 			body: data,
 		})
-		.then((response) => response.json())
-		.then((response) => {
-			console.log('response :::: ', response);
+			.then((response) => response.json())
+			.then((response) => {
+				console.log('response :::: ', response);
 
-			if(response.code != '0000') {
-				navigation.navigate('Signup02', {
-					memberSeq : props.route.params.memberSeq
-					, gender : response.member.gender
-				});
-			}
-			
-		})
-		.catch((error) => {
-			console.log('error', error);
-		});
-
-	}
+				if (response.code != '0000') {
+					navigation.navigate('Signup02', {
+						memberSeq: props.route.params.memberSeq,
+						gender: response.member.gender,
+					});
+				}
+			})
+			.catch((error) => {
+				console.log('error', error);
+			});
+	};
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
