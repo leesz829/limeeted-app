@@ -10,16 +10,17 @@ import { ViualSlider } from 'component/ViualSlider';
 import { MainProfileSlider } from 'component/MainProfileSlider';
 import { CommonBtn } from 'component/CommonBtn';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RouteProp, useNavigation } from '@react-navigation/native';
-import { jwt_token, api_domain} from 'utils/properties';
+import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
+import * as properties from 'utils/properties';
 import { ColorType, ScreenNavigationProp, BottomParamList, Interview, ProfileImg, FileInfo, MemberBaseData, CommonCode, LabelObj} from '@types';
 import { Modalize } from 'react-native-modalize';
 import { CommonCheckBox } from 'component/CommonCheckBox';
 import axios from 'axios';
+import { MatchSearch } from 'screens/matching/MatchSearch';
 
 /* ################################################################################################################
-매칭
-###################ttt############################################################################################# */
+###### 매칭 화면
+################################################################################################################### */
 interface Props {
 	navigation : StackNavigationProp<BottomParamList, 'Roby'>;
 	route : RouteProp<BottomParamList, 'Roby'>;
@@ -27,17 +28,23 @@ interface Props {
 
 export const Matching = (props : Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
+	const isFocus = useIsFocused();
 	
 	// 매치 회원 정보
 	const [matchMemberData, setMatchMemberData] = useState(MemberBaseData);
+
 	// 인터뷰 정보
 	const [interviewList, setInterviewList] = useState([Interview]);
+
 	// 2차인증 정보 
 	const [secondAuthList, setSecondAuthList] = useState([{'second_auth_code':''}]);
+
 	// 회원 인상 정보
 	const [profileImgList, setProfileImgList] = useState([ProfileImg]);
+
 	// 신고목록
 	const [reportTypeList, setReportTypeList] = useState([{text: '', value: ''}]);
+
 	// 선택된 신고하기 타입
 	const [checkReportType, setCheckReportType] = useState(['']);
 	
@@ -129,14 +136,14 @@ export const Matching = (props : Props) => {
 
 		console.log('insertReport');
 
-		const result = await axios.post(api_domain + '/match/insertReport', {
+		const result = await axios.post(properties.api_domain + '/match/insertReport', {
 			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
 			, 'report_type_code_list' : checkReportType.join()
 			, 'member_seq' : matchMemberData.member_seq
 		}
 		, {
 			headers: {
-				'jwt-token' : String(await jwt_token()) 
+				'jwt-token' : String(await properties.jwt_token()) 
 			}
 		})
 		.then(function (response) {
@@ -155,14 +162,14 @@ export const Matching = (props : Props) => {
 	}
 	
 	const insertMatchInfo = async (activeType:string) => {
-		const result = await axios.post(api_domain + '/match/insertMatchInfo', {
+		const result = await axios.post(properties.api_domain + '/match/insertMatchInfo', {
 			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
 			, 'active_type' : activeType
 			, 'member_seq' : matchMemberData.member_seq
 		}
 		, {
 			headers: {
-				'jwt-token' : String(await jwt_token()) 
+				'jwt-token' : String(await properties.jwt_token()) 
 			}
 		})
 		.then(function (response) {
@@ -189,14 +196,19 @@ export const Matching = (props : Props) => {
 	const createSecondAuthListBody = () => {
 		// 자산
 		let asset = false;
+
 		// 학업
 		let edu = false;
+
 		// 소득
 		let income = false;
+
 		// 직업
 		let job = false;
+
 		// sns
 		let sns = false;
+
 		// 차량
 		let vehice = false;
 
@@ -229,7 +241,7 @@ export const Matching = (props : Props) => {
 					<View style={styles.profileBox}>
 						<Image source={ICON.job} style={styles.iconSize48} />
 						<CommonText type={'h5'}>직업</CommonText>
-						{!asset && <View style={styles.disabled} />} 
+						{!job && <View style={styles.disabled} />} 
 					</View>
 					<View style={styles.profileBox}>
 						<Image source={ICON.degree} style={styles.iconSize48} />
@@ -247,7 +259,7 @@ export const Matching = (props : Props) => {
 					<View style={styles.profileBox}>
 						<Image source={ICON.asset} style={styles.iconSize48} />
 						<CommonText type={'h5'}>자산</CommonText>
-						{!job && <View style={styles.disabled} />} 
+						{!asset && <View style={styles.disabled} />} 
 					</View>
 					<View style={styles.profileBox}>
 						<Image source={ICON.sns} style={styles.iconSize48} />
@@ -266,13 +278,13 @@ export const Matching = (props : Props) => {
 
 	const selectReportCodeList = async () => {
 		
-		const result = await axios.post(api_domain + '/common/selectGroupCodeList/' +jwt_token, {
+		const result = await axios.post(properties.api_domain + '/common/selectGroupCodeList/' + properties.jwt_token, {
 			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
 			, 'group_code' : 'DECLAR'
 		}
 		, {
 			headers: {
-				'jwt-token' : String(await jwt_token())
+				'jwt-token' : String(await properties.jwt_token())
 			}
 		})
 		.then(function (response) {
@@ -298,12 +310,12 @@ export const Matching = (props : Props) => {
 
 	const getMatchProfileInfo = async () => {
 
-		const result = await axios.post(api_domain + '/match/selectMatchProfileInfo', {
+		const result = await axios.post(properties.api_domain + '/match/selectMatchProfileInfo', {
 			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
 		}
 		, {
 			headers: {
-				'jwt-token' : String(await jwt_token()) 
+				'jwt-token' : String(await properties.jwt_token()) 
 			}
 		})
 		.then(function (response) {
@@ -324,7 +336,7 @@ export const Matching = (props : Props) => {
 			// CommonCode
 			fileInfoList.map(fileInfo => {
 				tmpProfileImgList.push({
-									url : api_domain + fileInfo.file_path
+									url : properties.img_domain + fileInfo.file_path + fileInfo.file_name
 									, member_seq : fileInfo.member_seq
 									, name : fileInfo.name
 									, comment : fileInfo.comment
@@ -354,11 +366,12 @@ export const Matching = (props : Props) => {
 
 		// 신고목록 조회
 		selectReportCodeList();
-	}, [props.route]);
+		
+	}, [isFocus]);
 
 
 
-	return (
+	return profileImgList.length > 0 ? (
 		<>
 			<TopNavigation currentPath={'LIMEETED'} />
 			<ScrollView>
@@ -515,5 +528,5 @@ export const Matching = (props : Props) => {
 				</View>
 			</Modalize>
 		</>
-	);
+	) : <MatchSearch />;
 };

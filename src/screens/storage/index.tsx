@@ -11,8 +11,9 @@ import LinearGradient from 'react-native-linear-gradient';
 import { useState } from 'react';
 import axios from 'axios';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RouteProp, useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import * as properties from 'utils/properties';
+import * as dataUtils from 'utils/data';
 
 /* ################################################################################################################
 ###### 보관함
@@ -25,6 +26,7 @@ interface Props {
 
 export const Storage = (props : Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
+	const isFocus = useIsFocused();
 
 	const [btnStatus, setBtnStatus] = useState(true);
 	const [btnStatus1, setBtnStatus1] = useState(true);
@@ -34,34 +36,61 @@ export const Storage = (props : Props) => {
 	const [isReqSpecialVisible, setIsReqSpecialVisible] = React.useState(false);
 	const [isMatchSpecialVisible, setIsMatchSpecialVisible] = React.useState(false);
 
-	// 내가 받은 관심
-	const [resLikeList, setResLikeList] = React.useState(props.route.params.resLikeList);
+	/* ################################################
+	######## Storage Data 구성
+	######## - resLikeList : 내가 받은 관심 목록
+	######## - reqLikeList : 내가 받은 관심 목록
+	######## - matchTrgtList : 내가 받은 관심 목록
+	#################################################*/
+	const [data, setData] = React.useState<any>({
+		resLikeList : []
+		, reqLikeList : []
+		, matchTrgtList : []
+	});
 
-	// 내가 보낸 관심
-	const [reqLikeList, setReqLikeList] = React.useState(props.route.params.reqLikeList);
-
-	// 성공 매칭
-	const [matchTrgtList, setMatchTrgtList] = React.useState(props.route.params.matchTrgtList);
-
-	// 첫 렌더링 때 fetchNews() 한 번 실행
 	React.useEffect(() => {
-
-		console.log('resLikeList ::: ', resLikeList);
-
-		//selectMemberStorage();
-		
-	}, []);
+		getStorageData();		
+	}, [isFocus]);
 
 	// 찐심 설정
 	const specialInterestFn = async (type:string, value:string) => {
-		console.log('type ::::' , type);
-		console.log('value ::::' , value);
-	
 		if(type == "RES") { setIsResSpecialVisible(value == 'Y' ? true : false);
 		} else if(type == "REQ") { setIsReqSpecialVisible(value == 'Y' ? true : false);
 		} else if(type == "MATCH") { setIsMatchSpecialVisible(value == 'Y' ? true : false); }
-
 	}
+
+	// 보관함 정보 조회
+	const getStorageData = async () => {
+		const result = await axios.post(properties.api_domain + '/member/selectMemberStorage', {
+		   'api-key' : 'U0FNR09CX1RPS0VOXzAx'
+		   , 'member_seq' : String(await properties.get_json_data('member_seq'))
+		}
+		, {
+		   headers: {
+			  'jwt-token' : String(await properties.jwt_token())
+		   }
+		})
+		.then(function (response) {  
+			if(response.data.result_code != '0000'){
+				console.log(response.data.result_msg);
+				return false;
+			} else {
+				let resLikeListData:any = dataUtils.getStorageListData(response.data.resLikeList);
+				let reqLikeListData:any = dataUtils.getStorageListData(response.data.reqLikeList);
+				let matchTrgtListData:any = dataUtils.getStorageListData(response.data.matchTrgtList);
+
+				setData({
+					...data
+					, resLikeList : resLikeListData
+					, reqLikeList : reqLikeListData
+					, matchTrgtList : matchTrgtListData
+				});
+		   }
+		})
+		.catch(function (error) {
+		   console.log('error ::: ' , error);
+		});
+	 }
 
 	return (
 		<>
@@ -86,9 +115,9 @@ export const Storage = (props : Props) => {
 					</SpaceView>
 
 					<View>
-						{resLikeList.length > 0 ? (
+						{data.resLikeList.length > 0 ? (
 						<>
-							{resLikeList.map((item,index) => (
+							{data.resLikeList.map((item:any,index:any) => (
 								<SpaceView key={index} mb={16} viewStyle={styles.halfContainer}>
 									{item.map(({ req_member_seq, img_path, dday, special_interest_yn } : { req_member_seq: any, img_path: any, dday: any, special_interest_yn:any }) =>					
 										!isResSpecialVisible || (isResSpecialVisible && special_interest_yn == 'Y') ? (
@@ -294,9 +323,9 @@ export const Storage = (props : Props) => {
 
 					<View>
 
-						{reqLikeList.length > 0 ? (
+						{data.reqLikeList.length > 0 ? (
 						<>
-							{reqLikeList.map((item,index) => (
+							{data.reqLikeList.map((item:any,index:any) => (
 								<SpaceView key={index} mb={16} viewStyle={styles.halfContainer}>
 									{item.map(({ req_member_seq, img_path, dday, special_interest_yn } : { req_member_seq: any, img_path: any, dday: any, special_interest_yn:any }) =>					
 										!isReqSpecialVisible || (isReqSpecialVisible && special_interest_yn == 'Y') ? (
@@ -425,9 +454,9 @@ export const Storage = (props : Props) => {
 
 					<View>
 
-						{matchTrgtList.length > 0 ? (
+						{data.matchTrgtList.length > 0 ? (
 						<>
-						{matchTrgtList.map((item,index) => (
+						{data.matchTrgtList.map((item:any,index:any) => (
 							<SpaceView key={index} mb={16} viewStyle={styles.halfContainer}>
 								{item.map(({ req_member_seq, img_path, dday, special_interest_yn } : { req_member_seq: any, img_path: any, dday: any, special_interest_yn:any }) =>					
 									

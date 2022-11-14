@@ -119,17 +119,7 @@ export type BottomParamList = {
 	};
 	Mailbox: undefined;
 	Cashshop: undefined;
-	Storage: {
-		resLikeList: [
-			[{ req_member_seq : '', img_path : '', dday : Number, special_interest_yn : ''}]
-		];
-		reqLikeList: [
-			[{ req_member_seq : '', img_path : '', dday : Number, special_interest_yn : ''}]
-		];
-		matchTrgtList: [
-			[{ req_member_seq : '', img_path : '', dday : Number, special_interest_yn : ''}]
-		];
-	};
+	Storage: undefined;
 	Live: undefined;
 	LiveSearch: undefined;
 	Matching: undefined;
