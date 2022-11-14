@@ -336,47 +336,6 @@ export const Roby = (props: Props) => {
 			});
 	};
 
-	// 보관함 이동 함수
-	const goStorage = async () => {
-		const result = await axios
-			.post(
-				properties.api_domain + '/member/selectMemberStorage',
-				{
-					'api-key': 'U0FNR09CX1RPS0VOXzAx',
-					member_seq: String(await properties.get_json_data('member_seq')),
-				},
-				{
-					headers: {
-						'jwt-token': String(await properties.jwt_token()),
-					},
-				},
-			)
-			.then(function (response) {
-				console.log('resLikeList :::: ', response.data.resLikeList);
-
-				if (response.data.result_code != '0000') {
-					console.log(response.data.result_msg);
-					return false;
-				} else {
-					let resLikeListData: any = dataUtils.getStorageListData(response.data.resLikeList);
-					let reqLikeListData: any = dataUtils.getStorageListData(response.data.reqLikeList);
-					let matchTrgtListData: any = dataUtils.getStorageListData(response.data.matchTrgtList);
-
-					navigation.navigate('Main', {
-						screen: 'Storage',
-						params: {
-							resLikeList: resLikeListData,
-							reqLikeList: reqLikeListData,
-							matchTrgtList: matchTrgtListData,
-						},
-					});
-				}
-			})
-			.catch(function (error) {
-				console.log('error ::: ', error);
-			});
-	};
-
 	// 프로필 재심사 실행
 	const profileReexProc = async () => {
 		const result = await axios
@@ -406,6 +365,8 @@ export const Roby = (props: Props) => {
 				console.log('error ::: ', error);
 			});
 	};
+
+   // ################### 팝업 관련 #####################
 
 	// 내 선호 이성 Pop
 	const ideal_modalizeRef = useRef<Modalize>(null);
@@ -591,7 +552,9 @@ export const Roby = (props: Props) => {
 							</CommonText>
 							<TouchableOpacity
 								onPress={() => {
-									goStorage();
+									navigation.navigate('Main', {
+                              screen: 'Storage'
+                           });
 								}}
 							>
 								<Image source={ICON.arrRight} style={styles.iconSize} />
@@ -619,7 +582,9 @@ export const Roby = (props: Props) => {
 						</CommonText>
 						<TouchableOpacity
 							onPress={() => {
-								goStorage();
+								navigation.navigate('Main', {
+                           screen: 'Storage'
+                        });
 							}}
 						>
 							<Image source={ICON.arrRight} style={styles.iconSize} />
