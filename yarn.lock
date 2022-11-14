@@ -1807,9 +1807,9 @@ ajv@^6.10.0, ajv@^6.12.4:
     uri-js "^4.2.2"
 
 ajv@^8.0.1:
-  version "8.11.0"
-  resolved "https://registry.yarnpkg.com/ajv/-/ajv-8.11.0.tgz#977e91dd96ca669f54a11e23e378e33b884a565f"
-  integrity sha512-wGgprdCvMalC0BztXvitD2hC04YffAvtsUn93JbGXYLAtCUO4xd17mCCZQxUOItiBwZvJScWo8NIvQMQ71rdpg==
+  version "8.11.2"
+  resolved "https://registry.yarnpkg.com/ajv/-/ajv-8.11.2.tgz#aecb20b50607acf2569b6382167b65a96008bb78"
+  integrity sha512-E4bfmKAhGiSTvMfL1Myyycaub+cUEU2/IvpylXkUu7CHBkBj1f/ikdzbD7YQ6FKUbixDxeYvB/xY4fvyroDlQg==
   dependencies:
     fast-deep-equal "^3.1.1"
     json-schema-traverse "^1.0.0"
@@ -2544,9 +2544,9 @@ copy-descriptor@^0.1.0:
   integrity sha512-XgZ0pFcakEUlbwQEVNg3+QAis1FyTL3Qel9FYy8pSkQqoG3PNoT0bOCQtOXcOkur21r2Eq2kI+IE+gsmAEVlYw==
 
 core-js-compat@^3.25.1:
-  version "3.26.0"
-  resolved "https://registry.yarnpkg.com/core-js-compat/-/core-js-compat-3.26.0.tgz#94e2cf8ba3e63800c4956ea298a6473bc9d62b44"
-  integrity sha512-piOX9Go+Z4f9ZiBFLnZ5VrOpBl0h7IGCkiFUN11QTe6LjAvOT3ifL/5TdoizMh99hcGy5SoLyWbapIY/PIb/3A==
+  version "3.26.1"
+  resolved "https://registry.yarnpkg.com/core-js-compat/-/core-js-compat-3.26.1.tgz#0e710b09ebf689d719545ac36e49041850f943df"
+  integrity sha512-622/KzTudvXCDLRw70iHW4KKs1aGpcRcowGWyYJr2DEBfRrd6hNJybxSWJFuZYD4ma86xhrwDDHxmDaIq4EA8A==
   dependencies:
     browserslist "^4.21.4"
 
@@ -3379,9 +3379,9 @@ flatted@^3.1.0:
   integrity sha512-5nqDSxl8nn5BSNxyR3n4I6eDmbolI6WT+QqR547RwxQapgjQBmtktdP+HTBb/a/zLsbzERTONyUB5pefh5TtjQ==
 
 flow-parser@0.*:
-  version "0.192.0"
-  resolved "https://registry.yarnpkg.com/flow-parser/-/flow-parser-0.192.0.tgz#e2aa03e0c6a844c4d6ccdb4af2bc83cc589d9c8c"
-  integrity sha512-FLyei0ikf4ab9xlg+05WNmdpOODiH9XVBuw7iI9OZyjIo+cX2L2OUPTovjbWLYLlI41oGTcprbKdB/f9XwBnKw==
+  version "0.193.0"
+  resolved "https://registry.yarnpkg.com/flow-parser/-/flow-parser-0.193.0.tgz#8d705fc2d6b378a24bae189014f6f0320d040c4f"
+  integrity sha512-x7ZoArE1UO3Nk2rkq/KK/Tkp714QDMVzEsxIyK2+p7Alx+88LY7KgqmeQZuiAG8TCHucmYuHefbk3KsVFVjouA==
 
 flow-parser@^0.121.0:
   version "0.121.0"
@@ -5916,15 +5916,15 @@ react-native-gesture-handler@2.1.1:
     lodash "^4.17.21"
     prop-types "^15.7.2"
 
-react-native-iap@^12.3.2:
-  version "12.4.3"
-  resolved "https://registry.yarnpkg.com/react-native-iap/-/react-native-iap-12.4.3.tgz#4f8c1acec5684bfb3d6b448e9ff4019f68b834e3"
-  integrity sha512-g9lbs+7bKqhV1dX0OBrRIJ0+8P57SYs4mA+myxP1iD2BEFnJgKKLpyhW3af6zvRuyarrqWesGYLzdOeya05VGw==
+react-native-iap@^12.4.4:
+  version "12.4.4"
+  resolved "https://registry.yarnpkg.com/react-native-iap/-/react-native-iap-12.4.4.tgz#64bc83a3aa76920b103812fcd0d591ee41e3a82e"
+  integrity sha512-Vu98CVZNy2jeRdNQJ6A/WdWWTLmAxSwJWy/NiOaWN2q+stfyiByUimhYQyYCIVOXDxt2CG3hhibjsXvdKIDELQ==
 
 react-native-image-picker@^4.7.1:
-  version "4.10.0"
-  resolved "https://registry.yarnpkg.com/react-native-image-picker/-/react-native-image-picker-4.10.0.tgz#471ca942bd1189134eff63e25903147f54aeb8c2"
-  integrity sha512-QNK4ZnFLD+BdiM1QL1jh9GUALhRXm3MV97crhnTCSMv50H6E4tq3ozgfyxF5uKz0cECbNkWswg4sjgqZKEJtww==
+  version "4.10.1"
+  resolved "https://registry.yarnpkg.com/react-native-image-picker/-/react-native-image-picker-4.10.1.tgz#eb7e02124e8e649a89e4fcabb72d0312a65fe340"
+  integrity sha512-tPA9UtboEsZ8qtm7pX9WInlo9sf0J2ArJgP4uVgKw1QNrwkRX/kZQ6uzOSN747Dhj9WS42ce4RN+rFK86J13DQ==
 
 react-native-linear-gradient@^2.5.6:
   version "2.6.2"

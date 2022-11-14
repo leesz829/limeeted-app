@@ -6,6 +6,9 @@ import { LogBox, StatusBar, StyleSheet } from 'react-native';
 import { enableScreens } from 'react-native-screens';
 import { Provider } from 'react-redux';
 import store from 'redux/store';
+
+import { withIAPContext } from 'react-native-iap';
+
 enableScreens();
 LogBox.ignoreAllLogs();
 LogBox.ignoreLogs([
@@ -26,7 +29,7 @@ const App = () => {
 	);
 };
 
-export default App;
+export default withIAPContext(App);
 
 const style = StyleSheet.create({
 	container: {

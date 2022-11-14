@@ -3,11 +3,14 @@
 buildscript {
     ext {
         buildToolsVersion = "31.0.0"
-        minSdkVersion = 21
+        minSdkVersion = 24 // 21->24 (11.14)
         compileSdkVersion = 31
         targetSdkVersion = 31
-		kotlinVersion = '1.6.21'
+		kotlinVersion = '1.5.0' //1.6.21 -> 1.5.0 (11.14)
         ndkVersion = "21.4.7075529"
+        supportLibVersion = "28.0.0" // (11.14)
+        androidXAnnotation = "1.1.0" // (11.14)
+        androidXBrowser = "1.0.0" // (11.14)
     }
     repositories {
         google()

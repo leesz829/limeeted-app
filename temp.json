@@ -1,218 +1,26 @@
-{
-    "memberSndAuthList":[
-       {
-          "order_seq":1,
-          "file_seq":45,
-          "file_path":"/auth/",
-          "file_name":"rn_image_picker_lib_temp_f8020ad7-6ec8-4769-a93d-9b565e418caa.jpg",
-          "second_auth_code":"SNS",
-          "file_gubun":"F_SNS",
-          "member_seq":40,
-          "status":"ACCEPT"
-       },
-       {
-          "order_seq":1,
-          "file_seq":115,
-          "file_path":"/auth/",
-          "file_name":"rn_image_picker_lib_temp_bd561b1a-13f7-4426-8a8d-e6e41d380383.jpg",
-          "second_auth_code":"EDU",
-          "file_gubun":"EDU",
-          "member_seq":40,
-          "status":"PROGRESS"
-       },
-       {
-          "order_seq":1,
-          "file_seq":119,
-          "file_path":"/auth/",
-          "file_name":"rn_image_picker_lib_temp_26199e5b-d56b-4005-88bd-7545801137e0.jpg",
-          "second_auth_code":"INCOME",
-          "file_gubun":"F_INCOME",
-          "member_seq":40,
-          "status":"PROGRESS"
-       },
-       {
-          "order_seq":1,
-          "file_seq":120,
-          "file_path":"/auth/",
-          "file_name":"rn_image_picker_lib_temp_12e9a463-7bf2-462c-b574-36e8d3e1d0e5.jpg",
-          "second_auth_code":"JOB",
-          "file_gubun":"F_JOB",
-          "member_seq":40,
-          "status":"PROGRESS"
-       },
-       {
-          "order_seq":1,
-          "file_seq":124,
-          "file_path":"/auth/",
-          "file_name":"rn_image_picker_lib_temp_dfd10b5c-7722-4f6b-ac51-70e3cb6e15d4.jpg",
-          "second_auth_code":"VEHICLE",
-          "file_gubun":"F_VEHICLE",
-          "member_seq":40,
-          "status":"PROGRESS"
-       },
-       {
-          "order_seq":1,
-          "file_seq":135,
-          "file_path":"/auth/",
-          "file_name":"rn_image_picker_lib_temp_325f8677-d671-4920-8363-99f30c68268d.jpg",
-          "second_auth_code":"ASSET",
-          "file_gubun":"F_ASSET",
-          "member_seq":40,
-          "status":"PROGRESS"
-       }
-    ],
-    "memberResLikeList":[
-       
-    ],
-    "memberIdealType":{
-       "want_age_max":"28",
-       "want_person3":"FACE_G_06",
-       "want_person2":"FACE_G_02",
-       "want_person1":"FACE_G_04",
-       "mod_dt":"20221014220526",
-       "use_yn":"Y",
-       "want_job3":"JOB_13_05",
-       "want_job2":"JOB_08_00",
-       "want_business1":"JOB_06",
-       "want_business2":"JOB_08",
-       "want_local1":"20",
-       "want_business3":"JOB_13",
-       "reg_seq":40,
-       "member_seq":40,
-       "want_job1":"JOB_06_10",
-       "want_local2":"30",
-       "reg_dt":"20220927000000",
-       "want_age_min":"22",
-       "mod_seq":40,
-       "ideal_type_seq":1
-    },
-    "result_msg":"정상",
-    "memberInterviewList":[
-       {
-          "answer":"고민고민123",
-          "member_interview_seq":4,
-          "code_name":"요즘 나의 가장 큰 고민은?",
-          "common_code":"INTER_00"
-       },
-       {
-          "answer":"없음",
-          "member_interview_seq":6,
-          "code_name":"가족,동료, 연인에게 바라는 나의 욕구는 무엇인가?",
-          "common_code":"INTER_05"
-       },
-       {
-          "answer":"어떤모습",
-          "member_interview_seq":5,
-          "code_name":"반드시 바꾸고 싶은 나의 모습은?",
-          "common_code":"INTER_06"
-       },
-       {
-          "code_name":"내가 가장 중요하게 생각하는 가치는 무엇인가?",
-          "common_code":"INTER_10"
-       },
-       {
-          "code_name":"당신은 왜 사는가라고 묻는다면?",
-          "common_code":"INTER_14"
-       },
-       {
-          "code_name":"5년 뒤 나는 어떤 모습이 되길 바라는가?",
-          "common_code":"INTER_16"
-       },
-       {
-          "answer":" Cd",
-          "member_interview_seq":7,
-          "code_name":"당신에게 초능력이 생긴다면 어떤 능력을 갖을건가요?",
-          "common_code":"INTER_26"
-       }
-    ],
-    "result_code":"0000",
-    "token_param":{
-       "expire_date":"2024-10-05 02:36:19",
-       "jwt_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzYW1nb2IiLCJuYW1lIjoiTGVlIiwiZXhwIjoxNzI4MDYzMzc5LCJtZW1iZXJfc2VxIjoiNDAifQ.i_-PGF59SP9AQvMHqxsyi1br8tknW0IvvmAS4C5KKvE"
-    },
-    "memberMatchTrgtList":[
-       
-    ],
-    "memberImgList":[
-       {
-          "order_seq":3,
-          "file_seq":48,
-          "file_path":"/profile/",
-          "reg_dt":"20220912123750",
-          "mod_dt":"20220912123750",
-          "file_name":"rn_image_picker_lib_temp_62f08689-6a06-4592-b267-d1d50aa81bff.png",
-          "member_img_seq":19,
-          "use_yn":"Y",
-          "reg_seq":"40",
-          "mod_seq":"40",
-          "member_seq":40
-       },
-       {
-          "order_seq":5,
-          "file_seq":74,
-          "file_path":"/profile/",
-          "reg_dt":"20220926220506",
-          "mod_dt":"20220926220506",
-          "file_name":"rn_image_picker_lib_temp_7847d2f3-7827-414d-ba03-bbde15eb7520.png",
-          "member_img_seq":25,
-          "use_yn":"Y",
-          "reg_seq":"40",
-          "mod_seq":"40",
-          "member_seq":40
-       },
-       {
-          "order_seq":1,
-          "file_seq":186,
-          "file_path":"/profile/",
-          "reg_dt":"20221103220306",
-          "mod_dt":"20221103220306",
-          "file_name":"rn_image_picker_lib_temp_5218b9b2-c6df-48ef-8bf0-d40b91b4503e.png",
-          "member_img_seq":54,
-          "use_yn":"Y",
-          "reg_seq":"40",
-          "mod_seq":"40",
-          "member_seq":40
-       },
-       {
-          "order_seq":2,
-          "file_seq":187,
-          "file_path":"/profile/",
-          "reg_dt":"20221103220429",
-          "mod_dt":"20221103220429",
-          "file_name":"rn_image_picker_lib_temp_4e6573f7-9403-49ad-8dca-1fdec4cc51a4.png",
-          "member_img_seq":55,
-          "use_yn":"Y",
-          "reg_seq":"40",
-          "mod_seq":"40",
-          "member_seq":40
-       }
-    ],
-    "base":{
-       "friend_match_yn":"Y",
-       "gender":"M",
-       "profile_tier":"1",
-       "mst_img_path":"/profile/rn_image_picker_lib_temp_5218b9b2-c6df-48ef-8bf0-d40b91b4503e.png",
-       "smoking":"HARD",
-       "nickname":"나이스가이",
-       "profile_score":7,
-       "height":"188",
-       "introduce_comment":"게임과 운동을 좋아하는 남자입니다.",
-       "drinking":"LIGHT",
-       "business":"JOB_03",
-       "form_body":"FIT",
-       "kakao_id":"test2",
-       "member_seq":40,
-       "religion":"MARIA",
-       "member_level":2,
-       "job_name":"리미티드(주)",
-       "name":"Lee",
-       "comment":"게임과 운동을 좋아하는 남자입니다.",
-       "phone_number":"01011114575",
-       "join_dt":"20220819172725",
-       "job":"JOB_03_05",
-       "match_yn":"Y",
-       "join_status":"02",
-       "age":"30",
-       "status":"ACTIVE"
-    }
- }
+[
+	{
+		oneTimePurchaseOfferDetails: {
+			priceAmountMicros: '1000000000',
+			formattedPrice: '1,000',
+			priceCurrencyCode: 'KRW',
+		},
+		name: '1000캐시',
+		productType: 'inapp',
+		description: '테스트 1000캐시',
+		title: '1000캐시 (com.limeeted (unreviewed))',
+		productId: 'cash_100',
+	},
+	{
+		oneTimePurchaseOfferDetails: {
+			priceAmountMicros: '2000000000',
+			formattedPrice: '2,000',
+			priceCurrencyCode: 'KRW',
+		},
+		name: '캐시 2000',
+		productType: 'inapp',
+		description: '캐시 2000',
+		title: '캐시 2000 (com.limeeted (unreviewed))',
+		productId: 'cash_200',
+	},
+];

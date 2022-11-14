@@ -280,7 +280,7 @@ PODS:
   - React-jsinspector (0.66.4)
   - React-logger (0.66.4):
     - glog
-  - react-native-image-picker (4.10.0):
+  - react-native-image-picker (4.10.1):
     - React-Core
   - react-native-safe-area-context (3.4.1):
     - React-Core
@@ -361,7 +361,7 @@ PODS:
     - React-Core
   - RNGestureHandler (2.1.1):
     - React-Core
-  - RNIap (12.4.3):
+  - RNIap (12.4.4):
     - React-Core
   - RNReanimated (2.12.0):
     - DoubleConversion
@@ -613,7 +613,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 94ce921e1d8ce7023366873ec371f3441383b396
   React-jsinspector: d0374f7509d407d2264168b6d0fad0b54e300b85
   React-logger: 933f80c97c633ee8965d609876848148e3fef438
-  react-native-image-picker: 4bc9ed38c8be255b515d8c88babbaf74973f91a8
+  react-native-image-picker: f2ab1215d17bcfe27b0eb6417cc236fd1f4775e7
   react-native-safe-area-context: 9e40fb181dac02619414ba1294d6c2a807056ab9
   react-native-webview: d33e2db8925d090871ffeb232dfa50cb3a727581
   React-perflogger: 93075d8931c32cd1fce8a98c15d2d5ccc4d891bd
@@ -633,7 +633,7 @@ SPEC CHECKSUMS:
   RNCPicker: 0bf8ef8f7800524f32d2bb2a8bcadd53eda0ecd1
   RNDateTimePicker: 1dd15d7ed1ab7d999056bc77879a42920d139c12
   RNGestureHandler: e1ad51d31a580755079d5124d3ab66f0fcaa8311
-  RNIap: 35bf82b69ea1b6da0c48f1fa44ead53f0f69444f
+  RNIap: 3bcd6982cf99503339cf9243e4ba70a45ea2cf72
   RNReanimated: f6d11918cc6b85881a5256dcfe68b2cac8832e4d
   RNScreens: 34cc502acf1b916c582c60003dc3089fa01dc66d
   Yoga: e7dc4e71caba6472ff48ad7d234389b91dadc280
