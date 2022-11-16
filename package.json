@@ -14,6 +14,7 @@
     "all-m1": "watchman watch-del-all && rm -rf package-lock.json && rm -rf yarn.lock && rm -rf node_modules/ && rm -fr $TMPDIR/metro* && yarn install && cd ios && rm -rf Pods && rm -rf Podfile.lock &&  arch -x86_64 pod install && cd .."
   },
   "dependencies": {
+    "@invertase/react-native-apple-authentication": "^2.2.2",
     "@react-native-community/async-storage": "^1.12.1",
     "@react-native-community/datetimepicker": "^5.1.0",
     "@react-native-google-signin/google-signin": "^8.2.1",

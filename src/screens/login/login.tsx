@@ -9,18 +9,15 @@ import { CommonText } from 'component/CommonText';
 import { CommonSelect } from 'component/CommonSelect';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
-import { View, Image, ScrollView, Alert, StyleSheet, Text } from 'react-native';
+import { View, Image, ScrollView, Alert, StyleSheet, Text, Platform } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import axios from 'axios';
 import { Color } from 'assets/styles/Color';
 import RNPickerSelect from 'react-native-picker-select';
 import * as properties from 'utils/properties';
 import AsyncStorage from '@react-native-community/async-storage';
-import {
-	GoogleSignin,
-	GoogleSigninButton,
-	statusCodes,
-} from '@react-native-google-signin/google-signin';
+import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import { appleAuth } from '@invertase/react-native-apple-authentication';
 
 interface Props {
 	navigation: StackNavigationProp<StackParamList, 'Login01'>;
@@ -71,7 +68,32 @@ export const Login01 = (props: Props) => {
 			}
 		}
 	};
+	const onAppleButtonPress = async () => {
+		// performs login request
 
+		const appleAuthRequestResponse = await appleAuth.performRequest({
+			requestedOperation: appleAuth.Operation.LOGIN,
+			// Note: it appears putting FULL_NAME first is important, see issue #293
+			requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
+		});
+
+		Alert.alert('성공', JSON.stringify(appleAuthRequestResponse), [
+			{ text: '확인', onPress: () => {} },
+		]);
+
+		// get current authentication state for user
+		// /!\ This method must be tested on a real device. On the iOS simulator it always throws an error.
+		// const credentialState = await appleAuth
+		// 	.getCredentialStateForUser(appleAuthRequestResponse.user)
+		// 	.catch((e) => {
+		// 		console.log('error1', e);
+		// 	});
+
+		// // use credentialState response to ensure the user is authenticated
+		// if (credentialState === appleAuth.State.AUTHORIZED) {
+		// 	// user is authenticated
+		// }
+	};
 	const loginProc = async () => {
 		console.log(
 			properties.api_domain + '/join/getLoginchk/',
@@ -217,8 +239,15 @@ export const Login01 = (props: Props) => {
 					</View>
 
 					<SpaceView mb={20}>
+						{Platform.OS === 'ios' ? (
+							<SpaceView mb={5}>
+								<CommonBtn value={'애플로그인'} onPress={onAppleButtonPress} />
+							</SpaceView>
+						) : null}
 						<SpaceView mb={5}>
 							<CommonBtn value={'구글로그인'} onPress={google_signIn} />
+						</SpaceView>
+						<SpaceView mb={5}>
 							<CommonBtn
 								value={'로그인'}
 								onPress={() => {
