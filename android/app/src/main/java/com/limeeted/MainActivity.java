@@ -1,4 +1,4 @@
-package com.appsquad.limeeted;
+package com.limeeted;
 
 import com.facebook.react.ReactActivity;
 

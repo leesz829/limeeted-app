@@ -49,7 +49,8 @@ export const myProfile = createAsyncThunk<PrincipalProps>('auth/principal', asyn
 export const authSlice = createSlice({
 	name: 'auth',
 	initialState: {
-		principal: undefined,
+		base: undefined,
+		profileImg: undefined,
 	},
 	reducers: {
 		setPrincipal: (state, action) => {

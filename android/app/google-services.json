@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "369959009315",
+    "project_id": "limeeted-4e4a6",
+    "storage_bucket": "limeeted-4e4a6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:369959009315:android:0e95e315f91a3c53a14596",
+        "android_client_info": {
+          "package_name": "com.limeeted"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "369959009315-6q3qrqkfkd797nlvtrtcdbvsc7og2ie1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMiDKNnoJTLzgIV8eFEyAnEJ9zZdCQBnE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "369959009315-6q3qrqkfkd797nlvtrtcdbvsc7og2ie1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

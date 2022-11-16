@@ -28,10 +28,8 @@ interface Props {
 }
 
 GoogleSignin.configure({
-	scopes: ['https://www.googleapis.com/auth/drive.readonly'], // what API you want to access on behalf of the user, default is email and profile
-	webClientId: '<FROM DEVELOPER CONSOLE>', // client ID of type WEB for your server (needed to verify user ID and offline access)
+	webClientId: '369959009315-6q3qrqkfkd797nlvtrtcdbvsc7og2ie1.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
 	offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
-	hostedDomain: '', // specifies a hosted domain restriction
 	forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
 	accountName: '', // [Android] specifies an account name on the device that should be used
 	iosClientId: '<FROM DEVELOPER CONSOLE>', // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
@@ -45,15 +43,23 @@ export const Login01 = (props: Props) => {
 	const [id, setId] = React.useState('test2');
 	const [password, setPassword] = React.useState('1234');
 
-	console.log('askdlmasldkm ::::: ', properties.api_domain);
-
 	const google_signIn = async () => {
 		try {
-			await GoogleSignin.hasPlayServices();
-			const userInfo = await GoogleSignin.signIn();
-			console.log('google_signIn  : ', JSON.stringify(userInfo));
+			// Check if your device supports Google Play
+			await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+			// Get the users ID token
+			const { idToken } = await GoogleSignin.signIn();
+			Alert.alert('로그인 성공', idToken, [{ text: '확인', onPress: () => {} }]);
+
+			// Create a Google credential with the token
+			//   const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+			// Sign-in the user with the credential
+			//   return auth().signInWithCredential(googleCredential);
+			// await GoogleSignin.hasPlayServices();
+			// const userInfo = await GoogleSignin.signIn();
+			// console.log('google_signIn  : ', JSON.stringify(userInfo));
 		} catch (error) {
-			console.log('google error : ', JSON.stringify(error));
 			if (error.code === statusCodes.SIGN_IN_CANCELLED) {
 				// user cancelled the login flow
 			} else if (error.code === statusCodes.IN_PROGRESS) {
