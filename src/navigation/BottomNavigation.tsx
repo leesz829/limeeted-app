@@ -41,13 +41,6 @@ const BottomNavigation = () => {
 					headerShown: false,
 					tabBarShowLabel: true,
 				}}
-				listeners={({ navigation }) => ({
-					tabPress: (e) => {
-						e.preventDefault();
-						//busiUtils.goStoragePage(navigation);
-						Alert.alert('알림', '준비중입니다.', [{ text: '확인' }]);
-					},
-				})}
 			/>
 			<Tab.Screen
 				name="Mailbox"

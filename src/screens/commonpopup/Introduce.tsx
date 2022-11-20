@@ -8,11 +8,15 @@ import { FC, useState, useEffect } from 'react';
 import { CommonSelect } from 'component/CommonSelect';
 import { CommonBtn } from 'component/CommonBtn';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RouteProp, useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import { ColorType, StackParamList, BottomParamList, ScreenNavigationProp } from '@types';
 import axios from 'axios';
 import * as properties from 'utils/properties';
 import AsyncStorage from '@react-native-community/async-storage';
+import * as hooksMember from 'hooks/member';
+import { useDispatch } from 'react-redux';
+import * as mbrReducer from 'redux/reducers/mbrReducer';
+
 /* ################################################################################################################
 ###################################################################################################################
 ###### 내 소개하기
@@ -26,20 +30,23 @@ interface Props {
 
 export const Introduce = (props: Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
+	const isFocus = useIsFocused();
+	const dispatch = useDispatch();	
 
-	const [introduce_comment, setIntroduce_comment] = React.useState<any>(
-		props.route.params.introduce_comment,
-	);
-	const [business, setBusiness] = React.useState<any>(props.route.params.business);
-	const [job, setJob] = React.useState<any>(props.route.params.job);
-	const [job_name, setJob_name] = React.useState<any>(props.route.params.job_name);
+	const jwtToken = hooksMember.getJwtToken();				// 토큰
+	const memberBase = JSON.parse(hooksMember.getBase());	// 회원 기본정보
+
+	const [introduce_comment, setIntroduce_comment] = React.useState<any>(memberBase.introduce_comment);
+	const [business, setBusiness] = React.useState<any>(memberBase.business);
+	const [job, setJob] = React.useState<any>(memberBase.job);
+	const [job_name, setJob_name] = React.useState<any>(memberBase.job_name);
 	//const [birthLocal, setBirthLocal] = React.useState(props.route.params.birth_local);
 	//const [activeLocal, setActiveLocal] = React.useState(props.route.params.active_local);
-	const [height, setHeight] = React.useState<any>(props.route.params.height);
-	const [form_body, setForm_body] = React.useState<any>(props.route.params.form_body);
-	const [religion, setReligion] = React.useState<any>(props.route.params.religion);
-	const [drinking, setDrinking] = React.useState<any>(props.route.params.drinking);
-	const [smoking, setSmoking] = React.useState<any>(props.route.params.smoking);
+	const [height, setHeight] = React.useState<any>(memberBase.height);
+	const [form_body, setForm_body] = React.useState<any>(memberBase.form_body);
+	const [religion, setReligion] = React.useState<any>(memberBase.religion);
+	const [drinking, setDrinking] = React.useState<any>(memberBase.drinking);
+	const [smoking, setSmoking] = React.useState<any>(memberBase.smoking);
 
 	const [memberInfo, setMemberInfo] = React.useState({
 		comment: String,
@@ -130,7 +137,7 @@ export const Introduce = (props: Props) => {
 				},
 				{
 					headers: {
-						'jwt-token': String(await properties.jwt_token()),
+						'jwt-token': jwtToken,
 					},
 				},
 			)
@@ -171,7 +178,7 @@ export const Introduce = (props: Props) => {
 				properties.api_domain + '/member/saveMemberAddInfo',
 				{
 					'api-key': 'U0FNR09CX1RPS0VOXzAx',
-					member_seq: props.route.params.member_seq,
+					member_seq: memberBase.member_seq,
 					introduce_comment: introduce_comment,
 					business: business,
 					job: job,
@@ -184,26 +191,18 @@ export const Introduce = (props: Props) => {
 				},
 				{
 					headers: {
-						'jwt-token': String(await properties.jwt_token()),
+						'jwt-token': jwtToken,
 					},
 				},
 			)
 			.then(function (response) {
-				console.log('job code :::: ', response.data);
-
 				if (response.data.result_code != '0000') {
 					console.log(response.data.result_msg);
 					return false;
 				} else {
-					//props.route.params.callbackFn();
-
-					AsyncStorage.setItem('memberBase', JSON.stringify(response.data.memberBase));
-
+					dispatch(mbrReducer.setBase(JSON.stringify(response.data.memberBase)));
 					navigation.navigate('Main', {
-						screen: 'Roby',
-						params: {
-							memberBase: response.data.memberBase,
-						},
+						screen: 'Roby'
 					});
 				}
 			})
@@ -244,7 +243,7 @@ export const Introduce = (props: Props) => {
 		if (business != '') {
 			getJobCodeList();
 		}
-	}, [business]);
+	}, [isFocus]);
 
 	return (
 		<>

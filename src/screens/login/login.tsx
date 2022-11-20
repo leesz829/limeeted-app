@@ -16,6 +16,10 @@ import { Color } from 'assets/styles/Color';
 import RNPickerSelect from 'react-native-picker-select';
 import * as properties from 'utils/properties';
 import AsyncStorage from '@react-native-community/async-storage';
+import { get_login_chk } from 'api/models';
+import { useDispatch } from 'react-redux';
+import * as mbrReducer from 'redux/reducers/mbrReducer';
+import { useUserInfo  } from 'hooks/useUserInfo';
 
 interface Props {
 	navigation: StackNavigationProp<StackParamList, 'Login01'>;
@@ -28,9 +32,19 @@ export const Login01 = (props: Props) => {
 	const [id, setId] = React.useState('test2');
 	const [password, setPassword] = React.useState('1234');
 
-	console.log('askdlmasldkm ::::: ', properties.api_domain);
+	const dispatch = useDispatch();	
+
+	React.useEffect(() => {
+		//dispatch(myProfile());
+	}, []);
+	  
 
 	const loginProc = async () => {
+		//const { success, data } = await get_login_chk(id, password);
+
+		//console.log('success :::: ', success);
+		//console.log('data :::: ', data);
+
 		console.log(
 			properties.api_domain + '/join/getLoginchk/',
 			JSON.stringify({
@@ -68,7 +82,6 @@ export const Login01 = (props: Props) => {
 					if (resultCode == '0001' && (status == 'PROCEED' || status == 'APROVAL')) {
 						if (status == 'APROVAL') {
 							navigation.navigate('Approval');
-							//navigation.navigate('Signup02', { memberSeq : response.data.member_seq });
 						} else {
 							if (null != response.data.base.join_status) {
 								if (joinStatus == '01') {
@@ -87,24 +100,22 @@ export const Login01 = (props: Props) => {
 						}
 					} else {
 						Alert.alert('알림', '일치하는 회원이 없습니다.', [{ text: '확인' }]);
-
-						/* navigation.navigate('Signup00', { 
-						ci : profile.ci
-						, birthday : profile.birthday
-						, name : profile.name
-						, gender : profile.gender
-						, mobile : profile.hp
-					}); */
 					}
 				} else if (resultCode == '0002') {
 					console.log('alert 추가!!!!! 로그인 실패');
 				} else {
-					console.log('response.data.token_param ::: ', response.data.token_param.jwt_token);
+					dispatch(mbrReducer.setJwtToken(response.data.token_param.jwt_token));
+					dispatch(mbrReducer.setMemberSeq(JSON.stringify(response.data.base.member_seq)));
+					dispatch(mbrReducer.setBase(JSON.stringify(response.data.base)));
+					dispatch(mbrReducer.setProfileImg(JSON.stringify(response.data.memberImgList)));
+					dispatch(mbrReducer.setSecondAuth(JSON.stringify(response.data.memberSndAuthList)));
+					dispatch(mbrReducer.setIdealType(JSON.stringify(response.data.memberIdealType)));
+					dispatch(mbrReducer.setInterview(JSON.stringify(response.data.memberInterviewList)));
 
-					AsyncStorage.clear();
+					//AsyncStorage.clear();
 
 					// token set
-					AsyncStorage.setItem('jwt-token', response.data.token_param.jwt_token);
+					/* AsyncStorage.setItem('jwt-token', response.data.token_param.jwt_token);
 					AsyncStorage.setItem('member_seq', String(response.data.base.member_seq));
 					AsyncStorage.setItem('memberBase', JSON.stringify(response.data.base));
 					AsyncStorage.setItem('memberImgList', JSON.stringify(response.data.memberImgList));
@@ -116,23 +127,18 @@ export const Login01 = (props: Props) => {
 					AsyncStorage.setItem(
 						'memberInterviewList',
 						JSON.stringify(response.data.memberInterviewList),
-					);
+					); */
 
 					navigation.navigate('Main', {
-						screen: 'Roby',
-						params: {
-							memberBase: response.data.base,
-						},
-					});
+						screen: 'Roby'
+					}); 
 				}
 			})
 			.catch(function (error) {
 				console.log(error);
 			});
 
-		/* navigation.navigate('Signup02', {
-			memberSeq : 38
-		}); */
+
 	};
 
 	return (
@@ -189,6 +195,8 @@ export const Login01 = (props: Props) => {
 									}
 
 									loginProc();
+
+									//dispatch(loginReduce(id, password));
 								}}
 							/>
 						</SpaceView>
@@ -197,7 +205,10 @@ export const Login01 = (props: Props) => {
 							type={'kakao'}
 							iconSize={24}
 							onPress={() => {
-								navigation.navigate('Login');
+								//navigation.navigate('Login');
+
+								//const temp = useUserInfo();
+								//console.log('temp :::: ', temp);
 							}}
 						/>
 					</SpaceView>

@@ -14,6 +14,9 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import * as properties from 'utils/properties';
 import * as dataUtils from 'utils/data';
+import * as hooksMember from 'hooks/member';
+import { useDispatch } from 'react-redux';
+import * as mbrReducer from 'redux/reducers/mbrReducer';
 
 /* ################################################################################################################
 ###### 보관함
@@ -27,6 +30,9 @@ interface Props {
 export const Storage = (props : Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 	const isFocus = useIsFocused();
+
+	const jwtToken = hooksMember.getJwtToken();		// 토큰
+	const memberSeq = hooksMember.getMemberSeq();	// 회원번호
 
 	const [btnStatus, setBtnStatus] = useState(true);
 	const [btnStatus1, setBtnStatus1] = useState(true);
@@ -63,11 +69,11 @@ export const Storage = (props : Props) => {
 	const getStorageData = async () => {
 		const result = await axios.post(properties.api_domain + '/member/selectMemberStorage', {
 		   'api-key' : 'U0FNR09CX1RPS0VOXzAx'
-		   , 'member_seq' : String(await properties.get_json_data('member_seq'))
+		   , 'member_seq' : memberSeq
 		}
 		, {
 		   headers: {
-			  'jwt-token' : String(await properties.jwt_token())
+			  'jwt-token' : jwtToken
 		   }
 		})
 		.then(function (response) {  

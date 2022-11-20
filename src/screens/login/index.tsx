@@ -131,10 +131,7 @@ export const Login = () => {
 				}); */
 
 					navigation.navigate('Main', {
-						screen: 'Roby',
-						params: {
-							memberBase: response.data.base,
-						},
+						screen: 'Roby'
 					});
 				}
 			})

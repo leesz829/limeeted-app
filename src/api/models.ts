@@ -1,6 +1,6 @@
 import { Send } from 'api';
 import properties from 'utils/properties';
-import { MY_ACCOUNT } from './route';
+import * as route from './route';
 
 //### 네트워크 모델 함수이름은 snake_case를 사용해주세요
 
@@ -12,6 +12,19 @@ export async function some_get_functions() {
 
 //========================POST=========================
 
+/* 로그인 체크 */
+export async function get_login_chk(id:string, password:string) {
+	//const member_seq = await properties.get_json_data('member_seq');
+	const body = {
+		'api-key': 'U0FNR09CX1RPS0VOXzAx'
+		, 'kakao_id' : id
+		, 'passwordddd' : password
+	};
+
+	return Send(route.MY_ACCOUNT, 'POST', body, true, false);
+}
+
+
 export async function get_my_info() {
 	const member_seq = await properties.get_json_data('member_seq');
 	const body = {
@@ -19,7 +32,7 @@ export async function get_my_info() {
 		member_seq,
 	};
 
-	return Send(MY_ACCOUNT, 'POST', body, true, false);
+	return Send(route.MY_ACCOUNT, 'POST', body, true, false);
 }
 
 //=====================================================

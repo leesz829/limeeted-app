@@ -35,6 +35,8 @@ import { CommonDatePicker } from 'component/CommonDatePicker';
 import * as dataUtils from 'utils/data';
 import AsyncStorage from '@react-native-community/async-storage';
 import { useUserInfo } from 'hooks/useUserInfo';
+import * as hooksMember from 'hooks/member';
+
 
 /* ################################################################################################################
 ###### 로비
@@ -46,16 +48,13 @@ interface Props {
 }
 
 export const Roby = (props: Props) => {
-	const temp = useUserInfo();
-
 	const navigation = useNavigation<ScreenNavigationProp>();
 
-	const [profileReAprPopup, setProfileReAprPopup] = useState(false); // 프로필 재심사 팝업
-	const [useReportPopup, setUseReportPopup] = useState(false); // 사용자 신고하기 팝업
+	const jwtToken = hooksMember.getJwtToken();	// 토큰 추출
 
 	// 회원 기본 데이터
 	const [member, setMember] = React.useState({
-		base: MemberBaseData,
+		base: JSON.parse(hooksMember.getBase()),
 	});
 
 	/*
@@ -83,33 +82,8 @@ export const Roby = (props: Props) => {
 
 	// ###### 첫 렌더링 때 fetchNews() 한 번 실행
 	React.useEffect(() => {
-		if (props.route.params.memberBase != null) {
-			let base: any = props.route.params.memberBase;
-			setMember({
-				...member,
-				base: base,
-			});
-		} else {
-			initData();
-		}
-
 		getRealTimeMemberInfo();
-		//selectMemberInfo();
 	}, [props]);
-
-	const initData = async () => {
-		try {
-			const memberBase = await AsyncStorage.getItem('memberBase');
-			if (memberBase !== null) {
-				setMember({
-					...member,
-					base: JSON.parse(memberBase),
-				});
-			}
-		} catch (e) {
-			console.log(e);
-		}
-	};
 
 	// 실시간성 회원 데이터 조회
 	const getRealTimeMemberInfo = async () => {
@@ -118,16 +92,15 @@ export const Roby = (props: Props) => {
 				properties.api_domain + '/member/getRealTimeMemberInfo',
 				{
 					'api-key': 'U0FNR09CX1RPS0VOXzAx',
-					member_seq: String(await properties.get_json_data('member_seq')),
+					member_seq: member.base.member_seq,
 				},
 				{
 					headers: {
-						'jwt-token': String(await properties.jwt_token()),
+						'jwt-token': jwtToken,
 					},
 				},
 			)
 			.then(function (response) {
-				console.log('response.data :::: ', response.data);
 
 				// 관심 목록 셋팅
 				let resLikeDataList = new Array();
@@ -190,16 +163,15 @@ export const Roby = (props: Props) => {
 				properties.api_domain + '/member/selectMemberInfo',
 				{
 					'api-key': 'U0FNR09CX1RPS0VOXzAx',
-					member_seq: String(await properties.get_json_data('member_seq')),
+					member_seq: member.base.member_seq,
 				},
 				{
 					headers: {
-						'jwt-token': String(await properties.jwt_token()),
+						'jwt-token': jwtToken,
 					},
 				},
 			)
 			.then(function (response) {
-				console.log('response.data :::: ', response.data);
 
 				if (response.data.result_code != '0000') {
 					console.log(response.data.result_msg);
@@ -257,8 +229,6 @@ export const Roby = (props: Props) => {
 							file_name: any;
 							file_path: any;
 						}) => {
-							console.log('trgt_member_seq ::: ', trgt_member_seq);
-
 							const img_path = properties.api_domain + '/uploads' + file_path + file_name;
 							const dataJson = { trgt_member_seq: String, img_path: '' };
 
@@ -308,7 +278,7 @@ export const Roby = (props: Props) => {
 
 			dataJson = {
 				'api-key': 'U0FNR09CX1RPS0VOXzAx',
-				member_seq: String(await properties.get_json_data('member_seq')),
+				member_seq: member.base.member_seq,
 				match_yn: matchYnParam,
 			};
 		} else {
@@ -317,7 +287,7 @@ export const Roby = (props: Props) => {
 
 			dataJson = {
 				'api-key': 'U0FNR09CX1RPS0VOXzAx',
-				member_seq: String(await properties.get_json_data('member_seq')),
+				member_seq: member.base.member_seq,
 				friend_match_yn: friendMatchParam,
 			};
 		}
@@ -325,7 +295,7 @@ export const Roby = (props: Props) => {
 		const result = await axios
 			.post(properties.api_domain + '/member/updateMemberBase', dataJson, {
 				headers: {
-					'jwt-token': String(await properties.jwt_token()),
+					'jwt-token': jwtToken,
 				},
 			})
 			.then(function (response) {
@@ -343,17 +313,15 @@ export const Roby = (props: Props) => {
 				properties.api_domain + '/member/updateProfileReex',
 				{
 					'api-key': 'U0FNR09CX1RPS0VOXzAx',
-					member_seq: String(await properties.get_json_data('member_seq')),
+					member_seq: member.base.member_seq,
 				},
 				{
 					headers: {
-						'jwt-token': String(await properties.jwt_token()),
+						'jwt-token': jwtToken,
 					},
 				},
 			)
 			.then(function (response) {
-				console.log('response :::: ', response.data);
-
 				if (response.data.result_code != '0000') {
 					console.log(response.data.result_msg);
 					return false;
@@ -367,6 +335,9 @@ export const Roby = (props: Props) => {
 	};
 
    // ################### 팝업 관련 #####################
+
+	const [profileReAprPopup, setProfileReAprPopup] = useState(false); // 프로필 재심사 팝업
+	const [useReportPopup, setUseReportPopup] = useState(false); // 사용자 신고하기 팝업
 
 	// 내 선호 이성 Pop
 	const ideal_modalizeRef = useRef<Modalize>(null);
@@ -418,18 +389,7 @@ export const Roby = (props: Props) => {
 						<View style={styles.profilePenContainer}>
 							<TouchableOpacity
 								onPress={() => {
-									navigation.navigate('Introduce', {
-										member_seq: member.base.member_seq,
-										introduce_comment: member.base.introduce_comment,
-										business: member.base.business,
-										job: member.base.job,
-										job_name: member.base.job_name,
-										height: member.base.height,
-										form_body: member.base.form_body,
-										religion: member.base.religion,
-										drinking: member.base.drinking,
-										smoking: member.base.smoking,
-									});
+									navigation.navigate('Introduce');
 								}}
 							>
 								<Image source={ICON.pen} style={styles.iconSize24} />
@@ -456,31 +416,7 @@ export const Roby = (props: Props) => {
 						<TouchableOpacity
 							style={[layoutStyle.row, layoutStyle.alignCenter]}
 							onPress={() => {
-								const goPress = async () => {
-									try {
-										const memberImgList: any = await AsyncStorage.getItem('memberImgList');
-										const memberSndAuthList: any = await AsyncStorage.getItem('memberSndAuthList');
-										const memberInterviewList: any = await AsyncStorage.getItem(
-											'memberInterviewList',
-										);
-
-										if (
-											memberImgList !== null ||
-											memberSndAuthList !== null ||
-											memberInterviewList !== null
-										) {
-											navigation.navigate('Profile1', {
-												imgList: JSON.parse(memberImgList),
-												authList: JSON.parse(memberSndAuthList),
-												interviewList: JSON.parse(memberInterviewList),
-											});
-										}
-									} catch (e) {
-										console.log(e);
-									}
-								};
-
-								goPress();
+								navigation.navigate('Profile1');
 							}}
 						>
 							<CommonText type={'h3'} fontWeight={'700'}>
@@ -615,54 +551,7 @@ export const Roby = (props: Props) => {
 					<TouchableOpacity
 						style={styles.rowStyle}
 						onPress={() => {
-							const goPress = async () => {
-								try {
-									const memberIdealType = await AsyncStorage.getItem('memberIdealType');
-									console.log('memberIdealType ::: ', memberIdealType);
-									if (null != memberIdealType && 'null' != memberIdealType) {
-										const jsonData: any = JSON.parse(memberIdealType);
-										navigation.navigate('Preference', {
-											ideal_type_seq: jsonData.ideal_type_seq,
-											want_local1: jsonData.want_local1,
-											want_local2: jsonData.want_local2,
-											want_age_min: jsonData.want_age_min,
-											want_age_max: jsonData.want_age_max,
-											want_business1: jsonData.want_business1,
-											want_business2: jsonData.want_business2,
-											want_business3: jsonData.want_business3,
-											want_job1: jsonData.want_job1,
-											want_job2: jsonData.want_job2,
-											want_job3: jsonData.want_job3,
-											want_person1: jsonData.want_person1,
-											want_person2: jsonData.want_person2,
-											want_person3: jsonData.want_person3,
-											gender: member.base.gender,
-										});
-									} else {
-										navigation.navigate('Preference', {
-											ideal_type_seq: '',
-											want_local1: '',
-											want_local2: '',
-											want_age_min: '',
-											want_age_max: '',
-											want_business1: '',
-											want_business2: '',
-											want_business3: '',
-											want_job1: '',
-											want_job2: '',
-											want_job3: '',
-											want_person1: '',
-											want_person2: '',
-											want_person3: '',
-											gender: member.base.gender,
-										});
-									}
-								} catch (e) {
-									console.log(e);
-								}
-							};
-
-							goPress();
+							navigation.navigate('Preference');
 						}}
 					>
 						<CommonText fontWeight={'500'}>내 선호 이성</CommonText>
@@ -715,13 +604,11 @@ export const Roby = (props: Props) => {
 										},
 										{
 											headers: {
-												'jwt-token': String(await properties.jwt_token()),
+												'jwt-token': jwtToken,
 											},
 										},
 									)
 									.then(function (response) {
-										console.log('response.data :::: ', response.data);
-
 										navigation.navigate('Board0', {
 											boardList: response.data.boardList,
 										});
@@ -729,13 +616,13 @@ export const Roby = (props: Props) => {
 										// 게시판 목록 셋팅
 										let boardList = new Array();
 										/* response.data?.boardList?.map(({ board_seq, board_code, title, contents }: { board_seq: any, board_code: any, title: any, contents: any }) => {
-                              const dataJson = { req_member_seq : String, img_path : '' };
+											const dataJson = { req_member_seq : String, img_path : '' };
 
-                              dataJson.req_member_seq(req_member_seq);
-                              dataJson.img_path = img_path;
+											dataJson.req_member_seq(req_member_seq);
+											dataJson.img_path = img_path;
 
-                              resLikeDataList.push(dataJson);
-                           }); */
+											resLikeDataList.push(dataJson);
+										}); */
 									})
 									.catch(function (error) {
 										console.log('error ::: ', error);

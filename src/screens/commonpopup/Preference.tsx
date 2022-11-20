@@ -4,7 +4,7 @@ import { Modalize } from 'react-native-modalize';
 import type { FC, useState, useEffect } from 'react';
 import * as React from 'react';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RouteProp, useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import { ColorType, StackParamList, BottomParamList, ScreenNavigationProp } from '@types';
 import CommonHeader from 'component/CommonHeader';
 import { layoutStyle, modalStyle, styles } from 'assets/styles/Styles';
@@ -17,6 +17,11 @@ import axios from 'axios';
 import * as properties from 'utils/properties';
 import { Color } from 'assets/styles/Color';
 import AsyncStorage from '@react-native-community/async-storage';
+import * as hooksMember from 'hooks/member';
+import { useDispatch } from 'react-redux';
+import * as mbrReducer from 'redux/reducers/mbrReducer';
+
+
 /* ################################################################################################################
 ###################################################################################################################
 ###### 내 선호 이성
@@ -31,20 +36,29 @@ interface Props {
 export const Preference = (props: Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 
-	const [idealTypeSeq, setIdealTypeSeq] = React.useState<any>(props.route.params.ideal_type_seq);
-	const [wantLocal1, setWantLocal1] = React.useState<any>(props.route.params.want_local1);
-	const [wantLocal2, setWantLocal2] = React.useState<any>(props.route.params.want_local2);
-	const [wantAgeMin, setWantAgeMin] = React.useState<any>(props.route.params.want_age_min);
-	const [wantAgeMax, setWantAgeMax] = React.useState<any>(props.route.params.want_age_max);
-	const [wantBusiness1, setWantBusiness1] = React.useState<any>(props.route.params.want_business1);
-	const [wantBusiness2, setWantBusiness2] = React.useState<any>(props.route.params.want_business2);
-	const [wantBusiness3, setWantBusiness3] = React.useState<any>(props.route.params.want_business3);
-	const [wantJob1, setWantJob1] = React.useState<any>(props.route.params.want_job1);
-	const [wantJob2, setWantJob2] = React.useState<any>(props.route.params.want_job2);
-	const [wantJob3, setWantJob3] = React.useState<any>(props.route.params.want_job3);
-	const [wantPerson1, setWantPerson1] = React.useState<any>(props.route.params.want_person1);
-	const [wantPerson2, setWantPerson2] = React.useState<any>(props.route.params.want_person2);
-	const [wantPerson3, setWantPerson3] = React.useState<any>(props.route.params.want_person3);
+	const isFocus = useIsFocused();
+	const dispatch = useDispatch();
+
+	const jwtToken = hooksMember.getJwtToken();		// 토큰
+	const memberSeq = hooksMember.getMemberSeq();	// 회원번호
+
+	const mbrBase = JSON.parse(hooksMember.getBase());
+	const mbrIdealType = JSON.parse(hooksMember.getIdealType());
+
+	const [idealTypeSeq, setIdealTypeSeq] = React.useState<any>(mbrIdealType.ideal_type_seq);
+	const [wantLocal1, setWantLocal1] = React.useState<any>(mbrIdealType.want_local1);
+	const [wantLocal2, setWantLocal2] = React.useState<any>(mbrIdealType.want_local2);
+	const [wantAgeMin, setWantAgeMin] = React.useState<any>(mbrIdealType.want_age_min);
+	const [wantAgeMax, setWantAgeMax] = React.useState<any>(mbrIdealType.want_age_max);
+	const [wantBusiness1, setWantBusiness1] = React.useState<any>(mbrIdealType.want_business1);
+	const [wantBusiness2, setWantBusiness2] = React.useState<any>(mbrIdealType.want_business2);
+	const [wantBusiness3, setWantBusiness3] = React.useState<any>(mbrIdealType.want_business3);
+	const [wantJob1, setWantJob1] = React.useState<any>(mbrIdealType.want_job1);
+	const [wantJob2, setWantJob2] = React.useState<any>(mbrIdealType.want_job2);
+	const [wantJob3, setWantJob3] = React.useState<any>(mbrIdealType.want_job3);
+	const [wantPerson1, setWantPerson1] = React.useState<any>(mbrIdealType.want_person1);
+	const [wantPerson2, setWantPerson2] = React.useState<any>(mbrIdealType.want_person2);
+	const [wantPerson3, setWantPerson3] = React.useState<any>(mbrIdealType.want_person3);
 
 	// 업종 그룹 코드 목록
 	const busiGrpCdList = [
@@ -116,12 +130,11 @@ export const Preference = (props: Props) => {
 				},
 				{
 					headers: {
-						'jwt-token': String(await properties.jwt_token()),
+						'jwt-token': jwtToken,
 					},
 				},
 			)
 			.then(function (response) {
-				console.log('result ::: ', response.data);
 				if (response.data.result_code != '0000') {
 					console.log('fail ::: ', response.data.result_msg);
 					return false;
@@ -165,7 +178,7 @@ export const Preference = (props: Props) => {
 				properties.api_domain + '/member/saveMemberIdealType',
 				{
 					'api-key': 'U0FNR09CX1RPS0VOXzAx',
-					member_seq: String(await properties.get_json_data('member_seq')),
+					member_seq: memberSeq,
 					ideal_type_seq: idealTypeSeq,
 					want_local1: wantLocal1,
 					want_local2: wantLocal2,
@@ -183,25 +196,20 @@ export const Preference = (props: Props) => {
 				},
 				{
 					headers: {
-						'jwt-token': String(await properties.jwt_token()),
+						'jwt-token': jwtToken,
 					},
 				},
 			)
 			.then(function (response) {
-				console.log('job code :::: ', response.data);
-
 				if (response.data.result_code != '0000') {
 					console.log(response.data.result_msg);
 					return false;
 				} else {
-					AsyncStorage.setItem('memberBase', JSON.stringify(response.data.memberBase));
-					AsyncStorage.setItem('memberIdealType', JSON.stringify(response.data.memberIdealType));
+					dispatch(mbrReducer.setBase(JSON.stringify(response.data.memberBase)));
+					dispatch(mbrReducer.setIdealType(JSON.stringify(response.data.memberIdealType)));
 
 					navigation.navigate('Main', {
-						screen: 'Roby',
-						params: {
-							memberBase: response.data.memberBase,
-						},
+						screen: 'Roby'
 					});
 				}
 			})
@@ -241,7 +249,7 @@ export const Preference = (props: Props) => {
 
 	// 첫 렌더링 때 실행
 	React.useEffect(() => {
-		console.log('props.route.params.want_person1 ::: ', props.route.params.want_person1);
+		
 	}, []);
 
 	// 업종 상태 관리
@@ -405,7 +413,7 @@ export const Preference = (props: Props) => {
 					<SpaceView mb={24}>
 						<CommonSelect
 							label={'인상'}
-							items={props.route.params.gender == 'M' ? gFaceItemList : mFaceItemList}
+							items={mbrBase.gender == 'M' ? gFaceItemList : mFaceItemList}
 							selectValue={wantPerson1}
 							callbackFn={wantPerson1CallbackFn}
 						/>
@@ -413,7 +421,7 @@ export const Preference = (props: Props) => {
 					<SpaceView mb={24}>
 						<CommonSelect
 							label={'인상'}
-							items={props.route.params.gender == 'M' ? gFaceItemList : mFaceItemList}
+							items={mbrBase.gender == 'M' ? gFaceItemList : mFaceItemList}
 							selectValue={wantPerson2}
 							callbackFn={wantPerson2CallbackFn}
 						/>
@@ -421,7 +429,7 @@ export const Preference = (props: Props) => {
 					<SpaceView>
 						<CommonSelect
 							label={'인상'}
-							items={props.route.params.gender == 'M' ? gFaceItemList : mFaceItemList}
+							items={mbrBase.gender == 'M' ? gFaceItemList : mFaceItemList}
 							selectValue={wantPerson3}
 							callbackFn={wantPerson3CallbackFn}
 						/>

@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
 import { Image, ScrollView, TextInput, View, TouchableOpacity } from 'react-native';
-import { RouteProp, useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ICON } from 'utils/imageUtils';
 import { layoutStyle, styles, modalStyle } from 'assets/styles/Styles';
@@ -13,8 +13,12 @@ import CommonHeader from 'component/CommonHeader';
 import { CommonBtn } from 'component/CommonBtn';
 import axios from 'axios';
 import * as properties from 'utils/properties';
-import AsyncStorage from '@react-native-community/async-storage';
+//import AsyncStorage from '@react-native-community/async-storage';
 import { Modalize } from 'react-native-modalize';
+import * as hooksMember from 'hooks/member';
+import { useDispatch } from 'react-redux';
+import * as mbrReducer from 'redux/reducers/mbrReducer';
+
 
 /* ################################################################################################################
 ###################################################################################################################
@@ -29,6 +33,15 @@ interface Props {
 
 export const Profile1 = (props: Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
+	const isFocus = useIsFocused();
+	const dispatch = useDispatch();	
+
+	const jwtToken = hooksMember.getJwtToken();		// 토큰
+	const memberSeq = hooksMember.getMemberSeq();	// 회원번호
+
+	const mbrProfileImgList = JSON.parse(hooksMember.getProfileImg()); 
+	const mbrSecondAuthList = JSON.parse(hooksMember.getSecondAuth()); 
+	const mbrInterviewList = JSON.parse(hooksMember.getInterview());
 
 	// 프로필 사진
 	const [imgData, setImgData] = React.useState<any>({
@@ -56,7 +69,8 @@ export const Profile1 = (props: Props) => {
 	const [isVehicle, setIsVehicle] = React.useState<any>(false);
 
 	// 인터뷰 목록
-	const [interviewList, setInterviewList] = React.useState<any>(props.route.params.interviewList);
+	//const [interviewList, setInterviewList] = React.useState<any>(props.route.params.interviewList);
+	const [interviewList, setInterviewList] = React.useState<any>(mbrInterviewList);
 
 	// 인증 갯수
 	const [authCnt, setAuthCnt] = React.useState(0);
@@ -112,7 +126,7 @@ export const Profile1 = (props: Props) => {
 	 * 최초 실행
 	 */
 	React.useEffect(() => {
-		if (props.route.params.imgList != null) {
+		if (mbrProfileImgList != null) {
 			let imgData: any = {
 				orgImgUrl01: { memer_img_seq: '', url: '', delYn: '' },
 				orgImgUrl02: { memer_img_seq: '', url: '', delYn: '' },
@@ -126,7 +140,7 @@ export const Profile1 = (props: Props) => {
 				imgFile05: { uri: '', name: '', type: '' },
 			};
 
-			props.route.params.imgList.map(
+			mbrProfileImgList.map(
 				({
 					member_img_seq,
 					file_name,
@@ -143,64 +157,38 @@ export const Profile1 = (props: Props) => {
 						url: properties.img_domain + file_path + file_name,
 						delYn: 'N',
 					};
-					if (order_seq == 1) {
-						imgData.orgImgUrl01 = data;
-					}
-					if (order_seq == 2) {
-						imgData.orgImgUrl02 = data;
-					}
-					if (order_seq == 3) {
-						imgData.orgImgUrl03 = data;
-					}
-					if (order_seq == 4) {
-						imgData.orgImgUrl04 = data;
-					}
-					if (order_seq == 5) {
-						imgData.orgImgUrl05 = data;
-					}
+					if (order_seq == 1) { imgData.orgImgUrl01 = data; }
+					if (order_seq == 2) { imgData.orgImgUrl02 = data; }
+					if (order_seq == 3) { imgData.orgImgUrl03 = data; }
+					if (order_seq == 4) { imgData.orgImgUrl04 = data; }
+					if (order_seq == 5) { imgData.orgImgUrl05 = data; }
 				},
 			);
 
 			setImgData({ ...imgData, imgData });
 		}
 
-		if (props.route.params.authList != null) {
+		if (mbrSecondAuthList != null) {
 			let authCnt = 0;
-			props.route.params.authList.map(({ second_auth_code }: { second_auth_code: any }) => {
-				if (second_auth_code == 'JOB') {
-					setIsJob(true);
-				}
-				if (second_auth_code == 'EDU') {
-					setIsEdu(true);
-				}
-				if (second_auth_code == 'INCOME') {
-					setIsIncome(true);
-				}
-				if (second_auth_code == 'ASSET') {
-					setIsAsset(true);
-				}
-				if (second_auth_code == 'SNS') {
-					setIsSns(true);
-				}
-				if (second_auth_code == 'VEHICLE') {
-					setIsVehicle(true);
-				}
-
+			mbrSecondAuthList.map(({ second_auth_code }: { second_auth_code: any }) => {
+				if (second_auth_code == 'JOB') { setIsJob(true); }
+				if (second_auth_code == 'EDU') { setIsEdu(true); }
+				if (second_auth_code == 'INCOME') { setIsIncome(true); }
+				if (second_auth_code == 'ASSET') { setIsAsset(true); }
+				if (second_auth_code == 'SNS') { setIsSns(true); }
+				if (second_auth_code == 'VEHICLE') { setIsVehicle(true); }
 				authCnt++;
 			});
 
 			setAuthCnt(authCnt);
 		}
-	}, [props.route]);
+	}, [isFocus]);
 
 	// 프로필 관리 저장
 	const saveMemberProfile = async () => {
-		const member_seq = Number(await properties.get_json_data('member_seq'));
 		const data = new FormData();
 
-		console.log('imgDelSeqStr :::: ', imgDelSeqStr);
-
-		data.append('memberSeq', member_seq);
+		data.append('memberSeq', memberSeq);
 		//data.append("interviewList", JSON.stringify(interviewList));
 		//data.append("data", new Blob([JSON.stringify(interviewList[0])], {type: "application/json"}));
 		data.append('data', JSON.stringify(interviewList));
@@ -221,30 +209,23 @@ export const Profile1 = (props: Props) => {
 		}
 		data.append('imgDelSeqStr', imgDelSeqStr);
 
-		//console.log('data :::: ', data);
-
 		const result = await fetch(properties.api_domain + '/member/saveProfileImage/', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'multipart/form-data',
-				'jwt-token': String(await properties.jwt_token()),
+				'jwt-token': jwtToken,
 			},
 			body: data,
 		})
 			.then((res) => res.json())
 			.then((res) => {
-				//console.log('res :::: ', res);
-
 				if (res.result_code == '0000') {
-					AsyncStorage.setItem('memberBase', JSON.stringify(res.memberBase));
-					AsyncStorage.setItem('memberImgList', JSON.stringify(res.memberImgList));
-					AsyncStorage.setItem('memberInterviewList', JSON.stringify(res.memberInterviewList));
+					dispatch(mbrReducer.setBase(JSON.stringify(res.memberBase)));
+					dispatch(mbrReducer.setProfileImg(JSON.stringify(res.memberImgList)));
+					dispatch(mbrReducer.setInterview(JSON.stringify(res.memberInterviewList)));
 
 					navigation.navigate('Main', {
-						screen: 'Roby',
-						params: {
-							memberBase: res.memberBase,
-						},
+						screen: 'Roby'
 					});
 				}
 			})
