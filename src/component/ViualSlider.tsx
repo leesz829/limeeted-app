@@ -29,9 +29,8 @@ interface Props {
  * @param {boolean} onlyImg 이미지와 닉네임 거리만 나타남
  * @returns
  */
-export const ViualSlider: FC<Props> = (props) => {
-	
-	const [currentIndex, setCurrentIndex] = useState(0);
+export const VViualSlider: FC<Props> = (props) => {
+	const [currentIndex, setCurrentIndex] = React.useState(0);
 
 	const callBackFunction = (activeType:string) => {
 		console.log('activeType ::: ', activeType);
@@ -39,6 +38,11 @@ export const ViualSlider: FC<Props> = (props) => {
 		props.callBackFunction && props.callBackFunction(activeType);
 	}
 
+	// 첫 렌더링 때 fetchNews() 한 번 실행
+	React.useEffect(() => {
+		console.log('props.imgUrls ::: ', props.imgUrls);
+	}, []);
+	
 	return (
 		<SpaceView>
 			<View style={styles.processContainer}>
@@ -62,18 +66,23 @@ export const ViualSlider: FC<Props> = (props) => {
 					</View>
 				))}
 			</View>
+
 			<View>
-				{
-					props.imgUrls &&
-					<Carousel
-						onScrollEnd={(_, current) => setCurrentIndex(current)}
-						loop={false}
-						data={props.imgUrls}
-						width={width}
-						height={480}
-						renderItem={(data) => <RenderItem imgUrl={data} />}
-					/>
-				}
+				{null != props.imgUrls ? (
+					<>
+						<Carousel
+							onScrollEnd={(_, current:any) => setCurrentIndex(current)}
+							loop={false}
+							data={props.imgUrls}
+							width={width}
+							height={480}
+							//renderItem={(data) => <RenderItem imgUrl={data} />}
+							renderItem={({ item }) => {
+								return <View></View>;
+							}}
+						/>
+					</>
+				) : null}
 				
 				<View style={styles.viusalDescContainer}>
 					<SpaceView mb={8} viewStyle={[layoutStyle.row, layoutStyle.alignCenter]}>
@@ -146,14 +155,18 @@ const RenderItem = (imgObj:any) => {
 
 	return (
 		<View>
-			{/* <Image source={IMAGE.main} style={styles.visualImage} /> */}
 			{
 				!imgObj.imgUrl.item.url ?
-				<Image source={{uri : 'http://211.104.55.151:8080/uploads/profile/rn_image_picker_lib_temp_6813179b-95c7-416c-84da-51ab9ca0dbc1.jpg'}} style={styles.visualImage} />
+				<Image source={{uri : 'http://118.67.134.149:8080/uploads/profile/rn_image_picker_lib_temp_6813179b-95c7-416c-84da-51ab9ca0dbc1.jpg'}} style={styles.visualImage} />
 				: <Image source={{uri : imgObj.imgUrl.item.url}} style={styles.visualImage} />
 			}
 			
-			{/* <Image source={{uri : 'http://211.104.55.151:8080/uploads/profile/rn_image_picker_lib_temp_6813179b-95c7-416c-84da-51ab9ca0dbc1.jpg'}} style={styles.visualImage} /> */}			
+			{/* {
+				!imgObj.imgUrl.item.url ?
+				<Image source={{uri : 'http://118.67.134.149:8080/uploads/profile/rn_image_picker_lib_temp_6813179b-95c7-416c-84da-51ab9ca0dbc1.jpg'}} style={styles.visualImage} />
+				: <Image source={{uri : 'http://118.67.134.149:8080/uploads/tmp/rn_image_picker_lib_temp_27af3da1-87a1-4275-951f-3ff7ad09cec3.jpg'}} style={styles.visualImage} />
+			} */}
+			
 		</View>
 	);
 };

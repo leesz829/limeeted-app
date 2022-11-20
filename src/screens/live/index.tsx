@@ -15,10 +15,21 @@ import axios from 'axios';
 import { LivePopup } from 'screens/commonpopup/LivePopup';
 import { LiveSearch } from 'screens/live/LiveSearch';
 
+import * as hooksMember from 'hooks/member';
+import { useDispatch } from 'react-redux';
+import * as mbrReducer from 'redux/reducers/mbrReducer';
+
+
+/* ################################################################################################################
+###### LIVE
+################################################################################################################ */
 
 export const Live = () => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 	const isFocus = useIsFocused();
+
+	const jwtToken = hooksMember.getJwtToken();		// 토큰
+	const memberSeq = hooksMember.getMemberSeq();	// 회원번호
 	
 	// 회원 인상 정보
 	const [faceTypeList, setFaceTypeList] = useState([LabelObj]);
@@ -68,7 +79,7 @@ export const Live = () => {
 		}
 		, { 
 			headers: {
-				'jwt-token' : String(await properties.jwt_token())
+				'jwt-token' : jwtToken
 			}
 		})
 		.then(function (response) {
@@ -77,10 +88,7 @@ export const Live = () => {
 			}
 
 			navigation.navigate('Main', {
-				screen: 'Roby', 
-				params: {
-					memberBase : response.data.base
-				}
+				screen: 'Roby'
 			});
 		})
 		.finally(function () {
@@ -101,7 +109,7 @@ export const Live = () => {
 		}
 		, { 
 			headers: {
-				'jwt-token' : String(await properties.jwt_token())
+				'jwt-token' : jwtToken
 			}
 		})
 		.then(function (response) {
@@ -144,7 +152,7 @@ export const Live = () => {
 		}
 		, {
 			headers: {
-				'jwt-token' : String(await properties.jwt_token())
+				'jwt-token' : jwtToken
 			}
 		})
 		.then(function (response) {
@@ -170,7 +178,9 @@ export const Live = () => {
 
 
 	// 첫 렌더링 때 fetchNews() 한 번 실행
-	useEffect(() => {
+	React.useEffect(() => {
+		console.log('profileImgList1111111 :::: ', profileImgList);
+
 		// 프로필 이미지 정보
 		getLiveProfileImg();
 		
@@ -184,12 +194,12 @@ export const Live = () => {
 			<TopNavigation currentPath={'LIVE'} />
 			<ScrollView>
 				<SpaceView>
-					{profileImgList.length > 0 && <ViualSlider
-												isNew={profileImgList[0].profile_type=='NEW'?true:false} 
-												onlyImg={true}
-												imgUrls={profileImgList}
-												profileName={profileImgList[0].name}
-												age={profileImgList[0].age} />}
+					<ViualSlider
+						isNew={profileImgList[0].profile_type == 'NEW' ? true : false} 
+						onlyImg={true}
+						imgUrls={profileImgList}
+						profileName={profileImgList[0].name}
+						age={profileImgList[0].age} />
 				</SpaceView>
 
 				<SpaceView viewStyle={styles.container} pt={48}>

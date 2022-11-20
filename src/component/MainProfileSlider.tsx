@@ -27,12 +27,7 @@ interface Props {
  */
 export const MainProfileSlider = () => {
 	const [data] = useState<DataType[]>([
-		{ item: 1 },
-		{ item: 1 },
-		{ item: 1 },
-		{ item: 1 },
-		{ item: 1 },
-		{ item: 1 },
+		{ item: 1 }
 	]);
 
 	return <Carousel loop={false} width={width} height={300} data={data} renderItem={ProfileItem} />;
