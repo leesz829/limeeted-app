@@ -31,12 +31,14 @@ interface Props {
 export const Introduce = (props: Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 	const isFocus = useIsFocused();
-	const dispatch = useDispatch();	
+	const dispatch = useDispatch();
 
-	const jwtToken = hooksMember.getJwtToken();				// 토큰
-	const memberBase = JSON.parse(hooksMember.getBase());	// 회원 기본정보
+	const jwtToken = hooksMember.getJwtToken(); // 토큰
+	const memberBase = JSON.parse(hooksMember.getBase()); // 회원 기본정보
 
-	const [introduce_comment, setIntroduce_comment] = React.useState<any>(memberBase.introduce_comment);
+	const [introduce_comment, setIntroduce_comment] = React.useState<any>(
+		memberBase.introduce_comment,
+	);
 	const [business, setBusiness] = React.useState<any>(memberBase.business);
 	const [job, setJob] = React.useState<any>(memberBase.job);
 	const [job_name, setJob_name] = React.useState<any>(memberBase.job_name);
@@ -202,7 +204,7 @@ export const Introduce = (props: Props) => {
 				} else {
 					dispatch(mbrReducer.setBase(JSON.stringify(response.data.memberBase)));
 					navigation.navigate('Main', {
-						screen: 'Roby'
+						screen: 'Roby',
 					});
 				}
 			})

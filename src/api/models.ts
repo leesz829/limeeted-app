@@ -13,17 +13,16 @@ export async function some_get_functions() {
 //========================POST=========================
 
 /* 로그인 체크 */
-export async function get_login_chk(id:string, password:string) {
+export async function get_login_chk(id: string, password: string) {
 	//const member_seq = await properties.get_json_data('member_seq');
 	const body = {
-		'api-key': 'U0FNR09CX1RPS0VOXzAx'
-		, 'kakao_id' : id
-		, 'passwordddd' : password
+		'api-key': 'U0FNR09CX1RPS0VOXzAx',
+		kakao_id: id,
+		passwordddd: password,
 	};
 
 	return Send(route.MY_ACCOUNT, 'POST', body, true, false);
 }
-
 
 export async function get_my_info() {
 	const member_seq = await properties.get_json_data('member_seq');

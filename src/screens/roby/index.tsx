@@ -37,7 +37,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { useUserInfo } from 'hooks/useUserInfo';
 import * as hooksMember from 'hooks/member';
 
-
 /* ################################################################################################################
 ###### 로비
 ################################################################################################################ */
@@ -50,7 +49,7 @@ interface Props {
 export const Roby = (props: Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 
-	const jwtToken = hooksMember.getJwtToken();	// 토큰 추출
+	const jwtToken = hooksMember.getJwtToken(); // 토큰 추출
 
 	// 회원 기본 데이터
 	const [member, setMember] = React.useState({
@@ -101,7 +100,6 @@ export const Roby = (props: Props) => {
 				},
 			)
 			.then(function (response) {
-
 				// 관심 목록 셋팅
 				let resLikeDataList = new Array();
 				response.data?.memberResLikeList?.map(
@@ -172,7 +170,6 @@ export const Roby = (props: Props) => {
 				},
 			)
 			.then(function (response) {
-
 				if (response.data.result_code != '0000') {
 					console.log(response.data.result_msg);
 					return false;
@@ -334,7 +331,7 @@ export const Roby = (props: Props) => {
 			});
 	};
 
-   // ################### 팝업 관련 #####################
+	// ################### 팝업 관련 #####################
 
 	const [profileReAprPopup, setProfileReAprPopup] = useState(false); // 프로필 재심사 팝업
 	const [useReportPopup, setUseReportPopup] = useState(false); // 사용자 신고하기 팝업
@@ -489,8 +486,8 @@ export const Roby = (props: Props) => {
 							<TouchableOpacity
 								onPress={() => {
 									navigation.navigate('Main', {
-                              screen: 'Storage'
-                           });
+										screen: 'Storage',
+									});
 								}}
 							>
 								<Image source={ICON.arrRight} style={styles.iconSize} />
@@ -519,8 +516,8 @@ export const Roby = (props: Props) => {
 						<TouchableOpacity
 							onPress={() => {
 								navigation.navigate('Main', {
-                           screen: 'Storage'
-                        });
+									screen: 'Storage',
+								});
 							}}
 						>
 							<Image source={ICON.arrRight} style={styles.iconSize} />

@@ -48,7 +48,6 @@ export const memberInfo = createAsyncThunk<PrincipalProps>('mbr/base', async () 
 	return undefined;
 });
 
-
 export const mbrSlice = createSlice({
 	name: 'mbr',
 	initialState: {
@@ -58,16 +57,30 @@ export const mbrSlice = createSlice({
 		profileImg: undefined,
 		secondAuth: undefined,
 		idealType: undefined,
-		interview: undefined
+		interview: undefined,
 	},
 	reducers: {
-		setJwtToken: (state, action) => { state.jwtToken = action.payload; },
-		setMemberSeq: (state, action) => { state.memberSeq = action.payload; },
-		setBase: (state, action) => { state.base = action.payload; },
-		setProfileImg: (state, action) => { state.profileImg = action.payload; },
-		setSecondAuth: (state, action) => { state.secondAuth = action.payload; },
-		setIdealType: (state, action) => { state.idealType = action.payload; },
-		setInterview: (state, action) => { state.interview = action.payload; },
+		setJwtToken: (state, action) => {
+			state.jwtToken = action.payload;
+		},
+		setMemberSeq: (state, action) => {
+			state.memberSeq = action.payload;
+		},
+		setBase: (state, action) => {
+			state.base = action.payload;
+		},
+		setProfileImg: (state, action) => {
+			state.profileImg = action.payload;
+		},
+		setSecondAuth: (state, action) => {
+			state.secondAuth = action.payload;
+		},
+		setIdealType: (state, action) => {
+			state.idealType = action.payload;
+		},
+		setInterview: (state, action) => {
+			state.interview = action.payload;
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -77,9 +90,17 @@ export const mbrSlice = createSlice({
 				state.profileImg = action.payload.profileImg;
 			})
 			.addCase(memberInfo.rejected, () => {});
-	}
+	},
 });
 
-export const { setJwtToken, setMemberSeq, setBase, setProfileImg, setSecondAuth, setIdealType, setInterview } = mbrSlice.actions;
+export const {
+	setJwtToken,
+	setMemberSeq,
+	setBase,
+	setProfileImg,
+	setSecondAuth,
+	setIdealType,
+	setInterview,
+} = mbrSlice.actions;
 
 export default mbrSlice.reducer;
