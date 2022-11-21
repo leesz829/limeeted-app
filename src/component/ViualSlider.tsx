@@ -29,7 +29,7 @@ interface Props {
  * @param {boolean} onlyImg 이미지와 닉네임 거리만 나타남
  * @returns
  */
-export const VViualSlider: FC<Props> = (props) => {
+export const ViualSlider : FC<Props> = (props) => {
 	const [currentIndex, setCurrentIndex] = React.useState(0);
 
 	const callBackFunction = (activeType:string) => {
@@ -76,10 +76,10 @@ export const VViualSlider: FC<Props> = (props) => {
 							data={props.imgUrls}
 							width={width}
 							height={480}
-							//renderItem={(data) => <RenderItem imgUrl={data} />}
-							renderItem={({ item }) => {
+							renderItem={(data) => <RenderItem imgUrl={data} />}
+							/* renderItem={({ item }) => {
 								return <View></View>;
-							}}
+							}} */
 						/>
 					</>
 				) : null}
