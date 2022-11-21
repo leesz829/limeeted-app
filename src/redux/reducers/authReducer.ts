@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { get_my_info } from 'api/models';
+import { get_my_info, get_login_chk } from 'api/models';
 
 interface PrincipalProps {
 	friend_match_yn: string;
@@ -31,6 +31,7 @@ interface PrincipalProps {
 	status: string;
 }
 
+// 예시!!!!!!!!!!!!!!
 export const myProfile = createAsyncThunk<PrincipalProps>('auth/principal', async () => {
 	try {
 		// const { success, data } = await get_my_info();
@@ -45,6 +46,28 @@ export const myProfile = createAsyncThunk<PrincipalProps>('auth/principal', asyn
 		return undefined;
 	}
 });
+
+// 로그인 Reducers
+export const loginReduce = createAsyncThunk<PrincipalProps>('auth/principal', async (id:string, password:string) => {
+	try {
+		// const { success, data } = await get_my_info();
+		const { success, data } = await get_login_chk(id, password);
+
+		console.log('success :::::: ', success);
+		console.log('data :::::: ', data);
+
+		if (success) {
+			return data;
+		} else {
+			return undefined;
+		}
+	} catch (err) {
+		return undefined;
+	}
+});
+
+
+
 
 export const authSlice = createSlice({
 	name: 'auth',

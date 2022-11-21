@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './reducers/authReducer';
+import mbrReducer from './reducers/mbrReducer';
 
 const store = configureStore({
 	reducer: {
 		auth: authReducer,
+		mbr: mbrReducer
 	},
 });
 

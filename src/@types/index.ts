@@ -45,18 +45,7 @@ export type StackParamList = {
 	CommonPopup: undefined;
 	ReportPopup: undefined;
 	LivePopup: undefined;
-	Introduce: {
-		member_seq : string;
-		introduce_comment : string;
-		business : string;
-		job : string;
-		job_name : string;
-		height : string;
-		form_body : string;
-		religion : string;
-		drinking : string;
-		smoking : string;
-	};
+	Introduce: undefined;
 	Board0: {
 		boardList: [{
 			board_seq: Number
@@ -66,23 +55,7 @@ export type StackParamList = {
 		}];
 	};
 	Board1: undefined;
-	Preference: {
-		ideal_type_seq: string;
-		want_local1: string;
-		want_local2: string;
-		want_age_min: string;
-		want_age_max: string;
-		want_business1: string;
-		want_business2: string;
-		want_business3: string;
-		want_job1: string;
-		want_job2: string;
-		want_job3: string;
-		want_person1: string;
-		want_person2: string;
-		want_person3: string;
-		gender: string;
-	};
+	Preference: undefined;
 	PreferencePopup: undefined;
 	Profile: {
 		nickname : string;
@@ -92,31 +65,13 @@ export type StackParamList = {
 		phone_number: string;
 	};
 	Sample: undefined;
-	Profile1: {
-		imgList: [{
-			member_img_seq: Number
-			, order_seq: Number
-			, file_name: String
-			, file_path: String
-		}];
-		authList: [{
-			second_auth_code: string
-		}];
-		interviewList: [{
-			common_code: string
-			, code_name: string
-			, member_interview_seq: string
-			, answer: string
-		}];
-	};
+	Profile1: undefined;
 	SecondAuth: undefined;
 	Profile2: undefined;
 };
 
 export type BottomParamList = {
-	Roby: {
-		memberBase: {}
-	};
+	Roby: undefined;
 	Mailbox: undefined;
 	Cashshop: undefined;
 	Storage: undefined;
