@@ -29,11 +29,11 @@ interface Props {
 }
 
 GoogleSignin.configure({
-	webClientId: '369959009315-6q3qrqkfkd797nlvtrtcdbvsc7og2ie1.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
+	webClientId: '535563482959-01e4bap45pcsvvafnis6sqndk1vokr0g.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
 	offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
 	forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
 	accountName: '', // [Android] specifies an account name on the device that should be used
-	iosClientId: '369959009315-44q2i0a8ov52bdbmhb38j906ho577i94.apps.googleusercontent.com', // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
+	iosClientId: '535563482959-vq2qcp0jb3o67soviq7sj0lihvh9skj6.apps.googleusercontent.com', // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
 	googleServicePlistPath: '', // [iOS] if you renamed your GoogleService-Info file, new name here, e.g. GoogleService-Info-Staging
 	openIdRealm: '', // [iOS] The OpenID2 realm of the home web server. This allows Google to include the user's OpenID Identifier in the OpenID Connect ID token.
 	profileImageSize: 120, // [iOS] The desired height (and width) of the profile image. Defaults to 120px

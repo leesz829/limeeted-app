@@ -7,6 +7,7 @@ export default async function getFCMToken() {
 	// const token = await AsyncStorage.getItem('jwt')
 
 	if (FCMToken) {
+		AsyncStorage.setItem('FCM_TOKEN', FCMToken);
 		console.log('Firebase Token:', FCMToken);
 
 		//   const config = {

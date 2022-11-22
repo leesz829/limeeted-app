@@ -12,12 +12,12 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		6172F2D35A4C3AA820D92908 /* libPods-limeeted.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6423831EA8574132BED9D8CC /* libPods-limeeted.a */; };
-		7C2D3F772925266C00DE42E8 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7C2D3F762925266C00DE42E8 /* GoogleService-Info.plist */; };
 		7CB64CB9291B802E004941A8 /* AppleSDGothicNeoM00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7CB64CAF291B7E52004941A8 /* AppleSDGothicNeoM00.ttf */; };
 		7CB64CBA291B802E004941A8 /* RIDIBatang.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7CB64CB0291B7E52004941A8 /* RIDIBatang.otf */; };
 		7CB64CBB291B802E004941A8 /* AppleSDGothicNeoB00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7CB64CB1291B7E52004941A8 /* AppleSDGothicNeoB00.ttf */; };
 		7CB64CBC291B802E004941A8 /* AppleSDGothicNeoT00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7CB64CB2291B7E52004941A8 /* AppleSDGothicNeoT00.ttf */; };
 		7CB64CBD291B802E004941A8 /* AppleSDGothicNeoR00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7CB64CB3291B7E52004941A8 /* AppleSDGothicNeoR00.ttf */; };
+		7CC79898292D2AF900345F1F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7CC79897292D2AF900345F1F /* GoogleService-Info.plist */; };
 		7EF68E3733C33B6898317E18 /* libPods-limeeted-limeetedTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABFE59519B596E51CEFDCCC0 /* libPods-limeeted-limeetedTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
@@ -47,12 +47,12 @@
 		6423831EA8574132BED9D8CC /* libPods-limeeted.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-limeeted.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		670DB48B4B764396AB3C3ED5 /* AppleSDGothicNeoM00.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AppleSDGothicNeoM00.ttf; path = ../src/assets/fonts/AppleSDGothicNeoM00.ttf; sourceTree = "<group>"; };
 		6C97AB639B58BBB4B15BBE30 /* Pods-limeeted-limeetedTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-limeeted-limeetedTests.debug.xcconfig"; path = "Target Support Files/Pods-limeeted-limeetedTests/Pods-limeeted-limeetedTests.debug.xcconfig"; sourceTree = "<group>"; };
-		7C2D3F762925266C00DE42E8 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		7CB64CAF291B7E52004941A8 /* AppleSDGothicNeoM00.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = AppleSDGothicNeoM00.ttf; sourceTree = "<group>"; };
 		7CB64CB0291B7E52004941A8 /* RIDIBatang.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = RIDIBatang.otf; sourceTree = "<group>"; };
 		7CB64CB1291B7E52004941A8 /* AppleSDGothicNeoB00.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = AppleSDGothicNeoB00.ttf; sourceTree = "<group>"; };
 		7CB64CB2291B7E52004941A8 /* AppleSDGothicNeoT00.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = AppleSDGothicNeoT00.ttf; sourceTree = "<group>"; };
 		7CB64CB3291B7E52004941A8 /* AppleSDGothicNeoR00.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = AppleSDGothicNeoR00.ttf; sourceTree = "<group>"; };
+		7CC79897292D2AF900345F1F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Desktop/리미티드/FCM/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = limeeted/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8FF31B59ABF84B969B1F8A52 /* RIDIBatang.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = RIDIBatang.otf; path = ../src/assets/fonts/RIDIBatang.otf; sourceTree = "<group>"; };
 		ABFE59519B596E51CEFDCCC0 /* libPods-limeeted-limeetedTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-limeeted-limeetedTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -115,8 +115,8 @@
 		13B07FAE1A68108700A75B9A /* limeeted */ = {
 			isa = PBXGroup;
 			children = (
+				7CC79897292D2AF900345F1F /* GoogleService-Info.plist */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
-				7C2D3F762925266C00DE42E8 /* GoogleService-Info.plist */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
@@ -289,7 +289,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7CB64CB9291B802E004941A8 /* AppleSDGothicNeoM00.ttf in Resources */,
-				7C2D3F772925266C00DE42E8 /* GoogleService-Info.plist in Resources */,
+				7CC79898292D2AF900345F1F /* GoogleService-Info.plist in Resources */,
 				7CB64CBA291B802E004941A8 /* RIDIBatang.otf in Resources */,
 				7CB64CBB291B802E004941A8 /* AppleSDGothicNeoB00.ttf in Resources */,
 				7CB64CBC291B802E004941A8 /* AppleSDGothicNeoT00.ttf in Resources */,
@@ -552,7 +552,7 @@
 				DEVELOPMENT_TEAM = FKQH759AZL;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = limeeted/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "리미티드";
+				INFOPLIST_KEY_CFBundleDisplayName = LImeetED;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -562,7 +562,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.appsquad.limeeted;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.appsquad.limeeted-ios";
 				PRODUCT_NAME = limeeted;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -579,7 +579,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = FKQH759AZL;
 				INFOPLIST_FILE = limeeted/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "리미티드";
+				INFOPLIST_KEY_CFBundleDisplayName = LImeetED;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -589,7 +589,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.appsquad.limeeted;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.appsquad.limeeted-ios";
 				PRODUCT_NAME = limeeted;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";

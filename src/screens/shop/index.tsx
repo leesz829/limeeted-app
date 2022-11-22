@@ -12,6 +12,7 @@ import {
 	requestPurchase,
 	getAvailablePurchases,
 } from 'react-native-iap';
+import { purchase_product } from 'api/models';
 
 interface Products {
 	products: Product[];
@@ -55,12 +56,18 @@ export const Shop = () => {
 		}
 	}
 
-	const onPressItem = async (skus: string) => {
+	const onPressItem = async (id: string) => {
 		try {
-			await requestPurchase({
-				skus: [skus],
+			const result = await requestPurchase({
+				skus: [id],
 				andDangerouslyFinishTransactionAutomaticallyIOS: false,
 			});
+			const { success, data } = await purchase_product({ msg: result });
+			if (success) {
+				Alert.alert('구매완료', '상품이 성공적으로 구매되었습니다.', [
+					{ text: '확인', onPress: () => {} },
+				]);
+			}
 		} catch (err: any) {
 			console.warn(err.code, err.message);
 		}

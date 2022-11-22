@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-community/async-storage';
 import { Send } from 'api';
 import properties from 'utils/properties';
 import * as route from './route';
@@ -15,13 +16,18 @@ export async function some_get_functions() {
 /* 로그인 체크 */
 export async function get_login_chk(id: string, password: string) {
 	//const member_seq = await properties.get_json_data('member_seq');
+	const push_token = await AsyncStorage.getItem('FCM_TOKEN');
 	const body = {
 		'api-key': 'U0FNR09CX1RPS0VOXzAx',
 		kakao_id: id,
 		passwordddd: password,
+		push_token: push_token,
 	};
 
 	return Send(route.MY_ACCOUNT, 'POST', body, true, false);
+}
+export async function purchase_product(body: any) {
+	return Send(route.MY_ACCOUNT, 'POST', JSON.stringify(body), true, false);
 }
 
 export async function get_my_info() {
