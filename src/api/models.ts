@@ -20,14 +20,14 @@ export async function get_login_chk(id: string, password: string) {
 	const body = {
 		'api-key': 'U0FNR09CX1RPS0VOXzAx',
 		kakao_id: id,
-		passwordddd: password,
+		password: password,
 		push_token: push_token,
 	};
 
-	return Send(route.MY_ACCOUNT, 'POST', body, true, false);
+	return Send(route.LOGIN, 'POST', body, true, false);
 }
 export async function purchase_product(body: any) {
-	return Send(route.MY_ACCOUNT, 'POST', JSON.stringify(body), true, false);
+	return Send(route.PURCHASE, 'POST', JSON.stringify(body), true, false);
 }
 
 export async function get_my_info() {

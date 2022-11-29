@@ -140,6 +140,7 @@ export const styles = StyleSheet.create({
 	boxPlusIcon: {
 		width: '50%',
 		height: '50%',
+		opacity: 0.4
 	},
 	tempBoxBig: {
 		width: (width - 40) / 2,

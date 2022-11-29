@@ -56,6 +56,9 @@ export const Login01 = (props: Props) => {
 			const { idToken } = await GoogleSignin.signIn();
 			Alert.alert('로그인 성공', idToken, [{ text: '확인', onPress: () => {} }]);
 
+
+			console.log('idToken ::::: ', idToken);
+
 			// Create a Google credential with the token
 			//   const googleCredential = auth.GoogleAuthProvider.credential(idToken);
 
@@ -76,6 +79,7 @@ export const Login01 = (props: Props) => {
 			}
 		}
 	};
+
 	const onAppleButtonPress = async () => {
 		// performs login request
 
@@ -102,104 +106,67 @@ export const Login01 = (props: Props) => {
 		// 	// user is authenticated
 		// }
 	};
+
 	const loginProc = async () => {
-		//const { success, data } = await get_login_chk(id, password);
+		const { success, data } = await get_login_chk(id, password);
 
-		//console.log('success :::: ', success);
-		//console.log('data :::: ', data);
+		console.log('success :::: ', success);
+		console.log('data :::: ', data.result_code);
 
-		console.log(
-			properties.api_domain + '/join/getLoginchk/',
-			JSON.stringify({
-				kakao_id: id,
-				password: password,
-			}),
-		);
-		axios
-			.post(properties.api_domain + '/join/getLoginchk/', {
-				kakao_id: id,
-				password: password,
-			})
-			.then(function (response) {
-				console.log('response.data ::: ', response.data);
-
-				const resultCode = response.data.result_code;
-				let status: any = '';
-				let joinStatus: any = '';
-
-				if (typeof response.data.base != 'undefined') {
-					status = response.data.base.status;
-					joinStatus = response.data.base.join_status;
-				}
-
-				/*
+		if(success) {
+			let resultCode = data.result_code;
+			let memberStatus = data.base.status;
+			let joinStatus = data.base.join_status;
+			
+			/*
 				 * ## 인증 결과 코드 정의
-				 * 0000 : 회원미존재
-				 * 0001 : 회원존재
+				 * 0000 : 회원존재
+				 * 0001 : 회원미존재
 				 * 0002 : 에러
 				 */
-				if (
-					resultCode == '0000' ||
-					(resultCode == '0001' && (status == 'PROCEED' || status == 'APROVAL'))
-				) {
-					if (resultCode == '0001' && (status == 'PROCEED' || status == 'APROVAL')) {
-						if (status == 'APROVAL') {
-							navigation.navigate('Approval');
-						} else {
-							if (null != response.data.base.join_status) {
-								if (joinStatus == '01') {
-									navigation.navigate('Signup01', { memberSeq: response.data.base.member_seq });
-								} else if (joinStatus == '02') {
-									navigation.navigate('Signup02', {
-										memberSeq: response.data.base.member_seq,
-										gender: response.data.base.gender,
-									});
-								} else if (joinStatus == '03') {
-									navigation.navigate('Signup03', { memberSeq: response.data.base.member_seq });
-								} else if (joinStatus == '04') {
-									navigation.navigate('Approval');
-								}
+			if (
+				resultCode == '0001' ||
+				(resultCode == '0000' && (memberStatus == 'PROCEED' || memberStatus == 'APROVAL'))
+			) {
+				if (resultCode == '0000' && (memberStatus == 'PROCEED' || memberStatus == 'APROVAL')) {
+					if (memberStatus == 'APROVAL') {
+						navigation.navigate('Approval');
+					} else {
+						if (null != joinStatus) {
+							if (joinStatus == '01') {
+								navigation.navigate('Signup01', { memberSeq: data.base.member_seq });
+							} else if (joinStatus == '02') {
+								navigation.navigate('Signup02', {
+									memberSeq: data.base.member_seq,
+									gender: data.base.gender,
+								});
+							} else if (joinStatus == '03') {
+								navigation.navigate('Signup03', { memberSeq: data.base.member_seq });
+							} else if (joinStatus == '04') {
+								navigation.navigate('Approval');
 							}
 						}
-					} else {
-						Alert.alert('알림', '일치하는 회원이 없습니다.', [{ text: '확인' }]);
 					}
-				} else if (resultCode == '0002') {
-					console.log('alert 추가!!!!! 로그인 실패');
 				} else {
-					dispatch(mbrReducer.setJwtToken(response.data.token_param.jwt_token));
-					dispatch(mbrReducer.setMemberSeq(JSON.stringify(response.data.base.member_seq)));
-					dispatch(mbrReducer.setBase(JSON.stringify(response.data.base)));
-					dispatch(mbrReducer.setProfileImg(JSON.stringify(response.data.memberImgList)));
-					dispatch(mbrReducer.setSecondAuth(JSON.stringify(response.data.memberSndAuthList)));
-					dispatch(mbrReducer.setIdealType(JSON.stringify(response.data.memberIdealType)));
-					dispatch(mbrReducer.setInterview(JSON.stringify(response.data.memberInterviewList)));
-
-					//AsyncStorage.clear();
-
-					// token set
-					/* AsyncStorage.setItem('jwt-token', response.data.token_param.jwt_token);
-					AsyncStorage.setItem('member_seq', String(response.data.base.member_seq));
-					AsyncStorage.setItem('memberBase', JSON.stringify(response.data.base));
-					AsyncStorage.setItem('memberImgList', JSON.stringify(response.data.memberImgList));
-					AsyncStorage.setItem(
-						'memberSndAuthList',
-						JSON.stringify(response.data.memberSndAuthList),
-					);
-					AsyncStorage.setItem('memberIdealType', JSON.stringify(response.data.memberIdealType));
-					AsyncStorage.setItem(
-						'memberInterviewList',
-						JSON.stringify(response.data.memberInterviewList),
-					); */
-
-					navigation.navigate('Main', {
-						screen: 'Roby',
-					});
+					Alert.alert('알림', '일치하는 회원이 없습니다.', [{ text: '확인' }]);
 				}
-			})
-			.catch(function (error) {
-				console.log(error);
-			});
+			} else if (resultCode == '0002') {
+				console.log('alert 추가!!!!! 로그인 실패');
+			} else {
+				dispatch(mbrReducer.setJwtToken(data.token_param.jwt_token));
+				dispatch(mbrReducer.setMemberSeq(JSON.stringify(data.base.member_seq)));
+				dispatch(mbrReducer.setBase(JSON.stringify(data.base)));
+				dispatch(mbrReducer.setProfileImg(JSON.stringify(data.memberImgList)));
+				dispatch(mbrReducer.setSecondAuth(JSON.stringify(data.memberSndAuthList)));
+				dispatch(mbrReducer.setIdealType(JSON.stringify(data.memberIdealType)));
+				dispatch(mbrReducer.setInterview(JSON.stringify(data.memberInterviewList)));
+
+				navigation.navigate('Main', {
+					screen: 'Roby',
+				});
+			}
+		}
+
 	};
 
 	return (
@@ -274,9 +241,7 @@ export const Login01 = (props: Props) => {
 							type={'kakao'}
 							iconSize={24}
 							onPress={() => {
-								//navigation.navigate('Login');
-								//const temp = useUserInfo();
-								//console.log('temp :::: ', temp);
+								navigation.navigate('Login');
 							}}
 						/>
 					</SpaceView>
