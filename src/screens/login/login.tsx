@@ -50,12 +50,13 @@ export const Login01 = (props: Props) => {
 
 	const google_signIn = async () => {
 		try {
+			console.log('google_signIn');
 			// Check if your device supports Google Play
-			await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+			const result = await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+			console.log(JSON.stringify(result));
 			// Get the users ID token
 			const { idToken } = await GoogleSignin.signIn();
-			Alert.alert('로그인 성공', idToken, [{ text: '확인', onPress: () => {} }]);
-
+			Alert.alert('로그인 성공', JSON.stringify(idToken), [{ text: '확인', onPress: () => {} }]);
 
 			console.log('idToken ::::: ', idToken);
 
@@ -68,6 +69,7 @@ export const Login01 = (props: Props) => {
 			// const userInfo = await GoogleSignin.signIn();
 			// console.log('google_signIn  : ', JSON.stringify(userInfo));
 		} catch (error) {
+			console.log(error, error.code);
 			if (error.code === statusCodes.SIGN_IN_CANCELLED) {
 				// user cancelled the login flow
 			} else if (error.code === statusCodes.IN_PROGRESS) {
@@ -113,17 +115,17 @@ export const Login01 = (props: Props) => {
 		console.log('success :::: ', success);
 		console.log('data :::: ', data.result_code);
 
-		if(success) {
+		if (success) {
 			let resultCode = data.result_code;
 			let memberStatus = data.base.status;
 			let joinStatus = data.base.join_status;
-			
+
 			/*
-				 * ## 인증 결과 코드 정의
-				 * 0000 : 회원존재
-				 * 0001 : 회원미존재
-				 * 0002 : 에러
-				 */
+			 * ## 인증 결과 코드 정의
+			 * 0000 : 회원존재
+			 * 0001 : 회원미존재
+			 * 0002 : 에러
+			 */
 			if (
 				resultCode == '0001' ||
 				(resultCode == '0000' && (memberStatus == 'PROCEED' || memberStatus == 'APROVAL'))
@@ -166,7 +168,6 @@ export const Login01 = (props: Props) => {
 				});
 			}
 		}
-
 	};
 
 	return (
