@@ -115,24 +115,22 @@ export const Login01 = (props: Props) => {
 		console.log('success :::: ', success);
 		console.log('data :::: ', data.result_code);
 
-		if(success) {
-
+		if (success) {
 			/*
-			* ## 인증 결과 코드 정의
-			* 0000 : 회원존재
-			* 0001 : 회원미존재
-			* 0002 : 에러
-			*/
+			 * ## 인증 결과 코드 정의
+			 * 0000 : 회원존재
+			 * 0001 : 회원미존재
+			 * 0002 : 에러
+			 */
 			let resultCode = data.result_code;
 
-			if(resultCode == '0001') {
+			if (resultCode == '0001') {
 				Alert.alert('알림', '일치하는 회원이 없습니다.', [{ text: '확인' }]);
 			} else {
-				
 				let memberStatus = data.base.status;
 				let joinStatus = data.base.join_status;
 
-				if(resultCode == '0000' && (memberStatus == 'PROCEED' || memberStatus == 'APROVAL')) {
+				if (resultCode == '0000' && (memberStatus == 'PROCEED' || memberStatus == 'APROVAL')) {
 					if (memberStatus == 'APROVAL') {
 						navigation.navigate('Approval');
 					} else {
@@ -213,9 +211,11 @@ export const Login01 = (props: Props) => {
 								<CommonBtn value={'애플로그인'} onPress={onAppleButtonPress} />
 							</SpaceView>
 						) : null}
-						<SpaceView mb={5}>
-							<CommonBtn value={'구글로그인'} onPress={google_signIn} />
-						</SpaceView>
+						{Platform.OS === 'android' ? (
+							<SpaceView mb={5}>
+								<CommonBtn value={'구글로그인'} onPress={google_signIn} />
+							</SpaceView>
+						) : null}
 						<SpaceView mb={5}>
 							<CommonBtn
 								value={'로그인'}
