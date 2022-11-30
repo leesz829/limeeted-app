@@ -4,6 +4,7 @@ import messaging from '@react-native-firebase/messaging';
 export default async function getFCMToken() {
 	const storedFcmToken = await AsyncStorage.getItem('fcmToken');
 	const FCMToken = storedFcmToken || (await messaging().getToken());
+	console.log('FCMToken : ', FCMToken);
 	// const token = await AsyncStorage.getItem('jwt')
 
 	if (FCMToken) {
