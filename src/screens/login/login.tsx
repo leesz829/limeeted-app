@@ -17,8 +17,12 @@ import RNPickerSelect from 'react-native-picker-select';
 import * as properties from 'utils/properties';
 import AsyncStorage from '@react-native-community/async-storage';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
-import { appleAuth } from '@invertase/react-native-apple-authentication';
-import { get_login_chk } from 'api/models';
+import appleAuth, {
+	AppleAuthRequestOperation,
+	AppleAuthRequestScope,
+	AppleAuthCredentialState,
+} from '@invertase/react-native-apple-authentication';
+import { get_login_chk, signup_with_social } from 'api/models';
 import { useDispatch } from 'react-redux';
 import * as mbrReducer from 'redux/reducers/mbrReducer';
 import { useUserInfo } from 'hooks/useUserInfo';
@@ -56,18 +60,11 @@ export const Login01 = (props: Props) => {
 			console.log(JSON.stringify(result));
 			// Get the users ID token
 			const { idToken } = await GoogleSignin.signIn();
-			Alert.alert('로그인 성공', JSON.stringify(idToken), [{ text: '확인', onPress: () => {} }]);
 
-			console.log('idToken ::::: ', idToken);
-
-			// Create a Google credential with the token
-			//   const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-
-			// Sign-in the user with the credential
-			//   return auth().signInWithCredential(googleCredential);
-			// await GoogleSignin.hasPlayServices();
-			// const userInfo = await GoogleSignin.signIn();
-			// console.log('google_signIn  : ', JSON.stringify(userInfo));
+			const { success, data } = await signup_with_social('google', { identityToken: idToken });
+			if (success) {
+				Alert.alert('구글로그인 성공', '', [{ text: '확인', onPress: () => {} }]);
+			}
 		} catch (error) {
 			console.log(error, error.code);
 			if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -83,30 +80,29 @@ export const Login01 = (props: Props) => {
 	};
 
 	const onAppleButtonPress = async () => {
-		// performs login request
-
 		const appleAuthRequestResponse = await appleAuth.performRequest({
 			requestedOperation: appleAuth.Operation.LOGIN,
 			// Note: it appears putting FULL_NAME first is important, see issue #293
 			requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
 		});
 
-		Alert.alert('성공', JSON.stringify(appleAuthRequestResponse), [
-			{ text: '확인', onPress: () => {} },
-		]);
+		const credentialState = await appleAuth
+			.getCredentialStateForUser(appleAuthRequestResponse.user)
+			.catch((e) => {
+				console.log('error1', e);
+			});
 
-		// get current authentication state for user
-		// /!\ This method must be tested on a real device. On the iOS simulator it always throws an error.
-		// const credentialState = await appleAuth
-		// 	.getCredentialStateForUser(appleAuthRequestResponse.user)
-		// 	.catch((e) => {
-		// 		console.log('error1', e);
-		// 	});
-
-		// // use credentialState response to ensure the user is authenticated
-		// if (credentialState === appleAuth.State.AUTHORIZED) {
-		// 	// user is authenticated
-		// }
+		if (credentialState === appleAuth.State.AUTHORIZED) {
+			const { success, data } = await signup_with_social('apple', {
+				user: appleAuthRequestResponse.user,
+				identityToken: appleAuthRequestResponse.identityToken,
+				authorizationCode: appleAuthRequestResponse.authorizationCode,
+			});
+			if (success) {
+				Alert.alert('애플로그인 성공', '', [{ text: '확인', onPress: () => {} }]);
+			}
+			// user is authenticated
+		}
 	};
 
 	const loginProc = async () => {

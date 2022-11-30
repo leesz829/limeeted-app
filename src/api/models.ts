@@ -26,6 +26,19 @@ export async function get_login_chk(id: string, password: string) {
 
 	return Send(route.LOGIN, 'POST', body, true, false);
 }
+export async function signup_with_social(type: string, msg: any) {
+	//const member_seq = await properties.get_json_data('member_seq');
+	const push_token = await AsyncStorage.getItem('FCM_TOKEN');
+	const body = {
+		'api-key': 'U0FNR09CX1RPS0VOXzAx',
+		push_token: push_token,
+		msg,
+		type,
+	};
+
+	return Send(route.LOGIN, 'POST', body, true, false);
+}
+
 export async function purchase_product(body: any) {
 	return Send(route.PURCHASE, 'POST', JSON.stringify(body), true, false);
 }

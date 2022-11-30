@@ -21,6 +21,7 @@ const requestUserPermission = async () => {
 		authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
 		authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
+	console.log('enabled : ', enabled);
 	if (enabled) {
 		getFCMToken();
 	}
@@ -28,12 +29,11 @@ const requestUserPermission = async () => {
 const App = () => {
 	useEffect(() => {
 		// AsyncStorage.clear()
-		requestUserPermission();
-
 		const unsubscribe = messaging().onMessage(async (remoteMessage) => {
 			console.log('remoteMessage', remoteMessage);
 			// Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage))
 		});
+		requestUserPermission();
 
 		return unsubscribe;
 	}, []);
