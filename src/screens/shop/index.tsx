@@ -72,7 +72,7 @@ export const Shop = () => {
 			console.warn(err.code, err.message);
 		}
 	};
-	const rednerProduct = useCallback(
+	const RednerProduct = useCallback(
 		({ item }: { item: Product }) => (
 			<TouchableOpacity style={styles.rowStyle} onPress={() => onPressItem(item?.productId)}>
 				<SpaceView mr={4} viewStyle={layoutStyle.rowCenter}>
@@ -154,11 +154,16 @@ export const Shop = () => {
 							패스
 						</CommonText>
 					</SpaceView>
-					<FlatList
+					<ScrollView>
+						{products.map((e, index) => {
+							return <RednerProduct item={e} key={'RednerProduct' + index} />;
+						})}
+					</ScrollView>
+					{/* <FlatList
 						data={products}
 						keyExtractor={(item, index) => item?.productId?.toString() + index?.toString()}
 						renderItem={rednerProduct}
-					/>
+					/> */}
 				</SpaceView>
 
 				<SpaceView mb={48}>
