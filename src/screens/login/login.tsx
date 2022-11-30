@@ -115,22 +115,24 @@ export const Login01 = (props: Props) => {
 		console.log('success :::: ', success);
 		console.log('data :::: ', data.result_code);
 
-		if (success) {
-			let resultCode = data.result_code;
-			let memberStatus = data.base.status;
-			let joinStatus = data.base.join_status;
+		if(success) {
 
 			/*
-			 * ## 인증 결과 코드 정의
-			 * 0000 : 회원존재
-			 * 0001 : 회원미존재
-			 * 0002 : 에러
-			 */
-			if (
-				resultCode == '0001' ||
-				(resultCode == '0000' && (memberStatus == 'PROCEED' || memberStatus == 'APROVAL'))
-			) {
-				if (resultCode == '0000' && (memberStatus == 'PROCEED' || memberStatus == 'APROVAL')) {
+			* ## 인증 결과 코드 정의
+			* 0000 : 회원존재
+			* 0001 : 회원미존재
+			* 0002 : 에러
+			*/
+			let resultCode = data.result_code;
+
+			if(resultCode == '0001') {
+				Alert.alert('알림', '일치하는 회원이 없습니다.', [{ text: '확인' }]);
+			} else {
+				
+				let memberStatus = data.base.status;
+				let joinStatus = data.base.join_status;
+
+				if(resultCode == '0000' && (memberStatus == 'PROCEED' || memberStatus == 'APROVAL')) {
 					if (memberStatus == 'APROVAL') {
 						navigation.navigate('Approval');
 					} else {
@@ -150,22 +152,18 @@ export const Login01 = (props: Props) => {
 						}
 					}
 				} else {
-					Alert.alert('알림', '일치하는 회원이 없습니다.', [{ text: '확인' }]);
-				}
-			} else if (resultCode == '0002') {
-				console.log('alert 추가!!!!! 로그인 실패');
-			} else {
-				dispatch(mbrReducer.setJwtToken(data.token_param.jwt_token));
-				dispatch(mbrReducer.setMemberSeq(JSON.stringify(data.base.member_seq)));
-				dispatch(mbrReducer.setBase(JSON.stringify(data.base)));
-				dispatch(mbrReducer.setProfileImg(JSON.stringify(data.memberImgList)));
-				dispatch(mbrReducer.setSecondAuth(JSON.stringify(data.memberSndAuthList)));
-				dispatch(mbrReducer.setIdealType(JSON.stringify(data.memberIdealType)));
-				dispatch(mbrReducer.setInterview(JSON.stringify(data.memberInterviewList)));
+					dispatch(mbrReducer.setJwtToken(data.token_param.jwt_token));
+					dispatch(mbrReducer.setMemberSeq(JSON.stringify(data.base.member_seq)));
+					dispatch(mbrReducer.setBase(JSON.stringify(data.base)));
+					dispatch(mbrReducer.setProfileImg(JSON.stringify(data.memberImgList)));
+					dispatch(mbrReducer.setSecondAuth(JSON.stringify(data.memberSndAuthList)));
+					dispatch(mbrReducer.setIdealType(JSON.stringify(data.memberIdealType)));
+					dispatch(mbrReducer.setInterview(JSON.stringify(data.memberInterviewList)));
 
-				navigation.navigate('Main', {
-					screen: 'Roby',
-				});
+					navigation.navigate('Main', {
+						screen: 'Roby',
+					});
+				}
 			}
 		}
 	};
