@@ -28,6 +28,8 @@ export type StackParamList = {
 		gender: string;
 		mobile: string;
 		birthday: string;
+		sns_type: string;
+		sns_token: string;
 	};
 	Signup01: {
 		memberSeq: Number;
