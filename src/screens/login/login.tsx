@@ -45,8 +45,8 @@ GoogleSignin.configure({
 export const Login01 = (props: Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 	const dispatch = useDispatch();
-	const [id, setId] = React.useState('test2');
-	const [password, setPassword] = React.useState('1234');
+	const [id, setId] = React.useState('');
+	const [password, setPassword] = React.useState('');
 
 	React.useEffect(() => {
 		//dispatch(myProfile());
@@ -202,7 +202,7 @@ export const Login01 = (props: Props) => {
 					</View>
 
 					<SpaceView mb={20}>
-						{Platform.OS === 'ios' ? (
+						{/* {Platform.OS === 'ios' ? (
 							<SpaceView mb={5}>
 								<CommonBtn value={'애플로그인'} onPress={onAppleButtonPress} />
 							</SpaceView>
@@ -211,7 +211,7 @@ export const Login01 = (props: Props) => {
 							<SpaceView mb={5}>
 								<CommonBtn value={'구글로그인'} onPress={google_signIn} />
 							</SpaceView>
-						) : null}
+						) : null} */}
 						<SpaceView mb={5}>
 							<CommonBtn
 								value={'로그인'}

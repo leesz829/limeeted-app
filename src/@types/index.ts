@@ -70,6 +70,10 @@ export type StackParamList = {
 	Profile1: undefined;
 	SecondAuth: undefined;
 	Profile2: undefined;
+	StorageProfile: {
+		memberSeq: Number;
+		type: string;
+	};
 };
 
 export type BottomParamList = {
@@ -81,7 +85,6 @@ export type BottomParamList = {
 	LiveSearch: undefined;
 	Matching: undefined;
 	Shop: undefined;
-	StorageProfile: undefined;
 };
 
 export type StackScreenProp = NativeStackNavigationProp<StackParamList>;

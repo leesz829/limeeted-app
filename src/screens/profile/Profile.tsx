@@ -11,6 +11,9 @@ import { RouteProp, useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import * as properties from 'utils/properties';
 import AsyncStorage from '@react-native-community/async-storage';
+import * as hooksMember from 'hooks/member';
+import { useDispatch } from 'react-redux';
+import * as mbrReducer from 'redux/reducers/mbrReducer';
 
 /* ################################################################################################################
 ###################################################################################################################
@@ -25,6 +28,10 @@ interface Props {
 
 export const Profile = (props: Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
+	const dispatch = useDispatch();	
+
+	const jwtToken = hooksMember.getJwtToken();		// 토큰
+	const memberSeq = hooksMember.getMemberSeq();	// 회원번호
 
 	const [nickname, setNickname] = React.useState<any>(props.route.params.nickname);
 	const [name, setName] = React.useState<any>(props.route.params.name);
@@ -39,12 +46,12 @@ export const Profile = (props: Props) => {
 				properties.api_domain + '/member/saveMemberBase',
 				{
 					'api-key': 'U0FNR09CX1RPS0VOXzAx',
-					member_seq: String(await properties.get_json_data('member_seq')),
+					member_seq: memberSeq,
 					nickname: nickname,
 				},
 				{
 					headers: {
-						'jwt-token': String(await properties.jwt_token()),
+						'jwt-token': jwtToken,
 					},
 				},
 			)
@@ -55,13 +62,10 @@ export const Profile = (props: Props) => {
 					console.log(response.data.result_msg);
 					return false;
 				} else {
-					AsyncStorage.setItem('memberBase', JSON.stringify(response.data.memberBase));
+					dispatch(mbrReducer.setBase(JSON.stringify(response.data.memberBase)));
 
 					navigation.navigate('Main', {
-						screen: 'Roby',
-						params: {
-							memberBase: response.data.memberBase,
-						},
+						screen: 'Roby'
 					});
 				}
 			})

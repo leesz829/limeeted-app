@@ -28,7 +28,7 @@ import {
 import { ICON, IMAGE, PROFILE_IMAGE } from 'utils/imageUtils';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Modalize } from 'react-native-modalize';
-import { RouteProp, useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import * as properties from 'utils/properties';
 import axios from 'axios';
 import { CommonDatePicker } from 'component/CommonDatePicker';
@@ -48,6 +48,7 @@ interface Props {
 
 export const Roby = (props: Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
+	const isFocus = useIsFocused();
 
 	const jwtToken = hooksMember.getJwtToken(); // 토큰 추출
 
@@ -82,9 +83,9 @@ export const Roby = (props: Props) => {
 	// ###### 첫 렌더링 때 fetchNews() 한 번 실행
 	React.useEffect(() => {
 		getRealTimeMemberInfo();
-	}, [props]);
+	}, [isFocus]);
 
-	// 실시간성 회원 데이터 조회
+	// ###### 실시간성 회원 데이터 조회
 	const getRealTimeMemberInfo = async () => {
 		const result = await axios
 			.post(
@@ -100,6 +101,8 @@ export const Roby = (props: Props) => {
 				},
 			)
 			.then(function (response) {
+				console.log('response :::: ', response);
+
 				// 관심 목록 셋팅
 				let resLikeDataList = new Array();
 				response.data?.memberResLikeList?.map(
@@ -143,6 +146,9 @@ export const Roby = (props: Props) => {
 						matchDataList.push(dataJson);
 					},
 				);
+
+				// 프로필 이미지 목록 저장
+
 
 				setResLikeCnt(resLikeDataList.length);
 				setResLikeList(resLikeDataList);
@@ -401,11 +407,11 @@ export const Roby = (props: Props) => {
 					</SpaceView>
 					<SpaceView mb={16} viewStyle={styles.levelContainer}>
 						<CommonText color={ColorType.gray6666} type={'h6'}>
-							LV.{member.base.member_level != null ? member.base.member_level : 1}
+							LV.{member.base.auth_cnt != null ? member.base.auth_cnt : 0}
 						</CommonText>
 					</SpaceView>
 
-					<CommonText color={ColorType.gray6666}>{member.base.introduce_comment}</CommonText>
+					<CommonText color={ColorType.gray6666}>{member.base.comment}</CommonText>
 				</SpaceView>
 
 				<View>

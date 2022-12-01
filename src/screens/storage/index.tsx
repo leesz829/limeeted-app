@@ -127,6 +127,14 @@ export const Storage = (props : Props) => {
 								<SpaceView key={index} mb={16} viewStyle={styles.halfContainer}>
 									{item.map(({ req_member_seq, img_path, dday, special_interest_yn } : { req_member_seq: any, img_path: any, dday: any, special_interest_yn:any }) =>					
 										!isResSpecialVisible || (isResSpecialVisible && special_interest_yn == 'Y') ? (
+											<TouchableOpacity
+												onPress={() => {
+													navigation.navigate('StorageProfile', {
+														memberSeq: req_member_seq,
+														type: 'REQ'
+													})
+												}}>
+
 												<View key={req_member_seq} style={styles.halfItemLeft}>
 													<View style={styles.favoriteBox}>
 
@@ -158,6 +166,8 @@ export const Storage = (props : Props) => {
 														</View>
 													</View>
 												</View>	
+
+											</TouchableOpacity>
 										) : (
 											<View><CommonText>내가 받은 관심이 없습니다.</CommonText></View>
 										)
@@ -333,39 +343,50 @@ export const Storage = (props : Props) => {
 						<>
 							{data.reqLikeList.map((item:any,index:any) => (
 								<SpaceView key={index} mb={16} viewStyle={styles.halfContainer}>
-									{item.map(({ req_member_seq, img_path, dday, special_interest_yn } : { req_member_seq: any, img_path: any, dday: any, special_interest_yn:any }) =>					
+									{item.map(({ res_member_seq, img_path, dday, special_interest_yn } : { res_member_seq: any, img_path: any, dday: any, special_interest_yn:any }) =>					
 										!isReqSpecialVisible || (isReqSpecialVisible && special_interest_yn == 'Y') ? (
-											<View key={req_member_seq} style={styles.halfItemLeft}>
-												<View style={styles.favoriteBox}>
 
-													{/* 관심/찐심 구분 아이콘 */}
-													<View style={styles.posTopRight}>
-														{special_interest_yn != '' && special_interest_yn == 'Y' ? (
-															<Image source={ICON.royalpass} style={styles.iconSize32} />
-														) : (
-															<Image source={ICON.like} style={styles.iconSize32} />
-														)}
+											<TouchableOpacity
+												onPress={() => {
+													navigation.navigate('StorageProfile', {
+														memberSeq: res_member_seq,
+														type: 'RES'
+													})
+												}}>
+
+												<View key={res_member_seq} style={styles.halfItemLeft}>
+													<View style={styles.favoriteBox}>
+
+														{/* 관심/찐심 구분 아이콘 */}
+														<View style={styles.posTopRight}>
+															{special_interest_yn != '' && special_interest_yn == 'Y' ? (
+																<Image source={ICON.royalpass} style={styles.iconSize32} />
+															) : (
+																<Image source={ICON.like} style={styles.iconSize32} />
+															)}
+														</View>
+
+														{/* 썸네일 이미지 */}
+														<Image source={{ uri: img_path !== "" ? img_path : undefined }} style={styles.favoriteImg} />
+
+														{/* 썸네일 이미지 그라데이션 효과 */}
+														<LinearGradient
+															colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.4)']}
+															style={styles.dim}
+															start={{ x: 0, y: 0 }}
+															end={{ x: 1, y: 1 }}
+														/>
+
+														{/* 보관 기간 표시 */}
+														<View style={styles.posBottomLeft}>
+															<CommonText fontWeight={'700'} color={ColorType.white}>
+																D-{dday}
+															</CommonText>
+														</View>
 													</View>
-
-													{/* 썸네일 이미지 */}
-													<Image source={{ uri: img_path !== "" ? img_path : undefined }} style={styles.favoriteImg} />
-
-													{/* 썸네일 이미지 그라데이션 효과 */}
-													<LinearGradient
-														colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.4)']}
-														style={styles.dim}
-														start={{ x: 0, y: 0 }}
-														end={{ x: 1, y: 1 }}
-													/>
-
-													{/* 보관 기간 표시 */}
-													<View style={styles.posBottomLeft}>
-														<CommonText fontWeight={'700'} color={ColorType.white}>
-															D-{dday}
-														</CommonText>
-													</View>
-												</View>
-											</View>	
+												</View>	
+												
+											</TouchableOpacity>
 										) : (
 											<View><CommonText>내가 보낸 관심이 없습니다.</CommonText></View>
 										)

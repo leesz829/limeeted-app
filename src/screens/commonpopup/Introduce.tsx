@@ -204,7 +204,7 @@ export const Introduce = (props: Props) => {
 				} else {
 					dispatch(mbrReducer.setBase(JSON.stringify(response.data.memberBase)));
 					navigation.navigate('Main', {
-						screen: 'Roby',
+						screen: 'Roby'
 					});
 				}
 			})

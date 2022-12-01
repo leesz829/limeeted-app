@@ -18,6 +18,8 @@ import { CommonCheckBox } from 'component/CommonCheckBox';
 import axios from 'axios';
 import { MatchSearch } from 'screens/matching/MatchSearch';
 
+import * as hooksMember from 'hooks/member';
+
 /* ################################################################################################################
 ###### 매칭 화면
 ################################################################################################################### */
@@ -29,6 +31,9 @@ interface Props {
 export const Matching = (props : Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 	const isFocus = useIsFocused();
+
+	const jwtToken = hooksMember.getJwtToken();		// 토큰
+	const memberSeq = hooksMember.getMemberSeq();	// 회원번호
 	
 	// 매치 회원 정보
 	const [matchMemberData, setMatchMemberData] = useState(MemberBaseData);
@@ -86,9 +91,6 @@ export const Matching = (props : Props) => {
 			  },
 			]
 		);
-
-
-		
 	}
 
 	// 신고 여부 체크
@@ -143,7 +145,7 @@ export const Matching = (props : Props) => {
 		}
 		, {
 			headers: {
-				'jwt-token' : String(await properties.jwt_token()) 
+				'jwt-token' : jwtToken
 			}
 		})
 		.then(function (response) {
@@ -169,7 +171,7 @@ export const Matching = (props : Props) => {
 		}
 		, {
 			headers: {
-				'jwt-token' : String(await properties.jwt_token()) 
+				'jwt-token' : jwtToken
 			}
 		})
 		.then(function (response) {
@@ -179,10 +181,7 @@ export const Matching = (props : Props) => {
 			}
 
 			navigation.navigate('Main', {
-				screen: 'Roby', 
-				params: {
-					memberBase : response.data.base
-				}
+				screen: 'Roby'
 			});
 
 			// getMatchProfileInfo();
@@ -278,30 +277,37 @@ export const Matching = (props : Props) => {
 
 	const selectReportCodeList = async () => {
 		
-		const result = await axios.post(properties.api_domain + '/common/selectGroupCodeList/' + properties.jwt_token, {
-			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
-			, 'group_code' : 'DECLAR'
-		}
-		, {
-			headers: {
-				'jwt-token' : String(await properties.jwt_token())
-			}
-		})
+		const result = await axios.post(properties.api_domain + '/common/selectCommonCodeList',
+			{
+				'api-key': 'U0FNR09CX1RPS0VOXzAx',
+				group_code: 'DECLAR',
+			},
+			{
+				headers: {
+					'jwt-token': jwtToken,
+				},
+			},
+		)
 		.then(function (response) {
-			if(response.data.result_code != '0000'){	
+			console.log('selectReportCodeList :::::: ', response);
+
+			if (response.data.result_code != '0000') {
+				console.log('fail ::: ', response.data.result_msg);
 				return false;
+			} else {
+				if (null != response.data.result) {
+					let tmpReportTypeList = [{text: '', value: ''}];
+					let commonCodeList = [CommonCode];
+					commonCodeList = JSON.parse(response.data.result);
+					
+					// CommonCode
+					commonCodeList.map(commonCode => {
+						tmpReportTypeList.push({text: commonCode.code_name, value: commonCode.common_code})
+					});
+
+					setReportTypeList(tmpReportTypeList.filter(x => x.text));
+				}
 			}
-
-			let tmpReportTypeList = [{text: '', value: ''}];
-			let commonCodeList = [CommonCode];
-			commonCodeList = response.data.result;
-			
-			// CommonCode
-			commonCodeList.map(commonCode => {
-				tmpReportTypeList.push({text: commonCode.code_name, value: commonCode.common_code})
-			});
-
-			 setReportTypeList(tmpReportTypeList.filter(x => x.text));
 		})
 		.catch(function (error) {
 			console.log('getFaceType error ::: ' , error);
@@ -315,7 +321,7 @@ export const Matching = (props : Props) => {
 		}
 		, {
 			headers: {
-				'jwt-token' : String(await properties.jwt_token()) 
+				'jwt-token' : jwtToken
 			}
 		})
 		.then(function (response) {
@@ -353,6 +359,7 @@ export const Matching = (props : Props) => {
 			
 			// 인터뷰 
 			setInterviewList(response.data.result.interview_list);
+
 		})
 		.catch(function (error) {
 			console.log('getMatchProfileInfo error ::: ' , error);
@@ -445,7 +452,7 @@ export const Matching = (props : Props) => {
 						</SpaceView>
 						<View style={styles.interviewContainer}>
 							{
-								interviewList.length ?
+								interviewList.length > 0 ?
 									interviewList.map(interview => (
 										<>
 										<SpaceView mb={32} viewStyle={layoutStyle.row}>

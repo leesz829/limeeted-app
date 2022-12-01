@@ -547,7 +547,7 @@ export const Profile1 = (props: Props) => {
 														multiline={true}
 														placeholder={'대답을 등록해주세요!'}
 														placeholderTextColor={'#c6ccd3'}
-														numberOfLines={2}
+														numberOfLines={3}
 														maxLength={200}
 													/>
 												</SpaceView>
