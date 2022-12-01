@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage';
 
 // api 서버 도메인
-//export const api_domain = "http://211.104.55.151:8080";
+//export const api_domain = "http://61.72.174.189:8080";
 export const api_domain = 'http://118.67.134.149:8080';
 
 // 이미지 서버 경로
