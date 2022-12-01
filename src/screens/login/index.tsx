@@ -100,6 +100,8 @@ export const Login = () => {
 							name: profile.name,
 							gender: profile.gender,
 							mobile: profile.hp,
+							sns_type: '',
+							sns_token: ''
 						});
 					}
 				} else if (resultCode == '0002') {
@@ -194,8 +196,8 @@ export const Login = () => {
 					type={'kakao'}
 					iconSize={24}
 					onPress={() => {
-						signInWithKakao();
-						// navigation.navigate('NiceAuth');
+						//signInWithKakao();
+						navigation.navigate('NiceAuth');
 					}}
 				/>
 			</SpaceView>

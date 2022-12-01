@@ -169,7 +169,7 @@ export const Signup02 = (props: Props) => {
 
 		const localDomain = properties.img_domain;
 
-		if (order_seq == '1') {
+		/* if (order_seq == '1') {
 			setOrgImgUrl01(localDomain + file_path + file_name);
 		} else if (order_seq == '2') {
 			setOrgImgUrl02(localDomain + file_path + file_name);
@@ -179,7 +179,7 @@ export const Signup02 = (props: Props) => {
 			setOrgImgUrl04(localDomain + file_path + file_name);
 		} else if (order_seq == '5') {
 			setOrgImgUrl05(localDomain + file_path + file_name);
-		}
+		} */
 	}, []);
 
 	// 사진 삭제 팝업
@@ -443,7 +443,7 @@ export const Signup02 = (props: Props) => {
 						onPress={() => {
 							const data = new FormData();
 
-							const file01 = {
+							/* const file01 = {
 								uri: imgFileData01.uri,
 								type: imgFileData01.type,
 								name: imgFileData01.fileName,
@@ -467,7 +467,7 @@ export const Signup02 = (props: Props) => {
 								uri: imgFileData05.uri,
 								type: imgFileData05.type,
 								name: imgFileData05.fileName,
-							};
+							}; */
 
 							data.append('memberSeq', props.route.params.memberSeq);
 							if (imgData.imgFile01.uri != '') {
@@ -486,7 +486,7 @@ export const Signup02 = (props: Props) => {
 								data.append('file05', imgData.imgFile05);
 							}
 
-							fetch('http://211.104.55.151:8080/join/insertMemberProfile/', {
+							fetch(properties.api_domain + '/join/insertMemberProfile/', {
 								method: 'POST',
 								body: data,
 							})

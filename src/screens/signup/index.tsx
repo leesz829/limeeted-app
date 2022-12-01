@@ -40,6 +40,8 @@ export const Signup00 = (props: Props) => {
 	const [gender, setGender] = React.useState(props.route.params.gender);
 	const [mobile, setMobile] = React.useState(props.route.params.mobile);
 	const [birthday, setBirthday] = React.useState(props.route.params.birthday);
+	const [snsType, setSnsType] = React.useState(props.route.params.sns_type);
+	const [snsToken, setSnsToken] = React.useState(props.route.params.sns_token);
 
 	// 성별 항목 목록
 	const genderItemList = [
@@ -173,6 +175,8 @@ export const Signup00 = (props: Props) => {
 									phone_number: mobile,
 									ci: ci,
 									birthday: birthday,
+									snsType: snsType,
+									snsToken: snsToken
 								})
 								.then(function (response) {
 									console.log(response.data);

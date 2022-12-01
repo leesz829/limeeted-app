@@ -314,10 +314,12 @@ export const Introduce = (props: Props) => {
 				<SpaceView mb={24}>
 					<CommonInput
 						label={'키'}
+						keyboardType="number-pad"
 						value={height}
 						onChangeText={(height) => setHeight(height)}
 						placeholder={'키를 입력해 주세요.'}
 						placeholderTextColor={'#c6ccd3'}
+						maxLength={3}
 					/>
 				</SpaceView>
 
