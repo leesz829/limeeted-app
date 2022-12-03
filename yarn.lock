@@ -1893,6 +1893,11 @@ ajv@^6.10.0, ajv@^6.10.2, ajv@^6.12.4:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
+ale-url-parser@^0.13.0:
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/ale-url-parser/-/ale-url-parser-0.13.0.tgz#a9f5e89ca61fb8ab77f9ffc5d2b9799dd8979db1"
+  integrity sha512-ADoU/jUlb9lsS0m/OyBuCYP/B86R7Q0v4u2u3WNeQ7ncUBF2eppDLs/8L/3Jf66IfFk1fyTjglwSEwCJ+F30WA==
+
 anser@^1.4.9:
   version "1.4.10"
   resolved "https://registry.yarnpkg.com/anser/-/anser-1.4.10.tgz#befa3eddf282684bd03b63dcda3927aef8c2e35b"
@@ -6102,6 +6107,11 @@ react-native-modalize@2.0.13:
   version "2.0.13"
   resolved "https://registry.yarnpkg.com/react-native-modalize/-/react-native-modalize-2.0.13.tgz#51517cddd726ddbc19c080d15e7721ade4ee7a66"
   integrity sha512-BMJlpTnpeDVp5LbbE6kdO+3+yLzowRvPgcIu1QCCM+//uY7oON4VcL8ISilSgAfOYeNQc6vhaD5chVtmpTl/dw==
+
+react-native-notifications@^4.3.3:
+  version "4.3.3"
+  resolved "https://registry.yarnpkg.com/react-native-notifications/-/react-native-notifications-4.3.3.tgz#5be05cb144127f4db518079dd202415af497dfcb"
+  integrity sha512-t7uPgpC93A4L41Jea2zet3BUqgh45gpN/ATS9gxejNH3r6kWgMdGeeZJhuMpl1gSXw1gcvgzdjzIjN7YZSOP0A==
 
 react-native-picker-select@8.0.4:
   version "8.0.4"

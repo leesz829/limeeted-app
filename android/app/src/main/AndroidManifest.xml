@@ -3,6 +3,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="com.android.vending.BILLING" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
       android:name=".MainApplication"
@@ -36,5 +38,28 @@
             android:scheme="kakaof33df8242ecffe96078d10be73b34567" />
         </intent-filter>
 	    </activity>
+        <!-- local notification code -->
+        <meta-data  android:name="com.dieam.reactnativepushnotification.notification_foreground" android:value="false"/>
+        <meta-data  android:name="com.dieam.reactnativepushnotification.notification_color" android:resource="@color/white"/> <!-- or @android:color/{name} to use a standard color -->
+
+        <!-- common notification code -->
+        <receiver android:exported="true" android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationActions" />
+        <receiver android:exported="true" android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationPublisher" />
+        <receiver android:exported="true" android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationBootEventReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+            </intent-filter>
+        </receiver>
+
+        <!-- common notification code -->
+        <service
+            android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationListenerService"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
 </manifest>
