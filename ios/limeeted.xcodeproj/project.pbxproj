@@ -12,6 +12,7 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		6172F2D35A4C3AA820D92908 /* libPods-limeeted.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6423831EA8574132BED9D8CC /* libPods-limeeted.a */; };
+		7C4E08C4293BB73600242D71 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7C4E08C3293BB73600242D71 /* SplashScreen.storyboard */; };
 		7CA540442937A07B0071FB41 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7CA540432937A07B0071FB41 /* GoogleService-Info.plist */; };
 		7CA540462937A4A30071FB41 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CA540452937A4A30071FB41 /* StoreKit.framework */; };
 		7CB64CB9291B802E004941A8 /* AppleSDGothicNeoM00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7CB64CAF291B7E52004941A8 /* AppleSDGothicNeoM00.ttf */; };
@@ -48,6 +49,7 @@
 		6423831EA8574132BED9D8CC /* libPods-limeeted.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-limeeted.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		670DB48B4B764396AB3C3ED5 /* AppleSDGothicNeoM00.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AppleSDGothicNeoM00.ttf; path = ../src/assets/fonts/AppleSDGothicNeoM00.ttf; sourceTree = "<group>"; };
 		6C97AB639B58BBB4B15BBE30 /* Pods-limeeted-limeetedTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-limeeted-limeetedTests.debug.xcconfig"; path = "Target Support Files/Pods-limeeted-limeetedTests/Pods-limeeted-limeetedTests.debug.xcconfig"; sourceTree = "<group>"; };
+		7C4E08C3293BB73600242D71 /* SplashScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SplashScreen.storyboard; sourceTree = "<group>"; };
 		7CA540432937A07B0071FB41 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Desktop/리미티드/FCM/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		7CA540452937A4A30071FB41 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		7CA540472937A4AA0071FB41 /* limeeted.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = limeeted.entitlements; path = limeeted/limeeted.entitlements; sourceTree = "<group>"; };
@@ -165,6 +167,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				7C4E08C3293BB73600242D71 /* SplashScreen.storyboard */,
 				7CB64CAE291B7E52004941A8 /* fonts */,
 				13B07FAE1A68108700A75B9A /* limeeted */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -295,6 +298,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7CB64CB9291B802E004941A8 /* AppleSDGothicNeoM00.ttf in Resources */,
+				7C4E08C4293BB73600242D71 /* SplashScreen.storyboard in Resources */,
 				7CA540442937A07B0071FB41 /* GoogleService-Info.plist in Resources */,
 				7CB64CBA291B802E004941A8 /* RIDIBatang.otf in Resources */,
 				7CB64CBB291B802E004941A8 /* AppleSDGothicNeoB00.ttf in Resources */,

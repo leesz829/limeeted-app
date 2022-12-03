@@ -11,7 +11,7 @@ import { Notifications } from 'react-native-notifications';
 import { withIAPContext } from 'react-native-iap';
 import messaging from '@react-native-firebase/messaging';
 import getFCMToken from 'utils/FCM/getFCMToken';
-
+import SplashScreen from 'react-native-splash-screen'; /** 추가 **/
 enableScreens();
 LogBox.ignoreAllLogs();
 LogBox.ignoreLogs([
@@ -47,7 +47,7 @@ const App = () => {
 				// fireDate: new Date(),
 			});
 		});
-
+		SplashScreen.hide();
 		return unsubscribe;
 	}, []);
 
