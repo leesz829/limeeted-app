@@ -6,14 +6,11 @@ import { Alert, LogBox, StatusBar, StyleSheet } from 'react-native';
 import { enableScreens } from 'react-native-screens';
 import { Provider } from 'react-redux';
 import store from 'redux/store';
-import { Notifications, Notification } from 'react-native-notifications';
+import { Notifications } from 'react-native-notifications';
 
 import { withIAPContext } from 'react-native-iap';
 import messaging from '@react-native-firebase/messaging';
 import getFCMToken from 'utils/FCM/getFCMToken';
-import PushNotification, { Importance } from 'react-native-push-notification';
-
-import PushNotificationIOS from '@react-native-community/push-notification-ios';
 
 enableScreens();
 LogBox.ignoreAllLogs();
@@ -36,32 +33,19 @@ const App = () => {
 		// AsyncStorage.clear()
 		requestUserPermission();
 
-		// configurePushNotification();
 		const unsubscribe = messaging().onMessage(async (remoteMessage) => {
 			console.log('remoteMessage', remoteMessage);
-			PushNotification.localNotification({
-				message: remoteMessage.notification.body,
-				title: remoteMessage.notification.title,
-				// bigPictureUrl: remoteMessage.notification.android.imageUrl,
-				// smallIcon: remoteMessage.notification.android.imageUrl,
+
+			Notifications.postLocalNotification({
+				body: remoteMessage.notification?.body,
+				title: remoteMessage.notification?.title,
+				sound: 'chime.aiff',
+				silent: false,
+				category: 'SOME_CATEGORY',
+				userInfo: {},
+				type: 'alert',
+				// fireDate: new Date(),
 			});
-			PushNotificationIOS.addNotificationRequest({
-				id: remoteMessage.messageId,
-				body: remoteMessage.notification.body,
-				title: remoteMessage.notification.title,
-				userInfo: remoteMessage.data,
-			});
-			// //안드로이드는 돌아감
-			// Notifications.postLocalNotification({
-			// 	body: remoteMessage.notification?.body,
-			// 	title: remoteMessage.notification?.title,
-			// 	sound: 'chime.aiff',
-			// 	silent: false,
-			// 	category: 'SOME_CATEGORY',
-			// 	userInfo: {},
-			// 	type: 'alert',
-			// 	// fireDate: new Date(),
-			// });
 		});
 
 		return unsubscribe;
