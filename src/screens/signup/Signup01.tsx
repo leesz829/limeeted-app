@@ -403,14 +403,14 @@ export const Signup01 = (props: Props) => {
 
 									<SpaceView mb={8}>
 										<View style={[layoutStyle.row, layoutStyle.alignCenter]}>
-											<CommonText>학위</CommonText>
+											<CommonText>학업</CommonText>
 											<Image source={ICON.arrRight} style={styles.iconSize} />
 										</View>
 									</SpaceView>
 
 									<CommonText color={ColorType.gray6666} type={'h5'}>
 										프로필 2차 인증 위한{'\n'}
-										학위 설명 문구
+										학업 설명 문구
 									</CommonText>
 								</View>
 							</TouchableOpacity>

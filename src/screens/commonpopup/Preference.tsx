@@ -93,7 +93,7 @@ export const Preference = (props: Props) => {
 	const gFaceItemList = [
 		{ label: '다정해보여요', value: 'FACE_G_01' },
 		{ label: '웃는게 예뻐요', value: 'FACE_G_02' },
-		{ label: '패션 감각이 좋아 보여요', value: 'FACE_G_03' },
+		{ label: '스타일이 남달라요', value: 'FACE_G_03' },
 		{ label: '피부가 좋아요', value: 'FACE_G_04' },
 		{ label: '눈이 예뻐요', value: 'FACE_G_05' },
 		{ label: '현모양처상', value: 'FACE_G_06' },
@@ -102,7 +102,7 @@ export const Preference = (props: Props) => {
 	// 남자 인상 항목 목록
 	const mFaceItemList = [
 		{ label: '다정해보여요', value: 'FACE_M_01' },
-		{ label: '패션 감각이 좋아 보여요', value: 'FACE_M_02' },
+		{ label: '스타일이 남달라요', value: 'FACE_M_02' },
 		{ label: '피부가 좋아요', value: 'FACE_M_03' },
 		{ label: '오똑한 콧날', value: 'FACE_M_04' },
 		{ label: '넓은 어깨', value: 'FACE_M_05' },

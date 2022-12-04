@@ -156,7 +156,6 @@ export const Matching = (props : Props) => {
 
 			Alert.alert('신고처리되었습니다.');
 			report_onClose();
-			console.log('insertReport ::: ', response.data);
 		})
 		.catch(function (error) {
 			console.log('insertReport error ::: ' , error);
@@ -289,21 +288,21 @@ export const Matching = (props : Props) => {
 			},
 		)
 		.then(function (response) {
-			console.log('selectReportCodeList :::::: ', response);
-
 			if (response.data.result_code != '0000') {
 				console.log('fail ::: ', response.data.result_msg);
 				return false;
 			} else {
-				if (null != response.data.result) {
+
+				if (response.data.result) {
 					let tmpReportTypeList = [{text: '', value: ''}];
 					let commonCodeList = [CommonCode];
-					commonCodeList = JSON.parse(response.data.result);
+					commonCodeList = response.data.result;
 					
 					// CommonCode
 					commonCodeList.map(commonCode => {
 						tmpReportTypeList.push({text: commonCode.code_name, value: commonCode.common_code})
 					});
+					console.log('tmpReportTypeList ::: ' , tmpReportTypeList);
 
 					setReportTypeList(tmpReportTypeList.filter(x => x.text));
 				}
@@ -353,6 +352,8 @@ export const Matching = (props : Props) => {
 
 			tmpProfileImgList = tmpProfileImgList.filter(x => x.url);
 			setProfileImgList(tmpProfileImgList);
+
+			console.log('profileImgList[0].profile_type ::: ' , tmpProfileImgList);
 
 			// 2차인증
 			setSecondAuthList(response.data.result.second_auth_list);
@@ -522,6 +523,20 @@ export const Matching = (props : Props) => {
 					<SpaceView mb={16}>
 						<CommonText>신고 사유를 선택해주세요.</CommonText>
 					</SpaceView>
+
+					{/*
+					<SpaceView mb={24}>
+						{[
+							{ text: '비속어 사용' },
+							{ text: '과도한 성적 표현' },
+							{ text: '불쾌감을 주는 표현' },
+							{ text: '성차별 적 표현' },
+							{ text: '기타' },
+						].map((i, index) => (
+							<CommonCheckBox label={i.text} key={index + 'checkbox'} />
+						))}
+					</SpaceView>
+						*/}
 
 					<SpaceView mb={24}>
 						{reportTypeList.length && reportTypeList.map((i, index) => (

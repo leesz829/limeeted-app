@@ -68,7 +68,7 @@ export const Signup03 = (props : Props) => {
 			member_seq : props.route.params.memberSeq
 		})
 		.then(function (response) {
-			console.log("response ::: " + JSON.stringify(response.data));
+			console.log("response selectMemberIntro ::: " + JSON.stringify(response.data));
 
 			if(null != response.data.member) {
 				setNickname(response.data.member.nickname);
@@ -119,7 +119,8 @@ export const Signup03 = (props : Props) => {
 									placeholder={'한줄 소개를 입력해 주세요.'}
 									placeholderTextColor={'#c6ccd3'}
 									value={comment}
-									onChangeText={comment => setComment(comment)} />
+									onChangeText={comment => setComment(comment)}
+									maxLength={20} />
 				</SpaceView>
 
 				<SpaceView mb={24}>
@@ -192,6 +193,12 @@ export const Signup03 = (props : Props) => {
 										Alert.alert("알림",	"한줄 소개를 입력해 주세요.",	[{text: "확인"}]);
 										return;
 									}
+
+									if(!interestJsonArr.length){
+										Alert.alert("알림",	"관심사를 입력해 주세요.",	[{text: "확인"}]);
+										return;
+									}
+
 
 									axios.post(properties.api_domain + '/join/insertMemberIntro/', {
 										member_seq : props.route.params.memberSeq,
