@@ -209,6 +209,8 @@ dependencies {
 
     // Add the SDK for Firebase Cloud Messaging
     implementation 'com.google.firebase:firebase-messaging:20.2.3' //(11.22)
+    implementation project(':react-native-notifications') // (12.04)
+//    implementation 'com.google.firebase:firebase-core:16.0.0' // (12.04)
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
         exclude group: 'com.facebook.fbjni'
     }

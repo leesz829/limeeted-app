@@ -6,10 +6,12 @@ import { Alert, LogBox, StatusBar, StyleSheet } from 'react-native';
 import { enableScreens } from 'react-native-screens';
 import { Provider } from 'react-redux';
 import store from 'redux/store';
+import { Notifications } from 'react-native-notifications';
 
 import { withIAPContext } from 'react-native-iap';
 import messaging from '@react-native-firebase/messaging';
 import getFCMToken from 'utils/FCM/getFCMToken';
+import SplashScreen from 'react-native-splash-screen'; /** 추가 **/
 enableScreens();
 LogBox.ignoreAllLogs();
 LogBox.ignoreLogs([
@@ -29,12 +31,23 @@ const requestUserPermission = async () => {
 const App = () => {
 	useEffect(() => {
 		// AsyncStorage.clear()
-		const unsubscribe = messaging().onMessage(async (remoteMessage) => {
-			console.log('remoteMessage', remoteMessage);
-			// Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage))
-		});
 		requestUserPermission();
 
+		const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+			console.log('remoteMessage', remoteMessage);
+
+			Notifications.postLocalNotification({
+				body: remoteMessage.notification?.body,
+				title: remoteMessage.notification?.title,
+				sound: 'chime.aiff',
+				silent: false,
+				category: 'SOME_CATEGORY',
+				userInfo: {},
+				type: 'alert',
+				// fireDate: new Date(),
+			});
+		});
+		SplashScreen.hide();
 		return unsubscribe;
 	}, []);
 
