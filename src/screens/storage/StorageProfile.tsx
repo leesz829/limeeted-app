@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect, useRef} from 'react';
-import { Image, ScrollView, View, FlatList } from 'react-native';
+import { Image, ScrollView, View, FlatList, Alert, TouchableOpacity } from 'react-native';
 import TopNavigation from 'component/TopNavigation';
 import { ICON } from 'utils/imageUtils';
 import { layoutStyle, styles } from 'assets/styles/Styles';
@@ -28,7 +28,6 @@ interface Props {
 }
 
 export const StorageProfile = (props : Props) => {
-
 	console.log('props.route.params.matchSeq :::: ', props.route.params.matchSeq);
 
 	const navigation = useNavigation<ScreenNavigationProp>();
@@ -45,7 +44,7 @@ export const StorageProfile = (props : Props) => {
 		, profileImgList: []
 		, secondAuthList: []
 		, interviewList: []
-	})
+	});
 
 	// 회원 기본 정보
 	const [memberBase, setMemberBase] = useState<any>({MemberBaseData});
@@ -148,7 +147,8 @@ export const StorageProfile = (props : Props) => {
 				{
 					'api-key': 'U0FNR09CX1RPS0VOXzAx',
 					match_seq: matchSeq,
-					match_status: status
+					match_status: status,
+					member_seq: memberSeq
 				},
 				{
 					headers: {
@@ -160,15 +160,21 @@ export const StorageProfile = (props : Props) => {
 				console.log(response);
 				if (response.data.result_code != '0000') {
 					console.log(response.data.result_msg);
-
+					Alert.alert('오류입니다. 관리자에게 문의해주세요.');
 				} else {
-					
+					navigation.navigate('Main', {
+						screen: 'Storage',
+					});
 				}
 			})
 			.catch(function (error) {
 				console.log('error ::: ', error);
 			});
 	};
+
+	const clipBoard = async () => {
+		
+	}
 
 
 	// 관심 여부 체크
@@ -320,17 +326,30 @@ export const StorageProfile = (props : Props) => {
 										인사말 건네기
 									</CommonText>
 								</SpaceView>
+
 								<SpaceView mb={16}>
 									<CommonText>상대 이성에게 반가운 인사말을 건내보세요.</CommonText>
 								</SpaceView>
-								<SpaceView mb={8} viewStyle={styles.textContainer}>
+
+
+								<TouchableOpacity onPress={() => { clipBoard(); }}>
+									<SpaceView mb={8} viewStyle={styles.textContainer}>
+										<CommonText fontWeight={'500'}>연락처 정보</CommonText>
+										<CommonText type={'h5'} textStyle={layoutStyle.textCenter}>
+											{data.memberBase.phone_number}
+											{/* 영역을 터치하면 상대 이성의 연락처가 복사됩니다 */}
+										</CommonText>
+									</SpaceView>
+								</TouchableOpacity>
+
+								{/* <SpaceView mb={8} viewStyle={styles.textContainer}>
 									<CommonText fontWeight={'500'}>카카오톡 ID</CommonText>
 									<CommonText type={'h5'} textStyle={layoutStyle.textCenter}>
 										영역을 터치하면 상대 이성의 카카오톡 ID가 복사됩니다
 									</CommonText>
-								</SpaceView>
+								</SpaceView> */}
 
-								<CommonBtn value={'카카오톡 열기'} type={'kakao'} icon={ICON.kakao} iconSize={24} />
+								{/* <CommonBtn value={'카카오톡 열기'} type={'kakao'} icon={ICON.kakao} iconSize={24} /> */}
 							</SpaceView>
 						</>
 					) : null}

@@ -34,6 +34,18 @@ export const Matching = (props : Props) => {
 
 	const jwtToken = hooksMember.getJwtToken();		// 토큰
 	const memberSeq = hooksMember.getMemberSeq();	// 회원번호
+
+	// 매칭 회원 관련 데이터
+	const [data, setData] = useState<any>({
+		memberBase: {}
+		, profileImgList: []
+		, secondAuthList: []
+		, interviewList: []
+		, reportTypeList: []
+		, checkReportType: []
+	});
+
+
 	
 	// 매치 회원 정보
 	const [matchMemberData, setMatchMemberData] = useState(MemberBaseData);
@@ -210,7 +222,7 @@ export const Matching = (props : Props) => {
 		// 차량
 		let vehice = false;
 
-		secondAuthList.forEach((e, i) => {
+		data.secondAuthList.forEach((e, i) => {
 			switch(e.second_auth_code) {
 				case 'ASSET':
 					asset = true;
@@ -313,8 +325,8 @@ export const Matching = (props : Props) => {
 		});
 	}
 
+	// ### 매칭 프로필 정보 조회
 	const getMatchProfileInfo = async () => {
-
 		const result = await axios.post(properties.api_domain + '/match/selectMatchProfileInfo', {
 			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
 		}
@@ -324,11 +336,69 @@ export const Matching = (props : Props) => {
 			}
 		})
 		.then(function (response) {
+			console.log('reponse ::::: ', response.data.match_memeber_info);
+
 			if(response.data.result_code != '0000'){
 				console.log(response.data.result_msg);
 				return false;
 			}
 
+			let tmpProfileImgList = new Array(); // 프로필 이미지 목록
+			let tmpSecondAuthList = new Array(); // 2차 인증 목록
+			let tmpInterviewList = new Array(); // 인터뷰 목록
+
+			// 회원 프로필 이미지 정보 구성
+			response.data?.profile_img_list?.map(
+				({
+					file_name,
+					file_path
+				}: {
+					file_name: any;
+					file_path: any;
+				}) => {
+					const img_path = properties.api_domain + '/uploads' + file_path + file_name;
+					const dataJson = { url: img_path };
+					tmpProfileImgList.push(dataJson);
+				},
+			);
+
+			// 회원 2차 인증 목록 정보 구성
+			response.data?.second_auth_list?.map(
+				({
+					second_auth_code
+				}: {
+					second_auth_code: any;
+				}) => {
+					const dataJson = { second_auth_code: second_auth_code };
+					tmpSecondAuthList.push(dataJson);
+				},
+			);
+
+			// 회원 인터뷰 목록 정보 구성
+			response.data?.interview_list?.map(
+				({
+					code_name,
+					answer
+				}: {
+					code_name: any;
+					answer: any;
+				}) => {
+					const dataJson = { code_name: code_name, answer: answer };
+					tmpInterviewList.push(dataJson);
+				},
+			);
+			
+			setData({
+				...data
+				, memberBase: response.data.match_memeber_info
+				, profileImgList: tmpProfileImgList
+				, secondAuthList: tmpSecondAuthList
+				, interviewList: tmpInterviewList
+			})
+
+
+			
+/* 
 			// 1. 매칭 회원 정보
 			setMatchMemberData(response.data.result.match_memeber_info);
 
@@ -360,7 +430,7 @@ export const Matching = (props : Props) => {
 			
 			// 인터뷰 
 			setInterviewList(response.data.result.interview_list);
-
+ */
 		})
 		.catch(function (error) {
 			console.log('getMatchProfileInfo error ::: ' , error);
@@ -379,17 +449,17 @@ export const Matching = (props : Props) => {
 
 
 
-	return profileImgList.length > 0 ? (
+	return data.profileImgList.length > 0 ? (
 		<>
 			<TopNavigation currentPath={'LIMEETED'} />
 			<ScrollView>
-				{profileImgList.length > 0 && <ViualSlider 
-											isNew={profileImgList[0].profile_type=='NEW'?true:false} 
+				{data.profileImgList.length > 0 && <ViualSlider 
+											isNew={data.memberBase.profile_type == 'NEW' ? true : false} 
 											onlyImg={false}
-											imgUrls={profileImgList}
-											profileName={profileImgList[0].name}
-											age={profileImgList[0].age}
-											comment={profileImgList[0].comment}
+											imgUrls={data.profileImgList}
+											profileName={data.memberBase.name}
+											age={data.memberBase.age}
+											comment={data.memberBase.comment}
 											callBackFunction={profileCallbackFn} />}
 
 				<SpaceView pt={48} viewStyle={styles.container}>
@@ -409,7 +479,7 @@ export const Matching = (props : Props) => {
 						</View>
 					</SpaceView>
 
-					{secondAuthList && createSecondAuthListBody()}
+					{data.secondAuthList && createSecondAuthListBody()}
 
 					<SpaceView mb={54}>
 						<SpaceView mb={16}>
@@ -421,7 +491,12 @@ export const Matching = (props : Props) => {
 						<MainProfileSlider />
 					</SpaceView>
 
-					<SpaceView mb={24}>
+
+					{/* ###############################################
+										인터뷰 영역
+					############################################### */}
+
+					<SpaceView>
 						<SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
 							<View>
 								<CommonText fontWeight={'700'} type={'h3'}>
@@ -435,7 +510,88 @@ export const Matching = (props : Props) => {
 								</SpaceView>
 								<CommonText type={'h5'}>
 									{
-										interviewList.length? 
+										data.interviewList.length > 0 ? 
+											<>
+											<CommonText fontWeight={'700'} type={'h5'}>
+												{interviewList.length}개의 질의
+											</CommonText>
+											가 등록되어있어요
+											</>
+										: <>
+											<CommonText fontWeight={'700'} type={'h5'}>
+												등록된 질의가 없습니다.
+											</CommonText>
+										</>
+									}
+								</CommonText>
+							</View>
+						</SpaceView>
+
+						<View style={styles.interviewContainer}>
+							{
+								data.interviewList.length > 0 ? (
+									data.interviewList.map(({ common_code, code_name, answer } : { common_code: any, code_name: any, answer: any}) =>
+									<>
+										<SpaceView mb={32} viewStyle={layoutStyle.row}>
+											<SpaceView mr={16}>
+												<Image source={ICON.manage} style={styles.iconSize40} />
+											</SpaceView>
+		
+											<View style={styles.interviewLeftTextContainer}>
+												<CommonText type={'h5'}>
+													{code_name}
+												</CommonText>
+											</View>
+										</SpaceView>
+		
+										<SpaceView mb={32} viewStyle={[layoutStyle.row, layoutStyle.selfEnd]}>
+											<SpaceView viewStyle={styles.interviewRightTextContainer} mr={16}>
+												<CommonText type={'h5'} color={ColorType.white}>
+													{answer != null ? answer : '미등록 답변입니다.'}
+												</CommonText>
+											</SpaceView>
+											<SpaceView>
+												<Image source={ICON.boy} style={styles.iconSize40} />
+											</SpaceView>
+										</SpaceView>
+									</>
+									)
+								) : (
+									<>
+										<SpaceView mb={32} viewStyle={layoutStyle.row}>
+											<SpaceView mr={16}>
+												<Image source={ICON.manage} style={styles.iconSize40} />
+											</SpaceView>
+
+											<View style={styles.interviewLeftTextContainer}>
+												<CommonText type={'h5'}>
+													질문을 등록해주세요
+												</CommonText>
+											</View>
+										</SpaceView>
+									</>
+								)
+							}
+						</View>
+					</SpaceView>
+
+
+
+					{/* <SpaceView mb={24}>
+						<SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
+							<View>
+								<CommonText fontWeight={'700'} type={'h3'}>
+									인터뷰
+								</CommonText>
+							</View>
+
+							<View style={[layoutStyle.rowBetween]}>
+								<SpaceView mr={6}>
+									<Image source={ICON.info} style={styles.iconSize} />
+								</SpaceView>
+								<CommonText type={'h5'}>
+									{
+										data.interviewList.length > 0 ? 
 											<>
 											<CommonText fontWeight={'700'} type={'h5'}>
 												{interviewList.length}개의 질의
@@ -453,8 +609,8 @@ export const Matching = (props : Props) => {
 						</SpaceView>
 						<View style={styles.interviewContainer}>
 							{
-								interviewList.length > 0 ?
-									interviewList.map(interview => (
+								data.interviewList.length > 0 ?
+									data.interviewList.map(interview => (
 										<>
 										<SpaceView mb={32} viewStyle={layoutStyle.row}>
 											<SpaceView mr={16}>
@@ -495,7 +651,7 @@ export const Matching = (props : Props) => {
 									</>
 							}
 						</View>
-					</SpaceView>
+					</SpaceView> */}
 
 					<SpaceView mb={40}>
 						<CommonBtn value={'신고'} icon={ICON.siren} iconSize={24} onPress={() => report_onOpen()}/>
