@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect, useRef} from 'react';
-import { Image, ScrollView, View } from 'react-native';
+import { Image, ScrollView, View, FlatList } from 'react-native';
 import TopNavigation from 'component/TopNavigation';
 import { ICON } from 'utils/imageUtils';
 import { layoutStyle, styles } from 'assets/styles/Styles';
@@ -29,7 +29,7 @@ interface Props {
 
 export const StorageProfile = (props : Props) => {
 
-	console.log('props.route.params.memberSeq :::: ', props.route.params.memberSeq);
+	console.log('props.route.params.matchSeq :::: ', props.route.params.matchSeq);
 
 	const navigation = useNavigation<ScreenNavigationProp>();
 	const isFocus = useIsFocused();
@@ -37,18 +37,31 @@ export const StorageProfile = (props : Props) => {
 	const jwtToken = hooksMember.getJwtToken();		// 토큰
 	const memberSeq = hooksMember.getMemberSeq();	// 회원번호
 
+	// 매칭 번호
+	const matchSeq = props.route.params.matchSeq;
+
+	const [data, setData] = useState<any>({
+		memberBase: {}
+		, profileImgList: []
+		, secondAuthList: []
+		, interviewList: []
+	})
+
+	// 회원 기본 정보
+	const [memberBase, setMemberBase] = useState<any>({MemberBaseData});
+
 	// 회원 프로필 사진 정보
-	const [profileImgList, setProfileImgList] = useState([ProfileImg]);
+	const [profileImgList, setProfileImgList] = useState<any>([{}]);
 
 	// 2차인증 정보 
-	const [secondAuthList, setSecondAuthList] = useState([{'second_auth_code':''}]);
+	const [secondAuthList, setSecondAuthList] = useState<any>([{}]);
 
 	// 인터뷰 정보
-	const [interviewList, setInterviewList] = useState([Interview]);
+	const [interviewList, setInterviewList] = useState<any>([{}]);
 
 
 	// 매칭 회원 정보 조회
-	const selectMemberInfo = async () => {
+	const selectMatchMemberInfo = async () => {
 		const result = await axios.post(properties.api_domain + '/match/selectMatchMemberInfo',
 				{
 					'api-key': 'U0FNR09CX1RPS0VOXzAx',
@@ -66,31 +79,59 @@ export const StorageProfile = (props : Props) => {
 					return false;
 				} else {
 
-					// ##### 프로필 이미지
-					let tmpProfileImgList = [ProfileImg];
-					let fileInfoList = [FileInfo];
-					fileInfoList = response.data.profile_img_list;
+					let tmpProfileImgList = new Array(); // 프로필 이미지 목록
+					let tmpSecondAuthList = new Array(); // 2차 인증 목록
+					let tmpInterviewList = new Array(); // 인터뷰 목록
 
-					fileInfoList.map(fileInfo => {
-						tmpProfileImgList.push({
-											url : properties.img_domain + fileInfo.file_path + fileInfo.file_name
-											, member_seq : fileInfo.member_seq
-											, name : fileInfo.name
-											, comment : fileInfo.comment
-											, age : fileInfo.age
-											, profile_type : fileInfo.profile_type
-						})
-					});
+					// 회원 프로필 이미지 정보 구성
+					response.data?.profileImgList?.map(
+						({
+							file_name,
+							file_path
+						}: {
+							file_name: any;
+							file_path: any;
+						}) => {
+							const img_path = properties.api_domain + '/uploads' + file_path + file_name;
+							const dataJson = { url: img_path };
+							tmpProfileImgList.push(dataJson);
+						},
+					);
 
-					tmpProfileImgList = tmpProfileImgList.filter(x => x.url);
-					setProfileImgList(tmpProfileImgList);
+					// 회원 2차 인증 목록 정보 구성
+					response.data?.secondAuthList?.map(
+						({
+							second_auth_code
+						}: {
+							second_auth_code: any;
+						}) => {
+							const dataJson = { second_auth_code: second_auth_code };
+							tmpSecondAuthList.push(dataJson);
+						},
+					);
 
-					// 2차인증
-					setSecondAuthList(response.data.second_auth_list);
-
-					// 인터뷰 
-					setInterviewList(response.data.interview_list);
+					// 회원 인터뷰 목록 정보 구성
+					response.data?.interviewList?.map(
+						({
+							code_name,
+							answer
+						}: {
+							code_name: any;
+							answer: any;
+						}) => {
+							const dataJson = { code_name: code_name, answer: answer };
+							tmpInterviewList.push(dataJson);
+						},
+					);
 					
+
+					setData({
+						...data
+						, memberBase: response.data.memberBase
+						, profileImgList: tmpProfileImgList
+						, secondAuthList: tmpSecondAuthList
+						, interviewList: tmpInterviewList
+					})
 
 				}
 			})
@@ -98,6 +139,37 @@ export const StorageProfile = (props : Props) => {
 				console.log('error ::: ', error);
 			});
 	};
+
+	// 매칭 상태 변경
+	const updateMatchStatus = async (status:any) => {
+		const result = await axios
+			.post(
+				properties.api_domain + '/match/updateMatchStatus',
+				{
+					'api-key': 'U0FNR09CX1RPS0VOXzAx',
+					match_seq: matchSeq,
+					match_status: status
+				},
+				{
+					headers: {
+						'jwt-token': jwtToken,
+					},
+				},
+			)
+			.then(function (response) {
+				console.log(response);
+				if (response.data.result_code != '0000') {
+					console.log(response.data.result_msg);
+
+				} else {
+					
+				}
+			})
+			.catch(function (error) {
+				console.log('error ::: ', error);
+			});
+	};
+
 
 	// 관심 여부 체크
 	const profileCallbackFn = (activeType:string) => {
@@ -123,7 +195,7 @@ export const StorageProfile = (props : Props) => {
 		// 차량
 		let vehice = false;
 
-		secondAuthList.forEach((e, i) => {
+		data.secondAuthList.forEach((e, i) => {
 			switch(e.second_auth_code) {
 				case 'ASSET':
 					asset = true;
@@ -191,21 +263,21 @@ export const StorageProfile = (props : Props) => {
 	// 첫 렌더링
 	useEffect(() => {
 		//console.log('props.route.params.memberSeq ::::: ', props.route.params.memberSeq);
-		selectMemberInfo();
+		selectMatchMemberInfo();
 	}, [isFocus]);
 
-	return profileImgList.length > 0 ? (
+	return (
 		<>
 			<TopNavigation currentPath={''} />
 			<ScrollView>
 				{profileImgList.length > 0 && <ViualSlider 
-												isNew={profileImgList[0].profile_type=='NEW'?true:false} 
-												onlyImg={true}
-												imgUrls={profileImgList}
-												profileName={profileImgList[0].name}
-												age={profileImgList[0].age}
-												comment={profileImgList[0].comment}
-												callBackFunction={profileCallbackFn} />}
+													onlyImg={true}
+													isNew={data.memberBase.profile_type == 'NEW' ? true : false} 
+													imgUrls={data.profileImgList}
+													profileName={data.memberBase.name}
+													age={data.memberBase.age}
+													comment={data.memberBase.comment}
+													callBackFunction={profileCallbackFn} />}
 
 				<SpaceView viewStyle={styles.container}>
 
@@ -213,10 +285,10 @@ export const StorageProfile = (props : Props) => {
 						<>
 							<SpaceView viewStyle={styles.halfContainer} mb={48}>
 								<View style={styles.halfItemLeft4}>
-									<CommonBtn value={'거절'} height={48} />
+									<CommonBtn value={'거절'} height={48} onPress={() => { updateMatchStatus('REFUSE') }} />
 								</View>
 								<View style={styles.halfItemRight4}>
-									<CommonBtn value={'수락'} type={'primary'} height={48} />
+									<CommonBtn value={'수락'} type={'primary'} height={48} onPress={() => { updateMatchStatus('ACCEPT') }} />
 								</View>
 							</SpaceView>
 						</>
@@ -280,7 +352,7 @@ export const StorageProfile = (props : Props) => {
 						</View> */}
 					</SpaceView>
 
-					{secondAuthList && createSecondAuthListBody()}
+					{data.secondAuthList && createSecondAuthListBody()}
 
 					<SpaceView mb={54}>
 						<SpaceView mb={16}>
@@ -322,11 +394,41 @@ export const StorageProfile = (props : Props) => {
 								</CommonText>
 							</View>
 						</SpaceView>
+
+						{/* ###############################################
+											인터뷰 영역
+						############################################### */}
 						<View style={styles.interviewContainer}>
 							{
-								interviewList.length > 0 ?
-									interviewList.map(interview => (
-										<>
+								data.interviewList.length > 0 ? (
+									data.interviewList.map(({ common_code, code_name, answer } : { common_code: any, code_name: any, answer: any}) =>
+									<>
+										<SpaceView mb={32} viewStyle={layoutStyle.row}>
+											<SpaceView mr={16}>
+												<Image source={ICON.manage} style={styles.iconSize40} />
+											</SpaceView>
+		
+											<View style={styles.interviewLeftTextContainer}>
+												<CommonText type={'h5'}>
+													{code_name}
+												</CommonText>
+											</View>
+										</SpaceView>
+		
+										<SpaceView mb={32} viewStyle={[layoutStyle.row, layoutStyle.selfEnd]}>
+											<SpaceView viewStyle={styles.interviewRightTextContainer} mr={16}>
+												<CommonText type={'h5'} color={ColorType.white}>
+													{answer != null ? answer : '미등록 답변입니다.'}
+												</CommonText>
+											</SpaceView>
+											<SpaceView>
+												<Image source={ICON.boy} style={styles.iconSize40} />
+											</SpaceView>
+										</SpaceView>
+									</>
+									)
+								) : (
+									<>
 										<SpaceView mb={32} viewStyle={layoutStyle.row}>
 											<SpaceView mr={16}>
 												<Image source={ICON.manage} style={styles.iconSize40} />
@@ -334,41 +436,17 @@ export const StorageProfile = (props : Props) => {
 
 											<View style={styles.interviewLeftTextContainer}>
 												<CommonText type={'h5'}>
-													{interview.code_name}
+													질문을 등록해주세요
 												</CommonText>
 											</View>
 										</SpaceView>
-
-										<SpaceView mb={32} viewStyle={[layoutStyle.row, layoutStyle.selfEnd]}>
-											<SpaceView viewStyle={styles.interviewRightTextContainer} mr={16}>
-												<CommonText type={'h5'} color={ColorType.white}>
-													{interview.answer}
-												</CommonText>
-											</SpaceView>
-											<SpaceView>
-												<Image source={ICON.boy} style={styles.iconSize40} />
-											</SpaceView>
-										</SpaceView>
-										</>
-									)) :
-									<>
-									<SpaceView mb={32} viewStyle={layoutStyle.row}>
-										<SpaceView mr={16}>
-											<Image source={ICON.manage} style={styles.iconSize40} />
-										</SpaceView>
-
-										<View style={styles.interviewLeftTextContainer}>
-											<CommonText type={'h5'}>
-												질문을 등록해주세요
-											</CommonText>
-										</View>
-									</SpaceView>
 									</>
-								}
-							</View>
+								)
+							}
+						</View>
 					</SpaceView>
 				</SpaceView>
 			</ScrollView>
 		</>
-	) : <MatchSearch />;
+	);
 };

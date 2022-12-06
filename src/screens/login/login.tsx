@@ -45,8 +45,8 @@ GoogleSignin.configure({
 export const Login01 = (props: Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 	const dispatch = useDispatch();
-	const [id, setId] = React.useState('');
-	const [password, setPassword] = React.useState('');
+	const [id, setId] = React.useState('tester1');
+	const [password, setPassword] = React.useState('1234');
 
 	React.useEffect(() => {
 		//dispatch(myProfile());

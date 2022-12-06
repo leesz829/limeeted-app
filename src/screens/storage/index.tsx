@@ -125,11 +125,12 @@ export const Storage = (props : Props) => {
 						<>
 							{data.resLikeList.map((item:any,index:any) => (
 								<SpaceView key={index} mb={16} viewStyle={styles.halfContainer}>
-									{item.map(({ req_member_seq, img_path, dday, special_interest_yn } : { req_member_seq: any, img_path: any, dday: any, special_interest_yn:any }) =>					
+									{item.map(({ match_seq, req_member_seq, img_path, dday, special_interest_yn } : { match_seq:any, req_member_seq: any, img_path: any, dday: any, special_interest_yn:any }) =>					
 										!isResSpecialVisible || (isResSpecialVisible && special_interest_yn == 'Y') ? (
 											<TouchableOpacity
 												onPress={() => {
 													navigation.navigate('StorageProfile', {
+														matchSeq: match_seq,
 														memberSeq: req_member_seq,
 														type: 'REQ'
 													})
@@ -169,7 +170,7 @@ export const Storage = (props : Props) => {
 
 											</TouchableOpacity>
 										) : (
-											<View><CommonText>내가 받은 관심이 없습니다.</CommonText></View>
+											<></>
 										)
 									)}
 								</SpaceView>
@@ -343,12 +344,13 @@ export const Storage = (props : Props) => {
 						<>
 							{data.reqLikeList.map((item:any,index:any) => (
 								<SpaceView key={index} mb={16} viewStyle={styles.halfContainer}>
-									{item.map(({ res_member_seq, img_path, dday, special_interest_yn } : { res_member_seq: any, img_path: any, dday: any, special_interest_yn:any }) =>					
+									{item.map(({ match_seq, res_member_seq, img_path, dday, special_interest_yn } : { match_seq:any, res_member_seq: any, img_path: any, dday: any, special_interest_yn:any }) =>	
 										!isReqSpecialVisible || (isReqSpecialVisible && special_interest_yn == 'Y') ? (
 
 											<TouchableOpacity
 												onPress={() => {
 													navigation.navigate('StorageProfile', {
+														matchSeq: match_seq,
 														memberSeq: res_member_seq,
 														type: 'RES'
 													})
@@ -388,7 +390,7 @@ export const Storage = (props : Props) => {
 												
 											</TouchableOpacity>
 										) : (
-											<View><CommonText>내가 보낸 관심이 없습니다.</CommonText></View>
+											<></>
 										)
 									)}
 								</SpaceView>
@@ -485,7 +487,7 @@ export const Storage = (props : Props) => {
 						<>
 						{data.matchTrgtList.map((item:any,index:any) => (
 							<SpaceView key={index} mb={16} viewStyle={styles.halfContainer}>
-								{item.map(({ req_member_seq, img_path, dday, special_interest_yn } : { req_member_seq: any, img_path: any, dday: any, special_interest_yn:any }) =>					
+								{item.map(({ match_seq, req_member_seq, img_path, dday, special_interest_yn } : { match_seq:any, req_member_seq: any, img_path: any, dday: any, special_interest_yn:any }) =>					
 									
 									!isMatchSpecialVisible || (isMatchSpecialVisible && special_interest_yn == 'Y') ? (
 										<View key={req_member_seq} style={styles.halfItemLeft}>
@@ -520,7 +522,7 @@ export const Storage = (props : Props) => {
 											</View>
 										</View>	
 									) : (
-										<View><CommonText>성공 매칭이 없습니다.</CommonText></View>
+										<></>
 									)
 								)}
 							</SpaceView>
