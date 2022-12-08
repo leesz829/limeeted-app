@@ -6,11 +6,17 @@ PODS:
   - AppAuth/Core (1.6.0)
   - AppAuth/ExternalUserAgent (1.6.0):
     - AppAuth/Core
+  - Base64 (1.1.2)
   - boost (1.76.0)
   - boost-for-react-native (1.63.0)
   - BVLinearGradient (2.5.6):
     - React
   - CocoaAsyncSocket (7.6.5)
+  - CodePush (7.0.5):
+    - Base64 (~> 1.1)
+    - JWT (~> 3.0.0-beta.12)
+    - React-Core
+    - SSZipArchive (~> 2.2.2)
   - DoubleConversion (1.1.6)
   - FBLazyVector (0.66.4)
   - FBReactNativeSpec (0.66.4):
@@ -195,6 +201,8 @@ PODS:
     - AppAuth/Core (~> 1.6)
     - GTMSessionFetcher/Core (< 3.0, >= 1.5)
   - GTMSessionFetcher/Core (2.3.0)
+  - JWT (3.0.0-beta.14):
+    - Base64 (~> 1.1.2)
   - kakao-login (5.2.3):
     - KakaoSDKAuth (= 2.11.1)
     - KakaoSDKCommon (= 2.11.1)
@@ -550,6 +558,7 @@ PODS:
   - RNScreens (3.10.1):
     - React-Core
     - React-RCTImage
+  - SSZipArchive (2.2.3)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
@@ -557,6 +566,7 @@ PODS:
 DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
   - BVLinearGradient (from `../node_modules/react-native-linear-gradient`)
+  - CodePush (from `../node_modules/react-native-code-push`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/React/FBReactNativeSpec`)
@@ -639,6 +649,7 @@ SPEC REPOS:
   trunk:
     - Alamofire
     - AppAuth
+    - Base64
     - boost-for-react-native
     - CocoaAsyncSocket
     - Firebase
@@ -665,6 +676,7 @@ SPEC REPOS:
     - GoogleUtilities
     - GTMAppAuth
     - GTMSessionFetcher
+    - JWT
     - KakaoSDKAuth
     - KakaoSDKCommon
     - KakaoSDKUser
@@ -672,6 +684,7 @@ SPEC REPOS:
     - nanopb
     - OpenSSL-Universal
     - PromisesObjC
+    - SSZipArchive
     - YogaKit
 
 EXTERNAL SOURCES:
@@ -679,6 +692,8 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/boost.podspec"
   BVLinearGradient:
     :path: "../node_modules/react-native-linear-gradient"
+  CodePush:
+    :path: "../node_modules/react-native-code-push"
   DoubleConversion:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
   FBLazyVector:
@@ -779,10 +794,12 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Alamofire: 8b7a946e9db6f76e93eaa0d4c84e3751633959c9
   AppAuth: 8fca6b5563a5baef2c04bee27538025e4ceb2add
+  Base64: cecfb41a004124895a7bcee567a89bae5a89d49b
   boost: a7c83b31436843459a1961bfd74b96033dc77234
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   BVLinearGradient: e3aad03778a456d77928f594a649e96995f1c872
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
+  CodePush: ef496b6fd053012e985e3d4a0ab9f9dbf2739eac
   DoubleConversion: 831926d9b8bf8166fd87886c4abab286c2422662
   FBLazyVector: e5569e42a1c79ca00521846c223173a57aca1fe1
   FBReactNativeSpec: fe08c1cd7e2e205718d77ad14b34957cce949b58
@@ -811,6 +828,7 @@ SPEC CHECKSUMS:
   GoogleUtilities: bad72cb363809015b1f7f19beb1f1cd23c589f95
   GTMAppAuth: 0ff230db599948a9ad7470ca667337803b3fc4dd
   GTMSessionFetcher: 3a63d75eecd6aa32c2fc79f578064e1214dfdec2
+  JWT: ef71dfb03e1f842081e64dc42eef0e164f35d251
   kakao-login: d506fe760be606181e206f89bf42fd082720a068
   KakaoSDKAuth: bb2dfa7be30daa8403c9cfc8001aa6fde7a5b779
   KakaoSDKCommon: 555e1bb46595b842ded01cf7888cc17bbae4e113
@@ -861,6 +879,7 @@ SPEC CHECKSUMS:
   RNIap: 3bcd6982cf99503339cf9243e4ba70a45ea2cf72
   RNReanimated: da3860204e5660c0dd66739936732197d359d753
   RNScreens: 522705f2e5c9d27efb17f24aceb2bf8335bc7b8e
+  SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
   Yoga: e7dc4e71caba6472ff48ad7d234389b91dadc280
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
