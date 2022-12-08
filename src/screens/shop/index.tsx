@@ -13,6 +13,10 @@ import {
 	getAvailablePurchases,
 } from 'react-native-iap';
 import { purchase_product } from 'api/models';
+import * as hooksMember from 'hooks/member';
+import axios from 'axios';
+import * as properties from 'utils/properties';
+import { useIsFocused } from '@react-navigation/native';
 
 interface Products {
 	products: Product[];
@@ -30,6 +34,9 @@ interface Product {
 	productId: string;
 }
 export const Shop = () => {
+	const jwtToken = hooksMember.getJwtToken();		// 토큰
+	const isFocus = useIsFocused();
+
 	const [products, setProducts] = useState<Products>([]);
 	const skus = Platform.select({
 		ios: ['cash_100', 'cash_200'],
@@ -38,7 +45,7 @@ export const Shop = () => {
 
 	useEffect(() => {
 		init();
-	}, []);
+	}, [isFocus]);
 
 	async function init() {
 		const isConnected = await initConnection();
@@ -54,7 +61,34 @@ export const Shop = () => {
 				JSON.stringify(_products),
 			);
 		}
+
+		selectHasUserPoint();
 	}
+
+		// 보유 포인트 조회
+		const selectHasUserPoint = async () => {
+			const result = await axios
+				.post(
+					properties.api_domain + '/common/util/selectHasUserPoint',
+					{
+						'api-key': 'U0FNR09CX1RPS0VOXzAx'
+					},
+					{
+						headers: {
+							'jwt-token': jwtToken,
+						},
+					},
+				)
+				.then(function (response) {
+					console.log('selectHasUserPoint response :::: ', response.data);
+	
+					
+				})
+				.catch(function (error) {
+					console.log('selectHasUserPoint error ::: ', error);
+				});
+		};
+	
 
 	const onPressItem = async (id: string) => {
 		try {
