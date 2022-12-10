@@ -45,13 +45,12 @@ GoogleSignin.configure({
 export const Login01 = (props: Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 	const dispatch = useDispatch();
-	const [id, setId] = React.useState('tester1');
-	const [password, setPassword] = React.useState('1234');
+	const [id, setId] = React.useState('');
+	const [password, setPassword] = React.useState('');
 
 	React.useEffect(() => {
 		//dispatch(myProfile());
 	}, []);
-
 	const google_signIn = async () => {
 		try {
 			console.log('google_signIn');
@@ -60,7 +59,6 @@ export const Login01 = (props: Props) => {
 			console.log(JSON.stringify(result));
 			// Get the users ID token
 			const { idToken } = await GoogleSignin.signIn();
-
 			const { success, data } = await signup_with_social('google', { identityToken: idToken });
 			if (success) {
 				Alert.alert('구글로그인 성공', '', [{ text: '확인', onPress: () => {} }]);
@@ -78,20 +76,17 @@ export const Login01 = (props: Props) => {
 			}
 		}
 	};
-
 	const onAppleButtonPress = async () => {
 		const appleAuthRequestResponse = await appleAuth.performRequest({
 			requestedOperation: appleAuth.Operation.LOGIN,
 			// Note: it appears putting FULL_NAME first is important, see issue #293
 			requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
 		});
-
 		const credentialState = await appleAuth
 			.getCredentialStateForUser(appleAuthRequestResponse.user)
 			.catch((e) => {
 				console.log('error1', e);
 			});
-
 		if (credentialState === appleAuth.State.AUTHORIZED) {
 			const { success, data } = await signup_with_social('apple', {
 				user: appleAuthRequestResponse.user,
@@ -104,13 +99,10 @@ export const Login01 = (props: Props) => {
 			// user is authenticated
 		}
 	};
-
 	const loginProc = async () => {
 		const { success, data } = await get_login_chk(id, password);
-
 		console.log('success :::: ', success);
 		console.log('data :::: ', data.result_code);
-
 		if (success) {
 			/*
 			 * ## 인증 결과 코드 정의
@@ -119,13 +111,11 @@ export const Login01 = (props: Props) => {
 			 * 0002 : 에러
 			 */
 			let resultCode = data.result_code;
-
 			if (resultCode == '0001') {
 				Alert.alert('알림', '일치하는 회원이 없습니다.', [{ text: '확인' }]);
 			} else {
 				let memberStatus = data.base.status;
 				let joinStatus = data.base.join_status;
-
 				if (resultCode == '0000' && (memberStatus == 'PROCEED' || memberStatus == 'APROVAL')) {
 					if (memberStatus == 'APROVAL') {
 						navigation.navigate('Approval');
@@ -146,6 +136,8 @@ export const Login01 = (props: Props) => {
 						}
 					}
 				} else {
+					AsyncStorage.setItem('jwt-token', data.token_param.jwt_token);
+
 					dispatch(mbrReducer.setJwtToken(data.token_param.jwt_token));
 					dispatch(mbrReducer.setMemberSeq(JSON.stringify(data.base.member_seq)));
 					dispatch(mbrReducer.setBase(JSON.stringify(data.base)));
