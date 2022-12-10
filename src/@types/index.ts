@@ -59,13 +59,7 @@ export type StackParamList = {
 	Board1: undefined;
 	Preference: undefined;
 	PreferencePopup: undefined;
-	Profile: {
-		nickname : string;
-		name: string;
-		gender: string;
-		age: string;
-		phone_number: string;
-	};
+	Profile: undefined;
 	Sample: undefined;
 	Profile1: undefined;
 	SecondAuth: undefined;

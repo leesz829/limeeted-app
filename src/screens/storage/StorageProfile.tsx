@@ -360,15 +360,14 @@ export const StorageProfile = (props : Props) => {
                         프로필 2차 인증
                      </CommonText>
                   </View>
-
-                  {/* <View style={[layoutStyle.rowBetween]}>
-                     <View style={styles.statusBtn}>
-                        <CommonText type={'h6'} color={ColorType.white}>
-                           ALL
-                        </CommonText>
-                     </View>
-                     <Image source={ICON.medalAll} style={styles.iconSize32} />
-                  </View> */}
+                  <View style={[layoutStyle.rowBetween]}>
+							<View style={styles.statusBtn}>
+								<CommonText type={'h6'} color={ColorType.white}>
+									TIER {secondAuthList && 7-secondAuthList.length}
+								</CommonText>
+							</View>
+							<Image source={ICON.medalAll} style={styles.iconSize32} />
+						</View>
                </SpaceView>
 
                {data.secondAuthList && createSecondAuthListBody()}

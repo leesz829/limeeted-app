@@ -36,9 +36,7 @@ export const Introduce = (props: Props) => {
 	const jwtToken = hooksMember.getJwtToken(); // 토큰
 	const memberBase = JSON.parse(hooksMember.getBase()); // 회원 기본정보
 
-	const [introduce_comment, setIntroduce_comment] = React.useState<any>(
-		memberBase.introduce_comment,
-	);
+	const [comment, setComment] = React.useState<any>(memberBase.comment);
 	const [business, setBusiness] = React.useState<any>(memberBase.business);
 	const [job, setJob] = React.useState<any>(memberBase.job);
 	const [job_name, setJob_name] = React.useState<any>(memberBase.job_name);
@@ -98,11 +96,18 @@ export const Introduce = (props: Props) => {
 	// 활동지 항목 목록
 
 	// 체형 항목 목록
-	const bodyItemList = [
+	const manBodyItemList = [
 		{ label: '보통', value: 'NORMAL' },
 		{ label: '마른 체형', value: 'SKINNY' },
 		{ label: '근육질', value: 'FIT' },
 		{ label: '건장한', value: 'GIANT' },
+	];
+
+	const womanBodyItemList = [
+		{ label: '보통', value: 'NORMAL' },
+		{ label: '마른 체형', value: 'SKINNY' },
+		{ label: '섹시한', value: 'SEXY' },
+		{ label: '글래머', value: 'GLAMOUR' },
 	];
 
 	// 종교 항목 목록
@@ -129,13 +134,13 @@ export const Introduce = (props: Props) => {
 	];
 
 	// 직업 코드 목록 조회 함수
-	const getJobCodeList = async () => {
+	const getJobCodeList = async (value:string) => {
 		const result = await axios
 			.post(
 				properties.api_domain + '/common/selectCommonCodeList',
 				{
 					'api-key': 'U0FNR09CX1RPS0VOXzAx',
-					group_code: business,
+					group_code: value,
 				},
 				{
 					headers: {
@@ -181,7 +186,7 @@ export const Introduce = (props: Props) => {
 				{
 					'api-key': 'U0FNR09CX1RPS0VOXzAx',
 					member_seq: memberBase.member_seq,
-					introduce_comment: introduce_comment,
+					comment: comment,
 					business: business,
 					job: job,
 					job_name: job_name,
@@ -199,9 +204,9 @@ export const Introduce = (props: Props) => {
 			)
 			.then(function (response) {
 				if (response.data.result_code != '0000') {
-					console.log(response.data.result_msg);
 					return false;
 				} else {
+					dispatch(mbrReducer.setBase(JSON.stringify(response.data.memberBase)));
 					dispatch(mbrReducer.setBase(JSON.stringify(response.data.memberBase)));
 					navigation.navigate('Main', {
 						screen: 'Roby'
@@ -216,6 +221,7 @@ export const Introduce = (props: Props) => {
 	// 셀렉트 박스 콜백 함수
 	const busiCdCallbackFn = (value: string) => {
 		setBusiness(value);
+		getJobCodeList(value);
 	};
 	const jobCdCallbackFn = (value: string) => {
 		setJob(value);
@@ -235,15 +241,8 @@ export const Introduce = (props: Props) => {
 
 	// 첫 렌더링 때 실행
 	React.useEffect(() => {
-		if (business != '') {
-			getJobCodeList();
-		}
-	}, []);
-
-	// 업종 상태 관리
-	React.useEffect(() => {
-		if (business != '') {
-			getJobCodeList();
+		if (memberBase.business != '') {
+			getJobCodeList(memberBase.business);
 		}
 	}, [isFocus]);
 
@@ -254,8 +253,8 @@ export const Introduce = (props: Props) => {
 				<SpaceView mb={24}>
 					<CommonInput
 						label={'한줄 소개'}
-						value={introduce_comment}
-						onChangeText={(introduce_comment) => setIntroduce_comment(introduce_comment)}
+						value={comment}
+						onChangeText={(comment) => setComment(comment)}
 						placeholder={'한줄 소개를 입력해 주세요.'}
 						placeholderTextColor={'#c6ccd3'}
 					/>
@@ -326,7 +325,7 @@ export const Introduce = (props: Props) => {
 				<SpaceView mb={24}>
 					<CommonSelect
 						label={'체형'}
-						items={bodyItemList}
+						items={memberBase.gender == 'M' ? manBodyItemList : womanBodyItemList}
 						selectValue={form_body}
 						callbackFn={bodyCdCallbackFn}
 					/>

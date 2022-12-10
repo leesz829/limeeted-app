@@ -45,20 +45,20 @@ export const Preference = (props: Props) => {
 	const mbrBase = JSON.parse(hooksMember.getBase());
 	const mbrIdealType = JSON.parse(hooksMember.getIdealType());
 
-	const [idealTypeSeq, setIdealTypeSeq] = React.useState<any>(mbrIdealType.ideal_type_seq);
-	const [wantLocal1, setWantLocal1] = React.useState<any>(mbrIdealType.want_local1);
-	const [wantLocal2, setWantLocal2] = React.useState<any>(mbrIdealType.want_local2);
-	const [wantAgeMin, setWantAgeMin] = React.useState<any>(mbrIdealType.want_age_min);
-	const [wantAgeMax, setWantAgeMax] = React.useState<any>(mbrIdealType.want_age_max);
-	const [wantBusiness1, setWantBusiness1] = React.useState<any>(mbrIdealType.want_business1);
-	const [wantBusiness2, setWantBusiness2] = React.useState<any>(mbrIdealType.want_business2);
-	const [wantBusiness3, setWantBusiness3] = React.useState<any>(mbrIdealType.want_business3);
-	const [wantJob1, setWantJob1] = React.useState<any>(mbrIdealType.want_job1);
-	const [wantJob2, setWantJob2] = React.useState<any>(mbrIdealType.want_job2);
-	const [wantJob3, setWantJob3] = React.useState<any>(mbrIdealType.want_job3);
-	const [wantPerson1, setWantPerson1] = React.useState<any>(mbrIdealType.want_person1);
-	const [wantPerson2, setWantPerson2] = React.useState<any>(mbrIdealType.want_person2);
-	const [wantPerson3, setWantPerson3] = React.useState<any>(mbrIdealType.want_person3);
+	const [idealTypeSeq, setIdealTypeSeq] = React.useState<any>(mbrIdealType?.ideal_type_seq);
+	const [wantLocal1, setWantLocal1] = React.useState<any>(mbrIdealType?.want_local1);
+	const [wantLocal2, setWantLocal2] = React.useState<any>(mbrIdealType?.want_local2);
+	const [wantAgeMin, setWantAgeMin] = React.useState<any>(mbrIdealType?.want_age_min);
+	const [wantAgeMax, setWantAgeMax] = React.useState<any>(mbrIdealType?.want_age_max);
+	const [wantBusiness1, setWantBusiness1] = React.useState<any>(mbrIdealType?.want_business1);
+	const [wantBusiness2, setWantBusiness2] = React.useState<any>(mbrIdealType?.want_business2);
+	const [wantBusiness3, setWantBusiness3] = React.useState<any>(mbrIdealType?.want_business3);
+	const [wantJob1, setWantJob1] = React.useState<any>(mbrIdealType?.want_job1);
+	const [wantJob2, setWantJob2] = React.useState<any>(mbrIdealType?.want_job2);
+	const [wantJob3, setWantJob3] = React.useState<any>(mbrIdealType?.want_job3);
+	const [wantPerson1, setWantPerson1] = React.useState<any>(mbrIdealType?.want_person1);
+	const [wantPerson2, setWantPerson2] = React.useState<any>(mbrIdealType?.want_person2);
+	const [wantPerson3, setWantPerson3] = React.useState<any>(mbrIdealType?.want_person3);
 
 	// 업종 그룹 코드 목록
 	const busiGrpCdList = [
@@ -205,7 +205,6 @@ export const Preference = (props: Props) => {
 					console.log(response.data.result_msg);
 					return false;
 				} else {
-					dispatch(mbrReducer.setBase(JSON.stringify(response.data.memberBase)));
 					dispatch(mbrReducer.setIdealType(JSON.stringify(response.data.memberIdealType)));
 
 					navigation.navigate('Main', {

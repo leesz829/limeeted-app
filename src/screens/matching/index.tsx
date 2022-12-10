@@ -470,7 +470,7 @@ export const Matching = (props : Props) => {
 						<View style={[layoutStyle.rowBetween]}>
 							<View style={styles.statusBtn}>
 								<CommonText type={'h6'} color={ColorType.white}>
-									TIER {secondAuthList && secondAuthList.length}
+									TIER {secondAuthList && 7-secondAuthList.length}
 								</CommonText>
 							</View>
 							<Image source={ICON.medalAll} style={styles.iconSize32} />

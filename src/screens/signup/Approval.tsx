@@ -34,7 +34,7 @@ export const Approval = () => {
 				/> */}
 				{/* <CommonBtn value={'로비 이동'} onPress={() => navigation.navigate('Main', { screen: 'Roby' })} /> */}
 
-				<CommonBtn value={'로그인 이동'} onPress={() => navigation.navigate('Login01')} />
+				<CommonBtn value={'프로필 수정하기'} onPress={() => navigation.navigate('Login01')} />
 
 			</SpaceView>
 		</View>
