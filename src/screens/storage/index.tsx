@@ -1,11 +1,11 @@
 import { ColorType, BottomParamList, ScreenNavigationProp } from '@types';
-import { styles } from 'assets/styles/Styles';
+import { styles, layoutStyle, modalStyle } from 'assets/styles/Styles';
 import { CommonSwich } from 'component/CommonSwich';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import TopNavigation from 'component/TopNavigation';
 import * as React from 'react';
-import { Image, ScrollView, View, TouchableOpacity } from 'react-native';
+import { Image, ScrollView, View, TouchableOpacity, Modal, Alert } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import LinearGradient from 'react-native-linear-gradient';
 import { useState } from 'react';
@@ -29,7 +29,7 @@ interface Props {
 
 export const Storage = (props : Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
-	const isFocus = useIsFocused();
+	const isFocusStorage = useIsFocused();
 
 	const jwtToken = hooksMember.getJwtToken();		// 토큰
 	const memberSeq = hooksMember.getMemberSeq();	// 회원번호
@@ -52,11 +52,35 @@ export const Storage = (props : Props) => {
 		resLikeList : []
 		, reqLikeList : []
 		, matchTrgtList : []
+		, resSpecialCnt : 0
+		, reqSpecialCnt : 0
+		, matchSpecialCnt : 0
 	});
 
+	// 매칭 상세 이동하기 위한 저장 데이터
+	const [detailMatchData, setDetailMatchData] = React.useState<any>({
+		match_seq: ''
+		, tgt_member_seq: ''
+		, type: ''
+		, profile_open_yn: ''
+	})
+
+	/* let detailMatchData:any = {
+		match_seq: ''
+		, tgt_member_seq: ''
+		, type: ''
+		, profile_open_yn: ''
+	};
+ */
 	React.useEffect(() => {
+		/* detailMatchData = {
+			match_seq: ''
+			, tgt_member_seq: ''
+			, type: ''
+		} */
+
 		getStorageData();		
-	}, [isFocus]);
+	}, [isFocusStorage]);
 
 	// 찐심 설정
 	const specialInterestFn = async (type:string, value:string) => {
@@ -85,18 +109,167 @@ export const Storage = (props : Props) => {
 				let reqLikeListData:any = dataUtils.getStorageListData(response.data.reqLikeList);
 				let matchTrgtListData:any = dataUtils.getStorageListData(response.data.matchTrgtList);
 
+				let tmpResSpecialCnt = 0;
+				let tmpReqSpecialCnt = 0;
+				let tmpMatchSpecialCnt = 0;
+
+				if(response.data.resLikeList.length > 0) [
+					response.data.resLikeList.map(({ special_interest_yn } : { special_interest_yn:any }) => {
+						if(special_interest_yn == 'Y') { tmpResSpecialCnt++; }
+					})
+				]
+
+				if(response.data.reqLikeList.length > 0) [
+					response.data.reqLikeList.map(({ special_interest_yn } : { special_interest_yn:any }) => {
+						if(special_interest_yn == 'Y') { tmpReqSpecialCnt++; }
+					})
+				]
+
+				if(response.data.matchTrgtList.length > 0) [
+					response.data.matchTrgtList.map(({ special_interest_yn } : { special_interest_yn:any }) => {
+						if(special_interest_yn == 'Y') { tmpMatchSpecialCnt++; }
+					})
+				]
+
 				setData({
 					...data
 					, resLikeList : resLikeListData
 					, reqLikeList : reqLikeListData
 					, matchTrgtList : matchTrgtListData
+					, resSpecialCnt : tmpResSpecialCnt
+					, reqSpecialCnt : tmpReqSpecialCnt
+					, matchSpecialCnt : tmpMatchSpecialCnt
 				});
 		   }
 		})
 		.catch(function (error) {
 		   console.log('error ::: ' , error);
 		});
-	 }
+	}
+
+	// 프로필 열람 팝업 활성화
+	const popupProfileOpen = async (match_seq: any, tgt_member_seq: any, type: any, profile_open_yn: any) => {
+		setDetailMatchData({
+			match_seq: match_seq
+			, tgt_member_seq: tgt_member_seq
+			, type: type
+			, profile_open_yn: profile_open_yn
+		});
+
+		if(profile_open_yn == 'N') {
+			setProfileOpenPopup(true);
+		} else {
+			navigation.navigate('StorageProfile', {
+				matchSeq: detailMatchData.match_seq,
+				memberSeq: detailMatchData.tgt_member_seq,
+				type: detailMatchData.type
+			});
+		}
+	}
+
+	// 프로필 열람 이동
+	const goProfileOpen = async () => {
+		let req_profile_open_yn = '';
+		let res_profile_open_yn = '';
+
+		if(detailMatchData.type == 'REQ') {
+			req_profile_open_yn = 'Y';
+		} else if(detailMatchData.type == 'RES') {
+			res_profile_open_yn = 'Y';
+		}
+
+		const result = await axios.post(properties.api_domain + '/match/updateMatchInfo',
+			{
+				'api-key': 'U0FNR09CX1RPS0VOXzAx',
+				match_seq: detailMatchData.match_seq,
+				req_profile_open_yn: req_profile_open_yn,
+				res_profile_open_yn: res_profile_open_yn,
+				member_seq: memberSeq
+			},
+			{
+				headers: {
+					'jwt-token': jwtToken
+				},
+			},
+		)
+		.then(function (response) {
+			console.log(response);
+			if (response.data.result_code != '0000') {
+				console.log(response.data.result_msg);
+				Alert.alert('오류입니다. 관리자에게 문의해주세요.');
+			} else {
+				navigation.navigate('StorageProfile', {
+					matchSeq: detailMatchData.match_seq,
+					memberSeq: detailMatchData.tgt_member_seq,
+					type: detailMatchData.type
+				});
+			}
+		})
+		.catch(function (error) {
+			console.log('error ::: ', error);
+		});
+	}
+
+
+
+
+
+
+
+
+
+
+	// 매칭 상태 변경
+	/* const updateMatchStatus = async (status:any) => {
+		const result = await axios
+			.post(
+				properties.api_domain + '/match/updateMatchStatus',
+				{
+					'api-key': 'U0FNR09CX1RPS0VOXzAx',
+					match_seq: matchSeq,
+					match_status: status,
+					member_seq: memberSeq
+				},
+				{
+					headers: {
+						'jwt-token': jwtToken,
+					},
+				},
+			)
+			.then(function (response) {
+				console.log(response);
+				if (response.data.result_code != '0000') {
+					console.log(response.data.result_msg);
+					Alert.alert('오류입니다. 관리자에게 문의해주세요.');
+				} else {
+					navigation.navigate('Main', {
+						screen: 'Storage',
+					});
+				}
+			})
+			.catch(function (error) {
+				console.log('error ::: ', error);
+			});
+	}; */
+
+
+
+
+
+
+
+
+
+	// ################### 팝업 관련 #####################
+
+	const [profileOpenPopup, setProfileOpenPopup] = useState(false); // 프로필 열람 팝업
+
+
+
+
+
+
+
 
 	return (
 		<>
@@ -121,22 +294,30 @@ export const Storage = (props : Props) => {
 					</SpaceView>
 
 					<View>
-						{data.resLikeList.length > 0 ? (
+						{data.resLikeList.length > 0 && (!isResSpecialVisible || isResSpecialVisible && data.resSpecialCnt > 0) ? (
 						<>
 							{data.resLikeList.map((item:any,index:any) => (
 								<SpaceView key={index} mb={16} viewStyle={styles.halfContainer}>
-									{item.map(({ match_seq, req_member_seq, img_path, dday, special_interest_yn } : { match_seq:any, req_member_seq: any, img_path: any, dday: any, special_interest_yn:any }) =>					
+									{item.map((
+										{ 
+											match_seq
+											, req_member_seq
+											, img_path, dday
+											, special_interest_yn 
+											, req_profile_open_yn
+										} : { 
+											match_seq:any
+											, req_member_seq: any
+											, img_path: any
+											, dday: any
+											, special_interest_yn: any 
+											, req_profile_open_yn: any
+										}) =>
+															
 										!isResSpecialVisible || (isResSpecialVisible && special_interest_yn == 'Y') ? (
-											<TouchableOpacity
-												onPress={() => {
-													navigation.navigate('StorageProfile', {
-														matchSeq: match_seq,
-														memberSeq: req_member_seq,
-														type: 'REQ'
-													})
-												}}>
+											<TouchableOpacity onPress={() => { popupProfileOpen(match_seq, req_member_seq, 'REQ', req_profile_open_yn); }}>
 
-												<View key={req_member_seq} style={styles.halfItemLeft}>
+												<View key={match_seq} style={styles.halfItemLeft}>
 													<View style={styles.favoriteBox}>
 
 														{/* 관심/찐심 구분 아이콘 */}
@@ -339,24 +520,31 @@ export const Storage = (props : Props) => {
 					</SpaceView>
 
 					<View>
-
-						{data.reqLikeList.length > 0 ? (
+						{data.reqLikeList.length > 0 && (!isReqSpecialVisible || isReqSpecialVisible && data.reqSpecialCnt > 0) ? (
 						<>
 							{data.reqLikeList.map((item:any,index:any) => (
 								<SpaceView key={index} mb={16} viewStyle={styles.halfContainer}>
-									{item.map(({ match_seq, res_member_seq, img_path, dday, special_interest_yn } : { match_seq:any, res_member_seq: any, img_path: any, dday: any, special_interest_yn:any }) =>	
+									{item.map((
+										{ 
+											match_seq
+											, res_member_seq
+											, img_path, dday
+											, special_interest_yn
+											, res_profile_open_yn
+										} : { 
+											match_seq:any
+											, res_member_seq: any
+											, img_path: any
+											, dday: any
+											, special_interest_yn: any
+											, res_profile_open_yn: any
+										}) =>	
+
 										!isReqSpecialVisible || (isReqSpecialVisible && special_interest_yn == 'Y') ? (
 
-											<TouchableOpacity
-												onPress={() => {
-													navigation.navigate('StorageProfile', {
-														matchSeq: match_seq,
-														memberSeq: res_member_seq,
-														type: 'RES'
-													})
-												}}>
+											<TouchableOpacity onPress={() => { popupProfileOpen(match_seq, res_member_seq, 'RES', res_profile_open_yn); }} >
 
-												<View key={res_member_seq} style={styles.halfItemLeft}>
+												<View key={match_seq} style={styles.halfItemLeft}>
 													<View style={styles.favoriteBox}>
 
 														{/* 관심/찐심 구분 아이콘 */}
@@ -482,25 +670,37 @@ export const Storage = (props : Props) => {
 					</SpaceView>
 
 					<View>
-
-						{data.matchTrgtList.length > 0 ? (
+						{data.matchTrgtList.length > 0 && (!isMatchSpecialVisible || isMatchSpecialVisible && data.matchSpecialCnt > 0) ? (
 						<>
 						{data.matchTrgtList.map((item:any,index:any) => (
 							<SpaceView key={index} mb={16} viewStyle={styles.halfContainer}>
-								{item.map(({ match_seq, req_member_seq, img_path, dday, special_interest_yn } : { match_seq:any, req_member_seq: any, img_path: any, dday: any, special_interest_yn:any }) =>					
+								{item.map(({ 
+									match_seq
+									, req_member_seq
+									, res_member_seq
+									, img_path, dday
+									, special_interest_yn 
+								} : { 
+									match_seq:any
+									, req_member_seq: any
+									, res_member_seq: any
+									, img_path: any
+									, dday: any
+									, special_interest_yn:any 
+								}) =>
 									
 									!isMatchSpecialVisible || (isMatchSpecialVisible && special_interest_yn == 'Y') ? (
 
-										<TouchableOpacity
-												onPress={() => {
-													navigation.navigate('StorageProfile', {
-														matchSeq: match_seq,
-														memberSeq: req_member_seq,
-														type: 'MATCH'
-													})
-												}}>
+										<TouchableOpacity 
+											onPress={() => { 
+												if(req_member_seq != memberSeq) {
+													popupProfileOpen(match_seq, req_member_seq, 'MATCH', 'Y'); 
+												} else {
+													popupProfileOpen(match_seq, res_member_seq, 'MATCH', 'Y'); 
+												}
+											}} >
 
-											<View key={req_member_seq} style={styles.halfItemLeft}>
+											<View key={match_seq} style={styles.halfItemLeft}>
 												<View style={styles.favoriteBox}>
 
 													{/* 관심/찐심 구분 아이콘 */}
@@ -550,6 +750,45 @@ export const Storage = (props : Props) => {
 
 				</SpaceView>
 			</ScrollView>
+
+
+
+			{/* ###############################################
+                     	프로필 열람 팝업
+         	############################################### */}
+			<Modal visible={profileOpenPopup} transparent={true}>
+				<View style={modalStyle.modalBackground}>
+					<View style={modalStyle.modalStyle1}>
+						<SpaceView mb={16} viewStyle={layoutStyle.alignCenter}>
+							<CommonText fontWeight={'700'} type={'h4'}>
+								프로필 열람
+							</CommonText>
+						</SpaceView>
+
+						<SpaceView viewStyle={layoutStyle.alignCenter}>
+							<CommonText type={'h5'}>패스를 소모하여 프로필을 열람하시겠습니까?</CommonText>
+							<CommonText type={'h5'} color={ColorType.red}>패스 x5</CommonText>
+						</SpaceView>
+
+						<View style={modalStyle.modalBtnContainer}>
+							<TouchableOpacity
+								style={modalStyle.modalBtn}
+								onPress={() => setProfileOpenPopup(false)}
+							>
+								<CommonText fontWeight={'500'}>취소</CommonText>
+							</TouchableOpacity>
+							<View style={modalStyle.modalBtnline} />
+							<TouchableOpacity style={modalStyle.modalBtn} onPress={() => goProfileOpen() }>
+								<CommonText fontWeight={'500'} color={ColorType.red}>
+									확인
+								</CommonText>
+							</TouchableOpacity>
+						</View>
+					</View>
+				</View>
+			</Modal>
+
+
 		</>
 	);
 };

@@ -41,8 +41,6 @@ export const Matching = (props : Props) => {
 		, profileImgList: []
 		, secondAuthList: []
 		, interviewList: []
-		, reportTypeList: []
-		, checkReportType: []
 	});
 
 
@@ -153,7 +151,7 @@ export const Matching = (props : Props) => {
 		const result = await axios.post(properties.api_domain + '/match/insertReport', {
 			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
 			, 'report_type_code_list' : checkReportType.join()
-			, 'member_seq' : matchMemberData.member_seq
+			, 'member_seq' : data.memberBase.member_seq
 		}
 		, {
 			headers: {
@@ -178,7 +176,7 @@ export const Matching = (props : Props) => {
 		const result = await axios.post(properties.api_domain + '/match/insertMatchInfo', {
 			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
 			, 'active_type' : activeType
-			, 'member_seq' : matchMemberData.member_seq
+			, 'member_seq' : data.memberBase.member_seq
 		}
 		, {
 			headers: {
@@ -356,7 +354,7 @@ export const Matching = (props : Props) => {
 					file_name: any;
 					file_path: any;
 				}) => {
-					const img_path = properties.api_domain + '/uploads' + file_path + file_name;
+					const img_path = properties.img_domain + file_path + file_name;
 					const dataJson = { url: img_path };
 					tmpProfileImgList.push(dataJson);
 				},
@@ -390,7 +388,7 @@ export const Matching = (props : Props) => {
 			
 			setData({
 				...data
-				, memberBase: response.data.match_memeber_info
+				, memberBase: response.data.match_member_info
 				, profileImgList: tmpProfileImgList
 				, secondAuthList: tmpSecondAuthList
 				, interviewList: tmpInterviewList

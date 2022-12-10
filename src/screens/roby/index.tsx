@@ -115,7 +115,7 @@ export const Roby = (props: Props) => {
 						file_name: any;
 						file_path: any;
 					}) => {
-						const img_path = properties.api_domain + '/uploads' + file_path + file_name;
+						const img_path = properties.img_domain + file_path + file_name;
 						const dataJson = { req_member_seq: String, img_path: '' };
 
 						dataJson.req_member_seq(req_member_seq);
@@ -137,7 +137,7 @@ export const Roby = (props: Props) => {
 						file_name: any;
 						file_path: any;
 					}) => {
-						const img_path = properties.api_domain + '/uploads' + file_path + file_name;
+						const img_path = properties.img_domain + file_path + file_name;
 						const dataJson = { trgt_member_seq: String, img_path: '' };
 
 						dataJson.trgt_member_seq(trgt_member_seq);
@@ -210,7 +210,7 @@ export const Roby = (props: Props) => {
 						}) => {
 							console.log('req_member_seq ::: ', req_member_seq);
 
-							const img_path = properties.api_domain + '/uploads' + file_path + file_name;
+							const img_path = properties.img_domain + file_path + file_name;
 							const dataJson = { req_member_seq: String, img_path: '' };
 
 							dataJson.req_member_seq(req_member_seq);
@@ -232,7 +232,7 @@ export const Roby = (props: Props) => {
 							file_name: any;
 							file_path: any;
 						}) => {
-							const img_path = properties.api_domain + '/uploads' + file_path + file_name;
+							const img_path = properties.img_domain + file_path + file_name;
 							const dataJson = { trgt_member_seq: String, img_path: '' };
 
 							dataJson.trgt_member_seq(trgt_member_seq);
@@ -502,8 +502,8 @@ export const Roby = (props: Props) => {
 
 						<ScrollView horizontal={true}>
 							{resLikeList.map(
-								({ req_member_seq, img_path }: { req_member_seq: any; img_path: string }) => (
-									<SpaceView key={req_member_seq} viewStyle={styles.circleBox} mr={16}>
+								({ match_seq, req_member_seq, img_path }: { match_seq: any; req_member_seq: any; img_path: string }) => (
+									<SpaceView key={match_seq} viewStyle={styles.circleBox} mr={16}>
 										<Image
 											source={{ uri: img_path !== '' ? img_path : undefined }}
 											style={styles.circleBoxImg}
@@ -532,8 +532,8 @@ export const Roby = (props: Props) => {
 
 					<ScrollView horizontal={true}>
 						{matchList.map(
-							({ trgt_member_seq, img_path }: { trgt_member_seq: any; img_path: string }) => (
-								<SpaceView key={img_path} viewStyle={styles.circleBox} mr={16}>
+							({ match_seq, trgt_member_seq, img_path }: { match_seq: any; trgt_member_seq: any; img_path: string }) => (
+								<SpaceView key={match_seq} viewStyle={styles.circleBox} mr={16}>
 									<Image
 										source={{ uri: img_path !== '' ? img_path : undefined }}
 										style={styles.circleBoxImg}
@@ -677,8 +677,8 @@ export const Roby = (props: Props) => {
          </Modalize> */}
 
 			{/* ###############################################
-                     프로필 재심사 팝업
-         ############################################### */}
+                     	프로필 재심사 팝업
+         	############################################### */}
 			<Modal visible={profileReAprPopup} transparent={true}>
 				<View style={modalStyle.modalBackground}>
 					<View style={modalStyle.modalStyle1}>
@@ -711,8 +711,8 @@ export const Roby = (props: Props) => {
 			</Modal>
 
 			{/* ###############################################
-                     이용약관 팝업
-         ############################################### */}
+                     	이용약관 팝업
+         	############################################### */}
 			<Modalize
 				ref={terms_modalizeRef}
 				handleStyle={modalStyle.modalHandleStyle}

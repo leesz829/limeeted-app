@@ -91,7 +91,7 @@ export const StorageProfile = (props : Props) => {
 							file_name: any;
 							file_path: any;
 						}) => {
-							const img_path = properties.api_domain + '/uploads' + file_path + file_name;
+							const img_path = properties.img_domain + file_path + file_name;
 							const dataJson = { url: img_path };
 							tmpProfileImgList.push(dataJson);
 						},

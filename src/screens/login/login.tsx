@@ -45,8 +45,8 @@ GoogleSignin.configure({
 export const Login01 = (props: Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 	const dispatch = useDispatch();
-	const [id, setId] = React.useState('tester1');
-	const [password, setPassword] = React.useState('1234');
+	const [id, setId] = React.useState('');
+	const [password, setPassword] = React.useState('');
 
 	React.useEffect(() => {
 		//dispatch(myProfile());
@@ -146,6 +146,8 @@ export const Login01 = (props: Props) => {
 						}
 					}
 				} else {
+					AsyncStorage.setItem('jwt-token', data.token_param.jwt_token);
+
 					dispatch(mbrReducer.setJwtToken(data.token_param.jwt_token));
 					dispatch(mbrReducer.setMemberSeq(JSON.stringify(data.base.member_seq)));
 					dispatch(mbrReducer.setBase(JSON.stringify(data.base)));
