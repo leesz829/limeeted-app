@@ -197,7 +197,7 @@ export const Profile1 = (props: Props) => {
 		console.log('imgChk ::::: ', imgChk);
 
 		if(imgChk <= 2) {
-			Alert.alert('알림', '최소 3개의 프로필 사진을 등록해야 합니다.');
+			Alert.alert('알림', '최소 3개의 프로필 사진을 등록해야 합니다.', [{ text: '확인' }]);
 			return false;
 		}
 

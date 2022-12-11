@@ -65,20 +65,7 @@ export const Storage = (props : Props) => {
       , profile_open_yn: ''
    })
 
-   /* let detailMatchData:any = {
-      match_seq: ''
-      , tgt_member_seq: ''
-      , type: ''
-      , profile_open_yn: ''
-   };
- */
    React.useEffect(() => {
-      /* detailMatchData = {
-         match_seq: ''
-         , tgt_member_seq: ''
-         , type: ''
-      } */
-
       getStorageData();      
    }, [isFocusStorage]);
 
@@ -149,22 +136,28 @@ export const Storage = (props : Props) => {
 
    // 프로필 열람 팝업 활성화
    const popupProfileOpen = async (match_seq: any, tgt_member_seq: any, type: any, profile_open_yn: any) => {
-      setDetailMatchData({
-         match_seq: match_seq
-         , tgt_member_seq: tgt_member_seq
-         , type: type
-         , profile_open_yn: profile_open_yn
-      });
 
-      if(profile_open_yn == 'N') {
+      console.log('match_seq :::: ', match_seq);
+      console.log('tgt_member_seq :::: ', tgt_member_seq);
+      console.log('type :::: ', type);
+      console.log('profile_open_yn :::: ', profile_open_yn);
+
+      /* if(profile_open_yn == 'N') {
+         setDetailMatchData({
+            match_seq: match_seq
+            , tgt_member_seq: tgt_member_seq
+            , type: type
+            , profile_open_yn: profile_open_yn
+         });
          setProfileOpenPopup(true);
       } else {
-         navigation.navigate('StorageProfile', {
-            matchSeq: detailMatchData.match_seq,
-            memberSeq: detailMatchData.tgt_member_seq,
-            type: detailMatchData.type
-         });
-      }
+         navigation.reset({routes: [{name: "StorageProfile", params: {
+            matchSeq: match_seq,
+            tgtMemberSeq: tgt_member_seq,
+            type: type
+         }}]});
+
+      } */
    }
 
    // 프로필 열람 이동
@@ -193,83 +186,29 @@ export const Storage = (props : Props) => {
          },
       )
       .then(function (response) {
-         console.log(response);
-         if (response.data.result_code != '0000') {
-            console.log(response.data.result_msg);
-            Alert.alert('오류입니다. 관리자에게 문의해주세요.');
-         } else {
+         if(response.data.result_code == '0000') {
             navigation.navigate('StorageProfile', {
                matchSeq: detailMatchData.match_seq,
                memberSeq: detailMatchData.tgt_member_seq,
                type: detailMatchData.type
             });
+         } else if(response.data.result_code == '6010') {
+            setProfileOpenPopup(false);
+            Alert.alert('알림', '보유 패스가 부족합니다.', [{ text: '확인' }]);
+            return false;
+         } else {
+            console.log(response.data.result_msg);
+            Alert.alert('알림', '오류입니다. 관리자에게 문의해주세요.', [{ text: '확인' }]);
          }
+
       })
       .catch(function (error) {
          console.log('error ::: ', error);
       });
    }
 
-
-
-
-
-
-
-
-
-
-   // 매칭 상태 변경
-   /* const updateMatchStatus = async (status:any) => {
-      const result = await axios
-         .post(
-            properties.api_domain + '/match/updateMatchStatus',
-            {
-               'api-key': 'U0FNR09CX1RPS0VOXzAx',
-               match_seq: matchSeq,
-               match_status: status,
-               member_seq: memberSeq
-            },
-            {
-               headers: {
-                  'jwt-token': jwtToken,
-               },
-            },
-         )
-         .then(function (response) {
-            console.log(response);
-            if (response.data.result_code != '0000') {
-               console.log(response.data.result_msg);
-               Alert.alert('오류입니다. 관리자에게 문의해주세요.');
-            } else {
-               navigation.navigate('Main', {
-                  screen: 'Storage',
-               });
-            }
-         })
-         .catch(function (error) {
-            console.log('error ::: ', error);
-         });
-   }; */
-
-
-
-
-
-
-
-
-
    // ################### 팝업 관련 #####################
-
    const [profileOpenPopup, setProfileOpenPopup] = useState(false); // 프로필 열람 팝업
-
-
-
-
-
-
-
 
    return (
       <>

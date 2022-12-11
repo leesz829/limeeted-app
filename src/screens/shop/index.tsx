@@ -112,6 +112,9 @@ export const Shop = () => {
          }
       })
       .then(function (response) {
+         console.log('response.data.result_code :::::::: ', response.data.result_code);
+
+
          if(response.data.result_code != '0000'){
             console.log(response.data.result_msg);
             return false;

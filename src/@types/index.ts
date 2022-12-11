@@ -41,7 +41,10 @@ export type StackParamList = {
 	Signup03: {
 		memberSeq: Number;
 	};
-	Approval: undefined;
+	Approval: {
+		memberSeq: Number;
+		accessType: string;
+	};
 	SecondAuthPopup: undefined;	// 2차 인증 팝업
 	SignupPopUp2: undefined;
 	CommonPopup: undefined;
@@ -66,7 +69,7 @@ export type StackParamList = {
 	Profile2: undefined;
 	StorageProfile: {
 		matchSeq: Number;
-		memberSeq: Number;
+		tgtMemberSeq: Number;
 		type: string;
 	};
 };

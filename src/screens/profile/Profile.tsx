@@ -3,7 +3,7 @@ import CommonHeader from 'component/CommonHeader';
 import { CommonInput } from 'component/CommonInput';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
-import { ScrollView, View, Modal, TouchableOpacity } from 'react-native';
+import { ScrollView, View, Modal, TouchableOpacity, Alert } from 'react-native';
 import * as React from 'react';
 import { CommonBtn } from 'component/CommonBtn';
 import { StackParamList, ScreenNavigationProp, ColorType } from '@types';
@@ -65,6 +65,7 @@ export const Profile = (props: Props) => {
 					'api-key': 'U0FNR09CX1RPS0VOXzAx',
 					member_seq: memberSeq,
 					nickname: nickname,
+					usePassYn: 'Y'
 				},
 				{
 					headers: {
@@ -73,16 +74,24 @@ export const Profile = (props: Props) => {
 				},
 			)
 			.then(function (response) {
-				if (response.data.result_code != '0000') {
-					console.log(response.data.result_msg);
-					return false;
-				} else {
+				console.log('dasldkasm;ldams;ldkma; :::::: ' , response.data.result_code);
+
+				if(response.data.result_code == '0000') {
 					setNicknameUpdatePopup(false);
 					dispatch(mbrReducer.setBase(JSON.stringify(response.data.memberBase)));
 					navigation.navigate('Main', {
 						screen: 'Roby'
 					});
+				} else if(response.data.result_code == '6010') {
+					setNicknameUpdatePopup(false);
+					Alert.alert('알림', '보유 패스가 부족합니다.', [{ text: '확인' }]);
+					return false;
+				} else {
+					setNicknameUpdatePopup(false);
+					Alert.alert('알림', '시스템 오류입니다.\n관리자에게 문의해 주세요!', [{ text: '확인' }]);
+					return false;
 				}
+
 			})
 			.catch(function (error) {
 				console.log('error ::: ', error);

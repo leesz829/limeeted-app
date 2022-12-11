@@ -28,16 +28,20 @@ interface Props {
 }
 
 export const StorageProfile = (props : Props) => {
-   console.log('props.route.params.matchSeq :::: ', props.route.params.matchSeq);
-
    const navigation = useNavigation<ScreenNavigationProp>();
    const isFocus = useIsFocused();
 
    const jwtToken = hooksMember.getJwtToken();      // 토큰
    const memberSeq = hooksMember.getMemberSeq();   // 회원번호
 
+   // 로딩 상태 체크
+   const [isLoad, setIsLoad] = useState(props.route.params.matchSeq != null ? false : true);
+
    // 매칭 번호
    const matchSeq = props.route.params.matchSeq;
+
+   // 대상 회원 번호
+   const tgtMemberSeq = props.route.params.tgtMemberSeq;
 
    const [data, setData] = useState<any>({
       memberBase: {}
@@ -64,7 +68,7 @@ export const StorageProfile = (props : Props) => {
       const result = await axios.post(properties.api_domain + '/match/selectMatchMemberInfo',
             {
                'api-key': 'U0FNR09CX1RPS0VOXzAx',
-               member_seq: props.route.params.memberSeq
+               member_seq: tgtMemberSeq
             },
             {
                headers: {
@@ -123,14 +127,15 @@ export const StorageProfile = (props : Props) => {
                   },
                );
                
-
                setData({
                   ...data
                   , memberBase: response.data.memberBase
                   , profileImgList: tmpProfileImgList
                   , secondAuthList: tmpSecondAuthList
                   , interviewList: tmpInterviewList
-               })
+               });
+
+               setIsLoad(true);
 
             }
          })
@@ -266,13 +271,12 @@ export const StorageProfile = (props : Props) => {
    }
 
 
-   // 첫 렌더링
+   // ##### 첫 렌더링
    useEffect(() => {
-      //console.log('props.route.params.memberSeq ::::: ', props.route.params.memberSeq);
       selectMatchMemberInfo();
    }, [isFocus]);
 
-   return (
+   return isLoad ? (
       <>
          <TopNavigation currentPath={''} />
          <ScrollView>
@@ -466,5 +470,5 @@ export const StorageProfile = (props : Props) => {
             </SpaceView>
          </ScrollView>
       </>
-   );
+   ) : null;
 };
