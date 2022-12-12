@@ -299,26 +299,36 @@ export const Signup01 = (props: Props) => {
 		data.append('instagram_id', secondData.snsItem);
 		data.append('vehicle', secondData.vehicleItem);
 
-		if (secondData.jobFile.uri != '') {
+		let cnt = 0;
+		if (secondData.jobFile.uri) {
 			data.append('jobFile', secondData.jobFile);
+			cnt++;
 		}
-		if (secondData.eduFile.uri != '') {
+		if (secondData.eduFile.uri) {
 			data.append('eduFile', secondData.eduFile);
+			cnt++;
 		}
-		if (secondData.incomeFile.uri != '') {
+		if (secondData.incomeFile.uri) {
 			data.append('incomeFile', secondData.incomeFile);
+			cnt++;
 		}
-		if (secondData.assetFile.uri != '') {
+		if (secondData.assetFile.uri) {
 			data.append('assetFile', secondData.assetFile);
+			cnt++;
 		}
-		if (secondData.snsFile.uri != '') {
+		if (secondData.snsFile.uri) {
 			data.append('snsFile', secondData.snsFile);
+			cnt++;
 		}
-		if (secondData.vehicleFile.uri != '') {
+		if (secondData.vehicleFile.uri) {
 			data.append('vehicleFile', secondData.vehicleFile);
+			cnt++;
 		}
 
-		console.log('data ::: ', data);
+		if(!cnt){
+			Alert.alert('알림', '6개의 인증항목 중 최소 1개의 항목에 심사를 위한 이미지를 업로드해주세요.', [{ text: '확인' }]);
+			return false;
+		}
 
 		fetch(properties.api_domain + '/join/insertMemberSecondAuth/', {
 			method: 'POST',

@@ -507,7 +507,7 @@ export const SecondAuth = () => {
 
 				<SpaceView mb={24}>
 					<CommonBtn
-						value={'심사 요청'}
+						value={'확인'}
 						type={'primary'}
 						onPress={() => {
 							saveSecondAuth();
