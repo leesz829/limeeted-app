@@ -197,7 +197,8 @@ export const Login = () => {
 					iconSize={24}
 					onPress={() => {
 						//signInWithKakao();
-						navigation.navigate('NiceAuth');
+						navigation.navigate('Signup03', { memberSeq: '40' });
+						// navigation.navigate('NiceAuth');
 					}}
 				/>
 			</SpaceView>

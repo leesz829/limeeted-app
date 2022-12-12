@@ -66,7 +66,15 @@ const BottomNavigation = () => {
 					headerShown: false,
 					tabBarShowLabel: true,
 				}}
+				listeners={({ navigation }) => ({
+					tabPress: (e) => {
+						e.preventDefault();
+						navigation.reset({routes: [{name: "Cashshop"}]});
+					},
+				})}
 			/>
+			
+			
 			<Stack.Screen
 				name="Live"
 				component={Live}

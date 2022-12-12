@@ -65,6 +65,11 @@ export const Shop = () => {
       android: ['royal_pass_10', 'royal_pass_20_10', 'royal_pass_50_20', 'royal_pass_90_40', 'royal_pass_150_60', 'royal_pass_250_120'],
    });
 
+
+
+   const [errMsg, setErrMsg] = React.useState('');
+
+
    // 최초 실행
    useEffect(() => {
       init();
@@ -112,6 +117,9 @@ export const Shop = () => {
          }
       })
       .then(function (response) {
+         console.log('response.data.result_code :::::::: ', response.data.result_code);
+
+
          if(response.data.result_code != '0000'){
             console.log(response.data.result_msg);
             return false;
@@ -135,7 +143,7 @@ export const Shop = () => {
 
          const { success, data } = await purchase_product(
             Platform.OS
-            , price
+            , price.replace('₩', '').replace(',', '')
             , name
             , id
             , result
@@ -156,6 +164,7 @@ export const Shop = () => {
          }
       } catch (err: any) {
          console.warn(err.code, err.message);
+         setErrMsg(JSON.stringify(err));
       }
    };
 
@@ -367,6 +376,17 @@ export const Shop = () => {
                      청약철회 시 대상 상품의 수량이 보유 수량에서 차감됩니다.
                   </CommonText>
                </SpaceView>
+
+
+
+               <SpaceView viewStyle={styles.dotTextContainer}>
+                  <View style={styles.dot} />
+                  <CommonText color={ColorType.gray6666}>
+                     에러 : {errMsg}
+                  </CommonText>
+               </SpaceView>
+
+
             </SpaceView>
          </ScrollView>
       </>

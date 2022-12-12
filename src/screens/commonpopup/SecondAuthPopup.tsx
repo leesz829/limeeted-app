@@ -73,7 +73,7 @@ export const SecondAuthPopup : FC<Props> = (props) => {
 		title = "SNS";
 		itemNm = "인스타ID";
 		placeholderTxt = "인스타그램 ID를 입력해주세요.";
-		etcTxt01 = "자신의 인스타 계정을 연동시켜주세요. 팔로워 수 10000명 이상이 되면 프로필 2차 인증이 승인됩니다.";
+		etcTxt01 = "자신의 인스타 계정을 연동시켜주세요.\n팔로워 수 10000명 이상이 되면 프로필 2차 인증이 승인됩니다.";
 		etcTxt02 = "ID를 정확히 입력해주셔야 인증 승인이 가능합니다.";
 	} else if(type == "VEHICLE") {
 		title = "차량";
@@ -143,7 +143,7 @@ export const SecondAuthPopup : FC<Props> = (props) => {
 				</SpaceView>
 
 				<SpaceView mb={16}>
-					<CommonBtn value={'확인'} 
+					<CommonBtn value={'심사 요청'} 
 							   type={'primary'}
 							   	onPress={() => {
 									if("" != fileInfo.uri || "" != item) {

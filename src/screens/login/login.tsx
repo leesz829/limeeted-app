@@ -131,7 +131,10 @@ export const Login01 = (props: Props) => {
 							} else if (joinStatus == '03') {
 								navigation.navigate('Signup03', { memberSeq: data.base.member_seq });
 							} else if (joinStatus == '04') {
-								navigation.navigate('Approval');
+								navigation.navigate('Approval', {
+									memberSeq: data.base.member_seq,
+									accessType: 'LOGIN'
+								});
 							}
 						}
 					}

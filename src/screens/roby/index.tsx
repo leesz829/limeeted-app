@@ -36,6 +36,7 @@ import * as dataUtils from 'utils/data';
 import AsyncStorage from '@react-native-community/async-storage';
 import { useUserInfo } from 'hooks/useUserInfo';
 import * as hooksMember from 'hooks/member';
+import { useDispatch } from 'react-redux';
 
 /* ################################################################################################################
 ###### 로비
@@ -49,13 +50,12 @@ interface Props {
 export const Roby = (props: Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 	const isFocus = useIsFocused();
+	const dispatch = useDispatch();
 
 	const jwtToken = hooksMember.getJwtToken(); // 토큰 추출
 
-	// 회원 기본 데이터
-	const [member, setMember] = React.useState({
-		base: JSON.parse(hooksMember.getBase()),
-	});
+	// 회원 기본 정보
+	const memberBase = JSON.parse(hooksMember.getBase());
 
 	/*
 	 * 회원 실시간 데이터
@@ -80,6 +80,11 @@ export const Roby = (props: Props) => {
 		},
 	]);
 
+	// 툴팁 상태 관리
+	const [isTestTooltip, setIsTestTooltip] = React.useState<boolean>(false);
+
+
+
 	// ###### 첫 렌더링 때 fetchNews() 한 번 실행
 	React.useEffect(() => {
 		getRealTimeMemberInfo();
@@ -92,7 +97,7 @@ export const Roby = (props: Props) => {
 				properties.api_domain + '/member/getRealTimeMemberInfo',
 				{
 					'api-key': 'U0FNR09CX1RPS0VOXzAx',
-					member_seq: member.base.member_seq,
+					member_seq: memberBase.member_seq,
 				},
 				{
 					headers: {
@@ -160,110 +165,6 @@ export const Roby = (props: Props) => {
 			});
 	};
 
-	// 회원 정보 조회
-	const selectMemberInfo = async () => {
-		const result = await axios
-			.post(
-				properties.api_domain + '/member/selectMemberInfo',
-				{
-					'api-key': 'U0FNR09CX1RPS0VOXzAx',
-					member_seq: member.base.member_seq,
-				},
-				{
-					headers: {
-						'jwt-token': jwtToken,
-					},
-				},
-			)
-			.then(function (response) {
-				if (response.data.result_code != '0000') {
-					console.log(response.data.result_msg);
-					return false;
-				} else {
-					const member = JSON.parse(JSON.stringify(response.data));
-
-					// 회원 데이터 AsyncStorage 저장
-					AsyncStorage.clear();
-					AsyncStorage.setItem('jwt-token', response.data.token_param.jwt_token);
-					AsyncStorage.setItem('member_seq', String(response.data.member_seq));
-					AsyncStorage.setItem('member_info', JSON.stringify(response.data), (err) => {
-						if (err) {
-							console.log('an error');
-							throw err;
-						}
-						console.log('success');
-					}).catch((err) => {
-						console.log('error is: ' + err);
-					});
-
-					// 관심 목록 셋팅
-					let resLikeDataList = new Array();
-					response.data?.resLikeList?.map(
-						({
-							req_member_seq,
-							file_name,
-							file_path,
-						}: {
-							req_member_seq: any;
-							file_name: any;
-							file_path: any;
-						}) => {
-							console.log('req_member_seq ::: ', req_member_seq);
-
-							const img_path = properties.img_domain + file_path + file_name;
-							const dataJson = { req_member_seq: String, img_path: '' };
-
-							dataJson.req_member_seq(req_member_seq);
-							dataJson.img_path = img_path;
-
-							resLikeDataList.push(dataJson);
-						},
-					);
-
-					// 매칭 목록 셋팅
-					let matchDataList = new Array();
-					response.data?.matchTrgtList?.map(
-						({
-							trgt_member_seq,
-							file_name,
-							file_path,
-						}: {
-							trgt_member_seq: any;
-							file_name: any;
-							file_path: any;
-						}) => {
-							const img_path = properties.img_domain + file_path + file_name;
-							const dataJson = { trgt_member_seq: String, img_path: '' };
-
-							dataJson.trgt_member_seq(trgt_member_seq);
-							dataJson.img_path = img_path;
-
-							matchDataList.push(dataJson);
-						},
-					);
-
-					// 선호 이성 정보 셋팅
-					let idealTypeData = {};
-					if (response.data?.memberIdealType != null) {
-						idealTypeData = response.data?.memberIdealType;
-					}
-
-					setMember({
-						...member,
-						base: member,
-						resLikeCnt: resLikeDataList.length,
-						resLikeList: resLikeDataList,
-						matchCnt: matchDataList.length,
-						matchList: matchDataList,
-						idealType: idealTypeData,
-					});
-				}
-			})
-			.catch(function (error) {
-				console.log('error ::: ', error);
-			});
-	};
-
 	// 회원 정보 수정
 	const updateMemberInfo = async (type: string, value: string) => {
 		let matchYnParam = '';
@@ -277,20 +178,20 @@ export const Roby = (props: Props) => {
 		 */
 		if (type == '01') {
 			matchYnParam = value;
-			friendMatchParam = member.base.friend_match_yn;
+			friendMatchParam = memberBase.friend_match_yn;
 
 			dataJson = {
 				'api-key': 'U0FNR09CX1RPS0VOXzAx',
-				member_seq: member.base.member_seq,
+				member_seq: memberBase.member_seq,
 				match_yn: matchYnParam,
 			};
 		} else {
-			matchYnParam = member.base.match_yn;
+			matchYnParam = memberBase.match_yn;
 			friendMatchParam = value;
 
 			dataJson = {
 				'api-key': 'U0FNR09CX1RPS0VOXzAx',
-				member_seq: member.base.member_seq,
+				member_seq: memberBase.member_seq,
 				friend_match_yn: friendMatchParam,
 			};
 		}
@@ -316,7 +217,7 @@ export const Roby = (props: Props) => {
 				properties.api_domain + '/member/updateProfileReex',
 				{
 					'api-key': 'U0FNR09CX1RPS0VOXzAx',
-					member_seq: member.base.member_seq,
+					member_seq: memberBase.member_seq,
 				},
 				{
 					headers: {
@@ -337,7 +238,27 @@ export const Roby = (props: Props) => {
 			});
 	};
 
-	// ################### 팝업 관련 #####################
+	// 별점 이미지 적용
+	const showStarImg = (score:number) => {
+		let starCnt = score/2;
+		let starIntegerCnt = Math.floor(starCnt);
+		let starDecimalScore = score - Math.floor(score)
+  
+		let starImgArr = [];
+  
+		for(let i = 1; i <= starIntegerCnt; i++){
+		   starImgArr.push(<Image source={ICON.star} style={styles.iconSize24} />);
+		}
+  
+		if(starDecimalScore) starImgArr.push(<Image source={ICON.starHalf} style={styles.iconSize24} />);
+  
+		return starImgArr;
+	 };
+
+
+
+
+	// ####################################################### 팝업 관련 #######################################################
 
 	const [profileReAprPopup, setProfileReAprPopup] = useState(false); // 프로필 재심사 팝업
 	const [useReportPopup, setUseReportPopup] = useState(false); // 사용자 신고하기 팝업
@@ -384,17 +305,14 @@ export const Roby = (props: Props) => {
 				<SpaceView mb={48} viewStyle={layoutStyle.alignCenter}>
 					<SpaceView mb={8}>
 						<Image
-							source={{ uri: properties.img_domain + member.base.mst_img_path }}
+							source={{ uri: properties.img_domain + memberBase.mst_img_path }}
 							style={styles.profileImg}
 						/>
 						{/* <Image source={PROFILE_IMAGE.profileM1} style={styles.profileImg} /> */}
 						{/* <Image source={{uri : props.route.params.mstImg}} style={styles.profileImg} /> */}
 						<View style={styles.profilePenContainer}>
 							<TouchableOpacity
-								onPress={() => {
-									navigation.navigate('Introduce');
-								}}
-							>
+								onPress={() => { navigation.navigate('Introduce'); }} >
 								<Image source={ICON.pen} style={styles.iconSize24} />
 							</TouchableOpacity>
 						</View>
@@ -402,16 +320,16 @@ export const Roby = (props: Props) => {
 
 					<SpaceView mb={4}>
 						<CommonText fontWeight={'700'} type={'h4'}>
-							{member.base.nickname}, {member.base.age}
+							{memberBase.nickname}, {memberBase.age}
 						</CommonText>
 					</SpaceView>
 					<SpaceView mb={16} viewStyle={styles.levelContainer}>
 						<CommonText color={ColorType.gray6666} type={'h6'}>
-							LV.{member.base.auth_cnt != null ? member.base.auth_cnt : 0}
+							LV.{7-parseInt(memberBase.auth_acct_cnt)}
 						</CommonText>
 					</SpaceView>
 
-					<CommonText color={ColorType.gray6666}>{member.base.comment}</CommonText>
+					<CommonText color={ColorType.gray6666}>{memberBase.comment}</CommonText>
 				</SpaceView>
 
 				<View>
@@ -433,12 +351,13 @@ export const Roby = (props: Props) => {
 						<View style={[styles.halfItemLeft, styles.profileContainer, layoutStyle.alignCenter]}>
 							<SpaceView mb={4}>
 								<CommonText fontWeight={'700'} type={'h2'}>
-									{member.base.profile_score}
+									{memberBase.profile_score}
 								</CommonText>
 							</SpaceView>
 
 							<SpaceView mb={24} viewStyle={layoutStyle.rowCenter}>
-								<Image source={ICON.star} style={styles.iconSize24} />
+								{/* <Image source={ICON.star} style={styles.iconSize24} /> */}
+								{memberBase.profile_score < 1 ? (<Image source={ICON.star} style={styles.iconSize24} />) : showStarImg(memberBase.profile_score)}
 							</SpaceView>
 							<ToolTip
 								position={'bottomLeft'}
@@ -450,7 +369,7 @@ export const Roby = (props: Props) => {
 						<View style={[styles.halfItemRight, styles.profileContainer, layoutStyle.alignCenter]}>
 							<SpaceView mb={4}>
 								<CommonText fontWeight={'700'} type={'h2'}>
-									0
+									0.0
 								</CommonText>
 							</SpaceView>
 							<SpaceView mb={24} viewStyle={layoutStyle.rowCenter}>
@@ -555,8 +474,7 @@ export const Roby = (props: Props) => {
 						style={styles.rowStyle}
 						onPress={() => {
 							navigation.navigate('Preference');
-						}}
-					>
+						}} >
 						<CommonText fontWeight={'500'}>내 선호 이성</CommonText>
 						<Image source={ICON.arrRight} style={styles.iconSize} />
 					</TouchableOpacity>
@@ -570,7 +488,7 @@ export const Roby = (props: Props) => {
 							callbackFn={(value: boolean) => {
 								updateMemberInfo('01', value ? 'Y' : 'N');
 							}}
-							isOn={member.base.match_yn == 'Y' ? true : false}
+							isOn={memberBase.match_yn == 'Y' ? true : false}
 						/>
 					</View>
 
@@ -583,7 +501,7 @@ export const Roby = (props: Props) => {
 							callbackFn={(value: boolean) => {
 								updateMemberInfo('02', value ? 'Y' : 'N');
 							}}
-							isOn={member.base.friend_match_yn == 'Y' ? true : false}
+							isOn={memberBase.friend_match_yn == 'Y' ? true : false}
 						/>
 					</View>
 				</SpaceView>
@@ -641,13 +559,7 @@ export const Roby = (props: Props) => {
 					<TouchableOpacity
 						style={styles.rowStyle}
 						onPress={() => {
-							navigation.navigate('Profile', {
-								nickname: member.base.nickname,
-								name: member.base.name,
-								gender: member.base.gender,
-								age: member.base.age,
-								phone_number: member.base.phone_number,
-							});
+							navigation.navigate('Profile');
 						}}
 					>
 						<CommonText fontWeight={'500'}>내 계정 정보</CommonText>
@@ -690,6 +602,7 @@ export const Roby = (props: Props) => {
 
 						<SpaceView viewStyle={layoutStyle.alignCenter}>
 							<CommonText type={'h5'}>프로필 재심사 대기열에 등록하시겠습니까?</CommonText>
+							<CommonText type={'h5'} color={ColorType.red}>패스 x10</CommonText>
 						</SpaceView>
 
 						<View style={modalStyle.modalBtnContainer}>
