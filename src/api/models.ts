@@ -48,6 +48,9 @@ export async function purchase_product(
 	, result_code: any
 	, receiptData: any
 ) {
+
+	const receiptDataJson = JSON.parse(receiptData);
+
 	const body = {
 		'api-key': 'U0FNR09CX1RPS0VOXzAx'
 		, device_gubun: device_gubun
@@ -56,13 +59,13 @@ export async function purchase_product(
 		, item_code: item_code
 		, result_msg: JSON.stringify(result_msg)
 		, result_code: result_code
-		, acknowledged: receiptData.acknowledged
-		, packageName: receiptData.packageName
-		, productId: receiptData.productId
-		, purchaseState: receiptData.purchaseState
-		, purchaseTime: receiptData.purchaseTime
-		, purchaseToken: receiptData.purchaseToken
-		, quantity: receiptData.quantity
+		, acknowledged: receiptDataJson.acknowledged
+		, packageName: receiptDataJson.packageName
+		, productId: receiptDataJson.productId
+		, purchaseState: receiptDataJson.purchaseState
+		, purchaseTime: receiptDataJson.purchaseTime
+		, purchaseToken: receiptDataJson.purchaseToken
+		, quantity: receiptDataJson.quantity
 	}
 
 	return Send(route.PURCHASE, 'POST', body, true, false);

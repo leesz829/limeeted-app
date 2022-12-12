@@ -136,13 +136,7 @@ export const Storage = (props : Props) => {
 
    // 프로필 열람 팝업 활성화
    const popupProfileOpen = async (match_seq: any, tgt_member_seq: any, type: any, profile_open_yn: any) => {
-
-      console.log('match_seq :::: ', match_seq);
-      console.log('tgt_member_seq :::: ', tgt_member_seq);
-      console.log('type :::: ', type);
-      console.log('profile_open_yn :::: ', profile_open_yn);
-
-      /* if(profile_open_yn == 'N') {
+      if(profile_open_yn == 'N') {
          setDetailMatchData({
             match_seq: match_seq
             , tgt_member_seq: tgt_member_seq
@@ -151,13 +145,18 @@ export const Storage = (props : Props) => {
          });
          setProfileOpenPopup(true);
       } else {
-         navigation.reset({routes: [{name: "StorageProfile", params: {
+         /* navigation.reset({routes: [{name: "StorageProfile", params: {
             matchSeq: match_seq,
             tgtMemberSeq: tgt_member_seq,
             type: type
-         }}]});
+         }}]}); */
 
-      } */
+         navigation.navigate('StorageProfile', {
+            matchSeq: match_seq,
+            tgtMemberSeq: tgt_member_seq,
+            type: type
+         })
+      }
    }
 
    // 프로필 열람 이동
