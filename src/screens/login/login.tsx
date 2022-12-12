@@ -45,8 +45,8 @@ GoogleSignin.configure({
 export const Login01 = (props: Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 	const dispatch = useDispatch();
-	const [id, setId] = React.useState('');
-	const [password, setPassword] = React.useState('');
+	const [id, setId] = React.useState('tester1');
+	const [password, setPassword] = React.useState('1234');
 
 	React.useEffect(() => {
 		//dispatch(myProfile());
@@ -118,7 +118,10 @@ export const Login01 = (props: Props) => {
 				let joinStatus = data.base.join_status;
 				if (resultCode == '0000' && (memberStatus == 'PROCEED' || memberStatus == 'APROVAL')) {
 					if (memberStatus == 'APROVAL') {
-						navigation.navigate('Approval');
+						navigation.navigate('Approval', {
+							memberSeq: data.base.member_seq,
+							accessType: 'LOGIN'
+						});
 					} else {
 						if (null != joinStatus) {
 							if (joinStatus == '01') {
