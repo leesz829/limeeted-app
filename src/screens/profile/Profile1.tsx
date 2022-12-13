@@ -168,6 +168,7 @@ export const Profile1 = (props: Props) => {
 			setImgData({ ...imgData, imgData });
 		}
 
+		
 		if (mbrSecondAuthList != null) {
 			mbrSecondAuthList.map(({ second_auth_code, status }: { second_auth_code: any, status: any }) => {
 				if (second_auth_code == 'JOB' && status == 'ACCEPT') { setIsJob(true); }
@@ -456,7 +457,7 @@ export const Profile1 = (props: Props) => {
 							<View style={[layoutStyle.rowBetween]}>
 								<View style={styles.statusBtn}>
 									<CommonText type={'h6'} color={ColorType.white}>
-										TIER {7-parseInt(memberBase.auth_acct_cnt)}
+										TIER {mbrSecondAuthList.length}
 									</CommonText>
 								</View>
 								<Image source={ICON.medalAll} style={styles.iconSize32} />

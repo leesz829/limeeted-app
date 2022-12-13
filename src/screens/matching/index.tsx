@@ -80,7 +80,10 @@ export const Matching = (props : Props) => {
 			setInterestSendPopup(true);
 		} else if(activeType == 'sincere') {
 			setSincereSendPopup(true);
+		} else if(activeType == 'pass') {
+			setCancelPopup(true);
 		}
+
 
 
 		/* let alertTit = '알림';
@@ -192,6 +195,9 @@ export const Matching = (props : Props) => {
 
 			if(response.data.result_code == '0000') {
 				getMatchProfileInfo();
+				setInterestSendPopup(false)
+				setSincereSendPopup(false)
+				setCancelPopup(false);
 				setIsLoad(false);
 			 } else if(response.data.result_code == '6010') {
 				Alert.alert('알림', '보유 패스가 부족합니다.', [{ text: '확인' }]);
@@ -226,7 +232,7 @@ export const Matching = (props : Props) => {
 
 		// 차량
 		let vehice = false;
-
+		
 		data.secondAuthList.forEach((e, i) => {
 			switch(e.second_auth_code) {
 				case 'ASSET':
@@ -385,8 +391,6 @@ export const Matching = (props : Props) => {
 			}
 		})
 		.then(function (response) {
-			console.log('reponse ::::: ', response.data.match_memeber_info);
-
 			if(response.data.result_code != '0000'){
 				console.log(response.data.result_msg);
 				return false;
@@ -457,6 +461,7 @@ export const Matching = (props : Props) => {
 	// ################### 팝업 관련 #####################
 	const [interestSendPopup, setInterestSendPopup] = useState(false); // 관심 보내기 팝업
 	const [sincereSendPopup, setSincereSendPopup] = useState(false); // 찐심 보내기 팝업
+	const [cancelPopup, setCancelPopup] = useState(false); // 찐심 보내기 팝업
 
 	
 
@@ -500,7 +505,7 @@ export const Matching = (props : Props) => {
 						<View style={[layoutStyle.rowBetween]}>
 							<View style={styles.statusBtn}>
 								<CommonText type={'h6'} color={ColorType.white}>
-									TIER {secondAuthList && 7-secondAuthList.length}
+									TIER {data.secondAuthList.length}
 								</CommonText>
 							</View>
 							<Image source={ICON.medalAll} style={styles.iconSize32} />
@@ -660,6 +665,40 @@ export const Matching = (props : Props) => {
 					</SpaceView>
 				</View>
 			</Modalize>
+
+			{/* ###############################################
+                        매칭 취소 팝업
+            ############################################### */}
+			<Modal visible={cancelPopup} transparent={true}>
+				<View style={modalStyle.modalBackground}>
+					<View style={modalStyle.modalStyle1}>
+						<SpaceView mb={16} viewStyle={layoutStyle.alignCenter}>
+							<CommonText fontWeight={'700'} type={'h4'}>
+								매칭 취소
+							</CommonText>
+						</SpaceView>
+
+						<SpaceView viewStyle={layoutStyle.alignCenter}>
+							<CommonText type={'h5'}>이성을 거부하시겠습니까?</CommonText>
+						</SpaceView>
+
+						<View style={modalStyle.modalBtnContainer}>
+							<TouchableOpacity
+								style={modalStyle.modalBtn}
+								onPress={() => setCancelPopup(false)}
+							>
+								<CommonText fontWeight={'500'}>취소</CommonText>
+							</TouchableOpacity>
+							<View style={modalStyle.modalBtnline} />
+							<TouchableOpacity style={modalStyle.modalBtn} onPress={() => insertMatchInfo('pass') }>
+								<CommonText fontWeight={'500'} color={ColorType.red}>
+								확인
+								</CommonText>
+							</TouchableOpacity>
+						</View>
+					</View>
+				</View>
+			</Modal>
 
 
 			{/* ###############################################
