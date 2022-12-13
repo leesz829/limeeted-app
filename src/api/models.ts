@@ -39,8 +39,36 @@ export async function signup_with_social(type: string, msg: any) {
 	return Send(route.LOGIN, 'POST', body, true, false);
 }
 
-export async function purchase_product(body: any) {
-	return Send(route.PURCHASE, 'POST', JSON.stringify(body), true, false);
+export async function purchase_product(
+	device_gubun: any
+	, buy_price: any
+	, item_name: any
+	, item_code: any
+	, result_msg: any
+	, result_code: any
+	, receiptData: any
+) {
+
+	const receiptDataJson = JSON.parse(receiptData);
+
+	const body = {
+		'api-key': 'U0FNR09CX1RPS0VOXzAx'
+		, device_gubun: device_gubun
+		, buy_price: buy_price
+		, item_name: item_name
+		, item_code: item_code
+		, result_msg: JSON.stringify(result_msg)
+		, result_code: result_code
+		, acknowledged: receiptDataJson.acknowledged
+		, packageName: receiptDataJson.packageName
+		, productId: receiptDataJson.productId
+		, purchaseState: receiptDataJson.purchaseState
+		, purchaseTime: receiptDataJson.purchaseTime
+		, purchaseToken: receiptDataJson.purchaseToken
+		, quantity: receiptDataJson.quantity
+	}
+
+	return Send(route.PURCHASE, 'POST', body, true, false);
 }
 
 export async function get_my_info() {

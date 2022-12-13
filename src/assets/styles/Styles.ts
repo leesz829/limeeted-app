@@ -2,6 +2,44 @@ import { StyleSheet, Dimensions } from 'react-native';
 import { Color } from './Color';
 
 const { width, height } = Dimensions.get('window');
+
+export const commonStyle = StyleSheet.create({
+	mt5: { marginTop: 5 },
+	mt10: { marginTop: 10 },
+	mt15: { marginTop: 15 },
+	mt20: { marginTop: 20 },
+	mt25: { marginTop: 25 },
+	mt30: { marginTop: 30 },
+	mb5: { marginBottom: 5 },
+	mb10: { marginBottom: 10 },
+	mb15: { marginBottom: 15 },
+	mb20: { marginBottom: 20 },
+	mb25: { marginBottom: 25 },
+	mb30: { marginBottom: 30 },
+	ml5: { marginLeft: 5 },
+	ml10: { marginLeft: 10 },
+	ml15: { marginLeft: 15 },
+	ml20: { marginLeft: 20 },
+	ml25: { marginLeft: 25 },
+	ml30: { marginLeft: 30 },
+	mr5: { marginRight: 5 },
+	mr10: { marginRight: 10 },
+	mr15: { marginRight: 15 },
+	mr20: { marginRight: 20 },
+	mr25: { marginRight: 25 },
+	mr30: { marginRight: 30 },
+	fontSize10: { fontSize: 10 },
+	fontSize11: { fontSize: 11 },
+	fontSize12: { fontSize: 12 },
+	fontSize13: { fontSize: 13 },
+	fontSize14: { fontSize: 14 },
+	fontSize15: { fontSize: 15 },
+	fontSize16: { fontSize: 16 },
+	fontSize17: { fontSize: 17 },
+	fontSize18: { fontSize: 18 },
+});
+
+
 export const styles = StyleSheet.create({
 	dim: { position: 'absolute', width: '100%', height: '100%', borderRadius: 16 },
 	openCloseBtn: {

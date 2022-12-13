@@ -34,7 +34,19 @@ export const Matching = (props : Props) => {
 
 	const jwtToken = hooksMember.getJwtToken();		// 토큰
 	const memberSeq = hooksMember.getMemberSeq();	// 회원번호
-	
+
+	// 로딩 상태 체크
+	const [isLoad, setIsLoad] = useState(false);
+
+	// 매칭 회원 관련 데이터
+	const [data, setData] = useState<any>({
+		memberBase: {}
+		, profileImgList: []
+		, secondAuthList: []
+		, interviewList: []
+	});
+
+
 	// 매치 회원 정보
 	const [matchMemberData, setMatchMemberData] = useState(MemberBaseData);
 
@@ -53,13 +65,13 @@ export const Matching = (props : Props) => {
 	// 선택된 신고하기 타입
 	const [checkReportType, setCheckReportType] = useState(['']);
 	
-
 	// 신고 Pop
 	const report_modalizeRef = useRef<Modalize>(null);
 	const report_onOpen = () => { report_modalizeRef.current?.open(); };
 	const report_onClose = () => {	report_modalizeRef.current?.close(); };
 
-	// 관심 여부 체크
+
+	// ##### 관심 여부 체크 Callback 함수
 	const profileCallbackFn = (activeType:string) => {
 		// pass : 거부, sincere : 찐심, interest : 관심
 
@@ -68,9 +80,9 @@ export const Matching = (props : Props) => {
 
 		if(activeType == 'interest') { 
 			alertMsg = '이성에게 관심을 보내시겠습니까?';
-		 } else if(activeType == 'pass') {
+		} else if(activeType == 'pass') {
 			alertMsg = '이성을 거부하시겠습니까?';
-		 }
+		}
 
 		Alert.alert(
 			alertTit,
@@ -93,8 +105,8 @@ export const Matching = (props : Props) => {
 		);
 	}
 
-	// 신고 여부 체크
-	const reportCallbackFn = (reportType:string, check:boolean) => {
+	// ##### 사용자 신고하기 - 신고사유 체크 Callback 함수
+	const reportCheckCallbackFn = (reportType:string, check:boolean) => {
 		if(check){
 			checkReportType.push(reportType);
 			setCheckReportType(checkReportType.filter((e, index) => checkReportType.indexOf(e) === index && e));
@@ -104,12 +116,11 @@ export const Matching = (props : Props) => {
 		}
 	}
 
-	const insertReportCheck = () => {
-
-		console.log(insertReportCheck, checkReportType.join());
-
+	// ##### 사용자 신고하기 - 팝업 활성화
+	const popupReport = () => {
 		if(!checkReportType.length){
-			Alert.alert('신고항목을 선택해주세요.')
+			Alert.alert('알림', '신고항목을 선택해주세요.', [{ text: '확인' }]);
+
 			return false;
 		}else{
 			Alert.alert(
@@ -134,14 +145,12 @@ export const Matching = (props : Props) => {
 		}
 	}
 
+	// ##### 사용자 신고하기 등록
 	const insertReport = async () => {
-
-		console.log('insertReport');
-
 		const result = await axios.post(properties.api_domain + '/match/insertReport', {
 			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
 			, 'report_type_code_list' : checkReportType.join()
-			, 'member_seq' : matchMemberData.member_seq
+			, 'member_seq' : data.memberBase.member_seq
 		}
 		, {
 			headers: {
@@ -153,21 +162,21 @@ export const Matching = (props : Props) => {
 				console.log(response.data.result_msg);
 				return false;
 			}
-
-			Alert.alert('신고처리되었습니다.');
+			
+			Alert.alert('알림', '신고 처리 되었습니다.', [{ text: '확인' }]);
 			report_onClose();
-			console.log('insertReport ::: ', response.data);
 		})
 		.catch(function (error) {
 			console.log('insertReport error ::: ' , error);
 		});
 	}
 	
+	// ##### 찐심/관심/거부 저장
 	const insertMatchInfo = async (activeType:string) => {
 		const result = await axios.post(properties.api_domain + '/match/insertMatchInfo', {
 			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
 			, 'active_type' : activeType
-			, 'member_seq' : matchMemberData.member_seq
+			, 'member_seq' : data.memberBase.member_seq
 		}
 		, {
 			headers: {
@@ -175,23 +184,25 @@ export const Matching = (props : Props) => {
 			}
 		})
 		.then(function (response) {
-			if(response.data.result_code != '0000'){
-				console.log(response.data.result_msg);
+
+			if(response.data.result_code == '0000') {
+				getMatchProfileInfo();
+				setIsLoad(false);
+			 } else if(response.data.result_code == '6010') {
+				Alert.alert('알림', '보유 패스가 부족합니다.', [{ text: '확인' }]);
 				return false;
-			}
-
-			navigation.navigate('Main', {
-				screen: 'Roby'
-			});
-
-			// getMatchProfileInfo();
-
+			 } else {
+				console.log(response.data.result_msg);
+				Alert.alert('알림', '오류입니다. 관리자에게 문의해주세요.', [{ text: '확인' }]);
+			 }
+			
 		})
 		.catch(function (error) {
 			console.log('insertMatchInfo error ::: ' , error);
 		});
 	}
 
+	// ##### 프로필 2차 인증 목록 UI 생성
 	const createSecondAuthListBody = () => {
 		// 자산
 		let asset = false;
@@ -211,7 +222,7 @@ export const Matching = (props : Props) => {
 		// 차량
 		let vehice = false;
 
-		secondAuthList.forEach((e, i) => {
+		data.secondAuthList.forEach((e, i) => {
 			switch(e.second_auth_code) {
 				case 'ASSET':
 					asset = true;
@@ -275,6 +286,7 @@ export const Matching = (props : Props) => {
 		);
 	}
 
+	// ##### 신고사유 코드 목록 조회
 	const selectReportCodeList = async () => {
 		
 		const result = await axios.post(properties.api_domain + '/common/selectCommonCodeList',
@@ -289,21 +301,21 @@ export const Matching = (props : Props) => {
 			},
 		)
 		.then(function (response) {
-			console.log('selectReportCodeList :::::: ', response);
-
 			if (response.data.result_code != '0000') {
 				console.log('fail ::: ', response.data.result_msg);
 				return false;
 			} else {
-				if (null != response.data.result) {
+
+				if (response.data.result) {
 					let tmpReportTypeList = [{text: '', value: ''}];
 					let commonCodeList = [CommonCode];
-					commonCodeList = JSON.parse(response.data.result);
+					commonCodeList = response.data.result;
 					
 					// CommonCode
 					commonCodeList.map(commonCode => {
 						tmpReportTypeList.push({text: commonCode.code_name, value: commonCode.common_code})
 					});
+					console.log('tmpReportTypeList ::: ' , tmpReportTypeList);
 
 					setReportTypeList(tmpReportTypeList.filter(x => x.text));
 				}
@@ -314,8 +326,8 @@ export const Matching = (props : Props) => {
 		});
 	}
 
+	// ##### 매칭 프로필 정보 조회
 	const getMatchProfileInfo = async () => {
-
 		const result = await axios.post(properties.api_domain + '/match/selectMatchProfileInfo', {
 			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
 		}
@@ -325,40 +337,67 @@ export const Matching = (props : Props) => {
 			}
 		})
 		.then(function (response) {
+			console.log('reponse ::::: ', response.data.match_memeber_info);
+
 			if(response.data.result_code != '0000'){
 				console.log(response.data.result_msg);
 				return false;
 			}
 
-			// 1. 매칭 회원 정보
-			setMatchMemberData(response.data.result.match_memeber_info);
+			let tmpProfileImgList = new Array(); // 프로필 이미지 목록
+			let tmpSecondAuthList = new Array(); // 2차 인증 목록
+			let tmpInterviewList = new Array(); // 인터뷰 목록
 
-			// 2. 프로필 이미지
-			// match_profile_img
-			let tmpProfileImgList = [ProfileImg];
-			let fileInfoList = [FileInfo]
-			fileInfoList = response.data.result.profile_img_list;
+			// 회원 프로필 이미지 정보 구성
+			response.data?.profile_img_list?.map(
+				({
+					file_name,
+					file_path
+				}: {
+					file_name: any;
+					file_path: any;
+				}) => {
+					const img_path = properties.img_domain + file_path + file_name;
+					const dataJson = { url: img_path };
+					tmpProfileImgList.push(dataJson);
+				},
+			);
+
+			// 회원 2차 인증 목록 정보 구성
+			response.data?.second_auth_list?.map(
+				({
+					second_auth_code
+				}: {
+					second_auth_code: any;
+				}) => {
+					const dataJson = { second_auth_code: second_auth_code };
+					tmpSecondAuthList.push(dataJson);
+				},
+			);
+
+			// 회원 인터뷰 목록 정보 구성
+			response.data?.interview_list?.map(
+				({
+					code_name,
+					answer
+				}: {
+					code_name: any;
+					answer: any;
+				}) => {
+					const dataJson = { code_name: code_name, answer: answer };
+					tmpInterviewList.push(dataJson);
+				},
+			);
 			
-			// CommonCode
-			fileInfoList.map(fileInfo => {
-				tmpProfileImgList.push({
-									url : properties.img_domain + fileInfo.file_path + fileInfo.file_name
-									, member_seq : fileInfo.member_seq
-									, name : fileInfo.name
-									, comment : fileInfo.comment
-									, age : fileInfo.age
-									, profile_type : fileInfo.profile_type
-				})
+			setData({
+				...data
+				, memberBase: response.data.match_member_info
+				, profileImgList: tmpProfileImgList
+				, secondAuthList: tmpSecondAuthList
+				, interviewList: tmpInterviewList
 			});
 
-			tmpProfileImgList = tmpProfileImgList.filter(x => x.url);
-			setProfileImgList(tmpProfileImgList);
-
-			// 2차인증
-			setSecondAuthList(response.data.result.second_auth_list);
-			
-			// 인터뷰 
-			setInterviewList(response.data.result.interview_list);
+			setIsLoad(true);
 
 		})
 		.catch(function (error) {
@@ -366,10 +405,13 @@ export const Matching = (props : Props) => {
 		});
 	}
 
-	// 첫 렌더링
+	// ################################## 렌더링시 마다 실행
 	useEffect(() => {
-		// 프로필 정보 조회
-		getMatchProfileInfo();
+
+		if(!isLoad) {
+			// 프로필 정보 조회
+			getMatchProfileInfo();
+		}
 
 		// 신고목록 조회
 		selectReportCodeList();
@@ -378,17 +420,17 @@ export const Matching = (props : Props) => {
 
 
 
-	return profileImgList.length > 0 ? (
+	return data.profileImgList.length > 0 && isLoad ? (
 		<>
 			<TopNavigation currentPath={'LIMEETED'} />
 			<ScrollView>
-				{profileImgList.length > 0 && <ViualSlider 
-											isNew={profileImgList[0].profile_type=='NEW'?true:false} 
+				{data.profileImgList.length > 0 && <ViualSlider 
+											isNew={data.memberBase.profile_type == 'NEW' ? true : false} 
 											onlyImg={false}
-											imgUrls={profileImgList}
-											profileName={profileImgList[0].name}
-											age={profileImgList[0].age}
-											comment={profileImgList[0].comment}
+											imgUrls={data.profileImgList}
+											profileName={data.memberBase.name}
+											age={data.memberBase.age}
+											comment={data.memberBase.comment}
 											callBackFunction={profileCallbackFn} />}
 
 				<SpaceView pt={48} viewStyle={styles.container}>
@@ -401,14 +443,14 @@ export const Matching = (props : Props) => {
 						<View style={[layoutStyle.rowBetween]}>
 							<View style={styles.statusBtn}>
 								<CommonText type={'h6'} color={ColorType.white}>
-									TIER {secondAuthList && secondAuthList.length}
+									TIER {secondAuthList && 7-secondAuthList.length}
 								</CommonText>
 							</View>
 							<Image source={ICON.medalAll} style={styles.iconSize32} />
 						</View>
 					</SpaceView>
 
-					{secondAuthList && createSecondAuthListBody()}
+					{data.secondAuthList && createSecondAuthListBody()}
 
 					<SpaceView mb={54}>
 						<SpaceView mb={16}>
@@ -420,7 +462,12 @@ export const Matching = (props : Props) => {
 						<MainProfileSlider />
 					</SpaceView>
 
-					<SpaceView mb={24}>
+
+					{/* ###############################################
+										인터뷰 영역
+					############################################### */}
+
+					<SpaceView>
 						<SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
 							<View>
 								<CommonText fontWeight={'700'} type={'h3'}>
@@ -434,7 +481,7 @@ export const Matching = (props : Props) => {
 								</SpaceView>
 								<CommonText type={'h5'}>
 									{
-										interviewList.length? 
+										data.interviewList.length > 0 ? 
 											<>
 											<CommonText fontWeight={'700'} type={'h5'}>
 												{interviewList.length}개의 질의
@@ -450,11 +497,38 @@ export const Matching = (props : Props) => {
 								</CommonText>
 							</View>
 						</SpaceView>
+
 						<View style={styles.interviewContainer}>
 							{
-								interviewList.length > 0 ?
-									interviewList.map(interview => (
-										<>
+								data.interviewList.length > 0 ? (
+									data.interviewList.map(({ common_code, code_name, answer } : { common_code: any, code_name: any, answer: any}) =>
+									<>
+										<SpaceView mb={32} viewStyle={layoutStyle.row}>
+											<SpaceView mr={16}>
+												<Image source={ICON.manage} style={styles.iconSize40} />
+											</SpaceView>
+		
+											<View style={styles.interviewLeftTextContainer}>
+												<CommonText type={'h5'}>
+													{code_name}
+												</CommonText>
+											</View>
+										</SpaceView>
+		
+										<SpaceView mb={32} viewStyle={[layoutStyle.row, layoutStyle.selfEnd]}>
+											<SpaceView viewStyle={styles.interviewRightTextContainer} mr={16}>
+												<CommonText type={'h5'} color={ColorType.white}>
+													{answer != null ? answer : '미등록 답변입니다.'}
+												</CommonText>
+											</SpaceView>
+											<SpaceView>
+												<Image source={ICON.boy} style={styles.iconSize40} />
+											</SpaceView>
+										</SpaceView>
+									</>
+									)
+								) : (
+									<>
 										<SpaceView mb={32} viewStyle={layoutStyle.row}>
 											<SpaceView mr={16}>
 												<Image source={ICON.manage} style={styles.iconSize40} />
@@ -462,36 +536,12 @@ export const Matching = (props : Props) => {
 
 											<View style={styles.interviewLeftTextContainer}>
 												<CommonText type={'h5'}>
-													{interview.code_name}
+													질문을 등록해주세요
 												</CommonText>
 											</View>
 										</SpaceView>
-
-										<SpaceView mb={32} viewStyle={[layoutStyle.row, layoutStyle.selfEnd]}>
-											<SpaceView viewStyle={styles.interviewRightTextContainer} mr={16}>
-												<CommonText type={'h5'} color={ColorType.white}>
-													{interview.answer}
-												</CommonText>
-											</SpaceView>
-											<SpaceView>
-												<Image source={ICON.boy} style={styles.iconSize40} />
-											</SpaceView>
-										</SpaceView>
-										</>
-									)) :
-									<>
-									<SpaceView mb={32} viewStyle={layoutStyle.row}>
-										<SpaceView mr={16}>
-											<Image source={ICON.manage} style={styles.iconSize40} />
-										</SpaceView>
-
-										<View style={styles.interviewLeftTextContainer}>
-											<CommonText type={'h5'}>
-												질문을 등록해주세요
-											</CommonText>
-										</View>
-									</SpaceView>
 									</>
+								)
 							}
 						</View>
 					</SpaceView>
@@ -523,14 +573,28 @@ export const Matching = (props : Props) => {
 						<CommonText>신고 사유를 선택해주세요.</CommonText>
 					</SpaceView>
 
+					{/*
+					<SpaceView mb={24}>
+						{[
+							{ text: '비속어 사용' },
+							{ text: '과도한 성적 표현' },
+							{ text: '불쾌감을 주는 표현' },
+							{ text: '성차별 적 표현' },
+							{ text: '기타' },
+						].map((i, index) => (
+							<CommonCheckBox label={i.text} key={index + 'checkbox'} />
+						))}
+					</SpaceView>
+						*/}
+
 					<SpaceView mb={24}>
 						{reportTypeList.length && reportTypeList.map((i, index) => (
-							<CommonCheckBox label={i.text} value={i.value} key={index + '_' + i.value} callBackFunction={reportCallbackFn} />
+							<CommonCheckBox label={i.text} value={i.value} key={index + '_' + i.value} callBackFunction={reportCheckCallbackFn} />
 						))}
 					</SpaceView>
 
 					<SpaceView mb={16}>
-						<CommonBtn value={'신고하기'} onPress={insertReportCheck} type={'primary'} />
+						<CommonBtn value={'신고하기'} onPress={popupReport} type={'primary'} />
 					</SpaceView>
 				</View>
 			</Modalize>

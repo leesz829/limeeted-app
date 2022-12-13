@@ -30,6 +30,9 @@ export const Live = () => {
 
 	const jwtToken = hooksMember.getJwtToken();		// 토큰
 	const memberSeq = hooksMember.getMemberSeq();	// 회원번호
+
+	// 로딩 상태 체크
+	const [isLoad, setIsLoad] = useState(false);
 	
 	// 회원 인상 정보
 	const [faceTypeList, setFaceTypeList] = useState([LabelObj]);
@@ -70,6 +73,7 @@ export const Live = () => {
 		}
 	}
 	
+	// ####### 프로필 평가 등록
 	const insertProfileAssessment = async () => {
 		const result = await axios.post(properties.api_domain + '/profile/insertProfileAssessment', {
 			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
@@ -83,13 +87,12 @@ export const Live = () => {
 			}
 		})
 		.then(function (response) {
-			if(response.data.result_code != '0000'){	
+			if(response.data.result_code != '0000'){
 				return false;
 			}
 
-			navigation.navigate('Main', {
-				screen: 'Roby'
-			});
+			setIsLoad(false);
+			getLiveProfileImg();
 		})
 		.finally(function () {
 			// 다른 프로필 이미지 정보 재호출
@@ -102,7 +105,7 @@ export const Live = () => {
 		});
 	}
 
-	
+	// LIVE 평가 회원 조회
 	const getLiveProfileImg = async () => {
 		const result = await axios.post(properties.api_domain + '/match/selectLiveProfileImg', {
 			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
@@ -130,12 +133,11 @@ export const Live = () => {
 									, comment : fileInfo.comment
 									, age : fileInfo.age
 									, profile_type : fileInfo.profile_type
-				})
-
-				
+				});
 			});
 			tmpProfileImgList = tmpProfileImgList.filter(x => x.url);
 			setProfileImgList(tmpProfileImgList);
+			setIsLoad(true);
 		})
 		.catch(function (error) {
 			console.log('getLiveProfileImg error ::: ', error);
@@ -179,17 +181,18 @@ export const Live = () => {
 
 	// 첫 렌더링 때 fetchNews() 한 번 실행
 	React.useEffect(() => {
-		console.log('profileImgList1111111 :::: ', profileImgList);
 
-		// 프로필 이미지 정보
-		getLiveProfileImg();
+		if(!isLoad) {
+			// 프로필 이미지 정보
+			getLiveProfileImg();
+		}
 		
 		// 인상정보
 		getFaceType();
 	}, [isFocus]);
 	
 	
-	return profileImgList.length > 0 ? (
+	return profileImgList.length > 0 && isLoad ? (
 		<>
 			<TopNavigation currentPath={'LIVE'} />
 			<ScrollView>

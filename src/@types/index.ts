@@ -41,7 +41,10 @@ export type StackParamList = {
 	Signup03: {
 		memberSeq: Number;
 	};
-	Approval: undefined;
+	Approval: {
+		memberSeq: Number;
+		accessType: string;
+	};
 	SecondAuthPopup: undefined;	// 2차 인증 팝업
 	SignupPopUp2: undefined;
 	CommonPopup: undefined;
@@ -59,19 +62,14 @@ export type StackParamList = {
 	Board1: undefined;
 	Preference: undefined;
 	PreferencePopup: undefined;
-	Profile: {
-		nickname : string;
-		name: string;
-		gender: string;
-		age: string;
-		phone_number: string;
-	};
+	Profile: undefined;
 	Sample: undefined;
 	Profile1: undefined;
 	SecondAuth: undefined;
 	Profile2: undefined;
 	StorageProfile: {
-		memberSeq: Number;
+		matchSeq: Number;
+		tgtMemberSeq: Number;
 		type: string;
 	};
 };
@@ -135,7 +133,8 @@ export const CommonCode= {
 
 	
 export const Interview = {
-	code_name : ''
+	common_code : ''
+	, code_name : ''
 	, answer : ''
 	, order_seq : ''
 }
@@ -151,7 +150,6 @@ export const MemberBaseData = {
 	, age : ''
 	, gender : ''
 	, phone_number : ''
-	, profile_tier : ''
 	, member_auth_seq : ''
 	, birthday : ''
 	, join_appr_dt : ''
@@ -174,9 +172,11 @@ export const MemberBaseData = {
 	, smoking : ''
 	, mst_img_path : ImagePropTypes
 	, friend_match_yn : ''
-	, profile_score : ''
 	, grade_score : ''
 	, member_level : ''
+	, profile_tier : ''
+	, profile_score : ''
+	, profile_type : ''
 }
 
 export const FileInfo= {

@@ -152,10 +152,24 @@ export const Signup00 = (props: Props) => {
 								Alert.alert('알림', '아이디를 입력해 주세요.', [{ text: '확인' }]);
 								return;
 							}
+
+							let regEmail = /^([0-9a-zA-Z_\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;
+							if(!regEmail.test(id)){
+								Alert.alert('알림', '이메일 형식의 아이디가 아닙니다.', [{ text: '확인' }]);
+								return;
+							}
+							
 							if (password == '') {
 								Alert.alert('알림', '비밀번호를 입력해 주세요.', [{ text: '확인' }]);
 								return;
 							}
+
+							let regPass = /^(?=.*[a-zA-Z])(?=.*[0-9]).{8,25}$/;
+							if((!regPass.test(password))){
+								Alert.alert('알림', '영문, 숫자 조합으로 8-20자리 입력해주세요.', [{ text: '확인' }]);
+								return;
+							}
+
 							if (passwordChk == '') {
 								Alert.alert('알림', '비밀번호 확인을 입력해 주세요.', [{ text: '확인' }]);
 								return;
