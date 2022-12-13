@@ -3,7 +3,7 @@ import { useState, useEffect, useRef} from 'react';
 import { Image, ScrollView, View, FlatList, Alert, TouchableOpacity } from 'react-native';
 import TopNavigation from 'component/TopNavigation';
 import { ICON } from 'utils/imageUtils';
-import { layoutStyle, styles } from 'assets/styles/Styles';
+import { layoutStyle, styles, modalStyle } from 'assets/styles/Styles';
 import SpaceView from 'component/SpaceView';
 import { CommonText } from 'component/CommonText';
 import { ColorType, ScreenNavigationProp, BottomParamList, Interview, ProfileImg, FileInfo, MemberBaseData, CommonCode, LabelObj, StackParamList} from '@types';
@@ -16,6 +16,8 @@ import axios from 'axios';
 import * as properties from 'utils/properties';
 import { MainProfileSlider } from 'component/MainProfileSlider';
 import { MatchSearch } from 'screens/matching/MatchSearch';
+import { Modalize } from 'react-native-modalize';
+import { CommonCheckBox } from 'component/CommonCheckBox';
 
 /* ################################################################################################################
 ###### 매칭 상대 프로필 상세
@@ -61,6 +63,17 @@ export const StorageProfile = (props : Props) => {
 
    // 인터뷰 정보
    const [interviewList, setInterviewList] = useState<any>([{}]);
+
+   // 신고목록
+	const [reportTypeList, setReportTypeList] = useState([{text: '', value: ''}]);
+
+   // 선택된 신고하기 타입
+	const [checkReportType, setCheckReportType] = useState(['']);
+
+   // 신고 Pop
+	const report_modalizeRef = useRef<Modalize>(null);
+	const report_onOpen = () => { report_modalizeRef.current?.open(); };
+	const report_onClose = () => {	report_modalizeRef.current?.close(); };
 
 
    // 매칭 회원 정보 조회
@@ -134,6 +147,21 @@ export const StorageProfile = (props : Props) => {
                   , secondAuthList: tmpSecondAuthList
                   , interviewList: tmpInterviewList
                });
+
+
+               // 신고사유 코드 목록 적용
+               let tmpReportTypeList = [{text: '', value: ''}];
+               let commonCodeList = [CommonCode];
+               commonCodeList = response.data.reportCodeList;
+
+               // CommonCode
+               commonCodeList.map(commonCode => {
+                  tmpReportTypeList.push({text: commonCode.code_name, value: commonCode.common_code})
+               });
+               console.log('tmpReportTypeList ::: ' , tmpReportTypeList);
+
+               setReportTypeList(tmpReportTypeList.filter(x => x.text));
+
 
                setIsLoad(true);
 
@@ -271,9 +299,78 @@ export const StorageProfile = (props : Props) => {
    }
 
 
+
+   // ##### 사용자 신고하기 - 신고사유 체크 Callback 함수
+	const reportCheckCallbackFn = (reportType:string, check:boolean) => {
+		if(check){
+			checkReportType.push(reportType);
+			setCheckReportType(checkReportType.filter((e, index) => checkReportType.indexOf(e) === index && e));
+			
+		}else{			
+			setCheckReportType(checkReportType.filter((e) => e != reportType && e));
+		}
+	}
+
+	// ##### 사용자 신고하기 - 팝업 활성화
+	const popupReport = () => {
+		if(!checkReportType.length){
+			Alert.alert('알림', '신고항목을 선택해주세요.', [{ text: '확인' }]);
+
+			return false;
+		}else{
+			Alert.alert(
+				"사용자 신고하기",
+				"신고하시겠습니까?",
+				[
+				  // The "Yes" button
+				  {
+					text: "취소",
+					onPress: () => {
+						return false;
+					},
+				  },
+				  // The "No" button
+				  // Does nothing but dismiss the dialog when tapped
+				  {
+					text: "확인",
+					onPress: () => {insertReport()},
+				  },
+				]
+			);
+		}
+	}
+
+	// ##### 사용자 신고하기 등록
+	const insertReport = async () => {
+		const result = await axios.post(properties.api_domain + '/match/insertReport', {
+			'api-key' : 'U0FNR09CX1RPS0VOXzAx'
+			, 'report_type_code_list' : checkReportType.join()
+			, 'member_seq' : tgtMemberSeq
+		}
+		, {
+			headers: {
+				'jwt-token' : jwtToken
+			}
+		})
+		.then(function (response) {
+			if(response.data.result_code != '0000'){
+				console.log(response.data.result_msg);
+				return false;
+			}
+			
+			Alert.alert('알림', '신고 처리 되었습니다.', [{ text: '확인' }]);
+			report_onClose();
+		})
+		.catch(function (error) {
+			console.log('insertReport error ::: ' , error);
+		});
+	}
+
+
    // ##### 첫 렌더링
    useEffect(() => {
       selectMatchMemberInfo();
+
    }, [isFocus]);
 
    return isLoad ? (
@@ -467,8 +564,66 @@ export const StorageProfile = (props : Props) => {
                      }
                   </View>
                </SpaceView>
+
+               <SpaceView mb={40}>
+						<CommonBtn value={'신고'} icon={ICON.siren} iconSize={24} onPress={() => report_onOpen()}/>
+					</SpaceView>
+
             </SpaceView>
          </ScrollView>
+
+
+         {/* ###############################################
+                        사용자 신고하기 팝업
+            ############################################### */}
+			<Modalize
+				ref={report_modalizeRef}
+				adjustToContentHeight={true}
+				handleStyle={modalStyle.modalHandleStyle}
+				modalStyle={modalStyle.modalContainer}
+			>
+				<View style={modalStyle.modalHeaderContainer}>
+					<CommonText fontWeight={'700'} type={'h3'}>
+						사용자 신고하기
+					</CommonText>
+					<TouchableOpacity onPress={report_onClose}>
+						<Image source={ICON.xBtn} style={styles.iconSize24} />
+					</TouchableOpacity>
+				</View>
+
+				<View style={modalStyle.modalBody}>
+					<SpaceView mb={16}>
+						<CommonText>신고 사유를 선택해주세요.</CommonText>
+					</SpaceView>
+
+					{/*
+					<SpaceView mb={24}>
+						{[
+							{ text: '비속어 사용' },
+							{ text: '과도한 성적 표현' },
+							{ text: '불쾌감을 주는 표현' },
+							{ text: '성차별 적 표현' },
+							{ text: '기타' },
+						].map((i, index) => (
+							<CommonCheckBox label={i.text} key={index + 'checkbox'} />
+						))}
+					</SpaceView>
+						*/}
+
+					<SpaceView mb={24}>
+						{reportTypeList.length && reportTypeList.map((i, index) => (
+							<CommonCheckBox label={i.text} value={i.value} key={index + '_' + i.value} callBackFunction={reportCheckCallbackFn} />
+						))}
+					</SpaceView>
+
+					<SpaceView mb={16}>
+						<CommonBtn value={'신고하기'} onPress={popupReport} type={'primary'} />
+					</SpaceView>
+				</View>
+			</Modalize>
+
+
+
       </>
    ) : null;
 };

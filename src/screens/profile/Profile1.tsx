@@ -169,13 +169,13 @@ export const Profile1 = (props: Props) => {
 		}
 
 		if (mbrSecondAuthList != null) {
-			mbrSecondAuthList.map(({ second_auth_code }: { second_auth_code: any }) => {
-				if (second_auth_code == 'JOB') { setIsJob(true); }
-				if (second_auth_code == 'EDU') { setIsEdu(true); }
-				if (second_auth_code == 'INCOME') { setIsIncome(true); }
-				if (second_auth_code == 'ASSET') { setIsAsset(true); }
-				if (second_auth_code == 'SNS') { setIsSns(true); }
-				if (second_auth_code == 'VEHICLE') { setIsVehicle(true); }
+			mbrSecondAuthList.map(({ second_auth_code, status }: { second_auth_code: any, status: any }) => {
+				if (second_auth_code == 'JOB' && status == 'ACCEPT') { setIsJob(true); }
+				if (second_auth_code == 'EDU' && status == 'ACCEPT') { setIsEdu(true); }
+				if (second_auth_code == 'INCOME' && status == 'ACCEPT') { setIsIncome(true); }
+				if (second_auth_code == 'ASSET' && status == 'ACCEPT') { setIsAsset(true); }
+				if (second_auth_code == 'SNS' && status == 'ACCEPT') { setIsSns(true); }
+				if (second_auth_code == 'VEHICLE' && status == 'ACCEPT') { setIsVehicle(true); }
 			});
 		}
 	}, [isFocus]);
@@ -200,8 +200,6 @@ export const Profile1 = (props: Props) => {
 			Alert.alert('알림', '최소 3개의 프로필 사진을 등록해야 합니다.', [{ text: '확인' }]);
 			return false;
 		}
-
-		return false;
 		
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////
 		if(imgData.imgFile01.uri != '') { data.append('file01', imgData.imgFile01); }

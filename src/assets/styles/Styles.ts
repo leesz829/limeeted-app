@@ -37,6 +37,10 @@ export const commonStyle = StyleSheet.create({
 	fontSize16: { fontSize: 16 },
 	fontSize17: { fontSize: 17 },
 	fontSize18: { fontSize: 18 },
+	textCenter: { textAlign: 'center' },
+	textLeft: { textAlign: 'left' },
+	textRight: { textAlign: 'right' },
+	width100: { width: '100%' }
 });
 
 
