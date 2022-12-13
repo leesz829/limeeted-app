@@ -188,7 +188,7 @@ export const Storage = (props : Props) => {
          if(response.data.result_code == '0000') {
             navigation.navigate('StorageProfile', {
                matchSeq: detailMatchData.match_seq,
-               memberSeq: detailMatchData.tgt_member_seq,
+               tgtMemberSeq: detailMatchData.tgt_member_seq,
                type: detailMatchData.type
             });
          } else if(response.data.result_code == '6010') {
@@ -480,7 +480,7 @@ export const Storage = (props : Props) => {
 
                               !isReqSpecialVisible || (isReqSpecialVisible && special_interest_yn == 'Y') ? (
 
-                                 <TouchableOpacity onPress={() => { popupProfileOpen(match_seq, res_member_seq, 'RES', res_profile_open_yn); }} >
+                                 <TouchableOpacity onPress={() => { popupProfileOpen(match_seq, res_member_seq, 'RES', 'Y'); }} >
 
                                     <View key={match_seq} style={styles.halfItemLeft}>
                                        <View style={styles.favoriteBox}>

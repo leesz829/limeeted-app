@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect, useRef} from 'react';
-import { Image, ScrollView, View, TouchableOpacity, Alert} from 'react-native';
+import { Image, ScrollView, View, TouchableOpacity, Alert, Modal} from 'react-native';
 import TopNavigation from 'component/TopNavigation';
 import { ICON } from 'utils/imageUtils';
 import { layoutStyle, styles, modalStyle} from 'assets/styles/Styles';
@@ -38,6 +38,8 @@ export const Matching = (props : Props) => {
 	// 로딩 상태 체크
 	const [isLoad, setIsLoad] = useState(false);
 
+	const [royalPassAmt, setRoyalPassAmt] = useState<any>();
+
 	// 매칭 회원 관련 데이터
 	const [data, setData] = useState<any>({
 		memberBase: {}
@@ -45,7 +47,6 @@ export const Matching = (props : Props) => {
 		, secondAuthList: []
 		, interviewList: []
 	});
-
 
 	// 매치 회원 정보
 	const [matchMemberData, setMatchMemberData] = useState(MemberBaseData);
@@ -75,7 +76,14 @@ export const Matching = (props : Props) => {
 	const profileCallbackFn = (activeType:string) => {
 		// pass : 거부, sincere : 찐심, interest : 관심
 
-		let alertTit = '알림';
+		if(activeType == 'interest') {
+			setInterestSendPopup(true);
+		} else if(activeType == 'sincere') {
+			setSincereSendPopup(true);
+		}
+
+
+		/* let alertTit = '알림';
 		let alertMsg = '이성에게 찐심을 보내시겠습니까?';
 
 		if(activeType == 'interest') { 
@@ -88,21 +96,18 @@ export const Matching = (props : Props) => {
 			alertTit,
 			alertMsg,
 			[
-			  // The "Yes" button
 			  {
 				text: "취소",
 				onPress: () => {
 					return false;
 				},
 			  },
-			  // The "No" button
-			  // Does nothing but dismiss the dialog when tapped
 			  {
 				text: "확인",
 				onPress: () => { insertMatchInfo(activeType); },
 			  },
 			]
-		);
+		); */
 	}
 
 	// ##### 사용자 신고하기 - 신고사유 체크 Callback 함수
@@ -326,6 +331,49 @@ export const Matching = (props : Props) => {
 		});
 	}
 
+	// ##### 매칭 관련 정보 조회
+	const getMatchInfo = async () => {
+		
+		const result = await axios.post(properties.api_domain + '/match/getMatchInfo',
+			{
+				'api-key': 'U0FNR09CX1RPS0VOXzAx',
+				member_seq: memberSeq
+			},
+			{
+				headers: {
+					'jwt-token': jwtToken,
+				},
+			},
+		)
+		.then(function (response) {
+			if (response.data.result_code != '0000') {
+				console.log('fail ::: ', response.data.result_msg);
+				return false;
+			} else {
+
+				// 잔여 로얄패스 적용
+				setRoyalPassAmt(response.data.safeRoyalPass);
+	
+				// 신고사유 코드 목록 적용
+				let tmpReportTypeList = [{text: '', value: ''}];
+				let commonCodeList = [CommonCode];
+				commonCodeList = response.data.reportCodeList;
+				
+				// CommonCode
+				commonCodeList.map(commonCode => {
+					tmpReportTypeList.push({text: commonCode.code_name, value: commonCode.common_code})
+				});
+				console.log('tmpReportTypeList ::: ' , tmpReportTypeList);
+
+				setReportTypeList(tmpReportTypeList.filter(x => x.text));
+				
+			}
+		})
+		.catch(function (error) {
+			console.log('getFaceType error ::: ' , error);
+		});
+	}
+
 	// ##### 매칭 프로필 정보 조회
 	const getMatchProfileInfo = async () => {
 		const result = await axios.post(properties.api_domain + '/match/selectMatchProfileInfo', {
@@ -405,6 +453,14 @@ export const Matching = (props : Props) => {
 		});
 	}
 
+
+	// ################### 팝업 관련 #####################
+	const [interestSendPopup, setInterestSendPopup] = useState(false); // 관심 보내기 팝업
+	const [sincereSendPopup, setSincereSendPopup] = useState(false); // 찐심 보내기 팝업
+
+	
+
+
 	// ################################## 렌더링시 마다 실행
 	useEffect(() => {
 
@@ -414,7 +470,8 @@ export const Matching = (props : Props) => {
 		}
 
 		// 신고목록 조회
-		selectReportCodeList();
+		//selectReportCodeList();
+		getMatchInfo();
 		
 	}, [isFocus]);
 
@@ -553,6 +610,11 @@ export const Matching = (props : Props) => {
 				</SpaceView>
 			</ScrollView>
 
+
+
+			{/* ###############################################
+                        사용자 신고하기 팝업
+            ############################################### */}
 			<Modalize
 				ref={report_modalizeRef}
 				adjustToContentHeight={true}
@@ -598,6 +660,107 @@ export const Matching = (props : Props) => {
 					</SpaceView>
 				</View>
 			</Modalize>
+
+
+			{/* ###############################################
+                        관심 보내기 팝업
+            ############################################### */}
+			<Modal visible={interestSendPopup} transparent={true}>
+				<View style={modalStyle.modalBackground}>
+					<View style={modalStyle.modalStyle1}>
+						<SpaceView mb={16} viewStyle={layoutStyle.alignCenter}>
+							<CommonText fontWeight={'700'} type={'h4'}>
+								관심
+							</CommonText>
+						</SpaceView>
+
+						<SpaceView viewStyle={layoutStyle.alignCenter}>
+							<CommonText type={'h5'}>패스를 소모하여 관심을 보내시겠습니까?</CommonText>
+							<CommonText type={'h5'} color={ColorType.red}>패스 x5</CommonText>
+						</SpaceView>
+
+						<View style={modalStyle.modalBtnContainer}>
+							<TouchableOpacity
+								style={modalStyle.modalBtn}
+								onPress={() => setInterestSendPopup(false)}
+							>
+								<CommonText fontWeight={'500'}>취소</CommonText>
+							</TouchableOpacity>
+							<View style={modalStyle.modalBtnline} />
+							<TouchableOpacity style={modalStyle.modalBtn} onPress={() => insertMatchInfo('interest') }>
+								<CommonText fontWeight={'500'} color={ColorType.red}>
+								확인
+								</CommonText>
+							</TouchableOpacity>
+						</View>
+					</View>
+				</View>
+			</Modal>
+
+			{/* ###############################################
+                        찐심 보내기 팝업
+            ############################################### */}
+			<Modal visible={sincereSendPopup} transparent={true}>
+				<View style={modalStyle.modalBackground}>
+					<View style={modalStyle.modalStyle1}>
+						<SpaceView mb={16} viewStyle={layoutStyle.alignCenter}>
+							<CommonText fontWeight={'700'} type={'h4'}>
+								찐심
+							</CommonText>
+						</SpaceView>
+
+						{royalPassAmt <= 0 ? (
+							<>
+								<SpaceView viewStyle={layoutStyle.alignCenter}>
+									<CommonText type={'h5'}>보유 찐심</CommonText>
+									<CommonText type={'h5'} color={ColorType.red}>{royalPassAmt}</CommonText>
+								</SpaceView>
+
+								<View style={modalStyle.modalBtnContainer}>
+									<TouchableOpacity
+										style={modalStyle.modalBtn}
+										onPress={() => setSincereSendPopup(false)} >
+										<CommonText fontWeight={'500'}>취소</CommonText>
+									</TouchableOpacity>
+									<View style={modalStyle.modalBtnline} />
+									<TouchableOpacity style={modalStyle.modalBtn} onPress={() => navigation.navigate('Cashshop') }>
+										<CommonText fontWeight={'500'} color={ColorType.red}>
+											구매
+										</CommonText>
+									</TouchableOpacity>
+								</View>
+							</>
+						) : (
+							<>
+								<SpaceView viewStyle={layoutStyle.alignCenter}>
+									<CommonText type={'h5'}>로얄패스를 소모하여 찐심을 보내시겠습니까?</CommonText>
+									<CommonText type={'h5'} color={ColorType.red}>로얄패스 x20</CommonText>
+								</SpaceView>
+
+								<View style={modalStyle.modalBtnContainer}>
+									<TouchableOpacity
+										style={modalStyle.modalBtn}
+										onPress={() => setSincereSendPopup(false)}
+									>
+										<CommonText fontWeight={'500'}>취소</CommonText>
+									</TouchableOpacity>
+									<View style={modalStyle.modalBtnline} />
+									<TouchableOpacity style={modalStyle.modalBtn} onPress={() => insertMatchInfo('sincere') }>
+										<CommonText fontWeight={'500'} color={ColorType.red}>
+										확인
+										</CommonText>
+									</TouchableOpacity>
+								</View>
+							</>
+						)}
+						
+					</View>
+				</View>
+			</Modal>
+
+
+
+
 		</>
 	) : <MatchSearch />;
 };

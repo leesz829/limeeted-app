@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
 	penContainer: {
 		position: 'absolute',
 		right: 16,
-		top: -5,
+		top: 12,
 		height: '100%',
 		justifyContent: 'center',
 	},
