@@ -91,8 +91,7 @@ export const Shop = () => {
             JSON.stringify(_products),
          ); */
 
-         // const _productsPass = await getProducts({ skus:passSkus });
-
+         await getProducts({ skus:passSkus });
          const _productsPass = [
             {"description": "리미티드 기본 재화 30", "name": "패스30", "oneTimePurchaseOfferDetails": {"formattedPrice": "₩7,500", "priceAmountMicros": "7500000000", "priceCurrencyCode": "KRW"}, "productId": "pass_30", "productType": "inapp", "title": "패스30 (LImeetED)"}
             , {"description": "리미티드 기본 재화 50", "name": "패스50", "oneTimePurchaseOfferDetails": {"formattedPrice": "₩13,900", "priceAmountMicros": "13900000000", "priceCurrencyCode": "KRW"}, "productId": "pass_50_10", "productType": "inapp", "title": "패스50 (LImeetED)"}
@@ -104,8 +103,7 @@ export const Shop = () => {
          ];
          setProductsPass(_productsPass);
 
-         // const _productsRoyalPass = await getProducts({ skus:royalPassSkus });
-
+         await getProducts({ skus:royalPassSkus });
          const _productsRoyalPass = [
             {"description": "리미티드 고급 재화 10", "name": "로얄패스10", "oneTimePurchaseOfferDetails": {"formattedPrice": "₩10,000", "priceAmountMicros": "10000000000", "priceCurrencyCode": "KRW"}, "productId": "royal_pass_10", "productType": "inapp", "title": "로얄패스10 (LImeetED)"}
             , {"description": "리미티드 고급 재화 20", "name": "로얄패스20", "oneTimePurchaseOfferDetails": {"formattedPrice": "₩27,900", "priceAmountMicros": "27900000000", "priceCurrencyCode": "KRW"}, "productId": "royal_pass_20_10", "productType": "inapp", "title": "로얄패스20 (LImeetED)"}
