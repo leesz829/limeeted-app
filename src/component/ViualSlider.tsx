@@ -90,10 +90,10 @@ export const ViualSlider: FC<Props> = (props: Props) => {
 					</SpaceView>
 
 					<SpaceView mb={16}>
-						<View style={layoutStyle.row}>
+						{/* <View style={layoutStyle.row}>
 							<CommonText color={ColorType.white}>15km</CommonText>
 							<Image source={ICON.distance} style={styles.iconSize} />
-						</View>
+						</View> */}
 
 						{props.onlyImg ? (
 							<></>

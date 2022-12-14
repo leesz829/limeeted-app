@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { useState, useEffect, useRef} from 'react';
-import { Image, ScrollView, View, TouchableOpacity, Alert, Modal} from 'react-native';
+import { Image, ScrollView, View, TouchableOpacity, Alert, Modal, StyleSheet} from 'react-native';
 import TopNavigation from 'component/TopNavigation';
 import { ICON } from 'utils/imageUtils';
 import { layoutStyle, styles, modalStyle} from 'assets/styles/Styles';
 import SpaceView from 'component/SpaceView';
 import { CommonText } from 'component/CommonText';
+import { Color } from 'assets/styles/Color';
 import { ViualSlider } from 'component/ViualSlider';
 import { MainProfileSlider } from 'component/MainProfileSlider';
 import { CommonBtn } from 'component/CommonBtn';
@@ -19,6 +20,8 @@ import axios from 'axios';
 import { MatchSearch } from 'screens/matching/MatchSearch';
 
 import * as hooksMember from 'hooks/member';
+import { ToolTip } from 'component/Tooltip';
+import { BarGrap } from 'component/BarGrap';
 
 /* ################################################################################################################
 ###### 매칭 화면
@@ -505,7 +508,7 @@ export const Matching = (props : Props) => {
 						<View style={[layoutStyle.rowBetween]}>
 							<View style={styles.statusBtn}>
 								<CommonText type={'h6'} color={ColorType.white}>
-									TIER {data.secondAuthList.length}
+									TIER {7-data.secondAuthList.length}
 								</CommonText>
 							</View>
 							<Image source={ICON.medalAll} style={styles.iconSize32} />
@@ -517,11 +520,116 @@ export const Matching = (props : Props) => {
 					<SpaceView mb={54}>
 						<SpaceView mb={16}>
 							<CommonText fontWeight={'700'} type={'h3'}>
-								프로필 활동지수
+								프로필 평점
 							</CommonText>
 						</SpaceView>
 
-						<MainProfileSlider />
+						{/* <MainProfileSlider score={data.memberBase.profile_score} /> */}
+
+
+						<View style={[styles_m.profileContainer]}>
+							<SpaceView mb={8} viewStyle={layoutStyle.alignCenter}>
+								<Image source={ICON.party} style={styles_m.iconSize} />
+							</SpaceView>
+
+							<SpaceView viewStyle={layoutStyle.alignCenter} mb={29}>
+
+								{data.memberBase.profile_score >= 9 ? (
+									<>
+										<CommonText color={ColorType.gray8888} textStyle={styles_m.textCenter}>
+											더 이상 어떤 분을 소개시켜 드려야할 지 자신이 없어요.
+										</CommonText>
+									</>
+								) : (
+									<></>
+								)}
+
+								{data.memberBase.profile_score < 9 && data.memberBase.profile_score >= 8 ? (
+									<>
+										<CommonText color={ColorType.gray8888} textStyle={styles_m.textCenter}>
+											꼭! 이분에게 관심을 표현하시길 바래요..!
+										</CommonText>
+									</>
+								) : (
+									<></>
+								)}
+
+								{data.memberBase.profile_score < 8 && data.memberBase.profile_score >= 7 ? (
+									<>
+										<CommonText color={ColorType.gray8888} textStyle={styles_m.textCenter}>
+											매칭되면 후회하지 않을 듯한 느낌이 들어요.
+										</CommonText>
+									</>
+								) : (
+									<></>
+								)}
+
+								{data.memberBase.profile_score < 7 && data.memberBase.profile_score >= 6 ? (
+									<>
+										<CommonText color={ColorType.gray8888} textStyle={styles_m.textCenter}>
+											좋은 분이실지도 몰라서 소개시켜드려요.
+										</CommonText>
+									</>
+								) : (
+									<></>
+								)}
+
+								{data.memberBase.profile_score < 6 && data.memberBase.profile_score >= 5 ? (
+									<>
+										<CommonText color={ColorType.gray8888} textStyle={styles_m.textCenter}>
+											사람의 코드는 예상치 못 하게 맞는 법이잖아요?{'\n'}조심스럽게 소개시켜드려요.
+										</CommonText>
+									</>
+								) : (
+									<></>
+								)}
+
+								{data.memberBase.profile_score < 5 && data.memberBase.profile_score >= 4 ? (
+									<>
+										<CommonText color={ColorType.gray8888} textStyle={styles_m.textCenter}>
+											신중한 관심 표현을 권장드려요.
+										</CommonText>
+									</>
+								) : (
+									<></>
+								)}
+
+								{data.memberBase.profile_score < 4 ? (
+									<>
+										<CommonText color={ColorType.gray8888} textStyle={styles_m.textCenter}>
+											이 회원분에게 소셜 평점을 높이라고 당부에 당부를 드리는 중입니다.
+										</CommonText>
+									</>
+								) : (
+									<></>
+								)}
+
+								{/* <CommonText color={ColorType.gray8888} textStyle={styles_m.textCenter}>
+									이성들에게
+									<CommonText fontWeight={'700'} color={ColorType.purple}>
+										선호도가
+									</CommonText>
+									{'\n'}
+									<CommonText fontWeight={'700'} color={ColorType.purple}>
+										매우 높은 회원
+									</CommonText>
+									과 매칭되셨네요!
+								</CommonText> */}
+							</SpaceView>
+
+							<SpaceView viewStyle={layoutStyle.rowBetween} mb={29}>
+								<ToolTip title={'프로필 평점'} desc={'프로필 평점에 대한 툴팁'} />
+
+								<View>
+									<CommonText fontWeight={'700'} type={'h2'}>
+										{data.memberBase.profile_score}
+									</CommonText>
+								</View>
+							</SpaceView>
+							<BarGrap score={data.memberBase.profile_score} />
+						</View>
+
+
 					</SpaceView>
 
 
@@ -546,7 +654,7 @@ export const Matching = (props : Props) => {
 										data.interviewList.length > 0 ? 
 											<>
 											<CommonText fontWeight={'700'} type={'h5'}>
-												{interviewList.length}개의 질의
+												{data.interviewList.length}개의 질의
 											</CommonText>
 											가 등록되어있어요
 											</>
@@ -803,3 +911,21 @@ export const Matching = (props : Props) => {
 		</>
 	) : <MatchSearch />;
 };
+
+
+
+
+const styles_m = StyleSheet.create({
+	profileContainer: {
+		backgroundColor: Color.grayF8F8,
+		borderRadius: 16,
+		padding: 24,
+		marginRight: 0,
+		paddingBottom: 30,
+	},
+	iconSize: {
+		width: 48,
+		height: 48,
+	},
+	textCenter: { textAlign: 'center' },
+});

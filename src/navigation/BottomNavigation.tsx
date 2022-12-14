@@ -40,6 +40,7 @@ const BottomNavigation = () => {
 					tabBarLabel: '보관함',
 					headerShown: false,
 					tabBarShowLabel: true,
+					unmountOnBlur: true
 				}}
 			/>
 			<Tab.Screen
@@ -69,7 +70,8 @@ const BottomNavigation = () => {
 				listeners={({ navigation }) => ({
 					tabPress: (e) => {
 						e.preventDefault();
-						navigation.reset({routes: [{name: "Cashshop"}]});
+						//navigation.reset({routes: [{name: "Cashshop"}]});
+						navigation.navigate('Cashshop')
 					},
 				})}
 			/>
@@ -101,6 +103,7 @@ const BottomNavigation = () => {
 				component={StorageProfile}
 				options={{
 					headerShown: false,
+					unmountOnBlur: true
 				}}
 			/>
 			<Stack.Screen

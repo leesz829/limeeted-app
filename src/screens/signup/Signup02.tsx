@@ -7,7 +7,7 @@ import { ImagePicker } from 'component/ImagePicker';
 import SpaceView from 'component/SpaceView';
 import React, { useRef } from 'react';
 import { View, ScrollView, Image, Alert, TouchableOpacity } from 'react-native';
-import { RouteProp, useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ICON, PROFILE_IMAGE } from 'utils/imageUtils';
 import axios from 'axios';
@@ -28,6 +28,8 @@ interface Props {
 
 export const Signup02 = (props: Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
+
+	const isFocus = useIsFocused();
 
 	// 프로필 사진
 	const [imgData, setImgData] = React.useState<any>({
@@ -180,7 +182,7 @@ export const Signup02 = (props: Props) => {
 		} else if (order_seq == '5') {
 			setOrgImgUrl05(localDomain + file_path + file_name);
 		} */
-	}, []);
+	}, [isFocus]);
 
 	// 사진 삭제 팝업
 	const imgDel_modalizeRef = useRef<Modalize>(null);

@@ -7,7 +7,7 @@ import React, { useRef } from 'react';
 import { View, Image, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { ICON } from 'utils/imageUtils';
 import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
-import { RouteProp, useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Modalize } from 'react-native-modalize';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
@@ -30,6 +30,8 @@ export const Signup01 = (props: Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 	console.log('## Signup01 memberSeq ::: ', props.route.params.memberSeq);
 	console.log('## Signup01 params ::: ', props.route.params);
+
+	const isFocus = useIsFocused();
 
 	const [secondData, setSecondData] = React.useState({
 		orgJobFileUrl: '',
@@ -209,7 +211,7 @@ export const Signup01 = (props: Props) => {
 	 */
 	React.useEffect(() => {
 		getMemberProfileSecondAuth();
-	}, [props.route]);
+	}, [isFocus]);
 
 	// 프로필 2차 인증 정보 조회 함수
 	const getMemberProfileSecondAuth = async () => {
