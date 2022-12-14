@@ -505,14 +505,19 @@ export const Matching = (props : Props) => {
 								프로필 2차 인증
 							</CommonText>
 						</View>
-						<View style={[layoutStyle.rowBetween]}>
-							<View style={styles.statusBtn}>
-								<CommonText type={'h6'} color={ColorType.white}>
-									TIER {7-data.secondAuthList.length}
-								</CommonText>
-							</View>
-							<Image source={ICON.medalAll} style={styles.iconSize32} />
-						</View>
+
+						{data.memberBase.auth_acct_cnt > 0 ? (
+							<>
+								<View style={[layoutStyle.rowBetween]}>
+									<View style={styles.statusBtn}>
+										<CommonText type={'h6'} color={ColorType.white}>
+											LV.{data.memberBase.auth_acct_cnt}
+										</CommonText>
+									</View>
+									<Image source={ICON.medalAll} style={styles.iconSize32} />
+								</View>
+							</>
+						) : null}
 					</SpaceView>
 
 					{data.secondAuthList && createSecondAuthListBody()}
@@ -637,7 +642,7 @@ export const Matching = (props : Props) => {
 										인터뷰 영역
 					############################################### */}
 
-					<SpaceView>
+					<SpaceView mb={24}>
 						<SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
 							<View>
 								<CommonText fontWeight={'700'} type={'h3'}>
@@ -716,7 +721,7 @@ export const Matching = (props : Props) => {
 						</View>
 					</SpaceView>
 
-					<SpaceView mb={40}>
+					<SpaceView mb={15}>
 						<CommonBtn value={'신고'} icon={ICON.siren} iconSize={24} onPress={() => report_onOpen()}/>
 					</SpaceView>
 

@@ -468,14 +468,19 @@ export const StorageProfile = (props : Props) => {
                         프로필 2차 인증
                      </CommonText>
                   </View>
-                  <View style={[layoutStyle.rowBetween]}>
-							<View style={styles.statusBtn}>
-								<CommonText type={'h6'} color={ColorType.white}>
-									TIER {data.secondAuthList && 7-data.secondAuthList.length}
-								</CommonText>
-							</View>
-							<Image source={ICON.medalAll} style={styles.iconSize32} />
-						</View>
+
+                  {data.memberBase.auth_acct_cnt > 0 ? (
+							<>
+								<View style={[layoutStyle.rowBetween]}>
+                           <View style={styles.statusBtn}>
+                              <CommonText type={'h6'} color={ColorType.white}>
+                                 LV.{data.memberBase.auth_acct_cnt}
+                              </CommonText>
+                           </View>
+                           <Image source={ICON.medalAll} style={styles.iconSize32} />
+                        </View>
+							</>
+						) : null}
                </SpaceView>
 
                {data.secondAuthList && createSecondAuthListBody()}

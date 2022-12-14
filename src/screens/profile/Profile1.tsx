@@ -454,14 +454,18 @@ export const Profile1 = (props: Props) => {
 								</TouchableOpacity>
 							</View>
 
-							<View style={[layoutStyle.rowBetween]}>
-								<View style={styles.statusBtn}>
-									<CommonText type={'h6'} color={ColorType.white}>
-										TIER {mbrSecondAuthList.length}
-									</CommonText>
-								</View>
-								<Image source={ICON.medalAll} style={styles.iconSize32} />
-							</View>
+							{memberBase.auth_acct_cnt > 0 ? (
+								<>
+									<View style={[layoutStyle.rowBetween]}>
+										<View style={styles.statusBtn}>
+											<CommonText type={'h6'} color={ColorType.white}>
+												LV.{memberBase.auth_acct_cnt}
+											</CommonText>
+										</View>
+										<Image source={ICON.medalAll} style={styles.iconSize32} />
+									</View>
+								</>
+							) : null}
 						</SpaceView>
 
 						<SpaceView mb={48}>
