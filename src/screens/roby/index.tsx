@@ -37,6 +37,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { useUserInfo } from 'hooks/useUserInfo';
 import * as hooksMember from 'hooks/member';
 import { useDispatch } from 'react-redux';
+import * as mbrReducer from 'redux/reducers/mbrReducer';
 
 /* ################################################################################################################
 ###### 로비
@@ -92,12 +93,15 @@ export const Roby = (props: Props) => {
 
 	// ###### 실시간성 회원 데이터 조회
 	const getRealTimeMemberInfo = async () => {
+
 		const result = await axios
 			.post(
 				properties.api_domain + '/member/getRealTimeMemberInfo',
 				{
 					'api-key': 'U0FNR09CX1RPS0VOXzAx',
 					member_seq: memberBase.member_seq,
+					img_acct_cnt: memberBase.img_acct_cnt,
+					auth_acct_cnt: memberBase.auth_acct_cnt,
 				},
 				{
 					headers: {
@@ -153,8 +157,19 @@ export const Roby = (props: Props) => {
 				);
 
 				// 프로필 이미지 목록 저장
+				if(response.data?.memberImgList.length > 0) {
+					dispatch(mbrReducer.setProfileImg(JSON.stringify(response.data.memberImgList)));
+				}
 
+				if(response.data?.memberSndAuthList.length > 0) {
+					dispatch(mbrReducer.setProfileImg(JSON.stringify(response.data.memberImgList)));
+				}
 
+				if(response.data?.memberImgList.length > 0 || response.data?.memberSndAuthList > 0) {
+					dispatch(mbrReducer.setBase(JSON.stringify(response.data.memberBase)));
+				}
+
+				// 새 관심, 새 매칭 목록 저장
 				setResLikeCnt(resLikeDataList.length);
 				setResLikeList(resLikeDataList);
 				setMatchCnt(matchDataList.length);
