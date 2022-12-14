@@ -183,6 +183,16 @@ export const Signup03 = (props : Props) => {
 										console.log(response.data.result_code);
 
 										if(response.data.result_code == "0000") {
+											/* navigation.reset({
+												routes: [{
+													name: 'Approval'
+													, params: {
+														memberSeq: props.route.params.memberSeq,
+														accessType: 'JOIN'
+													}
+												}]
+											}); */
+
 											navigation.navigate('Approval', {
 												memberSeq: props.route.params.memberSeq,
 												accessType: 'JOIN'
