@@ -82,8 +82,8 @@ export const Shop = () => {
       if (isConnected) {
          const result = await getAvailablePurchases();
 
-         const _products = await getProducts({ skus:skus });
-         setProducts(_products);
+         // const _products = await getProducts({ skus:skus });
+         // setProducts(_products);
          /* console.log(
             'getAvailablePurchases : ',
             JSON.stringify(result),
@@ -91,16 +91,27 @@ export const Shop = () => {
             JSON.stringify(_products),
          ); */
 
-         const _productsPass = await getProducts({ skus:passSkus });
+         await getProducts({ skus:passSkus });
+         const _productsPass = [
+            {"description": "리미티드 기본 재화 30", "name": "패스30", "oneTimePurchaseOfferDetails": {"formattedPrice": "₩7,500", "priceAmountMicros": "7500000000", "priceCurrencyCode": "KRW"}, "productId": "pass_30", "productType": "inapp", "title": "패스30 (LImeetED)"}
+            , {"description": "리미티드 기본 재화 50", "name": "패스50", "oneTimePurchaseOfferDetails": {"formattedPrice": "₩13,900", "priceAmountMicros": "13900000000", "priceCurrencyCode": "KRW"}, "productId": "pass_50_10", "productType": "inapp", "title": "패스50 (LImeetED)"}
+            , {"description": "리미티드 기본 재화 100", "name": "패스100", "oneTimePurchaseOfferDetails": {"formattedPrice": "₩25,900", "priceAmountMicros": "25900000000", "priceCurrencyCode": "KRW"}, "productId": "pass_100_20", "productType": "inapp", "title": "패스100 (LImeetED)"}
+            , {"description": "리미티드 기본 재화 300", "name": "패스300", "oneTimePurchaseOfferDetails": {"formattedPrice": "₩68,900", "priceAmountMicros": "68900000000", "priceCurrencyCode": "KRW"}, "productId": "pass_300_60", "productType": "inapp", "title": "패스300 (LImeetED)"}
+            , {"description": "리미티드 기본 재화 500", "name": "패스500", "oneTimePurchaseOfferDetails": {"formattedPrice": "₩99,000", "priceAmountMicros": "99000000000", "priceCurrencyCode": "KRW"}, "productId": "pass_500_100", "productType": "inapp", "title": "패스500 (LImeetED)"}
+            , {"description": "리미티드 기본 재화 1000", "name": "패스1000", "oneTimePurchaseOfferDetails": {"formattedPrice": "₩179,000", "priceAmountMicros": "179000000000", "priceCurrencyCode": "KRW"}, "productId": "pass_1000_200", "productType": "inapp", "title": "패스1000 (LImeetED)"}
+               
+         ];
          setProductsPass(_productsPass);
-         console.log(
-            'getAvailablePurchases : ',
-            JSON.stringify(result),
-            '_productsPass : ',
-            JSON.stringify(_productsPass),
-         );
 
-         const _productsRoyalPass = await getProducts({ skus:royalPassSkus });
+         await getProducts({ skus:royalPassSkus });
+         const _productsRoyalPass = [
+            {"description": "리미티드 고급 재화 10", "name": "로얄패스10", "oneTimePurchaseOfferDetails": {"formattedPrice": "₩10,000", "priceAmountMicros": "10000000000", "priceCurrencyCode": "KRW"}, "productId": "royal_pass_10", "productType": "inapp", "title": "로얄패스10 (LImeetED)"}
+            , {"description": "리미티드 고급 재화 20", "name": "로얄패스20", "oneTimePurchaseOfferDetails": {"formattedPrice": "₩27,900", "priceAmountMicros": "27900000000", "priceCurrencyCode": "KRW"}, "productId": "royal_pass_20_10", "productType": "inapp", "title": "로얄패스20 (LImeetED)"}
+            , {"description": "리미티드 고급 재화 50", "name": "로얄패스50", "oneTimePurchaseOfferDetails": {"formattedPrice": "₩59,900", "priceAmountMicros": "59900000000", "priceCurrencyCode": "KRW"}, "productId": "royal_pass_50_20", "productType": "inapp", "title": "로얄패스50 (LImeetED)"}
+            , {"description": "리미티드 고급 재화 90", "name": "로얄패스90", "oneTimePurchaseOfferDetails": {"formattedPrice": "₩99,000", "priceAmountMicros": "99000000000", "priceCurrencyCode": "KRW"}, "productId": "royal_pass_90_40", "productType": "inapp", "title": "로얄패스90 (LImeetED)"}
+            , {"description": "리미티드 고급 재화 150", "name": "로얄패스150", "oneTimePurchaseOfferDetails": {"formattedPrice": "₩139,000", "priceAmountMicros": "139000000000", "priceCurrencyCode": "KRW"}, "productId": "royal_pass_150_60", "productType": "inapp", "title": "로얄패스150 (LImeetED)"}
+            , {"description": "리미티드 고급 재화 250", "name": "로얄패스250", "oneTimePurchaseOfferDetails": {"formattedPrice": "₩219,000", "priceAmountMicros": "219000000000", "priceCurrencyCode": "KRW"}, "productId": "royal_pass_250_120", "productType": "inapp", "title": "로얄패스250 (LImeetED)"}
+         ];
          setProductsRoyalPass(_productsRoyalPass);
       }
    }
@@ -278,6 +289,8 @@ export const Shop = () => {
                </View>
             </SpaceView> */}
 
+            
+            {/*
             <SpaceView mb={48}>
                <SpaceView mb={16}>
                   <CommonText fontWeight={'700'} type={'h3'}>
@@ -289,12 +302,8 @@ export const Shop = () => {
                      return <RenderProduct item={e} key={'RednerProduct' + index} />;
                   })}
                </ScrollView>
-               {/* <FlatList
-                  data={products}
-                  keyExtractor={(item, index) => item?.productId?.toString() + index?.toString()}
-                  renderItem={rednerProduct}
-               /> */}
             </SpaceView>
+            */}
 
             <SpaceView mb={48}>
                <SpaceView mb={16}>

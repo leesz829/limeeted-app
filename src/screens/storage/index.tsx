@@ -11,7 +11,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { useState } from 'react';
 import axios from 'axios';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
+import { RouteProp, useNavigation, useIsFocused, CommonActions } from '@react-navigation/native';
 import * as properties from 'utils/properties';
 import * as dataUtils from 'utils/data';
 import * as hooksMember from 'hooks/member';
@@ -156,6 +156,7 @@ export const Storage = (props : Props) => {
             tgtMemberSeq: tgt_member_seq,
             type: type
          })
+
       }
    }
 

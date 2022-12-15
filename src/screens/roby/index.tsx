@@ -37,6 +37,10 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { useUserInfo } from 'hooks/useUserInfo';
 import * as hooksMember from 'hooks/member';
 import { useDispatch } from 'react-redux';
+import * as mbrReducer from 'redux/reducers/mbrReducer';
+import { Terms } from 'screens/commonpopup/terms';
+import { Privacy } from 'screens/commonpopup/privacy';
+
 
 /* ################################################################################################################
 ###### 로비
@@ -92,12 +96,15 @@ export const Roby = (props: Props) => {
 
 	// ###### 실시간성 회원 데이터 조회
 	const getRealTimeMemberInfo = async () => {
+
 		const result = await axios
 			.post(
 				properties.api_domain + '/member/getRealTimeMemberInfo',
 				{
 					'api-key': 'U0FNR09CX1RPS0VOXzAx',
 					member_seq: memberBase.member_seq,
+					img_acct_cnt: memberBase.img_acct_cnt,
+					auth_acct_cnt: memberBase.auth_acct_cnt,
 				},
 				{
 					headers: {
@@ -153,8 +160,19 @@ export const Roby = (props: Props) => {
 				);
 
 				// 프로필 이미지 목록 저장
+				if(response.data?.memberImgList.length > 0) {
+					dispatch(mbrReducer.setProfileImg(JSON.stringify(response.data.memberImgList)));
+				}
 
+				if(response.data?.memberSndAuthList.length > 0) {
+					dispatch(mbrReducer.setProfileImg(JSON.stringify(response.data.memberImgList)));
+				}
 
+				if(response.data?.memberImgList.length > 0 || response.data?.memberSndAuthList > 0) {
+					dispatch(mbrReducer.setBase(JSON.stringify(response.data.memberBase)));
+				}
+
+				// 새 관심, 새 매칭 목록 저장
 				setResLikeCnt(resLikeDataList.length);
 				setResLikeList(resLikeDataList);
 				setMatchCnt(matchDataList.length);
@@ -323,11 +341,16 @@ export const Roby = (props: Props) => {
 							{memberBase.nickname}, {memberBase.age}
 						</CommonText>
 					</SpaceView>
-					<SpaceView mb={16} viewStyle={styles.levelContainer}>
-						<CommonText color={ColorType.gray6666} type={'h6'}>
-							LV.{7-parseInt(memberBase.auth_acct_cnt)}
-						</CommonText>
-					</SpaceView>
+
+					{memberBase.auth_acct_cnt > 0 ? (
+						<>
+							<SpaceView mb={16} viewStyle={styles.levelContainer}>
+								<CommonText color={ColorType.gray6666} type={'h6'}>
+									LV.{memberBase.auth_acct_cnt}
+								</CommonText>
+							</SpaceView>
+						</>
+					) : null}
 
 					<CommonText color={ColorType.gray6666}>{memberBase.comment}</CommonText>
 				</SpaceView>
@@ -630,28 +653,39 @@ export const Roby = (props: Props) => {
 				ref={terms_modalizeRef}
 				handleStyle={modalStyle.modalHandleStyle}
 				modalStyle={modalStyle.modalContainer}
-			>
-				<View style={modalStyle.modalHeaderContainer}>
-					<CommonText fontWeight={'700'} type={'h3'}>
-						이용약관
-					</CommonText>
-					<TouchableOpacity onPress={terms_onClose}>
-						<Image source={ICON.xBtn} style={styles.iconSize24} />
-					</TouchableOpacity>
-				</View>
+				adjustToContentHeight={false}
 
+				FooterComponent={
+					<>
+					   <SpaceView mb={16}>
+						  <CommonBtn value={'확인'} 
+								   type={'primary'}
+								   onPress={terms_onClose}/>
+					   </SpaceView>
+					</>
+				 }
+
+				 HeaderComponent={
+					<>
+						<View style={modalStyle.modalHeaderContainer}>
+							<CommonText fontWeight={'700'} type={'h3'}>
+								이용약관
+							</CommonText>
+							<TouchableOpacity onPress={terms_onClose}>
+								<Image source={ICON.xBtn} style={styles.iconSize24} />
+							</TouchableOpacity>
+						</View>
+					</>
+				} >
+				
 				<View style={[modalStyle.modalBody, layoutStyle.flex1]}>
-					<SpaceView mb={24}>
+					{/* <SpaceView mb={24}>
 						<CommonDatePicker />
-					</SpaceView>
+					</SpaceView> */}
 
-					<SpaceView
-						mb={24}
-						viewStyle={{ width: width - 32, height: height - 300, backgroundColor: Color.grayF8F8 }}
-					/>
-					<View>
-						<CommonBtn value={'확인'} type={'primary'} onPress={terms_onClose} />
-					</View>
+					<SpaceView mb={24} viewStyle={{ width: width - 32, backgroundColor: Color.grayF8F8 }}>
+						<Terms />
+					</SpaceView>
 				</View>
 			</Modalize>
 
@@ -662,28 +696,38 @@ export const Roby = (props: Props) => {
 				ref={privacy_modalizeRef}
 				handleStyle={modalStyle.modalHandleStyle}
 				modalStyle={modalStyle.modalContainer}
-			>
-				<View style={modalStyle.modalHeaderContainer}>
-					<CommonText fontWeight={'700'} type={'h3'}>
-						개인정보 취급방침
-					</CommonText>
-					<TouchableOpacity onPress={privacy_onClose}>
-						<Image source={ICON.xBtn} style={styles.iconSize24} />
-					</TouchableOpacity>
-				</View>
+				adjustToContentHeight={false}
+				FooterComponent={
+					<>
+					   <SpaceView mb={16}>
+						  <CommonBtn value={'확인'} 
+								   type={'primary'}
+								   onPress={privacy_onClose}/>
+					   </SpaceView>
+					</>
+				 }
 
+				 HeaderComponent={
+					<>
+						<View style={modalStyle.modalHeaderContainer}>
+							<CommonText fontWeight={'700'} type={'h3'}>
+								개인정보 취급방침
+							</CommonText>
+							<TouchableOpacity onPress={privacy_onClose}>
+								<Image source={ICON.xBtn} style={styles.iconSize24} />
+							</TouchableOpacity>
+						</View>
+					</>
+				} >
+				
 				<View style={[modalStyle.modalBody, layoutStyle.flex1]}>
-					<SpaceView mb={24}>
+					{/* <SpaceView mb={24}>
 						<CommonDatePicker />
-					</SpaceView>
+					</SpaceView> */}
 
-					<SpaceView
-						mb={24}
-						viewStyle={{ width: width - 32, height: height - 300, backgroundColor: Color.grayF8F8 }}
-					/>
-					<View>
-						<CommonBtn value={'확인'} type={'primary'} onPress={privacy_onClose} />
-					</View>
+					<SpaceView mb={24} viewStyle={{ width: width - 32, backgroundColor: Color.grayF8F8 }}>
+						<Privacy />
+					</SpaceView>
 				</View>
 			</Modalize>
 		</>

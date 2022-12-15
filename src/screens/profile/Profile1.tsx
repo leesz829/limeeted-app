@@ -168,6 +168,7 @@ export const Profile1 = (props: Props) => {
 			setImgData({ ...imgData, imgData });
 		}
 
+		
 		if (mbrSecondAuthList != null) {
 			mbrSecondAuthList.map(({ second_auth_code, status }: { second_auth_code: any, status: any }) => {
 				if (second_auth_code == 'JOB' && status == 'ACCEPT') { setIsJob(true); }
@@ -321,7 +322,7 @@ export const Profile1 = (props: Props) => {
 
 							{imgData.orgImgUrl01.url != '' && imgData.orgImgUrl01.status == 'PROGRESS' ? (
 								<View style={styles.disabled}>
-									<CommonText fontWeight={'700'} type={'h4'} color={ColorType.white} textStyle={[layoutStyle.textRight, commonStyle.mt10, commonStyle.mr10]}>심사중</CommonText>
+									<CommonText fontWeight={'700'} type={'h4'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mt10, commonStyle.mr10]}>심사중</CommonText>
 								</View>
 							) : null}
 						</View>
@@ -349,7 +350,7 @@ export const Profile1 = (props: Props) => {
 
 									{imgData.orgImgUrl02.url != '' && imgData.orgImgUrl02.status == 'PROGRESS' ? (
 										<View style={styles.disabled}>
-											<CommonText fontWeight={'700'} type={'h4'} color={ColorType.white} textStyle={[layoutStyle.textRight, commonStyle.mr10, commonStyle.fontSize10]}>심사중</CommonText>
+											<CommonText fontWeight={'700'} type={'h4'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mr10, commonStyle.fontSize10]}>심사중</CommonText>
 										</View>
 									) : null}
 
@@ -375,7 +376,7 @@ export const Profile1 = (props: Props) => {
 
 									{imgData.orgImgUrl03.url != '' && imgData.orgImgUrl03.status == 'PROGRESS' ? (
 										<View style={styles.disabled}>
-											<CommonText fontWeight={'700'} type={'h4'} color={ColorType.white} textStyle={[layoutStyle.textRight, commonStyle.mr10, commonStyle.fontSize10]}>심사중</CommonText>
+											<CommonText fontWeight={'700'} type={'h4'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mr10, commonStyle.fontSize10]}>심사중</CommonText>
 										</View>
 									) : null}
 								</SpaceView>
@@ -403,7 +404,7 @@ export const Profile1 = (props: Props) => {
 
 									{imgData.orgImgUrl04.url != '' && imgData.orgImgUrl04.status == 'PROGRESS' ? (
 										<View style={styles.disabled}>
-											<CommonText fontWeight={'700'} type={'h4'} color={ColorType.white} textStyle={[layoutStyle.textRight, commonStyle.mr10, commonStyle.fontSize10]}>심사중</CommonText>
+											<CommonText fontWeight={'700'} type={'h4'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mr10, commonStyle.fontSize10]}>심사중</CommonText>
 										</View>
 									) : null}
 								</SpaceView>
@@ -428,7 +429,7 @@ export const Profile1 = (props: Props) => {
 
 									{imgData.orgImgUrl05.url != '' && imgData.orgImgUrl05.status == 'PROGRESS' ? (
 										<View style={styles.disabled}>
-											<CommonText fontWeight={'700'} type={'h4'} color={ColorType.white} textStyle={[layoutStyle.textRight, commonStyle.mr10, commonStyle.fontSize10]}>심사중</CommonText>
+											<CommonText fontWeight={'700'} type={'h4'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mr10, commonStyle.fontSize10]}>심사중</CommonText>
 										</View>
 									) : null}
 								</SpaceView>
@@ -453,14 +454,18 @@ export const Profile1 = (props: Props) => {
 								</TouchableOpacity>
 							</View>
 
-							<View style={[layoutStyle.rowBetween]}>
-								<View style={styles.statusBtn}>
-									<CommonText type={'h6'} color={ColorType.white}>
-										TIER {7-parseInt(memberBase.auth_acct_cnt)}
-									</CommonText>
-								</View>
-								<Image source={ICON.medalAll} style={styles.iconSize32} />
-							</View>
+							{memberBase.auth_acct_cnt > 0 ? (
+								<>
+									<View style={[layoutStyle.rowBetween]}>
+										<View style={styles.statusBtn}>
+											<CommonText type={'h6'} color={ColorType.white}>
+												LV.{memberBase.auth_acct_cnt}
+											</CommonText>
+										</View>
+										<Image source={ICON.medalAll} style={styles.iconSize32} />
+									</View>
+								</>
+							) : null}
 						</SpaceView>
 
 						<SpaceView mb={48}>

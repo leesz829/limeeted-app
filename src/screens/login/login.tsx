@@ -45,8 +45,8 @@ GoogleSignin.configure({
 export const Login01 = (props: Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 	const dispatch = useDispatch();
-	const [id, setId] = React.useState('tester1');
-	const [password, setPassword] = React.useState('1234');
+	const [id, setId] = React.useState('');
+	const [password, setPassword] = React.useState('');
 
 	React.useEffect(() => {
 		//dispatch(myProfile());
@@ -113,9 +113,17 @@ export const Login01 = (props: Props) => {
 			let resultCode = data.result_code;
 			if (resultCode == '0001') {
 				Alert.alert('알림', '일치하는 회원이 없습니다.', [{ text: '확인' }]);
+			} else if(resultCode == '0003') { // 반려
+				navigation.navigate('Approval', {
+					memberSeq: data.base.member_seq,
+					accessType: 'REFUSE'
+				});
+			} else if(resultCode == '0003') { // 탈퇴
+				Alert.alert('알림', '탈퇴 회원 입니다.', [{ text: '확인' }]);
 			} else {
 				let memberStatus = data.base.status;
 				let joinStatus = data.base.join_status;
+
 				if (resultCode == '0000' && (memberStatus == 'PROCEED' || memberStatus == 'APROVAL')) {
 					if (memberStatus == 'APROVAL') {
 						navigation.navigate('Approval', {

@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { useState, useEffect, useRef} from 'react';
-import { Image, ScrollView, View, TouchableOpacity, Alert, Modal} from 'react-native';
+import { Image, ScrollView, View, TouchableOpacity, Alert, Modal, StyleSheet} from 'react-native';
 import TopNavigation from 'component/TopNavigation';
 import { ICON } from 'utils/imageUtils';
 import { layoutStyle, styles, modalStyle} from 'assets/styles/Styles';
 import SpaceView from 'component/SpaceView';
 import { CommonText } from 'component/CommonText';
+import { Color } from 'assets/styles/Color';
 import { ViualSlider } from 'component/ViualSlider';
 import { MainProfileSlider } from 'component/MainProfileSlider';
 import { CommonBtn } from 'component/CommonBtn';
@@ -19,6 +20,8 @@ import axios from 'axios';
 import { MatchSearch } from 'screens/matching/MatchSearch';
 
 import * as hooksMember from 'hooks/member';
+import { ToolTip } from 'component/Tooltip';
+import { BarGrap } from 'component/BarGrap';
 
 /* ################################################################################################################
 ###### 매칭 화면
@@ -80,7 +83,10 @@ export const Matching = (props : Props) => {
 			setInterestSendPopup(true);
 		} else if(activeType == 'sincere') {
 			setSincereSendPopup(true);
+		} else if(activeType == 'pass') {
+			setCancelPopup(true);
 		}
+
 
 
 		/* let alertTit = '알림';
@@ -192,6 +198,9 @@ export const Matching = (props : Props) => {
 
 			if(response.data.result_code == '0000') {
 				getMatchProfileInfo();
+				setInterestSendPopup(false)
+				setSincereSendPopup(false)
+				setCancelPopup(false);
 				setIsLoad(false);
 			 } else if(response.data.result_code == '6010') {
 				Alert.alert('알림', '보유 패스가 부족합니다.', [{ text: '확인' }]);
@@ -226,7 +235,7 @@ export const Matching = (props : Props) => {
 
 		// 차량
 		let vehice = false;
-
+		
 		data.secondAuthList.forEach((e, i) => {
 			switch(e.second_auth_code) {
 				case 'ASSET':
@@ -385,8 +394,6 @@ export const Matching = (props : Props) => {
 			}
 		})
 		.then(function (response) {
-			console.log('reponse ::::: ', response.data.match_memeber_info);
-
 			if(response.data.result_code != '0000'){
 				console.log(response.data.result_msg);
 				return false;
@@ -457,6 +464,7 @@ export const Matching = (props : Props) => {
 	// ################### 팝업 관련 #####################
 	const [interestSendPopup, setInterestSendPopup] = useState(false); // 관심 보내기 팝업
 	const [sincereSendPopup, setSincereSendPopup] = useState(false); // 찐심 보내기 팝업
+	const [cancelPopup, setCancelPopup] = useState(false); // 찐심 보내기 팝업
 
 	
 
@@ -497,14 +505,19 @@ export const Matching = (props : Props) => {
 								프로필 2차 인증
 							</CommonText>
 						</View>
-						<View style={[layoutStyle.rowBetween]}>
-							<View style={styles.statusBtn}>
-								<CommonText type={'h6'} color={ColorType.white}>
-									TIER {secondAuthList && 7-secondAuthList.length}
-								</CommonText>
-							</View>
-							<Image source={ICON.medalAll} style={styles.iconSize32} />
-						</View>
+
+						{data.memberBase.auth_acct_cnt > 0 ? (
+							<>
+								<View style={[layoutStyle.rowBetween]}>
+									<View style={styles.statusBtn}>
+										<CommonText type={'h6'} color={ColorType.white}>
+											LV.{data.memberBase.auth_acct_cnt}
+										</CommonText>
+									</View>
+									<Image source={ICON.medalAll} style={styles.iconSize32} />
+								</View>
+							</>
+						) : null}
 					</SpaceView>
 
 					{data.secondAuthList && createSecondAuthListBody()}
@@ -512,11 +525,116 @@ export const Matching = (props : Props) => {
 					<SpaceView mb={54}>
 						<SpaceView mb={16}>
 							<CommonText fontWeight={'700'} type={'h3'}>
-								프로필 활동지수
+								프로필 평점
 							</CommonText>
 						</SpaceView>
 
-						<MainProfileSlider />
+						{/* <MainProfileSlider score={data.memberBase.profile_score} /> */}
+
+
+						<View style={[styles_m.profileContainer]}>
+							<SpaceView mb={8} viewStyle={layoutStyle.alignCenter}>
+								<Image source={ICON.party} style={styles_m.iconSize} />
+							</SpaceView>
+
+							<SpaceView viewStyle={layoutStyle.alignCenter} mb={29}>
+
+								{data.memberBase.profile_score >= 9 ? (
+									<>
+										<CommonText color={ColorType.gray8888} textStyle={styles_m.textCenter}>
+											더 이상 어떤 분을 소개시켜 드려야할 지 자신이 없어요.
+										</CommonText>
+									</>
+								) : (
+									<></>
+								)}
+
+								{data.memberBase.profile_score < 9 && data.memberBase.profile_score >= 8 ? (
+									<>
+										<CommonText color={ColorType.gray8888} textStyle={styles_m.textCenter}>
+											꼭! 이분에게 관심을 표현하시길 바래요..!
+										</CommonText>
+									</>
+								) : (
+									<></>
+								)}
+
+								{data.memberBase.profile_score < 8 && data.memberBase.profile_score >= 7 ? (
+									<>
+										<CommonText color={ColorType.gray8888} textStyle={styles_m.textCenter}>
+											매칭되면 후회하지 않을 듯한 느낌이 들어요.
+										</CommonText>
+									</>
+								) : (
+									<></>
+								)}
+
+								{data.memberBase.profile_score < 7 && data.memberBase.profile_score >= 6 ? (
+									<>
+										<CommonText color={ColorType.gray8888} textStyle={styles_m.textCenter}>
+											좋은 분이실지도 몰라서 소개시켜드려요.
+										</CommonText>
+									</>
+								) : (
+									<></>
+								)}
+
+								{data.memberBase.profile_score < 6 && data.memberBase.profile_score >= 5 ? (
+									<>
+										<CommonText color={ColorType.gray8888} textStyle={styles_m.textCenter}>
+											사람의 코드는 예상치 못 하게 맞는 법이잖아요?{'\n'}조심스럽게 소개시켜드려요.
+										</CommonText>
+									</>
+								) : (
+									<></>
+								)}
+
+								{data.memberBase.profile_score < 5 && data.memberBase.profile_score >= 4 ? (
+									<>
+										<CommonText color={ColorType.gray8888} textStyle={styles_m.textCenter}>
+											신중한 관심 표현을 권장드려요.
+										</CommonText>
+									</>
+								) : (
+									<></>
+								)}
+
+								{data.memberBase.profile_score < 4 ? (
+									<>
+										<CommonText color={ColorType.gray8888} textStyle={styles_m.textCenter}>
+											이 회원분에게 소셜 평점을 높이라고 당부에 당부를 드리는 중입니다.
+										</CommonText>
+									</>
+								) : (
+									<></>
+								)}
+
+								{/* <CommonText color={ColorType.gray8888} textStyle={styles_m.textCenter}>
+									이성들에게
+									<CommonText fontWeight={'700'} color={ColorType.purple}>
+										선호도가
+									</CommonText>
+									{'\n'}
+									<CommonText fontWeight={'700'} color={ColorType.purple}>
+										매우 높은 회원
+									</CommonText>
+									과 매칭되셨네요!
+								</CommonText> */}
+							</SpaceView>
+
+							<SpaceView viewStyle={layoutStyle.rowBetween} mb={29}>
+								<ToolTip title={'프로필 평점'} desc={'프로필 평점에 대한 툴팁'} />
+
+								<View>
+									<CommonText fontWeight={'700'} type={'h2'}>
+										{data.memberBase.profile_score}
+									</CommonText>
+								</View>
+							</SpaceView>
+							<BarGrap score={data.memberBase.profile_score} />
+						</View>
+
+
 					</SpaceView>
 
 
@@ -524,7 +642,7 @@ export const Matching = (props : Props) => {
 										인터뷰 영역
 					############################################### */}
 
-					<SpaceView>
+					<SpaceView mb={24}>
 						<SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
 							<View>
 								<CommonText fontWeight={'700'} type={'h3'}>
@@ -541,7 +659,7 @@ export const Matching = (props : Props) => {
 										data.interviewList.length > 0 ? 
 											<>
 											<CommonText fontWeight={'700'} type={'h5'}>
-												{interviewList.length}개의 질의
+												{data.interviewList.length}개의 질의
 											</CommonText>
 											가 등록되어있어요
 											</>
@@ -603,7 +721,7 @@ export const Matching = (props : Props) => {
 						</View>
 					</SpaceView>
 
-					<SpaceView mb={40}>
+					<SpaceView mb={15}>
 						<CommonBtn value={'신고'} icon={ICON.siren} iconSize={24} onPress={() => report_onOpen()}/>
 					</SpaceView>
 
@@ -660,6 +778,40 @@ export const Matching = (props : Props) => {
 					</SpaceView>
 				</View>
 			</Modalize>
+
+			{/* ###############################################
+                        매칭 취소 팝업
+            ############################################### */}
+			<Modal visible={cancelPopup} transparent={true}>
+				<View style={modalStyle.modalBackground}>
+					<View style={modalStyle.modalStyle1}>
+						<SpaceView mb={16} viewStyle={layoutStyle.alignCenter}>
+							<CommonText fontWeight={'700'} type={'h4'}>
+								매칭 취소
+							</CommonText>
+						</SpaceView>
+
+						<SpaceView viewStyle={layoutStyle.alignCenter}>
+							<CommonText type={'h5'}>이성을 거부하시겠습니까?</CommonText>
+						</SpaceView>
+
+						<View style={modalStyle.modalBtnContainer}>
+							<TouchableOpacity
+								style={modalStyle.modalBtn}
+								onPress={() => setCancelPopup(false)}
+							>
+								<CommonText fontWeight={'500'}>취소</CommonText>
+							</TouchableOpacity>
+							<View style={modalStyle.modalBtnline} />
+							<TouchableOpacity style={modalStyle.modalBtn} onPress={() => insertMatchInfo('pass') }>
+								<CommonText fontWeight={'500'} color={ColorType.red}>
+								확인
+								</CommonText>
+							</TouchableOpacity>
+						</View>
+					</View>
+				</View>
+			</Modal>
 
 
 			{/* ###############################################
@@ -764,3 +916,21 @@ export const Matching = (props : Props) => {
 		</>
 	) : <MatchSearch />;
 };
+
+
+
+
+const styles_m = StyleSheet.create({
+	profileContainer: {
+		backgroundColor: Color.grayF8F8,
+		borderRadius: 16,
+		padding: 24,
+		marginRight: 0,
+		paddingBottom: 30,
+	},
+	iconSize: {
+		width: 48,
+		height: 48,
+	},
+	textCenter: { textAlign: 'center' },
+});

@@ -183,10 +183,20 @@ export const Signup03 = (props : Props) => {
 										console.log(response.data.result_code);
 
 										if(response.data.result_code == "0000") {
-											navigation.navigate('Approval', {
+											navigation.reset({
+												routes: [{
+													name: 'Approval'
+													, params: {
+														memberSeq: props.route.params.memberSeq,
+														accessType: 'JOIN'
+													}
+												}]
+											});
+
+											/* navigation.navigate('Approval', {
 												memberSeq: props.route.params.memberSeq,
 												accessType: 'JOIN'
-											});
+											}); */
 										}
 									})
 									.catch(function (error) {

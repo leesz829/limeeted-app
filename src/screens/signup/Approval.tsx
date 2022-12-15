@@ -39,7 +39,9 @@ export const Approval = (props : Props) => {
 					value={'프로필 수정하기'} 
 					onPress={() => {
 						if(accessType == "LOGIN") {
-							navigation.navigate('Login01');
+							navigation.reset({
+								routes: [{ name: 'Login01' }]
+							});
 						} else {
 							navigation.navigate('Signup03', {
 								memberSeq: memberSeq
