@@ -669,7 +669,7 @@ export const Roby = (props: Props) => {
 					<>
 						<View style={modalStyle.modalHeaderContainer}>
 							<CommonText fontWeight={'700'} type={'h3'}>
-							이용약관
+								이용약관
 							</CommonText>
 							<TouchableOpacity onPress={terms_onClose}>
 								<Image source={ICON.xBtn} style={styles.iconSize24} />
@@ -711,7 +711,7 @@ export const Roby = (props: Props) => {
 					<>
 						<View style={modalStyle.modalHeaderContainer}>
 							<CommonText fontWeight={'700'} type={'h3'}>
-							개인정보 취급방침
+								개인정보 취급방침
 							</CommonText>
 							<TouchableOpacity onPress={privacy_onClose}>
 								<Image source={ICON.xBtn} style={styles.iconSize24} />
