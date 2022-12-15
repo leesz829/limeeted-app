@@ -41,6 +41,8 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+  <key>CodePushDeploymentKey</key>
+  <string>${CODEPUSH_KEY}</string>
 	<key>KAKAO_APP_KEY</key>
 	<string>f33df8242ecffe96078d10be73b34567</string>
 	<key>LSApplicationCategoryType</key>

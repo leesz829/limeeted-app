@@ -11,7 +11,13 @@
     "pod": "cd ios && arch -x86_64 pod install",
     "reset": "react-native start --reset-cache",
     "clean": "cd android/ && ./gradlew clean",
-    "all-m1": "watchman watch-del-all && rm -rf package-lock.json && rm -rf yarn.lock && rm -rf node_modules/ && rm -fr $TMPDIR/metro* && yarn install && cd ios && rm -rf Pods && rm -rf Podfile.lock &&  arch -x86_64 pod install && cd .."
+    "all-m1": "watchman watch-del-all && rm -rf package-lock.json && rm -rf yarn.lock && rm -rf node_modules/ && rm -fr $TMPDIR/metro* && yarn install && cd ios && rm -rf Pods && rm -rf Podfile.lock &&  arch -x86_64 pod install && cd ..",
+    "codepushApps" : "appcenter apps list",
+    "codepushKey" : "appcenter codepush deployment list --app limeeted/LImeetED-ios -k && appcenter codepush deployment list --app limeeted/LImeetED-android -k",
+    "depoloyStatus" : "appcenter codepush deployment list -a limeeted/LImeetED-android && appcenter codepush deployment list -a limeeted/LImeetED-ios",
+    "depoloyStage": "appcenter codepush release-react -a limeeted/LImeetED-ios -d Staging && appcenter codepush release-react -a limeeted/LImeetED-android -d Staging",
+    "depoloyProd": "appcenter codepush release-react -a limeeted/LImeetED-ios -d Production && appcenter codepush release-react -a limeeted/LImeetED-android -d Staging"
+    
   },
   "dependencies": {
     "@invertase/react-native-apple-authentication": "2.2.2",
@@ -33,6 +39,7 @@
     "axios": "0.26.1",
     "react": "17.0.2",
     "react-native": "0.66.4",
+    "react-native-code-push": "^7.0.5",
     "react-native-custom-billing": "2.1.0",
     "react-native-gesture-handler": "2.1.1",
     "react-native-iap": "12.4.4",
