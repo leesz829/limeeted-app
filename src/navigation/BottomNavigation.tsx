@@ -28,7 +28,7 @@ const BottomNavigation = () => {
 				name="Roby"
 				component={Roby}
 				options={{
-					tabBarLabel: '로비',
+					tabBarLabel: '마이홈',
 					headerShown: false,
 					tabBarShowLabel: true,
 				}}

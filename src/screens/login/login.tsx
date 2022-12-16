@@ -161,7 +161,7 @@ export const Login01 = (props: Props) => {
 					dispatch(mbrReducer.setInterview(JSON.stringify(data.memberInterviewList)));
 
 					navigation.navigate('Main', {
-						screen: 'Roby',
+						screen: 'Matching',
 					});
 				}
 			}
