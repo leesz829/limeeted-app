@@ -20,26 +20,9 @@ import * as properties from 'utils/properties';
 export const Login = () => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 	const [kakaoResult, setKakaoResult] = React.useState('');
+
+/*
 	const signInWithKakao = async () => {
-		/* ### 실 버전 */
-		// const result = await loginWithKakaoAccount();
-		// console.log(JSON.stringify(result));
-		// return;
-		//const profile11 = await getKakaoProfile();
-		// console.log(profile11);
-		/* ### 테스트 버전 */
-		const profile = {
-			id: 'test2',
-			//id : "2233743623",
-			name: '손흥민',
-			gender: 'M',
-			age: '31',
-			hp: '010-1234-5678',
-			birthday: '',
-			ci: '',
-		};
-		console.log('profile :: ', profile);
-		//setKakaoResult(JSON.stringify(token));
 		axios
 			.post(properties.api_domain + '/join/getKakaoIdchk/', {
 				kakaoId: profile.id,
@@ -51,12 +34,7 @@ export const Login = () => {
 				const joinStatus = response.data.base.join_status;
 				console.log('resultCode ::: ', response.data.result_code);
 				console.log('status ::: ', response.data.base.status);
-				/*
-				 * ## 인증 결과 코드 정의
-				 * 0000 : 회원미존재
-				 * 0001 : 회원존재
-				 * 0002 : 에러
-				 */
+				
 				if (
 					resultCode == '0000' ||
 					(resultCode == '0001' && (status == 'PROCEED' || status == 'APROVAL'))
@@ -115,7 +93,7 @@ export const Login = () => {
 					console.log("success");
 				}).catch((err)=> {
 					console.log("error is: " + err);
-				}); */
+				}); 
 					navigation.navigate('Main', {
 						screen: 'Roby'
 					});
@@ -126,8 +104,9 @@ export const Login = () => {
 			});
 		/* navigation.navigate('Signup02', {
 			memberSeq : 38
-		}); */
-	};
+		}); 
+	};*/ 
+	
 	return (
 		<View style={[styles.container, layoutStyle.justifyCenter]}>
 			<View style={layoutStyle.alignCenter}>
@@ -172,9 +151,6 @@ export const Login = () => {
 					type={'kakao'}
 					iconSize={24}
 					onPress={() => {
-						signInWithKakao();
-						// navigation.navigate('NiceAuth');
-						//signInWithKakao();
 						navigation.navigate('NiceAuth');
 					}}
 				/>

@@ -134,6 +134,9 @@ export const Matching = (props : Props) => {
 
 			return false;
 		}else{
+
+			setReportPopup(true);
+			/*
 			Alert.alert(
 				"사용자 신고하기",
 				"신고하시겠습니까?",
@@ -153,6 +156,7 @@ export const Matching = (props : Props) => {
 				  },
 				]
 			);
+			*/
 		}
 	}
 
@@ -175,7 +179,9 @@ export const Matching = (props : Props) => {
 			}
 			
 			Alert.alert('알림', '신고 처리 되었습니다.', [{ text: '확인' }]);
+			getMatchProfileInfo();
 			report_onClose();
+			setReportPopup(false);
 		})
 		.catch(function (error) {
 			console.log('insertReport error ::: ' , error);
@@ -465,6 +471,8 @@ export const Matching = (props : Props) => {
 	const [interestSendPopup, setInterestSendPopup] = useState(false); // 관심 보내기 팝업
 	const [sincereSendPopup, setSincereSendPopup] = useState(false); // 찐심 보내기 팝업
 	const [cancelPopup, setCancelPopup] = useState(false); // 찐심 보내기 팝업
+	const [reportPopup, setReportPopup] = useState(false); // 찐심 보내기 팝업
+	
 
 	
 
@@ -753,20 +761,6 @@ export const Matching = (props : Props) => {
 						<CommonText>신고 사유를 선택해주세요.</CommonText>
 					</SpaceView>
 
-					{/*
-					<SpaceView mb={24}>
-						{[
-							{ text: '비속어 사용' },
-							{ text: '과도한 성적 표현' },
-							{ text: '불쾌감을 주는 표현' },
-							{ text: '성차별 적 표현' },
-							{ text: '기타' },
-						].map((i, index) => (
-							<CommonCheckBox label={i.text} key={index + 'checkbox'} />
-						))}
-					</SpaceView>
-						*/}
-
 					<SpaceView mb={24}>
 						{reportTypeList.length && reportTypeList.map((i, index) => (
 							<CommonCheckBox label={i.text} value={i.value} key={index + '_' + i.value} callBackFunction={reportCheckCallbackFn} />
@@ -906,6 +900,40 @@ export const Matching = (props : Props) => {
 							</>
 						)}
 						
+					</View>
+				</View>
+			</Modal>
+
+			
+
+
+			<Modal visible={reportPopup} transparent={true}>
+				<View style={modalStyle.modalBackground}>
+					<View style={modalStyle.modalStyle1}>
+						<SpaceView mb={16} viewStyle={layoutStyle.alignCenter}>
+							<CommonText fontWeight={'700'} type={'h4'}>
+								사용자 신고하기
+							</CommonText>
+						</SpaceView>
+							<>
+								<SpaceView viewStyle={layoutStyle.alignCenter}>
+									<CommonText type={'h5'}>신고하시겠습니까?</CommonText>									
+								</SpaceView>
+
+								<View style={modalStyle.modalBtnContainer}>
+									<TouchableOpacity
+										style={modalStyle.modalBtn}
+										onPress={() => setReportPopup(false)}>
+										<CommonText fontWeight={'500'}>취소</CommonText>
+									</TouchableOpacity>
+									<View style={modalStyle.modalBtnline} />
+									<TouchableOpacity style={modalStyle.modalBtn} onPress={() => insertReport() }>
+										<CommonText fontWeight={'500'} color={ColorType.red}>
+										확인
+										</CommonText>
+									</TouchableOpacity>
+								</View>
+							</>
 					</View>
 				</View>
 			</Modal>
