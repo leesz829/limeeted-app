@@ -387,9 +387,8 @@ export const SecondAuth = () => {
 										</View>
 									</SpaceView>
 
-									<CommonText color={ColorType.gray6666} type={'h5'}>
-										프로필 2차 인증 위한{'\n'}
-										직업 설명 문구
+									<CommonText color={ColorType.gray6666} type={'h6'} lineHeight={15}>
+										내 커리어를 확인할 수 있는 명함 또는 증명서를 올려주세요
 									</CommonText>
 								</View>
 							</TouchableOpacity>
@@ -407,9 +406,8 @@ export const SecondAuth = () => {
 										</View>
 									</SpaceView>
 
-									<CommonText color={ColorType.gray6666} type={'h5'}>
-										프로필 2차 인증 위한{'\n'}
-										학위 설명 문구
+									<CommonText color={ColorType.gray6666} type={'h6'} lineHeight={15}>
+										대학교/대학원의 재학증명서/졸업증명를 올려주세요.
 									</CommonText>
 								</View>
 							</TouchableOpacity>
@@ -431,9 +429,8 @@ export const SecondAuth = () => {
 										</View>
 									</SpaceView>
 
-									<CommonText color={ColorType.gray6666} type={'h5'}>
-										프로필 2차 인증 위한{'\n'}
-										소득 설명 문구
+									<CommonText color={ColorType.gray6666} type={'h6'} lineHeight={15}>
+										내 소득 자료를 올려주세요.
 									</CommonText>
 								</View>
 							</TouchableOpacity>
@@ -451,9 +448,8 @@ export const SecondAuth = () => {
 										</View>
 									</SpaceView>
 
-									<CommonText color={ColorType.gray6666} type={'h5'}>
-										프로필 2차 인증 위한{'\n'}
-										자산 설명 문구
+									<CommonText color={ColorType.gray6666} type={'h6'} lineHeight={15}>
+										은행에서 발급해주는 잔고 증명서를 올려주세요.
 									</CommonText>
 								</View>
 							</TouchableOpacity>
@@ -475,9 +471,8 @@ export const SecondAuth = () => {
 										</View>
 									</SpaceView>
 
-									<CommonText color={ColorType.gray6666} type={'h5'}>
-										프로필 2차 인증 위한{'\n'}
-										SNS 설명 문구
+									<CommonText color={ColorType.gray6666} type={'h6'} lineHeight={15}>
+										내 인스타 ID가 보이는 스크린샷을 올려주세요.
 									</CommonText>
 								</View>
 							</TouchableOpacity>
@@ -495,9 +490,8 @@ export const SecondAuth = () => {
 										</View>
 									</SpaceView>
 
-									<CommonText color={ColorType.gray6666} type={'h5'}>
-										프로필 2차 인증 위한{'\n'}
-										차량 설명 문구
+									<CommonText color={ColorType.gray6666} type={'h6'} lineHeight={15}>
+										차량 등록등 또는 자동차보험가입 증빙 자료를 올려주세요.
 									</CommonText>
 								</View>
 							</TouchableOpacity>

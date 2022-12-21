@@ -388,12 +388,12 @@ export const Shop = () => {
 
 
 
-               <SpaceView viewStyle={styles.dotTextContainer}>
+               {/* <SpaceView viewStyle={styles.dotTextContainer}>
                   <View style={styles.dot} />
                   <CommonText color={ColorType.gray6666}>
                      에러 : {errMsg}
                   </CommonText>
-               </SpaceView>
+               </SpaceView> */}
 
 
             </SpaceView>

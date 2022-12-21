@@ -299,7 +299,10 @@ export const Profile1 = (props: Props) => {
 			<CommonHeader title={'프로필 관리'} />
 			<ScrollView contentContainerStyle={styles.hasFloatingBtnContainer}>
 				<SpaceView viewStyle={styles.container}>
-					{/* ########### 프로필 이미지 ########### */}
+
+					{/* ####################################################################################
+					####################### 프로필 이미지 영역
+					#################################################################################### */}
 					<SpaceView mb={48} viewStyle={styles.halfContainer}>
 						<View style={styles.halfItemLeft}>
 							{imgData.orgImgUrl01.url != '' && imgData.orgImgUrl01.delYn == 'N' ? (
@@ -437,7 +440,9 @@ export const Profile1 = (props: Props) => {
 						</View>
 					</SpaceView>
 
-					{/* ########### 프로필 2차 인증 ########### */}
+					{/* ####################################################################################
+					####################### 프로필 2차 인증 영역
+					#################################################################################### */}
 					<SpaceView mb={54}>
 						<SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
 							<View>
@@ -511,7 +516,9 @@ export const Profile1 = (props: Props) => {
 						</SpaceView>
 					</SpaceView>
 
-					{/* ########### 인터뷰 ########### */}
+					{/* ####################################################################################
+					####################### 인터뷰 영역
+					#################################################################################### */}
 					<SpaceView>
 						<SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
 							<View>

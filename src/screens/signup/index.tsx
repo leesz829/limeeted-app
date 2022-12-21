@@ -38,7 +38,7 @@ export const Signup00 = (props: Props) => {
 		return age_d.toString();
 	});
 	const [gender, setGender] = React.useState(props.route.params.gender);
-	const [mobile, setMobile] = React.useState(props.route.params.mobile);
+	const [mobile, setMobile] = React.useState(props.route.params.mobile.replace(/[^0-9]/g, '').replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`));
 	const [birthday, setBirthday] = React.useState(props.route.params.birthday);
 	const [snsType, setSnsType] = React.useState(props.route.params.sns_type);
 	const [snsToken, setSnsToken] = React.useState(props.route.params.sns_token);

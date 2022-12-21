@@ -35,6 +35,8 @@ export const Matching = (props : Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 	const isFocus = useIsFocused();
 
+	const scrollRef = useRef();
+
 	const jwtToken = hooksMember.getJwtToken();		// 토큰
 	const memberSeq = hooksMember.getMemberSeq();	// 회원번호
 
@@ -75,10 +77,12 @@ export const Matching = (props : Props) => {
 	const report_onClose = () => {	report_modalizeRef.current?.close(); };
 
 
-	// ##### 관심 여부 체크 Callback 함수
+	// 
+	/* #############################################
+	##### 거부/찐심/관심 팝업 Callback 함수
+	##### - activeType : pass(거부), sincere(찐심), interest(관심)
+	############################################# */
 	const profileCallbackFn = (activeType:string) => {
-		// pass : 거부, sincere : 찐심, interest : 관심
-
 		if(activeType == 'interest') {
 			setInterestSendPopup(true);
 		} else if(activeType == 'sincere') {
@@ -86,34 +90,6 @@ export const Matching = (props : Props) => {
 		} else if(activeType == 'pass') {
 			setCancelPopup(true);
 		}
-
-
-
-		/* let alertTit = '알림';
-		let alertMsg = '이성에게 찐심을 보내시겠습니까?';
-
-		if(activeType == 'interest') { 
-			alertMsg = '이성에게 관심을 보내시겠습니까?';
-		} else if(activeType == 'pass') {
-			alertMsg = '이성을 거부하시겠습니까?';
-		}
-
-		Alert.alert(
-			alertTit,
-			alertMsg,
-			[
-			  {
-				text: "취소",
-				onPress: () => {
-					return false;
-				},
-			  },
-			  {
-				text: "확인",
-				onPress: () => { insertMatchInfo(activeType); },
-			  },
-			]
-		); */
 	}
 
 	// ##### 사용자 신고하기 - 신고사유 체크 Callback 함수
@@ -182,6 +158,12 @@ export const Matching = (props : Props) => {
 			getMatchProfileInfo();
 			report_onClose();
 			setReportPopup(false);
+
+			// 스크롤 최상단 이동
+			scrollRef.current?.scrollTo({
+				y: 0,
+				animated: false,
+			});
 		})
 		.catch(function (error) {
 			console.log('insertReport error ::: ' , error);
@@ -496,7 +478,8 @@ export const Matching = (props : Props) => {
 	return data.profileImgList.length > 0 && isLoad ? (
 		<>
 			<TopNavigation currentPath={'LIMEETED'} />
-			<ScrollView>
+
+			<ScrollView ref={scrollRef}>
 				{data.profileImgList.length > 0 && <ViualSlider 
 											isNew={data.memberBase.profile_type == 'NEW' ? true : false} 
 											onlyImg={false}

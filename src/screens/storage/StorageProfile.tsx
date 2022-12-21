@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect, useRef} from 'react';
-import { Image, ScrollView, View, FlatList, Alert, TouchableOpacity, StyleSheet } from 'react-native';
+import { Image, ScrollView, View, FlatList, Alert, TouchableOpacity, StyleSheet, Modal } from 'react-native';
 import TopNavigation from 'component/TopNavigation';
 import { ICON } from 'utils/imageUtils';
 import { layoutStyle, styles, modalStyle } from 'assets/styles/Styles';
@@ -21,6 +21,7 @@ import { Modalize } from 'react-native-modalize';
 import { CommonCheckBox } from 'component/CommonCheckBox';
 import { ToolTip } from 'component/Tooltip';
 import { BarGrap } from 'component/BarGrap';
+import { setBase } from 'redux/reducers/mbrReducer';
 
 /* ################################################################################################################
 ###### 매칭 상대 프로필 상세
@@ -49,11 +50,15 @@ export const StorageProfile = (props : Props) => {
    const tgtMemberSeq = props.route.params.tgtMemberSeq;
 
    const [data, setData] = useState<any>({
-      memberBase: {}
+      matchBase: {}
+      , memberBase: {}
       , profileImgList: []
       , secondAuthList: []
       , interviewList: []
    });
+
+   /// 매칭 기본 정보
+   const [matchBase, setMatchBase] = useState<any>({});
 
    // 회원 기본 정보
    const [memberBase, setMemberBase] = useState<any>({MemberBaseData});
@@ -84,7 +89,8 @@ export const StorageProfile = (props : Props) => {
       const result = await axios.post(properties.api_domain + '/match/selectMatchMemberInfo',
             {
                'api-key': 'U0FNR09CX1RPS0VOXzAx',
-               member_seq: tgtMemberSeq
+               member_seq: tgtMemberSeq,
+               match_seq: matchSeq
             },
             {
                headers: {
@@ -145,6 +151,7 @@ export const StorageProfile = (props : Props) => {
                
                setData({
                   ...data
+                  , matchBase: response.data.matchBase
                   , memberBase: response.data.memberBase
                   , profileImgList: tmpProfileImgList
                   , secondAuthList: tmpSecondAuthList
@@ -207,11 +214,6 @@ export const StorageProfile = (props : Props) => {
             console.log('error ::: ', error);
          });
    };
-
-   const clipBoard = async () => {
-      
-   }
-
 
    // 관심 여부 체크
    const profileCallbackFn = (activeType:string) => {
@@ -363,11 +365,57 @@ export const StorageProfile = (props : Props) => {
 			
 			Alert.alert('알림', '신고 처리 되었습니다.', [{ text: '확인' }]);
 			report_onClose();
+
+         navigation.navigate('Main', {
+            screen: 'Storage',
+         });
+         
 		})
 		.catch(function (error) {
 			console.log('insertReport error ::: ' , error);
 		});
 	}
+
+
+   // 연락처 열기
+   const goHpOpen = async () => {
+      const result = await axios.post(properties.api_domain + '/match/procMatchMemberHpOpen',
+         {
+            'api-key': 'U0FNR09CX1RPS0VOXzAx',
+            'match_seq': data.matchBase.match_seq,
+            'member_seq': memberSeq,
+         },
+         {
+            headers: {
+               'jwt-token': jwtToken
+            },
+         },
+      )
+      .then(function (response) {
+         if(response.data.result_code == '0000') {
+            setData({
+               ...data
+               , matchBase : {
+                  ...data.matchBase
+                  , phone_open_yn : "Y"
+               }
+            })
+         } else {
+            Alert.alert('알림', '보유 패스가 부족합니다.', [{ text: '확인' }]);
+         }
+
+         setHpOpenPopup(false);
+      })
+      .catch(function (error) {
+         setHpOpenPopup(false);
+         Alert.alert('알림', '보유 패스가 부족합니다.', [{ text: '확인' }]);
+         console.log('error ::: ', error);
+      });
+   }
+
+
+   // ################### 팝업 관련 #####################
+   const [hpOpenPopup, setHpOpenPopup] = useState(false); // 연락처 열기 팝업
 
 
    // ##### 첫 렌더링
@@ -435,25 +483,20 @@ export const StorageProfile = (props : Props) => {
                            <CommonText>상대 이성에게 반가운 인사말을 건내보세요.</CommonText>
                         </SpaceView>
 
-
-                        <TouchableOpacity onPress={() => { clipBoard(); }}>
-                           <SpaceView mb={8} viewStyle={styles.textContainer}>
-                              <CommonText fontWeight={'500'}>연락처 정보</CommonText>
-                              <CommonText type={'h5'} textStyle={layoutStyle.textCenter}>
-                                 {data.memberBase.phone_number}
-                                 {/* 영역을 터치하면 상대 이성의 연락처가 복사됩니다 */}
-                              </CommonText>
-                           </SpaceView>
-                        </TouchableOpacity>
-
-                        {/* <SpaceView mb={8} viewStyle={styles.textContainer}>
-                           <CommonText fontWeight={'500'}>카카오톡 ID</CommonText>
-                           <CommonText type={'h5'} textStyle={layoutStyle.textCenter}>
-                              영역을 터치하면 상대 이성의 카카오톡 ID가 복사됩니다
-                           </CommonText>
-                        </SpaceView> */}
-
-                        {/* <CommonBtn value={'카카오톡 열기'} type={'kakao'} icon={ICON.kakao} iconSize={24} /> */}
+                        {data.matchBase.res_member_seq == memberSeq || data.matchBase.phone_open_yn == 'Y' ? (
+                           <>
+                              <SpaceView mb={8} viewStyle={styles.textContainer}>
+                                 <CommonText fontWeight={'500'}>연락처 정보</CommonText>
+                                 <CommonText type={'h5'} textStyle={layoutStyle.textCenter}>
+                                    {data.memberBase.phone_number}
+                                 </CommonText>
+                              </SpaceView>
+                           </>
+                        ) : (
+                           <>
+                              <CommonBtn value={'연락처 열기'} type={'purple'} onPress={() => { setHpOpenPopup(true) }} />
+                           </>
+                        )}
                      </SpaceView>
                   </>
                ) : null}
@@ -743,6 +786,42 @@ export const StorageProfile = (props : Props) => {
 					</SpaceView>
 				</View>
 			</Modalize>
+
+
+         {/* ###############################################
+                        연락처 열기 팝업
+            ############################################### */}
+         <Modal visible={hpOpenPopup} transparent={true}>
+            <View style={modalStyle.modalBackground}>
+               <View style={modalStyle.modalStyle1}>
+                  <SpaceView mb={16} viewStyle={layoutStyle.alignCenter}>
+                     <CommonText fontWeight={'700'} type={'h4'}>
+                        연락처 열기
+                     </CommonText>
+                  </SpaceView>
+
+                  <SpaceView viewStyle={layoutStyle.alignCenter}>
+                     <CommonText type={'h5'}>패스를 소모하여 연락처를 확인하시겠습니까?</CommonText>
+                     <CommonText type={'h5'} color={ColorType.red}>패스 x25</CommonText>
+                  </SpaceView>
+
+                  <View style={modalStyle.modalBtnContainer}>
+                     <TouchableOpacity
+                        style={modalStyle.modalBtn}
+                        onPress={() => setHpOpenPopup(false)}
+                     >
+                        <CommonText fontWeight={'500'}>취소</CommonText>
+                     </TouchableOpacity>
+                     <View style={modalStyle.modalBtnline} />
+                     <TouchableOpacity style={modalStyle.modalBtn} onPress={() => goHpOpen() }>
+                        <CommonText fontWeight={'500'} color={ColorType.red}>
+                           확인
+                        </CommonText>
+                     </TouchableOpacity>
+                  </View>
+               </View>
+            </View>
+         </Modal>
 
 
 
