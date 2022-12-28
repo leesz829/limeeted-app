@@ -26,6 +26,8 @@ import { get_login_chk, signup_with_social } from 'api/models';
 import { useDispatch } from 'react-redux';
 import * as mbrReducer from 'redux/reducers/mbrReducer';
 import { useUserInfo } from 'hooks/useUserInfo';
+import { BasePopup } from 'screens/commonpopup/BasePopup';
+
 
 interface Props {
 	navigation: StackNavigationProp<StackParamList, 'Login01'>;
@@ -47,6 +49,9 @@ export const Login01 = (props: Props) => {
 	const dispatch = useDispatch();
 	const [id, setId] = React.useState('');
 	const [password, setPassword] = React.useState('');
+
+	const [basePopup, setBasePopup] = React.useState(false);			// 기본 팝업 state
+	const [basePopupText, setBasePopupText] = React.useState('');		// 기본 팝업 텍스트
 
 	React.useEffect(() => {
 		//dispatch(myProfile());
@@ -112,14 +117,16 @@ export const Login01 = (props: Props) => {
 			 */
 			let resultCode = data.result_code;
 			if (resultCode == '0001') {
-				Alert.alert('알림', '일치하는 회원이 없습니다.', [{ text: '확인' }]);
+				setBasePopupText('일치하는 회원이 없습니다.');
+				setBasePopup(true);
 			} else if(resultCode == '0003') { // 반려
 				navigation.navigate('Approval', {
 					memberSeq: data.base.member_seq,
 					accessType: 'REFUSE'
 				});
 			} else if(resultCode == '0003') { // 탈퇴
-				Alert.alert('알림', '탈퇴 회원 입니다.', [{ text: '확인' }]);
+				setBasePopupText('탈퇴 회원 입니다.');
+				setBasePopup(true);
 			} else {
 				let memberStatus = data.base.status;
 				let joinStatus = data.base.join_status;
@@ -223,11 +230,14 @@ export const Login01 = (props: Props) => {
 								value={'로그인'}
 								onPress={() => {
 									if (id == '') {
-										Alert.alert('알림', '아이디를 입력해 주세요.', [{ text: '확인' }]);
+										//Alert.alert('알림', '아이디를 입력해 주세요.', [{ text: '확인' }]);
+										setBasePopupText('아이디를 입력해 주세요.');
+										setBasePopup(true);
 										return;
 									}
 									if (password == '') {
-										Alert.alert('알림', '비밀번호를 입력해 주세요.', [{ text: '확인' }]);
+										setBasePopupText('비밀번호를 입력해 주세요.');
+										setBasePopup(true);
 										return;
 									}
 
@@ -248,6 +258,16 @@ export const Login01 = (props: Props) => {
 					</SpaceView>
 				</View>
 			</ScrollView>
+
+
+
+			{/* ######################################################################
+			##### 팝업 영역
+			###################################################################### */}
+
+			{/* ### 기본 팝업 */}
+			<BasePopup popupVisible={basePopup} setPopupVIsible={setBasePopup} title={''} text={basePopupText} />
+
 		</>
 	);
 };

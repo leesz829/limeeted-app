@@ -7,6 +7,7 @@ import { ScreenNavigationProp } from '@types';
 import { useNavigation } from '@react-navigation/native';
 import { Image, Alert } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
+import { BasePopup } from 'screens/commonpopup/BasePopup';
 
 interface Props {
 	currentPath: string;
@@ -19,6 +20,9 @@ interface Props {
 const TopNavigation: FC<Props> = (props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 	const [currentNavi, setCurrentNavi] = useState<string>(props.currentPath);
+
+	const [basePopup, setBasePopup] = React.useState(false);			// 기본 팝업 state
+	const [basePopupText, setBasePopupText] = React.useState('');		// 기본 팝업 텍스트
 
 	React.useEffect(() => {
 		setCurrentNavi(props.currentPath);
@@ -55,13 +59,24 @@ const TopNavigation: FC<Props> = (props) => {
 			<TouchableOpacity
 				style={[styles.tab]}
 				onPress={() => {
-					Alert.alert('알림', '준비중입니다.', [{ text: '확인' }]);
+					setBasePopupText('준비중입니다.');
+					setBasePopup(true);
 				}}
 				/* onPress={() => setCurrentNavi('STORY')} */
 			>
 				<Text style={[styles.tabText, currentNavi === 'STORY' && styles.tabTextActive]}>STORY</Text>
 				{currentNavi === 'STORY' && <View style={styles.activeDot} />}
 			</TouchableOpacity>
+
+			
+			
+			{/* ######################################################################
+			##### 팝업 영역
+			###################################################################### */}
+
+			{/* ### 기본 팝업 */}
+			<BasePopup popupVisible={basePopup} setPopupVIsible={setBasePopup} title={''} text={basePopupText} />
+
 		</View>
 	);
 };
