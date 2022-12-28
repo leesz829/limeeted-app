@@ -55,13 +55,13 @@ export const SecondAuthPopup : FC<Props> = (props) => {
 		itemNm = "직업";
 		placeholderTxt = "직업을 입력해주세요. (예 : 삼성전자 마케팅)";
 		etcTxt01 = "자신의 커리어를 증명할 수 있는 명함 또는 증명서를 올려주세요.";
-		etcTxt02 = "허용 증명서 : 재직증명서, 건강보험자격득실확인서, 직업라이센스";
+		etcTxt02 = "허용 증명서 : 재직 증명서, 건강보헝 자격 득실 증명서, 직업 라이선스";
 	} else if(type == "EDU") {
 		title = "학업";
 		itemNm = "교육기관";
 		placeholderTxt = "출신 교육기관을 입력해주세요. (예 : 서울대 컴퓨터 공학과)";
-		etcTxt01 = "자신의 출신 대학교 또는 대학원 등의 재학증명서 또는 졸업증명서 등을 올려주세요.";
-		etcTxt02 = "그외의 고등 교육기관의 경우는 관리자의 주관적 판단에 의해 결정될 수 있으니 참고해주세요.";
+		etcTxt01 = "자신의 출식 대학교 또는 대학원 등의 재학증명서 또는 졸업 증명서 등을 올려주세요.";
+		etcTxt02 = "그외의 고등 교육기관의 경우는 관리자의 주관적 판단에 의해 결정될 수 있으니 참고바랍니다.";
 	} else if(type == "INCOME") {
 		title = "소득";
 		etcTxt01 = "가장 최근의 급여 명세서를 올려주세요.";
@@ -73,13 +73,13 @@ export const SecondAuthPopup : FC<Props> = (props) => {
 		title = "SNS";
 		itemNm = "인스타ID";
 		placeholderTxt = "인스타그램 ID를 입력해주세요.";
-		etcTxt01 = "자신의 인스타 계정을 연동시켜주세요. 팔로워 수 10000명 이상이 되면 프로필 2차 인증이 승인됩니다.";
+		etcTxt01 = "자신의 인스타 계정을 연동시켜주세요.\n팔로워 수 10000명 이상이 되면 프로필 2차 인증이 승인됩니다.";
 		etcTxt02 = "ID를 정확히 입력해주셔야 인증 승인이 가능합니다.";
 	} else if(type == "VEHICLE") {
 		title = "차량";
 		itemNm = "모델명";
 		placeholderTxt = "소유중인 차량 모델을 입력해주세요. (예 : 제네시스 G80)";
-		etcTxt01 = "소유차량을 증명할 수 있는 차량 등록증 또는 자동차 보험 가입 현황을 올려주세요.";
+		etcTxt01 = "소유차량을 증명할 수 있는 차량 등록등 또는 자동차 보험 가입 현황을 올려주세요.";
 	}
 
 	const imgCallBackFn = ( uri:string, fileName:string, fileSize: number, type: string) => {
@@ -143,7 +143,7 @@ export const SecondAuthPopup : FC<Props> = (props) => {
 				</SpaceView>
 
 				<SpaceView mb={16}>
-					<CommonBtn value={'확인'} 
+					<CommonBtn value={'심사 요청'} 
 							   type={'primary'}
 							   	onPress={() => {
 									if("" != fileInfo.uri || "" != item) {

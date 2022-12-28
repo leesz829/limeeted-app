@@ -7,7 +7,7 @@ import React, { useRef } from 'react';
 import { View, Image, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { ICON } from 'utils/imageUtils';
 import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
-import { RouteProp, useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Modalize } from 'react-native-modalize';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
@@ -30,6 +30,8 @@ export const Signup01 = (props: Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 	console.log('## Signup01 memberSeq ::: ', props.route.params.memberSeq);
 	console.log('## Signup01 params ::: ', props.route.params);
+
+	const isFocus = useIsFocused();
 
 	const [secondData, setSecondData] = React.useState({
 		orgJobFileUrl: '',
@@ -209,7 +211,7 @@ export const Signup01 = (props: Props) => {
 	 */
 	React.useEffect(() => {
 		getMemberProfileSecondAuth();
-	}, [props.route]);
+	}, [isFocus]);
 
 	// 프로필 2차 인증 정보 조회 함수
 	const getMemberProfileSecondAuth = async () => {
@@ -299,26 +301,36 @@ export const Signup01 = (props: Props) => {
 		data.append('instagram_id', secondData.snsItem);
 		data.append('vehicle', secondData.vehicleItem);
 
-		if (secondData.jobFile.uri != '') {
+		let cnt = 0;
+		if (secondData.jobFile.uri) {
 			data.append('jobFile', secondData.jobFile);
+			cnt++;
 		}
-		if (secondData.eduFile.uri != '') {
+		if (secondData.eduFile.uri) {
 			data.append('eduFile', secondData.eduFile);
+			cnt++;
 		}
-		if (secondData.incomeFile.uri != '') {
+		if (secondData.incomeFile.uri) {
 			data.append('incomeFile', secondData.incomeFile);
+			cnt++;
 		}
-		if (secondData.assetFile.uri != '') {
+		if (secondData.assetFile.uri) {
 			data.append('assetFile', secondData.assetFile);
+			cnt++;
 		}
-		if (secondData.snsFile.uri != '') {
+		if (secondData.snsFile.uri) {
 			data.append('snsFile', secondData.snsFile);
+			cnt++;
 		}
-		if (secondData.vehicleFile.uri != '') {
+		if (secondData.vehicleFile.uri) {
 			data.append('vehicleFile', secondData.vehicleFile);
+			cnt++;
 		}
 
-		console.log('data ::: ', data);
+		if(!cnt){
+			Alert.alert('알림', '6개의 인증항목 중 최소 1개의 항목에 심사를 위한 이미지를 업로드해주세요.', [{ text: '확인' }]);
+			return false;
+		}
 
 		fetch(properties.api_domain + '/join/insertMemberSecondAuth/', {
 			method: 'POST',
@@ -389,8 +401,7 @@ export const Signup01 = (props: Props) => {
 									</SpaceView>
 
 									<CommonText color={ColorType.gray6666} type={'h5'}>
-										프로필 2차 인증 위한{'\n'}
-										직업 설명 문구
+										내 커리어를 확인할 수 있는 명함 또는 증명서를 올려주세요
 									</CommonText>
 								</View>
 							</TouchableOpacity>
@@ -403,14 +414,13 @@ export const Signup01 = (props: Props) => {
 
 									<SpaceView mb={8}>
 										<View style={[layoutStyle.row, layoutStyle.alignCenter]}>
-											<CommonText>학위</CommonText>
+											<CommonText>학업</CommonText>
 											<Image source={ICON.arrRight} style={styles.iconSize} />
 										</View>
 									</SpaceView>
 
 									<CommonText color={ColorType.gray6666} type={'h5'}>
-										프로필 2차 인증 위한{'\n'}
-										학위 설명 문구
+										대학교/대학원의 재학증명서/졸업증명를 올려주세요.
 									</CommonText>
 								</View>
 							</TouchableOpacity>
@@ -433,8 +443,7 @@ export const Signup01 = (props: Props) => {
 									</SpaceView>
 
 									<CommonText color={ColorType.gray6666} type={'h5'}>
-										프로필 2차 인증 위한{'\n'}
-										소득 설명 문구
+										소득금액증명원, 근로소득원천징수증과 같은 소득자료를 올려주세요.
 									</CommonText>
 								</View>
 							</TouchableOpacity>
@@ -453,8 +462,7 @@ export const Signup01 = (props: Props) => {
 									</SpaceView>
 
 									<CommonText color={ColorType.gray6666} type={'h5'}>
-										프로필 2차 인증 위한{'\n'}
-										자산 설명 문구
+										은행에서 발급해주는 잔고 증명서를 올려주세요.
 									</CommonText>
 								</View>
 							</TouchableOpacity>
@@ -477,8 +485,7 @@ export const Signup01 = (props: Props) => {
 									</SpaceView>
 
 									<CommonText color={ColorType.gray6666} type={'h5'}>
-										프로필 2차 인증 위한{'\n'}
-										SNS 설명 문구
+										내 인스타 ID가 보이는 스크린샷을 올려주세요.
 									</CommonText>
 								</View>
 							</TouchableOpacity>
@@ -497,8 +504,7 @@ export const Signup01 = (props: Props) => {
 									</SpaceView>
 
 									<CommonText color={ColorType.gray6666} type={'h5'}>
-										프로필 2차 인증 위한{'\n'}
-										차량 설명 문구
+										차량 등록등 또는 자동차보험가입 증빙 자료를 올려주세요.
 									</CommonText>
 								</View>
 							</TouchableOpacity>

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ScreenNavigationProp } from '@types';
 import { jwt_token, api_domain } from 'utils/properties';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, CommonActions } from '@react-navigation/native';
 import { WebView } from 'react-native-webview';
 import axios from 'axios';
 import { Alert } from 'react-native';
@@ -29,18 +29,50 @@ export const NiceAuth = () => {
 					{
 						text: '확인',
 						onPress: () => {
-							navigation.navigate('Login');
+							navigation.dispatch(
+								CommonActions.reset({
+									index: 1,
+									routes: [
+										{ name: 'Login' }
+									],
+								})
+							);
 						},
 					},
 				]);
 			} else {
-				navigation.navigate('Signup00', {
-					ci: dataJson.ci,
-					name: dataJson.name,
-					gender: dataJson.gender,
-					mobile: dataJson.mobile,
-					birthday: dataJson.birthday,
-				});
+				navigation.dispatch(
+					CommonActions.reset({
+						index: 1,
+						routes: [
+							{ name: 'Login' }
+							, {
+								name: 'Signup00'
+								, params: {
+									ci: dataJson.ci,
+									name: dataJson.name,
+									gender: dataJson.gender,
+									mobile: dataJson.mobile,
+									birthday: dataJson.birthday
+								}
+							}
+						],
+					})
+				);
+
+
+				/* navigation.reset({
+					routes: [{
+						name: 'Signup00'
+						, params: {
+							ci: dataJson.ci,
+							name: dataJson.name,
+							gender: dataJson.gender,
+							mobile: dataJson.mobile,
+							birthday: dataJson.birthday
+						}
+					}]
+				}); */
 			}
 		}
 

@@ -12,6 +12,7 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		6172F2D35A4C3AA820D92908 /* libPods-limeeted.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6423831EA8574132BED9D8CC /* libPods-limeeted.a */; };
+		7C4E08C4293BB73600242D71 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7C4E08C3293BB73600242D71 /* SplashScreen.storyboard */; };
 		7CA540442937A07B0071FB41 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7CA540432937A07B0071FB41 /* GoogleService-Info.plist */; };
 		7CA540462937A4A30071FB41 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CA540452937A4A30071FB41 /* StoreKit.framework */; };
 		7CB64CB9291B802E004941A8 /* AppleSDGothicNeoM00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7CB64CAF291B7E52004941A8 /* AppleSDGothicNeoM00.ttf */; };
@@ -37,6 +38,7 @@
 		00E356EE1AD99517003FC87E /* limeetedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = limeetedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* limeetedTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = limeetedTests.m; sourceTree = "<group>"; };
+		139E02B62CD3182D0D301CC4 /* Pods-limeeted-limeetedTests.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-limeeted-limeetedTests.staging.xcconfig"; path = "Target Support Files/Pods-limeeted-limeetedTests/Pods-limeeted-limeetedTests.staging.xcconfig"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* limeeted.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = limeeted.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = limeeted/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = limeeted/AppDelegate.m; sourceTree = "<group>"; };
@@ -48,6 +50,7 @@
 		6423831EA8574132BED9D8CC /* libPods-limeeted.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-limeeted.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		670DB48B4B764396AB3C3ED5 /* AppleSDGothicNeoM00.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AppleSDGothicNeoM00.ttf; path = ../src/assets/fonts/AppleSDGothicNeoM00.ttf; sourceTree = "<group>"; };
 		6C97AB639B58BBB4B15BBE30 /* Pods-limeeted-limeetedTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-limeeted-limeetedTests.debug.xcconfig"; path = "Target Support Files/Pods-limeeted-limeetedTests/Pods-limeeted-limeetedTests.debug.xcconfig"; sourceTree = "<group>"; };
+		7C4E08C3293BB73600242D71 /* SplashScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SplashScreen.storyboard; sourceTree = "<group>"; };
 		7CA540432937A07B0071FB41 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Desktop/리미티드/FCM/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		7CA540452937A4A30071FB41 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		7CA540472937A4AA0071FB41 /* limeeted.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = limeeted.entitlements; path = limeeted/limeeted.entitlements; sourceTree = "<group>"; };
@@ -61,6 +64,7 @@
 		ABFE59519B596E51CEFDCCC0 /* libPods-limeeted-limeetedTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-limeeted-limeetedTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC26003FFA43486F94BF29BA /* AppleSDGothicNeoT00.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AppleSDGothicNeoT00.ttf; path = ../src/assets/fonts/AppleSDGothicNeoT00.ttf; sourceTree = "<group>"; };
 		C0A881CF5CF3F2B244570E2A /* Pods-limeeted.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-limeeted.debug.xcconfig"; path = "Target Support Files/Pods-limeeted/Pods-limeeted.debug.xcconfig"; sourceTree = "<group>"; };
+		C8449447517BE5198005BF35 /* Pods-limeeted.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-limeeted.staging.xcconfig"; path = "Target Support Files/Pods-limeeted/Pods-limeeted.staging.xcconfig"; sourceTree = "<group>"; };
 		D00AAFFCFCFDA5787532823F /* Pods-limeeted.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-limeeted.release.xcconfig"; path = "Target Support Files/Pods-limeeted/Pods-limeeted.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F739A331B9B142E3995067D0 /* AppleSDGothicNeoR00.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AppleSDGothicNeoR00.ttf; path = ../src/assets/fonts/AppleSDGothicNeoR00.ttf; sourceTree = "<group>"; };
@@ -165,6 +169,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				7C4E08C3293BB73600242D71 /* SplashScreen.storyboard */,
 				7CB64CAE291B7E52004941A8 /* fonts */,
 				13B07FAE1A68108700A75B9A /* limeeted */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -195,6 +200,8 @@
 				D00AAFFCFCFDA5787532823F /* Pods-limeeted.release.xcconfig */,
 				6C97AB639B58BBB4B15BBE30 /* Pods-limeeted-limeetedTests.debug.xcconfig */,
 				1D0AE47A65C8663E3B452821 /* Pods-limeeted-limeetedTests.release.xcconfig */,
+				C8449447517BE5198005BF35 /* Pods-limeeted.staging.xcconfig */,
+				139E02B62CD3182D0D301CC4 /* Pods-limeeted-limeetedTests.staging.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -295,6 +302,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7CB64CB9291B802E004941A8 /* AppleSDGothicNeoM00.ttf in Resources */,
+				7C4E08C4293BB73600242D71 /* SplashScreen.storyboard in Resources */,
 				7CA540442937A07B0071FB41 /* GoogleService-Info.plist in Resources */,
 				7CB64CBA291B802E004941A8 /* RIDIBatang.otf in Resources */,
 				7CB64CBB291B802E004941A8 /* AppleSDGothicNeoB00.ttf in Resources */,
@@ -564,6 +572,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MULTI_DEPLOYMENT_CONFIG = "";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -592,6 +601,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MULTI_DEPLOYMENT_CONFIG = "";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -603,6 +613,120 @@
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
+		};
+		7C3668902941DEEB00654E52 /* Staging */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODEPUSH_KEY = "TZsBYFjwmEqJIX-tFp8O0RFmnFyQoocLSwjIN";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					/usr/lib/swift,
+					"$(inherited)",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"\"$(SDKROOT)/usr/lib/swift\"",
+					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
+					"\"$(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)\"",
+					"\"$(inherited)\"",
+				);
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MULTI_DEPLOYMENT_CONFIG = "$(BUILD_DIR)/Release$(EFFECTIVE_PLATFORM_NAME)";
+				NEW_SETTING = "";
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Staging;
+		};
+		7C3668912941DEEB00654E52 /* Staging */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C8449447517BE5198005BF35 /* Pods-limeeted.staging.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = limeeted/limeeted.entitlements;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2PTBRD7N36;
+				INFOPLIST_FILE = limeeted/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = LImeetED;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MULTI_DEPLOYMENT_CONFIG = "";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.appsquad.limeeted-ios";
+				PRODUCT_NAME = limeeted;
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Staging;
+		};
+		7C3668922941DEEB00654E52 /* Staging */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 139E02B62CD3182D0D301CC4 /* Pods-limeeted-limeetedTests.staging.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COPY_PHASE_STRIP = NO;
+				INFOPLIST_FILE = limeetedTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-lc++",
+					"$(inherited)",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/limeeted.app/limeeted";
+			};
+			name = Staging;
 		};
 		83CBBA201A601CBA00E9B192 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -633,6 +757,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODEPUSH_KEY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -665,6 +790,8 @@
 					"\"$(inherited)\"",
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
+				MULTI_DEPLOYMENT_CONFIG = "";
+				NEW_SETTING = "";
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 			};
@@ -699,6 +826,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODEPUSH_KEY = "Vf4_EAdjHLII4edsMu_31mfLqD_mBsEM-qFk0";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -724,6 +852,8 @@
 					"\"$(inherited)\"",
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
+				MULTI_DEPLOYMENT_CONFIG = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				NEW_SETTING = "";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -737,6 +867,7 @@
 			buildConfigurations = (
 				00E356F61AD99517003FC87E /* Debug */,
 				00E356F71AD99517003FC87E /* Release */,
+				7C3668922941DEEB00654E52 /* Staging */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -746,6 +877,7 @@
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
 				13B07F951A680F5B00A75B9A /* Release */,
+				7C3668912941DEEB00654E52 /* Staging */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -755,6 +887,7 @@
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,
 				83CBBA211A601CBA00E9B192 /* Release */,
+				7C3668902941DEEB00654E52 /* Staging */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -28,7 +28,7 @@ const BottomNavigation = () => {
 				name="Roby"
 				component={Roby}
 				options={{
-					tabBarLabel: '로비',
+					tabBarLabel: '마이홈',
 					headerShown: false,
 					tabBarShowLabel: true,
 				}}
@@ -40,6 +40,7 @@ const BottomNavigation = () => {
 					tabBarLabel: '보관함',
 					headerShown: false,
 					tabBarShowLabel: true,
+					unmountOnBlur: true
 				}}
 			/>
 			<Tab.Screen
@@ -66,7 +67,16 @@ const BottomNavigation = () => {
 					headerShown: false,
 					tabBarShowLabel: true,
 				}}
+				listeners={({ navigation }) => ({
+					tabPress: (e) => {
+						e.preventDefault();
+						//navigation.reset({routes: [{name: "Cashshop"}]});
+						navigation.navigate('Cashshop')
+					},
+				})}
 			/>
+			
+			
 			<Stack.Screen
 				name="Live"
 				component={Live}
@@ -93,6 +103,7 @@ const BottomNavigation = () => {
 				component={StorageProfile}
 				options={{
 					headerShown: false,
+					unmountOnBlur: true
 				}}
 			/>
 			<Stack.Screen

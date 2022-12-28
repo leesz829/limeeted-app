@@ -16,59 +16,25 @@ import {
 	logout,
 	unlink,
 } from '@react-native-seoul/kakao-login';
-
 import * as properties from 'utils/properties';
-
 export const Login = () => {
 	const navigation = useNavigation<ScreenNavigationProp>();
-
 	const [kakaoResult, setKakaoResult] = React.useState('');
 
+/*
 	const signInWithKakao = async () => {
-		/* ### 실 버전 */
-		// const result = await loginWithKakaoAccount();
-		// console.log(JSON.stringify(result));
-		// return;
-
-		//const profile11 = await getKakaoProfile();
-		// console.log(profile11);
-
-		/* ### 테스트 버전 */
-		const profile = {
-			id: 'test2',
-			//id : "2233743623",
-			name: '손흥민',
-			gender: 'M',
-			age: '31',
-			hp: '010-1234-5678',
-			birthday: '',
-			ci: '',
-		};
-
-		console.log('profile :: ', profile);
-
-		//setKakaoResult(JSON.stringify(token));
-
 		axios
 			.post(properties.api_domain + '/join/getKakaoIdchk/', {
 				kakaoId: profile.id,
 			})
 			.then(function (response) {
 				console.log('response.data ::: ', response.data);
-
 				const resultCode = response.data.result_code;
 				const status = response.data.base.status;
 				const joinStatus = response.data.base.join_status;
-
 				console.log('resultCode ::: ', response.data.result_code);
 				console.log('status ::: ', response.data.base.status);
-
-				/*
-				 * ## 인증 결과 코드 정의
-				 * 0000 : 회원미존재
-				 * 0001 : 회원존재
-				 * 0002 : 에러
-				 */
+				
 				if (
 					resultCode == '0000' ||
 					(resultCode == '0001' && (status == 'PROCEED' || status == 'APROVAL'))
@@ -108,9 +74,7 @@ export const Login = () => {
 					console.log('alert 추가!!!!! 로그인 실패');
 				} else {
 					console.log('response.data.token_param ::: ', response.data.token_param.jwt_token);
-
 					AsyncStorage.clear();
-
 					// token set
 					AsyncStorage.setItem('jwt-token', response.data.token_param.jwt_token);
 					AsyncStorage.setItem('member_seq', String(response.data.base.member_seq));
@@ -121,7 +85,6 @@ export const Login = () => {
 						JSON.stringify(response.data.memberSndAuthList),
 					);
 					AsyncStorage.setItem('memberIdealType', JSON.stringify(response.data.memberIdealType));
-
 					/* AsyncStorage.setItem('memberBase', JSON.stringify(response.data.base), (err)=> {
 					if(err){
 						console.log("an error");
@@ -130,8 +93,7 @@ export const Login = () => {
 					console.log("success");
 				}).catch((err)=> {
 					console.log("error is: " + err);
-				}); */
-
+				}); 
 					navigation.navigate('Main', {
 						screen: 'Roby'
 					});
@@ -140,12 +102,11 @@ export const Login = () => {
 			.catch(function (error) {
 				console.log(error);
 			});
-
 		/* navigation.navigate('Signup02', {
 			memberSeq : 38
-		}); */
-	};
-
+		}); 
+	};*/ 
+	
 	return (
 		<View style={[styles.container, layoutStyle.justifyCenter]}>
 			<View style={layoutStyle.alignCenter}>
@@ -154,19 +115,15 @@ export const Login = () => {
 						LIMIT + MEET
 					</CommonText>
 				</SpaceView> */}
-
 				<SpaceView>
 					<Image source={IMAGE.logoMark} style={styles.logoMark} resizeMode="contain" />
 				</SpaceView>
-
 				<SpaceView mb={200}>
 					<Image source={IMAGE.logoText} style={styles.logo} resizeMode="contain" />
 				</SpaceView>
-
 				{/* <SpaceView mb={150}>
 					<Image source={IMAGE.logo} style={styles.logo} resizeMode='contain' />
 				</SpaceView> */}
-
 				{/* <SpaceView mb={200}>
 					<CommonText>믿음가는 사람들의 인연</CommonText>
 				</SpaceView> */}
@@ -177,7 +134,6 @@ export const Login = () => {
 						value={'로그인'}
 						onPress={() => {
 							navigation.navigate('Login01');
-
 							//signInWithKakao();
 						}}
 					/>
@@ -190,13 +146,11 @@ export const Login = () => {
 								signInWithKakao();
 							}}
 				/> */}
-
 				<CommonBtn
 					value={'회원가입'}
 					type={'kakao'}
 					iconSize={24}
 					onPress={() => {
-						//signInWithKakao();
 						navigation.navigate('NiceAuth');
 					}}
 				/>

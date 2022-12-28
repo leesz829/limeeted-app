@@ -9,8 +9,16 @@ import { RouteProp, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
 
-export const Approval = () => {
+interface Props {
+	navigation : StackNavigationProp<StackParamList, 'Approval'>;
+	route : RouteProp<StackParamList, 'Approval'>;
+}
+
+export const Approval = (props : Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
+
+	const memberSeq = props.route.params.memberSeq;	// 회원 번호
+	const accessType = props.route.params.accessType;			// 
 
 	return (
 		<View style={[styles.container, layoutStyle.justifyCenter]}>
@@ -27,15 +35,20 @@ export const Approval = () => {
 				</SpaceView>
 			</View>
 			<SpaceView viewStyle={styles.bottomBtnContainer} mb={24}>
-				{/* <CommonBtn value={'프로필 수정하기'}
-							onPress={() => {
-								navigation.navigate('Approval');
-							}} 
-				/> */}
-				{/* <CommonBtn value={'로비 이동'} onPress={() => navigation.navigate('Main', { screen: 'Roby' })} /> */}
-
-				<CommonBtn value={'로그인 이동'} onPress={() => navigation.navigate('Login01')} />
-
+				<CommonBtn 
+					value={'프로필 수정하기'} 
+					onPress={() => {
+						if(accessType == "LOGIN") {
+							navigation.reset({
+								routes: [{ name: 'Login01' }]
+							});
+						} else {
+							navigation.navigate('Signup03', {
+								memberSeq: memberSeq
+							});
+						}
+						
+					}} />
 			</SpaceView>
 		</View>
 	);

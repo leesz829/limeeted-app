@@ -6,8 +6,8 @@ import { CommonText } from 'component/CommonText';
 import { ImagePicker } from 'component/ImagePicker';
 import SpaceView from 'component/SpaceView';
 import React, { useRef } from 'react';
-import { View, ScrollView, Image, TouchableOpacity } from 'react-native';
-import { RouteProp, useNavigation } from '@react-navigation/native';
+import { View, ScrollView, Image, Alert, TouchableOpacity } from 'react-native';
+import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ICON, PROFILE_IMAGE } from 'utils/imageUtils';
 import axios from 'axios';
@@ -28,6 +28,8 @@ interface Props {
 
 export const Signup02 = (props: Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
+
+	const isFocus = useIsFocused();
 
 	// 프로필 사진
 	const [imgData, setImgData] = React.useState<any>({
@@ -180,7 +182,7 @@ export const Signup02 = (props: Props) => {
 		} else if (order_seq == '5') {
 			setOrgImgUrl05(localDomain + file_path + file_name);
 		} */
-	}, []);
+	}, [isFocus]);
 
 	// 사진 삭제 팝업
 	const imgDel_modalizeRef = useRef<Modalize>(null);
@@ -484,6 +486,24 @@ export const Signup02 = (props: Props) => {
 							}
 							if (imgData.imgFile05.uri != '') {
 								data.append('file05', imgData.imgFile05);
+							}
+
+							console.log('imgData :::: ' , imgData);
+
+							let tmpCnt = 0;
+							for(var key in imgData) {
+								console.log('key :: ' , imgData[key]);
+								if(imgData[key].url || imgData[key].uri){
+									tmpCnt++;
+								}	
+							}
+							
+							console.log('tmpCnt out :: ' , tmpCnt);
+
+
+							if (tmpCnt < 3) {
+								Alert.alert('알림', '프로필 사진 최소 3장 등록해주세요', [{ text: '확인' }]);
+								return;
 							}
 
 							fetch(properties.api_domain + '/join/insertMemberProfile/', {

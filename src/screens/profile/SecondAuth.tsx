@@ -17,6 +17,9 @@ import { SecondAuthPopup } from 'screens/commonpopup/SecondAuthPopup';
 import axios from 'axios';
 import * as properties from 'utils/properties';
 import AsyncStorage from '@react-native-community/async-storage';
+import * as hooksMember from 'hooks/member';
+import { useDispatch } from 'react-redux';
+import * as mbrReducer from 'redux/reducers/mbrReducer';
 
 /* ################################################################################################################
 ###################################################################################################################
@@ -26,6 +29,10 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 export const SecondAuth = () => {
 	const navigation = useNavigation<ScreenNavigationProp>();
+	const dispatch = useDispatch();	
+
+	const jwtToken = hooksMember.getJwtToken();		// 토큰
+	const memberSeq = hooksMember.getMemberSeq();	// 회원번호
 
 	const [secondData, setSecondData] = React.useState({
 		orgJobFileUrl: '',
@@ -214,11 +221,11 @@ export const SecondAuth = () => {
 				properties.api_domain + '/member/getMemberProfileSecondAuth',
 				{
 					'api-key': 'U0FNR09CX1RPS0VOXzAx',
-					member_seq: String(await properties.get_json_data('member_seq')),
+					member_seq: memberSeq,
 				},
 				{
 					headers: {
-						'jwt-token': String(await properties.jwt_token()),
+						'jwt-token': jwtToken,
 					},
 				},
 			)
@@ -297,7 +304,7 @@ export const SecondAuth = () => {
 	const saveSecondAuth = async () => {
 		const data = new FormData();
 
-		let mbrSeq = String(await properties.get_json_data('member_seq'));
+		let mbrSeq = memberSeq;
 
 		data.append('memberSeq', mbrSeq);
 		data.append('job_name', secondData.jobItem);
@@ -330,7 +337,7 @@ export const SecondAuth = () => {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'multipart/form-data',
-				'jwt-token': String(await properties.jwt_token()),
+				'jwt-token': jwtToken,
 			},
 			body: data,
 		})
@@ -338,20 +345,9 @@ export const SecondAuth = () => {
 			.then((response) => {
 				const goPress = async () => {
 					try {
-						AsyncStorage.setItem('memberBase', JSON.stringify(response.memberBase));
-						AsyncStorage.setItem('memberSndAuthList', JSON.stringify(response.memberSndAuthList));
-
-						const memberImgList: any = await AsyncStorage.getItem('memberImgList');
-						const memberSndAuthList: any = await AsyncStorage.getItem('memberSndAuthList');
-						const memberInterviewList: any = await AsyncStorage.getItem('memberInterviewList');
-
-						if (memberImgList !== null || memberSndAuthList !== null) {
-							navigation.navigate('Profile1', {
-								imgList: JSON.parse(memberImgList),
-								authList: JSON.parse(memberSndAuthList),
-								interviewList: memberInterviewList,
-							});
-						}
+						dispatch(mbrReducer.setBase(JSON.stringify(response.memberBase)));
+						dispatch(mbrReducer.setSecondAuth(JSON.stringify(response.memberSndAuthList)));
+						navigation.navigate('Profile1');
 					} catch (error) {
 						console.log(error);
 					}
@@ -391,9 +387,8 @@ export const SecondAuth = () => {
 										</View>
 									</SpaceView>
 
-									<CommonText color={ColorType.gray6666} type={'h5'}>
-										프로필 2차 인증 위한{'\n'}
-										직업 설명 문구
+									<CommonText color={ColorType.gray6666} type={'h6'} lineHeight={15}>
+										내 커리어를 확인할 수 있는 명함 또는 증명서를 올려주세요
 									</CommonText>
 								</View>
 							</TouchableOpacity>
@@ -411,9 +406,8 @@ export const SecondAuth = () => {
 										</View>
 									</SpaceView>
 
-									<CommonText color={ColorType.gray6666} type={'h5'}>
-										프로필 2차 인증 위한{'\n'}
-										학위 설명 문구
+									<CommonText color={ColorType.gray6666} type={'h6'} lineHeight={15}>
+										대학교/대학원의 재학증명서/졸업증명를 올려주세요.
 									</CommonText>
 								</View>
 							</TouchableOpacity>
@@ -435,9 +429,8 @@ export const SecondAuth = () => {
 										</View>
 									</SpaceView>
 
-									<CommonText color={ColorType.gray6666} type={'h5'}>
-										프로필 2차 인증 위한{'\n'}
-										소득 설명 문구
+									<CommonText color={ColorType.gray6666} type={'h6'} lineHeight={15}>
+										내 소득 자료를 올려주세요.
 									</CommonText>
 								</View>
 							</TouchableOpacity>
@@ -455,9 +448,8 @@ export const SecondAuth = () => {
 										</View>
 									</SpaceView>
 
-									<CommonText color={ColorType.gray6666} type={'h5'}>
-										프로필 2차 인증 위한{'\n'}
-										자산 설명 문구
+									<CommonText color={ColorType.gray6666} type={'h6'} lineHeight={15}>
+										은행에서 발급해주는 잔고 증명서를 올려주세요.
 									</CommonText>
 								</View>
 							</TouchableOpacity>
@@ -479,9 +471,8 @@ export const SecondAuth = () => {
 										</View>
 									</SpaceView>
 
-									<CommonText color={ColorType.gray6666} type={'h5'}>
-										프로필 2차 인증 위한{'\n'}
-										SNS 설명 문구
+									<CommonText color={ColorType.gray6666} type={'h6'} lineHeight={15}>
+										내 인스타 ID가 보이는 스크린샷을 올려주세요.
 									</CommonText>
 								</View>
 							</TouchableOpacity>
@@ -499,9 +490,8 @@ export const SecondAuth = () => {
 										</View>
 									</SpaceView>
 
-									<CommonText color={ColorType.gray6666} type={'h5'}>
-										프로필 2차 인증 위한{'\n'}
-										차량 설명 문구
+									<CommonText color={ColorType.gray6666} type={'h6'} lineHeight={15}>
+										차량 등록등 또는 자동차보험가입 증빙 자료를 올려주세요.
 									</CommonText>
 								</View>
 							</TouchableOpacity>

@@ -11,6 +11,7 @@ export type TextProps = {
 	type?: TextType;
 	color?: ColorType;
 	fontWeight?: WeightType;
+	lineHeight?: number;
 };
 /**
  * 공통 인풋박스
@@ -23,8 +24,8 @@ export type TextProps = {
  *
  */
 export const CommonText: FC<TextProps> = (props) => {
-	const { textStyle, type, color, fontWeight, children } = props;
-	const style = styles({ type, color, fontWeight });
+	const { textStyle, type, color, fontWeight, children, lineHeight } = props;
+	const style = styles({ type, color, fontWeight, lineHeight });
 
 	return <Text style={[style.textStyle, textStyle]}>{children}</Text>;
 };
@@ -33,13 +34,16 @@ const styles = ({
 	type,
 	color,
 	fontWeight,
+	lineHeight
 }: {
 	type?: string;
 	color?: ColorType;
 	fontWeight?: WeightType;
+	lineHeight?: number;
 }) => {
 	let fontSize = 16;
 	let fontFamily = 'AppleSDGothicNeoR00';
+
 	switch (type) {
 		case 'h2':
 			fontSize = 24;
@@ -70,9 +74,16 @@ const styles = ({
 			break;
 	}
 
+	if(typeof lineHeight !== 'undefined') {
+		lineHeight = lineHeight;
+	} else {
+		lineHeight = fontSize + 8;
+	}
+
 	return StyleSheet.create({
 		textStyle: {
-			lineHeight: fontSize + 8,
+			//lineHeight: fontSize + 8,
+			lineHeight: lineHeight,
 			color: color ? color : Color.black2222,
 			fontSize,
 			fontFamily,

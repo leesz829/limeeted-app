@@ -1,10 +1,10 @@
 import React, { useRef } from 'react';
 import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
-import { Image, ScrollView, TextInput, View, TouchableOpacity } from 'react-native';
+import { Image, ScrollView, TextInput, View, TouchableOpacity, Alert } from 'react-native';
 import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ICON } from 'utils/imageUtils';
-import { layoutStyle, styles, modalStyle } from 'assets/styles/Styles';
+import { layoutStyle, styles, modalStyle, commonStyle } from 'assets/styles/Styles';
 import SpaceView from 'component/SpaceView';
 import { CommonText } from 'component/CommonText';
 import { ImagePicker } from 'component/ImagePicker';
@@ -39,17 +39,18 @@ export const Profile1 = (props: Props) => {
 	const jwtToken = hooksMember.getJwtToken();		// 토큰
 	const memberSeq = hooksMember.getMemberSeq();	// 회원번호
 
-	const mbrProfileImgList = JSON.parse(hooksMember.getProfileImg()); 
-	const mbrSecondAuthList = JSON.parse(hooksMember.getSecondAuth()); 
-	const mbrInterviewList = JSON.parse(hooksMember.getInterview());
+	const memberBase = JSON.parse(hooksMember.getBase());				// 회원 기본 정보
+	const mbrProfileImgList = JSON.parse(hooksMember.getProfileImg());	// 회원 프로필 사진 정보
+	const mbrSecondAuthList = JSON.parse(hooksMember.getSecondAuth()); 	// 회원 2차 인증 정보
+	const mbrInterviewList = JSON.parse(hooksMember.getInterview());	// 회원 인터뷰 정보
 
 	// 프로필 사진
 	const [imgData, setImgData] = React.useState<any>({
-		orgImgUrl01: { memer_img_seq: '', url: '', delYn: '' },
-		orgImgUrl02: { memer_img_seq: '', url: '', delYn: '' },
-		orgImgUrl03: { memer_img_seq: '', url: '', delYn: '' },
-		orgImgUrl04: { memer_img_seq: '', url: '', delYn: '' },
-		orgImgUrl05: { memer_img_seq: '', url: '', delYn: '' },
+		orgImgUrl01: { memer_img_seq: '', url: '', delYn: '', status: ''},
+		orgImgUrl02: { memer_img_seq: '', url: '', delYn: '', status: '' },
+		orgImgUrl03: { memer_img_seq: '', url: '', delYn: '', status: '' },
+		orgImgUrl04: { memer_img_seq: '', url: '', delYn: '', status: '' },
+		orgImgUrl05: { memer_img_seq: '', url: '', delYn: '', status: '' },
 		imgFile01: { uri: '', name: '', type: '' },
 		imgFile02: { uri: '', name: '', type: '' },
 		imgFile03: { uri: '', name: '', type: '' },
@@ -69,11 +70,7 @@ export const Profile1 = (props: Props) => {
 	const [isVehicle, setIsVehicle] = React.useState<any>(false);
 
 	// 인터뷰 목록
-	//const [interviewList, setInterviewList] = React.useState<any>(props.route.params.interviewList);
 	const [interviewList, setInterviewList] = React.useState<any>(mbrInterviewList);
-
-	// 인증 갯수
-	const [authCnt, setAuthCnt] = React.useState(0);
 
 	const fileCallBack1 = (uri: string, fileName: string, fileSize: number, type: string) => {
 		if (uri != null && uri != '') {
@@ -146,16 +143,19 @@ export const Profile1 = (props: Props) => {
 					file_name,
 					file_path,
 					order_seq,
+					status,
 				}: {
 					member_img_seq: any;
 					file_name: any;
 					file_path: any;
 					order_seq: any;
+					status: any;
 				}) => {
 					let data = {
 						member_img_seq: member_img_seq,
 						url: properties.img_domain + file_path + file_name,
 						delYn: 'N',
+						status: status
 					};
 					if (order_seq == 1) { imgData.orgImgUrl01 = data; }
 					if (order_seq == 2) { imgData.orgImgUrl02 = data; }
@@ -168,46 +168,49 @@ export const Profile1 = (props: Props) => {
 			setImgData({ ...imgData, imgData });
 		}
 
+		
 		if (mbrSecondAuthList != null) {
-			let authCnt = 0;
-			mbrSecondAuthList.map(({ second_auth_code }: { second_auth_code: any }) => {
-				if (second_auth_code == 'JOB') { setIsJob(true); }
-				if (second_auth_code == 'EDU') { setIsEdu(true); }
-				if (second_auth_code == 'INCOME') { setIsIncome(true); }
-				if (second_auth_code == 'ASSET') { setIsAsset(true); }
-				if (second_auth_code == 'SNS') { setIsSns(true); }
-				if (second_auth_code == 'VEHICLE') { setIsVehicle(true); }
-				authCnt++;
+			mbrSecondAuthList.map(({ second_auth_code, status }: { second_auth_code: any, status: any }) => {
+				if (second_auth_code == 'JOB' && status == 'ACCEPT') { setIsJob(true); }
+				if (second_auth_code == 'EDU' && status == 'ACCEPT') { setIsEdu(true); }
+				if (second_auth_code == 'INCOME' && status == 'ACCEPT') { setIsIncome(true); }
+				if (second_auth_code == 'ASSET' && status == 'ACCEPT') { setIsAsset(true); }
+				if (second_auth_code == 'SNS' && status == 'ACCEPT') { setIsSns(true); }
+				if (second_auth_code == 'VEHICLE' && status == 'ACCEPT') { setIsVehicle(true); }
 			});
-
-			setAuthCnt(authCnt);
 		}
 	}, [isFocus]);
 
 	// 프로필 관리 저장
 	const saveMemberProfile = async () => {
 		const data = new FormData();
-
 		data.append('memberSeq', memberSeq);
-		//data.append("interviewList", JSON.stringify(interviewList));
 		//data.append("data", new Blob([JSON.stringify(interviewList[0])], {type: "application/json"}));
-		data.append('data', JSON.stringify(interviewList));
-		if (imgData.imgFile01.uri != '') {
-			data.append('file01', imgData.imgFile01);
+
+		// Validation 체크
+		let imgChk = 0;
+		if(imgData.orgImgUrl01.delYn == 'N' || imgData.imgFile01.uri != '') { imgChk++ }
+		if(imgData.orgImgUrl02.delYn == 'N' || imgData.imgFile02.uri != '') { imgChk++ }
+		if(imgData.orgImgUrl03.delYn == 'N' || imgData.imgFile03.uri != '') { imgChk++ }
+		if(imgData.orgImgUrl04.delYn == 'N' || imgData.imgFile04.uri != '') { imgChk++ }
+		if(imgData.orgImgUrl05.delYn == 'N' || imgData.imgFile05.uri != '') { imgChk++ }
+
+		console.log('imgChk ::::: ', imgChk);
+
+		if(imgChk <= 2) {
+			Alert.alert('알림', '최소 3개의 프로필 사진을 등록해야 합니다.', [{ text: '확인' }]);
+			return false;
 		}
-		if (imgData.imgFile02.uri != '') {
-			data.append('file02', imgData.imgFile02);
-		}
-		if (imgData.imgFile03.uri != '') {
-			data.append('file03', imgData.imgFile03);
-		}
-		if (imgData.imgFile04.uri != '') {
-			data.append('file04', imgData.imgFile04);
-		}
-		if (imgData.imgFile05.uri != '') {
-			data.append('file05', imgData.imgFile05);
-		}
+		
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////
+		if(imgData.imgFile01.uri != '') { data.append('file01', imgData.imgFile01); }
+		if(imgData.imgFile02.uri != '') { data.append('file02', imgData.imgFile02); }
+		if(imgData.imgFile03.uri != '') { data.append('file03', imgData.imgFile03); }
+		if(imgData.imgFile04.uri != '') { data.append('file04', imgData.imgFile04); }
+		if(imgData.imgFile05.uri != '') { data.append('file05', imgData.imgFile05); }
 		data.append('imgDelSeqStr', imgDelSeqStr);
+
+		data.append('interviewListStr', JSON.stringify(interviewList));
 
 		const result = await fetch(properties.api_domain + '/member/saveProfileImage/', {
 			method: 'POST',
@@ -296,7 +299,10 @@ export const Profile1 = (props: Props) => {
 			<CommonHeader title={'프로필 관리'} />
 			<ScrollView contentContainerStyle={styles.hasFloatingBtnContainer}>
 				<SpaceView viewStyle={styles.container}>
-					{/* ########### 프로필 이미지 ########### */}
+
+					{/* ####################################################################################
+					####################### 프로필 이미지 영역
+					#################################################################################### */}
 					<SpaceView mb={48} viewStyle={styles.halfContainer}>
 						<View style={styles.halfItemLeft}>
 							{imgData.orgImgUrl01.url != '' && imgData.orgImgUrl01.delYn == 'N' ? (
@@ -316,6 +322,12 @@ export const Profile1 = (props: Props) => {
 							) : (
 								<ImagePicker isBig={true} callbackFn={fileCallBack1} uriParam={''} />
 							)}
+
+							{imgData.orgImgUrl01.url != '' && imgData.orgImgUrl01.status == 'PROGRESS' ? (
+								<View style={styles.disabled}>
+									<CommonText fontWeight={'700'} type={'h4'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mt10, commonStyle.mr10]}>심사중</CommonText>
+								</View>
+							) : null}
 						</View>
 
 						<View style={styles.halfItemRight}>
@@ -338,6 +350,13 @@ export const Profile1 = (props: Props) => {
 									) : (
 										<ImagePicker isBig={false} callbackFn={fileCallBack2} uriParam={''} />
 									)}
+
+									{imgData.orgImgUrl02.url != '' && imgData.orgImgUrl02.status == 'PROGRESS' ? (
+										<View style={styles.disabled}>
+											<CommonText fontWeight={'700'} type={'h4'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mr10, commonStyle.fontSize10]}>심사중</CommonText>
+										</View>
+									) : null}
+
 								</SpaceView>
 								<SpaceView ml={8}>
 									{imgData.orgImgUrl03.url != '' && imgData.orgImgUrl03.delYn == 'N' ? (
@@ -357,6 +376,12 @@ export const Profile1 = (props: Props) => {
 									) : (
 										<ImagePicker isBig={false} callbackFn={fileCallBack3} uriParam={''} />
 									)}
+
+									{imgData.orgImgUrl03.url != '' && imgData.orgImgUrl03.status == 'PROGRESS' ? (
+										<View style={styles.disabled}>
+											<CommonText fontWeight={'700'} type={'h4'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mr10, commonStyle.fontSize10]}>심사중</CommonText>
+										</View>
+									) : null}
 								</SpaceView>
 							</SpaceView>
 
@@ -379,6 +404,12 @@ export const Profile1 = (props: Props) => {
 									) : (
 										<ImagePicker isBig={false} callbackFn={fileCallBack4} uriParam={''} />
 									)}
+
+									{imgData.orgImgUrl04.url != '' && imgData.orgImgUrl04.status == 'PROGRESS' ? (
+										<View style={styles.disabled}>
+											<CommonText fontWeight={'700'} type={'h4'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mr10, commonStyle.fontSize10]}>심사중</CommonText>
+										</View>
+									) : null}
 								</SpaceView>
 								<SpaceView ml={8}>
 									{imgData.orgImgUrl05.url != '' && imgData.orgImgUrl05.delYn == 'N' ? (
@@ -398,12 +429,20 @@ export const Profile1 = (props: Props) => {
 									) : (
 										<ImagePicker isBig={false} callbackFn={fileCallBack5} uriParam={''} />
 									)}
+
+									{imgData.orgImgUrl05.url != '' && imgData.orgImgUrl05.status == 'PROGRESS' ? (
+										<View style={styles.disabled}>
+											<CommonText fontWeight={'700'} type={'h4'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mr10, commonStyle.fontSize10]}>심사중</CommonText>
+										</View>
+									) : null}
 								</SpaceView>
 							</SpaceView>
 						</View>
 					</SpaceView>
 
-					{/* ########### 프로필 2차 인증 ########### */}
+					{/* ####################################################################################
+					####################### 프로필 2차 인증 영역
+					#################################################################################### */}
 					<SpaceView mb={54}>
 						<SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
 							<View>
@@ -420,14 +459,18 @@ export const Profile1 = (props: Props) => {
 								</TouchableOpacity>
 							</View>
 
-							<View style={[layoutStyle.rowBetween]}>
-								<View style={styles.statusBtn}>
-									<CommonText type={'h6'} color={ColorType.white}>
-										TIER {authCnt}
-									</CommonText>
-								</View>
-								<Image source={ICON.medalAll} style={styles.iconSize32} />
-							</View>
+							{memberBase.auth_acct_cnt > 0 ? (
+								<>
+									<View style={[layoutStyle.rowBetween]}>
+										<View style={styles.statusBtn}>
+											<CommonText type={'h6'} color={ColorType.white}>
+												LV.{memberBase.auth_acct_cnt}
+											</CommonText>
+										</View>
+										<Image source={ICON.medalAll} style={styles.iconSize32} />
+									</View>
+								</>
+							) : null}
 						</SpaceView>
 
 						<SpaceView mb={48}>
@@ -473,7 +516,9 @@ export const Profile1 = (props: Props) => {
 						</SpaceView>
 					</SpaceView>
 
-					{/* ########### 인터뷰 ########### */}
+					{/* ####################################################################################
+					####################### 인터뷰 영역
+					#################################################################################### */}
 					<SpaceView>
 						<SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
 							<View>
@@ -547,7 +592,7 @@ export const Profile1 = (props: Props) => {
 														multiline={true}
 														placeholder={'대답을 등록해주세요!'}
 														placeholderTextColor={'#c6ccd3'}
-														numberOfLines={2}
+														numberOfLines={3}
 														maxLength={200}
 													/>
 												</SpaceView>

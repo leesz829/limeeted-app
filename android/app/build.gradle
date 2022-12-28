@@ -82,7 +82,11 @@ project.ext.react = [
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
+apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
 apply plugin: 'com.google.gms.google-services' // (11.22)
+googleServices {
+    disableVersionCheck = true
+}
 
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -136,8 +140,8 @@ android {
         applicationId "com.appsquad.limeeted"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 4
-        versionName "1.0"
+        versionCode 27
+        versionName "1.5.0"
         missingDimensionStrategy 'store', 'play'
     }
     splits {
@@ -209,6 +213,8 @@ dependencies {
 
     // Add the SDK for Firebase Cloud Messaging
     implementation 'com.google.firebase:firebase-messaging:20.2.3' //(11.22)
+    implementation project(':react-native-notifications') // (12.04)
+//    implementation 'com.google.firebase:firebase-core:16.0.0' // (12.04)
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
         exclude group: 'com.facebook.fbjni'
     }

@@ -11,6 +11,7 @@ type Props = {
 	rightPen?: boolean;
 	disabled?: boolean;
 	isMasking?: boolean;
+	maxLength?: number;
 } & StyleProp<TextInputProps>;
 
 /**
@@ -36,6 +37,7 @@ export const CommonInput: FC<Props> = (props: any) => {
 					{...props}
 					editable={props.disabled ? false : true}
 					secureTextEntry={props.isMasking ? true : false}
+					maxLength={props.maxLength ? props.maxLength : 1000}
 				/>
 			</View>
 
@@ -52,7 +54,7 @@ const styles = StyleSheet.create({
 	penContainer: {
 		position: 'absolute',
 		right: 16,
-		top: -5,
+		top: 12,
 		height: '100%',
 		justifyContent: 'center',
 	},

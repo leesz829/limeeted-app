@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Image, StyleSheet, Dimensions } from 'react-native';
+import { View, Image, StyleSheet, Dimensions, FlatList } from 'react-native';
 import SpaceView from './SpaceView';
 import Carousel from 'react-native-reanimated-carousel';
 import { useState } from 'react';
@@ -30,7 +30,13 @@ export const MainProfileSlider = () => {
 		{ item: 1 }
 	]);
 
-	return <Carousel loop={false} width={width} height={300} data={data} renderItem={ProfileItem} />;
+	return <FlatList 
+				showsHorizontalScrollIndicator={false}
+				pagingEnabled={true}
+				horizontal={false}
+				data={data} 
+				renderItem={ProfileItem} />;
+	//return null;
 };
 
 /**
@@ -65,11 +71,11 @@ export const ProfileItem = (props: Props) => {
 
 				<View>
 					<CommonText fontWeight={'700'} type={'h2'}>
-						7.5
+						0
 					</CommonText>
 				</View>
 			</SpaceView>
-			<BarGrap score={7.5} />
+			<BarGrap score={0} />
 		</View>
 	);
 };

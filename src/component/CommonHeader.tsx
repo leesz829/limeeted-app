@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, CommonActions } from '@react-navigation/native';
 import * as React from 'react';
 import { useCallback } from 'react';
 import { Image, View, StyleSheet, TouchableOpacity, Text } from 'react-native';
@@ -17,7 +17,14 @@ export type NavigationHeaderProps = {
 function CommonHeader({ title }: NavigationHeaderProps) {
 	const navigation = useNavigation<StackScreenProp>();
 	const goHome = useCallback(() => {
-		navigation.canGoBack() ? navigation.goBack() : navigation.navigate('StartPage');
+		navigation.canGoBack() ? navigation.goBack() : navigation.dispatch(
+															CommonActions.reset({
+																index: 1,
+																routes: [
+																	{ name: 'Login' }
+																],
+															})
+														);
 	}, [navigation]);
 
 	return (
