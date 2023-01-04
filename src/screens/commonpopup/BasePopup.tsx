@@ -15,62 +15,80 @@ import CommonHeader from 'component/CommonHeader';
 ################################################################################################################ */
 
 interface Props {
-	popupVisible?: boolean		// popup state
-	setPopupVIsible?: any;		// popup setState
-	isConfirm?: boolean;		// confirm 여부
-	title?: string;				// 팝업 제목
-	text?: string;				// 팝업 문구
-	confirmCallBackFunc?: () => void;	// 확인 Callback 함수
+  popupVisible?: boolean; // popup state
+  setPopupVIsible?: any; // popup setState
+  isConfirm?: boolean; // confirm 여부
+  title?: string; // 팝업 제목
+  text?: string; // 팝업 문구
+  confirmCallBackFunc?: () => void; // 확인 Callback 함수
 }
 
-export const BasePopup = (props : Props) => {
+export const BasePopup = (props: Props) => {
+  return (
+    <>
+      <Modal visible={props.popupVisible} transparent={true}>
+        <View style={modalStyle.modalBackground}>
+          <View style={modalStyle.modalStyle1}>
+            <SpaceView mb={16} viewStyle={layoutStyle.alignCenter}>
+              <CommonText fontWeight={'700'} type={'h4'}>
+                {typeof props.title != 'undefined' && props.title != ''
+                  ? props.title
+                  : '알림'}
+              </CommonText>
+            </SpaceView>
 
-	return (
-		<>
-			<Modal visible={props.popupVisible} transparent={true}>
-				<View style={modalStyle.modalBackground}>
-					<View style={modalStyle.modalStyle1}>
-						<SpaceView mb={16} viewStyle={layoutStyle.alignCenter}>
-							<CommonText fontWeight={'700'} type={'h4'}>
-								{typeof props.title != 'undefined' && props.title != '' ? props.title : '알림'}
-							</CommonText>
-						</SpaceView>
+            <SpaceView viewStyle={layoutStyle.alignCenter}>
+              <CommonText type={'h5'}>
+                {typeof props.text != 'undefined' && props.text != ''
+                  ? props.text
+                  : ''}
+              </CommonText>
+              {/* <CommonText type={'h5'} color={ColorType.red}>패스 x5</CommonText> */}
+            </SpaceView>
 
-						<SpaceView viewStyle={layoutStyle.alignCenter}>
-							<CommonText type={'h5'}>{typeof props.text != 'undefined' && props.text != '' ? props.text : ''}</CommonText>
-							{/* <CommonText type={'h5'} color={ColorType.red}>패스 x5</CommonText> */}
-						</SpaceView>
-
-						<View style={modalStyle.modalBtnContainer}>
-
-							{props.isConfirm ? (
-								<>
-									<TouchableOpacity
-										style={modalStyle.modalBtn}
-										onPress={() => props.setPopupVIsible(false) } >
-										<CommonText fontWeight={'500'}>취소</CommonText>
-									</TouchableOpacity>
-									<View style={modalStyle.modalBtnline} />
-									<TouchableOpacity 
-										style={modalStyle.modalBtn} 
-										onPress={() => typeof props.confirmCallBackFunc != 'undefined' ? props.confirmCallBackFunc : props.setPopupVIsible(false) }>
-										<CommonText fontWeight={'500'} color={ColorType.red}>확인</CommonText>
-									</TouchableOpacity>
-								</>
-							) : (
-								<>
-									<TouchableOpacity 
-										style={modalStyle.modalBtn} 
-										onPress={() => typeof props.confirmCallBackFunc != 'undefined' ? props.confirmCallBackFunc : props.setPopupVIsible(false) }>
-										<CommonText fontWeight={'500'} color={ColorType.red}>확인</CommonText>
-									</TouchableOpacity>
-								</>
-							)}
-
-						</View>
-					</View>
-				</View>
-			</Modal>
-		</>
-	);
+            <View style={modalStyle.modalBtnContainer}>
+              {props.isConfirm ? (
+                <>
+                  <TouchableOpacity
+                    style={modalStyle.modalBtn}
+                    onPress={() => props.setPopupVIsible(false)}
+                  >
+                    <CommonText fontWeight={'500'}>취소</CommonText>
+                  </TouchableOpacity>
+                  <View style={modalStyle.modalBtnline} />
+                  <TouchableOpacity
+                    style={modalStyle.modalBtn}
+                    onPress={() =>
+                      typeof props.confirmCallBackFunc != 'undefined'
+                        ? props.confirmCallBackFunc
+                        : props.setPopupVIsible(false)
+                    }
+                  >
+                    <CommonText fontWeight={'500'} color={ColorType.red}>
+                      확인
+                    </CommonText>
+                  </TouchableOpacity>
+                </>
+              ) : (
+                <>
+                  <TouchableOpacity
+                    style={modalStyle.modalBtn}
+                    onPress={() =>
+                      typeof props.confirmCallBackFunc != 'undefined'
+                        ? props.confirmCallBackFunc
+                        : props.setPopupVIsible(false)
+                    }
+                  >
+                    <CommonText fontWeight={'500'} color={ColorType.red}>
+                      확인
+                    </CommonText>
+                  </TouchableOpacity>
+                </>
+              )}
+            </View>
+          </View>
+        </View>
+      </Modal>
+    </>
+  );
 };

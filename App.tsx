@@ -1,21 +1,22 @@
 import { NavigationContainer } from '@react-navigation/native';
-import MainNaviagtion from './src/navigation/MainNaviagtion';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import React, { useEffect } from 'react';
-import { Alert, LogBox, StatusBar, StyleSheet } from 'react-native';
+import { LogBox, StatusBar, StyleSheet } from 'react-native';
+import { Notifications } from 'react-native-notifications';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { enableScreens } from 'react-native-screens';
 import { Provider, useDispatch } from 'react-redux';
 import store from 'redux/store';
-import { Notifications } from 'react-native-notifications';
+import MainNaviagtion from './src/navigation/MainNaviagtion';
 
-import { withIAPContext } from 'react-native-iap';
-import messaging from '@react-native-firebase/messaging';
-import getFCMToken from 'utils/FCM/getFCMToken';
-import SplashScreen from 'react-native-splash-screen';
-import codePush from 'react-native-code-push';
-import { JWT_TOKEN } from 'constants/storeKey';
-import { myProfile } from 'redux/reducers/authReducer';
 import AsyncStorage from '@react-native-community/async-storage';
+import messaging from '@react-native-firebase/messaging';
+import { JWT_TOKEN } from 'constants/storeKey';
+
+import codePush from 'react-native-code-push';
+import { withIAPContext } from 'react-native-iap';
+import { myProfile } from 'redux/reducers/authReducer';
+import getFCMToken from 'utils/FCM/getFCMToken';
+import { PopupProvider } from 'Context/index';
 
 enableScreens();
 LogBox.ignoreAllLogs();
@@ -73,16 +74,18 @@ const App = () => {
     <Provider store={store}>
       <SafeAreaProvider>
         <SafeAreaView style={style.container}>
-          <StatusBar
-            animated={true}
-            barStyle="dark-content"
-            backgroundColor="white"
-          />
-          <NavigationContainer>
-            <PreFetcher>
-              <MainNaviagtion />
-            </PreFetcher>
-          </NavigationContainer>
+          <PopupProvider>
+            <StatusBar
+              animated={true}
+              barStyle="dark-content"
+              backgroundColor="white"
+            />
+            <NavigationContainer>
+              <PreFetcher>
+                <MainNaviagtion />
+              </PreFetcher>
+            </NavigationContainer>
+          </PopupProvider>
         </SafeAreaView>
       </SafeAreaProvider>
     </Provider>
