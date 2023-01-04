@@ -4,9 +4,8 @@ import {
   GoogleSignin,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
-import { RouteProp, useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
+import { useNavigation } from '@react-navigation/native';
+import { ColorType } from '@types';
 import { get_login_chk, signup_with_social } from 'api/models';
 import { layoutStyle, styles } from 'assets/styles/Styles';
 import { CommonBtn } from 'component/CommonBtn';
@@ -14,6 +13,7 @@ import { CommonInput } from 'component/CommonInput';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import { REFUSE, SUCCESS, SUCESSION } from 'constants/reusltcode';
+import { ROUTES } from 'constants/routes';
 import { JWT_TOKEN } from 'constants/storeKey';
 import * as React from 'react';
 import { Alert, Image, ScrollView, View } from 'react-native';
@@ -21,11 +21,6 @@ import { useDispatch } from 'react-redux';
 import * as mbrReducer from 'redux/reducers/mbrReducer';
 import { BasePopup } from 'screens/commonpopup/BasePopup';
 import { ICON, IMAGE } from 'utils/imageUtils';
-
-interface Props {
-  navigation: StackNavigationProp<StackParamList, 'Login01'>;
-  route: RouteProp<StackParamList, 'Login01'>;
-}
 
 GoogleSignin.configure({
   webClientId:
@@ -39,8 +34,8 @@ GoogleSignin.configure({
   openIdRealm: '', // [iOS] The OpenID2 realm of the home web server. This allows Google to include the user's OpenID Identifier in the OpenID Connect ID token.
   profileImageSize: 120, // [iOS] The desired height (and width) of the profile image. Defaults to 120px
 });
-export const Login01 = (props: Props) => {
-  const navigation = useNavigation<ScreenNavigationProp>();
+export const Login01 = () => {
+  const navigation = useNavigation();
   const dispatch = useDispatch();
   const [id, setId] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -48,77 +43,10 @@ export const Login01 = (props: Props) => {
   const [basePopup, setBasePopup] = React.useState(false); // 기본 팝업 state
   const [basePopupText, setBasePopupText] = React.useState(''); // 기본 팝업 텍스트
 
-  React.useEffect(() => {
-    //dispatch(myProfile());
-  }, []);
-  const google_signIn = async () => {
-    try {
-      console.log('google_signIn');
-      // Check if your device supports Google Play
-      const result = await GoogleSignin.hasPlayServices({
-        showPlayServicesUpdateDialog: true,
-      });
-      console.log(JSON.stringify(result));
-      // Get the users ID token
-      const { idToken } = await GoogleSignin.signIn();
-      const { success, data } = await signup_with_social('google', {
-        identityToken: idToken,
-      });
-      if (success) {
-        Alert.alert('구글로그인 성공', '', [
-          { text: '확인', onPress: () => {} },
-        ]);
-      }
-    } catch (error) {
-      console.log(error, error.code);
-      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        // user cancelled the login flow
-      } else if (error.code === statusCodes.IN_PROGRESS) {
-        // operation (e.g. sign in) is in progress already
-      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-        // play services not available or outdated
-      } else {
-        // some other error happened
-      }
-    }
-  };
-  const onAppleButtonPress = async () => {
-    const appleAuthRequestResponse = await appleAuth.performRequest({
-      requestedOperation: appleAuth.Operation.LOGIN,
-      // Note: it appears putting FULL_NAME first is important, see issue #293
-      requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
-    });
-    const credentialState = await appleAuth
-      .getCredentialStateForUser(appleAuthRequestResponse.user)
-      .catch((e) => {
-        console.log('error1', e);
-      });
-    if (credentialState === appleAuth.State.AUTHORIZED) {
-      const { success, data } = await signup_with_social('apple', {
-        user: appleAuthRequestResponse.user,
-        identityToken: appleAuthRequestResponse.identityToken,
-        authorizationCode: appleAuthRequestResponse.authorizationCode,
-      });
-      if (success) {
-        Alert.alert('애플로그인 성공', '', [
-          { text: '확인', onPress: () => {} },
-        ]);
-      }
-      // user is authenticated
-    }
-  };
   const loginProc = async () => {
     const { success, data } = await get_login_chk(id, password);
 
     if (success) {
-      /*
-       * ## 인증 결과 코드 정의
-       * 0000 : 회원존재
-       * 0001 : 회원미존재
-       * 0002 : 에러
-       */
-      let resultCode = data.result_code;
-
       switch (data.result_code) {
         case SUCCESS:
           let memberStatus = data.base.status;
@@ -133,16 +61,16 @@ export const Login01 = (props: Props) => {
             } else {
               if (null != joinStatus) {
                 if (joinStatus == '01') {
-                  navigation.navigate('Signup01', {
+                  navigation.navigate(ROUTES.SIGNUP01, {
                     memberSeq: data.base.member_seq,
                   });
                 } else if (joinStatus == '02') {
-                  navigation.navigate('Signup02', {
+                  navigation.navigate(ROUTES.SIGNUP02, {
                     memberSeq: data.base.member_seq,
                     gender: data.base.gender,
                   });
                 } else if (joinStatus == '03') {
-                  navigation.navigate('Signup03', {
+                  navigation.navigate(ROUTES.SIGNUP03, {
                     memberSeq: data.base.member_seq,
                   });
                 } else if (joinStatus == '04') {
@@ -154,29 +82,18 @@ export const Login01 = (props: Props) => {
               }
             }
           } else {
-            AsyncStorage.setItem(JWT_TOKEN, data.token_param.jwt_token);
-
+            await AsyncStorage.setItem(JWT_TOKEN, data.token_param.jwt_token);
             dispatch(mbrReducer.setJwtToken(data.token_param.jwt_token));
-            dispatch(
-              mbrReducer.setMemberSeq(JSON.stringify(data.base.member_seq))
-            );
-            dispatch(mbrReducer.setBase(JSON.stringify(data.base)));
-            dispatch(
-              mbrReducer.setProfileImg(JSON.stringify(data.memberImgList))
-            );
-            dispatch(
-              mbrReducer.setSecondAuth(JSON.stringify(data.memberSndAuthList))
-            );
-            dispatch(
-              mbrReducer.setIdealType(JSON.stringify(data.memberIdealType))
-            );
-            dispatch(
-              mbrReducer.setInterview(JSON.stringify(data.memberInterviewList))
-            );
+            dispatch(mbrReducer.setMemberSeq(data.base.member_seq));
+            dispatch(mbrReducer.setBase(data.base));
+            dispatch(mbrReducer.setProfileImg(data.memberImgList));
+            dispatch(mbrReducer.setSecondAuth(data.memberSndAuthList));
+            dispatch(mbrReducer.setIdealType(data.memberIdealType));
+            dispatch(mbrReducer.setInterview(data.memberInterviewList));
 
-            navigation.navigate('Main', {
-              screen: 'Matching',
-            });
+            // navigation.navigate('Main', {
+            //   screen: 'Matching',
+            // });
           }
           break;
         case REFUSE:
@@ -309,3 +226,59 @@ export const Login01 = (props: Props) => {
     </>
   );
 };
+// const google_signIn = async () => {
+//   try {
+//     console.log('google_signIn');
+//     // Check if your device supports Google Play
+//     const result = await GoogleSignin.hasPlayServices({
+//       showPlayServicesUpdateDialog: true,
+//     });
+//     console.log(JSON.stringify(result));
+//     // Get the users ID token
+//     const { idToken } = await GoogleSignin.signIn();
+//     const { success, data } = await signup_with_social('google', {
+//       identityToken: idToken,
+//     });
+//     if (success) {
+//       Alert.alert('구글로그인 성공', '', [
+//         { text: '확인', onPress: () => {} },
+//       ]);
+//     }
+//   } catch (error) {
+//     console.log(error, error.code);
+//     if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+//       // user cancelled the login flow
+//     } else if (error.code === statusCodes.IN_PROGRESS) {
+//       // operation (e.g. sign in) is in progress already
+//     } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+//       // play services not available or outdated
+//     } else {
+//       // some other error happened
+//     }
+//   }
+// };
+// const onAppleButtonPress = async () => {
+//   const appleAuthRequestResponse = await appleAuth.performRequest({
+//     requestedOperation: appleAuth.Operation.LOGIN,
+//     // Note: it appears putting FULL_NAME first is important, see issue #293
+//     requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
+//   });
+//   const credentialState = await appleAuth
+//     .getCredentialStateForUser(appleAuthRequestResponse.user)
+//     .catch((e) => {
+//       console.log('error1', e);
+//     });
+//   if (credentialState === appleAuth.State.AUTHORIZED) {
+//     const { success, data } = await signup_with_social('apple', {
+//       user: appleAuthRequestResponse.user,
+//       identityToken: appleAuthRequestResponse.identityToken,
+//       authorizationCode: appleAuthRequestResponse.authorizationCode,
+//     });
+//     if (success) {
+//       Alert.alert('애플로그인 성공', '', [
+//         { text: '확인', onPress: () => {} },
+//       ]);
+//     }
+//     // user is authenticated
+//   }
+// };

@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { get_my_info, get_login_chk } from 'api/models';
+import SplashScreen from 'react-native-splash-screen';
 
 interface PrincipalProps {
   friend_match_yn: string;
@@ -46,6 +47,10 @@ export const myProfile = createAsyncThunk<PrincipalProps>(
       }
     } catch (err) {
       return undefined;
+    } finally {
+      setTimeout(() => {
+        SplashScreen.hide();
+      }, 2000);
     }
   }
 );
@@ -57,9 +62,6 @@ export const loginReduce = createAsyncThunk<PrincipalProps>(
     try {
       // const { success, data } = await get_my_info();
       const { success, data } = await get_login_chk(id, password);
-
-      console.log('success :::::: ', success);
-      console.log('data :::::: ', data);
 
       if (success) {
         return data;
@@ -75,6 +77,7 @@ export const loginReduce = createAsyncThunk<PrincipalProps>(
 export const authSlice = createSlice({
   name: 'auth',
   initialState: {
+    principal: undefined,
     base: undefined,
     profileImg: undefined,
   },

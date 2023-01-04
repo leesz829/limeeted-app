@@ -1,14 +1,12 @@
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
-import * as React from "react";
-import { useState } from "react";
-import { Color } from "assets/styles/Color";
-import type { FC } from "react";
-import { ScreenNavigationProp } from "@types";
-import { useNavigation } from "@react-navigation/native";
-import { Image, Alert } from "react-native";
-import { ICON, IMAGE } from "utils/imageUtils";
-import { BasePopup } from "screens/commonpopup/BasePopup";
-import { useUserInfo } from "hooks/useUserInfo";
+import { useNavigation } from '@react-navigation/native';
+import { ScreenNavigationProp } from '@types';
+import { Color } from 'assets/styles/Color';
+import { useUserInfo } from 'hooks/useUserInfo';
+import type { FC } from 'react';
+import * as React from 'react';
+import { useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { BasePopup } from 'screens/commonpopup/BasePopup';
 
 interface Props {
   currentPath: string;
@@ -23,7 +21,7 @@ const TopNavigation: FC<Props> = (props) => {
   const [currentNavi, setCurrentNavi] = useState<string>(props.currentPath);
 
   const [basePopup, setBasePopup] = React.useState(false); // 기본 팝업 state
-  const [basePopupText, setBasePopupText] = React.useState(""); // 기본 팝업 텍스트
+  const [basePopupText, setBasePopupText] = React.useState(''); // 기본 팝업 텍스트
   const me = useUserInfo();
   console.log(JSON.stringify(me));
   React.useEffect(() => {
@@ -31,61 +29,61 @@ const TopNavigation: FC<Props> = (props) => {
   }, [props]);
 
   function onPressLimeeted() {
-    navigation.navigate("Main", {
-      screen: "Matching",
+    navigation.navigate('Main', {
+      screen: 'Matching',
     });
   }
   function onPressLive() {
-    navigation.navigate("Live");
+    navigation.navigate('Live');
   }
   function onPressStory() {
-    setBasePopupText("준비중입니다.");
+    setBasePopupText('준비중입니다.');
     setBasePopup(true);
   }
 
   return (
     <View style={styles.tabContainer}>
-      <View style={{ flexDirection: "row" }}>
+      <View style={{ flexDirection: 'row' }}>
         <TouchableOpacity style={[styles.tab]} onPress={onPressLimeeted}>
           <Text
             style={[
               styles.tabText,
-              currentNavi === "LIMEETED" && styles.tabTextActive,
+              currentNavi === 'LIMEETED' && styles.tabTextActive,
             ]}
           >
             LIMEETED
           </Text>
 
-          {currentNavi === "LIMEETED" && <View style={styles.activeDot} />}
+          {currentNavi === 'LIMEETED' && <View style={styles.activeDot} />}
         </TouchableOpacity>
         <TouchableOpacity style={[styles.tab]} onPress={onPressLive}>
           <Text
             style={[
               styles.tabText,
-              currentNavi === "LIVE" && styles.tabTextActive,
+              currentNavi === 'LIVE' && styles.tabTextActive,
             ]}
           >
             LIVE
           </Text>
-          {currentNavi === "LIVE" && <View style={styles.activeDot} />}
+          {currentNavi === 'LIVE' && <View style={styles.activeDot} />}
         </TouchableOpacity>
         <TouchableOpacity style={[styles.tab]} onPress={onPressStory}>
           <Text
             style={[
               styles.tabText,
-              currentNavi === "STORY" && styles.tabTextActive,
+              currentNavi === 'STORY' && styles.tabTextActive,
             ]}
           >
             STORY
           </Text>
-          {currentNavi === "STORY" && <View style={styles.activeDot} />}
+          {currentNavi === 'STORY' && <View style={styles.activeDot} />}
         </TouchableOpacity>
       </View>
 
       {/* ######################################################################
 			##### 팝업 영역
 			###################################################################### */}
-      <View style={{ flexDirection: "row" }}>
+      <View style={{ flexDirection: 'row' }}>
         <View style={[styles.itemContainer, { marginRight: 8 }]}>
           <View style={styles.itemStyle} />
           <Text>179</Text>
@@ -100,7 +98,7 @@ const TopNavigation: FC<Props> = (props) => {
       <BasePopup
         popupVisible={basePopup}
         setPopupVIsible={setBasePopup}
-        title={""}
+        title={''}
         text={basePopupText}
       />
     </View>
@@ -112,14 +110,14 @@ export default TopNavigation;
 const styles = StyleSheet.create({
   logo1: { width: 105, height: 29 },
   tabContainer: {
-    flexDirection: "row",
+    flexDirection: 'row',
     paddingBottom: 16,
     paddingTop: 24,
     paddingLeft: 16,
     paddingRight: 16,
-    backgroundColor: "white",
-    justifyContent: "space-between",
-    alignItems: "center",
+    backgroundColor: 'white',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   tab: {
     paddingRight: 24,
@@ -128,7 +126,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     lineHeight: 32,
     color: Color.grayAAAA,
-    fontFamily: "AppleSDGothicNeoB00",
+    fontFamily: 'AppleSDGothicNeoB00',
   },
   tabTextActive: {
     color: Color.black2222,
@@ -136,7 +134,7 @@ const styles = StyleSheet.create({
   activeDot: {
     right: 18,
     top: 4,
-    position: "absolute",
+    position: 'absolute',
     width: 4,
     height: 4,
     borderRadius: 20,
@@ -147,7 +145,7 @@ const styles = StyleSheet.create({
     height: 18,
     marginRight: 10,
     borderWidth: 1,
-    borderColor: "grey",
+    borderColor: 'grey',
   },
   itemContainer: {
     flexDirection: `row`,

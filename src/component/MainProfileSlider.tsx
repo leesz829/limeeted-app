@@ -13,30 +13,31 @@ import { ToolTip } from './Tooltip';
 
 const { width } = Dimensions.get('window');
 interface DataType {
-	item: number;
+  item: number;
 }
 
 interface Props {
-	isOnlyProfileItem?: boolean;
-	item?: DataType;
-	index?: number;
+  isOnlyProfileItem?: boolean;
+  item?: DataType;
+  index?: number;
 }
 /**
  *
  * 프로파일 슬라이더
  */
 export const MainProfileSlider = () => {
-	const [data] = useState<DataType[]>([
-		{ item: 1 }
-	]);
+  const [data] = useState<DataType[]>([{ item: 1 }]);
 
-	return <FlatList 
-				showsHorizontalScrollIndicator={false}
-				pagingEnabled={true}
-				horizontal={false}
-				data={data} 
-				renderItem={ProfileItem} />;
-	//return null;
+  return (
+    <FlatList
+      showsHorizontalScrollIndicator={false}
+      pagingEnabled={true}
+      horizontal={false}
+      data={data}
+      renderItem={ProfileItem}
+    />
+  );
+  //return null;
 };
 
 /**
@@ -45,52 +46,54 @@ export const MainProfileSlider = () => {
  * @returns
  */
 export const ProfileItem = (props: Props) => {
-	const { isOnlyProfileItem } = props;
-	return (
-		<View style={[styles.profileContainer, isOnlyProfileItem && { marginRight: 0 }]}>
-			<SpaceView mb={8} viewStyle={layoutStyle.alignCenter}>
-				<Image source={ICON.party} style={styles.iconSize} />
-			</SpaceView>
+  const { isOnlyProfileItem } = props;
+  return (
+    <View
+      style={[styles.profileContainer, isOnlyProfileItem && { marginRight: 0 }]}
+    >
+      <SpaceView mb={8} viewStyle={layoutStyle.alignCenter}>
+        <Image source={ICON.party} style={styles.iconSize} />
+      </SpaceView>
 
-			<SpaceView viewStyle={layoutStyle.alignCenter} mb={29}>
-				<CommonText color={ColorType.gray8888} textStyle={styles.textCenter}>
-					이성들에게
-					<CommonText fontWeight={'700'} color={ColorType.purple}>
-						선호도가
-					</CommonText>
-					{'\n'}
-					<CommonText fontWeight={'700'} color={ColorType.purple}>
-						매우 높은 회원
-					</CommonText>
-					과 매칭되셨네요!
-				</CommonText>
-			</SpaceView>
+      <SpaceView viewStyle={layoutStyle.alignCenter} mb={29}>
+        <CommonText color={ColorType.gray8888} textStyle={styles.textCenter}>
+          이성들에게
+          <CommonText fontWeight={'700'} color={ColorType.purple}>
+            선호도가
+          </CommonText>
+          {'\n'}
+          <CommonText fontWeight={'700'} color={ColorType.purple}>
+            매우 높은 회원
+          </CommonText>
+          과 매칭되셨네요!
+        </CommonText>
+      </SpaceView>
 
-			<SpaceView viewStyle={layoutStyle.rowBetween} mb={29}>
-				<ToolTip title={'프로필 평점'} desc={'프로필 평점에 대한 툴팁'} />
+      <SpaceView viewStyle={layoutStyle.rowBetween} mb={29}>
+        <ToolTip title={'프로필 평점'} desc={'프로필 평점에 대한 툴팁'} />
 
-				<View>
-					<CommonText fontWeight={'700'} type={'h2'}>
-						0
-					</CommonText>
-				</View>
-			</SpaceView>
-			<BarGrap score={0} />
-		</View>
-	);
+        <View>
+          <CommonText fontWeight={'700'} type={'h2'}>
+            0
+          </CommonText>
+        </View>
+      </SpaceView>
+      <BarGrap score={0} />
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-	profileContainer: {
-		backgroundColor: Color.grayF8F8,
-		borderRadius: 16,
-		padding: 24,
-		marginRight: 32,
-		paddingBottom: 30,
-	},
-	iconSize: {
-		width: 48,
-		height: 48,
-	},
-	textCenter: { textAlign: 'center' },
+  profileContainer: {
+    backgroundColor: Color.grayF8F8,
+    borderRadius: 16,
+    padding: 24,
+    marginRight: 32,
+    paddingBottom: 30,
+  },
+  iconSize: {
+    width: 48,
+    height: 48,
+  },
+  textCenter: { textAlign: 'center' },
 });
