@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { ScreenNavigationProp } from '@types';
 import { Color } from 'assets/styles/Color';
+import { ROUTES, STACK } from 'constants/routes';
 import { useUserInfo } from 'hooks/useUserInfo';
 import type { FC } from 'react';
 import * as React from 'react';
@@ -29,7 +30,7 @@ const TopNavigation: FC<Props> = (props) => {
   }, [props]);
 
   function onPressLimeeted() {
-    navigation.navigate('Main', {
+    navigation.navigate(STACK.TAB, {
       screen: 'Matching',
     });
   }

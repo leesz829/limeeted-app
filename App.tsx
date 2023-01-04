@@ -48,7 +48,7 @@ const requestUserPermission = async () => {
 
 const App = () => {
   useEffect(() => {
-    // AsyncStorage.clear()
+    // AsyncStorage.clear();
     requestUserPermission();
 
     const unsubscribe = messaging().onMessage(async (remoteMessage) => {

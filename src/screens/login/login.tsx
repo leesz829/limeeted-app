@@ -15,6 +15,7 @@ import SpaceView from 'component/SpaceView';
 import { REFUSE, SUCCESS, SUCESSION } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
 import { JWT_TOKEN } from 'constants/storeKey';
+import { useUserInfo } from 'hooks/useUserInfo';
 import * as React from 'react';
 import { Alert, Image, ScrollView, View } from 'react-native';
 import { useDispatch } from 'react-redux';
@@ -37,6 +38,7 @@ GoogleSignin.configure({
 export const Login01 = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+
   const [id, setId] = React.useState('');
   const [password, setPassword] = React.useState('');
 
@@ -82,6 +84,8 @@ export const Login01 = () => {
               }
             }
           } else {
+            await AsyncStorage.setItem('id', id);
+            await AsyncStorage.setItem('password', password);
             await AsyncStorage.setItem(JWT_TOKEN, data.token_param.jwt_token);
             dispatch(mbrReducer.setJwtToken(data.token_param.jwt_token));
             dispatch(mbrReducer.setMemberSeq(data.base.member_seq));
@@ -90,6 +94,7 @@ export const Login01 = () => {
             dispatch(mbrReducer.setSecondAuth(data.memberSndAuthList));
             dispatch(mbrReducer.setIdealType(data.memberIdealType));
             dispatch(mbrReducer.setInterview(data.memberInterviewList));
+            dispatch(mbrReducer.setUserInfo(data));
 
             // navigation.navigate('Main', {
             //   screen: 'Matching',

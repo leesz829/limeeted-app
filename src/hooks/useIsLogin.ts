@@ -1,9 +1,7 @@
 import { shallowEqual, useSelector } from 'react-redux';
 
-import { RootState } from 'redux/store';
-
-export function useUserInfo() {
+export function useIsLogedin() {
   const me = useSelector(({ mbr }: RootState) => mbr.base, shallowEqual);
 
-  return me;
+  return !!me;
 }
