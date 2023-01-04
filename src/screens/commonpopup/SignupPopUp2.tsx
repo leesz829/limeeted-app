@@ -25,12 +25,7 @@ export const SignupPopUp2 = () => {
 			<CommonHeader title={'관심사 등록'} />
 			<CommonBtn value={'Open the modal'} onPress={onOpen} type={'primary'} />
 
-			<Modalize
-				ref={modalizeRef}
-				adjustToContentHeight={true}
-				handleStyle={modalStyle.modalHandleStyle}
-				modalStyle={modalStyle.modalContainer}
-			>
+			<Modalize ref={modalizeRef} adjustToContentHeight={true} handleStyle={modalStyle.modalHandleStyle} modalStyle={modalStyle.modalContainer}>
 				<View style={modalStyle.modalHeaderContainer}>
 					<CommonText fontWeight={'700'} type={'h3'}>
 						관심사 등록
@@ -55,10 +50,7 @@ export const SignupPopUp2 = () => {
 								return (
 									<SpaceView mr={index % 3 !== 2 ? 8 : 0} key={index + 'reg'}>
 										<TouchableOpacity style={[styles.interestBox, i.isActive && styles.boxActive]}>
-											<CommonText
-												fontWeight={'500'}
-												color={i.isActive ? ColorType.primary : ColorType.gray8888}
-											>
+											<CommonText fontWeight={'500'} color={i.isActive ? ColorType.primary : ColorType.gray8888}>
 												{i.text}
 											</CommonText>
 										</TouchableOpacity>
@@ -82,10 +74,7 @@ export const SignupPopUp2 = () => {
 								return (
 									<SpaceView mr={index % 3 !== 2 ? 8 : 0} key={index + 'movie'}>
 										<TouchableOpacity style={[styles.interestBox, i.isActive && styles.boxActive]}>
-											<CommonText
-												fontWeight={'500'}
-												color={i.isActive ? ColorType.primary : ColorType.gray8888}
-											>
+											<CommonText fontWeight={'500'} color={i.isActive ? ColorType.primary : ColorType.gray8888}>
 												{i.text}
 											</CommonText>
 										</TouchableOpacity>
@@ -109,10 +98,7 @@ export const SignupPopUp2 = () => {
 								return (
 									<SpaceView mr={index % 3 !== 2 ? 8 : 0} key={index + 'style'}>
 										<TouchableOpacity style={[styles.interestBox, i.isActive && styles.boxActive]}>
-											<CommonText
-												fontWeight={'500'}
-												color={i.isActive ? ColorType.primary : ColorType.gray8888}
-											>
+											<CommonText fontWeight={'500'} color={i.isActive ? ColorType.primary : ColorType.gray8888}>
 												{i.text}
 											</CommonText>
 										</TouchableOpacity>
@@ -136,10 +122,7 @@ export const SignupPopUp2 = () => {
 								return (
 									<SpaceView mr={index % 3 !== 2 ? 8 : 0} key={index + 'food'}>
 										<TouchableOpacity style={[styles.interestBox, i.isActive && styles.boxActive]}>
-											<CommonText
-												fontWeight={'500'}
-												color={i.isActive ? ColorType.primary : ColorType.gray8888}
-											>
+											<CommonText fontWeight={'500'} color={i.isActive ? ColorType.primary : ColorType.gray8888}>
 												{i.text}
 											</CommonText>
 										</TouchableOpacity>

@@ -16,26 +16,32 @@ import { RouteProp, useNavigation } from '@react-navigation/native';
 ################################################################################################################ */
 
 interface Props {
-	navigation : StackNavigationProp<StackParamList, 'Board0'>;
-	route : RouteProp<StackParamList, 'Board0'>;
+	navigation: StackNavigationProp<StackParamList, 'Board0'>;
+	route: RouteProp<StackParamList, 'Board0'>;
 }
 
-export const Board0 = (props : Props) => {
-
+export const Board0 = (props: Props) => {
 	const [noticeList, setnoticeList] = React.useState<any>(props.route.params.boardList);
 
 	return (
 		<>
 			<CommonHeader title={'최근 소식'} />
 			<ScrollView contentContainerStyle={styles.container}>
-				{noticeList.map(({ board_seq, board_code, title, contents } : { board_seq: any, board_code: string, title: string, contents: string }) => (
-					<EventRow
-						key={board_seq}
-						label="공지"
-						title={title}
-						desc={contents}
-					/>
-				))}
+				{noticeList.map(
+					({
+						board_seq,
+						board_code,
+						title,
+						contents,
+					}: {
+						board_seq: any;
+						board_code: string;
+						title: string;
+						contents: string;
+					}) => (
+						<EventRow key={board_seq} label="공지" title={title} desc={contents} />
+					),
+				)}
 			</ScrollView>
 		</>
 	);

@@ -31,8 +31,8 @@ export const Profile = (props: Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 	const dispatch = useDispatch();
 
-	const jwtToken = hooksMember.getJwtToken();		// 토큰
-	const memberSeq = hooksMember.getMemberSeq();	// 회원번호
+	const jwtToken = hooksMember.getJwtToken(); // 토큰
+	const memberSeq = hooksMember.getMemberSeq(); // 회원번호
 
 	const memberBase = JSON.parse(hooksMember.getBase()); // 회원 기본정보
 
@@ -42,19 +42,17 @@ export const Profile = (props: Props) => {
 	const [age, setAge] = React.useState<any>(String(memberBase.age));
 	const [phoneNumber, setPhoneNumber] = React.useState<any>(memberBase.phone_number);
 
-
 	// 저장 버튼
 	const btnSave = async () => {
-
 		// 닉네임 변경 여부 체크
-		if(memberBase.nickname == nickname) {
+		if (memberBase.nickname == nickname) {
 			navigation.navigate('Main', {
-				screen: 'Roby'
+				screen: 'Roby',
 			});
 		} else {
 			setNicknameUpdatePopup(true);
 		}
-	}
+	};
 
 	// 내 계정 정보 저장
 	const saveMemberBase = async () => {
@@ -65,7 +63,7 @@ export const Profile = (props: Props) => {
 					'api-key': 'U0FNR09CX1RPS0VOXzAx',
 					member_seq: memberSeq,
 					nickname: nickname,
-					usePassYn: 'Y'
+					usePassYn: 'Y',
 				},
 				{
 					headers: {
@@ -74,15 +72,15 @@ export const Profile = (props: Props) => {
 				},
 			)
 			.then(function (response) {
-				console.log('dasldkasm;ldams;ldkma; :::::: ' , response.data.result_code);
+				console.log('dasldkasm;ldams;ldkma; :::::: ', response.data.result_code);
 
-				if(response.data.result_code == '0000') {
+				if (response.data.result_code == '0000') {
 					setNicknameUpdatePopup(false);
 					dispatch(mbrReducer.setBase(JSON.stringify(response.data.memberBase)));
 					navigation.navigate('Main', {
-						screen: 'Roby'
+						screen: 'Roby',
 					});
-				} else if(response.data.result_code == '6010') {
+				} else if (response.data.result_code == '6010') {
 					setNicknameUpdatePopup(false);
 					Alert.alert('알림', '보유 패스가 부족합니다.', [{ text: '확인' }]);
 					return false;
@@ -91,7 +89,6 @@ export const Profile = (props: Props) => {
 					Alert.alert('알림', '시스템 오류입니다.\n관리자에게 문의해 주세요!', [{ text: '확인' }]);
 					return false;
 				}
-
 			})
 			.catch(function (error) {
 				console.log('error ::: ', error);
@@ -106,13 +103,7 @@ export const Profile = (props: Props) => {
 			<CommonHeader title={'내 계정 정보'} />
 			<ScrollView contentContainerStyle={styles.scrollContainer}>
 				<SpaceView mb={24}>
-					<CommonInput
-						label={'닉네임'}
-						placeholder=""
-						value={nickname}
-						onChangeText={(nickname) => setNickname(nickname)}
-						rightPen={true}
-					/>
+					<CommonInput label={'닉네임'} placeholder="" value={nickname} onChangeText={(nickname) => setNickname(nickname)} rightPen={true} />
 				</SpaceView>
 				<SpaceView mb={24}>
 					<CommonInput label={'이름'} placeholder="" value={name} disabled={true} />
@@ -120,12 +111,7 @@ export const Profile = (props: Props) => {
 
 				<SpaceView mb={24} viewStyle={styles.halfContainer}>
 					<View style={styles.halfItemLeft}>
-						<CommonInput
-							label={'성별'}
-							placeholder=""
-							value={gender == 'M' ? '남자' : '여자'}
-							disabled={true}
-						/>
+						<CommonInput label={'성별'} placeholder="" value={gender == 'M' ? '남자' : '여자'} disabled={true} />
 					</View>
 
 					<View style={styles.halfItemRight}>
@@ -157,36 +143,34 @@ export const Profile = (props: Props) => {
             ############################################### */}
 			<Modal visible={nickNameUpdatePopup} transparent={true}>
 				<View style={modalStyle.modalBackground}>
-				<View style={modalStyle.modalStyle1}>
-					<SpaceView mb={16} viewStyle={layoutStyle.alignCenter}>
-						<CommonText fontWeight={'700'} type={'h4'}>
-							닉네임 변경
-						</CommonText>
-					</SpaceView>
-
-					<SpaceView viewStyle={layoutStyle.alignCenter}>
-						<CommonText type={'h5'}>닉네임을 변경하시겠습니까?</CommonText>
-						<CommonText type={'h5'} color={ColorType.red}>패스 x5</CommonText>
-					</SpaceView>
-
-					<View style={modalStyle.modalBtnContainer}>
-						<TouchableOpacity
-							style={modalStyle.modalBtn}
-							onPress={() => setNicknameUpdatePopup(false)}
-						>
-							<CommonText fontWeight={'500'}>취소</CommonText>
-						</TouchableOpacity>
-						<View style={modalStyle.modalBtnline} />
-						<TouchableOpacity style={modalStyle.modalBtn} onPress={() => saveMemberBase() }>
-							<CommonText fontWeight={'500'} color={ColorType.red}>
-								확인
+					<View style={modalStyle.modalStyle1}>
+						<SpaceView mb={16} viewStyle={layoutStyle.alignCenter}>
+							<CommonText fontWeight={'700'} type={'h4'}>
+								닉네임 변경
 							</CommonText>
-						</TouchableOpacity>
+						</SpaceView>
+
+						<SpaceView viewStyle={layoutStyle.alignCenter}>
+							<CommonText type={'h5'}>닉네임을 변경하시겠습니까?</CommonText>
+							<CommonText type={'h5'} color={ColorType.red}>
+								패스 x5
+							</CommonText>
+						</SpaceView>
+
+						<View style={modalStyle.modalBtnContainer}>
+							<TouchableOpacity style={modalStyle.modalBtn} onPress={() => setNicknameUpdatePopup(false)}>
+								<CommonText fontWeight={'500'}>취소</CommonText>
+							</TouchableOpacity>
+							<View style={modalStyle.modalBtnline} />
+							<TouchableOpacity style={modalStyle.modalBtn} onPress={() => saveMemberBase()}>
+								<CommonText fontWeight={'500'} color={ColorType.red}>
+									확인
+								</CommonText>
+							</TouchableOpacity>
+						</View>
 					</View>
 				</View>
-				</View>
 			</Modal>
-
 		</>
 	);
 };

@@ -209,12 +209,7 @@ const Component = () => {
 								<Image source={ICON.like} style={styles.iconSize32} />
 							</View>
 							<Image source={IMAGE.main} style={styles.favoriteImg} />
-							<LinearGradient
-								colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.4)']}
-								style={styles.dim}
-								start={{ x: 0, y: 0 }}
-								end={{ x: 1, y: 1 }}
-							/>
+							<LinearGradient colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.4)']} style={styles.dim} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} />
 							<View style={styles.posBottomLeft}>
 								<CommonText fontWeight={'700'} color={ColorType.white}>
 									D-1
@@ -228,12 +223,7 @@ const Component = () => {
 								<Image source={ICON.royalpass} style={styles.iconSize32} />
 							</View>
 							<Image source={IMAGE.main} style={styles.favoriteImg} />
-							<LinearGradient
-								colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.4)']}
-								style={styles.dim}
-								start={{ x: 0, y: 0 }}
-								end={{ x: 1, y: 1 }}
-							/>
+							<LinearGradient colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.4)']} style={styles.dim} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} />
 							<View style={styles.posBottomLeft}>
 								<CommonText fontWeight={'700'} color={ColorType.white}>
 									D-2
@@ -260,12 +250,7 @@ const Component = () => {
 					</View>
 					<View style={layoutStyle.rowCenter}>
 						<SpaceView viewStyle={styles.whiteCircleBox30} mr={8}>
-							<CommonText
-								fontWeight={'700'}
-								textStyle={styles.lineHeight16}
-								type={'h6'}
-								color={ColorType.white}
-							>
+							<CommonText fontWeight={'700'} textStyle={styles.lineHeight16} type={'h6'} color={ColorType.white}>
 								D.C {'\n'}30%
 							</CommonText>
 						</SpaceView>
@@ -330,13 +315,7 @@ const Component = () => {
 				{/* 인터뷰 서치 인풋 */}
 				<SpaceView viewStyle={layoutStyle.rowBetween} mb={24}>
 					<SpaceView viewStyle={styles.searchInputContainer} mr={16}>
-						<TextInput
-							value={text}
-							onChangeText={(e) => setText(e)}
-							style={styles.searchInput}
-							placeholder={'검색'}
-							placeholderTextColor={Color.gray6666}
-						/>
+						<TextInput value={text} onChangeText={(e) => setText(e)} style={styles.searchInput} placeholder={'검색'} placeholderTextColor={Color.gray6666} />
 						<View style={styles.searchInputIconContainer}>
 							<Image source={ICON.searchGray} style={styles.iconSize24} />
 						</View>
@@ -389,13 +368,7 @@ const Component = () => {
 						<CommonBtn value={'등록 및 수정'} height={48} type={'white'} icon={ICON.plus} />
 					</SpaceView>
 					<SpaceView>
-						<CommonBtn
-							type="purple"
-							value="프로필 재심사"
-							icon={ICON.refresh}
-							iconSize={24}
-							iconPosition={'right'}
-						/>
+						<CommonBtn type="purple" value="프로필 재심사" icon={ICON.refresh} iconSize={24} iconPosition={'right'} />
 					</SpaceView>
 				</SpaceView>
 				{/* 공통 체크박스 */}
@@ -508,12 +481,7 @@ const Component = () => {
 					</SpaceView>
 				</SpaceView> */}
 				{/* 모달라이즈 */}
-				<Modalize
-					ref={modalizeRef}
-					adjustToContentHeight={true}
-					handleStyle={modalStyle.modalHandleStyle}
-					modalStyle={modalStyle.modalContainer}
-				>
+				<Modalize ref={modalizeRef} adjustToContentHeight={true} handleStyle={modalStyle.modalHandleStyle} modalStyle={modalStyle.modalContainer}>
 					<View style={modalStyle.modalHeaderContainer}>
 						<CommonText type={'h3'}>사용자 신고하기</CommonText>
 						<TouchableOpacity onPress={onClose}>
@@ -527,15 +495,11 @@ const Component = () => {
 						</SpaceView>
 
 						<SpaceView mb={24}>
-							{[
-								{ text: '비속어 사용' },
-								{ text: '과도한 성적 표현' },
-								{ text: '불쾌감을 주는 표현' },
-								{ text: '성차별 적 표현' },
-								{ text: '기타' },
-							].map((i, index) => (
-								<CommonCheckBox label={i.text} key={index + 'checkbox'} />
-							))}
+							{[{ text: '비속어 사용' }, { text: '과도한 성적 표현' }, { text: '불쾌감을 주는 표현' }, { text: '성차별 적 표현' }, { text: '기타' }].map(
+								(i, index) => (
+									<CommonCheckBox label={i.text} key={index + 'checkbox'} />
+								),
+							)}
 						</SpaceView>
 
 						<SpaceView mb={32}>

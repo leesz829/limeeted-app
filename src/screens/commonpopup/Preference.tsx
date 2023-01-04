@@ -21,7 +21,6 @@ import * as hooksMember from 'hooks/member';
 import { useDispatch } from 'react-redux';
 import * as mbrReducer from 'redux/reducers/mbrReducer';
 
-
 /* ################################################################################################################
 ###################################################################################################################
 ###### 내 선호 이성
@@ -39,8 +38,8 @@ export const Preference = (props: Props) => {
 	const isFocus = useIsFocused();
 	const dispatch = useDispatch();
 
-	const jwtToken = hooksMember.getJwtToken();		// 토큰
-	const memberSeq = hooksMember.getMemberSeq();	// 회원번호
+	const jwtToken = hooksMember.getJwtToken(); // 토큰
+	const memberSeq = hooksMember.getMemberSeq(); // 회원번호
 
 	const mbrBase = JSON.parse(hooksMember.getBase());
 	const mbrIdealType = JSON.parse(hooksMember.getIdealType());
@@ -208,7 +207,7 @@ export const Preference = (props: Props) => {
 					dispatch(mbrReducer.setIdealType(JSON.stringify(response.data.memberIdealType)));
 
 					navigation.navigate('Main', {
-						screen: 'Roby'
+						screen: 'Roby',
 					});
 				}
 			})
@@ -247,9 +246,7 @@ export const Preference = (props: Props) => {
 	};
 
 	// 첫 렌더링 때 실행
-	React.useEffect(() => {
-		
-	}, []);
+	React.useEffect(() => {}, []);
 
 	// 업종 상태 관리
 	React.useEffect(() => {

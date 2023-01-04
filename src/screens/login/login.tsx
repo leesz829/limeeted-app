@@ -17,17 +17,12 @@ import RNPickerSelect from 'react-native-picker-select';
 import * as properties from 'utils/properties';
 import AsyncStorage from '@react-native-community/async-storage';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
-import appleAuth, {
-	AppleAuthRequestOperation,
-	AppleAuthRequestScope,
-	AppleAuthCredentialState,
-} from '@invertase/react-native-apple-authentication';
+import appleAuth, { AppleAuthRequestOperation, AppleAuthRequestScope, AppleAuthCredentialState } from '@invertase/react-native-apple-authentication';
 import { get_login_chk, signup_with_social } from 'api/models';
 import { useDispatch } from 'react-redux';
 import * as mbrReducer from 'redux/reducers/mbrReducer';
 import { useUserInfo } from 'hooks/useUserInfo';
 import { BasePopup } from 'screens/commonpopup/BasePopup';
-
 
 interface Props {
 	navigation: StackNavigationProp<StackParamList, 'Login01'>;
@@ -50,8 +45,8 @@ export const Login01 = (props: Props) => {
 	const [id, setId] = React.useState('');
 	const [password, setPassword] = React.useState('');
 
-	const [basePopup, setBasePopup] = React.useState(false);			// 기본 팝업 state
-	const [basePopupText, setBasePopupText] = React.useState('');		// 기본 팝업 텍스트
+	const [basePopup, setBasePopup] = React.useState(false); // 기본 팝업 state
+	const [basePopupText, setBasePopupText] = React.useState(''); // 기본 팝업 텍스트
 
 	React.useEffect(() => {
 		//dispatch(myProfile());
@@ -87,11 +82,9 @@ export const Login01 = (props: Props) => {
 			// Note: it appears putting FULL_NAME first is important, see issue #293
 			requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
 		});
-		const credentialState = await appleAuth
-			.getCredentialStateForUser(appleAuthRequestResponse.user)
-			.catch((e) => {
-				console.log('error1', e);
-			});
+		const credentialState = await appleAuth.getCredentialStateForUser(appleAuthRequestResponse.user).catch((e) => {
+			console.log('error1', e);
+		});
 		if (credentialState === appleAuth.State.AUTHORIZED) {
 			const { success, data } = await signup_with_social('apple', {
 				user: appleAuthRequestResponse.user,
@@ -119,12 +112,14 @@ export const Login01 = (props: Props) => {
 			if (resultCode == '0001') {
 				setBasePopupText('일치하는 회원이 없습니다.');
 				setBasePopup(true);
-			} else if(resultCode == '0003') { // 반려
+			} else if (resultCode == '0003') {
+				// 반려
 				navigation.navigate('Approval', {
 					memberSeq: data.base.member_seq,
-					accessType: 'REFUSE'
+					accessType: 'REFUSE',
 				});
-			} else if(resultCode == '0003') { // 탈퇴
+			} else if (resultCode == '0003') {
+				// 탈퇴
 				setBasePopupText('탈퇴 회원 입니다.');
 				setBasePopup(true);
 			} else {
@@ -135,7 +130,7 @@ export const Login01 = (props: Props) => {
 					if (memberStatus == 'APROVAL') {
 						navigation.navigate('Approval', {
 							memberSeq: data.base.member_seq,
-							accessType: 'LOGIN'
+							accessType: 'LOGIN',
 						});
 					} else {
 						if (null != joinStatus) {
@@ -151,7 +146,7 @@ export const Login01 = (props: Props) => {
 							} else if (joinStatus == '04') {
 								navigation.navigate('Approval', {
 									memberSeq: data.base.member_seq,
-									accessType: 'LOGIN'
+									accessType: 'LOGIN',
 								});
 							}
 						}
@@ -204,13 +199,7 @@ export const Login01 = (props: Props) => {
 						</View>
 
 						<SpaceView mb={30}>
-							<CommonInput
-								label="비밀번호"
-								value={password}
-								onChangeText={(password) => setPassword(password)}
-								isMasking={true}
-								maxLength={20}
-							/>
+							<CommonInput label="비밀번호" value={password} onChangeText={(password) => setPassword(password)} isMasking={true} maxLength={20} />
 						</SpaceView>
 					</View>
 
@@ -259,15 +248,12 @@ export const Login01 = (props: Props) => {
 				</View>
 			</ScrollView>
 
-
-
 			{/* ######################################################################
 			##### 팝업 영역
 			###################################################################### */}
 
 			{/* ### 기본 팝업 */}
 			<BasePopup popupVisible={basePopup} setPopupVIsible={setBasePopup} title={''} text={basePopupText} />
-
 		</>
 	);
 };

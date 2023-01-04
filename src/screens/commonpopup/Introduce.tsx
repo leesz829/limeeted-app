@@ -134,7 +134,7 @@ export const Introduce = (props: Props) => {
 	];
 
 	// 직업 코드 목록 조회 함수
-	const getJobCodeList = async (value:string) => {
+	const getJobCodeList = async (value: string) => {
 		const result = await axios
 			.post(
 				properties.api_domain + '/common/selectCommonCodeList',
@@ -209,7 +209,7 @@ export const Introduce = (props: Props) => {
 					dispatch(mbrReducer.setBase(JSON.stringify(response.data.memberBase)));
 					dispatch(mbrReducer.setBase(JSON.stringify(response.data.memberBase)));
 					navigation.navigate('Main', {
-						screen: 'Roby'
+						screen: 'Roby',
 					});
 				}
 			})
