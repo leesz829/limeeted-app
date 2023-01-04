@@ -44,6 +44,7 @@ import { useDispatch } from 'react-redux';
 import * as mbrReducer from 'redux/reducers/mbrReducer';
 import { Terms } from 'screens/commonpopup/terms';
 import { Privacy } from 'screens/commonpopup/privacy';
+import { STACK } from 'constants/routes';
 
 /* ################################################################################################################
 ###### 로비
@@ -347,7 +348,7 @@ export const Roby = (props: Props) => {
             <View style={styles.profilePenContainer}>
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate('Introduce');
+                  navigation.navigate(STACK.COMMON, { screen: 'Introduce' });
                 }}
               >
                 <Image source={ICON.pen} style={styles.iconSize24} />
@@ -381,7 +382,7 @@ export const Roby = (props: Props) => {
             <TouchableOpacity
               style={[layoutStyle.row, layoutStyle.alignCenter]}
               onPress={() => {
-                navigation.navigate('Profile1');
+                navigation.navigate(STACK.COMMON, { screen: 'Profile1' });
               }}
             >
               <CommonText type={'h3'} fontWeight={'700'}>
@@ -645,7 +646,7 @@ export const Roby = (props: Props) => {
           <TouchableOpacity
             style={styles.rowStyle}
             onPress={() => {
-              navigation.navigate('Profile');
+              navigation.navigate(STACK.COMMON, { screen: 'Profile' });
             }}
           >
             <CommonText fontWeight={'500'}>내 계정 정보</CommonText>

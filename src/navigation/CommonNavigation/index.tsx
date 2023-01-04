@@ -24,7 +24,7 @@ const CommonStack = createStackNavigator<StackParamList>();
 
 const CommonNavigation = () => {
   return (
-    <CommonStack.Navigator screenOptions={{ headerShown: true }}>
+    <CommonStack.Navigator screenOptions={{ headerShown: false }}>
       <CommonStack.Screen name="Component" component={Component} />
       <CommonStack.Screen name="Main" component={BottomNavigation} />
       <CommonStack.Screen name="StartPage" component={StartPage} />

@@ -111,63 +111,70 @@ export const Profile = (props: Props) => {
   return (
     <>
       <CommonHeader title={'내 계정 정보'} />
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <SpaceView mb={24}>
-          <CommonInput
-            label={'닉네임'}
-            placeholder=""
-            value={nickname}
-            onChangeText={(nickname) => setNickname(nickname)}
-            rightPen={true}
-          />
-        </SpaceView>
-        <SpaceView mb={24}>
-          <CommonInput
-            label={'이름'}
-            placeholder=""
-            value={name}
-            disabled={true}
-          />
-        </SpaceView>
-
-        <SpaceView mb={24} viewStyle={styles.halfContainer}>
-          <View style={styles.halfItemLeft}>
+      <ScrollView
+        contentContainerStyle={[
+          styles.scrollContainer,
+          { justifyContent: 'space-between' },
+        ]}
+      >
+        <View>
+          <SpaceView mb={24}>
             <CommonInput
-              label={'성별'}
+              label={'닉네임'}
               placeholder=""
-              value={gender == 'M' ? '남자' : '여자'}
+              value={nickname}
+              onChangeText={(nickname) => setNickname(nickname)}
+              rightPen={true}
+            />
+          </SpaceView>
+          <SpaceView mb={24}>
+            <CommonInput
+              label={'이름'}
+              placeholder=""
+              value={name}
               disabled={true}
             />
-          </View>
+          </SpaceView>
 
-          <View style={styles.halfItemRight}>
-            <CommonInput
-              label={'나이'}
-              placeholder=""
-              value={age}
-              disabled={true}
-            />
-          </View>
-        </SpaceView>
+          <SpaceView mb={24} viewStyle={styles.halfContainer}>
+            <View style={styles.halfItemLeft}>
+              <CommonInput
+                label={'성별'}
+                placeholder=""
+                value={gender == 'M' ? '남자' : '여자'}
+                disabled={true}
+              />
+            </View>
 
-        {/* <SpaceView mb={24}>
+            <View style={styles.halfItemRight}>
+              <CommonInput
+                label={'나이'}
+                placeholder=""
+                value={age}
+                disabled={true}
+              />
+            </View>
+          </SpaceView>
+
+          {/* <SpaceView mb={24}>
 					<CommonInput 
 						label={'회사명'} 
 						placeholder="" />
 				</SpaceView> */}
 
-        {/* <SpaceView mb={24}>
+          {/* <SpaceView mb={24}>
 					<CommonInput label={'계정 ID'} placeholder="heighten@kakao.com" rightPen={true} />
 				</SpaceView> */}
 
-        <SpaceView mb={24}>
-          <CommonInput
-            label={'전화번호'}
-            placeholder=""
-            value={phoneNumber}
-            disabled={true}
-          />
-        </SpaceView>
+          <SpaceView mb={24}>
+            <CommonInput
+              label={'전화번호'}
+              placeholder=""
+              value={phoneNumber}
+              disabled={true}
+            />
+          </SpaceView>
+        </View>
 
         <SpaceView mb={16}>
           <CommonBtn value={'저장'} type={'primary'} onPress={btnSave} />

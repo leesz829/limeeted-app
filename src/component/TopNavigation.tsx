@@ -24,7 +24,7 @@ const TopNavigation: FC<Props> = (props) => {
   const [basePopup, setBasePopup] = React.useState(false); // 기본 팝업 state
   const [basePopupText, setBasePopupText] = React.useState(''); // 기본 팝업 텍스트
   const me = useUserInfo();
-  console.log(JSON.stringify(me));
+
   React.useEffect(() => {
     setCurrentNavi(props.currentPath);
   }, [props]);

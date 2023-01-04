@@ -36,16 +36,17 @@ export const CommonSelect: FC<Props> = (props) => {
           <Text style={styles.labelStyle}>{props.label}</Text>
           <View style={styles.inputContainer}>
             <RNPickerSelect
+              placeholder={'선택'}
               style={pickerSelectStyles}
               useNativeAndroidPickerStyle={false}
               onValueChange={(value) => setValue(value)}
               value={props.selectValue}
               items={props.items}
             />
+            <View style={styles.selectImgContainer}>
+              <Image source={ICON.arrRight} style={styles.icon} />
+            </View>
           </View>
-        </View>
-        <View style={styles.selectImgContainer}>
-          <Image source={ICON.arrRight} style={styles.icon} />
         </View>
       </View>
 
@@ -129,7 +130,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     height: '100%',
     justifyContent: 'center',
-    right: 16,
+    right: 2,
+    bottom: 0,
   },
   selectContainer: {},
   labelContainer: {
@@ -146,6 +148,10 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
     borderBottomWidth: 1,
     borderBottomColor: Color.grayDDDD,
+
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   icon: {
     width: 16,

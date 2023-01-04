@@ -216,7 +216,7 @@ const Startpage = () => {
       <TouchableOpacity
         style={style.pages}
         onPress={() => {
-          navigation.navigate('Introduce');
+          navigation.navigate(STACK.COMMON, { screen: 'Introduce' });
         }}
       >
         <Image
