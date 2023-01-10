@@ -205,7 +205,7 @@ export const Preference = (props: Props) => {
 					console.log(response.data.result_msg);
 					return false;
 				} else {
-					dispatch(mbrReducer.setIdealType(JSON.stringify(response.data.memberIdealType)));
+					dispatch(mbrReducer.setIdealType(JSON.stringify(response.data.member_ideal_type)));
 
 					navigation.navigate('Main', {
 						screen: 'Roby'

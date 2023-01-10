@@ -349,12 +349,12 @@ export const Matching = (props : Props) => {
 			} else {
 
 				// 잔여 로얄패스 적용
-				setRoyalPassAmt(response.data.safeRoyalPass);
+				setRoyalPassAmt(response.data.safe_royal_pass);
 	
 				// 신고사유 코드 목록 적용
 				let tmpReportTypeList = [{text: '', value: ''}];
 				let commonCodeList = [CommonCode];
-				commonCodeList = response.data.reportCodeList;
+				commonCodeList = response.data.report_code_list;
 				
 				// CommonCode
 				commonCodeList.map(commonCode => {

@@ -206,8 +206,7 @@ export const Introduce = (props: Props) => {
 				if (response.data.result_code != '0000') {
 					return false;
 				} else {
-					dispatch(mbrReducer.setBase(JSON.stringify(response.data.memberBase)));
-					dispatch(mbrReducer.setBase(JSON.stringify(response.data.memberBase)));
+					dispatch(mbrReducer.setBase(JSON.stringify(response.data.base)));
 					navigation.navigate('Main', {
 						screen: 'Roby'
 					});

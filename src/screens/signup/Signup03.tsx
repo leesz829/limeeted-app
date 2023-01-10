@@ -50,8 +50,9 @@ export const Signup03 = (props : Props) => {
 	 * 최초 실행
 	 */
 	React.useEffect(() => {
+		
 		// 회원 관심사 정보 조회
-		axios.post(properties.api_domain + '/join/selectMemberIntro/', {
+		axios.post(properties.api_domain + '/join/getMemberIntro/', {
 			member_seq : props.route.params.memberSeq
 		})
 		.then(function (response) {
@@ -177,7 +178,7 @@ export const Signup03 = (props : Props) => {
 										member_seq : props.route.params.memberSeq,
 										nickname : nickname,
 										comment: comment,
-										interestList : checkIntValue_01
+										interest_list : checkIntValue_01
 									})
 									.then(function (response) {
 										console.log(response.data.result_code);

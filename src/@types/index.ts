@@ -141,7 +141,7 @@ export const Interview = {
 
 export const MemberBaseData = {
 	member_seq  : ''
-	, kakao_id : ''
+	, email_id : ''
 	, nickname : ''
 	, name : ''
 	, comment : ''

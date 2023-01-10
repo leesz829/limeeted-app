@@ -181,23 +181,22 @@ export const Signup00 = (props: Props) => {
 
 							axios
 								.post(properties.api_domain + '/join/insertMemberInfo/', {
-									kakao_id: id,
+									id: id,
 									password: password,
 									name: name,
-									age: age,
 									gender: gender,
 									phone_number: mobile,
 									ci: ci,
 									birthday: birthday,
-									snsType: snsType,
-									snsToken: snsToken
+									sns_type: snsType,
+									sns_token: snsToken
 								})
 								.then(function (response) {
 									console.log(response.data);
 
 									if (response.data.result_code == '0000') {
 										navigation.navigate('Signup01', {
-											memberSeq: response.data.memberSeq,
+											memberSeq: response.data.member_seq,
 										});
 									}
 								})

@@ -65,7 +65,7 @@ export const Profile = (props: Props) => {
 					'api-key': 'U0FNR09CX1RPS0VOXzAx',
 					member_seq: memberSeq,
 					nickname: nickname,
-					usePassYn: 'Y'
+					use_pass_yn: 'Y'
 				},
 				{
 					headers: {
@@ -74,11 +74,9 @@ export const Profile = (props: Props) => {
 				},
 			)
 			.then(function (response) {
-				console.log('dasldkasm;ldams;ldkma; :::::: ' , response.data.result_code);
-
 				if(response.data.result_code == '0000') {
 					setNicknameUpdatePopup(false);
-					dispatch(mbrReducer.setBase(JSON.stringify(response.data.memberBase)));
+					dispatch(mbrReducer.setBase(JSON.stringify(response.data.base)));
 					navigation.navigate('Main', {
 						screen: 'Roby'
 					});

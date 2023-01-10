@@ -130,13 +130,12 @@ export const Shop = () => {
       .then(function (response) {
          console.log('response.data.result_code :::::::: ', response.data.result_code);
 
-
          if(response.data.result_code != '0000'){
             console.log(response.data.result_msg);
             return false;
          } else {
-            setPassAmt(response.data.passAmt);
-            setRoyalPassAmt(response.data.royalPassAmt);
+            setPassAmt(response.data.pass_amt);
+            setRoyalPassAmt(response.data.royal_pass_amt);
          }
       })
       .catch(function (error) {

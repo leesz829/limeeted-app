@@ -246,8 +246,8 @@ export const SecondAuth = () => {
 
 				const imgUrl = properties.api_domain + '/uploads';
 
-				if (null != response.data.authList) {
-					response.data?.authList?.map(
+				if (null != response.data.auth_list) {
+					response.data?.auth_list?.map(
 						({
 							file_gubun,
 							file_name,
@@ -274,11 +274,11 @@ export const SecondAuth = () => {
 					);
 				}
 
-				if (null != response.data.addInfo) {
-					o_jobItem = response.data.addInfo.job_name;
-					o_eduItem = response.data.addInfo.edu_ins;
-					o_snsItem = response.data.addInfo.instagram_id;
-					o_vehicleItem = response.data.addInfo.vehicle;
+				if (null != response.data.add_info) {
+					o_jobItem = response.data.add_info.job_name;
+					o_eduItem = response.data.add_info.edu_ins;
+					o_snsItem = response.data.add_info.instagram_id;
+					o_vehicleItem = response.data.add_info.vehicle;
 				}
 
 				setSecondData({
@@ -306,29 +306,29 @@ export const SecondAuth = () => {
 
 		let mbrSeq = memberSeq;
 
-		data.append('memberSeq', mbrSeq);
+		data.append('member_seq', mbrSeq);
 		data.append('job_name', secondData.jobItem);
 		data.append('edu_ins', secondData.eduItem);
 		data.append('instagram_id', secondData.snsItem);
 		data.append('vehicle', secondData.vehicleItem);
 
 		if (secondData.jobFile.uri != '') {
-			data.append('jobFile', secondData.jobFile);
+			data.append('job_file', secondData.jobFile);
 		}
 		if (secondData.eduFile.uri != '') {
-			data.append('eduFile', secondData.eduFile);
+			data.append('edu_file', secondData.eduFile);
 		}
 		if (secondData.incomeFile.uri != '') {
-			data.append('incomeFile', secondData.incomeFile);
+			data.append('income_file', secondData.incomeFile);
 		}
 		if (secondData.assetFile.uri != '') {
-			data.append('assetFile', secondData.assetFile);
+			data.append('asset_file', secondData.assetFile);
 		}
 		if (secondData.snsFile.uri != '') {
-			data.append('snsFile', secondData.snsFile);
+			data.append('sns_file', secondData.snsFile);
 		}
 		if (secondData.vehicleFile.uri != '') {
-			data.append('vehicleFile', secondData.vehicleFile);
+			data.append('vehicle_file', secondData.vehicleFile);
 		}
 
 		console.log('data ::: ', data);
@@ -345,8 +345,8 @@ export const SecondAuth = () => {
 			.then((response) => {
 				const goPress = async () => {
 					try {
-						dispatch(mbrReducer.setBase(JSON.stringify(response.memberBase)));
-						dispatch(mbrReducer.setSecondAuth(JSON.stringify(response.memberSndAuthList)));
+						dispatch(mbrReducer.setBase(JSON.stringify(response.base)));
+						dispatch(mbrReducer.setSecondAuth(JSON.stringify(response.second_auth_list)));
 						navigation.navigate('Profile1');
 					} catch (error) {
 						console.log(error);

@@ -105,7 +105,7 @@ export const Signup02 = (props: Props) => {
 	React.useEffect(() => {
 		// 회원 이미지 정보 조회
 		axios
-			.post(properties.api_domain + '/join/selectMemberImage/', {
+			.post(properties.api_domain + '/join/getProfileImage/', {
 				member_seq: props.route.params.memberSeq,
 			})
 			.then(function (response) {
@@ -445,47 +445,21 @@ export const Signup02 = (props: Props) => {
 						onPress={() => {
 							const data = new FormData();
 
-							/* const file01 = {
-								uri: imgFileData01.uri,
-								type: imgFileData01.type,
-								name: imgFileData01.fileName,
-							};
-							const file02 = {
-								uri: imgFileData02.uri,
-								type: imgFileData02.type,
-								name: imgFileData02.fileName,
-							};
-							const file03 = {
-								uri: imgFileData03.uri,
-								type: imgFileData03.type,
-								name: imgFileData03.fileName,
-							};
-							const file04 = {
-								uri: imgFileData04.uri,
-								type: imgFileData04.type,
-								name: imgFileData04.fileName,
-							};
-							const file05 = {
-								uri: imgFileData05.uri,
-								type: imgFileData05.type,
-								name: imgFileData05.fileName,
-							}; */
-
-							data.append('memberSeq', props.route.params.memberSeq);
+							data.append('member_seq', props.route.params.memberSeq);
 							if (imgData.imgFile01.uri != '') {
-								data.append('file01', imgData.imgFile01);
+								data.append('img_file01', imgData.imgFile01);
 							}
 							if (imgData.imgFile02.uri != '') {
-								data.append('file02', imgData.imgFile02);
+								data.append('img_file02', imgData.imgFile02);
 							}
 							if (imgData.imgFile03.uri != '') {
-								data.append('file03', imgData.imgFile03);
+								data.append('img_file03', imgData.imgFile03);
 							}
 							if (imgData.imgFile04.uri != '') {
-								data.append('file04', imgData.imgFile04);
+								data.append('img_file04', imgData.imgFile04);
 							}
 							if (imgData.imgFile05.uri != '') {
-								data.append('file05', imgData.imgFile05);
+								data.append('img_file05', imgData.imgFile05);
 							}
 
 							console.log('imgData :::: ' , imgData);
@@ -506,7 +480,7 @@ export const Signup02 = (props: Props) => {
 								return;
 							}
 
-							fetch(properties.api_domain + '/join/insertMemberProfile/', {
+							fetch(properties.api_domain + '/join/insertMemberProfileImage/', {
 								method: 'POST',
 								body: data,
 							})
@@ -514,7 +488,7 @@ export const Signup02 = (props: Props) => {
 								.then((response) => {
 									console.log('response :::: ', response);
 
-									fetch(properties.api_domain + '/join/insertMemberProfile/', {
+									fetch(properties.api_domain + '/join/insertMemberProfileImage/', {
 										method: 'POST',
 										body: data,
 									})

@@ -15,7 +15,7 @@ interface PrincipalProps {
 	drinking: string;
 	business: string;
 	form_body: string;
-	kakao_id: string;
+	email_id: string;
 	member_seq: number;
 	religion: string;
 	member_level: number;

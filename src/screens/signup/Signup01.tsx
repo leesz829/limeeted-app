@@ -216,7 +216,7 @@ export const Signup01 = (props: Props) => {
 	// 프로필 2차 인증 정보 조회 함수
 	const getMemberProfileSecondAuth = async () => {
 		const result = await axios
-			.post(properties.api_domain + '/join/selectMemberSecondAuth', {
+			.post(properties.api_domain + '/join/getProfileSecondAuth', {
 				'api-key': 'U0FNR09CX1RPS0VOXzAx',
 				member_seq: props.route.params.memberSeq,
 			})
@@ -295,7 +295,7 @@ export const Signup01 = (props: Props) => {
 	const saveSecondAuth = async () => {
 		const data = new FormData();
 
-		data.append('memberSeq', props.route.params.memberSeq);
+		data.append('member_seq', props.route.params.memberSeq);
 		data.append('job_name', secondData.jobItem);
 		data.append('edu_ins', secondData.eduItem);
 		data.append('instagram_id', secondData.snsItem);
@@ -303,27 +303,27 @@ export const Signup01 = (props: Props) => {
 
 		let cnt = 0;
 		if (secondData.jobFile.uri) {
-			data.append('jobFile', secondData.jobFile);
+			data.append('job_file', secondData.jobFile);
 			cnt++;
 		}
 		if (secondData.eduFile.uri) {
-			data.append('eduFile', secondData.eduFile);
+			data.append('edu_file', secondData.eduFile);
 			cnt++;
 		}
 		if (secondData.incomeFile.uri) {
-			data.append('incomeFile', secondData.incomeFile);
+			data.append('income_file', secondData.incomeFile);
 			cnt++;
 		}
 		if (secondData.assetFile.uri) {
-			data.append('assetFile', secondData.assetFile);
+			data.append('asset_file', secondData.assetFile);
 			cnt++;
 		}
 		if (secondData.snsFile.uri) {
-			data.append('snsFile', secondData.snsFile);
+			data.append('sns_file', secondData.snsFile);
 			cnt++;
 		}
 		if (secondData.vehicleFile.uri) {
-			data.append('vehicleFile', secondData.vehicleFile);
+			data.append('vehicle_file', secondData.vehicleFile);
 			cnt++;
 		}
 
@@ -343,7 +343,7 @@ export const Signup01 = (props: Props) => {
 				if (response.code != '0000') {
 					navigation.navigate('Signup02', {
 						memberSeq: props.route.params.memberSeq,
-						gender: response.member.gender,
+						gender: response.gender
 					});
 				}
 			})

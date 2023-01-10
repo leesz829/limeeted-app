@@ -184,7 +184,7 @@ export const Profile1 = (props: Props) => {
 	// 프로필 관리 저장
 	const saveMemberProfile = async () => {
 		const data = new FormData();
-		data.append('memberSeq', memberSeq);
+		data.append('member_seq', memberSeq);
 		//data.append("data", new Blob([JSON.stringify(interviewList[0])], {type: "application/json"}));
 
 		// Validation 체크
@@ -203,14 +203,14 @@ export const Profile1 = (props: Props) => {
 		}
 		
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////
-		if(imgData.imgFile01.uri != '') { data.append('file01', imgData.imgFile01); }
-		if(imgData.imgFile02.uri != '') { data.append('file02', imgData.imgFile02); }
-		if(imgData.imgFile03.uri != '') { data.append('file03', imgData.imgFile03); }
-		if(imgData.imgFile04.uri != '') { data.append('file04', imgData.imgFile04); }
-		if(imgData.imgFile05.uri != '') { data.append('file05', imgData.imgFile05); }
-		data.append('imgDelSeqStr', imgDelSeqStr);
+		if(imgData.imgFile01.uri != '') { data.append('img_file01', imgData.imgFile01); }
+		if(imgData.imgFile02.uri != '') { data.append('img_file02', imgData.imgFile02); }
+		if(imgData.imgFile03.uri != '') { data.append('img_file03', imgData.imgFile03); }
+		if(imgData.imgFile04.uri != '') { data.append('img_file04', imgData.imgFile04); }
+		if(imgData.imgFile05.uri != '') { data.append('img_file05', imgData.imgFile05); }
+		data.append('img_del_seq_str', imgDelSeqStr);
 
-		data.append('interviewListStr', JSON.stringify(interviewList));
+		data.append('interview_list_str', JSON.stringify(interviewList));
 
 		const result = await fetch(properties.api_domain + '/member/saveProfileImage/', {
 			method: 'POST',
@@ -223,9 +223,9 @@ export const Profile1 = (props: Props) => {
 			.then((res) => res.json())
 			.then((res) => {
 				if (res.result_code == '0000') {
-					dispatch(mbrReducer.setBase(JSON.stringify(res.memberBase)));
-					dispatch(mbrReducer.setProfileImg(JSON.stringify(res.memberImgList)));
-					dispatch(mbrReducer.setInterview(JSON.stringify(res.memberInterviewList)));
+					dispatch(mbrReducer.setBase(JSON.stringify(res.base)));
+					dispatch(mbrReducer.setProfileImg(JSON.stringify(res.img_list)));
+					dispatch(mbrReducer.setInterview(JSON.stringify(res.interview_list)));
 
 					navigation.navigate('Main', {
 						screen: 'Roby'

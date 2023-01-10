@@ -117,7 +117,7 @@ export const Roby = (props: Props) => {
 
 				// 관심 목록 셋팅
 				let resLikeDataList = new Array();
-				response.data?.memberResLikeList?.map(
+				response.data?.res_like_list?.map(
 					({
 						req_member_seq,
 						file_name,
@@ -139,7 +139,7 @@ export const Roby = (props: Props) => {
 
 				// 매칭 목록 셋팅
 				let matchDataList = new Array();
-				response.data?.memberMatchTrgtList?.map(
+				response.data?.match_trgt_list?.map(
 					({
 						trgt_member_seq,
 						file_name,
@@ -160,16 +160,16 @@ export const Roby = (props: Props) => {
 				);
 
 				// 프로필 이미지 목록 저장
-				if(response.data?.memberImgList.length > 0) {
-					dispatch(mbrReducer.setProfileImg(JSON.stringify(response.data.memberImgList)));
+				if(response.data?.img_list.length > 0) {
+					dispatch(mbrReducer.setProfileImg(JSON.stringify(response.data.img_list)));
 				}
 
-				if(response.data?.memberSndAuthList.length > 0) {
-					dispatch(mbrReducer.setProfileImg(JSON.stringify(response.data.memberImgList)));
+				if(response.data?.second_auth_list.length > 0) {
+					dispatch(mbrReducer.setSecondAuth(JSON.stringify(response.data.second_auth_list)));
 				}
 
-				if(response.data?.memberImgList.length > 0 || response.data?.memberSndAuthList > 0) {
-					dispatch(mbrReducer.setBase(JSON.stringify(response.data.memberBase)));
+				if(response.data?.img_list.length > 0 || response.data?.second_auth_list.length > 0) {
+					dispatch(mbrReducer.setBase(JSON.stringify(response.data.base)));
 				}
 
 				// 새 관심, 새 매칭 목록 저장

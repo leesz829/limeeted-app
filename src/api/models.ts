@@ -19,7 +19,7 @@ export async function get_login_chk(id: string, password: string) {
 	const push_token = await AsyncStorage.getItem('FCM_TOKEN');
 	const body = {
 		'api-key': 'U0FNR09CX1RPS0VOXzAx',
-		kakao_id: id,
+		email_id: id,
 		password: password,
 		push_token: push_token,
 	};
@@ -60,11 +60,11 @@ export async function purchase_product(
 		, result_msg: JSON.stringify(result_msg)
 		, result_code: result_code
 		, acknowledged: receiptDataJson.acknowledged
-		, packageName: receiptDataJson.packageName
-		, productId: receiptDataJson.productId
-		, purchaseState: receiptDataJson.purchaseState
-		, purchaseTime: receiptDataJson.purchaseTime
-		, purchaseToken: receiptDataJson.purchaseToken
+		, package_name: receiptDataJson.packageName
+		, product_id: receiptDataJson.productId
+		, purchase_state: receiptDataJson.purchaseState
+		, purchase_time: receiptDataJson.purchaseTime
+		, purchase_token: receiptDataJson.purchaseToken
 		, quantity: receiptDataJson.quantity
 	}
 
