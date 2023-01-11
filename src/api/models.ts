@@ -19,13 +19,13 @@ export async function get_login_chk(id: string, password: string) {
   //const member_seq = await properties.get_json_data('member_seq');
   const push_token = await AsyncStorage.getItem(FCM_TOKEN);
   const body = {
-    'api-key': 'U0FNR09CX1RPS0VOXzAx',
-    kakao_id: id,
+    // 'api-key': 'U0FNR09CX1RPS0VOXzAx',
+    email_id: id,
     password: password,
     push_token: push_token,
   };
 
-  return Send(route.LOGIN, 'POST', body, true, false);
+  return Send(route.LOGIN, 'POST', body, true, true);
 }
 export async function signup_with_social(type: string, msg: any) {
   //const member_seq = await properties.get_json_data('member_seq');
