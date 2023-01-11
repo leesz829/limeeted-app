@@ -12,8 +12,7 @@ export const Send = (
   url: string,
   method: Method | undefined,
   body: {} | undefined,
-  isAuth: boolean,
-  isConsole: boolean
+  isAuth: boolean
 ): Promise<ResponseProps> =>
   new Promise(async (resolve) => {
     try {
@@ -38,22 +37,10 @@ export const Send = (
           },
         };
       }
-      if (isConsole) {
-        console.log(
-          '\n\n[Network.js]===================================================================================================================\n'
-        );
-        console.log(`보내는 데이터 : ${JSON.stringify(config)}`);
-      }
 
       const result = await YahooClient(config);
 
       if (result && result.data) {
-        if (isConsole) {
-          console.log(`받은 데이터 : ${JSON.stringify(result.data)}`);
-          console.log(
-            '\n\n===================================================================================================================\n'
-          );
-        }
         if (result.data.success !== undefined) {
           resolve(result.data);
         } else {

@@ -1,50 +1,38 @@
 import {
-  ColorType,
-  StackParamList,
-  BottomParamList,
-  ScreenNavigationProp,
-  MemberBaseData,
-  MemberIdealTypeData,
-} from '@types';
-import { useState, useEffect } from 'react';
-import React, { useRef } from 'react';
-import { layoutStyle, modalStyle, styles } from 'assets/styles/Styles';
+  RouteProp,
+  useIsFocused,
+  useNavigation,
+} from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { BottomParamList, ColorType, ScreenNavigationProp } from '@types';
 import { Color } from 'assets/styles/Color';
+import { layoutStyle, modalStyle, styles } from 'assets/styles/Styles';
+import axios from 'axios';
 import { CommonBtn } from 'component/CommonBtn';
 import { CommonSwich } from 'component/CommonSwich';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import { ToolTip } from 'component/Tooltip';
 import TopNavigation from 'component/TopNavigation';
-import {
-  Image,
-  ScrollView,
-  View,
-  TouchableOpacity,
-  ImagePropTypes,
-  Dimensions,
-  Modal,
-} from 'react-native';
-import { ICON, IMAGE, PROFILE_IMAGE } from 'utils/imageUtils';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { Modalize } from 'react-native-modalize';
-import {
-  RouteProp,
-  useNavigation,
-  useIsFocused,
-} from '@react-navigation/native';
-import * as properties from 'utils/properties';
-import axios from 'axios';
-import { CommonDatePicker } from 'component/CommonDatePicker';
-import * as dataUtils from 'utils/data';
-import AsyncStorage from '@react-native-community/async-storage';
-import { useUserInfo } from 'hooks/useUserInfo';
+import { STACK } from 'constants/routes';
 import * as hooksMember from 'hooks/member';
+import { useUserInfo } from 'hooks/useUserInfo';
+import React, { useRef, useState } from 'react';
+import {
+  Dimensions,
+  Image,
+  Modal,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { Modalize } from 'react-native-modalize';
 import { useDispatch } from 'react-redux';
 import * as mbrReducer from 'redux/reducers/mbrReducer';
-import { Terms } from 'screens/commonpopup/terms';
 import { Privacy } from 'screens/commonpopup/privacy';
-import { STACK } from 'constants/routes';
+import { Terms } from 'screens/commonpopup/terms';
+import { ICON } from 'utils/imageUtils';
+import * as properties from 'utils/properties';
 
 /* ################################################################################################################
 ###### 로비
@@ -64,7 +52,7 @@ export const Roby = (props: Props) => {
 
   // 회원 기본 정보
   const memberBase = useUserInfo(); //hooksMember.getBase();
-  console.log(JSON.stringify(memberBase));
+
   /*
    * 회원 실시간 데이터
    * - 받은관심, 매칭대상, 평점
