@@ -14,7 +14,7 @@ import {
   useIsFocused,
 } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { ICON } from 'utils/imageUtils';
+import { findSourcePath, ICON } from 'utils/imageUtils';
 import {
   layoutStyle,
   styles,
@@ -35,6 +35,8 @@ import * as hooksMember from 'hooks/member';
 import { useDispatch } from 'react-redux';
 import * as mbrReducer from 'redux/reducers/mbrReducer';
 import { STACK } from 'constants/routes';
+import { useUserInfo } from 'hooks/useUserInfo';
+import { useProfileImg } from 'hooks/useProfileImg';
 
 /* ################################################################################################################
 ###################################################################################################################
@@ -54,6 +56,8 @@ export const Profile1 = (props: Props) => {
 
   const jwtToken = hooksMember.getJwtToken(); // 토큰
   const memberSeq = hooksMember.getMemberSeq(); // 회원번호
+
+  const profileImgs = useProfileImg();
 
   const memberBase = hooksMember.getBase(); // 회원 기본 정보
   const mbrProfileImgList = hooksMember.getProfileImg(); // 회원 프로필 사진 정보
@@ -414,19 +418,17 @@ export const Profile1 = (props: Props) => {
 					#################################################################################### */}
           <SpaceView mb={48} viewStyle={styles.halfContainer}>
             <View style={styles.halfItemLeft}>
-              {imgData.orgImgUrl01.url != '' &&
-              imgData.orgImgUrl01.delYn == 'N' ? (
+              {Array.isArray(profileImgs) && profileImgs.length > 0 ? (
                 <TouchableOpacity
                   onPress={() => {
-                    imgDel_onOpen(imgData.orgImgUrl01.member_img_seq, 1);
+                    // imgDel_onOpen(imgData.orgImgUrl01.member_img_seq, 1);
                   }}
                 >
                   <Image
                     resizeMode="cover"
                     resizeMethod="scale"
                     style={styles.tempBoxBig}
-                    key={imgData.orgImgUrl01.url}
-                    source={{ uri: imgData.orgImgUrl01.url }}
+                    source={findSourcePath(profileImgs[0])}
                   />
                 </TouchableOpacity>
               ) : (
@@ -437,8 +439,7 @@ export const Profile1 = (props: Props) => {
                 />
               )}
 
-              {imgData.orgImgUrl01.url != '' &&
-              imgData.orgImgUrl01.status == 'PROGRESS' ? (
+              {profileImgs[0]?.status === 'PROGRESS' ? (
                 <View style={styles.disabled}>
                   <CommonText
                     fontWeight={'700'}
@@ -459,8 +460,9 @@ export const Profile1 = (props: Props) => {
             <View style={styles.halfItemRight}>
               <SpaceView mb={16} viewStyle={layoutStyle.row}>
                 <SpaceView mr={8}>
-                  {imgData.orgImgUrl02.url != '' &&
-                  imgData.orgImgUrl02.delYn == 'N' ? (
+                  {Array.isArray(profileImgs) &&
+                  profileImgs.length > 0 &&
+                  profileImgs[1] ? (
                     <TouchableOpacity
                       onPress={() => {
                         imgDel_onOpen(imgData.orgImgUrl02.member_img_seq, 2);
@@ -471,7 +473,7 @@ export const Profile1 = (props: Props) => {
                         resizeMethod="scale"
                         style={styles.tempBoxSmall}
                         key={imgData.orgImgUrl02.url}
-                        source={{ uri: imgData.orgImgUrl02.url }}
+                        source={findSourcePath(profileImgs[1])}
                       />
                     </TouchableOpacity>
                   ) : (
@@ -482,8 +484,7 @@ export const Profile1 = (props: Props) => {
                     />
                   )}
 
-                  {imgData.orgImgUrl02.url != '' &&
-                  imgData.orgImgUrl02.status == 'PROGRESS' ? (
+                  {profileImgs[1]?.status == 'PROGRESS' ? (
                     <View style={styles.disabled}>
                       <CommonText
                         fontWeight={'700'}
@@ -501,8 +502,9 @@ export const Profile1 = (props: Props) => {
                   ) : null}
                 </SpaceView>
                 <SpaceView ml={8}>
-                  {imgData.orgImgUrl03.url != '' &&
-                  imgData.orgImgUrl03.delYn == 'N' ? (
+                  {Array.isArray(profileImgs) &&
+                  profileImgs.length > 0 &&
+                  profileImgs[2] ? (
                     <TouchableOpacity
                       onPress={() => {
                         imgDel_onOpen(imgData.orgImgUrl03.member_img_seq, 3);
@@ -513,7 +515,7 @@ export const Profile1 = (props: Props) => {
                         resizeMethod="scale"
                         style={styles.tempBoxSmall}
                         key={imgData.orgImgUrl03.url}
-                        source={{ uri: imgData.orgImgUrl03.url }}
+                        source={findSourcePath(profileImgs[2])}
                       />
                     </TouchableOpacity>
                   ) : (
@@ -524,8 +526,7 @@ export const Profile1 = (props: Props) => {
                     />
                   )}
 
-                  {imgData.orgImgUrl03.url != '' &&
-                  imgData.orgImgUrl03.status == 'PROGRESS' ? (
+                  {profileImgs[2]?.status == 'PROGRESS' ? (
                     <View style={styles.disabled}>
                       <CommonText
                         fontWeight={'700'}
@@ -546,8 +547,9 @@ export const Profile1 = (props: Props) => {
 
               <SpaceView viewStyle={layoutStyle.row}>
                 <SpaceView mr={8}>
-                  {imgData.orgImgUrl04.url != '' &&
-                  imgData.orgImgUrl04.delYn == 'N' ? (
+                  {Array.isArray(profileImgs) &&
+                  profileImgs.length > 0 &&
+                  profileImgs[3] ? (
                     <TouchableOpacity
                       onPress={() => {
                         imgDel_onOpen(imgData.orgImgUrl04.member_img_seq, 4);
@@ -558,7 +560,7 @@ export const Profile1 = (props: Props) => {
                         resizeMethod="scale"
                         style={styles.tempBoxSmall}
                         key={imgData.orgImgUrl04.url}
-                        source={{ uri: imgData.orgImgUrl04.url }}
+                        source={findSourcePath(profileImgs[3])}
                       />
                     </TouchableOpacity>
                   ) : (
@@ -569,8 +571,7 @@ export const Profile1 = (props: Props) => {
                     />
                   )}
 
-                  {imgData.orgImgUrl04.url != '' &&
-                  imgData.orgImgUrl04.status == 'PROGRESS' ? (
+                  {profileImgs[3]?.status == 'PROGRESS' ? (
                     <View style={styles.disabled}>
                       <CommonText
                         fontWeight={'700'}
@@ -588,8 +589,9 @@ export const Profile1 = (props: Props) => {
                   ) : null}
                 </SpaceView>
                 <SpaceView ml={8}>
-                  {imgData.orgImgUrl05.url != '' &&
-                  imgData.orgImgUrl05.delYn == 'N' ? (
+                  {Array.isArray(profileImgs) &&
+                  profileImgs.length > 0 &&
+                  profileImgs[4] ? (
                     <TouchableOpacity
                       onPress={() => {
                         imgDel_onOpen(imgData.orgImgUrl05.member_img_seq, 5);
@@ -600,7 +602,7 @@ export const Profile1 = (props: Props) => {
                         resizeMethod="scale"
                         style={styles.tempBoxSmall}
                         key={imgData.orgImgUrl05.url}
-                        source={{ uri: imgData.orgImgUrl05.url }}
+                        source={findSourcePath(profileImgs[4])}
                       />
                     </TouchableOpacity>
                   ) : (
@@ -611,8 +613,7 @@ export const Profile1 = (props: Props) => {
                     />
                   )}
 
-                  {imgData.orgImgUrl05.url != '' &&
-                  imgData.orgImgUrl05.status == 'PROGRESS' ? (
+                  {profileImgs[4]?.status == 'PROGRESS' ? (
                     <View style={styles.disabled}>
                       <CommonText
                         fontWeight={'700'}

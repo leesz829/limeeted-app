@@ -5,6 +5,7 @@ import {
 } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { BottomParamList, ColorType, ScreenNavigationProp } from '@types';
+import { get_live_members } from 'api/models';
 import { Color } from 'assets/styles/Color';
 import { layoutStyle, modalStyle, styles } from 'assets/styles/Styles';
 import axios from 'axios';
@@ -47,8 +48,7 @@ export const Roby = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
   const isFocus = useIsFocused();
   const dispatch = useDispatch();
-  const me = useUserInfo();
-  console.log(JSON.stringify(me));
+
   const jwtToken = hooksMember.getJwtToken(); // 토큰 추출
 
   // 회원 기본 정보
@@ -77,9 +77,6 @@ export const Roby = (props: Props) => {
     },
   ]);
 
-  // 툴팁 상태 관리
-  const [isTestTooltip, setIsTestTooltip] = React.useState<boolean>(false);
-
   // ###### 첫 렌더링 때 fetchNews() 한 번 실행
   React.useEffect(() => {
     getRealTimeMemberInfo();
@@ -87,6 +84,8 @@ export const Roby = (props: Props) => {
 
   // ###### 실시간성 회원 데이터 조회
   const getRealTimeMemberInfo = async () => {
+    const { success, data } = await get_live_members();
+
     const result = await axios
       .post(
         properties.api_domain + '/member/getRealTimeMemberInfo',
@@ -103,6 +102,7 @@ export const Roby = (props: Props) => {
         }
       )
       .then(function (response) {
+        console.log(JSON.stringify(response));
         // 관심 목록 셋팅
         let resLikeDataList = new Array();
         response.data?.memberResLikeList?.map(
