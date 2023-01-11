@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { get_my_info, get_login_chk } from 'api/models';
+import { get_my_info, signin } from 'api/models';
 import SplashScreen from 'react-native-splash-screen';
 
 interface PrincipalProps {
@@ -61,7 +61,7 @@ export const loginReduce = createAsyncThunk<PrincipalProps>(
   async (id: string, password: string) => {
     try {
       // const { success, data } = await get_my_info();
-      const { success, data } = await get_login_chk(id, password);
+      const { success, data } = await signin(id, password);
 
       if (success) {
         return data;

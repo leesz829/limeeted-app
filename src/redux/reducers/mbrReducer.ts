@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { get_my_info, get_login_chk } from 'api/models';
+import { get_my_info, signin } from 'api/models';
 
 interface PrincipalProps {
   friend_match_yn: string;
@@ -39,7 +39,7 @@ export const memberInfo = createAsyncThunk<PrincipalProps>(
       const id = AsyncStorage.getItem('id');
       const password = AsyncStorage.getItem('password');
       if (id && password) {
-        const { success, data } = await get_login_chk(id, password);
+        const { success, data } = await signin(id, password);
 
         if (success) {
           return data;

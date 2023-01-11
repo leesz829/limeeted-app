@@ -6,7 +6,7 @@ import {
 } from '@react-native-google-signin/google-signin';
 import { useNavigation } from '@react-navigation/native';
 import { ColorType } from '@types';
-import { get_login_chk, signup_with_social } from 'api/models';
+import { signin, signup_with_social } from 'api/models';
 import { layoutStyle, styles } from 'assets/styles/Styles';
 import { CommonBtn } from 'component/CommonBtn';
 import { CommonInput } from 'component/CommonInput';
@@ -46,7 +46,7 @@ export const Login01 = () => {
   const [basePopupText, setBasePopupText] = React.useState(''); // 기본 팝업 텍스트
 
   const loginProc = async () => {
-    const { success, data } = await get_login_chk(id, password);
+    const { success, data } = await signin(id, password);
 
     if (success) {
       switch (data.result_code) {
