@@ -1,17 +1,11 @@
-import * as React from 'react';
-import { useState } from 'react';
-import {
-  View,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  Dimensions,
-} from 'react-native';
-import { ICON } from 'utils/imageUtils';
+import { Color } from 'assets/styles/Color';
 import type { FC } from 'react';
+import * as React from 'react';
+import { Dimensions, Image, StyleSheet, View } from 'react-native';
+import Tooltip from 'rn-tooltip';
+import { ICON } from 'utils/imageUtils';
 import { CommonText } from './CommonText';
 import SpaceView from './SpaceView';
-import { Color } from 'assets/styles/Color';
 
 const { width, height } = Dimensions.get('window');
 
@@ -29,62 +23,29 @@ interface Props {
  * @returns
  */
 export const ToolTip: FC<Props> = (props) => {
-  const [isVisible, setIsVisible] = useState(false);
-  let descPositon: {
-    top?: number;
-    right?: number;
-    left?: number;
-    bottom?: number;
-  } = { top: 30, left: 0 };
-  switch (props.position) {
-    case 'topLeft':
-      descPositon = { top: -110, left: 0 };
-      break;
-    case 'topRight':
-      descPositon = { top: -110, right: 0 };
-      break;
-    case 'bottomLeft':
-      descPositon = { top: 45, left: 0 };
-      break;
-    case 'bottomRight':
-      descPositon = { top: 45, right: 0 };
-      break;
-  }
   return (
     <>
-      {isVisible && (
-        <TouchableOpacity
-          activeOpacity={0}
-          onPress={() => setIsVisible(false)}
-          style={styles.tooltipBackground}
-        />
-      )}
       <View style={styles.tooltipWrap}>
-        <TouchableOpacity
-          activeOpacity={0.3}
-          style={styles.tooltipTextContainer}
-          onPress={() => setIsVisible(!isVisible)}
-        >
+        <View style={styles.tooltipTextContainer}>
           <CommonText fontWeight={'500'}>{props.title}</CommonText>
-          <SpaceView ml={4}>
-            <Image source={ICON.tooltip} style={styles.tooltipIcon} />
-          </SpaceView>
-        </TouchableOpacity>
-
-        {isVisible && (
-          <>
-            <View style={[styles.tooltipDescContainer, { ...descPositon }]}>
-              <TouchableOpacity
-                activeOpacity={0.3}
-                style={styles.tooptipCloseBtnContainer}
-                onPress={() => setIsVisible(false)}
-              >
-                <Image source={ICON.xBtn} style={styles.tooltipIcon} />
-              </TouchableOpacity>
-              <CommonText>{props.desc}</CommonText>
-            </View>
-          </>
-        )}
+          <Tooltip
+            withPointer={false}
+            backgroundColor="white"
+            containerStyle={styles.tooltipDescContainer}
+            popover={
+              <View style={[styles.tooltipDescContainer]}>
+                <View style={styles.tooptipCloseBtnContainer}>
+                  <Image source={ICON.xBtn} style={styles.tooltipIcon} />
+                </View>
+                <CommonText>{props.desc}</CommonText>
+              </View>
+            }
+          >
+            <SpaceView ml={4}>
+              <Image source={ICON.tooltip} style={styles.tooltipIcon} />
+            </SpaceView>
+          </Tooltip>
+        </View>
       </View>
     </>
   );
