@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { ScreenNavigationProp } from '@types';
 import { Color } from 'assets/styles/Color';
 import { ROUTES, STACK } from 'constants/routes';
+import { usePopup } from 'Context';
 import { useUserInfo } from 'hooks/useUserInfo';
 import type { FC } from 'react';
 import * as React from 'react';
@@ -21,9 +22,7 @@ const TopNavigation: FC<Props> = (props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
   const [currentNavi, setCurrentNavi] = useState<string>(props.currentPath);
 
-  const [basePopup, setBasePopup] = React.useState(false); // 기본 팝업 state
-  const [basePopupText, setBasePopupText] = React.useState(''); // 기본 팝업 텍스트
-  const me = useUserInfo();
+  const { show } = usePopup();
 
   React.useEffect(() => {
     setCurrentNavi(props.currentPath);
@@ -38,8 +37,7 @@ const TopNavigation: FC<Props> = (props) => {
     navigation.navigate('Live');
   }
   function onPressStory() {
-    setBasePopupText('준비중입니다.');
-    setBasePopup(true);
+    show({ title: '스토리', content: '준비중입니다.' });
   }
 
   return (
@@ -94,14 +92,6 @@ const TopNavigation: FC<Props> = (props) => {
           <Text>0</Text>
         </View>
       </View>
-
-      {/* ### 기본 팝업 */}
-      <BasePopup
-        popupVisible={basePopup}
-        setPopupVIsible={setBasePopup}
-        title={''}
-        text={basePopupText}
-      />
     </View>
   );
 };

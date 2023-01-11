@@ -1,6 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { BottomParamList } from '@types';
+import { usePopup } from 'Context';
 import * as React from 'react';
 import { Alert } from 'react-native';
 import { Live } from 'screens/live';
@@ -16,6 +17,7 @@ import CustomTab from '../CustomTab';
 const Tab = createBottomTabNavigator<BottomParamList>();
 const Stack = createStackNavigator();
 const BottomNavigation = () => {
+  const { show } = usePopup();
   return (
     <Tab.Navigator
       backBehavior={'history'}
@@ -52,8 +54,9 @@ const BottomNavigation = () => {
         listeners={({ navigation }) => ({
           tabPress: (e) => {
             e.preventDefault();
+            show({ title: '알림', content: '준비중입니다.' });
             //busiUtils.goStoragePage(navigation);
-            Alert.alert('알림', '준비중입니다.', [{ text: '확인' }]);
+            // Alert.alert('알림', '준비중입니다.', [{ text: '확인' }]);
           },
         })}
       />
