@@ -504,7 +504,7 @@ export const Matching = (props: Props) => {
       <ScrollView ref={scrollRef}>
         {data.profileImgList.length > 0 && (
           <ViualSlider
-            isNew={data.memberBase.profile_type == 'NEW' ? true : false}
+            // isNew={data.memberBase.profile_type == 'NEW' ? true : false}
             onlyImg={false}
             imgUrls={data.profileImgList}
             profileName={data.memberBase.name}
