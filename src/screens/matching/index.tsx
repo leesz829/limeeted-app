@@ -697,10 +697,10 @@ export const Matching = (props: Props) => {
                   <Image source={ICON.info} style={styles.iconSize} />
                 </SpaceView>
                 <CommonText type={'h5'}>
-                  {data.interviewList.length > 0 ? (
+                  {data?.interviewList?.length > 0 ? (
                     <>
                       <CommonText fontWeight={'700'} type={'h5'}>
-                        {data.interviewList.length}개의 질의
+                        {data?.interviewList?.length}개의 질의
                       </CommonText>
                       가 등록되어있어요
                     </>
@@ -716,7 +716,7 @@ export const Matching = (props: Props) => {
             </SpaceView>
 
             <View style={styles.interviewContainer}>
-              {data.interviewList.length > 0 ? (
+              {data?.interviewList?.length > 0 ? (
                 data.interviewList.map(
                   ({
                     common_code,

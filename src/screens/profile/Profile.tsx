@@ -15,7 +15,8 @@ import AsyncStorage from '@react-native-community/async-storage';
 import * as hooksMember from 'hooks/member';
 import { useDispatch } from 'react-redux';
 import * as mbrReducer from 'redux/reducers/mbrReducer';
-import { STACK } from 'constants/routes';
+import { ROUTES, STACK } from 'constants/routes';
+import { clearPrincipal } from 'redux/reducers/authReducer';
 
 /* ################################################################################################################
 ###################################################################################################################
@@ -108,6 +109,14 @@ export const Profile = (props: Props) => {
   // ################### 팝업 관련 #####################
   const [nickNameUpdatePopup, setNicknameUpdatePopup] = React.useState(false); // 닉네임 변경 팝업
 
+  const logout = async () => {
+    // #todo pushtoken 비워줄 로그아웃 api
+    await AsyncStorage.clear();
+    dispatch(clearPrincipal());
+    //#todo mbr base = > principal reducer
+    // navigation.navigate(STACK.AUTH, { screen: ROUTES.LOGIN });
+  };
+
   return (
     <>
       <CommonHeader title={'내 계정 정보'} />
@@ -177,6 +186,8 @@ export const Profile = (props: Props) => {
         </View>
 
         <SpaceView mb={16}>
+          <CommonBtn value={'로그아웃'} type={'primary'} onPress={logout} />
+          <View style={{ height: 6 }} />
           <CommonBtn value={'저장'} type={'primary'} onPress={btnSave} />
         </SpaceView>
       </ScrollView>

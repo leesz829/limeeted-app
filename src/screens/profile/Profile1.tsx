@@ -725,10 +725,10 @@ export const Profile1 = (props: Props) => {
                   <Image source={ICON.info} style={styles.iconSize} />
                 </SpaceView>
                 <CommonText type={'h5'}>
-                  {interviewList.length ? (
+                  {interviewList?.length ? (
                     <>
                       <CommonText fontWeight={'700'} type={'h5'}>
-                        {interviewList.length}개의 질의
+                        {interviewList?.length}개의 질의
                       </CommonText>
                       가 등록되어있어요
                     </>
@@ -743,7 +743,7 @@ export const Profile1 = (props: Props) => {
               </View>
             </SpaceView>
             <View style={styles.interviewContainer}>
-              {interviewList.length > 0 ? (
+              {interviewList?.length > 0 ? (
                 interviewList.map(
                   ({
                     common_code,
