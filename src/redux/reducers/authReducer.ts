@@ -2,37 +2,36 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { get_my_info, signin } from 'api/models';
 import SplashScreen from 'react-native-splash-screen';
+import { PrincipalProps } from 'redux/types/authReducesTypes';
+// interface PrincipalProps {
+//   friend_match_yn: string;
+//   gender: string;
+//   profile_tier: string;
+//   mst_img_path: string;
+//   smoking: string;
+//   nickname: string;
+//   profile_score: number;
+//   height: string;
+//   introduce_comment: string;
+//   drinking: string;
+//   business: string;
+//   form_body: string;
+//   kakao_id: string;
+//   member_seq: number;
+//   religion: string;
+//   member_level: number;
+//   job_name: string;
+//   name: string;
+//   comment: string;
+//   phone_number: string;
+//   join_dt: string;
+//   job: string;
+//   match_yn: string;
+//   join_status: string;
+//   age: string;
+//   status: string;
+// }
 
-interface PrincipalProps {
-  friend_match_yn: string;
-  gender: string;
-  profile_tier: string;
-  mst_img_path: string;
-  smoking: string;
-  nickname: string;
-  profile_score: number;
-  height: string;
-  introduce_comment: string;
-  drinking: string;
-  business: string;
-  form_body: string;
-  kakao_id: string;
-  member_seq: number;
-  religion: string;
-  member_level: number;
-  job_name: string;
-  name: string;
-  comment: string;
-  phone_number: string;
-  join_dt: string;
-  job: string;
-  match_yn: string;
-  join_status: string;
-  age: string;
-  status: string;
-}
-
-// 예시!!!!!!!!!!!!!!
 export const myProfile = createAsyncThunk<PrincipalProps>(
   'auth/principal',
   async () => {
@@ -55,31 +54,10 @@ export const myProfile = createAsyncThunk<PrincipalProps>(
   }
 );
 
-// 로그인 Reducers
-export const loginReduce = createAsyncThunk<PrincipalProps>(
-  'auth/principal',
-  async (id: string, password: string) => {
-    try {
-      // const { success, data } = await get_my_info();
-      const { success, data } = await signin(id, password);
-
-      if (success) {
-        return data;
-      } else {
-        return undefined;
-      }
-    } catch (err) {
-      return undefined;
-    }
-  }
-);
-
 export const authSlice = createSlice({
   name: 'auth',
   initialState: {
     principal: undefined,
-    base: undefined,
-    profileImg: undefined,
   },
   reducers: {
     setPrincipal: (state, action) => {

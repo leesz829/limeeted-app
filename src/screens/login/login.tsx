@@ -19,6 +19,7 @@ import { useUserInfo } from 'hooks/useUserInfo';
 import * as React from 'react';
 import { Alert, Image, ScrollView, View } from 'react-native';
 import { useDispatch } from 'react-redux';
+import { setPrincipal } from 'redux/reducers/authReducer';
 import * as mbrReducer from 'redux/reducers/mbrReducer';
 import { BasePopup } from 'screens/commonpopup/BasePopup';
 import { ICON, IMAGE } from 'utils/imageUtils';
@@ -46,7 +47,11 @@ export const Login01 = () => {
   const [basePopupText, setBasePopupText] = React.useState(''); // 기본 팝업 텍스트
 
   const loginProc = async () => {
-    const { success, data } = await signin(id, password);
+    const body = {
+      email_id: id,
+      password,
+    };
+    const { success, data } = await signin(body);
 
     if (success) {
       switch (data.result_code) {
@@ -87,6 +92,9 @@ export const Login01 = () => {
             await AsyncStorage.setItem('id', id);
             await AsyncStorage.setItem('password', password);
             await AsyncStorage.setItem(JWT_TOKEN, data.token_param.jwt_token);
+
+            delete data.result_code;
+            dispatch(setPrincipal(data));
             dispatch(mbrReducer.setJwtToken(data.token_param.jwt_token));
             dispatch(mbrReducer.setMemberSeq(data.base.member_seq));
             dispatch(mbrReducer.setBase(data.base));

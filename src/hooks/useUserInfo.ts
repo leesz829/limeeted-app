@@ -3,7 +3,10 @@ import { shallowEqual, useSelector } from 'react-redux';
 import { RootState } from 'redux/store';
 
 export function useUserInfo() {
-  const me = useSelector(({ mbr }: RootState) => mbr.base, shallowEqual);
+  const me = useSelector(
+    ({ auth }: RootState) => auth?.principal?.base,
+    shallowEqual
+  );
 
   return me;
 }

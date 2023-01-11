@@ -47,7 +47,8 @@ export const Roby = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
   const isFocus = useIsFocused();
   const dispatch = useDispatch();
-
+  const me = useUserInfo();
+  console.log(JSON.stringify(me));
   const jwtToken = hooksMember.getJwtToken(); // 토큰 추출
 
   // 회원 기본 정보
@@ -102,8 +103,6 @@ export const Roby = (props: Props) => {
         }
       )
       .then(function (response) {
-        console.log('response :::: ', response);
-
         // 관심 목록 셋팅
         let resLikeDataList = new Array();
         response.data?.memberResLikeList?.map(

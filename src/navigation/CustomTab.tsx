@@ -41,7 +41,6 @@ const CustomTab = ({
         };
 
         if (options.tabBarShowLabel) {
-          console.log(route.key);
           return (
             <TouchableOpacity
               key={route.key}
