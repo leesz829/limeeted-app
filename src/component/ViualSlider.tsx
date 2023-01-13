@@ -1,20 +1,18 @@
-import * as React from 'react';
-import {
-  View,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-  Dimensions,
-  FlatList,
-} from 'react-native';
-import type { FC } from 'react';
-import SpaceView from './SpaceView';
-import { useState, useEffect } from 'react';
-import { ICON, IMAGE } from 'utils/imageUtils';
-import { CommonText } from './CommonText';
 import { ColorType } from '@types';
 import { layoutStyle } from 'assets/styles/Styles';
-import Carousel from 'react-native-reanimated-carousel';
+import type { FC } from 'react';
+import * as React from 'react';
+import {
+  Dimensions,
+  FlatList,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { ICON } from 'utils/imageUtils';
+import { CommonText } from './CommonText';
+import SpaceView from './SpaceView';
 
 const { width } = Dimensions.get('window');
 interface Props {

@@ -24,6 +24,7 @@ import {
   Image,
   Modal,
   ScrollView,
+  StyleSheet,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -34,7 +35,7 @@ import { Privacy } from 'screens/commonpopup/privacy';
 import { Terms } from 'screens/commonpopup/terms';
 import { ICON } from 'utils/imageUtils';
 import * as properties from 'utils/properties';
-
+import { Slider } from '@miblanchard/react-native-slider';
 /* ################################################################################################################
 ###### 로비
 ################################################################################################################ */
@@ -449,6 +450,44 @@ export const Roby = (props: Props) => {
           <SpaceView mb={16}>
             <SpaceView mb={16}>
               <CommonText fontWeight={'700'} type={'h3'}>
+                내 소셜 평점
+              </CommonText>
+              <View
+                style={[
+                  styles.profileContainer,
+                  layoutStyle.alignCenter,
+                  { marginTop: 16 },
+                ]}
+              >
+                <SpaceView mb={4} viewStyle={_styles.colCenter}>
+                  <CommonText>
+                    "매칭되면 후회하지 않을 듯한 느낌이 들어요."
+                  </CommonText>
+                </SpaceView>
+                <View style={_styles.socialScoreContainer}>
+                  <CommonText>소셜 평점</CommonText>
+
+                  <CommonText fontWeight={'700'} type={'h2'}>
+                    {memberBase?.profile_score}
+                  </CommonText>
+                </View>
+                <Slider
+                  value={0.73}
+                  animateTransitions={true}
+                  renderThumbComponent={() => null}
+                  maximumTrackTintColor={ColorType.purple}
+                  minimumTrackTintColor={ColorType.purple}
+                  containerStyle={_styles.indicatorContainer}
+                  trackStyle={_styles.trackStyle}
+                />
+              </View>
+            </SpaceView>
+          </SpaceView>
+        </SpaceView>
+        <SpaceView mb={48}>
+          <SpaceView mb={16}>
+            <SpaceView mb={16}>
+              <CommonText fontWeight={'700'} type={'h3'}>
                 보관함
               </CommonText>
             </SpaceView>
@@ -798,3 +837,30 @@ export const Roby = (props: Props) => {
     </>
   );
 };
+
+const _styles = StyleSheet.create({
+  colCenter: {
+    flexDirection: 'column',
+    alignItems: `center`,
+    justifyContent: `center`,
+  },
+  socialScoreContainer: {
+    width: '100%',
+    flexDirection: `row`,
+    alignItems: `center`,
+    justifyContent: 'space-between',
+    marginTop: 30,
+  },
+  indicatorContainer: {
+    width: '100%',
+    height: 6,
+    borderRadius: 3,
+    marginTop: 20,
+    backgroundColor: ColorType.primary,
+  },
+  trackStyle: {
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: ColorType.grayF8F8,
+  },
+});
