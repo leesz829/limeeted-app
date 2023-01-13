@@ -24,6 +24,7 @@ YahooClient.interceptors.request.use(
     return config;
   },
   function (error) {
+    console.error('API call failed: ', error?.response?.config?.url);
     // 요청 에러 직전 호출
     return Promise.reject(error);
   }
@@ -42,6 +43,7 @@ YahooClient.interceptors.response.use(
   },
 
   function (error) {
+    console.log('API call failed: ', error?.response?.config?.url);
     // https stauts !== 200 일 때 - axios 함수에서 .catch()으로 연결됨
     return Promise.reject(error);
   }

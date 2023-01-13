@@ -1,3 +1,4 @@
+import { Slider } from '@miblanchard/react-native-slider';
 import {
   RouteProp,
   useIsFocused,
@@ -5,7 +6,7 @@ import {
 } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { BottomParamList, ColorType, ScreenNavigationProp } from '@types';
-import { get_live_members } from 'api/models';
+import { request_reexamination } from 'api/models';
 import { Color } from 'assets/styles/Color';
 import { layoutStyle, modalStyle, styles } from 'assets/styles/Styles';
 import axios from 'axios';
@@ -17,6 +18,8 @@ import { ToolTip } from 'component/Tooltip';
 import TopNavigation from 'component/TopNavigation';
 import { STACK } from 'constants/routes';
 import * as hooksMember from 'hooks/member';
+import { useLikeList } from 'hooks/useLikeList';
+import { useMatches } from 'hooks/useMatches';
 import { useUserInfo } from 'hooks/useUserInfo';
 import React, { useRef, useState } from 'react';
 import {
@@ -30,12 +33,11 @@ import {
 } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import { useDispatch } from 'react-redux';
-import * as mbrReducer from 'redux/reducers/mbrReducer';
+import { myProfile } from 'redux/reducers/authReducer';
 import { Privacy } from 'screens/commonpopup/privacy';
 import { Terms } from 'screens/commonpopup/terms';
-import { ICON } from 'utils/imageUtils';
+import { findSourcePath, ICON } from 'utils/imageUtils';
 import * as properties from 'utils/properties';
-import { Slider } from '@miblanchard/react-native-slider';
 /* ################################################################################################################
 ###### 로비
 ################################################################################################################ */
@@ -54,209 +56,41 @@ export const Roby = (props: Props) => {
 
   // 회원 기본 정보
   const memberBase = useUserInfo(); //hooksMember.getBase();
-
-  /*
-   * 회원 실시간 데이터
-   * - 받은관심, 매칭대상, 평점
-   */
-
-  // 회원 받은 관심 목록
-  const [resLikeCnt, setResLikeCnt] = React.useState<any>('');
-  const [resLikeList, setResLikeList] = React.useState<any>([
-    {
-      req_member_seq: String,
-      img_path: '',
-    },
-  ]);
-
-  // 회원 매칭 대상 목록
-  const [matchCnt, setMatchCnt] = React.useState<any>('');
-  const [matchList, setMatchList] = React.useState<any>([
-    {
-      req_member_seq: String,
-      img_path: '',
-    },
-  ]);
-
-  // ###### 첫 렌더링 때 fetchNews() 한 번 실행
-  React.useEffect(() => {
-    getRealTimeMemberInfo();
-  }, [isFocus]);
+  const likes = useLikeList();
+  const matches = useMatches();
 
   // ###### 실시간성 회원 데이터 조회
-  const getRealTimeMemberInfo = async () => {
-    const { success, data } = await get_live_members();
-
-    const result = await axios
-      .post(
-        properties.api_domain + '/member/getRealTimeMemberInfo',
-        {
-          'api-key': 'U0FNR09CX1RPS0VOXzAx',
-          member_seq: memberBase?.member_seq,
-          img_acct_cnt: memberBase?.img_acct_cnt,
-          auth_acct_cnt: memberBase?.auth_acct_cnt,
-        },
-        {
-          headers: {
-            'jwt-token': jwtToken,
-          },
-        }
-      )
-      .then(function (response) {
-        console.log(JSON.stringify(response));
-        // 관심 목록 셋팅
-        let resLikeDataList = new Array();
-        response.data?.memberResLikeList?.map(
-          ({
-            req_member_seq,
-            file_name,
-            file_path,
-          }: {
-            req_member_seq: any;
-            file_name: any;
-            file_path: any;
-          }) => {
-            const img_path =
-              properties.api_domain + '/uploads' + file_path + file_name;
-            const dataJson = { req_member_seq: String, img_path: '' };
-
-            dataJson.req_member_seq(req_member_seq);
-            dataJson.img_path = img_path;
-
-            resLikeDataList.push(dataJson);
-          }
-        );
-
-        // 매칭 목록 셋팅
-        let matchDataList = new Array();
-        response.data?.memberMatchTrgtList?.map(
-          ({
-            trgt_member_seq,
-            file_name,
-            file_path,
-          }: {
-            trgt_member_seq: any;
-            file_name: any;
-            file_path: any;
-          }) => {
-            const img_path = properties.img_domain + file_path + file_name;
-            const dataJson = { trgt_member_seq: String, img_path: '' };
-
-            dataJson.trgt_member_seq(trgt_member_seq);
-            dataJson.img_path = img_path;
-
-            matchDataList.push(dataJson);
-          }
-        );
-
-        // 프로필 이미지 목록 저장
-        if (response.data?.memberImgList.length > 0) {
-          dispatch(
-            mbrReducer.setProfileImg(
-              JSON.stringify(response.data.memberImgList)
-            )
-          );
-        }
-
-        if (response.data?.memberSndAuthList.length > 0) {
-          dispatch(
-            mbrReducer.setProfileImg(
-              JSON.stringify(response.data.memberImgList)
-            )
-          );
-        }
-
-        if (
-          response.data?.memberImgList.length > 0 ||
-          response.data?.memberSndAuthList > 0
-        ) {
-          dispatch(
-            mbrReducer.setBase(JSON.stringify(response.data.memberBase))
-          );
-        }
-
-        // 새 관심, 새 매칭 목록 저장
-        setResLikeCnt(resLikeDataList.length);
-        setResLikeList(resLikeDataList);
-        setMatchCnt(matchDataList.length);
-        setMatchList(matchDataList);
-      })
-      .catch(function (error) {
-        console.log('error ::: ', error);
-      });
-  };
 
   // 회원 정보 수정
   const updateMemberInfo = async (type: string, value: string) => {
-    let matchYnParam = '';
-    let friendMatchParam = '';
-
-    let dataJson = {};
-
+    let body = {};
     /*
      * 01 : 내 프로필 공개
      * 02 : 아는 사람 소개
      */
     if (type == '01') {
-      matchYnParam = value;
-      friendMatchParam = memberBase?.friend_match_yn;
-
-      dataJson = {
-        'api-key': 'U0FNR09CX1RPS0VOXzAx',
-        member_seq: memberBase?.member_seq,
-        match_yn: matchYnParam,
+      body = {
+        match_yn: value,
       };
     } else {
-      matchYnParam = memberBase?.match_yn;
-      friendMatchParam = value;
-
-      dataJson = {
-        'api-key': 'U0FNR09CX1RPS0VOXzAx',
-        member_seq: memberBase?.member_seq,
-        friend_match_yn: friendMatchParam,
+      body = {
+        friend_match_yn: value,
       };
     }
 
-    const result = await axios
-      .post(properties.api_domain + '/member/updateMemberBase', dataJson, {
-        headers: {
-          'jwt-token': jwtToken,
-        },
-      })
-      .then(function (response) {
-        console.log('response.data :::: ', response.data);
-      })
-      .catch(function (error) {
-        console.log('error ::: ', error);
-      });
+    const { success, data } = await update_setting(body);
+    if (success) {
+      dispatch(myProfile());
+    }
   };
 
   // 프로필 재심사 실행
   const profileReexProc = async () => {
-    const result = await axios
-      .post(
-        properties.api_domain + '/member/updateProfileReex',
-        {
-          'api-key': 'U0FNR09CX1RPS0VOXzAx',
-          member_seq: memberBase?.member_seq,
-        },
-        {
-          headers: {
-            'jwt-token': jwtToken,
-          },
-        }
-      )
-      .then(function (response) {
-        if (response.data.result_code != '0000') {
-          console.log(response.data.result_msg);
-          return false;
-        } else {
-          setProfileReAprPopup(false);
-        }
-      })
-      .catch(function (error) {
-        console.log('error ::: ', error);
-      });
+    const { success, data } = await request_reexamination();
+    if (success) {
+      console.log(data);
+      setProfileReAprPopup(false);
+    }
   };
 
   // 별점 이미지 적용
@@ -492,84 +326,75 @@ export const Roby = (props: Props) => {
               </CommonText>
             </SpaceView>
 
-            <View style={styles.rowStyle}>
-              <CommonText fontWeight={'500'}>
-                새 관심
-                <CommonText color={ColorType.primary}> {resLikeCnt}</CommonText>
-                건
-              </CommonText>
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate('Main', {
-                    screen: 'Storage',
-                  });
-                }}
-              >
-                <Image source={ICON.arrRight} style={styles.iconSize} />
-              </TouchableOpacity>
-            </View>
-
-            <ScrollView horizontal={true}>
-              {resLikeList.map(
-                ({
-                  match_seq,
-                  req_member_seq,
-                  img_path,
-                }: {
-                  match_seq: any;
-                  req_member_seq: any;
-                  img_path: string;
-                }) => (
-                  <SpaceView
-                    key={match_seq}
-                    viewStyle={styles.circleBox}
-                    mr={16}
-                  >
-                    <Image
-                      source={{ uri: img_path !== '' ? img_path : undefined }}
-                      style={styles.circleBoxImg}
-                    />
-                  </SpaceView>
-                )
-              )}
-            </ScrollView>
-          </SpaceView>
-
-          <View style={styles.rowStyle}>
-            <CommonText fontWeight={'500'}>
-              새 매칭
-              <CommonText color={ColorType.primary}> {matchCnt}</CommonText>건
-            </CommonText>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('Main', {
+                navigation.navigate(STACK.COMMON, {
                   screen: 'Storage',
                 });
               }}
+              style={styles.rowStyle}
             >
+              <CommonText fontWeight={'500'}>
+                새 관심
+                <CommonText color={ColorType.primary}>
+                  {' '}
+                  {likes?.length}
+                </CommonText>
+                건
+              </CommonText>
+
               <Image source={ICON.arrRight} style={styles.iconSize} />
             </TouchableOpacity>
-          </View>
 
-          <ScrollView horizontal={true}>
-            {matchList.map(
-              ({
-                match_seq,
-                trgt_member_seq,
-                img_path,
-              }: {
-                match_seq: any;
-                trgt_member_seq: any;
-                img_path: string;
-              }) => (
-                <SpaceView key={match_seq} viewStyle={styles.circleBox} mr={16}>
+            <ScrollView horizontal={true}>
+              {likes?.map((item, index) => (
+                <SpaceView
+                  key={`likes-${index}`}
+                  viewStyle={styles.circleBox}
+                  mr={16}
+                >
                   <Image
-                    source={{ uri: img_path !== '' ? img_path : undefined }}
+                    source={findSourcePath(item)}
                     style={styles.circleBoxImg}
                   />
                 </SpaceView>
-              )
-            )}
+              ))}
+            </ScrollView>
+          </SpaceView>
+
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate(STACK.COMMON, {
+                screen: 'Storage',
+              });
+            }}
+            style={styles.rowStyle}
+          >
+            <CommonText fontWeight={'500'}>
+              새 매칭
+              <CommonText color={ColorType.primary}>
+                {' '}
+                {matches?.length}
+              </CommonText>
+              건
+            </CommonText>
+
+            <Image source={ICON.arrRight} style={styles.iconSize} />
+          </TouchableOpacity>
+
+          <ScrollView horizontal={true}>
+            {matches?.map((item, index) => (
+              <SpaceView
+                key={`matches-${index}`}
+                viewStyle={styles.circleBox}
+                mr={16}
+              >
+                <Image
+                  source={findSourcePath(item)}
+                  style={styles.circleBoxImg}
+                />
+              </SpaceView>
+            ))}
           </ScrollView>
         </SpaceView>
 
@@ -861,6 +686,6 @@ const _styles = StyleSheet.create({
   trackStyle: {
     height: 6,
     borderRadius: 3,
-    backgroundColor: ColorType.grayF8F8,
+    backgroundColor: ColorType.grayDDDD,
   },
 });
