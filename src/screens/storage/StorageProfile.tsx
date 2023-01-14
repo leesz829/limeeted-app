@@ -89,7 +89,6 @@ export const StorageProfile = (props : Props) => {
       const result = await axios.post(properties.api_domain + '/match/selectMatchMemberInfo',
             {
                'api-key': 'U0FNR09CX1RPS0VOXzAx',
-               member_seq: tgtMemberSeq,
                match_seq: matchSeq
             },
             {
@@ -109,7 +108,7 @@ export const StorageProfile = (props : Props) => {
                let tmpInterviewList = new Array(); // 인터뷰 목록
 
                // 회원 프로필 이미지 정보 구성
-               response.data?.profileImgList?.map(
+               response.data?.mbr_img_list?.map(
                   ({
                      file_name,
                      file_path
@@ -124,7 +123,7 @@ export const StorageProfile = (props : Props) => {
                );
 
                // 회원 2차 인증 목록 정보 구성
-               response.data?.secondAuthList?.map(
+               response.data?.mbr_second_auth_list?.map(
                   ({
                      second_auth_code
                   }: {
@@ -136,7 +135,7 @@ export const StorageProfile = (props : Props) => {
                );
 
                // 회원 인터뷰 목록 정보 구성
-               response.data?.interviewList?.map(
+               response.data?.mbr_interview_list?.map(
                   ({
                      code_name,
                      answer
@@ -151,8 +150,8 @@ export const StorageProfile = (props : Props) => {
                
                setData({
                   ...data
-                  , matchBase: response.data.matchBase
-                  , memberBase: response.data.memberBase
+                  , matchBase: response.data.match_base
+                  , memberBase: response.data.mbr_base
                   , profileImgList: tmpProfileImgList
                   , secondAuthList: tmpSecondAuthList
                   , interviewList: tmpInterviewList
@@ -162,7 +161,7 @@ export const StorageProfile = (props : Props) => {
                // 신고사유 코드 목록 적용
                let tmpReportTypeList = [{text: '', value: ''}];
                let commonCodeList = [CommonCode];
-               commonCodeList = response.data.reportCodeList;
+               commonCodeList = response.data.report_code_list;
 
                // CommonCode
                commonCodeList.map(commonCode => {
@@ -190,8 +189,7 @@ export const StorageProfile = (props : Props) => {
             {
                'api-key': 'U0FNR09CX1RPS0VOXzAx',
                match_seq: matchSeq,
-               match_status: status,
-               member_seq: memberSeq
+               match_status: status
             },
             {
                headers: {
@@ -382,8 +380,7 @@ export const StorageProfile = (props : Props) => {
       const result = await axios.post(properties.api_domain + '/match/procMatchMemberHpOpen',
          {
             'api-key': 'U0FNR09CX1RPS0VOXzAx',
-            'match_seq': data.matchBase.match_seq,
-            'member_seq': memberSeq,
+            'match_seq': data.matchBase.match_seq
          },
          {
             headers: {

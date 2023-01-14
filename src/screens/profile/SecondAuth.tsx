@@ -220,8 +220,7 @@ export const SecondAuth = () => {
 			.post(
 				properties.api_domain + '/member/getMemberProfileSecondAuth',
 				{
-					'api-key': 'U0FNR09CX1RPS0VOXzAx',
-					member_seq: memberSeq,
+					'api-key': 'U0FNR09CX1RPS0VOXzAx'
 				},
 				{
 					headers: {
@@ -303,10 +302,6 @@ export const SecondAuth = () => {
 	// 인증 정보 저장 함수
 	const saveSecondAuth = async () => {
 		const data = new FormData();
-
-		let mbrSeq = memberSeq;
-
-		data.append('member_seq', mbrSeq);
 		data.append('job_name', secondData.jobItem);
 		data.append('edu_ins', secondData.eduItem);
 		data.append('instagram_id', secondData.snsItem);

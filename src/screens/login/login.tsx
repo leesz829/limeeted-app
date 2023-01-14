@@ -108,6 +108,7 @@ export const Login01 = (props: Props) => {
 		const { success, data } = await get_login_chk(id, password);
 		console.log('success :::: ', success);
 		console.log('data :::: ', data.result_code);
+		console.log('data.mbr_base ::: ', data.mbr_base);
 		if (success) {
 			/*
 			 * ## 인증 결과 코드 정의
@@ -121,36 +122,36 @@ export const Login01 = (props: Props) => {
 				setBasePopup(true);
 			} else if(resultCode == '0003') { // 반려
 				navigation.navigate('Approval', {
-					memberSeq: data.base.member_seq,
+					memberSeq: data.mbr_base.member_seq,
 					accessType: 'REFUSE'
 				});
 			} else if(resultCode == '0003') { // 탈퇴
 				setBasePopupText('탈퇴 회원 입니다.');
 				setBasePopup(true);
 			} else {
-				let memberStatus = data.base.status;
-				let joinStatus = data.base.join_status;
+				let memberStatus = data.mbr_base.status;
+				let joinStatus = data.mbr_base.join_status;
 
 				if (resultCode == '0000' && (memberStatus == 'PROCEED' || memberStatus == 'APROVAL')) {
 					if (memberStatus == 'APROVAL') {
 						navigation.navigate('Approval', {
-							memberSeq: data.base.member_seq,
+							memberSeq: data.mbr_base.member_seq,
 							accessType: 'LOGIN'
 						});
 					} else {
 						if (null != joinStatus) {
 							if (joinStatus == '01') {
-								navigation.navigate('Signup01', { memberSeq: data.base.member_seq });
+								navigation.navigate('Signup01', { memberSeq: data.mbr_base.member_seq });
 							} else if (joinStatus == '02') {
 								navigation.navigate('Signup02', {
-									memberSeq: data.base.member_seq,
-									gender: data.base.gender,
+									memberSeq: data.mbr_base.member_seq,
+									gender: data.mbr_base.gender,
 								});
 							} else if (joinStatus == '03') {
-								navigation.navigate('Signup03', { memberSeq: data.base.member_seq });
+								navigation.navigate('Signup03', { memberSeq: data.mbr_base.member_seq });
 							} else if (joinStatus == '04') {
 								navigation.navigate('Approval', {
-									memberSeq: data.base.member_seq,
+									memberSeq: data.mbr_base.member_seq,
 									accessType: 'LOGIN'
 								});
 							}
@@ -160,12 +161,12 @@ export const Login01 = (props: Props) => {
 					AsyncStorage.setItem('jwt-token', data.token_param.jwt_token);
 
 					dispatch(mbrReducer.setJwtToken(data.token_param.jwt_token));
-					dispatch(mbrReducer.setMemberSeq(JSON.stringify(data.base.member_seq)));
-					dispatch(mbrReducer.setBase(JSON.stringify(data.base)));
-					dispatch(mbrReducer.setProfileImg(JSON.stringify(data.memberImgList)));
-					dispatch(mbrReducer.setSecondAuth(JSON.stringify(data.memberSndAuthList)));
-					dispatch(mbrReducer.setIdealType(JSON.stringify(data.memberIdealType)));
-					dispatch(mbrReducer.setInterview(JSON.stringify(data.memberInterviewList)));
+					dispatch(mbrReducer.setMemberSeq(JSON.stringify(data.mbr_base.member_seq)));
+					dispatch(mbrReducer.setBase(JSON.stringify(data.mbr_base)));
+					dispatch(mbrReducer.setProfileImg(JSON.stringify(data.mbr_img_list)));
+					dispatch(mbrReducer.setSecondAuth(JSON.stringify(data.mbr_second_auth_list)));
+					dispatch(mbrReducer.setIdealType(JSON.stringify(data.mbr_ideal_type)));
+					dispatch(mbrReducer.setInterview(JSON.stringify(data.mbr_interview_list)));
 
 					navigation.navigate('Main', {
 						screen: 'Matching',

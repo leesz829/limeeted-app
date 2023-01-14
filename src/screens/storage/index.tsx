@@ -78,9 +78,8 @@ export const Storage = (props : Props) => {
 
    // 보관함 정보 조회
    const getStorageData = async () => {
-      const result = await axios.post(properties.api_domain + '/member/selectMemberStorage', {
+      const result = await axios.post(properties.api_domain + '/member/getMemberStorageInfo', {
          'api-key' : 'U0FNR09CX1RPS0VOXzAx'
-         , 'member_seq' : memberSeq
       }
       , {
          headers: {
@@ -160,7 +159,7 @@ export const Storage = (props : Props) => {
       }
    }
 
-   // 프로필 열람 이동
+   // 프로필 열람 이동    
    const goProfileOpen = async () => {
       let req_profile_open_yn = '';
       let res_profile_open_yn = '';
@@ -176,8 +175,7 @@ export const Storage = (props : Props) => {
             'api-key': 'U0FNR09CX1RPS0VOXzAx',
             match_seq: detailMatchData.match_seq,
             req_profile_open_yn: req_profile_open_yn,
-            res_profile_open_yn: res_profile_open_yn,
-            member_seq: memberSeq
+            res_profile_open_yn: res_profile_open_yn
          },
          {
             headers: {

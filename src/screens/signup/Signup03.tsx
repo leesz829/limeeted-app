@@ -287,6 +287,7 @@ export const Signup03 = (props : Props) => {
 								);
 							})}
 						</View>
+						
 						<View style={[layoutStyle.row, layoutStyle.justifyBetween]}>
 							{[
 								{ code_name: '인스타그래머블..', common_code: 'CONC_01_03', group_code: 'CONCERN_01'}

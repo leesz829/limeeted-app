@@ -184,7 +184,6 @@ export const Profile1 = (props: Props) => {
 	// 프로필 관리 저장
 	const saveMemberProfile = async () => {
 		const data = new FormData();
-		data.append('member_seq', memberSeq);
 		//data.append("data", new Blob([JSON.stringify(interviewList[0])], {type: "application/json"}));
 
 		// Validation 체크

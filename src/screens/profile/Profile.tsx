@@ -63,7 +63,6 @@ export const Profile = (props: Props) => {
 				properties.api_domain + '/member/saveMemberBase',
 				{
 					'api-key': 'U0FNR09CX1RPS0VOXzAx',
-					member_seq: memberSeq,
 					nickname: nickname,
 					use_pass_yn: 'Y'
 				},

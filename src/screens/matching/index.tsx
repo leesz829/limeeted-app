@@ -308,14 +308,14 @@ export const Matching = (props : Props) => {
 				return false;
 			} else {
 
-				if (response.data.result) {
+				if (response.data.code_list) {
 					let tmpReportTypeList = [{text: '', value: ''}];
 					let commonCodeList = [CommonCode];
-					commonCodeList = response.data.result;
+					commonCodeList = response.data.code_list;
 					
 					// CommonCode
 					commonCodeList.map(commonCode => {
-						tmpReportTypeList.push({text: commonCode.code_name, value: commonCode.common_code})
+						tmpReportTypeList.push({text: commonCode.code_name, value: commonCode.common_code});
 					});
 					console.log('tmpReportTypeList ::: ' , tmpReportTypeList);
 
@@ -333,8 +333,7 @@ export const Matching = (props : Props) => {
 		
 		const result = await axios.post(properties.api_domain + '/match/getMatchInfo',
 			{
-				'api-key': 'U0FNR09CX1RPS0VOXzAx',
-				member_seq: memberSeq
+				'api-key': 'U0FNR09CX1RPS0VOXzAx'
 			},
 			{
 				headers: {

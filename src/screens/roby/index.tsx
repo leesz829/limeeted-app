@@ -102,7 +102,6 @@ export const Roby = (props: Props) => {
 				properties.api_domain + '/member/getRealTimeMemberInfo',
 				{
 					'api-key': 'U0FNR09CX1RPS0VOXzAx',
-					member_seq: memberBase.member_seq,
 					img_acct_cnt: memberBase.img_acct_cnt,
 					auth_acct_cnt: memberBase.auth_acct_cnt,
 				},
@@ -199,23 +198,23 @@ export const Roby = (props: Props) => {
 			friendMatchParam = memberBase.friend_match_yn;
 
 			dataJson = {
-				'api-key': 'U0FNR09CX1RPS0VOXzAx',
-				member_seq: memberBase.member_seq,
-				match_yn: matchYnParam,
+				'api-key': 'U0FNR09CX1RPS0VOXzAx'
+				, use_pass_yn: 'N'
+				, match_yn: matchYnParam
 			};
 		} else {
 			matchYnParam = memberBase.match_yn;
 			friendMatchParam = value;
 
 			dataJson = {
-				'api-key': 'U0FNR09CX1RPS0VOXzAx',
-				member_seq: memberBase.member_seq,
-				friend_match_yn: friendMatchParam,
+				'api-key': 'U0FNR09CX1RPS0VOXzAx'
+				, use_pass_yn: 'N'
+				, friend_match_yn: friendMatchParam
 			};
 		}
 
 		const result = await axios
-			.post(properties.api_domain + '/member/updateMemberBase', dataJson, {
+			.post(properties.api_domain + '/member/saveMemberBase', dataJson, {
 				headers: {
 					'jwt-token': jwtToken,
 				},
@@ -234,8 +233,7 @@ export const Roby = (props: Props) => {
 			.post(
 				properties.api_domain + '/member/updateProfileReex',
 				{
-					'api-key': 'U0FNR09CX1RPS0VOXzAx',
-					member_seq: memberBase.member_seq,
+					'api-key': 'U0FNR09CX1RPS0VOXzAx'
 				},
 				{
 					headers: {

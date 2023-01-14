@@ -139,9 +139,9 @@ export const Preference = (props: Props) => {
 					console.log('fail ::: ', response.data.result_msg);
 					return false;
 				} else {
-					if (null != response.data.result) {
+					if (null != response.data.code_list) {
 						let dataList = new Array();
-						response.data?.result?.map(
+						response.data?.code_list?.map(
 							({
 								group_code,
 								common_code,
@@ -178,7 +178,6 @@ export const Preference = (props: Props) => {
 				properties.api_domain + '/member/saveMemberIdealType',
 				{
 					'api-key': 'U0FNR09CX1RPS0VOXzAx',
-					member_seq: memberSeq,
 					ideal_type_seq: idealTypeSeq,
 					want_local1: wantLocal1,
 					want_local2: wantLocal2,

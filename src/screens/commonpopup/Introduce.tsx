@@ -153,9 +153,9 @@ export const Introduce = (props: Props) => {
 					console.log(response.data.result_msg);
 					return false;
 				} else {
-					if (null != response.data.result) {
+					if (null != response.data.code_list) {
 						let dataList = new Array();
-						response.data?.result?.map(
+						response.data?.code_list?.map(
 							({
 								group_code,
 								common_code,
@@ -185,7 +185,6 @@ export const Introduce = (props: Props) => {
 				properties.api_domain + '/member/saveMemberAddInfo',
 				{
 					'api-key': 'U0FNR09CX1RPS0VOXzAx',
-					member_seq: memberBase.member_seq,
 					comment: comment,
 					business: business,
 					job: job,

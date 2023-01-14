@@ -120,7 +120,6 @@ export const Shop = () => {
    const getMemberHasPoint = async () => {
       const result = await axios.post(properties.api_domain + '/member/getMemberHasPoint', {
          'api-key' : 'U0FNR09CX1RPS0VOXzAx'
-         , 'member_seq' : memberSeq
       }
       , {
          headers: {
