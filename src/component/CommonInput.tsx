@@ -31,6 +31,7 @@ export const CommonInput: FC<Props> = (props: any) => {
       </View>
       <View style={styles.inputContainer}>
         <TextInput
+          autoCapitalize="none"
           style={styles.inputStyle}
           placeholder={props.placeholder || ''}
           placeholderTextColor={Color.black2222}

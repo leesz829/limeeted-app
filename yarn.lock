@@ -6924,6 +6924,11 @@ react-native-webview@11.22.2:
     escape-string-regexp "2.0.0"
     invariant "2.2.4"
 
+react-native-wrapped-text@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/react-native-wrapped-text/-/react-native-wrapped-text-1.2.2.tgz#21d1a55b33d6ec03228d2a0346c3b9bfe73ba6ee"
+  integrity sha512-CglzV4GvGfbMV25W/g8DWKbcQfgOS1qG3CXkcZSMF10jKUf4GgSyf3slAeAbMaw6z96u092PeJaZhfkvQtMfyQ==
+
 react-native@0.66.4:
   version "0.66.4"
   resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.66.4.tgz#bf89a5fb18bd23046d889fb4de4ea2822a4d7805"

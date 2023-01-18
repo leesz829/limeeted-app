@@ -17,6 +17,7 @@ import { withIAPContext } from 'react-native-iap';
 import { myProfile } from 'redux/reducers/authReducer';
 import getFCMToken from 'utils/FCM/getFCMToken';
 import { PopupProvider } from 'Context/index';
+import SplashScreen from 'react-native-splash-screen';
 
 enableScreens();
 LogBox.ignoreAllLogs();
@@ -103,6 +104,8 @@ function PreFetcher(props) {
 
     if (token) {
       prefetch();
+    } else {
+      SplashScreen.hide();
     }
   }
   async function prefetch() {

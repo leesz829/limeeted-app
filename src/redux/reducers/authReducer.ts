@@ -47,6 +47,7 @@ export const myProfile = createAsyncThunk<PrincipalProps>(
     } catch (err) {
       return undefined;
     } finally {
+      console.log('load !');
       setTimeout(() => {
         SplashScreen.hide();
       }, 2000);
@@ -61,6 +62,7 @@ export const authSlice = createSlice({
   },
   reducers: {
     setPrincipal: (state, action) => {
+      console.log('payload : ', action.payload);
       state.principal = action.payload;
     },
     clearPrincipal: (state) => {

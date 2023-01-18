@@ -4,7 +4,7 @@ import { RootState } from 'redux/store';
 
 export function useIdeal() {
   const ideal = useSelector(
-    ({ auth }: RootState) => auth?.principal?.ideal_type,
+    ({ auth }: RootState) => auth?.principal?.mbr_ideal_type,
     shallowEqual
   );
 

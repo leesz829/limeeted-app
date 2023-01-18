@@ -75,12 +75,12 @@ interface BaseProps {
   status: string;
 }
 export interface PrincipalProps {
-  interview_list: InterviewProps[];
-  second_auth_list: secondaryAuthenticationProps[];
-  match_trgt_list: any;
-  img_list: ImageProps[];
-  token_param: TokenProps;
-  ideal_type: IdealProps;
-  base: BaseProps;
-  res_like_list: any[];
+  mbr_img_list: ImageProps[];
+  mbr_second_auth_list: secondaryAuthenticationProps[];
+  mbr_base: BaseProps;
+  mbr_ideal_type: IdealProps;
+  mbr_interview_list: InterviewProps[];
+
+  // match_trgt_list: any;
+  // res_like_list: any[];
 }

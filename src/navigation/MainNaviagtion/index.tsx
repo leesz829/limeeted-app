@@ -1,6 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import { STACK } from 'constants/routes';
 import { useIsLogedin } from 'hooks/useIsLogin';
+import { useUserInfo } from 'hooks/useUserInfo';
 import AuthNavigation from 'navigation/AuthNavigation';
 import CommonNavigation from 'navigation/CommonNavigation';
 import React from 'react';
@@ -9,18 +10,10 @@ import BottomNavigation from '../TabNavigation';
 const MainStack = createStackNavigator();
 
 const MainStackNavigation = () => {
-  // const dispatch = useDispatch();
   const isLogin = useIsLogedin();
-
-  // useEffect(() => {
-  //   authCheck();
-  // }, []);
-  // async function authCheck() {
-  //   const token = await AsyncStorage.getItem(JWT_TOKEN);
-  //   if (token) {
-  //     dispatch(myProfile());
-  //   }
-  // }
+  const me = useUserInfo();
+  console.log('isLogin', isLogin);
+  console.log('me', me);
 
   return (
     <MainStack.Navigator

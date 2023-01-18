@@ -4,7 +4,7 @@ import { RootState } from 'redux/store';
 
 export function useSecondAth() {
   const auth = useSelector(
-    ({ auth }: RootState) => auth?.principal?.second_auth_list,
+    ({ auth }: RootState) => auth?.principal?.mbr_second_auth_list,
     shallowEqual
   );
 

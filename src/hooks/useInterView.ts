@@ -4,7 +4,7 @@ import { RootState } from 'redux/store';
 
 export function useInterView() {
   const interview = useSelector(
-    ({ auth }: RootState) => auth?.principal?.interview_list,
+    ({ auth }: RootState) => auth?.principal?.mbr_interview_list,
     shallowEqual
   );
 
