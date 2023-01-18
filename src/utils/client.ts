@@ -17,7 +17,7 @@ YahooClient.interceptors.request.use(
     let params = 'no params and body';
     if (config?.data) params = JSON.stringify(config?.data);
     if (config?.params) params = JSON.stringify(config?.params);
-    console.log(`\n[ API REQUEST URL : ${config.url} ]\n${params}`);
+    console.log(`[ API REQUEST URL : ${config.url} ]\n${params}`);
 
     // 요청 성공 직전 호출
     // axios 설정값을 넣음 (사용자 정의 설정도 추가 가능)
@@ -43,7 +43,7 @@ YahooClient.interceptors.response.use(
   },
 
   function (error) {
-    console.log('API call failed: ', error?.response?.config?.url);
+    console.warn('[ API call failed: ', error?.response?.config?.url, ' ]');
     // https stauts !== 200 일 때 - axios 함수에서 .catch()으로 연결됨
     return Promise.reject(error);
   }

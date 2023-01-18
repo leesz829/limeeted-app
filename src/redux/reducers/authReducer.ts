@@ -1,36 +1,9 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { get_my_info, signin } from 'api/models';
+import { get_my_info } from 'api/models';
+import storeKey from 'constants/storeKey';
 import SplashScreen from 'react-native-splash-screen';
 import { PrincipalProps } from 'redux/types/authReducesTypes';
-// interface PrincipalProps {
-//   friend_match_yn: string;
-//   gender: string;
-//   profile_tier: string;
-//   mst_img_path: string;
-//   smoking: string;
-//   nickname: string;
-//   profile_score: number;
-//   height: string;
-//   introduce_comment: string;
-//   drinking: string;
-//   business: string;
-//   form_body: string;
-//   kakao_id: string;
-//   member_seq: number;
-//   religion: string;
-//   member_level: number;
-//   job_name: string;
-//   name: string;
-//   comment: string;
-//   phone_number: string;
-//   join_dt: string;
-//   job: string;
-//   match_yn: string;
-//   join_status: string;
-//   age: string;
-//   status: string;
-// }
 
 export const myProfile = createAsyncThunk<PrincipalProps>(
   'auth/principal',
@@ -45,9 +18,9 @@ export const myProfile = createAsyncThunk<PrincipalProps>(
         return undefined;
       }
     } catch (err) {
+      console.log(err);
       return undefined;
     } finally {
-      console.log('load !');
       setTimeout(() => {
         SplashScreen.hide();
       }, 2000);
@@ -62,7 +35,6 @@ export const authSlice = createSlice({
   },
   reducers: {
     setPrincipal: (state, action) => {
-      console.log('payload : ', action.payload);
       state.principal = action.payload;
     },
     clearPrincipal: (state) => {

@@ -11,9 +11,6 @@ const MainStack = createStackNavigator();
 
 const MainStackNavigation = () => {
   const isLogin = useIsLogedin();
-  const me = useUserInfo();
-  console.log('isLogin', isLogin);
-  console.log('me', me);
 
   return (
     <MainStack.Navigator

@@ -10,7 +10,7 @@ import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import { REFUSE, SUCCESS, SUCESSION } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
-import { JWT_TOKEN } from 'constants/storeKey';
+import storeKey, { JWT_TOKEN } from 'constants/storeKey';
 import { usePopup } from 'Context';
 import { useUserInfo } from 'hooks/useUserInfo';
 import * as React from 'react';
@@ -39,7 +39,7 @@ export const Login01 = () => {
   const [id, setId] = React.useState('');
   const [password, setPassword] = React.useState('');
   const me = useUserInfo();
-  console.log(JSON.stringify(me));
+
   const loginProc = async () => {
     const body = {
       email_id: id,
@@ -84,7 +84,10 @@ export const Login01 = () => {
             }
           } else {
             await AsyncStorage.setItem(JWT_TOKEN, data.token_param.jwt_token);
-
+            await AsyncStorage.setItem(
+              storeKey.MEMBER_SEQ,
+              data.mbr_base.member_seq + ''
+            );
             delete data.result_code;
             dispatch(setPrincipal(data));
             dispatch(mbrReducer.setJwtToken(data.token_param.jwt_token));

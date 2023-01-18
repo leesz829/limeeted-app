@@ -1,33 +1,29 @@
-import * as React from 'react';
-import { useState, useEffect, useRef } from 'react';
-import { ScrollView, TouchableOpacity } from 'react-native';
-import TopNavigation from 'component/TopNavigation';
-import { styles } from 'assets/styles/Styles';
-import SpaceView from 'component/SpaceView';
-import { CommonText } from 'component/CommonText';
-import { ViualSlider } from 'component/ViualSlider';
-import { RadioCheckBox } from 'component/RadioCheckBox';
-import * as properties from 'utils/properties';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import {
   CommonCode,
+  FileInfo,
   LabelObj,
   ProfileImg,
-  FileInfo,
   ScreenNavigationProp,
 } from '@types';
-import {
-  RouteProp,
-  useNavigation,
-  useIsFocused,
-} from '@react-navigation/native';
+import { styles } from 'assets/styles/Styles';
 import axios from 'axios';
+import { CommonText } from 'component/CommonText';
+import { RadioCheckBox } from 'component/RadioCheckBox';
+import SpaceView from 'component/SpaceView';
+import TopNavigation from 'component/TopNavigation';
+import { ViualSlider } from 'component/ViualSlider';
+import * as React from 'react';
+import { useState } from 'react';
+import { ScrollView } from 'react-native';
+import * as properties from 'utils/properties';
 
 import { LivePopup } from 'screens/commonpopup/LivePopup';
 import { LiveSearch } from 'screens/live/LiveSearch';
 
 import * as hooksMember from 'hooks/member';
-import { useDispatch } from 'react-redux';
-import * as mbrReducer from 'redux/reducers/mbrReducer';
+import { get_live_members, regist_profile_evaluation } from 'api/models';
+import { useMemberseq } from 'hooks/useMemberseq';
 
 /* ################################################################################################################
 ###### LIVE
@@ -35,10 +31,10 @@ import * as mbrReducer from 'redux/reducers/mbrReducer';
 
 export const Live = () => {
   const navigation = useNavigation<ScreenNavigationProp>();
+  const member_seq = useMemberseq();
   const isFocus = useIsFocused();
 
   const jwtToken = hooksMember.getJwtToken(); // 토큰
-  const memberSeq = hooksMember.getMemberSeq(); // 회원번호
 
   // 로딩 상태 체크
   const [isLoad, setIsLoad] = useState(false);
@@ -84,42 +80,66 @@ export const Live = () => {
 
   // ####### 프로필 평가 등록
   const insertProfileAssessment = async () => {
-    const result = await axios
-      .post(
-        properties.api_domain + '/profile/insertProfileAssessment',
-        {
-          'api-key': 'U0FNR09CX1RPS0VOXzAx',
-          member_seq: profileImgList[0].member_seq,
-          profile_score: clickFaceScore,
-          face_code: clickFaceTypeCode,
-        },
-        {
-          headers: {
-            'jwt-token': jwtToken,
-          },
-        }
-      )
-      .then(function (response) {
-        if (response.data.result_code != '0000') {
-          return false;
-        }
+    const body = {
+      profile_score: clickFaceScore,
+      face_code: clickFaceTypeCode,
+      member_seq,
+    };
+    try {
+      const { success, data } = await regist_profile_evaluation(body);
 
+      if (success && data.result_code != '0000') {
         setIsLoad(false);
         getLiveProfileImg();
-      })
-      .finally(function () {
-        // 다른 프로필 이미지 정보 재호출
-        getLiveProfileImg();
-        // 다른 인상정보 재호출
-        getFaceType();
-      })
-      .catch(function (error) {
-        console.log('insertProfileAssessment error ::: ', error);
-      });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      // 다른 프로필 이미지 정보 재호출
+      getLiveProfileImg();
+      // 다른 인상정보 재호출
+      getFaceType();
+    }
+    // const result = await axios
+    //   .post(
+    //     properties.api_domain + '/profile/insertProfileAssessment',
+    //     {
+    //       'api-key': 'U0FNR09CX1RPS0VOXzAx',
+    //       member_seq: profileImgList[0].member_seq,
+    //       profile_score: clickFaceScore,
+    //       face_code: clickFaceTypeCode,
+    //     },
+    //     {
+    //       headers: {
+    //         'jwt-token': jwtToken,
+    //       },
+    //     }
+    //   )
+    //   .then(function (response) {
+    //     if (response.data.result_code != '0000') {
+    //       return false;
+    //     }
+
+    //     setIsLoad(false);
+    //     getLiveProfileImg();
+    //   })
+    //   .finally(function () {
+    //     // 다른 프로필 이미지 정보 재호출
+    //     getLiveProfileImg();
+    //     // 다른 인상정보 재호출
+    //     getFaceType();
+    //   })
+    //   .catch(function (error) {
+    //     console.log('insertProfileAssessment error ::: ', error);
+    //   });
   };
 
   // LIVE 평가 회원 조회
   const getLiveProfileImg = async () => {
+    const { success, data } = await get_live_members({ member_seq });
+    if (success) {
+      console.log('getLiveProfileImg :', JSON.stringify(data));
+    }
     const result = await axios
       .post(
         properties.api_domain + '/match/selectLiveProfileImg',

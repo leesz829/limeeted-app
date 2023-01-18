@@ -56,6 +56,11 @@
     "age": 37,
     "status": "ACTIVE"
   },
+  "result_code": "0000",
+  "token_param": {
+    "expire_date": "2024-12-13 03:44:08",
+    "jwt_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzYW1nb2IiLCJuYW1lIjoi7YWM7Iqk7YSwIiwiZXhwIjoxNzM0MDI5MDQ4LCJtZW1iZXJfc2VxIjoiNDAifQ.XK1NdA69lzT9CbI4ZaCNqkm6pttTrT_Uzj3QVCESM3Q"
+  },
   "mbr_ideal_type": {
     "want_age_max": "99",
     "want_person3": "FACE_G_06",
@@ -75,6 +80,15 @@
     "ideal_type_seq": 1
   },
   "mbr_interview_list": [
+    {
+      "order_seq": 1,
+      "interview_seq": 4,
+      "answer": "고민고민123",
+      "disp_yn": "Y",
+      "use_yn": "Y",
+      "code_name": "요즘 나의 가장 큰 고민은?",
+      "common_code": "INTER_00"
+    },
     {
       "order_seq": 1,
       "interview_seq": 18,
@@ -110,15 +124,6 @@
       "use_yn": "Y",
       "code_name": "당신에게 초능력이 생긴다면 어떤 능력을 갖을건가요?",
       "common_code": "INTER_26"
-    },
-    {
-      "order_seq": 1,
-      "interview_seq": 4,
-      "answer": "고민고민123",
-      "disp_yn": "Y",
-      "use_yn": "Y",
-      "code_name": "요즘 나의 가장 큰 고민은?",
-      "common_code": "INTER_00"
     }
   ]
 }

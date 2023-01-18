@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import { AxiosRequestConfig, Method } from 'axios';
+import storeKey from 'constants/storeKey';
 import YahooClient from 'utils/client';
 import { api_domain } from 'utils/properties';
 
@@ -17,7 +18,8 @@ export const Send = (
   new Promise(async (resolve) => {
     try {
       const endPoint = api_domain + url;
-      const token = await AsyncStorage.getItem('jwt-token');
+      const token = await AsyncStorage.getItem(storeKey.JWT_TOKEN);
+      // const member_seq = await AsyncStorage.getItem(storeKey.MEMBER_SEQ);
       let config: AxiosRequestConfig = {
         url: endPoint,
         method: method,
@@ -25,7 +27,10 @@ export const Send = (
 
       // body가 있는 경우
       if (body !== undefined) {
-        config = { ...config, data: body };
+        config = {
+          ...config,
+          data: body,
+        };
       }
       // 토큰이 있는경우
       if (isAuth && token) {
@@ -37,7 +42,7 @@ export const Send = (
           },
         };
       }
-
+      // console.log('config\n\n' + JSON.stringify(config) + '\n\n');
       const result = await YahooClient(config);
 
       if (result && result.data) {
@@ -58,7 +63,6 @@ export const Send = (
         });
       }
     } catch (error) {
-      console.log('에러 error : ', error);
       resolve({
         success: false,
         message: '일시적인 오류가 발생했습니다.',

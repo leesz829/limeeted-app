@@ -1,12 +1,10 @@
-import * as React from 'react';
-import { Image, View } from 'react-native';
-import TopNavigation from 'component/TopNavigation';
 import { layoutStyle, styles } from 'assets/styles/Styles';
 import { CommonText } from 'component/CommonText';
-import { ICON } from 'utils/imageUtils';
 import SpaceView from 'component/SpaceView';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { usePopup } from 'Context';
+import TopNavigation from 'component/TopNavigation';
+import * as React from 'react';
+import { Image, View } from 'react-native';
+import { ICON } from 'utils/imageUtils';
 
 export const LiveSearch = () => {
   return (

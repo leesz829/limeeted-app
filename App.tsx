@@ -42,7 +42,6 @@ const requestUserPermission = async () => {
     authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-  console.log('enabled : ', enabled);
   if (enabled) {
     getFCMToken();
   }
