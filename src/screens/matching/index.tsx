@@ -712,7 +712,7 @@ export const Matching = (props : Props) => {
 					</SpaceView>
 
 					<SpaceView mb={15}>
-						<CommonBtn value={'신고'} icon={ICON.siren} iconSize={24} onPress={() => report_onOpen()}/>
+						<CommonBtn value={'신고 및 차단'} icon={ICON.siren} iconSize={24} onPress={() => report_onOpen()}/>
 					</SpaceView>
 
 				</SpaceView>
@@ -750,7 +750,7 @@ export const Matching = (props : Props) => {
 					</SpaceView>
 
 					<SpaceView mb={16}>
-						<CommonBtn value={'신고하기'} onPress={popupReport} type={'primary'} />
+						<CommonBtn value={'신고 및 차단하기'} onPress={popupReport} type={'primary'} />
 					</SpaceView>
 				</View>
 			</Modalize>
