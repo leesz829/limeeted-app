@@ -1,85 +1,16 @@
 {
-  "mbr_img_list": [
+  "from": 3,
+  "to": 1,
+  "data": [
     {
       "order_seq": 1,
-      "file_seq": 237,
-      "file_path": "/profile/",
-      "file_name": "rn_image_picker_lib_temp_8c0d0872-f14a-413a-872f-268f21fd1568.jpg",
-      "member_img_seq": 81,
+      "interview_seq": 1,
+      "answer": "고민고민123",
+      "disp_yn": "Y",
       "use_yn": "Y",
-      "member_seq": 40,
-      "status": "PROGRESS"
-    }
-  ],
-  "mbr_second_auth_list": [
-    {
-      "file_seq": 305,
-      "file_path": "/auth/",
-      "member_auth_seq": 69,
-      "file_name": "rn_image_picker_lib_temp_2cd8cf64-f46c-41a7-8c41-c6348b90c0a7.png",
-      "second_auth_code": "JOB",
-      "file_gubun": "F_JOB",
-      "member_seq": 40,
-      "status": "PROGRESS"
-    }
-  ],
-  "mbr_base": {
-    "email_id": "test2",
-    "birthday": "1987-10-10",
-    "join_appr_dt": "20221213223530",
-    "friend_match_yn": "Y",
-    "gender": "M",
-    "active_local": "인천",
-    "mst_img_path": "/profile/rn_image_picker_lib_temp_8c0d0872-f14a-413a-872f-268f21fd1568.jpg",
-    "smoking": "NONE",
-    "nickname": "QQQQ",
-    "birth_local": "경기",
-    "profile_score": "7.3",
-    "height": "dks",
-    "drinking": "HARD",
-    "profile_type": "NO",
-    "business": "JOB_00",
-    "form_body": "NORMAL",
-    "profile_eval_cnt": 3,
-    "member_seq": 40,
-    "religion": "ALLAH",
-    "img_acct_cnt": 0,
-    "job_name": "123123",
-    "name": "테스터",
-    "auth_acct_cnt": 0,
-    "comment": "QQQQ",
-    "phone_number": "010-1111-4575",
-    "join_dt": "20220504210051",
-    "job": "JOB_00_01",
-    "match_yn": "Y",
-    "join_status": "04",
-    "age": 37,
-    "status": "ACTIVE"
-  },
-  "result_code": "0000",
-  "token_param": {
-    "expire_date": "2024-12-13 03:44:08",
-    "jwt_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzYW1nb2IiLCJuYW1lIjoi7YWM7Iqk7YSwIiwiZXhwIjoxNzM0MDI5MDQ4LCJtZW1iZXJfc2VxIjoiNDAifQ.XK1NdA69lzT9CbI4ZaCNqkm6pttTrT_Uzj3QVCESM3Q"
-  },
-  "mbr_ideal_type": {
-    "want_age_max": "99",
-    "want_person3": "FACE_G_06",
-    "want_person2": "FACE_G_02",
-    "want_person1": "FACE_G_04",
-    "use_yn": "Y",
-    "want_job3": "JOB_13_05",
-    "want_job2": "JOB_08_00",
-    "want_business1": "JOB_06",
-    "want_business2": "JOB_08",
-    "want_local1": "1",
-    "want_business3": "JOB_13",
-    "member_seq": 40,
-    "want_job1": "JOB_06_10",
-    "want_local2": "99",
-    "want_age_min": "1",
-    "ideal_type_seq": 1
-  },
-  "mbr_interview_list": [
+      "code_name": "요즘 나의 가장 큰 고민은?",
+      "common_code": "INTER_00"
+    },
     {
       "order_seq": 1,
       "interview_seq": 4,
@@ -91,39 +22,39 @@
     },
     {
       "order_seq": 1,
-      "interview_seq": 18,
-      "answer": "Good",
+      "interview_seq": 2,
+      "answer": "고민고민123",
       "disp_yn": "Y",
       "use_yn": "Y",
-      "code_name": "당신은 왜 사는가라고 묻는다면?",
-      "common_code": "INTER_14"
+      "code_name": "요즘 나의 가장 큰 고민은?",
+      "common_code": "INTER_00"
+    },
+    {
+      "order_seq": 1,
+      "interview_seq": 3,
+      "answer": "고민고민123",
+      "disp_yn": "Y",
+      "use_yn": "Y",
+      "code_name": "요즘 나의 가장 큰 고민은?",
+      "common_code": "INTER_00"
     },
     {
       "order_seq": 1,
       "interview_seq": 5,
-      "answer": "어떤모습",
+      "answer": "고민고민123",
       "disp_yn": "Y",
       "use_yn": "Y",
-      "code_name": "반드시 바꾸고 싶은 나의 모습은?",
-      "common_code": "INTER_06"
+      "code_name": "요즘 나의 가장 큰 고민은?",
+      "common_code": "INTER_00"
     },
     {
       "order_seq": 1,
       "interview_seq": 6,
-      "answer": "없음",
+      "answer": "고민고민123",
       "disp_yn": "Y",
       "use_yn": "Y",
-      "code_name": "가족, 동료, 연인에게 바라는 나의 욕구는 무엇인가?",
-      "common_code": "INTER_05"
-    },
-    {
-      "order_seq": 1,
-      "interview_seq": 7,
-      "answer": " Cd",
-      "disp_yn": "Y",
-      "use_yn": "Y",
-      "code_name": "당신에게 초능력이 생긴다면 어떤 능력을 갖을건가요?",
-      "common_code": "INTER_26"
+      "code_name": "요즘 나의 가장 큰 고민은?",
+      "common_code": "INTER_00"
     }
   ]
 }

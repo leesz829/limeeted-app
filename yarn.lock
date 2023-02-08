@@ -736,7 +736,7 @@
     "@babel/helper-validator-option" "^7.18.6"
     "@babel/plugin-transform-flow-strip-types" "^7.18.6"
 
-"@babel/preset-typescript@7.18.6", "@babel/preset-typescript@^7.1.0":
+"@babel/preset-typescript@7.18.6", "@babel/preset-typescript@^7.1.0", "@babel/preset-typescript@^7.17.12":
   version "7.18.6"
   resolved "https://registry.yarnpkg.com/@babel/preset-typescript/-/preset-typescript-7.18.6.tgz#ce64be3e63eddc44240c6358daefac17b3186399"
   integrity sha512-s9ik86kXBAnD760aybBucdpnLsAt0jK1xqJn2juOn9lkOvSHV60os5hxoVJsPzMQxvnUJFAlkont2DvvaYEBtQ==
@@ -6807,6 +6807,13 @@ react-native-custom-billing@2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/react-native-custom-billing/-/react-native-custom-billing-2.1.0.tgz#c6068593e144f8f53464b67f40f4c7769adc54e8"
   integrity sha512-Ps0cuCtfEzOYb6YQbL7NYslbietasFijj8Y8BwDrd1RB702gtqYprKADHNV076rWjb53mzJMs3pyyMLQxZDK6Q==
+
+react-native-draggable-flatlist@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-draggable-flatlist/-/react-native-draggable-flatlist-4.0.0.tgz#c047b24511b40080d3a4b7967c6cc40ed2368244"
+  integrity sha512-3DVzZsCXNlK29UyIkx4Uh5+2TAHwHC9Q45i1lbuqEOcuSmZ8jHcqbE8VkLot2bVfWZGO5WFgihStmxkI0gBHRQ==
+  dependencies:
+    "@babel/preset-typescript" "^7.17.12"
 
 react-native-gesture-handler@2.1.1:
   version "2.1.1"

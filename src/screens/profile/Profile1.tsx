@@ -1,42 +1,33 @@
-import React, { useRef } from 'react';
-import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
-import {
-  Image,
-  ScrollView,
-  TextInput,
-  View,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
 import {
   RouteProp,
-  useNavigation,
   useIsFocused,
+  useNavigation,
 } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { findSourcePath, ICON } from 'utils/imageUtils';
+import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
 import {
-  layoutStyle,
-  styles,
-  modalStyle,
   commonStyle,
+  layoutStyle,
+  modalStyle,
+  styles,
 } from 'assets/styles/Styles';
-import SpaceView from 'component/SpaceView';
+import { CommonBtn } from 'component/CommonBtn';
+import CommonHeader from 'component/CommonHeader';
 import { CommonText } from 'component/CommonText';
 import { ImagePicker } from 'component/ImagePicker';
-import { ProfileItem } from 'component/MainProfileSlider';
-import CommonHeader from 'component/CommonHeader';
-import { CommonBtn } from 'component/CommonBtn';
-import axios from 'axios';
+import SpaceView from 'component/SpaceView';
+import React, { useRef } from 'react';
+import { Alert, Image, ScrollView, TouchableOpacity, View } from 'react-native';
+import { findSourcePath, ICON } from 'utils/imageUtils';
 import * as properties from 'utils/properties';
 //import AsyncStorage from '@react-native-community/async-storage';
-import { Modalize } from 'react-native-modalize';
+import { STACK } from 'constants/routes';
 import * as hooksMember from 'hooks/member';
+import { useProfileImg } from 'hooks/useProfileImg';
+import { Modalize } from 'react-native-modalize';
 import { useDispatch } from 'react-redux';
 import * as mbrReducer from 'redux/reducers/mbrReducer';
-import { STACK } from 'constants/routes';
-import { useUserInfo } from 'hooks/useUserInfo';
-import { useProfileImg } from 'hooks/useProfileImg';
+import Interview from 'component/Interview';
 
 /* ################################################################################################################
 ###################################################################################################################
@@ -653,12 +644,12 @@ export const Profile1 = (props: Props) => {
                 </TouchableOpacity>
               </View>
 
-              {memberBase.auth_acct_cnt > 0 ? (
+              {memberBase?.auth_acct_cnt > 0 ? (
                 <>
                   <View style={[layoutStyle.rowBetween]}>
                     <View style={styles.statusBtn}>
                       <CommonText type={'h6'} color={ColorType.white}>
-                        LV.{memberBase.auth_acct_cnt}
+                        LV.{memberBase?.auth_acct_cnt}
                       </CommonText>
                     </View>
                     <Image source={ICON.medalAll} style={styles.iconSize32} />
@@ -713,119 +704,10 @@ export const Profile1 = (props: Props) => {
           {/* ####################################################################################
 					####################### 인터뷰 영역
 					#################################################################################### */}
-          <SpaceView>
-            <SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
-              <View>
-                <CommonText fontWeight={'700'} type={'h3'}>
-                  인터뷰
-                </CommonText>
-              </View>
-
-              <View style={[layoutStyle.rowBetween]}>
-                <SpaceView mr={6}>
-                  <Image source={ICON.info} style={styles.iconSize} />
-                </SpaceView>
-                <CommonText type={'h5'}>
-                  {interviewList?.length ? (
-                    <>
-                      <CommonText fontWeight={'700'} type={'h5'}>
-                        {interviewList?.length}개의 질의
-                      </CommonText>
-                      가 등록되어있어요
-                    </>
-                  ) : (
-                    <>
-                      <CommonText fontWeight={'700'} type={'h5'}>
-                        등록된 질의가 없습니다.
-                      </CommonText>
-                    </>
-                  )}
-                </CommonText>
-              </View>
-            </SpaceView>
-            <View style={styles.interviewContainer}>
-              {interviewList?.length > 0 ? (
-                interviewList.map(
-                  ({
-                    common_code,
-                    code_name,
-                    answer,
-                  }: {
-                    common_code: any;
-                    code_name: any;
-                    answer: any;
-                  }) => (
-                    <View key={common_code}>
-                      <SpaceView mb={32} viewStyle={layoutStyle.row}>
-                        <SpaceView mr={16}>
-                          <Image
-                            source={ICON.manage}
-                            style={styles.iconSize40}
-                          />
-                        </SpaceView>
-
-                        <View style={layoutStyle.row}>
-                          <View style={styles.interviewLeftTextContainer}>
-                            <CommonText type={'h5'}>{code_name}</CommonText>
-                          </View>
-
-                          {/* <SpaceView ml={8}>
-													<TouchableOpacity 
-														onPress={() => {
-															navigation.navigate('Profile2');
-														}}>
-														<Image source={ICON.penCircleGray} style={styles.iconSize24} />
-													</TouchableOpacity>
-												</SpaceView> */}
-                        </View>
-                      </SpaceView>
-
-                      <SpaceView
-                        mb={32}
-                        viewStyle={[layoutStyle.row, layoutStyle.selfEnd]}
-                      >
-                        <SpaceView
-                          viewStyle={styles.interviewRightTextContainer}
-                          mr={16}
-                        >
-                          <TextInput
-                            defaultValue={answer}
-                            onChangeText={(text) =>
-                              answerChangeHandler(common_code, text)
-                            }
-                            style={[styles.inputTextStyle_type02]}
-                            multiline={true}
-                            placeholder={'대답을 등록해주세요!'}
-                            placeholderTextColor={'#c6ccd3'}
-                            numberOfLines={3}
-                            maxLength={200}
-                          />
-                        </SpaceView>
-                        <SpaceView>
-                          <Image source={ICON.boy} style={styles.iconSize40} />
-                        </SpaceView>
-                      </SpaceView>
-                    </View>
-                  )
-                )
-              ) : (
-                <>
-                  <SpaceView mb={32} viewStyle={layoutStyle.row}>
-                    <SpaceView mr={16}>
-                      <Image source={ICON.manage} style={styles.iconSize40} />
-                    </SpaceView>
-
-                    <View style={styles.interviewLeftTextContainer}>
-                      <CommonText type={'h5'}>질문을 등록해주세요</CommonText>
-                    </View>
-                  </SpaceView>
-                </>
-              )}
-            </View>
-          </SpaceView>
+          <Interview />
         </SpaceView>
 
-        <View style={styles.bottomBtnContainer}>
+        {/* <View style={styles.bottomBtnContainer}>
           <CommonBtn
             value={'저장'}
             type={'primary'}
@@ -833,7 +715,7 @@ export const Profile1 = (props: Props) => {
               saveMemberProfile();
             }}
           />
-        </View>
+        </View> */}
       </ScrollView>
 
       {/* ###############################################

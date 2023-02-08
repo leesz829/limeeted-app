@@ -1,93 +1,234 @@
-import * as React from 'react';
-import { Image, TextInput, View, ScrollView, TouchableOpacity } from 'react-native';
-import { ICON } from 'utils/imageUtils';
-import { layoutStyle, styles } from 'assets/styles/Styles';
-import SpaceView from 'component/SpaceView';
-import { CommonText } from 'component/CommonText';
-import CommonHeader from 'component/CommonHeader';
-import { CommonBtn } from 'component/CommonBtn';
 import { useNavigation } from '@react-navigation/native';
 import { ColorType } from '@types';
 import { Color } from 'assets/styles/Color';
+import { layoutStyle, styles } from 'assets/styles/Styles';
+import { CommonBtn } from 'component/CommonBtn';
+import CommonHeader from 'component/CommonHeader';
 import { CommonSwich } from 'component/CommonSwich';
-import { useState } from 'react';
+import { CommonText } from 'component/CommonText';
+import SpaceView from 'component/SpaceView';
+import React, { useMemo, useState } from 'react';
+import {
+  Image,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { ICON } from 'utils/imageUtils';
+
+import { useInterView } from 'hooks/useInterView';
+import DraggableFlatList, {
+  ScaleDecorator,
+} from 'react-native-draggable-flatlist';
+
+enum Mode {
+  view = 'view',
+  edit = 'edit',
+}
 export const Profile2 = () => {
-	const [text, setText] = useState('검색 글자');
-	const navi = useNavigation();
-	console.log(navi.getState());
-	return (
-		<>
-			<CommonHeader title={'인터뷰'} />
-			<ScrollView contentContainerStyle={styles.scrollContainer}>
-				<SpaceView viewStyle={layoutStyle.rowCenter} mb={32}>
-					<SpaceView viewStyle={styles.questionContainer} mr={16}>
-						<CommonText textStyle={layoutStyle.textCenter}>
-							첫번째 질문이에요{'\n'}
-							질문에 성실하게 답해주세요
-						</CommonText>
-					</SpaceView>
-					<Image source={ICON.refreshDark} style={styles.iconSize24} />
-				</SpaceView>
+  const [text, setText] = useState('');
+  const navi = useNavigation();
+  const origin = useInterView();
+  const [interview, setInterview] = useState([
+    {
+      order_seq: 1,
+      interview_seq: 1,
+      answer: '고민고민123',
+      disp_yn: 'Y',
+      use_yn: 'Y',
+      code_name: '요즘 나의 가장 큰 고민은?',
+      common_code: 'INTER_00',
+    },
+    {
+      order_seq: 1,
+      interview_seq: 4,
+      answer: '고민고민123',
+      disp_yn: 'Y',
+      use_yn: 'Y',
+      code_name: '요즘 나의 가장 큰 고민은?',
+      common_code: 'INTER_00',
+    },
+    {
+      order_seq: 1,
+      interview_seq: 2,
+      answer: '고민고민123',
+      disp_yn: 'Y',
+      use_yn: 'Y',
+      code_name: '요즘 나의 가장 큰 고민은?',
+      common_code: 'INTER_00',
+    },
+    {
+      order_seq: 1,
+      interview_seq: 3,
+      answer: '고민고민123',
+      disp_yn: 'Y',
+      use_yn: 'Y',
+      code_name: '요즘 나의 가장 큰 고민은?',
+      common_code: 'INTER_00',
+    },
+    {
+      order_seq: 1,
+      interview_seq: 5,
+      answer: '고민고민123',
+      disp_yn: 'Y',
+      use_yn: 'Y',
+      code_name: '요즘 나의 가장 큰 고민은?',
+      common_code: 'INTER_00',
+    },
+    {
+      order_seq: 1,
+      interview_seq: 6,
+      answer: '고민고민123',
+      disp_yn: 'Y',
+      use_yn: 'Y',
+      code_name: '요즘 나의 가장 큰 고민은?',
+      common_code: 'INTER_00',
+    },
+  ]);
+  const [mode, setMode] = useState(Mode.view);
 
-				<SpaceView viewStyle={styles.interviewContainer} mb={24}>
-					<SpaceView viewStyle={layoutStyle.rowBetween} mb={24}>
-						<SpaceView viewStyle={styles.searchInputContainer} mr={16}>
-							<TextInput
-								value={text}
-								onChangeText={(e) => setText(e)}
-								style={styles.searchInput}
-								placeholder={'검색'}
-								placeholderTextColor={Color.gray6666}
-							/>
-							<View style={styles.searchInputIconContainer}>
-								<Image source={ICON.searchGray} style={styles.iconSize24} />
-							</View>
-							{text.length > 0 && (
-								<TouchableOpacity
-									style={styles.searchDeleteBtnContainer}
-									onPress={() => setText('')}
-								>
-									<Image source={ICON.xBtn} style={styles.iconSize24} />
-								</TouchableOpacity>
-							)}
-						</SpaceView>
+  //질문 초기화 핸들러
+  function onPressResetQusetion() {}
 
-						<View>
-							<CommonText
-								type={'h5'}
-								textStyle={layoutStyle.lineFontGray}
-								color={ColorType.gray6666}
-							>
-								편집
-							</CommonText>
-						</View>
-					</SpaceView>
+  //편집버튼 핸들러
+  function onPressModify() {
+    setMode(mode === Mode.view ? Mode.edit : Mode.view);
+  }
 
-					{[
-						{ key: '1', title: '새 질문1에 대답해주세요' },
-						{ key: '20', title: '새 질문2에 대답해주세요' },
-						{ key: '23', title: '새 질문3에 대답해주세요' },
-					].map((i, ii) => (
-						<SpaceView viewStyle={layoutStyle.rowBetween} mb={ii === 2 ? 0 : 16} key={i.key}>
-							<SpaceView viewStyle={styles.questionItemTextContainer}>
-								<CommonText>{i.title}</CommonText>
-							</SpaceView>
+  function toggleFunction(value, id) {
+    //해당 인터뷰 노출여부 토글
+    // const {success, data} = await toggleDisplay(id, )
+  }
+  function onDragEnd({
+    from,
+    to,
+    data,
+  }: {
+    from: number;
+    to: number;
+    data: any;
+  }) {
+    setInterview(data);
+  }
+  const list = useMemo(() => {
+    if (text === '') return interview;
+    return interview?.filter((item: any) => item?.code_name?.includes(text));
+  }, [text, interview]);
 
-							<View style={styles.questionIconContainer}>
-								{i.key === '1' ? (
-									<CommonSwich />
-								) : (
-									<Image source={ICON.align} style={styles.iconSize24} />
-								)}
-							</View>
-						</SpaceView>
-					))}
-				</SpaceView>
+  return (
+    <View style={{ flex: 1 }}>
+      <CommonHeader title={'인터뷰'} />
+      <View
+        style={{
+          paddingTop: 24,
+          paddingLeft: 16,
+          paddingRight: 16,
+          backgroundColor: 'white',
+          flex: 1,
+        }}
+      >
+        <SpaceView viewStyle={layoutStyle.rowCenter} mb={32}>
+          <SpaceView viewStyle={styles.questionContainer} mr={16}>
+            <CommonText textStyle={layoutStyle.textCenter}>
+              첫번째 질문이에요{'\n'}
+              질문에 성실하게 답해주세요
+            </CommonText>
+          </SpaceView>
+          <TouchableOpacity onPress={onPressResetQusetion}>
+            <Image source={ICON.refreshDark} style={styles.iconSize24} />
+          </TouchableOpacity>
+        </SpaceView>
 
-				<SpaceView mb={16}>
-					<CommonBtn value={'저장'} type={'primary'} />
-				</SpaceView>
-			</ScrollView>
-		</>
-	);
+        <SpaceView viewStyle={styles.interviewContainer}>
+          <SpaceView viewStyle={{ alignItems: 'flex-end' }}>
+            <TouchableOpacity
+              style={style.modifyButton}
+              onPress={onPressModify}
+            >
+              <CommonText
+                type={'h5'}
+                textStyle={{ color: 'white' }}
+                color={ColorType.gray6666}
+              >
+                {mode === Mode.view ? '편집' : '종료'}
+              </CommonText>
+            </TouchableOpacity>
+          </SpaceView>
+          <SpaceView viewStyle={layoutStyle.rowBetween} mb={24}>
+            <SpaceView viewStyle={styles.searchInputContainer}>
+              <TextInput
+                value={text}
+                onChangeText={(e) => setText(e)}
+                style={styles.searchInput}
+                placeholder={'검색'}
+                placeholderTextColor={Color.gray6666}
+              />
+              <View style={styles.searchInputIconContainer}>
+                <Image source={ICON.searchGray} style={styles.iconSize24} />
+              </View>
+              {text.length > 0 && (
+                <TouchableOpacity
+                  style={styles.searchDeleteBtnContainer}
+                  onPress={() => setText('')}
+                >
+                  <Image source={ICON.xBtn} style={styles.iconSize24} />
+                </TouchableOpacity>
+              )}
+            </SpaceView>
+          </SpaceView>
+
+          <DraggableFlatList
+            data={list}
+            showsVerticalScrollIndicator={false}
+            containerStyle={{ marginBottom: 100 }}
+            renderItem={({ item, drag, isActive }) => (
+              <ScaleDecorator>
+                <SpaceView
+                  viewStyle={layoutStyle.rowBetween}
+                  mb={16}
+                  mr={8}
+                  ml={8}
+                >
+                  <SpaceView viewStyle={styles.questionItemTextContainer}>
+                    <CommonText>{item?.code_name}</CommonText>
+                  </SpaceView>
+
+                  <View style={styles.questionIconContainer}>
+                    {mode === Mode.edit ? (
+                      <CommonSwich
+                        isOn={item.disp_yn === 'Y'}
+                        callbackFn={(value) =>
+                          toggleFunction(value, item.interview_seq)
+                        }
+                      />
+                    ) : (
+                      <TouchableOpacity onPressIn={drag} disabled={isActive}>
+                        <Image source={ICON.align} style={styles.iconSize24} />
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                </SpaceView>
+              </ScaleDecorator>
+            )}
+            keyExtractor={(item, index) => index.toString()}
+            onDragEnd={onDragEnd}
+          />
+        </SpaceView>
+      </View>
+      <SpaceView>
+        <CommonBtn value={'저장'} type={'primary'} />
+      </SpaceView>
+    </View>
+  );
 };
+
+const style = StyleSheet.create({
+  modifyButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 5,
+    backgroundColor: Color.purple,
+    borderRadius: 8,
+    marginBottom: 5,
+  },
+});
