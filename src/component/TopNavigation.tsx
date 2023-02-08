@@ -22,6 +22,8 @@ const TopNavigation: FC<Props> = (props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
   const [currentNavi, setCurrentNavi] = useState<string>(props.currentPath);
 
+  const memberBase = useUserInfo(); // 회원 기본정보
+
   const { show } = usePopup();
 
   React.useEffect(() => {
@@ -85,11 +87,11 @@ const TopNavigation: FC<Props> = (props) => {
       <View style={{ flexDirection: 'row' }}>
         <View style={[styles.itemContainer, { marginRight: 8 }]}>
           <View style={styles.itemStyle} />
-          <Text>179</Text>
+          <Text>{memberBase.pass_has_amt}</Text>
         </View>
         <View style={styles.itemContainer}>
           <View style={styles.itemStyle} />
-          <Text>0</Text>
+          <Text>{memberBase.royal_pass_has_amt}</Text>
         </View>
       </View>
     </View>
@@ -134,7 +136,7 @@ const styles = StyleSheet.create({
   itemStyle: {
     width: 18,
     height: 18,
-    marginRight: 10,
+    marginRight: 5,
     borderWidth: 1,
     borderColor: 'grey',
   },

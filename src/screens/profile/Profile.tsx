@@ -17,6 +17,9 @@ import { useDispatch } from 'react-redux';
 import * as mbrReducer from 'redux/reducers/mbrReducer';
 import { ROUTES, STACK } from 'constants/routes';
 import { clearPrincipal } from 'redux/reducers/authReducer';
+import { useUserInfo } from 'hooks/useUserInfo';
+import { update_setting } from 'api/models';
+
 
 /* ################################################################################################################
 ###################################################################################################################
@@ -36,7 +39,7 @@ export const Profile = (props: Props) => {
   const jwtToken = hooksMember.getJwtToken(); // 토큰
   const memberSeq = hooksMember.getMemberSeq(); // 회원번호
 
-  const memberBase = hooksMember.getBase(); // 회원 기본정보
+  const memberBase = useUserInfo(); // 회원 기본정보
 
   const [nickname, setNickname] = React.useState<any>(memberBase.nickname);
   const [name, setName] = React.useState<any>(memberBase.name);
@@ -58,38 +61,27 @@ export const Profile = (props: Props) => {
     }
   };
 
-  // 내 계정 정보 저장
+  // ############### 내 계정 정보 저장
   const saveMemberBase = async () => {
-    const result = await axios
-      .post(
-        properties.api_domain + '/member/saveMemberBase',
-        {
-          'api-key': 'U0FNR09CX1RPS0VOXzAx',
-          member_seq: memberSeq,
-          nickname: nickname,
-          usePassYn: 'Y',
-        },
-        {
-          headers: {
-            'jwt-token': jwtToken,
-          },
-        }
-      )
-      .then(function (response) {
-        console.log(
-          'dasldkasm;ldams;ldkma; :::::: ',
-          response.data.result_code
-        );
 
-        if (response.data.result_code == '0000') {
+    const body = {
+      nickname: nickname,
+      comment: '',
+      match_yn: '',
+      use_pass_yn: 'Y',
+      friend_mathch_yn: ''
+    };
+    try {
+      const { success, data } = await update_setting(body);
+
+      if(success) {
+        if(data.result_code == '0000') {
           setNicknameUpdatePopup(false);
-          dispatch(
-            mbrReducer.setBase(JSON.stringify(response.data.memberBase))
-          );
+          dispatch(mbrReducer.setBase(JSON.stringify(data.base)));
           navigation.navigate('Main', {
             screen: 'Roby',
           });
-        } else if (response.data.result_code == '6010') {
+        } else if (data.result_code == '6010') {
           setNicknameUpdatePopup(false);
           Alert.alert('알림', '보유 패스가 부족합니다.', [{ text: '확인' }]);
           return false;
@@ -100,10 +92,12 @@ export const Profile = (props: Props) => {
           ]);
           return false;
         }
-      })
-      .catch(function (error) {
-        console.log('error ::: ', error);
-      });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setNicknameUpdatePopup(false);
+    }      
   };
 
   // ################### 팝업 관련 #####################

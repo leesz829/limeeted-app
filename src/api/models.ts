@@ -30,6 +30,7 @@ import {
   UPDATE_PROFILE_ATHENTICATION2,
   UPDATE_PROFILE_IMAGE,
   UPDATE_SETTING,
+  COMMON_CODE
 } from './route';
 
 //======================== AUTH =======================
@@ -114,6 +115,7 @@ export async function update_setting(body: {
   comment: string;
   match_yn: string;
   use_pass_yn: string;
+  friend_mathch_yn: string;
 }) {
   return Send(UPDATE_SETTING, 'POST', body, true);
 }
@@ -299,4 +301,13 @@ export async function purchase_product(
   };
 
   return Send(ORDER, 'POST', body, true, false);
+}
+
+
+
+//======================== 공통 =======================
+
+// #### 공통코드 목록을 조회한다.
+export async function get_common_code(body: { group_code: string }) {
+  return Send(COMMON_CODE, 'POST', body, true);
 }

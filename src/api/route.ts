@@ -19,7 +19,7 @@ export const REGIST_MEMBER_PROFILE_IMAGE = '/join/insertMemberProfileImage';
 export const ME = '/member/selectMemberInfo';
 export const UPDATE_SETTING = '/member/saveMemberBase';
 export const UPDATE_ADDITIONAL = '/member/saveMemberAddInfo';
-export const STORAGE = '/member/selectMemberStorage';
+export const STORAGE = '/member/getMemberStorageInfo';
 export const UPDATE_PREFERENCE = '/member/saveMemberIdealType';
 export const UPDATE_PROFILE_IMAGE = '/member/saveProfileImage';
 export const UPDATE_PROFILE_ATHENTICATION2 = '/member/saveProfileSecondAuth';
@@ -43,7 +43,7 @@ export const REGIST_PROFILE_EVALUATION = '/profile/insertProfileAssessment';
 export const MATCHED_MEMBER_PROFILE = '/match/selectMatchProfileInfo';
 export const REGIST_MATCHING_INFO = '/match/insertMatchInfo';
 export const REPORT = '/match/insertReport';
-export const LIVE_MEMBERS = '/match/selectLiveProfileImg';
+export const LIVE_MEMBERS = '/match/selectLiveMatchTrgt';
 export const MATCHED_MEMBER_INFO = '/match/selectMatchMemberInfo';
 export const UPDATE_MATCH = '/match/updateMatchInfo';
 export const UPDATE_MATCH_STATUS = '/match/updateMatchStatus';
@@ -59,4 +59,4 @@ export const ORDER = '/order/payment';
  * COMMON
  */
 
-export const COMMON_CODE = '';
+export const COMMON_CODE = '/common/selectGroupCodeList';

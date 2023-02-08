@@ -225,3 +225,22 @@ export const MemberIdealTypeData = {
   want_person2: '',
   want_person3: '',
 };
+
+// Live 매칭 회원 기본 정보
+export const LiveMemberInfo  = {
+  member_seq : ''
+  , name : ''
+  , gender : ''
+  , comment : ''
+  , live_trgt_type : ''
+  , age : ''
+};
+
+// Live 매칭 회원 프로필 사진 정보
+export const LiveProfileImg  = {
+  member_img_seq : ''
+  , order_seq : ''
+  , file_name : ''
+  , file_path : ''
+  , url : ''
+};

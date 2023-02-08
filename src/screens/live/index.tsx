@@ -4,6 +4,8 @@ import {
   FileInfo,
   LabelObj,
   ProfileImg,
+  LiveMemberInfo,
+  LiveProfileImg,
   ScreenNavigationProp,
 } from '@types';
 import { styles } from 'assets/styles/Styles';
@@ -22,7 +24,7 @@ import { LivePopup } from 'screens/commonpopup/LivePopup';
 import { LiveSearch } from 'screens/live/LiveSearch';
 
 import * as hooksMember from 'hooks/member';
-import { get_live_members, regist_profile_evaluation } from 'api/models';
+import { get_live_members, regist_profile_evaluation, get_common_code } from 'api/models';
 import { useMemberseq } from 'hooks/useMemberseq';
 
 /* ################################################################################################################
@@ -42,8 +44,12 @@ export const Live = () => {
   // 회원 인상 정보
   const [faceTypeList, setFaceTypeList] = useState([LabelObj]);
 
-  // 회원 인상 정보
-  const [profileImgList, setProfileImgList] = useState([ProfileImg]);
+  // LIVE 회원 기본 정보
+  const [liveMemberInfo, setLiveMemberInfo] = useState(LiveMemberInfo);
+
+  // LIVE 회원 프로필 사진 목록
+  const [liveProfileImg, setLiveProfileImg] = useState([LiveProfileImg]);
+  //const [profileImgList, setProfileImgList] = useState([ProfileImg]);
 
   // 팝업 이벤트 제어 변수
   const [clickEventFlag, setClickEventFlag] = useState(false);
@@ -78,133 +84,54 @@ export const Live = () => {
     }
   };
 
-  // ####### 프로필 평가 등록
+  // ######################################################### 프로필 평가 등록
   const insertProfileAssessment = async () => {
     const body = {
       profile_score: clickFaceScore,
       face_code: clickFaceTypeCode,
-      member_seq,
+      member_seq: liveMemberInfo.member_seq
     };
     try {
       const { success, data } = await regist_profile_evaluation(body);
 
       if (success && data.result_code != '0000') {
         setIsLoad(false);
-        getLiveProfileImg();
+        getLiveMatchTrgt();
       }
     } catch (error) {
       console.log(error);
     } finally {
       // 다른 프로필 이미지 정보 재호출
-      getLiveProfileImg();
+      getLiveMatchTrgt();
       // 다른 인상정보 재호출
-      getFaceType();
+      //getFaceType();
     }
-    // const result = await axios
-    //   .post(
-    //     properties.api_domain + '/profile/insertProfileAssessment',
-    //     {
-    //       'api-key': 'U0FNR09CX1RPS0VOXzAx',
-    //       member_seq: profileImgList[0].member_seq,
-    //       profile_score: clickFaceScore,
-    //       face_code: clickFaceTypeCode,
-    //     },
-    //     {
-    //       headers: {
-    //         'jwt-token': jwtToken,
-    //       },
-    //     }
-    //   )
-    //   .then(function (response) {
-    //     if (response.data.result_code != '0000') {
-    //       return false;
-    //     }
-
-    //     setIsLoad(false);
-    //     getLiveProfileImg();
-    //   })
-    //   .finally(function () {
-    //     // 다른 프로필 이미지 정보 재호출
-    //     getLiveProfileImg();
-    //     // 다른 인상정보 재호출
-    //     getFaceType();
-    //   })
-    //   .catch(function (error) {
-    //     console.log('insertProfileAssessment error ::: ', error);
-    //   });
   };
 
-  // LIVE 평가 회원 조회
-  const getLiveProfileImg = async () => {
-    const { success, data } = await get_live_members({ member_seq });
+  // ######################################################### LIVE 평가 회원 조회
+  const getLiveMatchTrgt = async () => {
+    const { success, data } = await get_live_members();
     if (success) {
-      console.log('getLiveProfileImg :', JSON.stringify(data));
-    }
-    const result = await axios
-      .post(
-        properties.api_domain + '/match/selectLiveProfileImg',
-        {
-          'api-key': 'U0FNR09CX1RPS0VOXzAx',
-        },
-        {
-          headers: {
-            'jwt-token': jwtToken,
-          },
-        }
-      )
-      .then(function (response) {
-        if (response.data.result_code != '0000') {
-          return false;
-        }
 
-        let tmpProfileImgList = [ProfileImg];
-        let fileInfoList = [FileInfo];
-        fileInfoList = response.data.result;
-
-        // CommonCode
-        fileInfoList.map((fileInfo) => {
-          tmpProfileImgList.push({
-            url:
-              properties.img_domain + fileInfo.file_path + fileInfo.file_name,
-            member_seq: fileInfo.member_seq,
-            name: fileInfo.name,
-            comment: fileInfo.comment,
-            age: fileInfo.age,
-            profile_type: fileInfo.profile_type,
-          });
-        });
-        tmpProfileImgList = tmpProfileImgList.filter((x) => x.url);
-        setProfileImgList(tmpProfileImgList);
-        setIsLoad(true);
-      })
-      .catch(function (error) {
-        console.log('getLiveProfileImg error ::: ', error);
-      });
-  };
-
-  // todo :: 조회대상 없을때 어떻게 처리?
-  const getFaceType = async () => {
-    const result = await axios
-      .post(
-        properties.api_domain + '/common/selectGroupCodeList',
-        {
-          'api-key': 'U0FNR09CX1RPS0VOXzAx',
-          group_code: 'OPPOSITE_FACE',
-        },
-        {
-          headers: {
-            'jwt-token': jwtToken,
-          },
-        }
-      )
-      .then(function (response) {
-        if (response.data.result_code != '0000') {
-          return false;
-        }
-
+      if(data.result_code == '0000') {
+        let tmpMemberInfo = LiveMemberInfo;
+        let tmpProfileImgList = [LiveProfileImg];
         let tmpFaceTypeList = [LabelObj];
         let commonCodeList = [CommonCode];
-        commonCodeList = response.data.result;
+
+        tmpMemberInfo = data.live_member_info;
+
+        // LIVE 회원 프로필 사진
+        data.live_profile_img_list.map((item) => {
+          tmpProfileImgList.push({
+            url: properties.img_domain + item.file_path + item.file_name
+            , member_img_seq: item.member_img_seq
+            , order_seq: item.order_seq
+          });
+        });
+
+        // 인상 유형 목록
+        commonCodeList = data.face_type_list;
 
         // CommonCode
         commonCodeList.map((commonCode) => {
@@ -214,35 +141,36 @@ export const Live = () => {
           });
         });
 
+        
+        setLiveMemberInfo(tmpMemberInfo);
+
+        tmpProfileImgList = tmpProfileImgList.filter((x) => x.url);
+        setLiveProfileImg(tmpProfileImgList);
         setFaceTypeList(tmpFaceTypeList);
-      })
-      .catch(function (error) {
-        console.log('getFaceType error ::: ', error);
-      });
+        setIsLoad(true);
+      }
+    }
   };
 
   // 첫 렌더링 때 fetchNews() 한 번 실행
   React.useEffect(() => {
     if (!isLoad) {
-      // 프로필 이미지 정보
-      getLiveProfileImg();
+      // Live 매칭 대상 조회
+      getLiveMatchTrgt();
     }
-
-    // 인상정보
-    getFaceType();
   }, [isFocus]);
 
-  return profileImgList.length > 0 && isLoad ? (
+  return liveProfileImg.length > 0 && isLoad ? (
     <>
       <TopNavigation currentPath={'LIVE'} />
       <ScrollView>
         <SpaceView>
           <ViualSlider
-            isNew={profileImgList[0].profile_type == 'NEW' ? true : false}
+            isNew={liveMemberInfo.live_trgt_type == 'NEW' ? true : false}
             onlyImg={true}
-            imgUrls={profileImgList}
-            profileName={profileImgList[0].name}
-            age={profileImgList[0].age}
+            imgUrls={liveProfileImg}
+            profileName={liveMemberInfo.name}
+            age={liveMemberInfo.age}
           />
         </SpaceView>
 

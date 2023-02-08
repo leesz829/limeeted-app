@@ -29,6 +29,8 @@ import * as dataUtils from 'utils/data';
 import * as hooksMember from 'hooks/member';
 import { useDispatch } from 'react-redux';
 import * as mbrReducer from 'redux/reducers/mbrReducer';
+import { get_member_storage, update_match } from 'api/models';
+
 
 /* ################################################################################################################
 ###### 보관함
@@ -95,41 +97,32 @@ export const Storage = (props: Props) => {
 
   // 보관함 정보 조회
   const getStorageData = async () => {
-    const result = await axios
-      .post(
-        properties.api_domain + '/member/selectMemberStorage',
-        {
-          'api-key': 'U0FNR09CX1RPS0VOXzAx',
-          member_seq: memberSeq,
-        },
-        {
-          headers: {
-            'jwt-token': jwtToken,
-          },
-        }
-      )
-      .then(function (response) {
-        if (response.data.result_code != '0000') {
-          console.log(response.data.result_msg);
+
+    try {
+      const { success, data } = await get_member_storage();
+
+      if(success) {
+        if (data.result_code != '0000') {
+          console.log(data.result_msg);
           return false;
         } else {
           let resLikeListData: any = dataUtils.getStorageListData(
-            response.data.resLikeList
+            data.res_like_list
           );
           let reqLikeListData: any = dataUtils.getStorageListData(
-            response.data.reqLikeList
+            data.req_like_list
           );
           let matchTrgtListData: any = dataUtils.getStorageListData(
-            response.data.matchTrgtList
+            data.match_trgt_list
           );
 
           let tmpResSpecialCnt = 0;
           let tmpReqSpecialCnt = 0;
           let tmpMatchSpecialCnt = 0;
 
-          if (response.data.resLikeList.length > 0)
+          if (data.res_like_list.length > 0)
             [
-              response.data.resLikeList.map(
+              data.res_like_list.map(
                 ({ special_interest_yn }: { special_interest_yn: any }) => {
                   if (special_interest_yn == 'Y') {
                     tmpResSpecialCnt++;
@@ -138,9 +131,9 @@ export const Storage = (props: Props) => {
               ),
             ];
 
-          if (response.data.reqLikeList.length > 0)
+          if (data.req_like_list.length > 0)
             [
-              response.data.reqLikeList.map(
+              data.req_like_list.map(
                 ({ special_interest_yn }: { special_interest_yn: any }) => {
                   if (special_interest_yn == 'Y') {
                     tmpReqSpecialCnt++;
@@ -149,9 +142,9 @@ export const Storage = (props: Props) => {
               ),
             ];
 
-          if (response.data.matchTrgtList.length > 0)
+          if (data.match_trgt_list.length > 0)
             [
-              response.data.matchTrgtList.map(
+              data.match_trgt_list.map(
                 ({ special_interest_yn }: { special_interest_yn: any }) => {
                   if (special_interest_yn == 'Y') {
                     tmpMatchSpecialCnt++;
@@ -170,10 +163,13 @@ export const Storage = (props: Props) => {
             matchSpecialCnt: tmpMatchSpecialCnt,
           });
         }
-      })
-      .catch(function (error) {
-        console.log('error ::: ', error);
-      });
+        
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      
+    }
   };
 
   // 프로필 열람 팝업 활성화
@@ -217,7 +213,54 @@ export const Storage = (props: Props) => {
       res_profile_open_yn = 'Y';
     }
 
-    const result = await axios
+
+
+    const body = {
+      match_seq: detailMatchData.match_seq,
+      req_profile_open_yn: req_profile_open_yn,
+      res_profile_open_yn: res_profile_open_yn,
+    };
+    try {
+      const { success, data } = await update_match(body);
+
+      if(success) {
+        if (data.result_code == '0000') {
+          navigation.navigate('StorageProfile', {
+            matchSeq: detailMatchData.match_seq,
+            tgtMemberSeq: detailMatchData.tgt_member_seq,
+            type: detailMatchData.type,
+          });
+        } else if (data.result_code == '6010') {
+          setProfileOpenPopup(false);
+          Alert.alert('알림', '보유 패스가 부족합니다.', [{ text: '확인' }]);
+          return false;
+        } else {
+          console.log(data.result_msg);
+          Alert.alert('알림', '오류입니다. 관리자에게 문의해주세요.', [
+            { text: '확인' },
+          ]);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setProfileOpenPopup(false);
+    }   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   /*  const result = await axios
       .post(
         properties.api_domain + '/match/updateMatchInfo',
         {
@@ -253,7 +296,7 @@ export const Storage = (props: Props) => {
       })
       .catch(function (error) {
         console.log('error ::: ', error);
-      });
+      }); */
   };
 
   // ################### 팝업 관련 #####################
