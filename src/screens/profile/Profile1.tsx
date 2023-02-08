@@ -330,15 +330,6 @@ export const Profile1 = (props: Props) => {
       });
   };
 
-  /* 인터뷰 답변 핸들러 */
-  const answerChangeHandler = (v_code: any, text: any) => {
-    setInterviewList(
-      interviewList.map((item: any) =>
-        item.common_code === v_code ? { ...item, answer: text } : item
-      )
-    );
-  };
-
   // 사진 삭제 팝업
   const imgDel_modalizeRef = useRef<Modalize>(null);
   const imgDel_onOpen = (img_seq: any, order_seq: any) => {

@@ -30,66 +30,14 @@ export const Profile2 = () => {
   const [text, setText] = useState('');
   const navi = useNavigation();
   const origin = useInterView();
-  const [interview, setInterview] = useState([
-    {
-      order_seq: 1,
-      interview_seq: 1,
-      answer: '고민고민123',
-      disp_yn: 'Y',
-      use_yn: 'Y',
-      code_name: '요즘 나의 가장 큰 고민은?',
-      common_code: 'INTER_00',
-    },
-    {
-      order_seq: 1,
-      interview_seq: 4,
-      answer: '고민고민123',
-      disp_yn: 'Y',
-      use_yn: 'Y',
-      code_name: '요즘 나의 가장 큰 고민은?',
-      common_code: 'INTER_00',
-    },
-    {
-      order_seq: 1,
-      interview_seq: 2,
-      answer: '고민고민123',
-      disp_yn: 'Y',
-      use_yn: 'Y',
-      code_name: '요즘 나의 가장 큰 고민은?',
-      common_code: 'INTER_00',
-    },
-    {
-      order_seq: 1,
-      interview_seq: 3,
-      answer: '고민고민123',
-      disp_yn: 'Y',
-      use_yn: 'Y',
-      code_name: '요즘 나의 가장 큰 고민은?',
-      common_code: 'INTER_00',
-    },
-    {
-      order_seq: 1,
-      interview_seq: 5,
-      answer: '고민고민123',
-      disp_yn: 'Y',
-      use_yn: 'Y',
-      code_name: '요즘 나의 가장 큰 고민은?',
-      common_code: 'INTER_00',
-    },
-    {
-      order_seq: 1,
-      interview_seq: 6,
-      answer: '고민고민123',
-      disp_yn: 'Y',
-      use_yn: 'Y',
-      code_name: '요즘 나의 가장 큰 고민은?',
-      common_code: 'INTER_00',
-    },
-  ]);
+  const [interview, setInterview] = useState(origin);
+  const [target, setTarget] = useState(null);
   const [mode, setMode] = useState(Mode.view);
 
   //질문 초기화 핸들러
-  function onPressResetQusetion() {}
+  function onPressResetTarget() {
+    setTarget(null);
+  }
 
   //편집버튼 핸들러
   function onPressModify() {
@@ -131,11 +79,12 @@ export const Profile2 = () => {
         <SpaceView viewStyle={layoutStyle.rowCenter} mb={32}>
           <SpaceView viewStyle={styles.questionContainer} mr={16}>
             <CommonText textStyle={layoutStyle.textCenter}>
-              첫번째 질문이에요{'\n'}
-              질문에 성실하게 답해주세요
+              {target !== null
+                ? target?.code_name
+                : `첫번째 질문이에요${'\n'}질문에 성실하게 답해주세요`}
             </CommonText>
           </SpaceView>
-          <TouchableOpacity onPress={onPressResetQusetion}>
+          <TouchableOpacity onPress={onPressResetTarget}>
             <Image source={ICON.refreshDark} style={styles.iconSize24} />
           </TouchableOpacity>
         </SpaceView>
@@ -190,9 +139,11 @@ export const Profile2 = () => {
                   mr={8}
                   ml={8}
                 >
-                  <SpaceView viewStyle={styles.questionItemTextContainer}>
-                    <CommonText>{item?.code_name}</CommonText>
-                  </SpaceView>
+                  <TouchableOpacity onPress={() => setTarget(item)}>
+                    <SpaceView viewStyle={styles.questionItemTextContainer}>
+                      <CommonText>{item?.code_name}</CommonText>
+                    </SpaceView>
+                  </TouchableOpacity>
 
                   <View style={styles.questionIconContainer}>
                     {mode === Mode.edit ? (
