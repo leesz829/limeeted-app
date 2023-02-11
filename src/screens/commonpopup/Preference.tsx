@@ -36,6 +36,13 @@ import AsyncStorage from '@react-native-community/async-storage';
 import * as hooksMember from 'hooks/member';
 import { useDispatch } from 'react-redux';
 import * as mbrReducer from 'redux/reducers/mbrReducer';
+import { useUserInfo } from 'hooks/useUserInfo';
+import { useIdeal } from 'hooks/useIdeal';
+import { get_common_code, update_prefference } from 'api/models';
+import { usePopup } from 'Context';
+import { myProfile } from 'redux/reducers/authReducer';
+import { setPrincipal } from 'redux/reducers/authReducer';
+
 
 /* ################################################################################################################
 ###################################################################################################################
@@ -54,11 +61,10 @@ export const Preference = (props: Props) => {
   const isFocus = useIsFocused();
   const dispatch = useDispatch();
 
-  const jwtToken = hooksMember.getJwtToken(); // 토큰
-  const memberSeq = hooksMember.getMemberSeq(); // 회원번호
+  const { show } = usePopup();  // 공통 팝업
 
-  const mbrBase = hooksMember.getBase();
-  const mbrIdealType = hooksMember.getIdealType();
+  const memberBase = useUserInfo(); // 회원 기본정보
+  const mbrIdealType = useIdeal();  // 회원 선호이성 정보
 
   const [idealTypeSeq, setIdealTypeSeq] = React.useState<any>(
     mbrIdealType?.ideal_type_seq
@@ -164,27 +170,15 @@ export const Preference = (props: Props) => {
       paramBusinessCd = wantBusiness3;
     }
 
-    const result = await axios
-      .post(
-        properties.api_domain + '/common/selectCommonCodeList',
-        {
-          'api-key': 'U0FNR09CX1RPS0VOXzAx',
-          group_code: paramBusinessCd,
-        },
-        {
-          headers: {
-            'jwt-token': jwtToken,
-          },
-        }
-      )
-      .then(function (response) {
-        if (response.data.result_code != '0000') {
-          console.log('fail ::: ', response.data.result_msg);
-          return false;
-        } else {
-          if (null != response.data.result) {
-            let dataList = new Array();
-            response.data?.result?.map(
+    const body = {
+      group_code: paramBusinessCd
+    };
+    try {
+      const { success, data } = await get_common_code(body);
+      if(success) {
+        if(data.result_code == '0000') {
+          let dataList = new Array();
+            data?.code_list?.map(
               ({
                 group_code,
                 common_code,
@@ -206,16 +200,61 @@ export const Preference = (props: Props) => {
             } else if (type == '03') {
               setJobCdList3(dataList);
             }
-          }
+        } else {
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+          return false;
         }
-      })
-      .catch(function (error) {
-        console.log('error ::: ', error);
-      });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      
+    }
   };
 
   // 내 선호이성 저장
   const saveMemberIdealType = async () => {
+
+    const body = {
+      ideal_type_seq: idealTypeSeq,
+      want_local1: wantLocal1,
+      want_local2: wantLocal2,
+      want_age_min: wantAgeMin,
+      want_age_max: wantAgeMax,
+      want_business1: wantBusiness1,
+      want_business2: wantBusiness2,
+      want_business3: wantBusiness3,
+      want_job1: wantJob1,
+      want_job2: wantJob2,
+      want_job3: wantJob3,
+      want_person1: wantPerson1,
+      want_person2: wantPerson2,
+      want_person3: wantPerson3,
+    };
+    try {
+      const { success, data } = await update_prefference(body);
+      if(success) {
+        if(data.result_code == '0000') {
+          dispatch(mbrReducer.setIdealType(data.mbr_ideal_type));
+          show({ content: '저장되었습니다.' });
+
+          /* navigation.navigate('Main', {
+            screen: 'Roby',
+          }); */
+        } else {
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+          return false;
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      
+    }
+
+
+
+/* 
     const result = await axios
       .post(
         properties.api_domain + '/member/saveMemberIdealType',
@@ -262,6 +301,10 @@ export const Preference = (props: Props) => {
       .catch(function (error) {
         console.log('error ::: ', error);
       });
+ */
+
+
+
   };
 
   // 셀렉트 박스 콜백 함수
@@ -457,7 +500,7 @@ export const Preference = (props: Props) => {
           <SpaceView mb={24}>
             <CommonSelect
               label={'인상'}
-              items={mbrBase.gender == 'M' ? gFaceItemList : mFaceItemList}
+              items={memberBase?.gender == 'M' ? gFaceItemList : mFaceItemList}
               selectValue={wantPerson1}
               callbackFn={wantPerson1CallbackFn}
             />
@@ -465,7 +508,7 @@ export const Preference = (props: Props) => {
           <SpaceView mb={24}>
             <CommonSelect
               label={'인상'}
-              items={mbrBase.gender == 'M' ? gFaceItemList : mFaceItemList}
+              items={memberBase?.gender == 'M' ? gFaceItemList : mFaceItemList}
               selectValue={wantPerson2}
               callbackFn={wantPerson2CallbackFn}
             />
@@ -473,7 +516,7 @@ export const Preference = (props: Props) => {
           <SpaceView>
             <CommonSelect
               label={'인상'}
-              items={mbrBase.gender == 'M' ? gFaceItemList : mFaceItemList}
+              items={memberBase?.gender == 'M' ? gFaceItemList : mFaceItemList}
               selectValue={wantPerson3}
               callbackFn={wantPerson3CallbackFn}
             />

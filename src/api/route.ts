@@ -40,14 +40,13 @@ export const REGIST_PROFILE_EVALUATION = '/profile/insertProfileAssessment';
 /**
  * MATCHING
  */
-export const MATCHED_MEMBER_PROFILE = '/match/selectMatchProfileInfo';
+export const DAILY_MATCHED_INFO = '/match/getDailyMatchInfo';
 export const REGIST_MATCHING_INFO = '/match/insertMatchInfo';
 export const REPORT = '/match/insertReport';
 export const LIVE_MEMBERS = '/match/selectLiveMatchTrgt';
 export const MATCHED_MEMBER_INFO = '/match/selectMatchMemberInfo';
 export const UPDATE_MATCH = '/match/updateMatchInfo';
 export const UPDATE_MATCH_STATUS = '/match/updateMatchStatus';
-export const PEEK_MATCH_INFO = '/match/getMatchInfo';
 export const RESOLVE_MATCH = '/match/procMatchMemberHpOpen';
 
 /**

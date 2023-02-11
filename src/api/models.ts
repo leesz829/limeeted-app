@@ -5,7 +5,9 @@ import {
   GET_POINT,
   LIVE_MEMBERS,
   LOGIN,
+  DAILY_MATCHED_INFO,
   MATCHED_MEMBER_PROFILE,
+  MATCHED_MEMBER_INFO,
   ME,
   MEMBER_BASE_INFO,
   MEMBER_INTRODUCE_GUIDE,
@@ -33,7 +35,9 @@ import {
   COMMON_CODE
 } from './route';
 
-//======================== AUTH =======================
+/* ========================================================================================================
+==================================================== AUTH
+======================================================================================================== */
 //로그인 체크 및 회원정보를 제공한다.
 export async function signin(body: { email_id: string; password: string }) {
   const push_token = await AsyncStorage.getItem(FCM_TOKEN);
@@ -103,7 +107,9 @@ export async function regist_introduce(body: {
   return Send(MEMBER_BASE_INFO, 'POST', body, true);
 }
 
-//======================== USER =======================
+/* ========================================================================================================
+==================================================== USER
+======================================================================================================== */
 //회원의 정보를 조회한다.
 export async function get_my_info() {
   return Send(ME, 'POST', undefined, true);
@@ -214,7 +220,10 @@ export async function get_points() {
   return Send(GET_POINT, 'POST', undefined, true);
 }
 
-//======================== PROFILE =======================
+
+/* ========================================================================================================
+==================================================== PROFILE
+======================================================================================================== */
 //프로필 평가를 신규 등록한다.
 export async function regist_profile_evaluation(body: {
   profile_score: string;
@@ -223,18 +232,27 @@ export async function regist_profile_evaluation(body: {
   return Send(REGIST_PROFILE_EVALUATION, 'POST', body, true);
 }
 
-//======================== MATCH =======================
-//매칭 회원의 정보를 조회한다.
-export async function get_matched_member(body: { match_seq: number }) {
-  return Send(MATCHED_MEMBER_PROFILE, 'POST', body, true);
+
+/* ========================================================================================================
+==================================================== MATCH
+======================================================================================================== */
+// 데일리 매칭 정보를 조회한다.
+export async function get_daily_matched_info() {
+  return Send(DAILY_MATCHED_INFO, 'POST', undefined, true);
 }
+
 //찐심/관심/거부 매칭 정보를 신규 등록한다.
-export async function regist_match_status(body: { active_type: string }) {
+export async function regist_match_status(body: { 
+  active_type: string;
+  res_member_seq: number;
+}) {
   return Send(REGIST_MATCHING_INFO, 'POST', body, true);
 }
+
 //매칭 회원을 신고한다.
 export async function report_matched_user(body: {
   report_type_code_list: string;
+  report_member_seq: number;
 }) {
   return Send(REPORT, 'POST', body, true);
 }
@@ -252,6 +270,7 @@ export async function update_match(body: {
 }) {
   return Send(UPDATE_MATCH, 'POST', body, true);
 }
+
 //매칭 상태를 변경한다.
 export async function update_match_status(body: {
   match_seq: number;
@@ -260,16 +279,21 @@ export async function update_match_status(body: {
   return Send(UPDATE_MATCH_STATUS, 'POST', body, true);
 }
 
-//매칭 관련 정보를 조회한다.
-export async function get_match_info() {
-  return Send(PEEK_MATCH_INFO, 'POST', undefined, true);
-}
 //매칭된 회원의 연락처를 활성화한다.
 export async function resolve_match(body: { match_seq: string }) {
   return Send(RESOLVE_MATCH, 'POST', body, true);
 }
 
-//======================== ORDER =======================
+//매칭된 회원의 기본 정보를 조회한다.
+export async function get_matched_member_info(body: { match_seq: number }) {
+  return Send(MATCHED_MEMBER_INFO, 'POST', body, true);
+}
+
+
+/* ========================================================================================================
+==================================================== ORDER
+======================================================================================================== */
+
 //주문을 처리한다.
 
 export async function purchase_product(
@@ -304,8 +328,9 @@ export async function purchase_product(
 }
 
 
-
-//======================== 공통 =======================
+/* ========================================================================================================
+==================================================== 공통
+======================================================================================================== */
 
 // #### 공통코드 목록을 조회한다.
 export async function get_common_code(body: { group_code: string }) {

@@ -21,11 +21,14 @@ import {
 } from '@types';
 import axios from 'axios';
 import * as properties from 'utils/properties';
-import AsyncStorage from '@react-native-community/async-storage';
-import * as hooksMember from 'hooks/member';
 import { useDispatch } from 'react-redux';
 import * as mbrReducer from 'redux/reducers/mbrReducer';
 import { STACK } from 'constants/routes';
+import { useUserInfo } from 'hooks/useUserInfo';
+import { get_common_code, update_additional } from 'api/models';
+import { usePopup } from 'Context';
+import { myProfile } from 'redux/reducers/authReducer';
+
 
 /* ################################################################################################################
 ###################################################################################################################
@@ -43,8 +46,9 @@ export const Introduce = (props: Props) => {
   const isFocus = useIsFocused();
   const dispatch = useDispatch();
 
-  const jwtToken = hooksMember.getJwtToken(); // 토큰
-  const memberBase = hooksMember.getBase(); // 회원 기본정보
+  const { show } = usePopup();  // 공통 팝업
+
+  const memberBase = useUserInfo(); // 회원 기본정보
 
   const [comment, setComment] = React.useState<any>(memberBase.comment);
   const [business, setBusiness] = React.useState<any>(memberBase.business);
@@ -57,10 +61,6 @@ export const Introduce = (props: Props) => {
   const [religion, setReligion] = React.useState<any>(memberBase.religion);
   const [drinking, setDrinking] = React.useState<any>(memberBase.drinking);
   const [smoking, setSmoking] = React.useState<any>(memberBase.smoking);
-
-  const [memberInfo, setMemberInfo] = React.useState({
-    comment: String,
-  });
 
   // 업종 그룹 코드 목록
   const busiGrpCdList = [
@@ -143,29 +143,18 @@ export const Introduce = (props: Props) => {
     { label: '자주 흡연', value: 'HARD' },
   ];
 
-  // 직업 코드 목록 조회 함수
+  // ############################################################ 직업 코드 목록 조회 함수
   const getJobCodeList = async (value: string) => {
-    const result = await axios
-      .post(
-        properties.api_domain + '/common/selectCommonCodeList',
-        {
-          'api-key': 'U0FNR09CX1RPS0VOXzAx',
-          group_code: value,
-        },
-        {
-          headers: {
-            'jwt-token': jwtToken,
-          },
-        }
-      )
-      .then(function (response) {
-        if (response.data.result_code != '0000') {
-          console.log(response.data.result_msg);
-          return false;
-        } else {
-          if (null != response.data.result) {
-            let dataList = new Array();
-            response.data?.result?.map(
+    const body = {
+      group_code: value
+    };
+    try {
+      const { success, data } = await get_common_code(body);
+
+      if(success) {
+        if(data.result_code == '0000') {
+          let dataList = new Array();
+            data?.code_list?.map(
               ({
                 group_code,
                 common_code,
@@ -180,56 +169,51 @@ export const Introduce = (props: Props) => {
               }
             );
             setJobCdList(dataList);
-          }
+        } else {
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+          return false;
         }
-      })
-      .catch(function (error) {
-        console.log('error ::: ', error);
-      });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      
+    }
   };
 
   // 내 소개하기 저장
   const saveMemberAddInfo = async () => {
-    const result = await axios
-      .post(
-        properties.api_domain + '/member/saveMemberAddInfo',
-        {
-          'api-key': 'U0FNR09CX1RPS0VOXzAx',
-          member_seq: memberBase.member_seq,
-          comment: comment,
-          business: business,
-          job: job,
-          job_name: job_name,
-          height: height,
-          form_body: form_body,
-          religion: religion,
-          drinking: drinking,
-          smoking: smoking,
-        },
-        {
-          headers: {
-            'jwt-token': jwtToken,
-          },
-        }
-      )
-      .then(function (response) {
-        if (response.data.result_code != '0000') {
-          return false;
-        } else {
-          dispatch(
-            mbrReducer.setBase(JSON.stringify(response.data.memberBase))
-          );
-          dispatch(
-            mbrReducer.setBase(JSON.stringify(response.data.memberBase))
-          );
-          navigation.navigate(STACK.TAB, {
+
+    const body = {
+      comment: comment,
+      business: business,
+      job: job,
+      job_name: job_name,
+      height: height,
+      form_body: form_body,
+      religion: religion,
+      drinking: drinking,
+      smoking: smoking,
+    };
+    try {
+      const { success, data } = await update_additional(body);
+      if(success) {
+        if(data.result_code == '0000') {
+          dispatch(myProfile());
+          show({ content: '저장되었습니다.' });
+          /* navigation.navigate(STACK.TAB, {
             screen: 'Roby',
-          });
+          }); */
+        } else {
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+          return false;
         }
-      })
-      .catch(function (error) {
-        console.log('error ::: ', error);
-      });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      
+    }
   };
 
   // 셀렉트 박스 콜백 함수

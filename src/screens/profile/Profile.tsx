@@ -8,7 +8,7 @@ import * as React from 'react';
 import { CommonBtn } from 'component/CommonBtn';
 import { StackParamList, ScreenNavigationProp, ColorType } from '@types';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RouteProp, useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, CommonActions } from '@react-navigation/native';
 import axios from 'axios';
 import * as properties from 'utils/properties';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -19,6 +19,8 @@ import { ROUTES, STACK } from 'constants/routes';
 import { clearPrincipal } from 'redux/reducers/authReducer';
 import { useUserInfo } from 'hooks/useUserInfo';
 import { update_setting } from 'api/models';
+import { usePopup } from 'Context';
+import { myProfile } from 'redux/reducers/authReducer';
 
 
 /* ################################################################################################################
@@ -36,18 +38,15 @@ export const Profile = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
   const dispatch = useDispatch();
 
-  const jwtToken = hooksMember.getJwtToken(); // 토큰
-  const memberSeq = hooksMember.getMemberSeq(); // 회원번호
+  const { show } = usePopup();  // 공통 팝업
 
   const memberBase = useUserInfo(); // 회원 기본정보
 
-  const [nickname, setNickname] = React.useState<any>(memberBase.nickname);
-  const [name, setName] = React.useState<any>(memberBase.name);
-  const [gender, setGender] = React.useState<any>(memberBase.gender);
-  const [age, setAge] = React.useState<any>(String(memberBase.age));
-  const [phoneNumber, setPhoneNumber] = React.useState<any>(
-    memberBase.phone_number
-  );
+  const [nickname, setNickname] = React.useState<any>(memberBase?.nickname);
+  const [name, setName] = React.useState<any>(memberBase?.name);
+  const [gender, setGender] = React.useState<any>(memberBase?.gender);
+  const [age, setAge] = React.useState<any>(String(memberBase?.age));
+  const [phoneNumber, setPhoneNumber] = React.useState<any>(memberBase?.phone_number);
 
   // 저장 버튼
   const btnSave = async () => {
@@ -77,19 +76,20 @@ export const Profile = (props: Props) => {
       if(success) {
         if(data.result_code == '0000') {
           setNicknameUpdatePopup(false);
-          dispatch(mbrReducer.setBase(JSON.stringify(data.base)));
-          navigation.navigate('Main', {
+          dispatch(myProfile());
+          show({ content: '저장되었습니다.' });
+
+          //dispatch(mbrReducer.setBase(JSON.stringify(data.base)));
+          /* navigation.navigate('Main', {
             screen: 'Roby',
-          });
+          }); */
         } else if (data.result_code == '6010') {
           setNicknameUpdatePopup(false);
-          Alert.alert('알림', '보유 패스가 부족합니다.', [{ text: '확인' }]);
+          show({ content: '보유 패스가 부족합니다.' });
           return false;
         } else {
           setNicknameUpdatePopup(false);
-          Alert.alert('알림', '시스템 오류입니다.\n관리자에게 문의해 주세요!', [
-            { text: '확인' },
-          ]);
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
           return false;
         }
       }
@@ -97,7 +97,7 @@ export const Profile = (props: Props) => {
       console.log(error);
     } finally {
       setNicknameUpdatePopup(false);
-    }      
+    }
   };
 
   // ################### 팝업 관련 #####################
@@ -108,7 +108,7 @@ export const Profile = (props: Props) => {
     await AsyncStorage.clear();
     dispatch(clearPrincipal());
     //#todo mbr base = > principal reducer
-    // navigation.navigate(STACK.AUTH, { screen: ROUTES.LOGIN });
+    //navigation.navigate(STACK.AUTH, { screen: ROUTES.LOGIN });    
   };
 
   return (

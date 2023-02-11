@@ -26,10 +26,11 @@ import {
 } from '@react-navigation/native';
 import * as properties from 'utils/properties';
 import * as dataUtils from 'utils/data';
-import * as hooksMember from 'hooks/member';
 import { useDispatch } from 'react-redux';
 import * as mbrReducer from 'redux/reducers/mbrReducer';
 import { get_member_storage, update_match } from 'api/models';
+import { useMemberseq } from 'hooks/useMemberseq';
+import { usePopup } from 'Context';
 
 
 /* ################################################################################################################
@@ -45,8 +46,9 @@ export const Storage = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
   const isFocusStorage = useIsFocused();
 
-  const jwtToken = hooksMember.getJwtToken(); // 토큰
-  const memberSeq = hooksMember.getMemberSeq(); // 회원번호
+  const { show } = usePopup();  // 공통 팝업
+
+  const memberSeq = useMemberseq(); // 회원번호
 
   const [btnStatus, setBtnStatus] = useState(true);
   const [btnStatus1, setBtnStatus1] = useState(true);
@@ -213,8 +215,6 @@ export const Storage = (props: Props) => {
       res_profile_open_yn = 'Y';
     }
 
-
-
     const body = {
       match_seq: detailMatchData.match_seq,
       req_profile_open_yn: req_profile_open_yn,
@@ -232,71 +232,18 @@ export const Storage = (props: Props) => {
           });
         } else if (data.result_code == '6010') {
           setProfileOpenPopup(false);
-          Alert.alert('알림', '보유 패스가 부족합니다.', [{ text: '확인' }]);
+          show({ content: '보유 패스가 부족합니다.' });
           return false;
         } else {
           console.log(data.result_msg);
-          Alert.alert('알림', '오류입니다. 관리자에게 문의해주세요.', [
-            { text: '확인' },
-          ]);
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
         }
       }
     } catch (error) {
       console.log(error);
     } finally {
       setProfileOpenPopup(false);
-    }   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-   /*  const result = await axios
-      .post(
-        properties.api_domain + '/match/updateMatchInfo',
-        {
-          'api-key': 'U0FNR09CX1RPS0VOXzAx',
-          match_seq: detailMatchData.match_seq,
-          req_profile_open_yn: req_profile_open_yn,
-          res_profile_open_yn: res_profile_open_yn,
-          member_seq: memberSeq,
-        },
-        {
-          headers: {
-            'jwt-token': jwtToken,
-          },
-        }
-      )
-      .then(function (response) {
-        if (response.data.result_code == '0000') {
-          navigation.navigate('StorageProfile', {
-            matchSeq: detailMatchData.match_seq,
-            tgtMemberSeq: detailMatchData.tgt_member_seq,
-            type: detailMatchData.type,
-          });
-        } else if (response.data.result_code == '6010') {
-          setProfileOpenPopup(false);
-          Alert.alert('알림', '보유 패스가 부족합니다.', [{ text: '확인' }]);
-          return false;
-        } else {
-          console.log(response.data.result_msg);
-          Alert.alert('알림', '오류입니다. 관리자에게 문의해주세요.', [
-            { text: '확인' },
-          ]);
-        }
-      })
-      .catch(function (error) {
-        console.log('error ::: ', error);
-      }); */
+    }
   };
 
   // ################### 팝업 관련 #####################

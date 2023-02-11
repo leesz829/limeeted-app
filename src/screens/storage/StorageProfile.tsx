@@ -46,6 +46,11 @@ import { CommonCheckBox } from 'component/CommonCheckBox';
 import { ToolTip } from 'component/Tooltip';
 import { BarGrap } from 'component/BarGrap';
 import { setBase } from 'redux/reducers/mbrReducer';
+import { get_matched_member_info, resolve_match, report_matched_user, update_match_status } from 'api/models';
+import { usePopup } from 'Context';
+import { ROUTES, STACK } from 'constants/routes';
+
+
 
 /* ################################################################################################################
 ###### 매칭 상대 프로필 상세
@@ -59,6 +64,8 @@ interface Props {
 export const StorageProfile = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
   const isFocus = useIsFocused();
+
+  const { show } = usePopup();  // 공통 팝업
 
   const jwtToken = hooksMember.getJwtToken(); // 토큰
   const memberSeq = hooksMember.getMemberSeq(); // 회원번호
@@ -114,25 +121,18 @@ export const StorageProfile = (props: Props) => {
     report_modalizeRef.current?.close();
   };
 
-  // 매칭 회원 정보 조회
+  // ############################################################ 매칭 회원 정보 조회
   const selectMatchMemberInfo = async () => {
-    const result = await axios
-      .post(
-        properties.api_domain + '/match/selectMatchMemberInfo',
-        {
-          'api-key': 'U0FNR09CX1RPS0VOXzAx',
-          member_seq: tgtMemberSeq,
-          match_seq: matchSeq,
-        },
-        {
-          headers: {
-            'jwt-token': jwtToken,
-          },
-        }
-      )
-      .then(function (response) {
-        if (response.data.result_code != '0000') {
-          console.log(response.data.result_msg);
+
+    const body = {
+      match_seq: matchSeq
+    };
+    try {
+      const { success, data } = await get_matched_member_info(body);
+
+      if(success) {
+        if (data.result_code != '0000') {
+          console.log(data.result_msg);
           return false;
         } else {
           let tmpProfileImgList = new Array(); // 프로필 이미지 목록
@@ -140,7 +140,7 @@ export const StorageProfile = (props: Props) => {
           let tmpInterviewList = new Array(); // 인터뷰 목록
 
           // 회원 프로필 이미지 정보 구성
-          response.data?.profileImgList?.map(
+          data?.mbr_img_list?.map(
             ({ file_name, file_path }: { file_name: any; file_path: any }) => {
               const img_path = properties.img_domain + file_path + file_name;
               const dataJson = { url: img_path };
@@ -149,7 +149,7 @@ export const StorageProfile = (props: Props) => {
           );
 
           // 회원 2차 인증 목록 정보 구성
-          response.data?.secondAuthList?.map(
+          data?.mbr_second_auth_list?.map(
             ({ second_auth_code }: { second_auth_code: any }) => {
               const dataJson = { second_auth_code: second_auth_code };
               tmpSecondAuthList.push(dataJson);
@@ -157,7 +157,7 @@ export const StorageProfile = (props: Props) => {
           );
 
           // 회원 인터뷰 목록 정보 구성
-          response.data?.interviewList?.map(
+          data?.mbr_interview_list?.map(
             ({ code_name, answer }: { code_name: any; answer: any }) => {
               const dataJson = { code_name: code_name, answer: answer };
               tmpInterviewList.push(dataJson);
@@ -166,8 +166,8 @@ export const StorageProfile = (props: Props) => {
 
           setData({
             ...data,
-            matchBase: response.data.matchBase,
-            memberBase: response.data.memberBase,
+            matchBase: data.match_base,
+            memberBase: data.mbr_base,
             profileImgList: tmpProfileImgList,
             secondAuthList: tmpSecondAuthList,
             interviewList: tmpInterviewList,
@@ -176,7 +176,7 @@ export const StorageProfile = (props: Props) => {
           // 신고사유 코드 목록 적용
           let tmpReportTypeList = [{ text: '', value: '' }];
           let commonCodeList = [CommonCode];
-          commonCodeList = response.data.reportCodeList;
+          commonCodeList = data.report_code_list;
 
           // CommonCode
           commonCodeList.map((commonCode) => {
@@ -185,52 +185,42 @@ export const StorageProfile = (props: Props) => {
               value: commonCode.common_code,
             });
           });
-          console.log('tmpReportTypeList ::: ', tmpReportTypeList);
 
           setReportTypeList(tmpReportTypeList.filter((x) => x.text));
-
           setIsLoad(true);
         }
-      })
-      .catch(function (error) {
-        console.log('error ::: ', error);
-      });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      
+    }
   };
 
-  // 매칭 상태 변경
+  // ############################################################ 매칭 상태 변경(수락, 거절)
   const updateMatchStatus = async (status: any) => {
-    const result = await axios
-      .post(
-        properties.api_domain + '/match/updateMatchStatus',
-        {
-          'api-key': 'U0FNR09CX1RPS0VOXzAx',
-          match_seq: matchSeq,
-          match_status: status,
-          member_seq: memberSeq,
-        },
-        {
-          headers: {
-            'jwt-token': jwtToken,
-          },
-        }
-      )
-      .then(function (response) {
-        console.log(response);
-        if (response.data.result_code != '0000') {
-          console.log(response.data.result_msg);
-          Alert.alert('오류입니다. 관리자에게 문의해주세요.');
-        } else {
-          navigation.navigate('Main', {
+    const body = {
+      match_seq: matchSeq,
+      match_status: status
+    };
+    try {
+      const { success, data } = await update_match_status(body);
+      if(success) {
+        if(data.result_code == '0000') {
+          navigation.navigate(STACK.TAB, {
             screen: 'Storage',
           });
+        } else {
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
         }
-      })
-      .catch(function (error) {
-        console.log('error ::: ', error);
-      });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+    }
   };
 
-  // 관심 여부 체크
+  // ############################################################ 관심 여부 체크
   const profileCallbackFn = (activeType: string) => {};
 
   const createSecondAuthListBody = () => {
@@ -316,7 +306,7 @@ export const StorageProfile = (props: Props) => {
     );
   };
 
-  // ##### 사용자 신고하기 - 신고사유 체크 Callback 함수
+  // ############################################################ 사용자 신고하기 - 신고사유 체크 Callback 함수
   const reportCheckCallbackFn = (reportType: string, check: boolean) => {
     if (check) {
       checkReportType.push(reportType);
@@ -330,23 +320,21 @@ export const StorageProfile = (props: Props) => {
     }
   };
 
-  // ##### 사용자 신고하기 - 팝업 활성화
+  // ############################################################ 사용자 신고하기 - 팝업 활성화
   const popupReport = () => {
     if (!checkReportType.length) {
-      Alert.alert('알림', '신고항목을 선택해주세요.', [{ text: '확인' }]);
+      //Alert.alert('알림', '신고항목을 선택해주세요.', [{ text: '확인' }]);
+      show({ content: '신고항목을 선택해주세요.' });
 
       return false;
     } else {
       Alert.alert('사용자 신고하기', '신고하시겠습니까?', [
-        // The "Yes" button
         {
           text: '취소',
           onPress: () => {
             return false;
           },
         },
-        // The "No" button
-        // Does nothing but dismiss the dialog when tapped
         {
           text: '확인',
           onPress: () => {
@@ -357,84 +345,68 @@ export const StorageProfile = (props: Props) => {
     }
   };
 
-  // ##### 사용자 신고하기 등록
+  // ############################################################ 사용자 신고하기 등록
   const insertReport = async () => {
-    const result = await axios
-      .post(
-        properties.api_domain + '/match/insertReport',
-        {
-          'api-key': 'U0FNR09CX1RPS0VOXzAx',
-          report_type_code_list: checkReportType.join(),
-          member_seq: tgtMemberSeq,
-        },
-        {
-          headers: {
-            'jwt-token': jwtToken,
-          },
-        }
-      )
-      .then(function (response) {
-        if (response.data.result_code != '0000') {
-          console.log(response.data.result_msg);
+    const body = {
+      report_type_code_list: checkReportType.join(),
+      report_member_seq: tgtMemberSeq
+    };
+    try {
+      const { success, data } = await report_matched_user(body);
+
+      if(success) {
+        if (data.result_code != '0000') {
+          console.log(data.result_msg);
           return false;
         }
 
-        Alert.alert('알림', '신고 처리 되었습니다.', [{ text: '확인' }]);
+        show({ content: '신고 처리 되었습니다.' });
         report_onClose();
 
-        navigation.navigate('Main', {
+        navigation.navigate(STACK.TAB, {
           screen: 'Storage',
         });
-      })
-      .catch(function (error) {
-        console.log('insertReport error ::: ', error);
-      });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+
+    }
   };
 
-  // 연락처 열기
+  // ############################################################ 연락처 열기
   const goHpOpen = async () => {
-    const result = await axios
-      .post(
-        properties.api_domain + '/match/procMatchMemberHpOpen',
-        {
-          'api-key': 'U0FNR09CX1RPS0VOXzAx',
-          match_seq: data.matchBase.match_seq,
-          member_seq: memberSeq,
-        },
-        {
-          headers: {
-            'jwt-token': jwtToken,
-          },
-        }
-      )
-      .then(function (response) {
-        if (response.data.result_code == '0000') {
-          setData({
-            ...data,
-            matchBase: {
-              ...data.matchBase,
-              phone_open_yn: 'Y',
-            },
-          });
+    const body = {
+      match_seq: data.matchBase.match_seq
+    };
+    try {
+      const { success, data } = await resolve_match(body);
+
+      if(success) {
+        if (data.result_code == '0000') {
+          selectMatchMemberInfo();
         } else {
           Alert.alert('알림', '보유 패스가 부족합니다.', [{ text: '확인' }]);
         }
 
         setHpOpenPopup(false);
-      })
-      .catch(function (error) {
-        setHpOpenPopup(false);
-        Alert.alert('알림', '보유 패스가 부족합니다.', [{ text: '확인' }]);
-        console.log('error ::: ', error);
-      });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setHpOpenPopup(false);
+    }
   };
 
-  // ################### 팝업 관련 #####################
+
+  // ############################################################ 팝업 관련
   const [hpOpenPopup, setHpOpenPopup] = useState(false); // 연락처 열기 팝업
 
   // ##### 첫 렌더링
   useEffect(() => {
     selectMatchMemberInfo();
+    //setCheckReportType('');
+    console.log('tgtMemberSeq ::: ' , tgtMemberSeq);
   }, [isFocus]);
 
   return isLoad ? (
@@ -812,7 +784,7 @@ export const StorageProfile = (props: Props) => {
 
           <SpaceView mb={40}>
             <CommonBtn
-              value={'신고'}
+              value={'신고 및 차단'}
               icon={ICON.siren}
               iconSize={24}
               onPress={() => report_onOpen()}
@@ -872,7 +844,7 @@ export const StorageProfile = (props: Props) => {
 
           <SpaceView mb={16}>
             <CommonBtn
-              value={'신고하기'}
+              value={'신고 및 차단하기'}
               onPress={popupReport}
               type={'primary'}
             />
