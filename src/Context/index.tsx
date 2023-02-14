@@ -1,27 +1,38 @@
 import React, { createContext, useContext, useState } from 'react';
 import { BasePopup } from 'screens/commonpopup/BasePopup';
 
-export const PopupContext = createContext();
+export const PopupContext = createContext({} as any);
 
-// interface ContentProps {
-//   title: string;
-//   content: string;
-// }
-export const PopupProvider = ({ children }) => {
+interface PopupContextProps {
+  title: string | undefined;
+  content: string | undefined;
+  confirmCallback: Function | undefined;
+  cancelCallback: Function | undefined;
+}
+
+export const PopupProvider = ({ children }: any) => {
   const [visible, setVisible] = useState(false);
-  const [contents, setContents] = useState({
+  const [contents, setContents] = useState<PopupContextProps>({
     title: '',
     content: '',
+    confirmCallback: undefined,
+    cancelCallback: undefined,
   });
 
-  function show(content) {
+  function show(content: PopupContextProps) {
     setVisible(true);
     setContents(content);
   }
   function hide() {
     setVisible(false);
-    setContents({ title: '', content: '' });
+    setContents({
+      title: '',
+      content: '',
+      confirmCallback: undefined,
+      cancelCallback: undefined,
+    });
   }
+
   return (
     <PopupContext.Provider value={{ show, hide }}>
       {children}
@@ -30,6 +41,7 @@ export const PopupProvider = ({ children }) => {
         setPopupVIsible={setVisible}
         title={contents.title}
         text={contents.content}
+        confirmCallBackFunc={contents.confirmCallback}
       />
     </PopupContext.Provider>
   );

@@ -20,10 +20,18 @@ interface Props {
   isConfirm?: boolean; // confirm 여부
   title?: string; // 팝업 제목
   text?: string; // 팝업 문구
-  confirmCallBackFunc?: () => void; // 확인 Callback 함수
+  confirmCallbackFunc?: Function | undefined; // 확인 Callback 함수
 }
 
 export const BasePopup = (props: Props) => {
+  const onPressConfirm = () => {
+    props.confirmCallbackFunc && props.confirmCallbackFunc();
+    props.setPopupVIsible(false);
+  };
+  const onPressCancel = () => {
+    props.confirmCallbackFunc && props.confirmCallbackFunc();
+    props.setPopupVIsible(false);
+  };
   return (
     <>
       <Modal visible={props.popupVisible} transparent={true}>
@@ -51,18 +59,14 @@ export const BasePopup = (props: Props) => {
                 <>
                   <TouchableOpacity
                     style={modalStyle.modalBtn}
-                    onPress={() => props.setPopupVIsible(false)}
+                    onPress={onPressCancel}
                   >
                     <CommonText fontWeight={'500'}>취소</CommonText>
                   </TouchableOpacity>
                   <View style={modalStyle.modalBtnline} />
                   <TouchableOpacity
                     style={modalStyle.modalBtn}
-                    onPress={() =>
-                      typeof props.confirmCallBackFunc != 'undefined'
-                        ? props.confirmCallBackFunc
-                        : props.setPopupVIsible(false)
-                    }
+                    onPress={onPressConfirm}
                   >
                     <CommonText fontWeight={'500'} color={ColorType.red}>
                       확인
@@ -73,11 +77,7 @@ export const BasePopup = (props: Props) => {
                 <>
                   <TouchableOpacity
                     style={modalStyle.modalBtn}
-                    onPress={() =>
-                      typeof props.confirmCallBackFunc != 'undefined'
-                        ? props.confirmCallBackFunc
-                        : props.setPopupVIsible(false)
-                    }
+                    onPress={onPressConfirm}
                   >
                     <CommonText fontWeight={'500'} color={ColorType.red}>
                       확인
