@@ -41,7 +41,8 @@ export const PopupProvider = ({ children }: any) => {
         setPopupVIsible={setVisible}
         title={contents.title}
         text={contents.content}
-        confirmCallBackFunc={contents.confirmCallback}
+        confirmCallbackFunc={contents.confirmCallback}
+        cancelCallbackFunc={contents.cancelCallback}
       />
     </PopupContext.Provider>
   );

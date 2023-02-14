@@ -21,6 +21,7 @@ interface Props {
   title?: string; // 팝업 제목
   text?: string; // 팝업 문구
   confirmCallbackFunc?: Function | undefined; // 확인 Callback 함수
+  cancelCallbackFunc?: Function | undefined;
 }
 
 export const BasePopup = (props: Props) => {
@@ -29,7 +30,7 @@ export const BasePopup = (props: Props) => {
     props.setPopupVIsible(false);
   };
   const onPressCancel = () => {
-    props.confirmCallbackFunc && props.confirmCallbackFunc();
+    props.cancelCallbackFunc && props.cancelCallbackFunc();
     props.setPopupVIsible(false);
   };
   return (
