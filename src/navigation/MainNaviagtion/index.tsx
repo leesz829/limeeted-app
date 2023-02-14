@@ -11,20 +11,22 @@ const MainStack = createStackNavigator();
 
 const MainStackNavigation = () => {
   const isLogin = useIsLogedin();
-
+  console.log('isLogin : ', isLogin);
   return (
     <MainStack.Navigator
       // initialRouteName={isLogin ? STACK.TAB : STACK.AUTH}
       screenOptions={{ headerShown: false }}
     >
       {isLogin ? (
-        <MainStack.Screen name={STACK.TAB} component={BottomNavigation} />
+        <>
+          <MainStack.Screen name={STACK.TAB} component={BottomNavigation} />
+          <MainStack.Screen name={STACK.COMMON} component={CommonNavigation} />
+        </>
       ) : (
         <MainStack.Screen name={STACK.AUTH} component={AuthNavigation} />
       )}
       {/* <MainStack.Screen name={STACK.AUTH} component={AuthNavigation} />
       <MainStack.Screen name={STACK.TAB} component={BottomNavigation} /> */}
-      <MainStack.Screen name={STACK.COMMON} component={CommonNavigation} />
     </MainStack.Navigator>
   );
 };

@@ -37,6 +37,9 @@ export const authSlice = createSlice({
     setPrincipal: (state, action) => {
       state.principal = action.payload;
     },
+    setPartialPrincipal: (state, action) => {
+      state.principal = { ...state, ...action.payload };
+    },
     clearPrincipal: (state) => {
       AsyncStorage.removeItem('jwt-token');
       state.principal = undefined;
