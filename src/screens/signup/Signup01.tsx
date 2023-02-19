@@ -4,8 +4,8 @@ import CommonHeader from 'component/CommonHeader';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import React, { useRef } from 'react';
-import { View, Image, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import { ICON } from 'utils/imageUtils';
+import { View, Image, ScrollView, TouchableOpacity } from 'react-native';
+import { ICON, findSourcePath } from 'utils/imageUtils';
 import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
 import {
   RouteProp,
@@ -18,6 +18,9 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { SecondAuthPopup } from 'screens/commonpopup/SecondAuthPopup';
 import axios from 'axios';
 import * as properties from 'utils/properties';
+import { usePopup } from 'Context';
+
+
 
 /* ################################################################################################################
 ###################################################################################################################
@@ -36,6 +39,7 @@ export const Signup01 = (props: Props) => {
   console.log('## Signup01 params ::: ', props.route.params);
 
   const isFocus = useIsFocused();
+  const { show } = usePopup();  // 공통 팝업
 
   const [secondData, setSecondData] = React.useState({
     orgJobFileUrl: '',
@@ -239,31 +243,27 @@ export const Signup01 = (props: Props) => {
         let o_snsItem: any = '';
         let o_vehicleItem: any = '';
 
-        const imgUrl = properties.api_domain + '/uploads';
-
         if (null != response.data.authList) {
           response.data?.authList?.map(
             ({
               file_gubun,
-              file_name,
-              file_path,
+              img_file_path,
             }: {
               file_gubun: any;
-              file_name: any;
-              file_path: any;
+              img_file_path: any;
             }) => {
               if (file_gubun == 'F_JOB') {
-                jobFileUrl = imgUrl + file_path + file_name;
+                jobFileUrl = findSourcePath(img_file_path);
               } else if (file_gubun == 'F_EDU') {
-                eduFileUrl = imgUrl + file_path + file_name;
+                eduFileUrl = findSourcePath(img_file_path);
               } else if (file_gubun == 'F_INCOME') {
-                incomeFileUrl = imgUrl + file_path + file_name;
+                incomeFileUrl = findSourcePath(img_file_path);
               } else if (file_gubun == 'F_ASSET') {
-                assetFileUrl = imgUrl + file_path + file_name;
+                assetFileUrl = findSourcePath(img_file_path);
               } else if (file_gubun == 'F_SNS') {
-                snsFileUrl = imgUrl + file_path + file_name;
+                snsFileUrl = findSourcePath(img_file_path);
               } else if (file_gubun == 'F_VEHICLE') {
-                vehicleFileUrl = imgUrl + file_path + file_name;
+                vehicleFileUrl = findSourcePath(img_file_path);
               }
             }
           );
@@ -332,11 +332,13 @@ export const Signup01 = (props: Props) => {
     }
 
     if (!cnt) {
-      Alert.alert(
-        '알림',
-        '6개의 인증항목 중 최소 1개의 항목에 심사를 위한 이미지를 업로드해주세요.',
-        [{ text: '확인' }]
-      );
+      show({
+        content: '삭제되었습니다.' ,
+        confirmCallback: function() {
+        }
+      });
+
+      show({ content: '6개의 인증항목 중 최소 1개의 항목에 심사를 위한 이미지를 업로드해주세요.' });
       return false;
     }
 

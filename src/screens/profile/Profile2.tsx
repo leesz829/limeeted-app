@@ -1,5 +1,5 @@
-import { useNavigation } from '@react-navigation/native';
-import { ColorType } from '@types';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
+import { ColorType, ScreenNavigationProp } from '@types';
 import { Color } from 'assets/styles/Color';
 import { layoutStyle, styles } from 'assets/styles/Styles';
 import { CommonBtn } from 'component/CommonBtn';
@@ -7,7 +7,7 @@ import CommonHeader from 'component/CommonHeader';
 import { CommonSwich } from 'component/CommonSwich';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import {
   Image,
   StyleSheet,
@@ -21,12 +21,25 @@ import { useInterView } from 'hooks/useInterView';
 import DraggableFlatList, {
   ScaleDecorator,
 } from 'react-native-draggable-flatlist';
+import { get_member_interview, update_interview } from 'api/models';
+import { usePopup } from 'Context';
+import { setPartialPrincipal } from 'redux/reducers/authReducer';
+import { useDispatch } from 'react-redux';
+import { STACK } from 'constants/routes';
+
+
+/* ################################################################################################################
+###################################################################################################################
+###### 인터뷰 화면
+###################################################################################################################
+################################################################################################################ */
 
 enum Mode {
   view = 'view',
   edit = 'edit',
 }
 export const Profile2 = () => {
+  const navigation = useNavigation<ScreenNavigationProp>();
   const [text, setText] = useState('');
   const navi = useNavigation();
   const origin = useInterView();
@@ -34,20 +47,27 @@ export const Profile2 = () => {
   const [target, setTarget] = useState(null);
   const [mode, setMode] = useState(Mode.view);
 
-  //질문 초기화 핸들러
+  const { show } = usePopup();  // 공통 팝업
+  const isFocus = useIsFocused();
+
+  const dispatch = useDispatch();
+
+  // ############################################# 질문 초기화 핸들러 UI Function
   function onPressResetTarget() {
     setTarget(null);
   }
 
-  //편집버튼 핸들러
+  // ############################################# 편집버튼 핸들러 UI Function
   function onPressModify() {
     setMode(mode === Mode.view ? Mode.edit : Mode.view);
   }
 
+  // ############################################# 노출 여부 Toggle UI Function
   function toggleFunction(value, id) {
-    //해당 인터뷰 노출여부 토글
-    // const {success, data} = await toggleDisplay(id, )
+    updateDispYn(value, id);
   }
+
+  // ############################################# 순서 Drag UI Function
   function onDragEnd({
     from,
     to,
@@ -59,10 +79,123 @@ export const Profile2 = () => {
   }) {
     setInterview(data);
   }
+
   const list = useMemo(() => {
     if (text === '') return interview;
     return interview?.filter((item: any) => item?.code_name?.includes(text));
   }, [text, interview]);
+  
+  // ############################################# 인터뷰 노출 여부 변경
+  const updateDispYn = async (value: boolean, id:string) => {
+    let applyInterview = [];
+      interview.map((item: any) => {
+        if(item.common_code === id) {
+          item.disp_yn = (value ? 'Y' : 'N');
+          applyInterview.push(item);
+        }
+      }
+    )
+    saveAPI(applyInterview, function(){
+      console.log('ok');
+    });
+  };
+
+  // ############################################# 인터뷰 전체 저장
+  const saveAllInterview = async () => {
+    if(target != null && origin.length > 9) {
+      show({content: '인터뷰는 최소 10개까지 등록 가능합니다.'});
+      return;
+    }
+
+    let applyInterview = [];
+    applyInterview = interview.map((item: any, index) =>
+      target != null && item.common_code === target.common_code ? { ...item, use_yn: 'Y', order_seq: index+1 } : {...item, order_seq: index+1}
+    )
+
+    //return;
+
+    saveAPI(applyInterview, function() {
+      show({ 
+        content: '저장되었습니다.' ,
+        confirmCallback: function() {
+          navigation.navigate(STACK.COMMON, { screen: 'Profile1' });
+        }
+      });
+    });
+  };
+
+  // ############################################# 인터뷰 정보 저장 API 호출
+  const saveAPI = async (dataList: [], callbackFn : Function) => {
+
+    show({ 
+      content: '저장하시겠습니까?' ,
+      cancelCallback: function() {
+        
+      },
+      confirmCallback: async function() {
+        const body = {
+          interview_list : dataList
+        };
+        try {
+          const { success, data } = await update_interview(body);
+          if(success) {
+            if(data.result_code == '0000') {
+              //setInterview(data.mbr_interview_list);
+              dispatch(setPartialPrincipal({mbr_interview_list : data.mbr_interview_list}));
+              callbackFn(); // 콜백함수 실행
+            } else {
+              show({ 
+                content: '오류입니다. 관리자에게 문의해주세요.' ,
+                confirmCallback: function() {}
+              });
+              return false;
+            }
+          }
+        } catch (error) {
+          console.log(error);
+        } finally {
+          
+        }
+      }
+    });
+
+    console.log('dataList :::: ', dataList);
+
+  };
+
+  // ############################################# 인터뷰 목록 조회
+  const getInterviewList = async () => {
+    const body = {
+      use_yn : ''
+      , disp_yn : ''
+    };
+    try {
+      const { success, data } = await get_member_interview(body);
+      console.log('data :::::::: ', data);
+      if(success) {
+        if(data.result_code == '0000') {
+          setInterview(data.interview_list);
+        } else {
+          show({ 
+            content: '오류입니다. 관리자에게 문의해주세요.' ,
+            confirmCallback: function() {
+              
+            }
+          });
+          return false;
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      
+    }
+  };
+
+  useEffect(() => {
+    //getInterviewList();
+    
+  }, [isFocus]);
 
   return (
     <View style={{ flex: 1 }}>
@@ -140,9 +273,15 @@ export const Profile2 = () => {
                   ml={8}
                 >
                   <TouchableOpacity onPress={() => setTarget(item)}>
-                    <SpaceView viewStyle={styles.questionItemTextContainer}>
-                      <CommonText>{item?.code_name}</CommonText>
-                    </SpaceView>
+                    {item.use_yn === 'Y' ? (
+                      <SpaceView viewStyle={styles.questionItemTextContainerActive}>
+                        <CommonText color={Color.white}>{item?.code_name}</CommonText>
+                      </SpaceView>
+                    ) : (
+                      <SpaceView viewStyle={styles.questionItemTextContainer}>
+                        <CommonText>{item?.code_name}</CommonText>
+                      </SpaceView>
+                    )}
                   </TouchableOpacity>
 
                   <View style={styles.questionIconContainer}>
@@ -150,7 +289,7 @@ export const Profile2 = () => {
                       <CommonSwich
                         isOn={item.disp_yn === 'Y'}
                         callbackFn={(value) =>
-                          toggleFunction(value, item.interview_seq)
+                          toggleFunction(value, item.common_code)
                         }
                       />
                     ) : (
@@ -168,7 +307,10 @@ export const Profile2 = () => {
         </SpaceView>
       </View>
       <SpaceView>
-        <CommonBtn value={'저장'} type={'primary'} />
+        <CommonBtn 
+          value={'저장'} 
+          type={'primary'}
+          onPress={saveAllInterview} />
       </SpaceView>
     </View>
   );

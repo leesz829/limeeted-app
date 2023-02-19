@@ -5,16 +5,16 @@ import {
   ScrollView,
   View,
   FlatList,
-  Alert,
   TouchableOpacity,
   StyleSheet,
   Modal,
 } from 'react-native';
 import TopNavigation from 'component/TopNavigation';
-import { ICON } from 'utils/imageUtils';
+import { findSourcePath, ICON } from 'utils/imageUtils';
 import { layoutStyle, styles, modalStyle } from 'assets/styles/Styles';
 import SpaceView from 'component/SpaceView';
 import { CommonText } from 'component/CommonText';
+import CommonHeader from 'component/CommonHeader';
 import {
   ColorType,
   ScreenNavigationProp,
@@ -53,7 +53,9 @@ import { ROUTES, STACK } from 'constants/routes';
 
 
 /* ################################################################################################################
+###################################################################################################################
 ###### 매칭 상대 프로필 상세
+###################################################################################################################
 ################################################################################################################ */
 
 interface Props {
@@ -141,8 +143,8 @@ export const StorageProfile = (props: Props) => {
 
           // 회원 프로필 이미지 정보 구성
           data?.mbr_img_list?.map(
-            ({ file_name, file_path }: { file_name: any; file_path: any }) => {
-              const img_path = properties.img_domain + file_path + file_name;
+            ({ img_file_path }: { img_file_path: any; }) => {
+              const img_path = findSourcePath(img_file_path);
               const dataJson = { url: img_path };
               tmpProfileImgList.push(dataJson);
             }
@@ -323,25 +325,19 @@ export const StorageProfile = (props: Props) => {
   // ############################################################ 사용자 신고하기 - 팝업 활성화
   const popupReport = () => {
     if (!checkReportType.length) {
-      //Alert.alert('알림', '신고항목을 선택해주세요.', [{ text: '확인' }]);
       show({ content: '신고항목을 선택해주세요.' });
 
       return false;
     } else {
-      Alert.alert('사용자 신고하기', '신고하시겠습니까?', [
-        {
-          text: '취소',
-          onPress: () => {
-            return false;
-          },
+      show({ 
+        content: '신고하시겠습니까?' ,
+        cancelCallback: function() {
+          
         },
-        {
-          text: '확인',
-          onPress: () => {
-            insertReport();
-          },
-        },
-      ]);
+        confirmCallback: async function() {
+          insertReport();
+        }
+      });
     }
   };
 
@@ -360,7 +356,7 @@ export const StorageProfile = (props: Props) => {
           return false;
         }
 
-        show({ content: '신고 처리 되었습니다.' });
+        show({ content: '차단 및 신고 처리가 완료 되었습니다.' });
         report_onClose();
 
         navigation.navigate(STACK.TAB, {
@@ -386,7 +382,7 @@ export const StorageProfile = (props: Props) => {
         if (data.result_code == '0000') {
           selectMatchMemberInfo();
         } else {
-          Alert.alert('알림', '보유 패스가 부족합니다.', [{ text: '확인' }]);
+          show({ content: '보유 패스가 부족합니다.' });
         }
 
         setHpOpenPopup(false);
@@ -406,12 +402,18 @@ export const StorageProfile = (props: Props) => {
   useEffect(() => {
     selectMatchMemberInfo();
     //setCheckReportType('');
-    console.log('tgtMemberSeq ::: ' , tgtMemberSeq);
   }, [isFocus]);
 
   return isLoad ? (
     <>
-      <TopNavigation currentPath={''} />
+      <CommonHeader title={
+        (() => {
+          if(props.route.params.type == 'REQ') return '내가 받은 관심';
+          else if(props.route.params.type == 'RES') return '내가 보낸 관심';
+          else if(props.route.params.type == 'MATCH') return '성공 매칭';
+        })()
+      } />
+
       <ScrollView>
         {profileImgList.length > 0 && (
           <ViualSlider

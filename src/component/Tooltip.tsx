@@ -31,7 +31,7 @@ export const ToolTip: FC<Props> = (props) => {
           <Tooltip
             withPointer={false}
             backgroundColor="white"
-            containerStyle={styles.tooltipDescContainer}
+            containerStyle={[styles.tooltipDescContainer]}
             popover={
               <View style={[styles.tooltipDescContainer]}>
                 <View style={styles.tooptipCloseBtnContainer}>

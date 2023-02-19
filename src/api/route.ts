@@ -24,9 +24,8 @@ export const UPDATE_PREFERENCE = '/member/saveMemberIdealType';
 export const UPDATE_PROFILE_IMAGE = '/member/saveProfileImage';
 export const UPDATE_PROFILE_ATHENTICATION2 = '/member/saveProfileSecondAuth';
 export const PEEK_MEMBER = '/member/getRealTimeMemberInfo';
-export const MEMBER_PROFILE_ATHENTICATION2 =
-  '/member/getMemberProfileSecondAuth';
-
+export const MEMBER_PROFILE_ATHENTICATION2 = '/member/getMemberProfileSecondAuth';
+export const MEMBER_INTERVIEW = '/member/getMemberInterviewList';
 export const MEMBER_REEXAMINATION = '/member/profileReexProc';
 export const UPDATE_INTERVIEW = '/member/saveMemberInterview';
 export const GET_POINT = '/member/getMemberHasPoint';

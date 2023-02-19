@@ -23,11 +23,20 @@ import * as properties from 'utils/properties';
 //import AsyncStorage from '@react-native-community/async-storage';
 import { STACK } from 'constants/routes';
 import * as hooksMember from 'hooks/member';
+import { useUserInfo } from 'hooks/useUserInfo';
 import { useProfileImg } from 'hooks/useProfileImg';
+import { useSecondAth } from 'hooks/useSecondAth';
+import { useInterView } from 'hooks/useInterView';
 import { Modalize } from 'react-native-modalize';
 import { useDispatch } from 'react-redux';
 import * as mbrReducer from 'redux/reducers/mbrReducer';
 import Interview from 'component/Interview';
+import { update_profile_image } from 'api/models';
+import { usePopup } from 'Context';
+import { myProfile } from 'redux/reducers/authReducer';
+import { setPartialPrincipal } from 'redux/reducers/authReducer';
+
+
 
 /* ################################################################################################################
 ###################################################################################################################
@@ -45,15 +54,16 @@ export const Profile1 = (props: Props) => {
   const isFocus = useIsFocused();
   const dispatch = useDispatch();
 
-  const jwtToken = hooksMember.getJwtToken(); // 토큰
-  const memberSeq = hooksMember.getMemberSeq(); // 회원번호
+  const { show } = usePopup();  // 공통 팝업
 
   const profileImgs = useProfileImg();
 
-  const memberBase = hooksMember.getBase(); // 회원 기본 정보
-  const mbrProfileImgList = hooksMember.getProfileImg(); // 회원 프로필 사진 정보
-  const mbrSecondAuthList = hooksMember.getSecondAuth(); // 회원 2차 인증 정보
-  const mbrInterviewList = hooksMember.getInterview(); // 회원 인터뷰 정보
+  const jwtToken = hooksMember.getJwtToken(); // 토큰
+
+  const memberBase = useUserInfo();           // 회원 기본정보
+  const mbrProfileImgList = useProfileImg();  // 회원 프로필 사진 정보
+  const mbrSecondAuthList = useSecondAth();   // 회원 2차 인증 정보
+  const mbrInterviewList = useInterView();    // 회원 인터뷰 정보
 
   // 프로필 사진
   const [imgData, setImgData] = React.useState<any>({
@@ -81,8 +91,7 @@ export const Profile1 = (props: Props) => {
   const [isVehicle, setIsVehicle] = React.useState<any>(false);
 
   // 인터뷰 목록
-  const [interviewList, setInterviewList] =
-    React.useState<any>(mbrInterviewList);
+  const [interviewList, setInterviewList] = React.useState<any>(mbrInterviewList);
 
   const fileCallBack1 = (
     uri: string,
@@ -150,14 +159,14 @@ export const Profile1 = (props: Props) => {
     }
   };
 
-  // 사진삭제 컨트롤 변수
+  // ############################################################ 사진삭제 컨트롤 변수
   const [isDelImgData, setIsDelImgData] = React.useState<any>({
     img_seq: '',
     order_seq: '',
   });
 
   /*
-   * 최초 실행
+   * ############################################################ 최초 실행
    */
   React.useEffect(() => {
     if (mbrProfileImgList != null) {
@@ -177,24 +186,23 @@ export const Profile1 = (props: Props) => {
       mbrProfileImgList.map(
         ({
           member_img_seq,
-          file_name,
-          file_path,
+          img_file_path,
           order_seq,
           status,
         }: {
           member_img_seq: any;
-          file_name: any;
-          file_path: any;
+          img_file_path: any;
           order_seq: any;
           status: any;
         }) => {
           let data = {
             member_img_seq: member_img_seq,
-            url: properties.img_domain + file_path + file_name,
+            url: findSourcePath(img_file_path),
             delYn: 'N',
             status: status,
           };
           if (order_seq == 1) {
+            console.log('data :::!!!: ' ,data);
             imgData.orgImgUrl01 = data;
           }
           if (order_seq == 2) {
@@ -247,31 +255,16 @@ export const Profile1 = (props: Props) => {
     }
   }, [isFocus]);
 
-  // 프로필 관리 저장
+  // ############################################################  프로필 관리 저장
   const saveMemberProfile = async () => {
-    const data = new FormData();
-    data.append('memberSeq', memberSeq);
-    //data.append("data", new Blob([JSON.stringify(interviewList[0])], {type: "application/json"}));
 
-    // Validation 체크
+    // ##### Validation 체크
     let imgChk = 0;
-    if (imgData.orgImgUrl01.delYn == 'N' || imgData.imgFile01.uri != '') {
-      imgChk++;
-    }
-    if (imgData.orgImgUrl02.delYn == 'N' || imgData.imgFile02.uri != '') {
-      imgChk++;
-    }
-    if (imgData.orgImgUrl03.delYn == 'N' || imgData.imgFile03.uri != '') {
-      imgChk++;
-    }
-    if (imgData.orgImgUrl04.delYn == 'N' || imgData.imgFile04.uri != '') {
-      imgChk++;
-    }
-    if (imgData.orgImgUrl05.delYn == 'N' || imgData.imgFile05.uri != '') {
-      imgChk++;
-    }
-
-    console.log('imgChk ::::: ', imgChk);
+    if (imgData.orgImgUrl01.delYn == 'N' || imgData.imgFile01.uri != '') { imgChk++; }
+    if (imgData.orgImgUrl02.delYn == 'N' || imgData.imgFile02.uri != '') { imgChk++; }
+    if (imgData.orgImgUrl03.delYn == 'N' || imgData.imgFile03.uri != '') { imgChk++; }
+    if (imgData.orgImgUrl04.delYn == 'N' || imgData.imgFile04.uri != '') { imgChk++; }
+    if (imgData.orgImgUrl05.delYn == 'N' || imgData.imgFile05.uri != '') { imgChk++; }
 
     if (imgChk <= 2) {
       Alert.alert('알림', '최소 3개의 프로필 사진을 등록해야 합니다.', [
@@ -280,25 +273,64 @@ export const Profile1 = (props: Props) => {
       return false;
     }
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-    if (imgData.imgFile01.uri != '') {
-      data.append('file01', imgData.imgFile01);
-    }
-    if (imgData.imgFile02.uri != '') {
-      data.append('file02', imgData.imgFile02);
-    }
-    if (imgData.imgFile03.uri != '') {
-      data.append('file03', imgData.imgFile03);
-    }
-    if (imgData.imgFile04.uri != '') {
-      data.append('file04', imgData.imgFile04);
-    }
-    if (imgData.imgFile05.uri != '') {
-      data.append('file05', imgData.imgFile05);
-    }
-    data.append('imgDelSeqStr', imgDelSeqStr);
+    const body = new FormData();
+    if (imgData.imgFile01.uri != '') { body.append('img_file01', imgData.imgFile01); }
+    if (imgData.imgFile02.uri != '') { body.append('img_file02', imgData.imgFile02); }
+    if (imgData.imgFile03.uri != '') { body.append('img_file03', imgData.imgFile03); }
+    if (imgData.imgFile04.uri != '') { body.append('img_file04', imgData.imgFile04); }
+    if (imgData.imgFile05.uri != '') { body.append('img_file05', imgData.imgFile05); }
+    body.append('img_del_seq_str', imgDelSeqStr);
+    body.append('interview_list_str', JSON.stringify(interviewList));
 
-    data.append('interviewListStr', JSON.stringify(interviewList));
+    console.log('body :::: ' , body);
+
+    try {
+      const { success, data } = await update_profile_image(body);
+      console.log('data :::: ' , data);
+      if(success) {
+        if(data.result_code == '0000') {
+
+          console.log('data.mbr_img_list :::: ' , data.mbr_img_list);
+
+          dispatch(setPartialPrincipal({
+            mbr_base : data.mbr_base
+            , mbr_img_list : data.mbr_img_list
+            , mbr_interview_list : data.mbr_interview_list
+          }));
+
+          /* dispatch(mbrReducer.setBase(JSON.stringify(res.memberBase)));
+          dispatch(mbrReducer.setProfileImg(JSON.stringify(res.memberImgList)));
+          dispatch(
+            mbrReducer.setInterview(JSON.stringify(res.memberInterviewList))
+          ); */
+
+          show({
+            content: '저장되었습니다.' ,
+            confirmCallback: function() {
+              navigation.navigate(STACK.TAB, {
+                screen: 'Roby',
+              });
+            }
+          });
+          
+        } else {
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+          return false;
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      
+    }
+
+
+    
+
+
+/* 
+    data.append('memberSeq', memberBase.member_seq);
+    //data.append("data", new Blob([JSON.stringify(interviewList[0])], {type: "application/json"}));
 
     const result = await fetch(
       properties.api_domain + '/member/saveProfileImage/',
@@ -306,31 +338,33 @@ export const Profile1 = (props: Props) => {
         method: 'POST',
         headers: {
           'Content-Type': 'multipart/form-data',
-          'jwt-token': jwtToken,
+          'jwt-token': await AsyncStorage.getItem(storeKey.JWT_TOKEN),
         },
         body: data,
       }
     )
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.result_code == '0000') {
-          dispatch(mbrReducer.setBase(JSON.stringify(res.memberBase)));
-          dispatch(mbrReducer.setProfileImg(JSON.stringify(res.memberImgList)));
-          dispatch(
-            mbrReducer.setInterview(JSON.stringify(res.memberInterviewList))
-          );
+    .then((res) => res.json())
+    .then((res) => {
+      if (res.result_code == '0000') {
+        dispatch(mbrReducer.setBase(JSON.stringify(res.memberBase)));
+        dispatch(mbrReducer.setProfileImg(JSON.stringify(res.memberImgList)));
+        dispatch(
+          mbrReducer.setInterview(JSON.stringify(res.memberInterviewList))
+        );
+        navigation.navigate(STACK.TAB, {
+          screen: 'Roby',
+        });
+      }
+    })
+    .catch((error) => {
+      console.log('error', error);
+    });
 
-          navigation.navigate(STACK.TAB, {
-            screen: 'Roby',
-          });
-        }
-      })
-      .catch((error) => {
-        console.log('error', error);
-      });
+     */
+      
   };
 
-  // 사진 삭제 팝업
+  // ############################################################ 사진 삭제 팝업
   const imgDel_modalizeRef = useRef<Modalize>(null);
   const imgDel_onOpen = (img_seq: any, order_seq: any) => {
     setIsDelImgData({
@@ -343,7 +377,7 @@ export const Profile1 = (props: Props) => {
     imgDel_modalizeRef.current?.close();
   };
 
-  // 사진 삭제
+  // ############################################################ 사진 삭제
   const imgDelProc = () => {
     if (isDelImgData.order_seq == '1') {
       setImgData({
@@ -395,222 +429,145 @@ export const Profile1 = (props: Props) => {
       <CommonHeader title={'프로필 관리'} />
       <ScrollView contentContainerStyle={styles.hasFloatingBtnContainer}>
         <SpaceView viewStyle={styles.container}>
+
           {/* ####################################################################################
 					####################### 프로필 이미지 영역
 					#################################################################################### */}
           <SpaceView mb={48} viewStyle={styles.halfContainer}>
-            <View style={styles.halfItemLeft}>
-              {Array.isArray(profileImgs) && profileImgs.length > 0 ? (
-                <TouchableOpacity
-                  onPress={() => {
-                    // imgDel_onOpen(imgData.orgImgUrl01.member_img_seq, 1);
-                  }}
-                >
-                  <Image
-                    resizeMode="cover"
-                    resizeMethod="scale"
-                    style={styles.tempBoxBig}
-                    source={findSourcePath(profileImgs[0])}
-                  />
-                </TouchableOpacity>
-              ) : (
-                <ImagePicker
-                  isBig={true}
-                  callbackFn={fileCallBack1}
-                  uriParam={''}
-                />
-              )}
 
-              {profileImgs[0]?.status === 'PROGRESS' ? (
-                <View style={styles.disabled}>
-                  <CommonText
-                    fontWeight={'700'}
-                    type={'h4'}
-                    color={ColorType.gray8888}
-                    textStyle={[
-                      layoutStyle.textRight,
-                      commonStyle.mt10,
-                      commonStyle.mr10,
-                    ]}
-                  >
-                    심사중
-                  </CommonText>
-                </View>
-              ) : null}
+            <View style={styles.halfItemLeft}>
+              {imgData.orgImgUrl01.url != '' && imgData.orgImgUrl01.delYn == 'N' ? (
+								<TouchableOpacity
+									onPress={() => {
+										imgDel_onOpen(imgData.orgImgUrl01.member_img_seq, 1);
+									}}
+								>
+									<Image
+										resizeMode="cover"
+										resizeMethod="scale"
+										style={styles.tempBoxBig}
+										key={imgData.orgImgUrl01.url}
+										source={imgData.orgImgUrl01.url}
+									/>
+								</TouchableOpacity>
+							) : (
+								<ImagePicker isBig={true} callbackFn={fileCallBack1} uriParam={''} />
+							)}
+
+							{imgData.orgImgUrl01.url != '' && imgData.orgImgUrl01.status == 'PROGRESS' ? (
+								<View style={styles.disabled}>
+									<CommonText fontWeight={'700'} type={'h4'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mt10, commonStyle.mr10]}>심사중</CommonText>
+								</View>
+							) : null}
             </View>
 
             <View style={styles.halfItemRight}>
               <SpaceView mb={16} viewStyle={layoutStyle.row}>
                 <SpaceView mr={8}>
-                  {Array.isArray(profileImgs) &&
-                  profileImgs.length > 0 &&
-                  profileImgs[1] ? (
-                    <TouchableOpacity
-                      onPress={() => {
-                        imgDel_onOpen(imgData.orgImgUrl02.member_img_seq, 2);
-                      }}
-                    >
-                      <Image
-                        resizeMode="cover"
-                        resizeMethod="scale"
-                        style={styles.tempBoxSmall}
-                        key={imgData.orgImgUrl02.url}
-                        source={findSourcePath(profileImgs[1])}
-                      />
-                    </TouchableOpacity>
-                  ) : (
-                    <ImagePicker
-                      isBig={false}
-                      callbackFn={fileCallBack2}
-                      uriParam={''}
-                    />
-                  )}
 
-                  {profileImgs[1]?.status == 'PROGRESS' ? (
-                    <View style={styles.disabled}>
-                      <CommonText
-                        fontWeight={'700'}
-                        type={'h4'}
-                        color={ColorType.gray8888}
-                        textStyle={[
-                          layoutStyle.textRight,
-                          commonStyle.mr10,
-                          commonStyle.fontSize10,
-                        ]}
-                      >
-                        심사중
-                      </CommonText>
-                    </View>
-                  ) : null}
+                  {imgData.orgImgUrl02.url != '' && imgData.orgImgUrl02.delYn == 'N' ? (
+										<TouchableOpacity
+											onPress={() => {
+												imgDel_onOpen(imgData.orgImgUrl02.member_img_seq, 2);
+											}}
+										>
+											<Image
+												resizeMode="cover"
+												resizeMethod="scale"
+												style={styles.tempBoxSmall}
+												key={imgData.orgImgUrl02.url}
+												source={imgData.orgImgUrl02.url}
+											/>
+										</TouchableOpacity>
+									) : (
+										<ImagePicker isBig={false} callbackFn={fileCallBack2} uriParam={''} />
+									)}
+
+									{imgData.orgImgUrl02.url != '' && imgData.orgImgUrl02.status == 'PROGRESS' ? (
+										<View style={styles.disabled}>
+											<CommonText fontWeight={'700'} type={'h4'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mr10, commonStyle.fontSize10]}>심사중</CommonText>
+										</View>
+									) : null}
                 </SpaceView>
-                <SpaceView ml={8}>
-                  {Array.isArray(profileImgs) &&
-                  profileImgs.length > 0 &&
-                  profileImgs[2] ? (
-                    <TouchableOpacity
-                      onPress={() => {
-                        imgDel_onOpen(imgData.orgImgUrl03.member_img_seq, 3);
-                      }}
-                    >
-                      <Image
-                        resizeMode="cover"
-                        resizeMethod="scale"
-                        style={styles.tempBoxSmall}
-                        key={imgData.orgImgUrl03.url}
-                        source={findSourcePath(profileImgs[2])}
-                      />
-                    </TouchableOpacity>
-                  ) : (
-                    <ImagePicker
-                      isBig={false}
-                      callbackFn={fileCallBack3}
-                      uriParam={''}
-                    />
-                  )}
 
-                  {profileImgs[2]?.status == 'PROGRESS' ? (
-                    <View style={styles.disabled}>
-                      <CommonText
-                        fontWeight={'700'}
-                        type={'h4'}
-                        color={ColorType.gray8888}
-                        textStyle={[
-                          layoutStyle.textRight,
-                          commonStyle.mr10,
-                          commonStyle.fontSize10,
-                        ]}
-                      >
-                        심사중
-                      </CommonText>
-                    </View>
-                  ) : null}
+                <SpaceView ml={8}>
+                  {imgData.orgImgUrl03.url != '' && imgData.orgImgUrl03.delYn == 'N' ? (
+										<TouchableOpacity
+											onPress={() => {
+												imgDel_onOpen(imgData.orgImgUrl03.member_img_seq, 3);
+											}}
+										>
+											<Image
+												resizeMode="cover"
+												resizeMethod="scale"
+												style={styles.tempBoxSmall}
+												key={imgData.orgImgUrl03.url}
+												source={imgData.orgImgUrl03.url}
+											/>
+										</TouchableOpacity>
+									) : (
+										<ImagePicker isBig={false} callbackFn={fileCallBack3} uriParam={''} />
+									)}
+
+									{imgData.orgImgUrl03.url != '' && imgData.orgImgUrl03.status == 'PROGRESS' ? (
+										<View style={styles.disabled}>
+											<CommonText fontWeight={'700'} type={'h4'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mr10, commonStyle.fontSize10]}>심사중</CommonText>
+										</View>
+									) : null}
                 </SpaceView>
               </SpaceView>
 
               <SpaceView viewStyle={layoutStyle.row}>
                 <SpaceView mr={8}>
-                  {Array.isArray(profileImgs) &&
-                  profileImgs.length > 0 &&
-                  profileImgs[3] ? (
-                    <TouchableOpacity
-                      onPress={() => {
-                        imgDel_onOpen(imgData.orgImgUrl04.member_img_seq, 4);
-                      }}
-                    >
-                      <Image
-                        resizeMode="cover"
-                        resizeMethod="scale"
-                        style={styles.tempBoxSmall}
-                        key={imgData.orgImgUrl04.url}
-                        source={findSourcePath(profileImgs[3])}
-                      />
-                    </TouchableOpacity>
-                  ) : (
-                    <ImagePicker
-                      isBig={false}
-                      callbackFn={fileCallBack4}
-                      uriParam={''}
-                    />
-                  )}
+                  {imgData.orgImgUrl04.url != '' && imgData.orgImgUrl04.delYn == 'N' ? (
+										<TouchableOpacity
+											onPress={() => {
+												imgDel_onOpen(imgData.orgImgUrl04.member_img_seq, 4);
+											}}
+										>
+											<Image
+												resizeMode="cover"
+												resizeMethod="scale"
+												style={styles.tempBoxSmall}
+												key={imgData.orgImgUrl04.url}
+												source={imgData.orgImgUrl04.url}
+											/>
+										</TouchableOpacity>
+									) : (
+										<ImagePicker isBig={false} callbackFn={fileCallBack4} uriParam={''} />
+									)}
 
-                  {profileImgs[3]?.status == 'PROGRESS' ? (
-                    <View style={styles.disabled}>
-                      <CommonText
-                        fontWeight={'700'}
-                        type={'h4'}
-                        color={ColorType.gray8888}
-                        textStyle={[
-                          layoutStyle.textRight,
-                          commonStyle.mr10,
-                          commonStyle.fontSize10,
-                        ]}
-                      >
-                        심사중
-                      </CommonText>
-                    </View>
-                  ) : null}
+									{imgData.orgImgUrl04.url != '' && imgData.orgImgUrl04.status == 'PROGRESS' ? (
+										<View style={styles.disabled}>
+											<CommonText fontWeight={'700'} type={'h4'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mr10, commonStyle.fontSize10]}>심사중</CommonText>
+										</View>
+									) : null}
                 </SpaceView>
-                <SpaceView ml={8}>
-                  {Array.isArray(profileImgs) &&
-                  profileImgs.length > 0 &&
-                  profileImgs[4] ? (
-                    <TouchableOpacity
-                      onPress={() => {
-                        imgDel_onOpen(imgData.orgImgUrl05.member_img_seq, 5);
-                      }}
-                    >
-                      <Image
-                        resizeMode="cover"
-                        resizeMethod="scale"
-                        style={styles.tempBoxSmall}
-                        key={imgData.orgImgUrl05.url}
-                        source={findSourcePath(profileImgs[4])}
-                      />
-                    </TouchableOpacity>
-                  ) : (
-                    <ImagePicker
-                      isBig={false}
-                      callbackFn={fileCallBack5}
-                      uriParam={''}
-                    />
-                  )}
 
-                  {profileImgs[4]?.status == 'PROGRESS' ? (
-                    <View style={styles.disabled}>
-                      <CommonText
-                        fontWeight={'700'}
-                        type={'h4'}
-                        color={ColorType.gray8888}
-                        textStyle={[
-                          layoutStyle.textRight,
-                          commonStyle.mr10,
-                          commonStyle.fontSize10,
-                        ]}
-                      >
-                        심사중
-                      </CommonText>
-                    </View>
-                  ) : null}
+                <SpaceView ml={8}>
+                  {imgData.orgImgUrl05.url != '' && imgData.orgImgUrl05.delYn == 'N' ? (
+										<TouchableOpacity
+											onPress={() => {
+												imgDel_onOpen(imgData.orgImgUrl05.member_img_seq, 5);
+											}}
+										>
+											<Image
+												resizeMode="cover"
+												resizeMethod="scale"
+												style={styles.tempBoxSmall}
+												key={imgData.orgImgUrl05.url}
+												source={imgData.orgImgUrl05.url}
+											/>
+										</TouchableOpacity>
+									) : (
+										<ImagePicker isBig={false} callbackFn={fileCallBack5} uriParam={''} />
+									)}
+
+									{imgData.orgImgUrl05.url != '' && imgData.orgImgUrl05.status == 'PROGRESS' ? (
+										<View style={styles.disabled}>
+											<CommonText fontWeight={'700'} type={'h4'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mr10, commonStyle.fontSize10]}>심사중</CommonText>
+										</View>
+									) : null}
                 </SpaceView>
               </SpaceView>
             </View>
@@ -698,7 +655,7 @@ export const Profile1 = (props: Props) => {
           <Interview />
         </SpaceView>
 
-        {/* <View style={styles.bottomBtnContainer}>
+        <View style={styles.bottomBtnContainer}>
           <CommonBtn
             value={'저장'}
             type={'primary'}
@@ -706,7 +663,7 @@ export const Profile1 = (props: Props) => {
               saveMemberProfile();
             }}
           />
-        </View> */}
+        </View>
       </ScrollView>
 
       {/* ###############################################

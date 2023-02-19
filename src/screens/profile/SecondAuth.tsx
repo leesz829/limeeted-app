@@ -5,11 +5,10 @@ import { CommonText } from 'component/CommonText';
 import { CommonInput } from 'component/CommonInput';
 import SpaceView from 'component/SpaceView';
 import React, { useRef } from 'react';
-import { View, Image, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import { ICON } from 'utils/imageUtils';
+import { View, Image, ScrollView, TouchableOpacity } from 'react-native';
+import { ICON, findSourcePath } from 'utils/imageUtils';
 import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
 import { RouteProp, useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { Modalize } from 'react-native-modalize';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { ImagePicker } from 'component/ImagePicker';
@@ -21,6 +20,12 @@ import * as hooksMember from 'hooks/member';
 import { useDispatch } from 'react-redux';
 import * as mbrReducer from 'redux/reducers/mbrReducer';
 import WrappedText from 'react-native-wrapped-text';
+import { get_member_profile_authentication } from 'api/models';
+import { usePopup } from 'Context';
+import { useMemberseq } from 'hooks/useMemberseq';
+import storeKey from 'constants/storeKey';
+import { STACK } from 'constants/routes';
+
 
 /* ################################################################################################################
 ###################################################################################################################
@@ -32,8 +37,10 @@ export const SecondAuth = () => {
   const navigation = useNavigation<ScreenNavigationProp>();
   const dispatch = useDispatch();
 
-  const jwtToken = hooksMember.getJwtToken(); // 토큰
-  const memberSeq = hooksMember.getMemberSeq(); // 회원번호
+  const { show } = usePopup();  // 공통 팝업
+
+  //const jwtToken = hooksMember.getJwtToken(); // 토큰
+  const memberSeq = useMemberseq(); // 회원번호
 
   const [secondData, setSecondData] = React.useState({
     orgJobFileUrl: '',
@@ -217,97 +224,86 @@ export const SecondAuth = () => {
 
   // 프로필 2차 인증 정보 조회 함수
   const getMemberProfileSecondAuth = async () => {
-    const result = await axios
-      .post(
-        properties.api_domain + '/member/getMemberProfileSecondAuth',
-        {
-          'api-key': 'U0FNR09CX1RPS0VOXzAx',
-          member_seq: memberSeq,
-        },
-        {
-          headers: {
-            'jwt-token': jwtToken,
-          },
-        }
-      )
-      .then(function (response) {
-        console.log('getMemberProfileSecondAuth data :::: ', response.data);
+    try {
+      const { success, data } = await get_member_profile_authentication();
 
-        let jobFileUrl: any = '';
-        let eduFileUrl: any = '';
-        let incomeFileUrl: any = '';
-        let assetFileUrl: any = '';
-        let snsFileUrl: any = '';
-        let vehicleFileUrl: any = '';
+      if(success) {
+        if(data.result_code == '0000') {
+          let jobFileUrl: any = '';
+          let eduFileUrl: any = '';
+          let incomeFileUrl: any = '';
+          let assetFileUrl: any = '';
+          let snsFileUrl: any = '';
+          let vehicleFileUrl: any = '';
 
-        let o_jobItem: any = '';
-        let o_eduItem: any = '';
-        let o_snsItem: any = '';
-        let o_vehicleItem: any = '';
+          let o_jobItem: any = '';
+          let o_eduItem: any = '';
+          let o_snsItem: any = '';
+          let o_vehicleItem: any = '';
 
-        const imgUrl = properties.api_domain + '/uploads';
+          const imgUrl = properties.img_domain;
 
-        if (null != response.data.authList) {
-          response.data?.authList?.map(
-            ({
-              file_gubun,
-              file_name,
-              file_path,
-            }: {
-              file_gubun: any;
-              file_name: any;
-              file_path: any;
-            }) => {
-              if (file_gubun == 'F_JOB') {
-                jobFileUrl = imgUrl + file_path + file_name;
-              } else if (file_gubun == 'F_EDU') {
-                eduFileUrl = imgUrl + file_path + file_name;
-              } else if (file_gubun == 'F_INCOME') {
-                incomeFileUrl = imgUrl + file_path + file_name;
-              } else if (file_gubun == 'F_ASSET') {
-                assetFileUrl = imgUrl + file_path + file_name;
-              } else if (file_gubun == 'F_SNS') {
-                snsFileUrl = imgUrl + file_path + file_name;
-              } else if (file_gubun == 'F_VEHICLE') {
-                vehicleFileUrl = imgUrl + file_path + file_name;
+          if (null != data.auth_list) {
+            data?.auth_list?.map(
+              ({
+                file_gubun,
+                img_file_path,
+              }: {
+                file_gubun: any;
+                img_file_path: any;
+              }) => {
+                if (file_gubun == 'F_JOB') {
+                  jobFileUrl = findSourcePath(img_file_path);
+                } else if (file_gubun == 'F_EDU') {
+                  eduFileUrl = findSourcePath(img_file_path);
+                } else if (file_gubun == 'F_INCOME') {
+                  incomeFileUrl = findSourcePath(img_file_path);
+                } else if (file_gubun == 'F_ASSET') {
+                  assetFileUrl = findSourcePath(img_file_path);
+                } else if (file_gubun == 'F_SNS') {
+                  snsFileUrl = findSourcePath(img_file_path);
+                } else if (file_gubun == 'F_VEHICLE') {
+                  vehicleFileUrl = findSourcePath(img_file_path);
+                }
               }
-            }
-          );
-        }
+            );
+          }
 
-        if (null != response.data.addInfo) {
-          o_jobItem = response.data.addInfo.job_name;
-          o_eduItem = response.data.addInfo.edu_ins;
-          o_snsItem = response.data.addInfo.instagram_id;
-          o_vehicleItem = response.data.addInfo.vehicle;
-        }
+          if (null != data.add_info) {
+            o_jobItem = data.add_info.job_name;
+            o_eduItem = data.add_info.edu_ins;
+            o_snsItem = data.add_info.instagram_id;
+            o_vehicleItem = data.add_info.vehicle;
+          }
 
-        setSecondData({
-          ...secondData,
-          orgJobFileUrl: jobFileUrl,
-          orgEduFileUrl: eduFileUrl,
-          orgIncomeFileUrl: incomeFileUrl,
-          orgAssetFileUrl: assetFileUrl,
-          orgSnsFileUrl: snsFileUrl,
-          orgVehicleFileUrl: vehicleFileUrl,
-          jobItem: o_jobItem,
-          eduItem: o_eduItem,
-          snsItem: o_snsItem,
-          vehicleItem: o_vehicleItem,
-        });
-      })
-      .catch(function (error) {
-        console.log('error ::: ', error);
-      });
+          setSecondData({
+            ...secondData,
+            orgJobFileUrl: jobFileUrl,
+            orgEduFileUrl: eduFileUrl,
+            orgIncomeFileUrl: incomeFileUrl,
+            orgAssetFileUrl: assetFileUrl,
+            orgSnsFileUrl: snsFileUrl,
+            orgVehicleFileUrl: vehicleFileUrl,
+            jobItem: o_jobItem,
+            eduItem: o_eduItem,
+            snsItem: o_snsItem,
+            vehicleItem: o_vehicleItem,
+          });
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      
+    }
+
   };
 
   // 인증 정보 저장 함수
   const saveSecondAuth = async () => {
     const data = new FormData();
 
-    let mbrSeq = memberSeq;
-
-    data.append('memberSeq', mbrSeq);
+    data.append('memberSeq', memberSeq);
     data.append('job_name', secondData.jobItem);
     data.append('edu_ins', secondData.eduItem);
     data.append('instagram_id', secondData.snsItem);
@@ -338,7 +334,7 @@ export const SecondAuth = () => {
       method: 'POST',
       headers: {
         'Content-Type': 'multipart/form-data',
-        'jwt-token': jwtToken,
+        'jwt-token': await AsyncStorage.getItem(storeKey.JWT_TOKEN),
       },
       body: data,
     })
@@ -348,11 +344,9 @@ export const SecondAuth = () => {
           try {
             dispatch(mbrReducer.setBase(JSON.stringify(response.memberBase)));
             dispatch(
-              mbrReducer.setSecondAuth(
-                JSON.stringify(response.memberSndAuthList)
-              )
+              mbrReducer.setSecondAuth(JSON.stringify(response.memberSndAuthList))
             );
-            navigation.navigate('Profile1');
+            navigation.navigate(STACK.COMMON, { screen: 'Profile1' });
           } catch (error) {
             console.log(error);
           }

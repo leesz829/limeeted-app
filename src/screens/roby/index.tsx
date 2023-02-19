@@ -21,7 +21,7 @@ import * as hooksMember from 'hooks/member';
 import { useLikeList } from 'hooks/useLikeList';
 import { useMatches } from 'hooks/useMatches';
 import { useUserInfo } from 'hooks/useUserInfo';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   Dimensions,
   Image,
@@ -38,6 +38,10 @@ import { Privacy } from 'screens/commonpopup/privacy';
 import { Terms } from 'screens/commonpopup/terms';
 import { findSourcePath, ICON } from 'utils/imageUtils';
 import * as properties from 'utils/properties';
+import { peek_member } from 'api/models';
+import { usePopup } from 'Context';
+
+
 /* ################################################################################################################
 ###### 로비
 ################################################################################################################ */
@@ -52,6 +56,8 @@ export const Roby = (props: Props) => {
   const isFocus = useIsFocused();
   const dispatch = useDispatch();
 
+  const { show } = usePopup();  // 공통 팝업
+
   const jwtToken = hooksMember.getJwtToken(); // 토큰 추출
 
   // 회원 기본 정보
@@ -59,7 +65,40 @@ export const Roby = (props: Props) => {
   const likes = useLikeList();
   const matches = useMatches();
 
+  const [resLikeList, setResLikeList] = useState([]);
+  const [matchTrgtList, setMatchTrgtList] = useState([]);
+
+  useEffect(() => {
+    getPeekMemberInfo();
+  }, [isFocus]);
+
   // ###### 실시간성 회원 데이터 조회
+  const getPeekMemberInfo = async () => {
+    const body = {
+      img_acct_cnt: memberBase.img_acct_cnt
+      , auth_acct_cnt: memberBase.auth_acct_cnt
+    };
+    try {
+      const { success, data } = await peek_member(body);
+      console.log('data :::::: ' , data);
+      if(success) {
+        if(data.result_code == '0000') {
+          setResLikeList(data.res_like_list);
+          setMatchTrgtList(data.match_trgt_list);
+        } else {
+          show({
+            content: '오류입니다. 관리자에게 문의해주세요.' ,
+            confirmCallback: function() {}
+          });
+          return false;
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      
+    }
+  }
 
   // 회원 정보 수정
   const updateMemberInfo = async (type: string, value: string) => {
@@ -261,9 +300,9 @@ export const Roby = (props: Props) => {
                 <Image source={ICON.star} style={styles.iconSize24} />
               </SpaceView>
               <ToolTip
-                position={'bottomRight'}
-                title={'기여 평점'}
-                desc={'LIMEETED에서 발생한 활동 지표를 통해 부여된 기여 평점'}
+                position={'topLeft'}
+                title={'소셜 평점'}
+                desc={'LIMEETED에서 발생한 활동 지표를 통해 부여된 소셜 평점'}
               />
             </View>
           </SpaceView>
@@ -280,7 +319,7 @@ export const Roby = (props: Props) => {
           </SpaceView>
         </View>
 
-        <SpaceView mb={48}>
+        {/* <SpaceView mb={48}>
           <SpaceView mb={16}>
             <SpaceView mb={16}>
               <CommonText fontWeight={'700'} type={'h3'}>
@@ -317,7 +356,8 @@ export const Roby = (props: Props) => {
               </View>
             </SpaceView>
           </SpaceView>
-        </SpaceView>
+        </SpaceView> */}
+
         <SpaceView mb={48}>
           <SpaceView mb={16}>
             <SpaceView mb={16}>
@@ -330,6 +370,9 @@ export const Roby = (props: Props) => {
               onPress={() => {
                 navigation.navigate(STACK.COMMON, {
                   screen: 'Storage',
+                  params: {
+                    'headerType' : 'common'
+                  }
                 });
               }}
               style={styles.rowStyle}
@@ -338,7 +381,7 @@ export const Roby = (props: Props) => {
                 새 관심
                 <CommonText color={ColorType.primary}>
                   {' '}
-                  {likes?.length}
+                  {resLikeList?.length}
                 </CommonText>
                 건
               </CommonText>
@@ -347,14 +390,14 @@ export const Roby = (props: Props) => {
             </TouchableOpacity>
 
             <ScrollView horizontal={true}>
-              {likes?.map((item, index) => (
+              {resLikeList?.map((item, index) => (
                 <SpaceView
                   key={`likes-${index}`}
                   viewStyle={styles.circleBox}
                   mr={16}
                 >
                   <Image
-                    source={findSourcePath(item)}
+                    source={findSourcePath(item.img_file_path)}
                     style={styles.circleBoxImg}
                   />
                 </SpaceView>
@@ -366,6 +409,9 @@ export const Roby = (props: Props) => {
             onPress={() => {
               navigation.navigate(STACK.COMMON, {
                 screen: 'Storage',
+                params: {
+                  'headerType' : 'common'
+                }
               });
             }}
             style={styles.rowStyle}
@@ -374,7 +420,7 @@ export const Roby = (props: Props) => {
               새 매칭
               <CommonText color={ColorType.primary}>
                 {' '}
-                {matches?.length}
+                {matchTrgtList?.length}
               </CommonText>
               건
             </CommonText>
@@ -383,14 +429,14 @@ export const Roby = (props: Props) => {
           </TouchableOpacity>
 
           <ScrollView horizontal={true}>
-            {matches?.map((item, index) => (
+            {matchTrgtList?.map((item, index) => (
               <SpaceView
                 key={`matches-${index}`}
                 viewStyle={styles.circleBox}
                 mr={16}
               >
                 <Image
-                  source={findSourcePath(item)}
+                  source={findSourcePath(item.img_file_path)}
                   style={styles.circleBoxImg}
                 />
               </SpaceView>
@@ -408,9 +454,8 @@ export const Roby = (props: Props) => {
           <TouchableOpacity
             style={styles.rowStyle}
             onPress={() => {
-              navigation.navigate('Preference');
-            }}
-          >
+              navigation.navigate(STACK.COMMON, { screen: 'Preference' });
+            }} >
             <CommonText fontWeight={'500'}>내 선호 이성</CommonText>
             <Image source={ICON.arrRight} style={styles.iconSize} />
           </TouchableOpacity>

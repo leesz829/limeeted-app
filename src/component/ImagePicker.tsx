@@ -78,7 +78,7 @@ export const ImagePicker: FC<Props> = (props) => {
           resizeMethod="scale"
           style={props.isBig ? styles.tempBoxBig : styles.tempBoxSmall}
           key={props.uriParam}
-          source={{ uri: props.uriParam }}
+          source={props.uriParam}
         />
       ) : (
         <Image source={ICON.purplePlus} style={styles.boxPlusIcon} />

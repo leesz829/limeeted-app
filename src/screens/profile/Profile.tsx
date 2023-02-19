@@ -8,7 +8,11 @@ import * as React from 'react';
 import { CommonBtn } from 'component/CommonBtn';
 import { StackParamList, ScreenNavigationProp, ColorType } from '@types';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RouteProp, useNavigation, CommonActions } from '@react-navigation/native';
+import {
+  RouteProp,
+  useNavigation,
+  CommonActions,
+} from '@react-navigation/native';
 import axios from 'axios';
 import * as properties from 'utils/properties';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -21,7 +25,6 @@ import { useUserInfo } from 'hooks/useUserInfo';
 import { update_setting } from 'api/models';
 import { usePopup } from 'Context';
 import { myProfile } from 'redux/reducers/authReducer';
-
 
 /* ################################################################################################################
 ###################################################################################################################
@@ -38,7 +41,7 @@ export const Profile = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
   const dispatch = useDispatch();
 
-  const { show } = usePopup();  // 공통 팝업
+  const { show } = usePopup(); // 공통 팝업
 
   const memberBase = useUserInfo(); // 회원 기본정보
 
@@ -46,7 +49,9 @@ export const Profile = (props: Props) => {
   const [name, setName] = React.useState<any>(memberBase?.name);
   const [gender, setGender] = React.useState<any>(memberBase?.gender);
   const [age, setAge] = React.useState<any>(String(memberBase?.age));
-  const [phoneNumber, setPhoneNumber] = React.useState<any>(memberBase?.phone_number);
+  const [phoneNumber, setPhoneNumber] = React.useState<any>(
+    memberBase?.phone_number
+  );
 
   // 저장 버튼
   const btnSave = async () => {
@@ -62,19 +67,18 @@ export const Profile = (props: Props) => {
 
   // ############### 내 계정 정보 저장
   const saveMemberBase = async () => {
-
     const body = {
       nickname: nickname,
       comment: '',
       match_yn: '',
       use_pass_yn: 'Y',
-      friend_mathch_yn: ''
+      friend_mathch_yn: '',
     };
     try {
       const { success, data } = await update_setting(body);
 
-      if(success) {
-        if(data.result_code == '0000') {
+      if (success) {
+        if (data.result_code == '0000') {
           setNicknameUpdatePopup(false);
           dispatch(myProfile());
           show({ content: '저장되었습니다.' });
@@ -104,11 +108,12 @@ export const Profile = (props: Props) => {
   const [nickNameUpdatePopup, setNicknameUpdatePopup] = React.useState(false); // 닉네임 변경 팝업
 
   const logout = async () => {
+    console.log('logout');
     // #todo pushtoken 비워줄 로그아웃 api
-    await AsyncStorage.clear();
+    // await AsyncStorage.clear();
     dispatch(clearPrincipal());
     //#todo mbr base = > principal reducer
-    //navigation.navigate(STACK.AUTH, { screen: ROUTES.LOGIN });    
+    //navigation.navigate(STACK.AUTH, { screen: ROUTES.LOGIN });
   };
 
   return (

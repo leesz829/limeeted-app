@@ -1,20 +1,19 @@
 import AsyncStorage from '@react-native-community/async-storage';
-import { Send } from 'api';
+import { send, send_file } from 'api';
 import { FCM_TOKEN } from 'constants/storeKey';
 import {
   GET_POINT,
   LIVE_MEMBERS,
   LOGIN,
   DAILY_MATCHED_INFO,
-  MATCHED_MEMBER_PROFILE,
   MATCHED_MEMBER_INFO,
   ME,
   MEMBER_BASE_INFO,
   MEMBER_INTRODUCE_GUIDE,
   MEMBER_PROFILE_ATHENTICATION2,
   MEMBER_REEXAMINATION,
+  MEMBER_INTERVIEW,
   ORDER,
-  PEEK_MATCH_INFO,
   PEEK_MEMBER,
   PROFILEIMAGE_GUIDE,
   PROFILE_ATHENTICATION2,
@@ -41,20 +40,20 @@ import {
 //로그인 체크 및 회원정보를 제공한다.
 export async function signin(body: { email_id: string; password: string }) {
   const push_token = await AsyncStorage.getItem(FCM_TOKEN);
-  return Send(LOGIN, 'POST', { ...body, push_token }, true);
+  return send(LOGIN, 'POST', { ...body, push_token }, true, false);
 }
 
 //회원가입시 프로필 2차 인증에 대한 정보를 제공한다.
 export async function get_profile_secondary_authentication() {
-  return Send(PROFILE_ATHENTICATION2, 'POST', undefined, true);
+  return send(PROFILE_ATHENTICATION2, 'POST', undefined, true, false);
 }
 //회원가입시 프로필 사진에 대한 정보를 제공한다.
 export async function get_profile_imgage_guide() {
-  return Send(PROFILEIMAGE_GUIDE, 'POST', undefined, true);
+  return send(PROFILEIMAGE_GUIDE, 'POST', undefined, true, false);
 }
 //회원가입시 닉네임, 한줄소개, 관심사 정보를 제공한다.
 export async function get_member_introduce_guide() {
-  return Send(MEMBER_INTRODUCE_GUIDE, 'POST', undefined, true);
+  return send(MEMBER_INTRODUCE_GUIDE, 'POST', undefined, true, false);
 }
 //회원의 기본정보를 신규 등록한다.
 export async function regist_member_base_info(body: {
@@ -68,7 +67,7 @@ export async function regist_member_base_info(body: {
   sns_type?: string;
   sns_token?: string;
 }) {
-  return Send(MEMBER_BASE_INFO, 'POST', body, true);
+  return send(MEMBER_BASE_INFO, 'POST', body, true, false);
 }
 
 //회원 2차 기본정보를 신규 등록한다.
@@ -84,7 +83,7 @@ export async function regist_member_secondary_info(body: {
   sns_file?: FormData;
   vehicle_file?: FormData;
 }) {
-  return Send(MEMBER_BASE_INFO, 'POST', body, true);
+  return send(MEMBER_BASE_INFO, 'POST', body, true, false);
 }
 
 //회원의 프로필 사진을 신규 등록한다.
@@ -95,7 +94,7 @@ export async function regist_profile_image(body: {
   img_file04?: FormData;
   img_file05?: FormData;
 }) {
-  return Send(REGIST_MEMBER_PROFILE_IMAGE, 'POST', body, true);
+  return send(REGIST_MEMBER_PROFILE_IMAGE, 'POST', body, true, false);
 }
 
 //회원의 닉네임, 한줄소개, 관심사를 신규 등록한다.
@@ -104,7 +103,7 @@ export async function regist_introduce(body: {
   comment: string;
   interest_list: any;
 }) {
-  return Send(MEMBER_BASE_INFO, 'POST', body, true);
+  return send(MEMBER_BASE_INFO, 'POST', body, true, false);
 }
 
 /* ========================================================================================================
@@ -112,7 +111,7 @@ export async function regist_introduce(body: {
 ======================================================================================================== */
 //회원의 정보를 조회한다.
 export async function get_my_info() {
-  return Send(ME, 'POST', undefined, true);
+  return send(ME, 'POST', undefined, true, false);
 }
 
 //회원의 기본 정보를 저장한다.
@@ -123,7 +122,7 @@ export async function update_setting(body: {
   use_pass_yn: string;
   friend_mathch_yn: string;
 }) {
-  return Send(UPDATE_SETTING, 'POST', body, true);
+  return send(UPDATE_SETTING, 'POST', body, true, false);
 }
 
 //회원의 부가 정보를 저장한다.
@@ -138,12 +137,12 @@ export async function update_additional(body: {
   drinking: string;
   smoking: string;
 }) {
-  return Send(UPDATE_ADDITIONAL, 'POST', body, true);
+  return send(UPDATE_ADDITIONAL, 'POST', body, true, false);
 }
 
 //회원의 보관함 정보를 조회한다.
 export async function get_member_storage() {
-  return Send(STORAGE, 'POST', undefined, true);
+  return send(STORAGE, 'POST', undefined, true, false);
 }
 //회원의 선호이성 정보를 저장한다.
 export async function update_prefference(body: {
@@ -162,11 +161,11 @@ export async function update_prefference(body: {
   want_person2: string;
   want_person3: string;
 }) {
-  return Send(UPDATE_PREFERENCE, 'POST', body, true);
+  return send(UPDATE_PREFERENCE, 'POST', body, true, false);
 }
 
 //회원의 프로필 사진을 저장한다.
-export async function update_profile_image(body: {
+/* export async function update_profile_image(body: {
   img_file01: FormData;
   img_file02: FormData;
   img_file03: FormData;
@@ -175,8 +174,14 @@ export async function update_profile_image(body: {
   img_del_seq_str: string;
   interview_list_str: string;
 }) {
-  return Send(UPDATE_PROFILE_IMAGE, 'POST', body, true);
+  return send_file(UPDATE_PROFILE_IMAGE, 'POST', body, true);
+} */
+export async function update_profile_image(body: FormData) {
+  console.log('body111 ::::: ' , body);
+
+  return send_file(UPDATE_PROFILE_IMAGE, body, true);
 }
+
 //회원의 프로필 2차 인증 정보를 저장한다.
 export async function update_profile_authentication(body: {
   job_name?: string;
@@ -190,7 +195,7 @@ export async function update_profile_authentication(body: {
   sns_file?: FormData;
   vehicle_file?: FormData;
 }) {
-  return Send(UPDATE_PROFILE_ATHENTICATION2, 'POST', body, true);
+  return send(UPDATE_PROFILE_ATHENTICATION2, 'POST', body, true, false);
 }
 
 //회원의 실시간성 정보를 조회한다.
@@ -198,26 +203,34 @@ export async function peek_member(body: {
   img_acct_cnt: number;
   auth_acct_cnt: number;
 }) {
-  return Send(PEEK_MEMBER, 'POST', body, true);
+  return send(PEEK_MEMBER, 'POST', body, true, false);
 }
 
 //회원의 프로필 2차 인증 정보 및 인증의 부가 정보를 조회한다.
 export async function get_member_profile_authentication() {
-  return Send(MEMBER_PROFILE_ATHENTICATION2, 'POST', undefined, true);
+  return send(MEMBER_PROFILE_ATHENTICATION2, 'POST', undefined, true, false);
 }
 
 //회원의 프로필을 재심사 처리한다.
 export async function request_reexamination() {
-  return Send(MEMBER_REEXAMINATION, 'POST', undefined, true);
+  return send(MEMBER_REEXAMINATION, 'POST', undefined, true, false);
 }
 
 //회원의 인터뷰 정보를 저장한다.
 export async function update_interview(body: any) {
-  return Send(UPDATE_INTERVIEW, 'POST', body, true);
+  return send(UPDATE_INTERVIEW, 'POST', body, true, false);
 }
 //회원의 보유 포인트 정보를 조회한다.
 export async function get_points() {
-  return Send(GET_POINT, 'POST', undefined, true);
+  return send(GET_POINT, 'POST', undefined, true, false);
+}
+
+//회원의 인터뷰 목록을 조회한다.
+export async function get_member_interview(body: {
+  use_yn: string;
+  disp_yn: string;
+}) {
+  return send(MEMBER_INTERVIEW, 'POST', body, true, false);
 }
 
 
@@ -229,7 +242,7 @@ export async function regist_profile_evaluation(body: {
   profile_score: string;
   face_code: string;
 }) {
-  return Send(REGIST_PROFILE_EVALUATION, 'POST', body, true);
+  return send(REGIST_PROFILE_EVALUATION, 'POST', body, true, false);
 }
 
 
@@ -238,7 +251,7 @@ export async function regist_profile_evaluation(body: {
 ======================================================================================================== */
 // 데일리 매칭 정보를 조회한다.
 export async function get_daily_matched_info() {
-  return Send(DAILY_MATCHED_INFO, 'POST', undefined, true);
+  return send(DAILY_MATCHED_INFO, 'POST', undefined, true, false);
 }
 
 //찐심/관심/거부 매칭 정보를 신규 등록한다.
@@ -246,7 +259,7 @@ export async function regist_match_status(body: {
   active_type: string;
   res_member_seq: number;
 }) {
-  return Send(REGIST_MATCHING_INFO, 'POST', body, true);
+  return send(REGIST_MATCHING_INFO, 'POST', body, true, false);
 }
 
 //매칭 회원을 신고한다.
@@ -254,12 +267,12 @@ export async function report_matched_user(body: {
   report_type_code_list: string;
   report_member_seq: number;
 }) {
-  return Send(REPORT, 'POST', body, true);
+  return send(REPORT, 'POST', body, true, false);
 }
 
 //LIVE에서 평가할 프로필을 조회한다.
 export async function get_live_members() {
-  return Send(LIVE_MEMBERS, 'POST', undefined, true);
+  return send(LIVE_MEMBERS, 'POST', undefined, true, false);
 }
 
 //매칭 정보를 변경한다.
@@ -268,7 +281,7 @@ export async function update_match(body: {
   req_profile_open_yn: string;
   res_profile_open_yn: string;
 }) {
-  return Send(UPDATE_MATCH, 'POST', body, true);
+  return send(UPDATE_MATCH, 'POST', body, true, false);
 }
 
 //매칭 상태를 변경한다.
@@ -276,17 +289,17 @@ export async function update_match_status(body: {
   match_seq: number;
   match_status: string;
 }) {
-  return Send(UPDATE_MATCH_STATUS, 'POST', body, true);
+  return send(UPDATE_MATCH_STATUS, 'POST', body, true, false);
 }
 
 //매칭된 회원의 연락처를 활성화한다.
 export async function resolve_match(body: { match_seq: string }) {
-  return Send(RESOLVE_MATCH, 'POST', body, true);
+  return send(RESOLVE_MATCH, 'POST', body, true, false);
 }
 
 //매칭된 회원의 기본 정보를 조회한다.
 export async function get_matched_member_info(body: { match_seq: number }) {
-  return Send(MATCHED_MEMBER_INFO, 'POST', body, true);
+  return send(MATCHED_MEMBER_INFO, 'POST', body, true, false);
 }
 
 
@@ -324,7 +337,7 @@ export async function purchase_product(
     quantity: receiptDataJson.quantity,
   };
 
-  return Send(ORDER, 'POST', body, true, false);
+  return send(ORDER, 'POST', body, true, false);
 }
 
 
@@ -334,5 +347,5 @@ export async function purchase_product(
 
 // #### 공통코드 목록을 조회한다.
 export async function get_common_code(body: { group_code: string }) {
-  return Send(COMMON_CODE, 'POST', body, true);
+  return send(COMMON_CODE, 'POST', body, true, false);
 }

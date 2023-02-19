@@ -19,13 +19,14 @@ import * as React from 'react';
 import { useState } from 'react';
 import { ScrollView } from 'react-native';
 import * as properties from 'utils/properties';
-
 import { LivePopup } from 'screens/commonpopup/LivePopup';
 import { LiveSearch } from 'screens/live/LiveSearch';
-
 import * as hooksMember from 'hooks/member';
 import { get_live_members, regist_profile_evaluation, get_common_code } from 'api/models';
 import { useMemberseq } from 'hooks/useMemberseq';
+import { findSourcePath } from 'utils/imageUtils';
+
+
 
 /* ################################################################################################################
 ###### LIVE
@@ -123,8 +124,11 @@ export const Live = () => {
 
         // LIVE 회원 프로필 사진
         data.live_profile_img_list.map((item) => {
+          console.log('findSourcePath(item.img_file_path) :::: ', findSourcePath(item.img_file_path));
+            
+
           tmpProfileImgList.push({
-            url: properties.img_domain + item.file_path + item.file_name
+            url: findSourcePath(item.img_file_path)
             , member_img_seq: item.member_img_seq
             , order_seq: item.order_seq
           });

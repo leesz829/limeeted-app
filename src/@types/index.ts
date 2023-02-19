@@ -89,7 +89,9 @@ export type BottomParamList = {
   Roby: undefined;
   Mailbox: undefined;
   Cashshop: undefined;
-  Storage: undefined;
+  Storage: {
+    headerType: String;
+  };
   Live: undefined;
   LiveSearch: undefined;
   Matching: undefined;
@@ -240,7 +242,6 @@ export const LiveMemberInfo  = {
 export const LiveProfileImg  = {
   member_img_seq : ''
   , order_seq : ''
-  , file_name : ''
-  , file_path : ''
+  , img_file_path : ''
   , url : ''
 };

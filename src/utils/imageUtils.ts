@@ -108,10 +108,10 @@ export const PROFILE_IMAGE = {
   profileM1: require('assets/img/tmp/robby_tmp.jpg'),
 };
 
-export function findSourcePath(source: any) {
-  if (source?.file_name) {
-    const path = properties.img_domain + source?.file_path + source?.file_name;
+export function findSourcePath(img_file_path: any) {
+  if (img_file_path) {
+    const path = properties.img_domain + img_file_path;
     return { uri: path };
   }
-  return source;
+  return img_file_path;
 }

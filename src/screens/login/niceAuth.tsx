@@ -4,10 +4,12 @@ import { jwt_token, api_domain } from 'utils/properties';
 import { useNavigation, CommonActions } from '@react-navigation/native';
 import { WebView } from 'react-native-webview';
 import axios from 'axios';
-import { Alert } from 'react-native';
+import { usePopup } from 'Context';
+
 
 export const NiceAuth = () => {
 	const navigation = useNavigation<ScreenNavigationProp>();
+	const { show } = usePopup();  // 공통 팝업
 
 	const [niceWebViewBody, setNiceWebViewBody] = React.useState(String);
 
@@ -25,21 +27,19 @@ export const NiceAuth = () => {
 
 		if (null != dataJson) {
 			if (dataJson.dupYn == 'Y') {
-				Alert.alert('알림', '이미 등록된 회원 입니다.', [
-					{
-						text: '확인',
-						onPress: () => {
-							navigation.dispatch(
-								CommonActions.reset({
-									index: 1,
-									routes: [
-										{ name: 'Login' }
-									],
-								})
-							);
-						},
-					},
-				]);
+				show({ 
+					content: '이미 등록된 회원 입니다.' ,
+					confirmCallback: async function() {
+						navigation.dispatch(
+							CommonActions.reset({
+								index: 1,
+								routes: [
+									{ name: 'Login' }
+								],
+							})
+						);
+					}
+				  });
 			} else {
 				navigation.dispatch(
 					CommonActions.reset({

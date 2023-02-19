@@ -44,6 +44,10 @@ export const commonStyle = StyleSheet.create({
 });
 
 export const styles = StyleSheet.create({
+  bgColorGray : {
+    backgroundColor: Color.black2222,
+  },
+
   dim: {
     position: 'absolute',
     width: '100%',
@@ -360,6 +364,24 @@ export const styles = StyleSheet.create({
     paddingLeft: 16,
     paddingRight: 16,
   },
+  questionItemTextContainerActive: {
+    flex: 1,
+    backgroundColor: 'black',
+    borderRadius: 8,
+    shadowColor: 'black',
+    shadowOffset: {
+      width: -1,
+      height: 1,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 1,
+    elevation: 1,
+    height: 52,
+    justifyContent: 'center',
+    paddingLeft: 16,
+    paddingRight: 16,
+  },
+
   questionIconContainer: {
     height: 52,
     justifyContent: 'center',
