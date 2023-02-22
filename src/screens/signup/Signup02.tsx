@@ -6,18 +6,20 @@ import { CommonText } from 'component/CommonText';
 import { ImagePicker } from 'component/ImagePicker';
 import SpaceView from 'component/SpaceView';
 import React, { useRef } from 'react';
-import { View, ScrollView, Image, Alert, TouchableOpacity } from 'react-native';
+import { View, ScrollView, Image, TouchableOpacity } from 'react-native';
 import {
   RouteProp,
   useNavigation,
   useIsFocused,
 } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { ICON, PROFILE_IMAGE } from 'utils/imageUtils';
+import { ICON, PROFILE_IMAGE, findSourcePath } from 'utils/imageUtils';
 import axios from 'axios';
 import { Value } from 'react-native-reanimated';
 import * as properties from 'utils/properties';
 import { Modalize } from 'react-native-modalize';
+import { usePopup } from 'Context';
+
 
 /* ################################################################################################################
 ###################################################################################################################
@@ -34,6 +36,7 @@ export const Signup02 = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
 
   const isFocus = useIsFocused();
+  const { show } = usePopup();  // 공통 팝업
 
   // 프로필 사진
   const [imgData, setImgData] = React.useState<any>({
@@ -159,18 +162,16 @@ export const Signup02 = (props: Props) => {
           response.data?.imgList?.map(
             ({
               member_img_seq,
-              file_name,
-              file_path,
+              img_file_path,
               order_seq,
             }: {
               member_img_seq: any;
-              file_name: any;
-              file_path: any;
+              img_file_path: any;
               order_seq: any;
             }) => {
               let data = {
                 member_img_seq: member_img_seq,
-                url: properties.img_domain + file_path + file_name,
+                url: findSourcePath(img_file_path),
                 delYn: 'N',
               };
               if (order_seq == 1) {
@@ -199,18 +200,6 @@ export const Signup02 = (props: Props) => {
       });
 
     const localDomain = properties.img_domain;
-
-    /* if (order_seq == '1') {
-			setOrgImgUrl01(localDomain + file_path + file_name);
-		} else if (order_seq == '2') {
-			setOrgImgUrl02(localDomain + file_path + file_name);
-		} else if (order_seq == '3') {
-			setOrgImgUrl03(localDomain + file_path + file_name);
-		} else if (order_seq == '4') {
-			setOrgImgUrl04(localDomain + file_path + file_name);
-		} else if (order_seq == '5') {
-			setOrgImgUrl05(localDomain + file_path + file_name);
-		} */
   }, [isFocus]);
 
   // 사진 삭제 팝업
@@ -298,7 +287,7 @@ export const Signup02 = (props: Props) => {
                   resizeMethod="scale"
                   style={styles.tempBoxBig}
                   key={imgData.orgImgUrl01.url}
-                  source={{ uri: imgData.orgImgUrl01.url }}
+                  source={imgData.orgImgUrl01.url}
                 />
               </TouchableOpacity>
             ) : (
@@ -327,7 +316,7 @@ export const Signup02 = (props: Props) => {
                       resizeMethod="scale"
                       style={styles.tempBoxSmall}
                       key={imgData.orgImgUrl02.url}
-                      source={{ uri: imgData.orgImgUrl02.url }}
+                      source={imgData.orgImgUrl02.url}
                     />
                   </TouchableOpacity>
                 ) : (
@@ -351,7 +340,7 @@ export const Signup02 = (props: Props) => {
                       resizeMethod="scale"
                       style={styles.tempBoxSmall}
                       key={imgData.orgImgUrl03.url}
-                      source={{ uri: imgData.orgImgUrl03.url }}
+                      source={imgData.orgImgUrl03.url}
                     />
                   </TouchableOpacity>
                 ) : (
@@ -378,7 +367,7 @@ export const Signup02 = (props: Props) => {
                       resizeMethod="scale"
                       style={styles.tempBoxSmall}
                       key={imgData.orgImgUrl04.url}
-                      source={{ uri: imgData.orgImgUrl04.url }}
+                      source={imgData.orgImgUrl04.url}
                     />
                   </TouchableOpacity>
                 ) : (
@@ -402,7 +391,7 @@ export const Signup02 = (props: Props) => {
                       resizeMethod="scale"
                       style={styles.tempBoxSmall}
                       key={imgData.orgImgUrl05.url}
-                      source={{ uri: imgData.orgImgUrl05.url }}
+                      source={imgData.orgImgUrl05.url}
                     />
                   </TouchableOpacity>
                 ) : (
@@ -608,9 +597,7 @@ export const Signup02 = (props: Props) => {
               console.log('tmpCnt out :: ', tmpCnt);
 
               if (tmpCnt < 3) {
-                Alert.alert('알림', '프로필 사진 최소 3장 등록해주세요', [
-                  { text: '확인' },
-                ]);
+                show({ content: '프로필 사진 최소 3장 등록해주세요.' });
                 return;
               }
 

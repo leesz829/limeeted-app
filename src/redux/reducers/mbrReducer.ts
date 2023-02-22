@@ -96,6 +96,9 @@ export const mbrSlice = createSlice({
       .addCase(memberInfo.fulfilled, (state, action) => {
         state.base = action.payload.base;
         state.profileImg = action.payload.profileImg;
+        state.secondAuth = action.payload.secondAuth;
+        state.idealType = action.payload.idealType;
+        state.interview = action.payload.interview;
       })
       .addCase(memberInfo.rejected, () => {});
   },

@@ -10,7 +10,6 @@ import { Matching } from 'screens/matching';
 import { Roby } from 'screens/roby';
 import { Shop } from 'screens/shop';
 import { Storage } from 'screens/storage';
-import { StorageProfile } from 'screens/storage/StorageProfile';
 
 import CustomTab from '../CustomTab';
 
@@ -24,6 +23,7 @@ const BottomNavigation = () => {
       initialRouteName={'Live'}
       tabBar={(props) => <CustomTab {...props} />}
     >
+
       <Tab.Screen
         name="Roby"
         component={Roby}
@@ -77,6 +77,10 @@ const BottomNavigation = () => {
         })}
       />
 
+
+      {/* ###############################################################################################################
+      ############################################################################################################### */}
+
       <Stack.Screen
         name="Live"
         component={Live}
@@ -96,14 +100,6 @@ const BottomNavigation = () => {
         component={Matching}
         options={{
           headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="StorageProfile"
-        component={StorageProfile}
-        options={{
-          headerShown: false,
-          unmountOnBlur: true,
         }}
       />
       <Stack.Screen

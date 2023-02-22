@@ -9,11 +9,13 @@ interface ResponseProps {
   data: {} | undefined;
   message: string;
 }
-export const Send = (
+
+export const send = (
   url: string,
   method: Method | undefined,
   body: {} | undefined,
-  isAuth: boolean
+  isAuth: boolean,
+  isFile: boolean,
 ): Promise<ResponseProps> =>
   new Promise(async (resolve) => {
     try {
@@ -25,6 +27,14 @@ export const Send = (
         method: method,
       };
 
+      let contentType = '';
+
+      if(isFile) {
+        contentType = 'multipart/form-data';
+      } else {
+        contentType = 'application/json';
+      }
+
       // body가 있는 경우
       if (body !== undefined) {
         config = {
@@ -32,16 +42,18 @@ export const Send = (
           data: body,
         };
       }
+
       // 토큰이 있는경우
       if (isAuth && token) {
         config = {
           ...config,
           headers: {
             'jwt-token': token,
-            'Content-Type': 'application/json',
+            'Content-Type': contentType,
           },
         };
       }
+
       // console.log('config\n\n' + JSON.stringify(config) + '\n\n');
       const result = await YahooClient(config);
 
@@ -62,6 +74,59 @@ export const Send = (
           data: undefined,
         });
       }
+    } catch (error) {
+      resolve({
+        success: false,
+        message: '일시적인 오류가 발생했습니다.',
+        data: undefined,
+      });
+    }
+  });
+
+
+// ######################## 파일 전송
+export const send_file = (
+  url: string,
+  body: FormData | undefined,
+  isAuth: boolean
+): Promise<ResponseProps> =>
+  new Promise(async (resolve) => {
+    try {
+      const endPoint = api_domain + url;
+      const token = await AsyncStorage.getItem(storeKey.JWT_TOKEN);
+      
+      let config = {
+        method: 'POST',
+        body: body
+      };
+
+      // 토큰이 있는경우
+      if (isAuth && token) {
+        config = {
+          ...config,
+          headers: {
+            'jwt-token': token
+          },
+        };
+      }
+
+      const result = await fetch(endPoint, config)
+      .then((res) => res.json())
+      .then((res) => {
+        resolve({
+          success: true,
+          message: '',
+          data: res,
+        });
+      })
+      .catch((error) => {
+        resolve({
+          success: false,
+          message: '일시적인 오류가 발생했습니다.',
+          data: undefined,
+        });
+      });
+
     } catch (error) {
       resolve({
         success: false,

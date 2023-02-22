@@ -178,7 +178,7 @@ const RenderItem = (imgObj: any) => {
         />
       ) : (
         <Image
-          source={{ uri: imgObj.imgUrl.item.url }}
+          source={imgObj.imgUrl.item.url}
           style={styles.visualImage}
         />
       )}

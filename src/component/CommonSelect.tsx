@@ -36,7 +36,7 @@ export const CommonSelect: FC<Props> = (props) => {
           <Text style={styles.labelStyle}>{props.label}</Text>
           <View style={styles.inputContainer}>
             <RNPickerSelect
-              placeholder={'선택'}
+              placeholder={{label: '선택', value: ''}}
               style={pickerSelectStyles}
               useNativeAndroidPickerStyle={false}
               onValueChange={(value) => setValue(value)}
@@ -170,6 +170,7 @@ const pickerSelectStyles = StyleSheet.create({
     marginTop: 8,
   },
   inputAndroid: {
+    width: 1000,
     fontSize: 16,
     lineHeight: 24,
     color: Color.black2222,

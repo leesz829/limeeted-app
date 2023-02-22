@@ -18,6 +18,8 @@ import { Profile2 } from 'screens/profile/Profile2';
 import { SecondAuth } from 'screens/profile/SecondAuth';
 import { Sample } from 'screens/sample/sample';
 import { Approval } from 'screens/signup/Approval';
+import { Storage } from 'screens/storage/index';
+import { StorageProfile } from 'screens/storage/StorageProfile';
 
 import React from 'react';
 const CommonStack = createStackNavigator<StackParamList>();
@@ -42,6 +44,8 @@ const CommonNavigation = () => {
       <CommonStack.Screen name="Approval" component={Approval} />
       <CommonStack.Screen name="Sample" component={Sample} />
       <CommonStack.Screen name="NiceAuth" component={NiceAuth} />
+      <CommonStack.Screen name="StorageProfile" component={StorageProfile} />
+      <CommonStack.Screen name="Storage" component={Storage} />
     </CommonStack.Navigator>
   );
 };

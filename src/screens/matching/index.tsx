@@ -10,7 +10,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import TopNavigation from 'component/TopNavigation';
-import { ICON } from 'utils/imageUtils';
+import { ICON, findSourcePath } from 'utils/imageUtils';
 import { layoutStyle, styles, modalStyle } from 'assets/styles/Styles';
 import SpaceView from 'component/SpaceView';
 import { CommonText } from 'component/CommonText';
@@ -45,6 +45,7 @@ import { ToolTip } from 'component/Tooltip';
 import { BarGrap } from 'component/BarGrap';
 import { get_daily_matched_info, report_matched_user, regist_match_status } from 'api/models';
 import { usePopup } from 'Context';
+import { Slider } from '@miblanchard/react-native-slider';
 
 
 /* ################################################################################################################
@@ -255,8 +256,8 @@ export const Matching = (props: Props) => {
 
           // 회원 프로필 이미지 정보 구성
           data.profile_img_list?.map(
-            ({ file_name, file_path }: { file_name: any; file_path: any }) => {
-              const img_path = properties.img_domain + file_path + file_name;
+            ({ img_file_path }: { img_file_path: any; }) => {
+              const img_path = findSourcePath(img_file_path);
               const dataJson = { url: img_path };
               tmpProfileImgList.push(dataJson);
             }
@@ -436,22 +437,26 @@ export const Matching = (props: Props) => {
 
           {data.secondAuthList && createSecondAuthListBody()}
 
+
+          {/* ###################################################################################################
+										프로필 평점 영역
+					################################################################################################### */}
           <SpaceView mb={54}>
-            <SpaceView mb={16}>
+            {/* <SpaceView mb={16}>
               <CommonText fontWeight={'700'} type={'h3'}>
                 프로필 평점
               </CommonText>
-            </SpaceView>
+            </SpaceView> */}
 
             {/* <MainProfileSlider score={data.memberBase.profile_score} /> */}
 
             <View style={[styles_m.profileContainer]}>
-              <SpaceView mb={8} viewStyle={layoutStyle.alignCenter}>
+              {/* <SpaceView mb={8} viewStyle={layoutStyle.alignCenter}>
                 <Image source={ICON.party} style={styles_m.iconSize} />
-              </SpaceView>
+              </SpaceView> */}
 
               <SpaceView viewStyle={layoutStyle.alignCenter} mb={29}>
-                {data.memberBase.profile_score >= 9 ? (
+                {/* {data.memberBase.profile_score >= 9 ? (
                   <>
                     <CommonText
                       color={ColorType.gray8888}
@@ -462,92 +467,7 @@ export const Matching = (props: Props) => {
                   </>
                 ) : (
                   <></>
-                )}
-
-                {data.memberBase.profile_score < 9 &&
-                data.memberBase.profile_score >= 8 ? (
-                  <>
-                    <CommonText
-                      color={ColorType.gray8888}
-                      textStyle={styles_m.textCenter}
-                    >
-                      꼭! 이분에게 관심을 표현하시길 바래요..!
-                    </CommonText>
-                  </>
-                ) : (
-                  <></>
-                )}
-
-                {data.memberBase.profile_score < 8 &&
-                data.memberBase.profile_score >= 7 ? (
-                  <>
-                    <CommonText
-                      color={ColorType.gray8888}
-                      textStyle={styles_m.textCenter}
-                    >
-                      매칭되면 후회하지 않을 듯한 느낌이 들어요.
-                    </CommonText>
-                  </>
-                ) : (
-                  <></>
-                )}
-
-                {data.memberBase.profile_score < 7 &&
-                data.memberBase.profile_score >= 6 ? (
-                  <>
-                    <CommonText
-                      color={ColorType.gray8888}
-                      textStyle={styles_m.textCenter}
-                    >
-                      좋은 분이실지도 몰라서 소개시켜드려요.
-                    </CommonText>
-                  </>
-                ) : (
-                  <></>
-                )}
-
-                {data.memberBase.profile_score < 6 &&
-                data.memberBase.profile_score >= 5 ? (
-                  <>
-                    <CommonText
-                      color={ColorType.gray8888}
-                      textStyle={styles_m.textCenter}
-                    >
-                      사람의 코드는 예상치 못 하게 맞는 법이잖아요?{'\n'}
-                      조심스럽게 소개시켜드려요.
-                    </CommonText>
-                  </>
-                ) : (
-                  <></>
-                )}
-
-                {data.memberBase.profile_score < 5 &&
-                data.memberBase.profile_score >= 4 ? (
-                  <>
-                    <CommonText
-                      color={ColorType.gray8888}
-                      textStyle={styles_m.textCenter}
-                    >
-                      신중한 관심 표현을 권장드려요.
-                    </CommonText>
-                  </>
-                ) : (
-                  <></>
-                )}
-
-                {data.memberBase.profile_score < 4 ? (
-                  <>
-                    <CommonText
-                      color={ColorType.gray8888}
-                      textStyle={styles_m.textCenter}
-                    >
-                      이 회원분에게 소셜 평점을 높이라고 당부에 당부를 드리는
-                      중입니다.
-                    </CommonText>
-                  </>
-                ) : (
-                  <></>
-                )}
+                )} */}
 
                 {/* <CommonText color={ColorType.gray8888} textStyle={styles_m.textCenter}>
 									이성들에게
@@ -559,28 +479,91 @@ export const Matching = (props: Props) => {
 										매우 높은 회원
 									</CommonText>
 									과 매칭되셨네요!
-								</CommonText> */}
+								</CommonText>
+              </SpaceView> */}
+
+                <CommonText color={ColorType.gray8888} textStyle={styles_m.textCenter}>
+									LimeetED의 여러 회원 분들에게
+                  {'\n'}
+									<CommonText fontWeight={'700'} color={ColorType.purple}>
+										{data.memberBase?.face_code_name !== null ? data.memberBase?.face_code_name : ''}
+									</CommonText>
+									{'\n'}
+									매력있다고 생각하세요.
+								</CommonText>
               </SpaceView>
 
               <SpaceView viewStyle={layoutStyle.rowBetween} mb={29}>
                 <ToolTip
                   title={'프로필 평점'}
-                  desc={'프로필 평점에 대한 툴팁'}
+                  desc={
+                    '<라이브>에 소개된 내 프로필에 다른 이성들이 부여한 프로필 평점'
+                  }
                 />
 
                 <View>
                   <CommonText fontWeight={'700'} type={'h2'}>
-                    {data.memberBase.profile_score}
+                    {data.memberBase?.profile_score}
                   </CommonText>
                 </View>
               </SpaceView>
-              <BarGrap score={data.memberBase.profile_score} />
+              <BarGrap score={data.memberBase?.profile_score} />
             </View>
           </SpaceView>
 
-          {/* ###############################################
+
+          {/* ###################################################################################################
+										소셜평점 영역
+					################################################################################################### */}
+          <SpaceView mb={48}>
+            <SpaceView mb={16}>
+              <SpaceView mb={16}>
+                <CommonText fontWeight={'700'} type={'h3'}>
+                  소셜 평점
+                </CommonText>
+                <View
+                  style={[
+                    styles.profileContainer,
+                    layoutStyle.alignCenter,
+                    { marginTop: 16 },
+                  ]}
+                >
+                  <SpaceView mb={4} viewStyle={_styles.colCenter}>
+                    <CommonText>
+                      {data.memberBase?.social_grade > 9 && '더 이상 어떤 분을 소개시켜 드려야할 지 자신이 없어요.'}
+                      {data.memberBase?.social_grade > 8 && data.memberBase?.social_grade <= 9 && '꼭! 이분에게 관심을 표현하시길 바래요..!'}
+                      {data.memberBase?.social_grade > 7 && data.memberBase?.social_grade <= 8 && '매칭되면 후회하지 않을 듯한 느낌이 들어요.'}
+                      {data.memberBase?.social_grade > 6 && data.memberBase?.social_grade <= 7 && '좋은 분이실지도 몰라서 소개시켜드려요.'}
+                      {data.memberBase?.social_grade > 5 && data.memberBase?.social_grade <= 6 && '사람의 코드는 예상치 못 하게 맞는 법이잖아요? 조심스럽게 소개시켜드려요.'}
+                      {data.memberBase?.social_grade > 4 && data.memberBase?.social_grade <= 5 && '신중한 관심 표현을 권장드려요.'}
+                      {data.memberBase?.social_grade <= 4 && '이 회원분에게 소셜 평점을 높이라고 당부에 당부를 드리는 중입니다.'}
+                    </CommonText>
+                  </SpaceView>
+                  
+                  <View style={_styles.socialScoreContainer}>
+                    <CommonText>소셜 평점</CommonText>
+                    <CommonText fontWeight={'700'} type={'h2'}>
+                      {data.memberBase?.social_grade}
+                    </CommonText>
+                  </View>
+                  <Slider
+                    value={data.memberBase?.social_grade/10}
+                    animateTransitions={true}
+                    renderThumbComponent={() => null}
+                    maximumTrackTintColor={ColorType.purple}
+                    minimumTrackTintColor={ColorType.purple}
+                    containerStyle={_styles.indicatorContainer}
+                    trackStyle={_styles.trackStyle}
+                  />
+                </View>
+              </SpaceView>
+            </SpaceView>
+          </SpaceView>
+          
+
+          {/* ###################################################################################################
 										인터뷰 영역
-					############################################### */}
+					################################################################################################### */}
 
           <SpaceView mb={24}>
             <SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
@@ -935,4 +918,31 @@ const styles_m = StyleSheet.create({
     height: 48,
   },
   textCenter: { textAlign: 'center' },
+});
+
+const _styles = StyleSheet.create({
+  colCenter: {
+    flexDirection: 'column',
+    alignItems: `center`,
+    justifyContent: `center`,
+  },
+  socialScoreContainer: {
+    width: '100%',
+    flexDirection: `row`,
+    alignItems: `center`,
+    justifyContent: 'space-between',
+    marginTop: 30,
+  },
+  indicatorContainer: {
+    width: '100%',
+    height: 6,
+    borderRadius: 3,
+    marginTop: 20,
+    backgroundColor: ColorType.primary,
+  },
+  trackStyle: {
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: ColorType.grayDDDD,
+  },
 });

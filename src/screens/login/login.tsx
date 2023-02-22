@@ -90,14 +90,14 @@ export const Login01 = () => {
             );
             delete data.result_code;
             dispatch(setPrincipal(data));
-            /* dispatch(mbrReducer.setJwtToken(data.token_param.jwt_token));
+            dispatch(mbrReducer.setJwtToken(data.token_param.jwt_token));
             dispatch(mbrReducer.setMemberSeq(data.mbr_base.member_seq));
             dispatch(mbrReducer.setBase(data.mbr_base));
             dispatch(mbrReducer.setProfileImg(data.mbr_img_list));
             dispatch(mbrReducer.setSecondAuth(data.mbr_second_auth_list));
             dispatch(mbrReducer.setIdealType(data.mbr_ideal_type));
             dispatch(mbrReducer.setInterview(data.mbr_interview_list));
-            dispatch(mbrReducer.setUserInfo(data)); */
+            dispatch(mbrReducer.setUserInfo(data));
 
             // navigation.navigate('Main', {
             //   screen: 'Matching',

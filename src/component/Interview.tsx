@@ -12,8 +12,9 @@ import { useInterView } from 'hooks/useInterView';
 import { CommonBtn } from './CommonBtn';
 import { TextInput } from 'react-native-gesture-handler';
 import { useDispatch, useSelector } from 'react-redux';
-
-import { myProfile, setPrincipal } from 'redux/reducers/authReducer';
+import { get_member_interview, update_interview } from 'api/models';
+import { usePopup } from 'Context';
+import { setPartialPrincipal } from 'redux/reducers/authReducer';
 
 enum Mode {
   view = 'view',
@@ -21,7 +22,6 @@ enum Mode {
 }
 export default function Interview() {
   const origin = useInterView();
-  console.log('origin : ', JSON.stringify(origin));
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [mode, setMode] = useState(Mode.view);
@@ -29,10 +29,14 @@ export default function Interview() {
   const [deleteList, setDeleteList] = useState([]);
   const temp = useSelector(({ auth }) => auth.principal);
 
+  const { show } = usePopup();  // 공통 팝업
+
   useEffect(() => {
-    setInterview(origin);
+    setInterview(origin?.filter((item: any) => item.use_yn === 'Y' && item.disp_yn === 'Y'));
   }, [origin]);
+
   function onPressRegist() {
+    setMode(Mode.view);
     navigation.navigate(STACK.COMMON, { screen: 'Profile2' });
   }
 
@@ -50,24 +54,58 @@ export default function Interview() {
     if (deleteList.includes(item)) {
       setDeleteList((prev) => prev.filter((i) => i !== item));
     } else {
+      console.log('????');
       setDeleteList([...deleteList, item]);
     }
   }
+
   //저장버튼
   async function submit() {
-    // if (mode === Mode.delete) {
-    //   const { success, data } = await deleteInterview(deleteList);
-    //   if (success) {
-    //     dispatch(myProfile());
-    //     setDeleteList([]);
-    //   }
-    // } else {
-    //   const { success, data } = await updateInterview(interview);
-    //   if (success) {
-    //     dispatch(myProfile());
-    //   }
-    // }
+    if(deleteList.length > 0) {
+      show({ 
+        content: '선택한 인터뷰 아이템을 삭제하시겠습니까?' ,
+        cancelCallback: function() {
+          
+        },
+        confirmCallback: function() {
+          deleteList?.filter((item: any) => item.use_yn = 'N');
+          saveAPI();
+        }
+      });
+    } else {
+      show({ content: '삭제할 인터뷰를 선택해 주세요.' });
+    }
   }
+
+  // ############################################# 인터뷰 정보 저장 API 호출
+  const saveAPI = async () => {
+    const body = {
+      interview_list : deleteList
+    };
+    try {
+      const { success, data } = await update_interview(body);
+      if(success) {
+        if(data.result_code == '0000') {
+          dispatch(setPartialPrincipal({mbr_interview_list : data.mbr_interview_list}));
+          show({
+            content: '삭제되었습니다.' ,
+            confirmCallback: function() {
+            }
+          });
+        } else {
+          show({ 
+            content: '오류입니다. 관리자에게 문의해주세요.' ,
+            confirmCallback: function() {}
+          });
+          return false;
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      
+    }
+  };
 
   /* 인터뷰 답변 핸들러 */
   const answerChangeHandler = (v_code: any, text: any) => {
@@ -107,8 +145,8 @@ export default function Interview() {
         <View style={styles.interviewContainer}>
           {interview?.length > 0 ? (
             interview.map(
-              (item: { common_code: any; code_name: any; answer: any }) => {
-                const { common_code, code_name, answer } = item;
+              (item: { common_code: any; code_name: any; answer: any; use_yn: any; disp_yn: any; }) => {
+                const { common_code, code_name, answer, use_yn, disp_yn } = item;
                 return (
                   <View key={common_code}>
                     <SpaceView
@@ -182,12 +220,19 @@ export default function Interview() {
               </SpaceView>
             </>
           )}
-          {(JSON.stringify(origin) !== JSON.stringify(interview) ||
+          {/* {(JSON.stringify(origin) !== JSON.stringify(interview) ||
             mode === Mode.delete) && (
             <View>
               <CommonBtn value={'저장'} type={'primary'} onPress={submit} />
             </View>
-          )}
+          )} */}
+
+          {(mode === Mode.delete) && (
+            <View>
+              <CommonBtn value={'선택 삭제'} type={'primary'} onPress={submit} />
+            </View>
+          )}     
+
         </View>
       </SpaceView>
     </>

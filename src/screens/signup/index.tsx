@@ -10,9 +10,11 @@ import { CommonInput } from 'component/CommonInput';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
-import { Alert, Image, ScrollView, StyleSheet, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, View } from 'react-native';
 import { ICON } from 'utils/imageUtils';
 import * as properties from 'utils/properties';
+import { usePopup } from 'Context';
+
 
 interface Props {
   navigation: StackNavigationProp<StackParamList, 'Signup00'>;
@@ -21,6 +23,8 @@ interface Props {
 
 export const Signup00 = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
+
+  const { show } = usePopup();  // 공통 팝업
 
   const [ci, setCi] = React.useState(props.route.params.ci);
   const [id, setId] = React.useState('');
@@ -161,48 +165,34 @@ export const Signup00 = (props: Props) => {
             type={'primary'}
             onPress={() => {
               if (id == '') {
-                Alert.alert('알림', '아이디를 입력해 주세요.', [
-                  { text: '확인' },
-                ]);
+                show({ content: '아이디를 입력해 주세요.' });
                 return;
               }
 
               let regEmail =
                 /^([0-9a-zA-Z_\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;
               if (!regEmail.test(id)) {
-                Alert.alert('알림', '이메일 형식의 아이디가 아닙니다.', [
-                  { text: '확인' },
-                ]);
+                show({ content: '이메일 형식의 아이디가 아닙니다.' });
                 return;
               }
 
               if (password == '') {
-                Alert.alert('알림', '비밀번호를 입력해 주세요.', [
-                  { text: '확인' },
-                ]);
+                show({ content: '비밀번호를 입력해 주세요.' });
                 return;
               }
 
               let regPass = /^(?=.*[a-zA-Z])(?=.*[0-9]).{8,25}$/;
               if (!regPass.test(password)) {
-                Alert.alert(
-                  '알림',
-                  '영문, 숫자 조합으로 8-20자리 입력해주세요.',
-                  [{ text: '확인' }]
-                );
+                show({ content: '영문, 숫자 조합으로 8-20자리 입력해주세요.' });
                 return;
               }
 
               if (passwordChk == '') {
-                Alert.alert('알림', '비밀번호 확인을 입력해 주세요.', [
-                  { text: '확인' },
-                ]);
+                show({ content: '비밀번호 확인을 입력해 주세요.' });
                 return;
               }
               if (password != passwordChk) {
-                Alert.alert('알림', '비밀번호 확인이 맞지 않습니다.', [
-                  { text: '확인' },
-                ]);
+                show({ content: '비밀번호 확인이 맞지 않습니다.' });
                 return;
               }
 

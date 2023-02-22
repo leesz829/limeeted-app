@@ -1,12 +1,9 @@
-import { Modal, View, TouchableOpacity } from 'react-native';
-import * as React from 'react';
-import { useState } from 'react';
-import { CommonBtn } from 'component/CommonBtn';
-import { CommonText } from 'component/CommonText';
-import { layoutStyle, modalStyle } from 'assets/styles/Styles';
 import { ColorType } from '@types';
+import { layoutStyle, modalStyle } from 'assets/styles/Styles';
+import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
-import CommonHeader from 'component/CommonHeader';
+import * as React from 'react';
+import { Modal, TouchableOpacity, View } from 'react-native';
 
 /* ################################################################################################################
 ###################################################################################################################

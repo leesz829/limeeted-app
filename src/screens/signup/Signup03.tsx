@@ -6,7 +6,7 @@ import { CommonInput } from 'component/CommonInput';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import React, { useRef, useState } from 'react';
-import { View, Image, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { ICON } from 'utils/imageUtils';
 import { Modalize } from 'react-native-modalize';
 import { RouteProp, useNavigation } from '@react-navigation/native';
@@ -14,6 +14,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import axios from 'axios';
 import { RadioCheckBox_2 } from 'component/RadioCheckBox_2';
 import * as properties from 'utils/properties';
+import { usePopup } from 'Context';
 
 
 /* ################################################################################################################
@@ -29,6 +30,8 @@ interface Props {
 
 export const Signup03 = (props : Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
+
+	const { show } = usePopup();  // 공통 팝업
 
 	const [nickname, setNickname] = React.useState('');
 	const [comment, setComment] = React.useState('');
@@ -158,17 +161,17 @@ export const Signup03 = (props : Props) => {
 								type={'primary'}
 								onPress={() => {
 									if(nickname == '' || typeof nickname == 'undefined') {
-										Alert.alert("알림",	"닉네임을 입력해 주세요.",	[{text: "확인"}]);
+										show({ content: '닉네임을 입력해 주세요.' });
 										return;
 									}
 
 									if(comment == '' || typeof comment == 'undefined') {
-										Alert.alert("알림",	"한줄 소개를 입력해 주세요.",	[{text: "확인"}]);
+										show({ content: '한줄 소개를 입력해 주세요.' });
 										return;
 									}
 
 									if(checkIntValue_01.length < 2){
-										Alert.alert("알림",	"관심사를 입력해 주세요.",	[{text: "확인"}]);
+										show({ content: '관심사를 입력해 주세요.' });
 										return;
 									}
 

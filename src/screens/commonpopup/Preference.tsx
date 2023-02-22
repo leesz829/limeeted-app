@@ -29,19 +29,15 @@ import SpaceView from 'component/SpaceView';
 import { CommonBtn } from 'component/CommonBtn';
 import { CommonSelect } from 'component/CommonSelect';
 import { CommonInput } from 'component/CommonInput';
-import axios from 'axios';
-import * as properties from 'utils/properties';
 import { Color } from 'assets/styles/Color';
-import AsyncStorage from '@react-native-community/async-storage';
-import * as hooksMember from 'hooks/member';
 import { useDispatch } from 'react-redux';
-import * as mbrReducer from 'redux/reducers/mbrReducer';
 import { useUserInfo } from 'hooks/useUserInfo';
 import { useIdeal } from 'hooks/useIdeal';
 import { get_common_code, update_prefference } from 'api/models';
 import { usePopup } from 'Context';
-import { myProfile } from 'redux/reducers/authReducer';
-import { setPrincipal } from 'redux/reducers/authReducer';
+import { setPartialPrincipal } from 'redux/reducers/authReducer';
+import { ROUTES, STACK } from 'constants/routes';
+
 
 
 /* ################################################################################################################
@@ -201,7 +197,12 @@ export const Preference = (props: Props) => {
               setJobCdList3(dataList);
             }
         } else {
-          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+          show({ 
+            content: '오류입니다. 관리자에게 문의해주세요.' ,
+            confirmCallback: function() {
+              
+            }
+          });
           return false;
         }
       }
@@ -235,8 +236,20 @@ export const Preference = (props: Props) => {
       const { success, data } = await update_prefference(body);
       if(success) {
         if(data.result_code == '0000') {
-          dispatch(mbrReducer.setIdealType(data.mbr_ideal_type));
-          show({ content: '저장되었습니다.' });
+          console.log('data.mbr_ideal_type :::: ', data.mbr_ideal_type);
+
+          dispatch(setPartialPrincipal({mbr_ideal_type : data.mbr_ideal_type}));
+          //dispatch(mbrReducer.setIdealType(data.mbr_ideal_type));
+          //show({ content: '저장되었습니다.' });
+
+          show({ 
+            content: '저장되었습니다.' ,
+            confirmCallback: function() {
+              navigation.navigate(STACK.TAB, {
+                screen: 'Roby',
+              });
+            }
+          });
 
           /* navigation.navigate('Main', {
             screen: 'Roby',
@@ -376,7 +389,7 @@ export const Preference = (props: Props) => {
                 value={wantAgeMin}
                 onChangeText={(wantAgeMin) => setWantAgeMin(wantAgeMin)}
                 maxLength={2}
-                placeholder={'ex) 22'}
+                placeholder={'입력'}
                 placeholderTextColor={'#c6ccd3'}
               />
             </View>
@@ -388,7 +401,7 @@ export const Preference = (props: Props) => {
                 value={wantAgeMax}
                 onChangeText={(wantAgeMax) => setWantAgeMax(wantAgeMax)}
                 maxLength={2}
-                placeholder={'ex) 35'}
+                placeholder={'입력'}
                 placeholderTextColor={'#c6ccd3'}
               />
             </View>
@@ -410,7 +423,7 @@ export const Preference = (props: Props) => {
                 value={wantLocal1}
                 onChangeText={(wantLocal1) => setWantLocal1(wantLocal1)}
                 maxLength={2}
-                placeholder={'ex) 1'}
+                placeholder={'입력'}
                 placeholderTextColor={'#c6ccd3'}
               />
             </View>
@@ -422,7 +435,7 @@ export const Preference = (props: Props) => {
                 value={wantLocal2}
                 onChangeText={(wantLocal2) => setWantLocal2(wantLocal2)}
                 maxLength={2}
-                placeholder={'ex) 50'}
+                placeholder={'입력'}
                 placeholderTextColor={'#c6ccd3'}
               />
             </View>

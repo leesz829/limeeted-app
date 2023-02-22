@@ -41,6 +41,10 @@ export const PopupProvider = ({ children }: any) => {
         setPopupVIsible={setVisible}
         title={contents.title}
         text={contents.content}
+        isConfirm={
+          typeof contents.confirmCallback != 'undefined' &&
+          typeof contents.cancelCallback != 'undefined'
+        }
         confirmCallbackFunc={contents.confirmCallback}
         cancelCallbackFunc={contents.cancelCallback}
       />

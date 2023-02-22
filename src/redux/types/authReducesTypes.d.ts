@@ -6,9 +6,8 @@ interface InterviewProps {
 }
 interface secondaryAuthenticationProps {
   file_seq: number;
-  file_path: string;
+  img_file_path: string;
   member_auth_seq: number;
-  file_name: string;
   second_auth_code: string;
   file_gubun: string;
   member_seq: number;
@@ -17,8 +16,7 @@ interface secondaryAuthenticationProps {
 interface ImageProps {
   order_seq: number;
   file_seq: number;
-  file_path: string;
-  file_name: string;
+  img_file_path: string;
   member_img_seq: number;
   use_yn: string;
   member_seq: number;

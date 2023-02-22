@@ -11,7 +11,6 @@ import {
   View,
   TouchableOpacity,
   Modal,
-  Alert,
 } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import LinearGradient from 'react-native-linear-gradient';
@@ -31,6 +30,9 @@ import * as mbrReducer from 'redux/reducers/mbrReducer';
 import { get_member_storage, update_match } from 'api/models';
 import { useMemberseq } from 'hooks/useMemberseq';
 import { usePopup } from 'Context';
+import { STACK } from 'constants/routes';
+import CommonHeader from 'component/CommonHeader';
+
 
 
 /* ################################################################################################################
@@ -196,11 +198,17 @@ export const Storage = (props: Props) => {
             type: type
          }}]}); */
 
-      navigation.navigate('StorageProfile', {
+      navigation.navigate(STACK.COMMON, { screen: 'StorageProfile', params: {
         matchSeq: match_seq,
         tgtMemberSeq: tgt_member_seq,
         type: type,
-      });
+      } });
+
+      /* navigation.navigate('StorageProfile', {
+        matchSeq: match_seq,
+        tgtMemberSeq: tgt_member_seq,
+        type: type,
+      }); */
     }
   };
 
@@ -251,7 +259,17 @@ export const Storage = (props: Props) => {
 
   return (
     <>
-      <TopNavigation currentPath={''} />
+      {/* <TopNavigation currentPath={''} /> */}
+
+      
+
+
+      {props.route.params?.headerType == 'common' ? (
+        <CommonHeader title={'보관함'} />
+      ) : (
+        <TopNavigation currentPath={''} />
+      )}
+
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {/* ################################################################
             ######################   내가 받은 관심 목록 영역 ######################
