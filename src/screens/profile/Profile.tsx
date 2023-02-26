@@ -65,6 +65,11 @@ export const Profile = (props: Props) => {
     }
   };
 
+	// 비밀번호 변경 버튼
+	const btnChangePassword = async () => {
+		navigation.navigate('ChangePassword', {});
+	}
+
   // ############### 내 계정 정보 저장
   const saveMemberBase = async () => {
     const body = {
@@ -186,6 +191,10 @@ export const Profile = (props: Props) => {
 
         <SpaceView mb={16}>
           <CommonBtn value={'로그아웃'} type={'primary'} onPress={logout} />
+          
+          <View style={{ height: 6 }} />
+          <CommonBtn value={'비밀번호 변경'} type={'primary'} onPress={btnChangePassword} />
+          
           <View style={{ height: 6 }} />
           <CommonBtn value={'저장'} type={'primary'} onPress={btnSave} />
         </SpaceView>

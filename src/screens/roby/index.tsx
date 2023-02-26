@@ -548,6 +548,15 @@ export const Roby = (props: Props) => {
             <CommonText fontWeight={'500'}>내 계정 정보</CommonText>
             <Image source={ICON.arrRight} style={styles.iconSize} />
           </TouchableOpacity>
+
+          <TouchableOpacity style={styles.rowStyle} 
+            onPress={() => {
+              navigation.navigate(STACK.COMMON, { screen: 'CustomerInquiry' });
+          }}>
+          <CommonText fontWeight={'500'}>고객문의</CommonText>
+            <Image source={ICON.arrRight} style={styles.iconSize} />
+          </TouchableOpacity>
+
           <TouchableOpacity style={styles.rowStyle} onPress={terms_onOpen}>
             <CommonText fontWeight={'500'}>이용약관</CommonText>
             <Image source={ICON.arrRight} style={styles.iconSize} />
