@@ -5,6 +5,7 @@ import {
   GET_POINT,
   LIVE_MEMBERS,
   LOGIN,
+  MEMBER_LOGOUT,
   DAILY_MATCHED_INFO,
   MATCHED_MEMBER_INFO,
   ME,
@@ -31,7 +32,9 @@ import {
   UPDATE_PROFILE_ATHENTICATION2,
   UPDATE_PROFILE_IMAGE,
   UPDATE_SETTING,
-  COMMON_CODE
+  COMMON_CODE,
+  SAVE_PROFILE_AUTH,
+  MEMBER_AUTH_DETAIL
 } from './route';
 
 /* ========================================================================================================
@@ -42,10 +45,9 @@ export async function signin(body: { email_id: string; password: string }) {
   const push_token = await AsyncStorage.getItem(FCM_TOKEN);
   return send(LOGIN, 'POST', { ...body, push_token }, true, false);
 }
-
 //회원가입시 프로필 2차 인증에 대한 정보를 제공한다.
-export async function get_profile_secondary_authentication() {
-  return send(PROFILE_ATHENTICATION2, 'POST', undefined, true, false);
+export async function get_profile_secondary_authentication(body: { member_seq: any; second_auth_code: string;}) {
+  return send(PROFILE_ATHENTICATION2, 'POST', body, false, false);
 }
 //회원가입시 프로필 사진에 대한 정보를 제공한다.
 export async function get_profile_imgage_guide() {
@@ -105,6 +107,7 @@ export async function regist_introduce(body: {
 }) {
   return send(MEMBER_BASE_INFO, 'POST', body, true, false);
 }
+
 
 /* ========================================================================================================
 ==================================================== USER
@@ -177,8 +180,6 @@ export async function update_prefference(body: {
   return send_file(UPDATE_PROFILE_IMAGE, 'POST', body, true);
 } */
 export async function update_profile_image(body: FormData) {
-  console.log('body111 ::::: ' , body);
-
   return send_file(UPDATE_PROFILE_IMAGE, body, true);
 }
 
@@ -232,6 +233,28 @@ export async function get_member_interview(body: {
 }) {
   return send(MEMBER_INTERVIEW, 'POST', body, true, false);
 }
+
+// 회원 로그아웃 한다.
+export async function member_logout() {
+  return send(MEMBER_LOGOUT, 'POST', undefined, true, false);
+}
+
+// 회원 2차 인증 상세 목록을 조회한다.
+export async function get_member_second_detail(body: {
+  second_auth_code : any;
+}) {
+  return send(MEMBER_AUTH_DETAIL, 'POST', body, true, false);
+}
+
+
+export async function save_profile_auth(body: {
+  fileList : any;
+}) {
+  return send(SAVE_PROFILE_AUTH, 'POST', body, true, false);
+}
+
+
+
 
 
 /* ========================================================================================================

@@ -6,6 +6,7 @@ import { Login } from 'screens/login';
 import { Login01 } from 'screens/login/login';
 import { NiceAuth } from 'screens/login/niceAuth';
 import { Signup00 } from 'screens/signup';
+import { Policy } from 'screens/signup/policy';
 import { Signup01 } from 'screens/signup/Signup01';
 import { Signup02 } from 'screens/signup/Signup02';
 import { Signup03 } from 'screens/signup/Signup03';
@@ -27,6 +28,7 @@ export default function AuthNavigation() {
       <AuthStack.Screen name={ROUTES.TITLE00} component={Title00} />
       <AuthStack.Screen name={ROUTES.SIGNUP00} component={Signup00} />
       <AuthStack.Screen name={ROUTES.SIGNUP01} component={Signup01} />
+      <AuthStack.Screen name={ROUTES.POLICY} component={Policy} />
       <AuthStack.Screen
         name={ROUTES.SECOND_AUTH_POPUP}
         component={SecondAuthPopup}

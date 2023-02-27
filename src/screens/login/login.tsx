@@ -64,6 +64,7 @@ export const Login01 = () => {
                 if (joinStatus == '01') {
                   navigation.navigate(ROUTES.SIGNUP01, {
                     memberSeq: data.mbr_base.member_seq,
+                    gender: data.mbr_base.gender,
                   });
                 } else if (joinStatus == '02') {
                   navigation.navigate(ROUTES.SIGNUP02, {

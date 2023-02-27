@@ -20,6 +20,7 @@ type Props = {
   iconSize?: number;
   iconPosition?: 'left' | 'right';
   height?: number;
+  width?: number;
 } & StyleProp<TouchableOpacityProps>;
 /**
  * 공통 버튼
@@ -106,6 +107,7 @@ const styles = (props: Props) => {
   }
   return StyleSheet.create({
     btnStyle: {
+      width: props.width ? props.width : '100%',
       height: props.height ? props.height : 56,
       borderRadius: 12,
       backgroundColor: backgroundColor,

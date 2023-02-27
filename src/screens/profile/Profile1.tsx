@@ -55,9 +55,6 @@ export const Profile1 = (props: Props) => {
   const dispatch = useDispatch();
 
   const { show } = usePopup();  // 공통 팝업
-
-  const profileImgs = useProfileImg();
-
   const jwtToken = hooksMember.getJwtToken(); // 토큰
 
   const memberBase = useUserInfo();           // 회원 기본정보
@@ -93,6 +90,7 @@ export const Profile1 = (props: Props) => {
   // 인터뷰 목록
   const [interviewList, setInterviewList] = React.useState<any>(mbrInterviewList);
 
+  // ################################################################ 회원 프로필 사진 파일 콜백 함수
   const fileCallBack1 = (
     uri: string,
     fileName: string,
@@ -227,27 +225,27 @@ export const Profile1 = (props: Props) => {
       mbrSecondAuthList.map(
         ({
           second_auth_code,
-          status,
+          auth_status,
         }: {
           second_auth_code: any;
           status: any;
         }) => {
-          if (second_auth_code == 'JOB' && status == 'ACCEPT') {
+          if (second_auth_code == 'JOB' && auth_status == 'ACCEPT') {
             setIsJob(true);
           }
-          if (second_auth_code == 'EDU' && status == 'ACCEPT') {
+          if (second_auth_code == 'EDU' && auth_status == 'ACCEPT') {
             setIsEdu(true);
           }
-          if (second_auth_code == 'INCOME' && status == 'ACCEPT') {
+          if (second_auth_code == 'INCOME' && auth_status == 'ACCEPT') {
             setIsIncome(true);
           }
-          if (second_auth_code == 'ASSET' && status == 'ACCEPT') {
+          if (second_auth_code == 'ASSET' && auth_status == 'ACCEPT') {
             setIsAsset(true);
           }
-          if (second_auth_code == 'SNS' && status == 'ACCEPT') {
+          if (second_auth_code == 'SNS' && auth_status == 'ACCEPT') {
             setIsSns(true);
           }
-          if (second_auth_code == 'VEHICLE' && status == 'ACCEPT') {
+          if (second_auth_code == 'VEHICLE' && auth_status == 'ACCEPT') {
             setIsVehicle(true);
           }
         }
@@ -605,7 +603,7 @@ export const Profile1 = (props: Props) => {
                 </>
               ) : null}
             </SpaceView>
-
+            
             <SpaceView mb={48}>
               <SpaceView viewStyle={[layoutStyle.rowBetween]} mb={16}>
                 <View style={styles.profileBox}>
