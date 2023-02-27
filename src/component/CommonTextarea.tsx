@@ -28,7 +28,6 @@ export const CommonTextarea: FC<Props> = (props: any) => {
   const [charCount, setCharCount] = React.useState(0);
 
   const handleChangeText = (text: string) => {
-    setCharCount(text.length);
     if (props.onChangeText) props.onChangeText(text);
   };
 
@@ -55,17 +54,6 @@ export const CommonTextarea: FC<Props> = (props: any) => {
 };
 
 const styles = StyleSheet.create({
-  penContainer: {
-    position: 'absolute',
-    right: 16,
-    top: 12,
-    height: '100%',
-    justifyContent: 'center',
-  },
-  iconSize: {
-    width: 18,
-    height: 18,
-  },
   labelContainer: {
     marginBottom: 8,
   },
@@ -76,20 +64,17 @@ const styles = StyleSheet.create({
     color: Color.gray6666,
   },
   inputContainer: {
-    margin: 16,
-    textAlign: 'center',
-    borderWidth: 1,
-    borderColor: '#9E9E9E',
-    borderRadius: 10 ,
-    backgroundColor : "#FFFFFF",
-    height: 150
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   inputStyle: {
-    fontSize: 16,
-    lineHeight: 24,
-    color: Color.black2222,
-    padding: 0,
-    margin: 0,
-    fontFamily: 'AppleSDGothicNeoM00',
+    width: 370,
+    height: 220,
+    borderColor: '#999',
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 10,
+    textAlignVertical: 'top',
   },
 });

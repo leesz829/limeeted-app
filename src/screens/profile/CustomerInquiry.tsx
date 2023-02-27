@@ -118,13 +118,14 @@ export const CustomerInquiry = (props : Props) => {
             				}}
           				/>
         			</SpaceView>
-					
+
 					<SpaceView mb={16}>
-						<CommonText type={'h2'}>등록해주신 문의내용은 관리자 확인 후{'\n'}
-							우편함으로 답변드립니다.
-						</CommonText>
+						<View style={layoutStyle.alignCenter}>
+          					<CommonText type={'h3'}>등록해주신 문의내용은 관리자 확인 후{'\n'}
+							우편함으로 답변드립니다.</CommonText>
+        				</View>
 					</SpaceView>
-				</SpaceView>				
+				</SpaceView>
 
 				<Modal visible={customerInquiryCompletePopup} transparent={true}>
 					<View style={modalStyle.modalBackground}>
