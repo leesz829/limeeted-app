@@ -215,6 +215,7 @@ export const Signup00 = (props: Props) => {
                   if (response.data.result_code == '0000') {
                     navigation.navigate('Signup01', {
                       memberSeq: response.data.memberSeq,
+                      gender: gender
                     });
                   }
                 })

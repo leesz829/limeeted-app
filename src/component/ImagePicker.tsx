@@ -17,10 +17,8 @@ interface Action {
 interface Props {
   isBig: boolean;
   callbackFn: (
-    uri: string,
-    fileName: string,
-    fileSize: number,
-    type: string
+    uri: any,
+    base64: string
   ) => void;
   uriParam?: string;
 }
@@ -30,29 +28,26 @@ const options: Action = {
   title: '이미지를 선택해 주세요.',
   type: 'library',
   options: {
-    maxHeight: 200,
-    maxWidth: 200,
+    //maxHeight: 200,
+    //maxWidth: 200,
     selectionLimit: 0,
     mediaType: 'photo',
-    includeBase64: false,
+    includeBase64: true,
     includeExtra,
   },
 };
 export const ImagePicker: FC<Props> = (props) => {
   const [response, setResponse] = React.useState<any>(null);
   const onButtonPress = React.useCallback(() => {
-    launchImageLibrary(options, setResponse);
+    //launchImageLibrary(options, setResponse);
+    launchImageLibrary(options.options, setResponse);
   }, []);
 
   React.useEffect(() => {
-    console.log('image response :: ', response);
-
     if (null != response && !response.didCancel) {
       props.callbackFn(
         response?.assets[0].uri,
-        response?.assets[0].fileName,
-        response?.assets[0].fileSize,
-        response?.assets[0].type
+        response?.assets[0].base64
       );
     }
   }, [response]);
@@ -70,6 +65,7 @@ export const ImagePicker: FC<Props> = (props) => {
             style={props.isBig ? styles.tempBoxBig : styles.tempBoxSmall}
             key={uri}
             source={{ uri }}
+            
           />
         ))
       ) : props.uriParam != null && props.uriParam != '' ? (

@@ -29,6 +29,10 @@ export const MEMBER_INTERVIEW = '/member/getMemberInterviewList';
 export const MEMBER_REEXAMINATION = '/member/profileReexProc';
 export const UPDATE_INTERVIEW = '/member/saveMemberInterview';
 export const GET_POINT = '/member/getMemberHasPoint';
+export const MEMBER_LOGOUT = '/member/logoutProc';
+
+export const SAVE_PROFILE_AUTH = '/member/saveProfileSecondAuth';
+export const MEMBER_AUTH_DETAIL = '/member/selectMemberSecondAuthDetailList';
 
 /**
  * PROFILE

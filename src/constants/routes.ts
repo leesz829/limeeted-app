@@ -8,6 +8,7 @@ export const ROUTES = {
   LOGIN01: 'Login01',
   START_PAGE: 'StartPage',
   TITLE00: 'Title00',
+  POLICY: 'Policy',
   SIGNUP00: 'Signup00',
   SIGNUP01: 'Signup01',
   SIGNUP02: 'Signup02',

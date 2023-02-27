@@ -54,7 +54,6 @@ export default function Interview() {
     if (deleteList.includes(item)) {
       setDeleteList((prev) => prev.filter((i) => i !== item));
     } else {
-      console.log('????');
       setDeleteList([...deleteList, item]);
     }
   }

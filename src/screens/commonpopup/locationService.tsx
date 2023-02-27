@@ -14,7 +14,7 @@ import { ImagePicker } from 'component/ImagePicker';
 
 interface Props {}
 
-export const Terms: FC<Props> = (props) => {
+export const LocationService: FC<Props> = (props) => {
 	return (
 		<CommonText>
 			1. 목적{'\n'}

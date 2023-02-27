@@ -151,7 +151,7 @@ export const Login = () => {
 					type={'kakao'}
 					iconSize={24}
 					onPress={() => {
-						navigation.navigate('NiceAuth');
+						navigation.navigate('Policy');
 					}}
 				/>
 			</SpaceView>
