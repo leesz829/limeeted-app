@@ -13,6 +13,7 @@ export const ROUTES = {
   SIGNUP01: 'Signup01',
   SIGNUP02: 'Signup02',
   SIGNUP03: 'Signup03',
+  APPROVAL: 'Approval',
   SECOND_AUTH_POPUP: 'SecondAuthPopup',
   SIGNUP_POPUP2: 'SignupPopUp2',
   NICE_AUTH: 'NiceAuth',

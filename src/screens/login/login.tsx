@@ -55,8 +55,9 @@ export const Login01 = () => {
 
           if (memberStatus == 'PROCEED' || memberStatus == 'APROVAL') {
             if (memberStatus == 'APROVAL') {
-              navigation.navigate('Approval', {
+              navigation.navigate(ROUTES.APPROVAL, {
                 memberSeq: data.mbr_base.member_seq,
+                gender: data.mbr_base.gender,
                 accessType: 'LOGIN',
               });
             } else {
@@ -74,10 +75,12 @@ export const Login01 = () => {
                 } else if (joinStatus == '03') {
                   navigation.navigate(ROUTES.SIGNUP03, {
                     memberSeq: data.mbr_base.member_seq,
+                    gender: data.mbr_base.gender,
                   });
                 } else if (joinStatus == '04') {
-                  navigation.navigate('Approval', {
+                  navigation.navigate(ROUTES.APPROVAL, {
                     memberSeq: data.mbr_base.member_seq,
+                    gender: data.mbr_base.gender,
                     accessType: 'LOGIN',
                   });
                 }
@@ -112,7 +115,7 @@ export const Login01 = () => {
           show({ content: '탈퇴 회원 입니다.' });
           break;
         default:
-          navigation.navigate('Approval', {
+          navigation.navigate(ROUTES.APPROVAL, {
             memberSeq: data.mbr_base.member_seq,
             accessType: 'REFUSE',
           });

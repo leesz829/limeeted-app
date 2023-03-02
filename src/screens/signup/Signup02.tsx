@@ -14,11 +14,11 @@ import {
 } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ICON, PROFILE_IMAGE, findSourcePath } from 'utils/imageUtils';
-import axios from 'axios';
-import { Value } from 'react-native-reanimated';
-import * as properties from 'utils/properties';
 import { Modalize } from 'react-native-modalize';
 import { usePopup } from 'Context';
+import { get_profile_imgage_guide, regist_profile_image } from 'api/models';
+import { REFUSE, SUCCESS, SUCESSION } from 'constants/reusltcode';
+import { ROUTES } from 'constants/routes';
 
 
 /* ################################################################################################################
@@ -38,6 +38,8 @@ export const Signup02 = (props: Props) => {
   const isFocus = useIsFocused();
   const { show } = usePopup();  // 공통 팝업
 
+  const [profileImageList, setProfileImageList] = React.useState([]); // 프로필 이미지 목록
+
   // 프로필 사진
   const [imgData, setImgData] = React.useState<any>({
     orgImgUrl01: { memer_img_seq: '', url: '', delYn: '' },
@@ -45,164 +47,78 @@ export const Signup02 = (props: Props) => {
     orgImgUrl03: { memer_img_seq: '', url: '', delYn: '' },
     orgImgUrl04: { memer_img_seq: '', url: '', delYn: '' },
     orgImgUrl05: { memer_img_seq: '', url: '', delYn: '' },
-    imgFile01: { uri: '', name: '', type: '' },
-    imgFile02: { uri: '', name: '', type: '' },
-    imgFile03: { uri: '', name: '', type: '' },
-    imgFile04: { uri: '', name: '', type: '' },
-    imgFile05: { uri: '', name: '', type: '' },
   });
 
   // 프로필 이미지 삭제 시퀀스 문자열
   const [imgDelSeqStr, setImgDelSeqStr] = React.useState('');
 
+
+  // ################################################################ 프로필 이미지 파일 콜백 함수
   const fileCallBack1 = (
-    uri: string,
-    fileName: string,
-    fileSize: number,
-    type: string
+    uri: any,
+    base64: string
   ) => {
-    if (uri != null && uri != '') {
-      setImgData({
-        ...imgData,
-        imgFile01: { uri: uri, name: fileName, type: type },
-      });
-    }
+    let data = {file_uri: uri, file_base64: base64, order_seq: 1};
+    imageDataApply(data);
   };
 
   const fileCallBack2 = (
-    uri: string,
-    fileName: string,
-    fileSize: number,
-    type: string
+    uri: any,
+    base64: string
   ) => {
-    if (uri != null && uri != '') {
-      setImgData({
-        ...imgData,
-        imgFile02: { uri: uri, name: fileName, type: type },
-      });
-    }
+    let data = {file_uri: uri, file_base64: base64, order_seq: 2};
+    imageDataApply(data);
   };
 
   const fileCallBack3 = (
-    uri: string,
-    fileName: string,
-    fileSize: number,
-    type: string
+    uri: any,
+    base64: string
   ) => {
-    if (uri != null && uri != '') {
-      setImgData({
-        ...imgData,
-        imgFile03: { uri: uri, name: fileName, type: type },
-      });
-    }
+    let data = {file_uri: uri, file_base64: base64, order_seq: 3};
+    imageDataApply(data);
   };
 
   const fileCallBack4 = (
-    uri: string,
-    fileName: string,
-    fileSize: number,
-    type: string
+    uri: any,
+    base64: string
   ) => {
-    if (uri != null && uri != '') {
-      setImgData({
-        ...imgData,
-        imgFile04: { uri: uri, name: fileName, type: type },
-      });
-    }
+    let data = {file_uri: uri, file_base64: base64, order_seq: 4};
+    imageDataApply(data);
   };
 
   const fileCallBack5 = (
-    uri: string,
-    fileName: string,
-    fileSize: number,
-    type: string
+    uri: any,
+    base64: string
   ) => {
-    if (uri != null && uri != '') {
-      setImgData({
-        ...imgData,
-        imgFile05: { uri: uri, name: fileName, type: type },
-      });
-    }
+    let data = {file_uri: uri, file_base64: base64, order_seq: 5};
+    imageDataApply(data);
   };
 
-  // 사진삭제 컨트롤 변수
+  // ################################################################ 프로필 이미지 데이터 적용
+  const imageDataApply  = (data: any) => {
+    let dupChk = false;
+    profileImageList.map(({order_seq} : {order_seq: any;}) => {
+      if(order_seq == data.order_seq) { dupChk = true };
+    })
+
+    if(!dupChk) {
+      setProfileImageList([...profileImageList, data]);
+    } else {
+      setProfileImageList((prev) =>
+        prev.map((item: any) =>
+          item.order_seq === data.order_seq ? { ...item, uri: data.file_uri, file_base64: data.file_base64 } : item
+        )
+      );
+    }
+  }
+
+  // ############################################################################# 사진삭제 컨트롤 변수
   const [isDelImgData, setIsDelImgData] = React.useState<any>({
     img_seq: '',
     order_seq: '',
   });
 
-  /*
-   * 최초 실행
-   */
-  React.useEffect(() => {
-    // 회원 이미지 정보 조회
-    axios
-      .post(properties.api_domain + '/join/selectMemberImage/', {
-        member_seq: props.route.params.memberSeq,
-      })
-      .then(function (response) {
-        console.log('response ::: ' + JSON.stringify(response.data));
-
-        if (null != response.data.imgList) {
-          console.log('imgList ::: ', response.data.imgList);
-
-          let imgData: any = {
-            orgImgUrl01: { memer_img_seq: '', url: '', delYn: '' },
-            orgImgUrl02: { memer_img_seq: '', url: '', delYn: '' },
-            orgImgUrl03: { memer_img_seq: '', url: '', delYn: '' },
-            orgImgUrl04: { memer_img_seq: '', url: '', delYn: '' },
-            orgImgUrl05: { memer_img_seq: '', url: '', delYn: '' },
-            imgFile01: { uri: '', name: '', type: '' },
-            imgFile02: { uri: '', name: '', type: '' },
-            imgFile03: { uri: '', name: '', type: '' },
-            imgFile04: { uri: '', name: '', type: '' },
-            imgFile05: { uri: '', name: '', type: '' },
-          };
-
-          response.data?.imgList?.map(
-            ({
-              member_img_seq,
-              img_file_path,
-              order_seq,
-            }: {
-              member_img_seq: any;
-              img_file_path: any;
-              order_seq: any;
-            }) => {
-              let data = {
-                member_img_seq: member_img_seq,
-                url: findSourcePath(img_file_path),
-                delYn: 'N',
-              };
-              if (order_seq == 1) {
-                imgData.orgImgUrl01 = data;
-              }
-              if (order_seq == 2) {
-                imgData.orgImgUrl02 = data;
-              }
-              if (order_seq == 3) {
-                imgData.orgImgUrl03 = data;
-              }
-              if (order_seq == 4) {
-                imgData.orgImgUrl04 = data;
-              }
-              if (order_seq == 5) {
-                imgData.orgImgUrl05 = data;
-              }
-            }
-          );
-
-          setImgData({ ...imgData, imgData });
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-
-    const localDomain = properties.img_domain;
-  }, [isFocus]);
-
-  // 사진 삭제 팝업
+  // ############################################################################# 사진 삭제 팝업
   const imgDel_modalizeRef = useRef<Modalize>(null);
   const imgDel_onOpen = (img_seq: any, order_seq: any) => {
     setIsDelImgData({
@@ -215,16 +131,12 @@ export const Signup02 = (props: Props) => {
     imgDel_modalizeRef.current?.close();
   };
 
-  // 사진 삭제
+  // ############################################################################# 사진 삭제
   const imgDelProc = () => {
     if (isDelImgData.order_seq == '1') {
       setImgData({
         ...imgData,
-        orgImgUrl01: {
-          member_img_seq: imgData.orgImgUrl01.member_img_seq,
-          url: imgData.orgImgUrl01.url,
-          delYn: 'Y',
-        },
+        orgImgUrl01: { ...imgData.orgImgUrl01, delYn: 'Y' },
       });
     }
     if (isDelImgData.order_seq == '2') {
@@ -261,6 +173,133 @@ export const Signup02 = (props: Props) => {
     setImgDelSeqStr(delArr);
     imgDel_onClose();
   };
+
+  // ############################################################################# 프로필 이미지 정보 조회
+  const getProfileImage = async() => {
+    const body = {
+      member_seq: props.route.params.memberSeq
+    };
+    try {
+      const { success, data } = await get_profile_imgage_guide(body);
+      if(success) {
+        switch (data.result_code) {
+          case SUCCESS:
+            if (null != data.imgList) {
+              let imgData: any = {
+                orgImgUrl01: { memer_img_seq: '', url: '', delYn: '' },
+                orgImgUrl02: { memer_img_seq: '', url: '', delYn: '' },
+                orgImgUrl03: { memer_img_seq: '', url: '', delYn: '' },
+                orgImgUrl04: { memer_img_seq: '', url: '', delYn: '' },
+                orgImgUrl05: { memer_img_seq: '', url: '', delYn: '' },
+              };
+    
+              data?.imgList?.map(
+                ({
+                  member_img_seq,
+                  img_file_path,
+                  order_seq,
+                }: {
+                  member_img_seq: any;
+                  img_file_path: any;
+                  order_seq: any;
+                }) => {
+                  let data = {
+                    member_img_seq: member_img_seq,
+                    url: findSourcePath(img_file_path),
+                    delYn: 'N',
+                  };
+                  if (order_seq == 1) { imgData.orgImgUrl01 = data; }
+                  if (order_seq == 2) { imgData.orgImgUrl02 = data; }
+                  if (order_seq == 3) { imgData.orgImgUrl03 = data; }
+                  if (order_seq == 4) { imgData.orgImgUrl04 = data; }
+                  if (order_seq == 5) { imgData.orgImgUrl05 = data; }
+                }
+              );
+    
+              setImgData({ ...imgData, imgData });
+            }
+
+            break;
+          default:
+            show({
+              content: '오류입니다. 관리자에게 문의해주세요.' ,
+              confirmCallback: function() {}
+            });
+            break;
+        }
+       
+      } else {
+        show({
+          content: '오류입니다. 관리자에게 문의해주세요.' ,
+          confirmCallback: function() {}
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      
+    }
+  } 
+
+  // ############################################################################# 프로필 이미지 저장
+  const saveProfileImage = async() => {
+    let tmpCnt = 0;
+    for (var key in imgData) {
+      if (imgData[key].delYn == 'N' && (imgData[key].url || imgData[key].uri)) {
+        tmpCnt++;
+      }
+    }
+    for(var key in profileImageList) {
+      tmpCnt++;
+    }
+
+    if (tmpCnt < 3) {
+      show({ content: '프로필 사진은 최소 3장 등록해주세요.' });
+      return;
+    }
+
+    const body = {
+      member_seq: props.route.params.memberSeq
+      , file_list: profileImageList
+      , img_del_seq_str: imgDelSeqStr
+    };
+    try {
+      const { success, data } = await regist_profile_image(body);
+      if(success) {
+        switch (data.result_code) {
+          case SUCCESS:
+            navigation.navigate(ROUTES.SIGNUP03, {
+              memberSeq: props.route.params.memberSeq,
+              gender: props.route.params.gender,
+            });
+            break;
+          default:
+            show({
+              content: '오류입니다. 관리자에게 문의해주세요.' ,
+              confirmCallback: function() {}
+            });
+            break;
+        }
+       
+      } else {
+        show({
+          content: '오류입니다. 관리자에게 문의해주세요.' ,
+          confirmCallback: function() {}
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      
+    }
+  }
+
+   // ############################################################################# 최초 실행
+   React.useEffect(() => {
+    setProfileImageList([]);
+    setImgDelSeqStr('');
+    getProfileImage();
+  }, [isFocus]);
 
   return (
     <>
@@ -308,7 +347,7 @@ export const Signup02 = (props: Props) => {
                 imgData.orgImgUrl02.delYn == 'N' ? (
                   <TouchableOpacity
                     onPress={() => {
-                      imgDel_onOpen(imgData.orgImgUrl02.member_img_seq, 1);
+                      imgDel_onOpen(imgData.orgImgUrl02.member_img_seq, 2);
                     }}
                   >
                     <Image
@@ -332,7 +371,7 @@ export const Signup02 = (props: Props) => {
                 imgData.orgImgUrl03.delYn == 'N' ? (
                   <TouchableOpacity
                     onPress={() => {
-                      imgDel_onOpen(imgData.orgImgUrl03.member_img_seq, 1);
+                      imgDel_onOpen(imgData.orgImgUrl03.member_img_seq, 3);
                     }}
                   >
                     <Image
@@ -359,7 +398,7 @@ export const Signup02 = (props: Props) => {
                 imgData.orgImgUrl04.delYn == 'N' ? (
                   <TouchableOpacity
                     onPress={() => {
-                      imgDel_onOpen(imgData.orgImgUrl04.member_img_seq, 1);
+                      imgDel_onOpen(imgData.orgImgUrl04.member_img_seq, 4);
                     }}
                   >
                     <Image
@@ -383,7 +422,7 @@ export const Signup02 = (props: Props) => {
                 imgData.orgImgUrl05.delYn == 'N' ? (
                   <TouchableOpacity
                     onPress={() => {
-                      imgDel_onOpen(imgData.orgImgUrl05.member_img_seq, 1);
+                      imgDel_onOpen(imgData.orgImgUrl05.member_img_seq, 5);
                     }}
                   >
                     <Image
@@ -539,90 +578,7 @@ export const Signup02 = (props: Props) => {
             value={'다음 (3/4)'}
             type={'primary'}
             onPress={() => {
-              const data = new FormData();
-
-              /* const file01 = {
-								uri: imgFileData01.uri,
-								type: imgFileData01.type,
-								name: imgFileData01.fileName,
-							};
-							const file02 = {
-								uri: imgFileData02.uri,
-								type: imgFileData02.type,
-								name: imgFileData02.fileName,
-							};
-							const file03 = {
-								uri: imgFileData03.uri,
-								type: imgFileData03.type,
-								name: imgFileData03.fileName,
-							};
-							const file04 = {
-								uri: imgFileData04.uri,
-								type: imgFileData04.type,
-								name: imgFileData04.fileName,
-							};
-							const file05 = {
-								uri: imgFileData05.uri,
-								type: imgFileData05.type,
-								name: imgFileData05.fileName,
-							}; */
-
-              data.append('memberSeq', props.route.params.memberSeq);
-              if (imgData.imgFile01.uri != '') {
-                data.append('file01', imgData.imgFile01);
-              }
-              if (imgData.imgFile02.uri != '') {
-                data.append('file02', imgData.imgFile02);
-              }
-              if (imgData.imgFile03.uri != '') {
-                data.append('file03', imgData.imgFile03);
-              }
-              if (imgData.imgFile04.uri != '') {
-                data.append('file04', imgData.imgFile04);
-              }
-              if (imgData.imgFile05.uri != '') {
-                data.append('file05', imgData.imgFile05);
-              }
-
-              console.log('imgData :::: ', imgData);
-
-              let tmpCnt = 0;
-              for (var key in imgData) {
-                console.log('key :: ', imgData[key]);
-                if (imgData[key].url || imgData[key].uri) {
-                  tmpCnt++;
-                }
-              }
-
-              console.log('tmpCnt out :: ', tmpCnt);
-
-              if (tmpCnt < 3) {
-                show({ content: '프로필 사진 최소 3장 등록해주세요.' });
-                return;
-              }
-
-              fetch(properties.api_domain + '/join/insertMemberProfile/', {
-                method: 'POST',
-                body: data,
-              })
-                .then((response) => response.json())
-                .then((response) => {
-                  fetch(properties.api_domain + '/join/insertMemberProfile/', {
-                    method: 'POST',
-                    body: data,
-                  })
-                    .then((response) => response.json())
-                    .then((response) => {
-                      if (response.result_code == '0000') {
-                        navigation.navigate('Signup03', {
-                          memberSeq: props.route.params.memberSeq,
-                        });
-                      }
-                    })
-                    .catch((error) => {
-                      console.log('error', error);
-                    });
-                });
+              saveProfileImage();
             }}
           />
         </SpaceView>

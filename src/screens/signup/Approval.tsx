@@ -8,6 +8,8 @@ import { IMAGE } from 'utils/imageUtils';
 import { RouteProp, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
+import { ROUTES } from 'constants/routes';
+
 
 interface Props {
   navigation: StackNavigationProp<StackParamList, 'Approval'>;
@@ -18,6 +20,7 @@ export const Approval = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
 
   const memberSeq = props.route.params.memberSeq; // 회원 번호
+  const gender = props.route.params.gender;       // 회원 성별
   const accessType = props.route.params.accessType; //
 
   return (
@@ -38,15 +41,20 @@ export const Approval = (props: Props) => {
         <CommonBtn
           value={'프로필 수정하기'}
           onPress={() => {
-            if (accessType == 'LOGIN') {
+            /* if (accessType == 'LOGIN') {
               navigation.reset({
                 routes: [{ name: 'Login01' }],
               });
             } else {
-              navigation.navigate('Signup03', {
+              navigation.navigate('Signup01', {
                 memberSeq: memberSeq,
               });
-            }
+            } */
+
+            navigation.navigate(ROUTES.SIGNUP00, {
+              memberSeq: memberSeq,
+              gender: gender,
+            });
           }}
         />
       </SpaceView>

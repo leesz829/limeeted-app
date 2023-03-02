@@ -15,13 +15,14 @@ import * as properties from 'utils/properties';
 import AsyncStorage from '@react-native-community/async-storage';
 import { useDispatch } from 'react-redux';
 import * as mbrReducer from 'redux/reducers/mbrReducer';
-import { get_member_profile_authentication, get_member_second_detail } from 'api/models';
+import { get_member_profile_authentication, get_member_second_detail, save_profile_auth } from 'api/models';
 import { usePopup } from 'Context';
 import { useMemberseq } from 'hooks/useMemberseq';
 import { useSecondAth } from 'hooks/useSecondAth';
 import storeKey from 'constants/storeKey';
 import { STACK } from 'constants/routes';
 import { verticalStackLayout } from 'react-native-reanimated-carousel/lib/typescript/layouts/stack';
+import { REFUSE, SUCCESS, SUCESSION } from 'constants/reusltcode';
 
 
 /* ################################################################################################################
@@ -59,8 +60,12 @@ export const SecondAuth = () => {
 
   // 직업 Pop
   const job_modalizeRef = useRef<Modalize>(null);
-  const job_onOpen = () => { job_modalizeRef.current?.open(); };
-  const job_onClose = () => { job_modalizeRef.current?.close(); };
+  const job_onOpen = () => {
+    getMemberSecondDetail('JOB');
+  };
+  const job_onClose = () => { 
+    job_modalizeRef.current?.close();
+  };
 
   // 학위 Pop
   const edu_modalizeRef = useRef<Modalize>(null);
@@ -190,11 +195,12 @@ export const SecondAuth = () => {
               if(order_seq == 1) {
                 filePath01 = img_file_path;
               } else if(order_seq == 2) {
-                filePath01 = img_file_path;
+                filePath02 = img_file_path;
               } else if(order_seq == 3) {
-                filePath01 = img_file_path;
+                filePath03 = img_file_path;
               }
             });
+
             setFilePathData({
               filePath01: filePath01
               , filePath02: filePath02
@@ -231,8 +237,41 @@ export const SecondAuth = () => {
     }
   }
 
-  // ############################################################################# 인증 정보 저장 함수
-  const saveSecondAuth = async () => {
+  // ############################################################################# 2차인증 저장 함수
+  const saveSecondAuth = async(type: string, file_list: any) => {
+    const body = {
+      file_list: file_list
+    };
+    try {
+      const { success, data } = await save_profile_auth(body);
+
+      if (success) {
+        if (data.result_code == '0000') {
+          show({
+            content: '심사 요청 되었습니다.' ,
+            confirmCallback: function() {
+              if(type == 'JOB') { job_onClose(); }
+              else if(type == 'EDU') { edu_onClose(); }
+              else if(type == 'INCOME') { income_onClose(); }
+              else if(type == 'ASSET') { asset_onClose(); }
+              else if(type == 'SNS') { sns_onClose(); }
+              else if(type == 'VEHICLE') { vehicle_onClose(); }
+            }
+          });          
+        } else {
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+          return false;
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      
+    }
+  }
+
+
+  /* const saveSecondAuth = async () => {
     const data = new FormData();
 
     data.append('memberSeq', memberSeq);
@@ -289,7 +328,7 @@ export const SecondAuth = () => {
       .catch((error) => {
         console.log('error', error);
       });
-  };
+  }; */
 
   return (
     <>
@@ -357,7 +396,7 @@ export const SecondAuth = () => {
         <SecondAuthPopup
           type={'JOB'}
           onCloseFn={job_onClose}
-          callbackFn={null}
+          saveFn={saveSecondAuth}
           filePath01={filePathData.filePath01}
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
@@ -375,7 +414,7 @@ export const SecondAuth = () => {
         <SecondAuthPopup
           type={'EDU'}
           onCloseFn={edu_onClose}
-          callbackFn={null}
+          saveFn={saveSecondAuth}
           filePath01={filePathData.filePath01}
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
@@ -393,7 +432,7 @@ export const SecondAuth = () => {
         <SecondAuthPopup
           type={'INCOME'}
           onCloseFn={income_onClose}
-          callbackFn={null}
+          saveFn={saveSecondAuth}
           filePath01={filePathData.filePath01}
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
@@ -411,7 +450,7 @@ export const SecondAuth = () => {
         <SecondAuthPopup
           type={'ASSET'}
           onCloseFn={asset_onClose}
-          callbackFn={null}
+          saveFn={saveSecondAuth}
           filePath01={filePathData.filePath01}
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
@@ -429,7 +468,7 @@ export const SecondAuth = () => {
         <SecondAuthPopup
           type={'SNS'}
           onCloseFn={sns_onClose}
-          callbackFn={null}
+          saveFn={saveSecondAuth}
           filePath01={filePathData.filePath01}
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
@@ -447,7 +486,7 @@ export const SecondAuth = () => {
         <SecondAuthPopup
           type={'VEHICLE'}
           onCloseFn={vehicle_onClose}
-          callbackFn={null}
+          saveFn={saveSecondAuth}
           filePath01={filePathData.filePath01}
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}

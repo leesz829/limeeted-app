@@ -28,19 +28,16 @@ import { useSecondAth } from 'hooks/useSecondAth';
 ###### - INCOME : 소득
 ###### - ASSET : 자산
 ###### - SNS : SNS
-###### - VEHICE : 차량
+###### - VEHICLE : 차량
 ###################################################################################################################
 ################################################################################################################ */
 
 interface Props {
   type: string;
   onCloseFn: () => void;
-  callbackFn: (
-    uri: string,
-    fileName: string,
-    fileSize: number,
-    type: string,
-    item: string
+  saveFn: (
+      type: string,
+      list: any
   ) => void;
   filePath01: string
   filePath02: string
@@ -166,8 +163,10 @@ export const SecondAuthPopup = (props: Props) => {
 
   // ################################################################ 2차 인증 저장 함수
   const saveSecondAuth = async () => {
-    const body = {
-      fileList: fileDataList
+    props.saveFn(props.type, fileDataList);
+
+    /* const body = {
+      file_list: fileDataList
     };
     try {
       const { success, data } = await save_profile_auth(body);
@@ -190,7 +189,7 @@ export const SecondAuthPopup = (props: Props) => {
       console.log(error);
     } finally {
       
-    }
+    } */
   };
 
   // ################################################################ 회원 2차인증 상세 목록 조회

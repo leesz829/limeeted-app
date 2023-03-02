@@ -20,7 +20,7 @@ enum Mode {
   view = 'view',
   delete = 'delete',
 }
-export default function Interview() {
+export default function Interview({ callbackFn }) {
   const origin = useInterView();
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -49,7 +49,7 @@ export default function Interview() {
     }
   }
 
-  //삭제 체크/해제 핸들러
+  // 삭제 체크/해제 핸들러
   function onSelectDeleteItem(item: any) {
     if (deleteList.includes(item)) {
       setDeleteList((prev) => prev.filter((i) => i !== item));
@@ -58,7 +58,7 @@ export default function Interview() {
     }
   }
 
-  //저장버튼
+  // 저장버튼
   async function submit() {
     if(deleteList.length > 0) {
       show({ 
@@ -107,12 +107,14 @@ export default function Interview() {
   };
 
   /* 인터뷰 답변 핸들러 */
-  const answerChangeHandler = (v_code: any, text: any) => {
+  const answerChangeHandler = (member_interview_seq: any, text: any) => {
     setInterview((prev) =>
       prev.map((item: any) =>
-        item.common_code === v_code ? { ...item, answer: text } : item
+        item.member_interview_seq === member_interview_seq ? { ...item, answer: text } : item
       )
     );
+
+    callbackFn(member_interview_seq, text);
   };
   return (
     <>
@@ -144,8 +146,8 @@ export default function Interview() {
         <View style={styles.interviewContainer}>
           {interview?.length > 0 ? (
             interview.map(
-              (item: { common_code: any; code_name: any; answer: any; use_yn: any; disp_yn: any; }) => {
-                const { common_code, code_name, answer, use_yn, disp_yn } = item;
+              (item: { member_interview_seq: any; common_code: any; code_name: any; answer: any; use_yn: any; disp_yn: any; }) => {
+                const { member_interview_seq, common_code, code_name, answer, use_yn, disp_yn } = item;
                 return (
                   <View key={common_code}>
                     <SpaceView
@@ -188,7 +190,7 @@ export default function Interview() {
                         <TextInput
                           defaultValue={answer}
                           onChangeText={(text) =>
-                            answerChangeHandler(common_code, text)
+                            answerChangeHandler(member_interview_seq, text)
                           }
                           style={[styles.inputTextStyle_type02]}
                           multiline={true}

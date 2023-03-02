@@ -51,9 +51,11 @@ export type StackParamList = {
   };
   Signup03: {
     memberSeq: Number;
+    gender: string;
   };
   Approval: {
     memberSeq: Number;
+    gender: string;
     accessType: string;
   };
   SecondAuthPopup: undefined; // 2차 인증 팝업

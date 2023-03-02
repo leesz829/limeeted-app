@@ -7,10 +7,13 @@ export const PURCHASE = '/order/payment';
  */
 export const LOGIN = '/login/loginProc';
 export const PROFILE_ATHENTICATION2 = '/join/getProfileSecondAuth';
-export const PROFILEIMAGE_GUIDE = '/join/getProfileImage';
+export const PROFILE_IMAGE_GUIDE = '/join/getProfileImage';
 export const MEMBER_INTRODUCE_GUIDE = '/join/getMemberIntro';
-export const MEMBER_BASE_INFO = '/join/insertMemberInfo';
+export const REGIST_BASE_INFO = '/join/insertMemberInfo';
 export const REGIST_MEMBER_PROFILE_IMAGE = '/join/insertMemberProfileImage';
+export const REGIST_MEMBER_INTEREST = '/join/insertMemberIntro';
+export const REGIST_MEMBER_SECOND_AUTH = '/join/insertMemberSecondAuth';
+
 
 /**
  * USER
@@ -21,7 +24,7 @@ export const UPDATE_SETTING = '/member/saveMemberBase';
 export const UPDATE_ADDITIONAL = '/member/saveMemberAddInfo';
 export const STORAGE = '/member/getMemberStorageInfo';
 export const UPDATE_PREFERENCE = '/member/saveMemberIdealType';
-export const UPDATE_PROFILE_IMAGE = '/member/saveProfileImage';
+export const UPDATE_PROFILE = '/member/saveMemberProfile';
 export const UPDATE_PROFILE_ATHENTICATION2 = '/member/saveProfileSecondAuth';
 export const PEEK_MEMBER = '/member/getRealTimeMemberInfo';
 export const MEMBER_PROFILE_ATHENTICATION2 = '/member/getMemberProfileSecondAuth';
