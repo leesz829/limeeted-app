@@ -5,21 +5,24 @@ import {
   GET_POINT,
   LIVE_MEMBERS,
   LOGIN,
+  MEMBER_LOGOUT,
   DAILY_MATCHED_INFO,
   MATCHED_MEMBER_INFO,
   ME,
-  MEMBER_BASE_INFO,
   MEMBER_INTRODUCE_GUIDE,
   MEMBER_PROFILE_ATHENTICATION2,
   MEMBER_REEXAMINATION,
   MEMBER_INTERVIEW,
   ORDER,
   PEEK_MEMBER,
-  PROFILEIMAGE_GUIDE,
+  PROFILE_IMAGE_GUIDE,
   PROFILE_ATHENTICATION2,
+  REGIST_BASE_INFO,
   REGIST_MATCHING_INFO,
   REGIST_MEMBER_PROFILE_IMAGE,
   REGIST_PROFILE_EVALUATION,
+  REGIST_MEMBER_INTEREST,
+  REGIST_MEMBER_SECOND_AUTH,
   REPORT,
   RESOLVE_MATCH,
   STORAGE,
@@ -29,9 +32,11 @@ import {
   UPDATE_MATCH_STATUS,
   UPDATE_PREFERENCE,
   UPDATE_PROFILE_ATHENTICATION2,
-  UPDATE_PROFILE_IMAGE,
+  UPDATE_PROFILE,
   UPDATE_SETTING,
-  COMMON_CODE
+  COMMON_CODE,
+  SAVE_PROFILE_AUTH,
+  MEMBER_AUTH_DETAIL
 } from './route';
 
 /* ========================================================================================================
@@ -42,18 +47,17 @@ export async function signin(body: { email_id: string; password: string }) {
   const push_token = await AsyncStorage.getItem(FCM_TOKEN);
   return send(LOGIN, 'POST', { ...body, push_token }, true, false);
 }
-
 //회원가입시 프로필 2차 인증에 대한 정보를 제공한다.
-export async function get_profile_secondary_authentication() {
-  return send(PROFILE_ATHENTICATION2, 'POST', undefined, true, false);
+export async function get_profile_secondary_authentication(body: { member_seq: any; second_auth_code: string;}) {
+  return send(PROFILE_ATHENTICATION2, 'POST', body, false, false);
 }
 //회원가입시 프로필 사진에 대한 정보를 제공한다.
-export async function get_profile_imgage_guide() {
-  return send(PROFILEIMAGE_GUIDE, 'POST', undefined, true, false);
+export async function get_profile_imgage_guide(body: { member_seq: any; }) {
+  return send(PROFILE_IMAGE_GUIDE, 'POST', body, false, false);
 }
 //회원가입시 닉네임, 한줄소개, 관심사 정보를 제공한다.
-export async function get_member_introduce_guide() {
-  return send(MEMBER_INTRODUCE_GUIDE, 'POST', undefined, true, false);
+export async function get_member_introduce_guide(body: { member_seq: any; }) {
+  return send(MEMBER_INTRODUCE_GUIDE, 'POST', body, false, false);
 }
 //회원의 기본정보를 신규 등록한다.
 export async function regist_member_base_info(body: {
@@ -67,44 +71,36 @@ export async function regist_member_base_info(body: {
   sns_type?: string;
   sns_token?: string;
 }) {
-  return send(MEMBER_BASE_INFO, 'POST', body, true, false);
-}
-
-//회원 2차 기본정보를 신규 등록한다.
-export async function regist_member_secondary_info(body: {
-  job_name?: string;
-  edu_ins?: string;
-  instagram_id?: string;
-  vehicle?: string;
-  job_file?: FormData;
-  edu_file?: FormData;
-  income_file?: FormData;
-  asset_file?: FormData;
-  sns_file?: FormData;
-  vehicle_file?: FormData;
-}) {
-  return send(MEMBER_BASE_INFO, 'POST', body, true, false);
+  return send(REGIST_BASE_INFO, 'POST', body, false, false);
 }
 
 //회원의 프로필 사진을 신규 등록한다.
 export async function regist_profile_image(body: {
-  img_file01?: FormData;
-  img_file02?: FormData;
-  img_file03?: FormData;
-  img_file04?: FormData;
-  img_file05?: FormData;
+  member_seq : number;
+  file_list : any;
+  img_del_seq_str: string;
 }) {
-  return send(REGIST_MEMBER_PROFILE_IMAGE, 'POST', body, true, false);
+  return send(REGIST_MEMBER_PROFILE_IMAGE, 'POST', body, false, false);
 }
 
 //회원의 닉네임, 한줄소개, 관심사를 신규 등록한다.
 export async function regist_introduce(body: {
+  member_seq: number;
   nickname: string;
   comment: string;
   interest_list: any;
 }) {
-  return send(MEMBER_BASE_INFO, 'POST', body, true, false);
+  return send(REGIST_MEMBER_INTEREST, 'POST', body, false, false);
 }
+
+//회원의 2차 인증정보를 신규 등록한다.
+export async function regist_second_auth(body: {
+  member_seq: number;
+  file_list: any;
+}) {
+  return send(REGIST_MEMBER_SECOND_AUTH, 'POST', body, false, false);
+}
+
 
 /* ========================================================================================================
 ==================================================== USER
@@ -164,22 +160,13 @@ export async function update_prefference(body: {
   return send(UPDATE_PREFERENCE, 'POST', body, true, false);
 }
 
-//회원의 프로필 사진을 저장한다.
-/* export async function update_profile_image(body: {
-  img_file01: FormData;
-  img_file02: FormData;
-  img_file03: FormData;
-  img_file04: FormData;
-  img_file05: FormData;
+//회원의 프로필을 저장한다.
+export async function update_profile(body: {
+  file_list: any;
   img_del_seq_str: string;
   interview_list_str: string;
 }) {
-  return send_file(UPDATE_PROFILE_IMAGE, 'POST', body, true);
-} */
-export async function update_profile_image(body: FormData) {
-  console.log('body111 ::::: ' , body);
-
-  return send_file(UPDATE_PROFILE_IMAGE, body, true);
+  return send(UPDATE_PROFILE, 'POST', body, true, false);
 }
 
 //회원의 프로필 2차 인증 정보를 저장한다.
@@ -232,6 +219,28 @@ export async function get_member_interview(body: {
 }) {
   return send(MEMBER_INTERVIEW, 'POST', body, true, false);
 }
+
+// 회원 로그아웃 한다.
+export async function member_logout() {
+  return send(MEMBER_LOGOUT, 'POST', undefined, true, false);
+}
+
+// 회원 2차 인증 상세 목록을 조회한다.
+export async function get_member_second_detail(body: {
+  second_auth_code : any;
+}) {
+  return send(MEMBER_AUTH_DETAIL, 'POST', body, true, false);
+}
+
+
+export async function save_profile_auth(body: {
+  file_list : any;
+}) {
+  return send(SAVE_PROFILE_AUTH, 'POST', body, true, false);
+}
+
+
+
 
 
 /* ========================================================================================================

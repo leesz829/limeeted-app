@@ -23,6 +23,7 @@ export const commonStyle = StyleSheet.create({
   ml25: { marginLeft: 25 },
   ml30: { marginLeft: 30 },
   mr5: { marginRight: 5 },
+  mr8: { marginRight: 8 },
   mr10: { marginRight: 10 },
   mr15: { marginRight: 15 },
   mr20: { marginRight: 20 },

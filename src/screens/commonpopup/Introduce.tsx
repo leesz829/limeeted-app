@@ -1,12 +1,13 @@
-import { styles } from 'assets/styles/Styles';
+import { styles, layoutStyle, modalStyle } from 'assets/styles/Styles';
 import CommonHeader from 'component/CommonHeader';
 import { CommonInput } from 'component/CommonInput';
 import SpaceView from 'component/SpaceView';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import * as React from 'react';
-import { FC, useState, useEffect } from 'react';
+import { FC, useState, useEffect, useRef } from 'react';
 import { CommonSelect } from 'component/CommonSelect';
 import { CommonBtn } from 'component/CommonBtn';
+import { CommonText } from 'component/CommonText';
 import { StackNavigationProp } from '@react-navigation/stack';
 import {
   RouteProp,
@@ -19,15 +20,15 @@ import {
   BottomParamList,
   ScreenNavigationProp,
 } from '@types';
-import axios from 'axios';
-import * as properties from 'utils/properties';
 import { useDispatch } from 'react-redux';
-import * as mbrReducer from 'redux/reducers/mbrReducer';
 import { STACK } from 'constants/routes';
 import { useUserInfo } from 'hooks/useUserInfo';
 import { get_common_code, update_additional } from 'api/models';
 import { usePopup } from 'Context';
 import { myProfile } from 'redux/reducers/authReducer';
+import { Color } from 'assets/styles/Color';
+import { ICON } from 'utils/imageUtils';
+import { Modalize } from 'react-native-modalize';
 
 
 /* ################################################################################################################
@@ -62,7 +63,22 @@ export const Introduce = (props: Props) => {
   const [drinking, setDrinking] = React.useState<any>(memberBase.drinking);
   const [smoking, setSmoking] = React.useState<any>(memberBase.smoking);
 
-  // 업종 그룹 코드 목록
+  const int_modalizeRef = useRef<Modalize>(null);
+	const int_onOpen = () => { int_modalizeRef.current?.open(); };
+	const int_onClose = () => {	int_modalizeRef.current?.close(); };
+
+  // 관심사 목록
+	const [intList, setIntList] = React.useState([]);
+
+	// 관심사 체크 목록
+	const [checkIntList, setCheckIntList] = React.useState([{code_name: "", common_code: "", interest_seq: ""}]);
+
+	// 관심사 등록 확인 함수
+	const int_confirm = () => {
+		int_modalizeRef.current?.close();
+	};
+
+  // ############################################################ 업종 그룹 코드 목록
   const busiGrpCdList = [
     { label: '일반', value: 'JOB_00' },
     { label: '공군/군사', value: 'JOB_01' },
@@ -258,6 +274,34 @@ export const Introduce = (props: Props) => {
           />
         </SpaceView>
 
+        <SpaceView mb={24}>
+					<SpaceView mb={8}>
+						<CommonText textStyle={_styles.labelStyle}>관심사</CommonText>
+					</SpaceView>
+          <SpaceView mb={15}>
+            <CommonBtn value={'관심사 변경'} 
+							          height={48} 
+								        type={'white'} 
+								        icon={ICON.plus}
+								        onPress={null} />
+          </SpaceView>
+          <SpaceView mb={40} mt={15} viewStyle={[layoutStyle.row, layoutStyle.wrap]}>
+            {checkIntList.map((i, index) => {
+              return (
+                i.code_name != "" ? (
+                  <SpaceView mr={index % 3 !== 2 ? 8 : 0} key={index + 'reg'}>
+                    <TouchableOpacity style={[styles.interestBox]}>
+                      <CommonText color={ColorType.gray8888}>
+                        {i.code_name}
+                      </CommonText>
+                    </TouchableOpacity>
+                  </SpaceView>
+                ) : null
+              );
+            })}
+          </SpaceView>
+				</SpaceView>
+
         <SpaceView mb={24} viewStyle={styles.halfContainer}>
           <View style={styles.halfItemLeft}>
             <CommonSelect
@@ -368,6 +412,101 @@ export const Introduce = (props: Props) => {
           />
         </SpaceView>
       </ScrollView>
+
+
+      {/* #############################################################################
+											관심사 설정 팝업
+			############################################################################# */}
+
+			<Modalize
+				ref={int_modalizeRef}
+				adjustToContentHeight = {false}
+				handleStyle={modalStyle.modalHandleStyle}
+				modalStyle={modalStyle.modalContainer}
+				FooterComponent={
+					<>
+						<SpaceView mb={16}>
+							<CommonBtn value={'저장'} 
+										type={'primary'}
+										onPress={int_confirm}/>
+						</SpaceView>
+					</>
+				}
+				HeaderComponent={
+					<>
+						<View style={modalStyle.modalHeaderContainer}>
+							<CommonText fontWeight={'700'} type={'h3'}>
+								관심사 등록
+							</CommonText>
+							<TouchableOpacity onPress={int_onClose}>
+								<Image source={ICON.xBtn} style={styles.iconSize24} />
+							</TouchableOpacity>
+						</View>
+					</>
+				} >	
+
+				<View style={modalStyle.modalBody}>
+					{intList.map((item, index) => (
+						<SpaceView mb={24} key={item.group_code + '_' + index}>
+							<SpaceView mb={16}>
+								<CommonText fontWeight={'500'}>{item.group_code_name}</CommonText>
+							</SpaceView>
+
+							<View style={[_styles.rowStyle, layoutStyle.justifyBetween]}>
+								{item.list.map((i, idx) => {
+									let tmpCommonCode = '';
+									let tmpCnt = 0;
+	
+									for (let j = 0; j < checkIntList.length; j++) {
+										if(checkIntList[j].common_code == i.common_code){
+											tmpCommonCode = i.common_code
+											tmpCnt = j;
+											break;
+										}
+									}
+
+									return (
+										<SpaceView key={i.common_code}>
+											<TouchableOpacity style={[styles.interestBox, i.common_code === tmpCommonCode && styles.boxActive]}
+																onPress={() => {
+																	if(i.common_code === tmpCommonCode){
+																		setCheckIntList(checkIntList.filter(value => value.common_code != tmpCommonCode))
+																	} else {
+																		setCheckIntList(intValue => [...intValue, i])
+																	}
+																}}>
+												<CommonText
+													fontWeight={'500'}
+													color={i.common_code === tmpCommonCode ? ColorType.primary : ColorType.gray8888} >
+													{i.code_name}
+												</CommonText>
+											</TouchableOpacity>
+										</SpaceView>
+									)
+								})}	
+							</View>
+						</SpaceView>
+					))}
+				</View>
+			</Modalize>
+
+
     </>
   );
 };
+
+
+
+
+const _styles = StyleSheet.create({
+  labelStyle: {
+    fontSize: 14,
+    lineHeight: 20,
+    fontFamily: 'AppleSDGothicNeoR00',
+    color: Color.gray6666,
+  },
+  rowStyle : {
+		flexDirection: 'row',
+		flexWrap: 'wrap'
+	}
+});

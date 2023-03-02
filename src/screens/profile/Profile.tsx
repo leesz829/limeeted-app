@@ -22,7 +22,7 @@ import * as mbrReducer from 'redux/reducers/mbrReducer';
 import { ROUTES, STACK } from 'constants/routes';
 import { clearPrincipal } from 'redux/reducers/authReducer';
 import { useUserInfo } from 'hooks/useUserInfo';
-import { update_setting } from 'api/models';
+import { update_setting, member_logout } from 'api/models';
 import { usePopup } from 'Context';
 import { myProfile } from 'redux/reducers/authReducer';
 
@@ -64,6 +64,11 @@ export const Profile = (props: Props) => {
       setNicknameUpdatePopup(true);
     }
   };
+
+	// 비밀번호 변경 버튼
+	const btnChangePassword = async () => {
+		navigation.navigate('ChangePassword', {});
+	}
 
   // ############### 내 계정 정보 저장
   const saveMemberBase = async () => {
@@ -111,9 +116,25 @@ export const Profile = (props: Props) => {
     console.log('logout');
     // #todo pushtoken 비워줄 로그아웃 api
     // await AsyncStorage.clear();
-    dispatch(clearPrincipal());
     //#todo mbr base = > principal reducer
     //navigation.navigate(STACK.AUTH, { screen: ROUTES.LOGIN });
+
+    try {
+      const { success, data } = await member_logout();
+      if (success) {
+        if (data.result_code == '0000') {
+          dispatch(clearPrincipal());
+        } else {
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+          return false;
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      
+    }
+
   };
 
   return (
@@ -186,6 +207,10 @@ export const Profile = (props: Props) => {
 
         <SpaceView mb={16}>
           <CommonBtn value={'로그아웃'} type={'primary'} onPress={logout} />
+          
+          <View style={{ height: 6 }} />
+          <CommonBtn value={'비밀번호 변경'} type={'primary'} onPress={btnChangePassword} />
+          
           <View style={{ height: 6 }} />
           <CommonBtn value={'저장'} type={'primary'} onPress={btnSave} />
         </SpaceView>

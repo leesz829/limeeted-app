@@ -4,6 +4,8 @@ import { get_my_info } from 'api/models';
 import storeKey from 'constants/storeKey';
 import SplashScreen from 'react-native-splash-screen';
 import { PrincipalProps } from 'redux/types/authReducesTypes';
+import { JWT_TOKEN } from 'constants/storeKey';
+
 
 export const myProfile = createAsyncThunk<PrincipalProps>(
   'auth/principal',
@@ -38,12 +40,10 @@ export const authSlice = createSlice({
       state.principal = action.payload;
     },
     setPartialPrincipal: (state, action) => {
-      console.log('state ::: ', state);
-      console.log('action ::: ', action);
       state.principal = { ...state.principal, ...action.payload };
     },
     clearPrincipal: (state) => {
-      AsyncStorage.removeItem('jwt-token');
+      AsyncStorage.removeItem(JWT_TOKEN);
       state.principal = undefined;
     },
   },

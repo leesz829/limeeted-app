@@ -31,6 +31,7 @@ export type StackParamList = {
   Title00: undefined;
   NiceAuth: undefined;
   Login01: undefined;
+  Policy: undefined;
   Signup00: {
     ci: string;
     name: string;
@@ -42,6 +43,7 @@ export type StackParamList = {
   };
   Signup01: {
     memberSeq: Number;
+    gender: string;
   };
   Signup02: {
     memberSeq: Number;
@@ -49,9 +51,11 @@ export type StackParamList = {
   };
   Signup03: {
     memberSeq: Number;
+    gender: string;
   };
   Approval: {
     memberSeq: Number;
+    gender: string;
     accessType: string;
   };
   SecondAuthPopup: undefined; // 2차 인증 팝업

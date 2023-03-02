@@ -186,8 +186,6 @@ export const Roby = (props: Props) => {
 
   const { width, height } = Dimensions.get('window');
 
-  console.log(properties.img_domain + memberBase?.mst_img_path);
-
   return (
     <>
       <TopNavigation currentPath={''} />
@@ -308,16 +306,29 @@ export const Roby = (props: Props) => {
           </SpaceView>
 
           <SpaceView mb={48}>
-            <CommonBtn
-              type="purple"
-              value="프로필 재심사"
-              icon={ICON.refresh}
-              iconSize={24}
-              iconPosition={'right'}
-              onPress={() => setProfileReAprPopup(true)}
-            />
+            {memberBase?.reex_yn === 'Y' ? (
+            <SpaceView mb={48}>
+              <CommonBtn
+                type="primary"
+                value={memberBase?.reex_cnt + '명의 회원님이 평가를 남겨주셨어요\n 회원님은 ' + memberBase?.reex_face_code_name + '가 인상적이래요.'}
+                icon={ICON.starEmpty}
+                iconSize={24}
+                iconPosition={'right'}
+              />
+            </SpaceView>
+            ) : (
+              <CommonBtn
+                type="purple"
+                value="프로필 재심사"
+                icon={ICON.refresh}
+                iconSize={24}
+                iconPosition={'right'}
+                onPress={() => setProfileReAprPopup(true)}
+              />
+            )}
           </SpaceView>
         </View>
+
 
         {/* <SpaceView mb={48}>
           <SpaceView mb={16}>
@@ -548,6 +559,15 @@ export const Roby = (props: Props) => {
             <CommonText fontWeight={'500'}>내 계정 정보</CommonText>
             <Image source={ICON.arrRight} style={styles.iconSize} />
           </TouchableOpacity>
+
+          <TouchableOpacity style={styles.rowStyle} 
+            onPress={() => {
+              navigation.navigate(STACK.COMMON, { screen: 'CustomerInquiry' });
+          }}>
+          <CommonText fontWeight={'500'}>고객문의</CommonText>
+            <Image source={ICON.arrRight} style={styles.iconSize} />
+          </TouchableOpacity>
+
           <TouchableOpacity style={styles.rowStyle} onPress={terms_onOpen}>
             <CommonText fontWeight={'500'}>이용약관</CommonText>
             <Image source={ICON.arrRight} style={styles.iconSize} />
@@ -733,4 +753,7 @@ const _styles = StyleSheet.create({
     borderRadius: 3,
     backgroundColor: ColorType.grayDDDD,
   },
+
+
+
 });
