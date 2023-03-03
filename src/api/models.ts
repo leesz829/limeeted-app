@@ -11,12 +11,13 @@ import {
   ME,
   MEMBER_INTRODUCE_GUIDE,
   MEMBER_PROFILE_ATHENTICATION2,
-  MEMBER_REEXAMINATION,
   MEMBER_INTERVIEW,
+  MEMBER_INTRODUCE,
   ORDER,
   PEEK_MEMBER,
   PROFILE_IMAGE_GUIDE,
   PROFILE_ATHENTICATION2,
+  PROFILE_REEXAMINATION,
   REGIST_BASE_INFO,
   REGIST_MATCHING_INFO,
   REGIST_MEMBER_PROFILE_IMAGE,
@@ -36,7 +37,8 @@ import {
   UPDATE_SETTING,
   COMMON_CODE,
   SAVE_PROFILE_AUTH,
-  MEMBER_AUTH_DETAIL
+  MEMBER_AUTH_DETAIL,
+  BOARD_LIST,
 } from './route';
 
 /* ========================================================================================================
@@ -198,15 +200,11 @@ export async function get_member_profile_authentication() {
   return send(MEMBER_PROFILE_ATHENTICATION2, 'POST', undefined, true, false);
 }
 
-//회원의 프로필을 재심사 처리한다.
-export async function request_reexamination() {
-  return send(MEMBER_REEXAMINATION, 'POST', undefined, true, false);
-}
-
 //회원의 인터뷰 정보를 저장한다.
 export async function update_interview(body: any) {
   return send(UPDATE_INTERVIEW, 'POST', body, true, false);
 }
+
 //회원의 보유 포인트 정보를 조회한다.
 export async function get_points() {
   return send(GET_POINT, 'POST', undefined, true, false);
@@ -218,6 +216,13 @@ export async function get_member_interview(body: {
   disp_yn: string;
 }) {
   return send(MEMBER_INTERVIEW, 'POST', body, true, false);
+}
+
+//회원의 소개 정보를 조회한다.
+export async function get_member_introduce(body: {
+  group_code: string;
+}) {
+  return send(MEMBER_INTRODUCE, 'POST', body, true, false);
 }
 
 // 회원 로그아웃 한다.
@@ -246,12 +251,17 @@ export async function save_profile_auth(body: {
 /* ========================================================================================================
 ==================================================== PROFILE
 ======================================================================================================== */
-//프로필 평가를 신규 등록한다.
+// 프로필 평가를 신규 등록한다.
 export async function regist_profile_evaluation(body: {
   profile_score: string;
   face_code: string;
 }) {
   return send(REGIST_PROFILE_EVALUATION, 'POST', body, true, false);
+}
+
+// 프로필 재심사를 진행한다.
+export async function request_reexamination() {
+  return send(PROFILE_REEXAMINATION, 'POST', undefined, true, false);
 }
 
 
@@ -357,4 +367,9 @@ export async function purchase_product(
 // #### 공통코드 목록을 조회한다.
 export async function get_common_code(body: { group_code: string }) {
   return send(COMMON_CODE, 'POST', body, true, false);
+}
+
+// #### 최근소식 목록을 조회한다.
+export async function get_board_list() {
+  return send(BOARD_LIST, 'POST', undefined, true, false);
 }

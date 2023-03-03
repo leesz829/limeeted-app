@@ -122,36 +122,36 @@ export const Live = () => {
 
         tmpMemberInfo = data.live_member_info;
 
-        // LIVE 회원 프로필 사진
-        data.live_profile_img_list.map((item) => {
-          console.log('findSourcePath(item.img_file_path) :::: ', findSourcePath(item.img_file_path));
-            
-
-          tmpProfileImgList.push({
-            url: findSourcePath(item.img_file_path)
-            , member_img_seq: item.member_img_seq
-            , order_seq: item.order_seq
+        if(tmpMemberInfo != null) {
+          
+          // LIVE 회원 프로필 사진
+          data.live_profile_img_list.map((item) => {
+            tmpProfileImgList.push({
+              url: findSourcePath(item.img_file_path)
+              , member_img_seq: item.member_img_seq
+              , order_seq: item.order_seq
+            });
           });
-        });
 
-        // 인상 유형 목록
-        commonCodeList = data.face_type_list;
+          // 인상 유형 목록
+          commonCodeList = data.face_type_list;
 
-        // CommonCode
-        commonCodeList.map((commonCode) => {
-          tmpFaceTypeList.push({
-            label: commonCode.code_name,
-            value: commonCode.common_code,
+          // CommonCode
+          commonCodeList.map((commonCode) => {
+            tmpFaceTypeList.push({
+              label: commonCode.code_name,
+              value: commonCode.common_code,
+            });
           });
-        });
 
-        
-        setLiveMemberInfo(tmpMemberInfo);
+          
+          setLiveMemberInfo(tmpMemberInfo);
 
-        tmpProfileImgList = tmpProfileImgList.filter((x) => x.url);
-        setLiveProfileImg(tmpProfileImgList);
-        setFaceTypeList(tmpFaceTypeList);
-        setIsLoad(true);
+          tmpProfileImgList = tmpProfileImgList.filter((x) => x.url);
+          setLiveProfileImg(tmpProfileImgList);
+          setFaceTypeList(tmpFaceTypeList);
+          setIsLoad(true);
+        }
       }
     }
   };

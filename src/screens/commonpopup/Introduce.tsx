@@ -23,12 +23,13 @@ import {
 import { useDispatch } from 'react-redux';
 import { STACK } from 'constants/routes';
 import { useUserInfo } from 'hooks/useUserInfo';
-import { get_common_code, update_additional } from 'api/models';
+import { get_common_code, update_additional, get_member_introduce } from 'api/models';
 import { usePopup } from 'Context';
 import { myProfile } from 'redux/reducers/authReducer';
 import { Color } from 'assets/styles/Color';
 import { ICON } from 'utils/imageUtils';
 import { Modalize } from 'react-native-modalize';
+import { REFUSE, SUCCESS, SUCESSION } from 'constants/reusltcode';
 
 
 /* ################################################################################################################
@@ -165,41 +166,112 @@ export const Introduce = (props: Props) => {
       group_code: value
     };
     try {
-      const { success, data } = await get_common_code(body);
+			const { success, data } = await get_common_code(body);
+			if(success) {
+				switch (data.result_code) {
+				case SUCCESS:
+					let dataList = new Array();
+          data.code_list?.map(
+            ({
+              group_code,
+              common_code,
+              code_name,
+            }: {
+              group_code: any;
+              common_code: any;
+              code_name: any;
+            }) => {
+              let dataMap = { label: code_name, value: common_code };
+              dataList.push(dataMap);
+            }
+          );
+          setJobCdList(dataList);
+					break;
+				default:
+					show({
+						content: '오류입니다. 관리자에게 문의해주세요.' ,
+						confirmCallback: function() {}
+					});
+					break;
+				}
+			} else {
+				show({
+					content: '오류입니다. 관리자에게 문의해주세요.' ,
+					confirmCallback: function() {}
+				});
+			}
+		} catch (error) {
+			console.log(error);
+		} finally {
+			
+		}
 
-      if(success) {
-        if(data.result_code == '0000') {
-          let dataList = new Array();
-            data?.code_list?.map(
-              ({
-                group_code,
-                common_code,
-                code_name,
-              }: {
-                group_code: any;
-                common_code: any;
-                code_name: any;
-              }) => {
-                let dataMap = { label: code_name, value: common_code };
-                dataList.push(dataMap);
-              }
-            );
-            setJobCdList(dataList);
-        } else {
-          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-          return false;
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      
-    }
   };
 
-  // 내 소개하기 저장
-  const saveMemberAddInfo = async () => {
+  // ############################################################ 회원 소개 정보 조회 함수
+  const getMemberIntroduce = async (group_code: string) => {
+    const body = {
+      group_code: group_code
+    };
+    try {
+			const { success, data } = await get_member_introduce(body);
+			if(success) {
+				switch (data.result_code) {
+				case SUCCESS:
+          let dataList = new Array();
+          data?.code_list?.map(
+            ({
+              group_code,
+              common_code,
+              code_name,
+            }: {
+              group_code: any;
+              common_code: any;
+              code_name: any;
+            }) => {
+              let dataMap = { label: code_name, value: common_code };
+              dataList.push(dataMap);
+            }
+          );
+          setJobCdList(dataList);       // 직업 코드 목록
+          setIntList(data.int_list);   // 관심사 목록
 
+
+          let setList = new Array();
+					data.int_list.map((item, index) => {
+						item.list.map((obj, idx) => {
+							if(obj.interest_seq != null) {
+								setList.push(obj);
+							}
+						})
+					})
+		
+					setCheckIntList(setList);
+					
+					break;
+				default:
+					show({
+						content: '오류입니다. 관리자에게 문의해주세요.' ,
+						confirmCallback: function() {}
+					});
+					break;
+				}
+			} else {
+				show({
+					content: '오류입니다. 관리자에게 문의해주세요.' ,
+					confirmCallback: function() {}
+				});
+			}
+		} catch (error) {
+			console.log(error);
+		} finally {
+			
+		}
+
+  };
+
+  // ############################################################ 내 소개하기 저장
+  const saveMemberAddInfo = async () => {
     const body = {
       comment: comment,
       business: business,
@@ -210,26 +282,38 @@ export const Introduce = (props: Props) => {
       religion: religion,
       drinking: drinking,
       smoking: smoking,
+      interest_list : checkIntList
     };
     try {
-      const { success, data } = await update_additional(body);
-      if(success) {
-        if(data.result_code == '0000') {
+			const { success, data } = await update_additional(body);
+			if(success) {
+				switch (data.result_code) {
+				case SUCCESS:
           dispatch(myProfile());
           show({ content: '저장되었습니다.' });
           /* navigation.navigate(STACK.TAB, {
             screen: 'Roby',
-          }); */
-        } else {
-          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-          return false;
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      
-    }
+          }); */					
+					break;
+				default:
+					show({
+						content: '오류입니다. 관리자에게 문의해주세요.' ,
+						confirmCallback: function() {}
+					});
+					break;
+				}
+			} else {
+				show({
+					content: '오류입니다. 관리자에게 문의해주세요.' ,
+					confirmCallback: function() {}
+				});
+			}
+		} catch (error) {
+			console.log(error);
+		} finally {
+			
+		}
+
   };
 
   // 셀렉트 박스 콜백 함수
@@ -256,7 +340,8 @@ export const Introduce = (props: Props) => {
   // 첫 렌더링 때 실행
   React.useEffect(() => {
     if (memberBase.business != '') {
-      getJobCodeList(memberBase.business);
+      //getJobCodeList(memberBase.business);
+      getMemberIntroduce(memberBase.business);
     }
   }, [isFocus]);
 
@@ -283,7 +368,7 @@ export const Introduce = (props: Props) => {
 							          height={48} 
 								        type={'white'} 
 								        icon={ICON.plus}
-								        onPress={null} />
+								        onPress={int_onOpen} />
           </SpaceView>
           <SpaceView mb={40} mt={15} viewStyle={[layoutStyle.row, layoutStyle.wrap]}>
             {checkIntList.map((i, index) => {
@@ -412,6 +497,8 @@ export const Introduce = (props: Props) => {
           />
         </SpaceView>
       </ScrollView>
+
+
 
 
       {/* #############################################################################

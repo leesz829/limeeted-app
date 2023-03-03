@@ -483,7 +483,7 @@ export const Matching = (props: Props) => {
               </SpaceView> */}
 
                 <CommonText color={ColorType.gray8888} textStyle={styles_m.textCenter}>
-									LimeetED의 여러 회원 분들에게
+									리미티드의 여러 회원 분들에게
                   {'\n'}
 									<CommonText fontWeight={'700'} color={ColorType.purple}>
 										{data.memberBase?.face_code_name !== null ? data.memberBase?.face_code_name : ''}
