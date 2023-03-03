@@ -555,7 +555,7 @@ export const Profile1 = (props: Props) => {
                     <CommonText type={'h6'} textStyle={commonStyle.fontSize13}>다정해보여요</CommonText>
                   </View>
                   <View style={[layoutStyle.rowBetween]}>
-                    <CommonText type={'h6'} textStyle={commonStyle.fontSize13}>50%</CommonText>
+                    <CommonText type={'h6'} textStyle={commonStyle.fontSize13} color={ColorType.gray6666}>50%</CommonText>
                   </View>
                 </SpaceView>
                 <SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
@@ -566,7 +566,7 @@ export const Profile1 = (props: Props) => {
                     <CommonText type={'h6'} textStyle={commonStyle.fontSize13}>패션 감각이 좋아 보여요</CommonText>
                   </View>
                   <View style={[layoutStyle.rowBetween]}>
-                    <CommonText type={'h6'} textStyle={commonStyle.fontSize13}>25%</CommonText>
+                    <CommonText type={'h6'} textStyle={[commonStyle.fontSize13]} color={ColorType.gray6666}>25%</CommonText>
                   </View>
                 </SpaceView>
               </SpaceView>
