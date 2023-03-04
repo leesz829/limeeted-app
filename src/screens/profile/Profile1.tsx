@@ -28,7 +28,7 @@ import { useInterView } from 'hooks/useInterView';
 import { Modalize } from 'react-native-modalize';
 import { useDispatch } from 'react-redux';
 import Interview from 'component/Interview';
-import { update_profile } from 'api/models';
+import { update_profile, get_member_face_rank } from 'api/models';
 import { usePopup } from 'Context';
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
 import { REFUSE, SUCCESS, SUCESSION } from 'constants/reusltcode';
@@ -85,6 +85,10 @@ export const Profile1 = (props: Props) => {
 
   // 프로필 이미지 목록
   const [profileImageList, setProfileImageList] = React.useState([]);
+
+  // 프로필 인상 순위 목록
+  const [profileFaceRankList, setProfileFaceRankList] = React.useState([]);
+
 
   // ################################################################ 프로필 이미지 파일 콜백 함수
   const fileCallBack1 = (
@@ -289,8 +293,40 @@ export const Profile1 = (props: Props) => {
       
   };
 
+  // ############################################################  프로필 랭크 순위 조회
+  const getMemberFaceRank = async () => {
+    try {
+      const { success, data } = await get_member_face_rank();
+      if(success) {
+        switch (data.result_code) {
+          case SUCCESS:
+            setProfileFaceRankList(data.face_rank_list);
+            break;
+          default:
+            show({
+              content: '오류입니다. 관리자에게 문의해주세요.' ,
+              confirmCallback: function() {}
+            });
+            break;
+        }
+       
+      } else {
+        show({
+          content: '오류입니다. 관리자에게 문의해주세요.' ,
+          confirmCallback: function() {}
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      
+    }
+      
+  };
+
   // ############################################################################# 최초 실행
   React.useEffect(() => {
+    getMemberFaceRank();
     setProfileImageList([]);
     
     if (mbrProfileImgList != null) {
@@ -540,40 +576,38 @@ export const Profile1 = (props: Props) => {
             </SpaceView>
 
             <View style={[_styles.profileContainer]}>
-              <SpaceView viewStyle={layoutStyle.alignStart} mb={10}>
-                <CommonText color={ColorType.black2222} textStyle={[layoutStyle.textCenter]}>
-									내 인상 투표 결과
-								</CommonText>
-              </SpaceView>
 
-              <SpaceView viewStyle={styles.container}>
-                <SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
-                  <View style={[layoutStyle.rowBetween]}>
-                    <View style={[styles.statusBtn, commonStyle.mr8]}>
-                      <CommonText type={'h6'} color={ColorType.white}>ICON</CommonText>
-                    </View>
-                    <CommonText type={'h6'} textStyle={commonStyle.fontSize13}>다정해보여요</CommonText>
-                  </View>
-                  <View style={[layoutStyle.rowBetween]}>
-                    <CommonText type={'h6'} textStyle={commonStyle.fontSize13} color={ColorType.gray6666}>50%</CommonText>
-                  </View>
-                </SpaceView>
-                <SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
-                  <View style={[layoutStyle.rowBetween]}>
-                    <View style={[styles.statusBtn, commonStyle.mr8]}>
-                      <CommonText type={'h6'} color={ColorType.white}>ICON</CommonText>
-                    </View>
-                    <CommonText type={'h6'} textStyle={commonStyle.fontSize13}>패션 감각이 좋아 보여요</CommonText>
-                  </View>
-                  <View style={[layoutStyle.rowBetween]}>
-                    <CommonText type={'h6'} textStyle={[commonStyle.fontSize13]} color={ColorType.gray6666}>25%</CommonText>
-                  </View>
-                </SpaceView>
-              </SpaceView>
+              {profileFaceRankList.length > 0 ? (
+                <>
+                  <SpaceView viewStyle={layoutStyle.alignStart} mb={10}>
+                    <CommonText color={ColorType.black2222} textStyle={[layoutStyle.textCenter]}>
+                      내 인상 투표 결과
+                    </CommonText>
+                  </SpaceView>
+
+                  <SpaceView viewStyle={styles.container}>
+
+                    {profileFaceRankList.map((item : any) => (
+                      <SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
+                        <View style={[layoutStyle.rowBetween]}>
+                          <View style={[styles.statusBtn, commonStyle.mr8]}>
+                            <CommonText type={'h6'} color={ColorType.white}>ICON</CommonText>
+                          </View>
+                          <CommonText type={'h6'} textStyle={commonStyle.fontSize13}>{item.face_code_name}</CommonText>
+                        </View>
+                        <View style={[layoutStyle.rowBetween]}>
+                          <CommonText type={'h6'} textStyle={commonStyle.fontSize13} color={ColorType.gray6666}>{item.percent}%</CommonText>
+                        </View>
+                      </SpaceView>
+                    ))}
+
+                  </SpaceView> 
+                </>
+              ) : null}
 
               <SpaceView viewStyle={layoutStyle.rowBetween} mt={30} mb={29}>
                 <BarGrap score={memberBase?.profile_score} />
-              </SpaceView>              
+              </SpaceView>        
             </View>
           </SpaceView>
 

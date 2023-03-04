@@ -25,6 +25,8 @@ import * as hooksMember from 'hooks/member';
 import { get_live_members, regist_profile_evaluation, get_common_code } from 'api/models';
 import { useMemberseq } from 'hooks/useMemberseq';
 import { findSourcePath } from 'utils/imageUtils';
+import { usePopup } from 'Context';
+import { REFUSE, SUCCESS, SUCESSION } from 'constants/reusltcode';
 
 
 
@@ -38,6 +40,7 @@ export const Live = () => {
   const isFocus = useIsFocused();
 
   const jwtToken = hooksMember.getJwtToken(); // 토큰
+  const { show } = usePopup();  // 공통 팝업
 
   // 로딩 상태 체크
   const [isLoad, setIsLoad] = useState(false);
@@ -94,66 +97,101 @@ export const Live = () => {
     };
     try {
       const { success, data } = await regist_profile_evaluation(body);
-
-      if (success && data.result_code != '0000') {
-        setIsLoad(false);
-        getLiveMatchTrgt();
+      if(success) {
+        switch (data.result_code) {
+          case SUCCESS:
+            setIsLoad(false);
+            getLiveMatchTrgt();
+            break;
+          default:
+            show({
+              content: '오류입니다. 관리자에게 문의해주세요.' ,
+              confirmCallback: function() {}
+            });
+            break;
+        }
+       
+      } else {
+        show({
+          content: '오류입니다. 관리자에게 문의해주세요.' ,
+          confirmCallback: function() {}
+        });
       }
     } catch (error) {
       console.log(error);
     } finally {
-      // 다른 프로필 이미지 정보 재호출
-      getLiveMatchTrgt();
-      // 다른 인상정보 재호출
-      //getFaceType();
+      
     }
+
   };
 
   // ######################################################### LIVE 평가 회원 조회
   const getLiveMatchTrgt = async () => {
-    const { success, data } = await get_live_members();
-    if (success) {
+    try {
+      const { success, data } = await get_live_members();
+      if(success) {
+        switch (data.result_code) {
+          case SUCCESS:
+            let tmpMemberInfo = LiveMemberInfo;
+            let tmpProfileImgList = [LiveProfileImg];
+            let tmpFaceTypeList = [LabelObj];
+            let commonCodeList = [CommonCode];
+    
+            tmpMemberInfo = data.live_member_info;
+            console.log('tmpMemberInfo ::::: ', tmpMemberInfo);
+            
+            if(tmpMemberInfo != null && tmpMemberInfo.member_seq != null) {
+              
+              // LIVE 회원 프로필 사진
+              data.live_profile_img_list.map((item) => {
+                tmpProfileImgList.push({
+                  url: findSourcePath(item.img_file_path)
+                  , member_img_seq: item.member_img_seq
+                  , order_seq: item.order_seq
+                });
+              });
+    
+              // 인상 유형 목록
+              commonCodeList = data.face_type_list;
+    
+              // CommonCode
+              commonCodeList.map((commonCode) => {
+                tmpFaceTypeList.push({
+                  label: commonCode.code_name,
+                  value: commonCode.common_code,
+                });
+              });
+    
+              
+              setLiveMemberInfo(tmpMemberInfo);
+    
+              tmpProfileImgList = tmpProfileImgList.filter((x) => x.url);
+              setLiveProfileImg(tmpProfileImgList);
+              setFaceTypeList(tmpFaceTypeList);
+              setIsLoad(true)
+            }
 
-      if(data.result_code == '0000') {
-        let tmpMemberInfo = LiveMemberInfo;
-        let tmpProfileImgList = [LiveProfileImg];
-        let tmpFaceTypeList = [LabelObj];
-        let commonCodeList = [CommonCode];
-
-        tmpMemberInfo = data.live_member_info;
-
-        if(tmpMemberInfo != null) {
-          
-          // LIVE 회원 프로필 사진
-          data.live_profile_img_list.map((item) => {
-            tmpProfileImgList.push({
-              url: findSourcePath(item.img_file_path)
-              , member_img_seq: item.member_img_seq
-              , order_seq: item.order_seq
+            break;
+          default:
+            show({
+              content: '오류입니다. 관리자에게 문의해주세요.' ,
+              confirmCallback: function() {}
             });
-          });
-
-          // 인상 유형 목록
-          commonCodeList = data.face_type_list;
-
-          // CommonCode
-          commonCodeList.map((commonCode) => {
-            tmpFaceTypeList.push({
-              label: commonCode.code_name,
-              value: commonCode.common_code,
-            });
-          });
-
-          
-          setLiveMemberInfo(tmpMemberInfo);
-
-          tmpProfileImgList = tmpProfileImgList.filter((x) => x.url);
-          setLiveProfileImg(tmpProfileImgList);
-          setFaceTypeList(tmpFaceTypeList);
-          setIsLoad(true);
+            break;
         }
+       
+      } else {
+        show({
+          content: '오류입니다. 관리자에게 문의해주세요.' ,
+          confirmCallback: function() {}
+        });
       }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      
     }
+
   };
 
   // 첫 렌더링 때 fetchNews() 한 번 실행

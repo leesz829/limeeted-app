@@ -39,6 +39,7 @@ import {
   SAVE_PROFILE_AUTH,
   MEMBER_AUTH_DETAIL,
   BOARD_LIST,
+  GET_MEMBER_FACE_RANK,
 } from './route';
 
 /* ========================================================================================================
@@ -262,6 +263,11 @@ export async function regist_profile_evaluation(body: {
 // 프로필 재심사를 진행한다.
 export async function request_reexamination() {
   return send(PROFILE_REEXAMINATION, 'POST', undefined, true, false);
+}
+
+// 회원 프로필 인상 순위를 조회한다.
+export async function get_member_face_rank() {
+  return send(GET_MEMBER_FACE_RANK, 'POST', undefined, true, false);
 }
 
 
