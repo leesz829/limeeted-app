@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
     flexDirection: `row`,
     alignItems: `center`,
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
   },
   categoryBorder: (isSelected: boolean) => {
     return {
@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
       borderWidth: 1,
       borderColor: isSelected ? Color.primary : Color.grayAAAA,
       borderRadius: 9,
+      marginLeft: 4,
     };
   },
   categoryText: (isSelected: boolean) => {
@@ -132,14 +133,14 @@ const styles = StyleSheet.create({
 });
 
 const categories = [
-  {
-    label: '전체',
-    value: 'all',
-  },
-  {
-    label: '기획상품',
-    value: 'plan',
-  },
+  //   {
+  //     label: '전체',
+  //     value: 'all',
+  //   },
+  //   {
+  //     label: '기획상품',
+  //     value: 'plan',
+  //   },
   {
     label: '패스상품',
     value: 'pass',

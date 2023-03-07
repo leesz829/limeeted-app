@@ -24,6 +24,7 @@ import { Storage } from 'screens/storage/index';
 import { StorageProfile } from 'screens/storage/StorageProfile';
 
 import React from 'react';
+import PointReward from 'screens/shop/PointReward';
 const CommonStack = createStackNavigator<StackParamList>();
 
 const CommonNavigation = () => {
@@ -50,6 +51,7 @@ const CommonNavigation = () => {
       <CommonStack.Screen name="NiceAuth" component={NiceAuth} />
       <CommonStack.Screen name="StorageProfile" component={StorageProfile} />
       <CommonStack.Screen name="Storage" component={Storage} />
+      <CommonStack.Screen name="PointReward" component={PointReward} />
     </CommonStack.Navigator>
   );
 };

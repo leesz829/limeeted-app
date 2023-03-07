@@ -29,8 +29,9 @@ import * as properties from 'utils/properties';
 import * as hooksMember from 'hooks/member';
 import { Color } from 'assets/styles/Color';
 import { Slider } from '@miblanchard/react-native-slider';
-import RecommandProduct from './RecommandProduct';
-import CategoryShop from './CategoryShop';
+import RecommandProduct from './Component/RecommandProduct';
+import CategoryShop from './Component/CategoryShop';
+import { ROUTES, STACK } from 'constants/routes';
 
 interface Products {
   products: Product[];
@@ -48,7 +49,7 @@ interface Product {
   productId: string;
 }
 export const Shop = () => {
-  // const navigation = useNavigation<ScreenNavigationProp>();
+  const navigation = useNavigation<ScreenNavigationProp>();
 
   // const isFocusShop = useIsFocused();
 
@@ -416,7 +417,9 @@ export const Shop = () => {
   //   ),
   //   [productsRoyalPass]
   // );
-
+  const onPressPointReward = () => {
+    navigation.navigate(STACK.COMMON, { screen: 'PointReward' });
+  };
   return (
     <>
       <TopNavigation currentPath={''} />
@@ -426,13 +429,15 @@ export const Shop = () => {
           {/* 상단 배너 */}
           <View style={styles.floatWrapper}>
             <View style={styles.floatContainer}>
-              <Text style={styles.pointText}>
-                리미티드 포인트 <Text>✌️</Text>
-              </Text>
-              <Text style={styles.infoText}>
-                즐거운 <Text style={styles.cashbackText}>캐시백</Text> 생활
-                9,000 / 10,000
-              </Text>
+              <View>
+                <Text style={styles.pointText}>
+                  리미티드 포인트 <Text>✌️</Text>
+                </Text>
+                <Text style={styles.infoText}>
+                  즐거운 <Text style={styles.cashbackText}>캐시백</Text> 생활
+                  9,000 / 10,000
+                </Text>
+              </View>
               <Slider
                 value={0.7}
                 animateTransitions={true}
@@ -442,10 +447,15 @@ export const Shop = () => {
                 containerStyle={styles.sliderContainer}
                 trackStyle={styles.sliderTrack}
               />
-              <Image
-                source={ICON.currencyTooltip}
-                style={styles.imageTooltip}
-              />
+              <TouchableOpacity
+                onPress={onPressPointReward}
+                style={styles.TooltipButton}
+              >
+                <Image
+                  source={ICON.currencyTooltip}
+                  style={styles.imageTooltip}
+                />
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -466,18 +476,18 @@ const styles = StyleSheet.create({
   topBanner: {
     backgroundColor: Color.primary,
     width: `100%`,
-    height: 255,
+    height: 200,
   },
   floatWrapper: {
     width: `100%`,
     position: 'absolute',
-    bottom: -60,
+    bottom: -50,
   },
   floatContainer: {
     padding: 25,
     backgroundColor: 'white',
     width: Dimensions.get('window').width - 40,
-    height: 120,
+    height: 100,
     marginHorizontal: 20,
     borderRadius: 5,
     shadowColor: '#000',
@@ -489,6 +499,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
 
     elevation: 5,
+    justifyContent: 'space-around',
   },
   pointText: {
     fontSize: 16,
@@ -496,7 +507,7 @@ const styles = StyleSheet.create({
     fontFamily: 'AppleSDGothicNeoM00',
   },
   infoText: {
-    marginTop: 14,
+    marginTop: 8,
     fontSize: 10,
     fontWeight: 'bold',
     fontFamily: 'AppleSDGothicNeoM00',
@@ -521,10 +532,12 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     backgroundColor: ColorType.grayDDDD,
   },
-  imageTooltip: {
+  TooltipButton: {
     position: 'absolute',
     top: 10,
     right: 10,
+  },
+  imageTooltip: {
     width: 20,
     height: 20,
     resizeMode: 'contain',
