@@ -44,6 +44,8 @@ export const Profile = (props: Props) => {
   const { show } = usePopup(); // 공통 팝업
 
   const memberBase = useUserInfo(); // 회원 기본정보
+  
+  const jwtToken = hooksMember.getJwtToken(); // 토큰 추출
 
   const [nickname, setNickname] = React.useState<any>(memberBase?.nickname);
   const [name, setName] = React.useState<any>(memberBase?.name);
@@ -64,6 +66,42 @@ export const Profile = (props: Props) => {
       setNicknameUpdatePopup(true);
     }
   };
+
+	// 회원탈퇴 버튼
+	const btnDeleteMyAccount = async () => {
+    const result = await axios
+		.post(
+			properties.api_domain + '/member/deleteMyAccount',
+			{
+				'api-key': 'U0FNR09CX1RPS0VOXzAx',
+				member_seq : memberBase.member_seq
+			},
+			{
+				headers: {
+					'jwt-token': jwtToken,
+				},
+			},
+		)
+		.then(function (response) {
+      if (response.data.result_code != '0000') {
+				return false;
+			} else {
+				deleteMyAccountComplete();
+			}
+		})
+		.catch(function (error) {
+			console.log('error ::: ', error);
+		});
+	}
+
+  // 탈퇴 완료 버튼 클릭
+	const deleteMyAccountComplete = async () => {
+		// #todo pushtoken 비워줄 로그아웃 api
+		await AsyncStorage.clear();
+		dispatch(clearPrincipal());
+		//#todo mbr base = > principal reducer
+		 navigation.navigate(STACK.AUTH, { screen: ROUTES.LOGIN });
+	};
 
 	// 비밀번호 변경 버튼
 	const btnChangePassword = async () => {
@@ -207,7 +245,10 @@ export const Profile = (props: Props) => {
 
         <SpaceView mb={16}>
           <CommonBtn value={'로그아웃'} type={'primary'} onPress={logout} />
-          
+
+          {/* <View style={{ height: 6 }} />
+          <CommonBtn value={'탈퇴'} type={'primary'} onPress={btnDeleteMyAccount} /> */}
+
           <View style={{ height: 6 }} />
           <CommonBtn value={'비밀번호 변경'} type={'primary'} onPress={btnChangePassword} />
           
