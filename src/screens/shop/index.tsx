@@ -493,7 +493,7 @@ const styles = StyleSheet.create({
   pointText: {
     fontSize: 16,
     fontWeight: 'bold',
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'AppleSDGothicNeoM00',
   },
   infoText: {
     marginTop: 14,
