@@ -29,11 +29,10 @@ export const UPDATE_PROFILE_ATHENTICATION2 = '/member/saveProfileSecondAuth';
 export const PEEK_MEMBER = '/member/getRealTimeMemberInfo';
 export const MEMBER_PROFILE_ATHENTICATION2 = '/member/getMemberProfileSecondAuth';
 export const MEMBER_INTERVIEW = '/member/getMemberInterviewList';
-export const MEMBER_REEXAMINATION = '/member/profileReexProc';
+export const MEMBER_INTRODUCE = '/member/getMemberIntroduce';
 export const UPDATE_INTERVIEW = '/member/saveMemberInterview';
 export const GET_POINT = '/member/getMemberHasPoint';
 export const MEMBER_LOGOUT = '/member/logoutProc';
-
 export const SAVE_PROFILE_AUTH = '/member/saveProfileSecondAuth';
 export const MEMBER_AUTH_DETAIL = '/member/selectMemberSecondAuthDetailList';
 
@@ -42,6 +41,9 @@ export const MEMBER_AUTH_DETAIL = '/member/selectMemberSecondAuthDetailList';
  */
 
 export const REGIST_PROFILE_EVALUATION = '/profile/insertProfileAssessment';
+export const PROFILE_REEXAMINATION = '/profile/profileReexProc';
+export const GET_MEMBER_FACE_RANK = '/profile/getMemberFaceRankList';
+
 
 /**
  * MATCHING
@@ -65,3 +67,4 @@ export const ORDER = '/order/payment';
  */
 
 export const COMMON_CODE = '/common/selectGroupCodeList';
+export const BOARD_LIST = '/board/selectBoardList';

@@ -78,6 +78,7 @@ export const Matching = (props: Props) => {
     profileImgList: [],
     secondAuthList: [],
     interviewList: [],
+    interestList: [],
   });
 
   // 매치 회원 정보
@@ -252,6 +253,7 @@ export const Matching = (props: Props) => {
           let tmpProfileImgList = new Array();    // 프로필 이미지 목록
           let tmpSecondAuthList = new Array();    // 2차 인증 목록
           let tmpInterviewList = new Array();     // 인터뷰 목록
+          let tmpInterestList = new Array();     // 관심사 목록
           let tmpReportTypeList = [{ text: '', value: '' }];    // 신고사유 유형 목록
 
           // 회원 프로필 이미지 정보 구성
@@ -279,12 +281,21 @@ export const Matching = (props: Props) => {
             }
           );
 
+          // 회원 관심사 목록 정보 구성
+          data.interest_list?.map(
+            ({ interest_seq, common_code, code_name }: { interest_seq: any; common_code: any; code_name: any; }) => {
+              const dataJson = { interest_seq: interest_seq, common_code: common_code, code_name: code_name };
+              tmpInterestList.push(dataJson);
+            }
+          );
+
           setData({
             ...data,
             memberBase: data.match_member_info,
             profileImgList: tmpProfileImgList,
             secondAuthList: tmpSecondAuthList,
             interviewList: tmpInterviewList,
+            interestList: tmpInterestList,
           });
 
 
@@ -439,6 +450,32 @@ export const Matching = (props: Props) => {
 
 
           {/* ###################################################################################################
+										관심사 영역
+					################################################################################################### */}
+          
+          <SpaceView viewStyle={layoutStyle.rowBetween} mb={10}>
+            <View>
+              <CommonText fontWeight={'700'} type={'h3'}>
+                관심사
+              </CommonText>
+            </View>
+          </SpaceView>
+
+          <SpaceView mb={40} mt={15} viewStyle={[layoutStyle.row, layoutStyle.wrap]}>
+            {data.interestList.map((i, index) => {
+              return (
+                <SpaceView mr={index % 3 !== 2 ? 8 : 0} key={index + 'reg'}>
+                  <TouchableOpacity style={[styles.interestBox]}>
+                    <CommonText color={ColorType.gray8888}>
+                      {i.code_name}
+                    </CommonText>
+                  </TouchableOpacity>
+                </SpaceView>
+              );
+            })}
+          </SpaceView>
+
+          {/* ###################################################################################################
 										프로필 평점 영역
 					################################################################################################### */}
           <SpaceView mb={54}>
@@ -483,7 +520,7 @@ export const Matching = (props: Props) => {
               </SpaceView> */}
 
                 <CommonText color={ColorType.gray8888} textStyle={styles_m.textCenter}>
-									LimeetED의 여러 회원 분들에게
+									리미티드의 여러 회원 분들에게
                   {'\n'}
 									<CommonText fontWeight={'700'} color={ColorType.purple}>
 										{data.memberBase?.face_code_name !== null ? data.memberBase?.face_code_name : ''}

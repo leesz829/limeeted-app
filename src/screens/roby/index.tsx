@@ -38,7 +38,7 @@ import { Privacy } from 'screens/commonpopup/privacy';
 import { Terms } from 'screens/commonpopup/terms';
 import { findSourcePath, ICON } from 'utils/imageUtils';
 import * as properties from 'utils/properties';
-import { peek_member } from 'api/models';
+import { peek_member, get_board_list } from 'api/models';
 import { usePopup } from 'Context';
 
 
@@ -83,6 +83,9 @@ export const Roby = (props: Props) => {
       console.log('data :::::: ' , data);
       if(success) {
         if(data.result_code == '0000') {
+          /* dispatch(setPartialPrincipal({
+            mbr_base : data.mbr_base
+          })); */
           setResLikeList(data.res_like_list);
           setMatchTrgtList(data.match_trgt_list);
         } else {
@@ -127,7 +130,7 @@ export const Roby = (props: Props) => {
   const profileReexProc = async () => {
     const { success, data } = await request_reexamination();
     if (success) {
-      console.log(data);
+      dispatch(myProfile());
       setProfileReAprPopup(false);
     }
   };
@@ -236,6 +239,7 @@ export const Roby = (props: Props) => {
           </CommonText>
         </SpaceView>
 
+        {/* ################################################################################ 프로필 관리 영역 */}
         <View>
           <SpaceView mb={16}>
             <TouchableOpacity
@@ -250,6 +254,20 @@ export const Roby = (props: Props) => {
               <Image source={ICON.arrRight} style={styles.iconSize} />
             </TouchableOpacity>
           </SpaceView>
+
+          {memberBase?.reex_face_code_name != null ? (
+            <SpaceView viewStyle={[layoutStyle.alignCenter, styles.profileContainer]} mb={10}>
+              <CommonText color={ColorType.black2222} textStyle={layoutStyle.textCenter}>
+                리미티드의 회원 분들은 {memberBase?.nickname}님이
+                {'\n'}
+                <CommonText fontWeight={'700'} color={ColorType.purple}>
+                  {memberBase?.reex_face_code_name !== null ? memberBase?.reex_face_code_name : ''}
+                </CommonText>
+                {'\n'}
+                인상적이라고 생각하세요.
+              </CommonText>
+            </SpaceView>
+          ) : null}
 
           <SpaceView mb={16} viewStyle={styles.halfContainer}>
             <View
@@ -305,12 +323,12 @@ export const Roby = (props: Props) => {
             </View>
           </SpaceView>
 
-          <SpaceView mb={48}>
+          <SpaceView mb={40}>
             {memberBase?.reex_yn === 'Y' ? (
             <SpaceView mb={48}>
               <CommonBtn
                 type="primary"
-                value={memberBase?.reex_cnt + '명의 회원님이 평가를 남겨주셨어요\n 회원님은 ' + memberBase?.reex_face_code_name + '가 인상적이래요.'}
+                value={memberBase?.reex_cnt + '명의 회원님이 평가를 남겨주셨어요'}
                 icon={ICON.starEmpty}
                 iconSize={24}
                 iconPosition={'right'}
@@ -327,8 +345,8 @@ export const Roby = (props: Props) => {
               />
             )}
           </SpaceView>
-        </View>
 
+        </View>
 
         {/* <SpaceView mb={48}>
           <SpaceView mb={16}>
@@ -369,6 +387,7 @@ export const Roby = (props: Props) => {
           </SpaceView>
         </SpaceView> */}
 
+        {/* ################################################################################ 보관함 영역 */}
         <SpaceView mb={48}>
           <SpaceView mb={16}>
             <SpaceView mb={16}>
@@ -511,37 +530,43 @@ export const Roby = (props: Props) => {
             onPress={() => {
               // 실시간성 회원 데이터 조회
               const goPage = async () => {
-                const result = await axios
-                  .post(
-                    properties.api_domain + '/board/selectBoardList',
-                    {
-                      'api-key': 'U0FNR09CX1RPS0VOXzAx',
-                    },
-                    {
-                      headers: {
-                        'jwt-token': jwtToken,
-                      },
+                try {
+                  const { success, data } = await get_board_list();
+                  if(success) {
+                    if(data.result_code == '0000') {
+                      navigation.navigate(STACK.COMMON, {
+                        screen: 'Board0' 
+                        , params: {
+                          'boardList': data.boardList,
+                        }
+                      });
+  
+                      // 게시판 목록 셋팅
+                      let boardList = new Array();
+                      /* response.data?.boardList?.map(({ board_seq, board_code, title, contents }: { board_seq: any, board_code: any, title: any, contents: any }) => {
+                        const dataJson = { req_member_seq : String, img_path : '' };
+  
+                        dataJson.req_member_seq(req_member_seq);
+                        dataJson.img_path = img_path;
+  
+                        resLikeDataList.push(dataJson);
+                      }); */
+
+
+                    } else {
+                      show({
+                        content: '오류입니다. 관리자에게 문의해주세요.' ,
+                        confirmCallback: function() {}
+                      });
+                      return false;
                     }
-                  )
-                  .then(function (response) {
-                    navigation.navigate('Board0', {
-                      boardList: response.data.boardList,
-                    });
+                  }
+                } catch (error) {
+                  console.log(error);
+                } finally {
+                  
+                }
 
-                    // 게시판 목록 셋팅
-                    let boardList = new Array();
-                    /* response.data?.boardList?.map(({ board_seq, board_code, title, contents }: { board_seq: any, board_code: any, title: any, contents: any }) => {
-											const dataJson = { req_member_seq : String, img_path : '' };
-
-											dataJson.req_member_seq(req_member_seq);
-											dataJson.img_path = img_path;
-
-											resLikeDataList.push(dataJson);
-										}); */
-                  })
-                  .catch(function (error) {
-                    console.log('error ::: ', error);
-                  });
               };
 
               goPage();
