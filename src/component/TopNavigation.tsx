@@ -7,8 +7,9 @@ import { useUserInfo } from 'hooks/useUserInfo';
 import type { FC } from 'react';
 import * as React from 'react';
 import { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { BasePopup } from 'screens/commonpopup/BasePopup';
+import { ICON } from 'utils/imageUtils';
 
 interface Props {
   currentPath: string;
@@ -84,14 +85,18 @@ const TopNavigation: FC<Props> = (props) => {
       {/* ######################################################################
 			##### 팝업 영역
 			###################################################################### */}
-      <View style={{ flexDirection: 'row' }}>
+      <View
+        style={{
+          flexDirection: 'row',
+        }}
+      >
         <View style={[styles.itemContainer, { marginRight: 8 }]}>
-          <View style={styles.itemStyle} />
-          <Text>{memberBase.pass_has_amt}</Text>
+          <Image style={styles.itemStyle} source={ICON.currency} />
+          <Text style={styles.statusText}>{memberBase.pass_has_amt}</Text>
         </View>
         <View style={styles.itemContainer}>
-          <View style={styles.itemStyle} />
-          <Text>{memberBase.royal_pass_has_amt}</Text>
+          <Image style={styles.itemStyle} source={ICON.ticket} />
+          <Text style={styles.statusText}>{memberBase.royal_pass_has_amt}</Text>
         </View>
       </View>
     </View>
@@ -104,8 +109,7 @@ const styles = StyleSheet.create({
   logo1: { width: 105, height: 29 },
   tabContainer: {
     flexDirection: 'row',
-    paddingBottom: 16,
-    paddingTop: 24,
+    paddingVertical: 10,
     paddingLeft: 16,
     paddingRight: 16,
     backgroundColor: 'white',
@@ -113,16 +117,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   tab: {
-    paddingRight: 24,
+    paddingRight: 16,
   },
   tabText: {
-    fontSize: 20,
+    fontSize: 18,
     lineHeight: 32,
     color: Color.grayAAAA,
     fontFamily: 'AppleSDGothicNeoB00',
   },
   tabTextActive: {
-    color: Color.black2222,
+    color: Color.primary,
   },
   activeDot: {
     right: 18,
@@ -137,12 +141,16 @@ const styles = StyleSheet.create({
     width: 18,
     height: 18,
     marginRight: 5,
-    borderWidth: 1,
-    borderColor: 'grey',
+    resizeMode: 'contain',
   },
   itemContainer: {
     flexDirection: `row`,
     alignItems: `center`,
     justifyContent: `center`,
+  },
+  statusText: {
+    fontSize: 14,
+    color: 'rgb(84, 84 , 86)',
+    fontWeight: 'bold',
   },
 });

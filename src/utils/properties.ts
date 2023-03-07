@@ -3,8 +3,8 @@ import { JWT_TOKEN } from 'constants/storeKey';
 
 // api 서버 도메인
 //export const api_domain = "http://61.72.174.189:8080";
-// export const api_domain = 'http://118.67.134.149:8080';
-export const api_domain = 'http://59.5.92.43:8080';
+export const api_domain = 'http://118.67.134.149:8080';
+// export const api_domain = 'http://59.5.92.43:8080';
 
 // 이미지 서버 경로
 export const img_domain = api_domain + '/uploads';

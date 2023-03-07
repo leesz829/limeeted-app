@@ -1,8 +1,9 @@
 import { NavigationContainer } from '@react-navigation/native';
 import React, { useEffect } from 'react';
-import { LogBox, StatusBar, StyleSheet } from 'react-native';
+import { LogBox, SafeAreaView, StatusBar, StyleSheet } from 'react-native';
 import { Notifications } from 'react-native-notifications';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
 import { enableScreens } from 'react-native-screens';
 import { Provider, useDispatch } from 'react-redux';
 import store from 'redux/store';
@@ -18,6 +19,7 @@ import { myProfile } from 'redux/reducers/authReducer';
 import getFCMToken from 'utils/FCM/getFCMToken';
 import { PopupProvider } from 'Context/index';
 import SplashScreen from 'react-native-splash-screen';
+import { Color } from 'assets/styles/Color';
 
 enableScreens();
 LogBox.ignoreAllLogs();
@@ -73,6 +75,7 @@ const App = () => {
   return (
     <Provider store={store}>
       <SafeAreaProvider>
+        <SafeAreaView />
         <SafeAreaView style={style.container}>
           <PopupProvider>
             <StatusBar
@@ -118,5 +121,6 @@ export default codePush(codePushOptions)(withIAPContext(App));
 const style = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Color.tabColor,
   },
 });

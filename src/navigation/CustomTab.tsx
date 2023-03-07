@@ -52,7 +52,7 @@ const CustomTab = ({
               accessibilityState={isFocused ? { selected: true } : {}}
             >
               <TabIcon name={route.name} isFocused={isFocused} />
-              <Text style={styles.tabLabel}>{label}</Text>
+              {/* <Text style={styles.tabLabel}>{label}</Text> */}
             </TouchableOpacity>
           );
         }
@@ -74,10 +74,11 @@ const styles = StyleSheet.create({
     borderTopColor: Color.grayEEEE,
     borderTopWidth: 2,
     flexDirection: 'row',
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
     height: 56,
     justifyContent: 'space-between',
     alignItems: 'center',
+    backgroundColor: Color.tabColor,
   },
   tabLabel: {
     marginTop: 4,

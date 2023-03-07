@@ -51,6 +51,9 @@ export const ICON = {
   wait: require('assets/icon/icon-wait.png'),
   pass: require('assets/icon/icon-pass.png'),
   purplePlus: require('assets/icon/icon-purple-plus.png'),
+  currency: require('assets/icon/icon-currency.png'),
+  ticket: require('assets/icon/icon-ticket.png'),
+  currencyTooltip: require('assets/icon/icon-currency-tooltip.png'),
 };
 
 export const IMAGE = {
