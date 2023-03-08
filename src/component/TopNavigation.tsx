@@ -23,8 +23,6 @@ const TopNavigation: FC<Props> = (props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
   const [currentNavi, setCurrentNavi] = useState<string>(props.currentPath);
 
-  const memberBase = useUserInfo(); // 회원 기본정보
-
   const { show } = usePopup();
 
   React.useEffect(() => {
@@ -85,24 +83,29 @@ const TopNavigation: FC<Props> = (props) => {
       {/* ######################################################################
 			##### 팝업 영역
 			###################################################################### */}
-      <View
-        style={{
-          flexDirection: 'row',
-        }}
-      >
-        <View style={[styles.itemContainer, { marginRight: 8 }]}>
-          <Image style={styles.itemStyle} source={ICON.currency} />
-          <Text style={styles.statusText}>{memberBase.pass_has_amt}</Text>
-        </View>
-        <View style={styles.itemContainer}>
-          <Image style={styles.itemStyle} source={ICON.ticket} />
-          <Text style={styles.statusText}>{memberBase.royal_pass_has_amt}</Text>
-        </View>
-      </View>
+      <Wallet />
     </View>
   );
 };
-
+export function Wallet({}) {
+  const memberBase = useUserInfo(); // 회원 기본정보
+  return (
+    <View
+      style={{
+        flexDirection: 'row',
+      }}
+    >
+      <View style={[styles.itemContainer, { marginRight: 8 }]}>
+        <Image style={styles.itemStyle} source={ICON.currency} />
+        <Text style={styles.statusText}>{memberBase.pass_has_amt}</Text>
+      </View>
+      <View style={styles.itemContainer}>
+        <Image style={styles.itemStyle} source={ICON.ticket} />
+        <Text style={styles.statusText}>{memberBase.royal_pass_has_amt}</Text>
+      </View>
+    </View>
+  );
+}
 export default TopNavigation;
 
 const styles = StyleSheet.create({

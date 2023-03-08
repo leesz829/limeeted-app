@@ -8,13 +8,14 @@ import { Color } from 'assets/styles/Color';
 
 export type NavigationHeaderProps = {
   title: string;
+  right?: React.ReactNode;
 };
 
 /**
  * 공통 헤더
  * @param {string} title 헤더 타이틀
  */
-function CommonHeader({ title }: NavigationHeaderProps) {
+function CommonHeader({ title, right }: NavigationHeaderProps) {
   const navigation = useNavigation<StackScreenProp>();
   const goHome = useCallback(() => {
     navigation.canGoBack()
@@ -34,10 +35,11 @@ function CommonHeader({ title }: NavigationHeaderProps) {
       </TouchableOpacity>
 
       {title && (
-        <View>
+        <View style={{ flex: 1 }}>
           <Text style={styles.titleStyle}>{title}</Text>
         </View>
       )}
+      {right && <View>{right}</View>}
     </View>
   );
 }
@@ -58,6 +60,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
   backImg: {
     width: 24,

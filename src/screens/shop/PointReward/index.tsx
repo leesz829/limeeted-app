@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { ICON } from 'utils/imageUtils';
 import Modal from 'react-native-modal';
+import { Wallet } from 'component/TopNavigation';
 
 export default function PointReward() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,7 +24,7 @@ export default function PointReward() {
   };
   return (
     <View style={styles.container}>
-      <CommonHeader title="리미티드 포인트 보상" />
+      <CommonHeader title="리미티드 포인트 보상" right={<Wallet />} />
       <ScrollView style={styles.scroll}>
         <View style={styles.inner}>
           <View style={styles.gradeContainer}>
