@@ -1,6 +1,6 @@
 import { Color } from 'assets/styles/Color';
 import CommonHeader from 'component/CommonHeader';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Image,
   ScrollView,
@@ -10,52 +10,17 @@ import {
   View,
 } from 'react-native';
 import { ICON } from 'utils/imageUtils';
+import Modal from 'react-native-modal';
 
-const dummy = [
-  {
-    grade: 'E',
-    reward: 50,
-    ticket: 2,
-    isComplete: true,
-    isNext: false,
-  },
-  {
-    grade: 'D',
-    reward: 50,
-    ticket: 2,
-    isComplete: true,
-    isNext: false,
-  },
-  {
-    grade: 'C',
-    reward: 50,
-    ticket: 2,
-    isComplete: true,
-    isNext: false,
-  },
-  {
-    grade: 'B',
-    reward: 50,
-    ticket: 2,
-    isComplete: true,
-    isNext: false,
-  },
-  {
-    grade: 'A',
-    reward: 50,
-    ticket: 2,
-    isComplete: false,
-    isNext: true,
-  },
-  {
-    grade: 'S',
-    reward: 50,
-    ticket: 2,
-    isComplete: false,
-    isNext: false,
-  },
-];
 export default function PointReward() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const onPressGetReward = () => {
+    setIsModalOpen(true);
+  };
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
   return (
     <View style={styles.container}>
       <CommonHeader title="리미티드 포인트 보상" />
@@ -92,7 +57,11 @@ export default function PointReward() {
               {item.isComplete ? (
                 <Text style={styles.completeText}>보상 완료!</Text>
               ) : item.isNext ? (
-                <TouchableOpacity style={styles.rewardButton}>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  style={styles.rewardButton}
+                  onPress={onPressGetReward}
+                >
                   <Text style={styles.rewardButtonText}>보상받기</Text>
                 </TouchableOpacity>
               ) : (
@@ -102,6 +71,25 @@ export default function PointReward() {
           ))}
         </View>
       </ScrollView>
+      <Modal isVisible={isModalOpen} style={styles.modalStyle}>
+        <View style={styles.modalContainer}>
+          {/* 아이콘 나오면 넣어야함 */}
+          <Image style={styles.modalIcon} />
+          <Text style={styles.normalText}>
+            리미티드 <Text style={styles.boldText}>보상획득</Text>
+          </Text>
+          <Text style={styles.infoText}>
+            리미티드 포인트 A등급 보상을 획득하셨습니다.
+          </Text>
+          <TouchableOpacity style={styles.confirmButton} onPress={closeModal}>
+            <Text style={{ color: Color.gray6666 }}>확인</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+            {/* close 검정버튼 나오면 교체 */}
+            <Image source={ICON.close} style={styles.closeImage} />
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -222,4 +210,106 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
   },
+  modalStyle: {
+    margin: 0,
+    flexDirection: `row`,
+    alignItems: `center`,
+    justifyContent: `center`,
+  },
+  modalContainer: {
+    width: '80%',
+    minHeight: '30%',
+    flexDirection: 'column',
+    alignItems: `center`,
+    justifyContent: `center`,
+    backgroundColor: 'white',
+    borderRadius: 3,
+  },
+  modalIcon: {
+    width: 100,
+    height: 100,
+    borderWidth: 1,
+  },
+  normalText: {
+    marginTop: 15,
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  boldText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  infoText: {
+    marginTop: 8,
+    fontWeight: 'bold',
+    fontSize: 10,
+    color: Color.grayAAAA,
+  },
+  confirmButton: {
+    flexDirection: `row`,
+    alignItems: `center`,
+    justifyContent: `center`,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: Color.grayDDDD,
+    paddingVertical: 8,
+    paddingHorizontal: 40,
+    marginTop: 16,
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
+  },
+  closeImage: {
+    backgroundColor: 'black',
+    width: 24,
+    height: 24,
+    resizeMode: 'contain',
+  },
 });
+
+const dummy = [
+  {
+    grade: 'E',
+    reward: 50,
+    ticket: 2,
+    isComplete: true,
+    isNext: false,
+  },
+  {
+    grade: 'D',
+    reward: 50,
+    ticket: 2,
+    isComplete: true,
+    isNext: false,
+  },
+  {
+    grade: 'C',
+    reward: 50,
+    ticket: 2,
+    isComplete: true,
+    isNext: false,
+  },
+  {
+    grade: 'B',
+    reward: 50,
+    ticket: 2,
+    isComplete: true,
+    isNext: false,
+  },
+  {
+    grade: 'A',
+    reward: 50,
+    ticket: 2,
+    isComplete: false,
+    isNext: true,
+  },
+  {
+    grade: 'S',
+    reward: 50,
+    ticket: 2,
+    isComplete: false,
+    isNext: false,
+  },
+];
