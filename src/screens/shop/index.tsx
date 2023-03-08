@@ -32,6 +32,7 @@ import { Slider } from '@miblanchard/react-native-slider';
 import RecommandProduct from './Component/RecommandProduct';
 import CategoryShop from './Component/CategoryShop';
 import { ROUTES, STACK } from 'constants/routes';
+import BannerPannel from './Component/BannerPannel';
 
 interface Products {
   products: Product[];
@@ -417,47 +418,15 @@ export const Shop = () => {
   //   ),
   //   [productsRoyalPass]
   // );
-  const onPressPointReward = () => {
-    navigation.navigate(STACK.COMMON, { screen: 'PointReward' });
-  };
+
   return (
     <>
       <TopNavigation currentPath={''} />
 
-      <ScrollView>
+      <ScrollView stickyHeaderIndices={[3]}>
         <View style={styles.topBanner}>
           {/* 상단 배너 */}
-          <View style={styles.floatWrapper}>
-            <View style={styles.floatContainer}>
-              <View>
-                <Text style={styles.pointText}>
-                  리미티드 포인트 <Text>✌️</Text>
-                </Text>
-                <Text style={styles.infoText}>
-                  즐거운 <Text style={styles.cashbackText}>캐시백</Text> 생활
-                  9,000 / 10,000
-                </Text>
-              </View>
-              <Slider
-                value={0.7}
-                animateTransitions={true}
-                renderThumbComponent={() => null}
-                maximumTrackTintColor={ColorType.purple}
-                minimumTrackTintColor={ColorType.purple}
-                containerStyle={styles.sliderContainer}
-                trackStyle={styles.sliderTrack}
-              />
-              <TouchableOpacity
-                onPress={onPressPointReward}
-                style={styles.TooltipButton}
-              >
-                <Image
-                  source={ICON.currencyTooltip}
-                  style={styles.imageTooltip}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
+          <BannerPannel />
         </View>
         {/* spacer */}
         <View style={{ height: 60 }} />
@@ -466,7 +435,7 @@ export const Shop = () => {
         <RecommandProduct data={['', '', '', '']} />
 
         {/* 카테고리별 */}
-        <CategoryShop data={['', '', '', '']} />
+        <CategoryShop data={['', '', '', '', '', '', '', '', '', '', '', '']} />
       </ScrollView>
     </>
   );

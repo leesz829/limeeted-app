@@ -1,6 +1,12 @@
 import { Color } from 'assets/styles/Color';
 import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 export default function CategoryShop({ data }) {
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
@@ -8,7 +14,7 @@ export default function CategoryShop({ data }) {
     setSelectedCategory(value);
   };
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.categoriesContainer}>
         {categories?.map((item) => (
           <TouchableOpacity
@@ -48,7 +54,7 @@ export default function CategoryShop({ data }) {
           </View>
         </View>
       ))}
-    </View>
+    </ScrollView>
   );
 }
 
