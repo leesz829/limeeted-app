@@ -67,7 +67,7 @@ const TopNavigation: FC<Props> = (props) => {
           </Text>
           {currentNavi === 'LIVE' && <View style={styles.activeDot} />}
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.tab]} onPress={onPressStory}>
+        {/* <TouchableOpacity style={[styles.tab]} onPress={onPressStory}>
           <Text
             style={[
               styles.tabText,
@@ -77,7 +77,7 @@ const TopNavigation: FC<Props> = (props) => {
             STORY
           </Text>
           {currentNavi === 'STORY' && <View style={styles.activeDot} />}
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
 
       {/* ######################################################################

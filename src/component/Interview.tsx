@@ -16,11 +16,12 @@ import { get_member_interview, update_interview } from 'api/models';
 import { usePopup } from 'Context';
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
 
+
 enum Mode {
   view = 'view',
   delete = 'delete',
 }
-export default function Interview({ callbackFn }) {
+export default function Interview({ callbackAnswerFn, callbackOnDelFn }) {
   const origin = useInterView();
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -32,20 +33,30 @@ export default function Interview({ callbackFn }) {
   const { show } = usePopup();  // 공통 팝업
 
   useEffect(() => {
-    setInterview(origin?.filter((item: any) => item.use_yn === 'Y' && item.disp_yn === 'Y'));
+    //setInterview(origin?.filter((item: any) => item.use_yn === 'Y' && item.disp_yn === 'Y'));
+    setInterview(origin?.filter((item: any) => item.use_yn === 'Y'));
   }, [origin]);
 
-  function onPressRegist() {
+  // ###################################### 인터뷰 등록 페이지 이동 함수
+  function onPressRegist(code) {
+    console.log('code :::::: ', code);
     setMode(Mode.view);
-    navigation.navigate(STACK.COMMON, { screen: 'Profile2' });
+    navigation.navigate(STACK.COMMON, { 
+      screen: 'Profile2',
+      params: {
+        code: code
+      }
+    });
   }
 
   function onPressToggleMode() {
     if (mode === Mode.view) {
       setMode(Mode.delete);
+      callbackOnDelFn(true);
     } else {
       setMode(Mode.view);
       setDeleteList([]);
+      callbackOnDelFn(false);
     }
   }
 
@@ -114,7 +125,7 @@ export default function Interview({ callbackFn }) {
       )
     );
 
-    callbackFn(member_interview_seq, text);
+    callbackAnswerFn(member_interview_seq, text);
   };
   return (
     <>
@@ -163,20 +174,35 @@ export default function Interview({ callbackFn }) {
                           <CommonText type={'h5'}>{code_name}</CommonText>
                         </View>
                       </View>
-                      {mode === 'delete' && (
+                      {mode === 'delete' ? (
                         <TouchableOpacity
                           onPress={() => onSelectDeleteItem(item)}
                         >
+                          <View style={[style.checkContainer, deleteList.includes(item) && style.active]}>
+                            <Image
+                              source={
+                                deleteList.includes(item)
+                                  ? ICON.checkOn
+                                  : ICON.checkOff
+                              }
+                              style={style.iconStyle}
+                            />
+                          </View>
+                        </TouchableOpacity>
+                      ) : null
+                      
+                      /* (
+                        <TouchableOpacity
+                          onPress={() => onPressRegist(item.common_code)}
+                        >
                           <Image
-                            source={
-                              deleteList.includes(item)
-                                ? ICON.pen
-                                : ICON.penCircleGray
-                            }
+                            source={ICON.pen}
                             style={{ width: 25, height: 25, marginLeft: 10 }}
                           />
                         </TouchableOpacity>
-                      )}
+                        
+                      ) */
+                      }
                     </SpaceView>
 
                     <SpaceView
@@ -221,12 +247,6 @@ export default function Interview({ callbackFn }) {
               </SpaceView>
             </>
           )}
-          {/* {(JSON.stringify(origin) !== JSON.stringify(interview) ||
-            mode === Mode.delete) && (
-            <View>
-              <CommonBtn value={'저장'} type={'primary'} onPress={submit} />
-            </View>
-          )} */}
 
           {(mode === Mode.delete) && (
             <View>
@@ -265,5 +285,29 @@ const style = StyleSheet.create({
   },
   deleteText: {
     color: Color.gray6666,
+  },
+  checkWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingTop: 12,
+    paddingBottom: 12,
+  },
+  iconStyle: {
+    width: 12,
+    height: 8,
+  },
+  checkContainer: {
+    width: 24,
+    height: 24,
+    borderWidth: 1,
+    borderRadius: 12,
+    borderColor: Color.grayDDDD,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 10
+  },
+  active: {
+    backgroundColor: Color.primary,
+    borderColor: Color.primary,
   },
 });

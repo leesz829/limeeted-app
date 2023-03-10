@@ -465,11 +465,11 @@ export const Matching = (props: Props) => {
             {data.interestList.map((i, index) => {
               return (
                 <SpaceView mr={index % 3 !== 2 ? 8 : 0} key={index + 'reg'}>
-                  <TouchableOpacity style={[styles.interestBox]}>
-                    <CommonText color={ColorType.gray8888}>
+                  <View style={[styles.interestBox, styles.boxActive]}>
+                    <CommonText color={ColorType.primary}>
                       {i.code_name}
                     </CommonText>
-                  </TouchableOpacity>
+                  </View>
                 </SpaceView>
               );
             })}
@@ -479,11 +479,11 @@ export const Matching = (props: Props) => {
 										프로필 평점 영역
 					################################################################################################### */}
           <SpaceView mb={54}>
-            {/* <SpaceView mb={16}>
+            <SpaceView mb={16}>
               <CommonText fontWeight={'700'} type={'h3'}>
                 프로필 평점
               </CommonText>
-            </SpaceView> */}
+            </SpaceView>
 
             {/* <MainProfileSlider score={data.memberBase.profile_score} /> */}
 
@@ -534,7 +534,7 @@ export const Matching = (props: Props) => {
                 <ToolTip
                   title={'프로필 평점'}
                   desc={
-                    '<라이브>에 소개된 내 프로필에 다른 이성들이 부여한 프로필 평점'
+                    '다른 회원들이 바라보는\n내 프로필 사진의 인기 지수'
                   }
                 />
 
@@ -578,7 +578,12 @@ export const Matching = (props: Props) => {
                   </SpaceView>
                   
                   <View style={_styles.socialScoreContainer}>
-                    <CommonText>소셜 평점</CommonText>
+                    <ToolTip
+                      title={'소셜 평점'}
+                      desc={
+                        '컨텐츠 참여와 매너 수준에 따른\n활동 지수(주1회갱신)'
+                      }
+                    />
                     <CommonText fontWeight={'700'} type={'h2'}>
                       {data.memberBase?.social_grade}
                     </CommonText>

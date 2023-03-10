@@ -20,7 +20,7 @@ const BottomNavigation = () => {
   return (
     <Tab.Navigator
       backBehavior={'history'}
-      initialRouteName={'Live'}
+      initialRouteName={'Matching'}
       tabBar={(props) => <CustomTab {...props} />}
     >
       <Tab.Screen

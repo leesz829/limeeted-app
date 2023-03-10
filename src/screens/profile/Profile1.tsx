@@ -89,6 +89,9 @@ export const Profile1 = (props: Props) => {
   // 프로필 인상 순위 목록
   const [profileFaceRankList, setProfileFaceRankList] = React.useState([]);
 
+  // 저장, 선택삭제 버튼 노출 구분
+  const [isSaveBtn, setIsSaveBtn] = React.useState(true);
+
 
   // ################################################################ 프로필 이미지 파일 콜백 함수
   const fileCallBack1 = (
@@ -211,8 +214,8 @@ export const Profile1 = (props: Props) => {
     imgDel_onClose();
   };
 
-  // ############################################################  인터뷰 Callback 함수
-  const callbackInterview = async (seq: any, answer: any) => {
+  // ############################################################  인터뷰 답변 작성 Callback 함수
+  const callbackInterviewAnswer = async (seq: any, answer: any) => {
     let dupChk = false;
     let data = {member_interview_seq: seq, answer: answer};
     applyInterviewList.map(({member_interview_seq} : {member_interview_seq: any;}) => {
@@ -228,6 +231,16 @@ export const Profile1 = (props: Props) => {
       );
     }
   }
+
+  // ############################################################  인터뷰 삭제, 종료 버튼 클릭 Callback 함수
+  const callbackInterviewDel = async (isDel: boolean) => {
+    if(isDel) {
+      setIsSaveBtn(false);
+    } else {
+      setIsSaveBtn(true);
+    }
+  }
+
 
   // ############################################################  프로필 관리 저장
   const saveMemberProfile = async () => {
@@ -691,18 +704,20 @@ export const Profile1 = (props: Props) => {
           {/* ####################################################################################
 					####################### 인터뷰 영역
 					#################################################################################### */}
-          <Interview callbackFn={callbackInterview} />
+          <Interview callbackAnswerFn={callbackInterviewAnswer} callbackOnDelFn={callbackInterviewDel} />
 
         </SpaceView>
 
         <View style={styles.bottomBtnContainer}>
-          <CommonBtn
-            value={'저장'}
-            type={'primary'}
-            onPress={() => {
-              saveMemberProfile();
-            }}
-          />
+          {isSaveBtn ? (
+            <CommonBtn
+              value={'저장'}
+              type={'primary'}
+              onPress={() => {
+                saveMemberProfile();
+              }}
+            />
+          ) : null}          
         </View>
       </ScrollView>
 

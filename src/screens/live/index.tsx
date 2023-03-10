@@ -213,6 +213,8 @@ export const Live = () => {
             imgUrls={liveProfileImg}
             profileName={liveMemberInfo.name}
             age={liveMemberInfo.age}
+            status={liveMemberInfo.live_trgt_type}
+            comment={liveMemberInfo.comment}
           />
         </SpaceView>
 

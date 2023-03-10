@@ -54,7 +54,7 @@ export const ViualSlider: FC<Props> = (props: Props) => {
     <SpaceView>
       <View style={styles.processContainer}>
         {props.status ? (
-          props.status === 'ing' ? (
+          props.status === 'NEW' ? (
             <Image source={ICON.process} style={styles.iconSize40} />
           ) : (
             <Image source={ICON.badge} style={styles.iconSize40} />
@@ -110,11 +110,7 @@ export const ViualSlider: FC<Props> = (props: Props) => {
 							<Image source={ICON.distance} style={styles.iconSize} />
 						</View> */}
 
-            {props.onlyImg ? (
-              <></>
-            ) : (
-              <CommonText color={ColorType.white}>{props.comment}</CommonText>
-            )}
+            <CommonText color={ColorType.white}>{props.comment}</CommonText>
           </SpaceView>
 
           {props.onlyImg ? (

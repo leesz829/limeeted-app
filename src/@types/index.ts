@@ -81,7 +81,9 @@ export type StackParamList = {
   Sample: undefined;
   Profile1: undefined;
   SecondAuth: undefined;
-  Profile2: undefined;
+  Profile2: {
+    code: string;
+  };
   StorageProfile: {
     matchSeq: Number;
     tgtMemberSeq: Number;

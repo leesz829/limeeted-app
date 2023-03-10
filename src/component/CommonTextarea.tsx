@@ -55,7 +55,7 @@ export const CommonTextarea: FC<Props> = (props: any) => {
 
 const styles = StyleSheet.create({
   labelContainer: {
-    marginBottom: 8,
+    marginBottom: 15,
   },
   labelStyle: {
     fontSize: 14,
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   inputStyle: {
-    width: 370,
+    width: '100%',
     height: 220,
     borderColor: '#999',
     borderWidth: 1,

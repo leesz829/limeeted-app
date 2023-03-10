@@ -375,11 +375,11 @@ export const Introduce = (props: Props) => {
               return (
                 i.code_name != "" ? (
                   <SpaceView mr={index % 3 !== 2 ? 8 : 0} key={index + 'reg'}>
-                    <TouchableOpacity style={[styles.interestBox]}>
-                      <CommonText color={ColorType.gray8888}>
+                    <View style={[styles.interestBox, styles.boxActive]}>
+                      <CommonText color={ColorType.primary}>
                         {i.code_name}
                       </CommonText>
-                    </TouchableOpacity>
+                    </View>
                   </SpaceView>
                 ) : null
               );

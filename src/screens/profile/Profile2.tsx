@@ -1,6 +1,7 @@
-import { useNavigation, useIsFocused } from '@react-navigation/native';
+import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import { ColorType, ScreenNavigationProp } from '@types';
 import { Color } from 'assets/styles/Color';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { layoutStyle, styles } from 'assets/styles/Styles';
 import { CommonBtn } from 'component/CommonBtn';
 import CommonHeader from 'component/CommonHeader';
@@ -8,6 +9,7 @@ import { CommonSwich } from 'component/CommonSwich';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import React, { useMemo, useState, useEffect } from 'react';
+import { StackParamList } from '@types';
 import {
   Image,
   StyleSheet,
@@ -34,17 +36,27 @@ import { STACK } from 'constants/routes';
 ###################################################################################################################
 ################################################################################################################ */
 
+interface Props {
+  navigation: StackNavigationProp<StackParamList, 'Profile2'>;
+  route: RouteProp<StackParamList, 'Profile2'>;
+}
+
 enum Mode {
   view = 'view',
   edit = 'edit',
 }
-export const Profile2 = () => {
+export const Profile2 = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
   const [text, setText] = useState('');
   const navi = useNavigation();
   const origin = useInterView();
   const [interview, setInterview] = useState(origin);
-  const [target, setTarget] = useState(null);
+  const [target, setTarget] = useState(function() {
+    let data = {}
+    interview?.filter((item: any) => item?.common_code == props.route.params.code ? data = item : null);
+    return data;
+  });
+  //const [target, setTarget] = useState(interview?.filter((item: any) => item?.common_code != props.route.params.code ? item : item));
   const [mode, setMode] = useState(Mode.view);
 
   const { show } = usePopup();  // 공통 팝업
@@ -65,6 +77,22 @@ export const Profile2 = () => {
   // ############################################# 노출 여부 Toggle UI Function
   function toggleFunction(value, id) {
     updateDispYn(value, id);
+  }
+
+  // ############################################# 노출 여부 Toggle UI Function
+  function onPressTarget(_item) {
+    let isChk = false;
+    interview.map((item: any) => {
+      if(item.use_yn == 'Y' && _item.common_code == item.common_code) {
+        isChk = true;
+      }
+    })
+
+    if(isChk) {
+      show({content: '이미 등록된 질문이에요.'});
+    } else {
+      setTarget(_item);
+    }
   }
 
   // ############################################# 순서 Drag UI Function
@@ -90,7 +118,7 @@ export const Profile2 = () => {
     let applyInterview = [];
       interview.map((item: any) => {
         if(item.common_code === id) {
-          item.disp_yn = (value ? 'Y' : 'N');
+          //item.disp_yn = (value ? 'Y' : 'N');
           applyInterview.push(item);
         }
       }
@@ -112,15 +140,8 @@ export const Profile2 = () => {
       target != null && item.common_code === target.common_code ? { ...item, use_yn: 'Y', order_seq: index+1 } : {...item, order_seq: index+1}
     )
 
-    //return;
-
     saveAPI(applyInterview, function() {
-      show({ 
-        content: '저장되었습니다.' ,
-        confirmCallback: function() {
-          navigation.navigate(STACK.COMMON, { screen: 'Profile1' });
-        }
-      });
+      navigation.navigate(STACK.COMMON, { screen: 'Profile1' });
     });
   };
 
@@ -212,7 +233,7 @@ export const Profile2 = () => {
         <SpaceView viewStyle={layoutStyle.rowCenter} mb={32}>
           <SpaceView viewStyle={styles.questionContainer} mr={16}>
             <CommonText textStyle={layoutStyle.textCenter}>
-              {target !== null
+              {target !== null && Object.keys(target).length > 0
                 ? target?.code_name
                 : `첫번째 질문이에요${'\n'}질문에 성실하게 답해주세요`}
             </CommonText>
@@ -223,7 +244,7 @@ export const Profile2 = () => {
         </SpaceView>
 
         <SpaceView viewStyle={styles.interviewContainer}>
-          <SpaceView viewStyle={{ alignItems: 'flex-end' }}>
+          {/* <SpaceView viewStyle={{ alignItems: 'flex-end' }}>
             <TouchableOpacity
               style={style.modifyButton}
               onPress={onPressModify}
@@ -236,7 +257,7 @@ export const Profile2 = () => {
                 {mode === Mode.view ? '편집' : '종료'}
               </CommonText>
             </TouchableOpacity>
-          </SpaceView>
+          </SpaceView> */}
           <SpaceView viewStyle={layoutStyle.rowBetween} mb={24}>
             <SpaceView viewStyle={styles.searchInputContainer}>
               <TextInput
@@ -272,7 +293,7 @@ export const Profile2 = () => {
                   mr={8}
                   ml={8}
                 >
-                  <TouchableOpacity onPress={() => setTarget(item)}>
+                  <TouchableOpacity onPress={() => onPressTarget(item)}>
                     {item.use_yn === 'Y' ? (
                       <SpaceView viewStyle={styles.questionItemTextContainerActive}>
                         <CommonText color={Color.white}>{item?.code_name}</CommonText>

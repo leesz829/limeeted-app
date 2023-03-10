@@ -84,9 +84,14 @@ export const CustomerInquiry = (props : Props) => {
 		<>
 			<CommonHeader title={'고객문의'} />
 			<ScrollView contentContainerStyle={[styles.scrollContainer]}>
+				<SpaceView mb={25}>
+					<View style={layoutStyle.alignStart}>
+						<CommonText type={'h4'}>등록해주신 문의내용은 관리자 확인 후{'\n'}우편함으로 답변드립니다.</CommonText>
+					</View>
+				</SpaceView>
 				
 				<SpaceView>
-					<SpaceView>	
+					<SpaceView mb={25} pl={10} pr={10}>	
 						<CommonInput
 							label={'제목'}
 							value={title}
@@ -97,7 +102,7 @@ export const CustomerInquiry = (props : Props) => {
 						/>
 					</SpaceView>
 
-					<SpaceView mb={16}>
+					<SpaceView mb={35} pl={10} pr={10}>
 						<CommonTextarea
 							label={'내용'} 
 							value={contents}
@@ -109,7 +114,7 @@ export const CustomerInquiry = (props : Props) => {
 						/>
 					</SpaceView>
 
-					<SpaceView mb={16}>
+					<SpaceView mb={16} pl={8} pr={8}>
           				<CommonBtn
             				value={'문의하기'}
             				type={'primary'}
@@ -118,13 +123,6 @@ export const CustomerInquiry = (props : Props) => {
             				}}
           				/>
         			</SpaceView>
-
-					<SpaceView mb={16}>
-						<View style={layoutStyle.alignCenter}>
-          					<CommonText type={'h3'}>등록해주신 문의내용은 관리자 확인 후{'\n'}
-							우편함으로 답변드립니다.</CommonText>
-        				</View>
-					</SpaceView>
 				</SpaceView>
 
 				<Modal visible={customerInquiryCompletePopup} transparent={true}>
