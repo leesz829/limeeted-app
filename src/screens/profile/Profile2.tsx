@@ -47,16 +47,17 @@ enum Mode {
 }
 export const Profile2 = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
+  const tgtCode = props.route.params.tgtCode;
+
   const [text, setText] = useState('');
   const navi = useNavigation();
   const origin = useInterView();
   const [interview, setInterview] = useState(origin);
   const [target, setTarget] = useState(function() {
     let data = {}
-    interview?.filter((item: any) => item?.common_code == props.route.params.code ? data = item : null);
+    interview?.filter((item: any) => item?.common_code == props.route.params.tgtCode ? data = item : null);
     return data;
   });
-  //const [target, setTarget] = useState(interview?.filter((item: any) => item?.common_code != props.route.params.code ? item : item));
   const [mode, setMode] = useState(Mode.view);
 
   const { show } = usePopup();  // 공통 팝업
@@ -116,13 +117,12 @@ export const Profile2 = (props: Props) => {
   // ############################################# 인터뷰 노출 여부 변경
   const updateDispYn = async (value: boolean, id:string) => {
     let applyInterview = [];
-      interview.map((item: any) => {
-        if(item.common_code === id) {
-          //item.disp_yn = (value ? 'Y' : 'N');
-          applyInterview.push(item);
-        }
+    interview.map((item: any) => {
+      if(item.common_code === id) {
+        //item.disp_yn = (value ? 'Y' : 'N');
+        applyInterview.push(item);
       }
-    )
+    })
     saveAPI(applyInterview, function(){
       console.log('ok');
     });
@@ -130,17 +130,34 @@ export const Profile2 = (props: Props) => {
 
   // ############################################# 인터뷰 전체 저장
   const saveAllInterview = async () => {
-    if(target != null && origin.length > 9) {
-      show({content: '인터뷰는 최소 10개까지 등록 가능합니다.'});
-      return;
+
+    if(typeof tgtCode != 'undefined') {
+      if(tgtCode == target.common_code) {
+        show({content: '변경할 인터뷰를 선택해 주세요.'});
+        return;
+      }
+    } else {
+      if(target != null && origin.length > 9) {
+        show({content: '인터뷰는 최소 10개까지 등록 가능합니다.'});
+        return;
+      }
     }
 
-    let applyInterview = [];
-    applyInterview = interview.map((item: any, index) =>
-      target != null && item.common_code === target.common_code ? { ...item, use_yn: 'Y', order_seq: index+1 } : {...item, order_seq: index+1}
-    )
+    // ### 적용할 인터뷰 데이터 구성
+    let applyInterviewList = [];
+    interview.map((item: any, index) => {
+      if(target != null && item.common_code === target.common_code) {
+        item.use_yn = 'Y';
+      } else if(typeof tgtCode != 'undefined' && tgtCode === item.common_code) {
+        item.use_yn = 'N';
+      }
+      item.order_seq = index+1;
+      applyInterviewList.push(item);
+    })
 
-    saveAPI(applyInterview, function() {
+    console.log('applyInterviewList :::::: ', applyInterviewList);
+
+    saveAPI(applyInterviewList, function() {
       navigation.navigate(STACK.COMMON, { screen: 'Profile1' });
     });
   };
@@ -179,9 +196,6 @@ export const Profile2 = (props: Props) => {
         }
       }
     });
-
-    console.log('dataList :::: ', dataList);
-
   };
 
   // ############################################# 인터뷰 목록 조회

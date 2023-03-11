@@ -21,6 +21,7 @@ type Props = {
   iconPosition?: 'left' | 'right';
   height?: number;
   width?: number;
+  fontSize?: number;
 } & StyleProp<TouchableOpacityProps>;
 /**
  * 공통 버튼
@@ -118,7 +119,7 @@ const styles = (props: Props) => {
       flexDirection: 'row',
     },
     btnText: {
-      fontSize: 16,
+      fontSize: props.fontSize ? props.fontSize : 16,
       lineHeight: 26,
       color: textColor,
       fontFamily: 'AppleSDGothicNeoM00',

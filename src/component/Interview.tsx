@@ -44,7 +44,7 @@ export default function Interview({ callbackAnswerFn, callbackOnDelFn }) {
     navigation.navigate(STACK.COMMON, { 
       screen: 'Profile2',
       params: {
-        code: code
+        tgtCode: code
       }
     });
   }
@@ -189,9 +189,7 @@ export default function Interview({ callbackAnswerFn, callbackOnDelFn }) {
                             />
                           </View>
                         </TouchableOpacity>
-                      ) : null
-                      
-                      /* (
+                      ) : (
                         <TouchableOpacity
                           onPress={() => onPressRegist(item.common_code)}
                         >
@@ -201,8 +199,7 @@ export default function Interview({ callbackAnswerFn, callbackOnDelFn }) {
                           />
                         </TouchableOpacity>
                         
-                      ) */
-                      }
+                      )}
                     </SpaceView>
 
                     <SpaceView

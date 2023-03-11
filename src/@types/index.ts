@@ -29,7 +29,9 @@ export type StackParamList = {
   StartPage: undefined;
   Login: undefined;
   Title00: undefined;
-  NiceAuth: undefined;
+  NiceAuth: {
+    type: string;
+  };
   Login01: undefined;
   Policy: undefined;
   Signup00: {
@@ -82,7 +84,7 @@ export type StackParamList = {
   Profile1: undefined;
   SecondAuth: undefined;
   Profile2: {
-    code: string;
+    tgtCode: string;
   };
   StorageProfile: {
     matchSeq: Number;

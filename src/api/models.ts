@@ -40,6 +40,10 @@ import {
   MEMBER_AUTH_DETAIL,
   BOARD_LIST,
   GET_MEMBER_FACE_RANK,
+  NICE_AUTH,
+  UPDATE_PHONE_NUMBER,
+  UPDATE_PASSWORD,
+  MEMBER_EXIT,
 } from './route';
 
 /* ========================================================================================================
@@ -238,14 +242,33 @@ export async function get_member_second_detail(body: {
   return send(MEMBER_AUTH_DETAIL, 'POST', body, true, false);
 }
 
-
+// 회원 2차 인증을 저장한다.
 export async function save_profile_auth(body: {
   file_list : any;
 }) {
   return send(SAVE_PROFILE_AUTH, 'POST', body, true, false);
 }
 
+// 회원의 전화번호를 저장한다.
+export async function update_phone_number(body: {
+  phone_number: string;
+  ci: string;
+}) {
+  return send(UPDATE_PHONE_NUMBER, 'POST', body, true, false);
+}
 
+// 회원의 비밀번호를 수정한다.
+export async function update_member_password(body: {
+  old_password: string;
+  new_password: string;
+}) {
+  return send(UPDATE_PASSWORD, 'POST', body, true, false);
+}
+
+// 회원 탈퇴를 한다.
+export async function update_member_exit() {
+  return send(MEMBER_EXIT, 'POST', undefined, true, false);
+}
 
 
 
@@ -378,4 +401,9 @@ export async function get_common_code(body: { group_code: string }) {
 // #### 최근소식 목록을 조회한다.
 export async function get_board_list() {
   return send(BOARD_LIST, 'POST', undefined, true, false);
+}
+
+// #### 나이스 인증 모듈을 실행한다.
+export async function nice_auth() {
+  return send(NICE_AUTH, 'POST', undefined, false, false);
 }

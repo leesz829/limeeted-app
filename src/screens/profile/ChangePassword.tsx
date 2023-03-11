@@ -15,8 +15,9 @@ import * as properties from 'utils/properties';
 import AsyncStorage from '@react-native-community/async-storage';
 import * as hooksMember from 'hooks/member';
 import { useDispatch } from 'react-redux';
-import * as mbrReducer from 'redux/reducers/mbrReducer';
 import { clearPrincipal } from 'redux/reducers/authReducer';
+import { useUserInfo } from 'hooks/useUserInfo';
+
 
 /* ################################################################################################################
 ###################################################################################################################
@@ -52,7 +53,7 @@ export const ChangePassword = (props : Props) => {
 	const jwtToken = hooksMember.getJwtToken(); // 토큰 추출
 
 	// 회원 기본 정보
-	const memberBase = hooksMember.getBase(); // 회원 기본정보
+	const memberBase = useUserInfo(); // 회원 기본정보
 	
 	// ################### 팝업 관련 #####################
 	const [newPasswordUpdatePopup,   setNewPasswordUpdatePopup]   = React.useState(false); // 비밀번호 변경 팝업

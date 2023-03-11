@@ -178,7 +178,12 @@ export const Policy = (props: Props) => {
             value={'다음'}
             type={'primary'}
             onPress={() => {
-              navigation.navigate('NiceAuth');
+              navigation.navigate({
+                name : 'NiceAuth',
+                params : {
+                  type : 'JOIN'
+                }
+              });
             }}
           />
         </SpaceView>

@@ -18,7 +18,6 @@ export const REGIST_MEMBER_SECOND_AUTH = '/join/insertMemberSecondAuth';
 /**
  * USER
  */
-
 export const ME = '/member/selectMemberInfo';
 export const UPDATE_SETTING = '/member/saveMemberBase';
 export const UPDATE_ADDITIONAL = '/member/saveMemberAddInfo';
@@ -35,11 +34,14 @@ export const GET_POINT = '/member/getMemberHasPoint';
 export const MEMBER_LOGOUT = '/member/logoutProc';
 export const SAVE_PROFILE_AUTH = '/member/saveProfileSecondAuth';
 export const MEMBER_AUTH_DETAIL = '/member/selectMemberSecondAuthDetailList';
+export const UPDATE_PHONE_NUMBER = '/member/modfyMemberPhoneNumber';
+export const MEMBER_EXIT = '/member/deleteMyAccount';
+export const UPDATE_PASSWORD = '/changePassword/updateNewPassword';
+
 
 /**
  * PROFILE
  */
-
 export const REGIST_PROFILE_EVALUATION = '/profile/insertProfileAssessment';
 export const PROFILE_REEXAMINATION = '/profile/profileReexProc';
 export const GET_MEMBER_FACE_RANK = '/profile/getMemberFaceRankList';
@@ -57,10 +59,12 @@ export const UPDATE_MATCH = '/match/updateMatchInfo';
 export const UPDATE_MATCH_STATUS = '/match/updateMatchStatus';
 export const RESOLVE_MATCH = '/match/procMatchMemberHpOpen';
 
+
 /**
  * ORDER
  */
 export const ORDER = '/order/payment';
+
 
 /**
  * COMMON
@@ -68,3 +72,4 @@ export const ORDER = '/order/payment';
 
 export const COMMON_CODE = '/common/selectGroupCodeList';
 export const BOARD_LIST = '/board/selectBoardList';
+export const NICE_AUTH = '/nice/authToken'

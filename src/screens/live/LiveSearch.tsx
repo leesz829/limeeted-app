@@ -4,7 +4,7 @@ import SpaceView from 'component/SpaceView';
 import TopNavigation from 'component/TopNavigation';
 import * as React from 'react';
 import { Image, View } from 'react-native';
-import { ICON } from 'utils/imageUtils';
+import { ICON, GIF_IMG } from 'utils/imageUtils';
 
 export const LiveSearch = () => {
   return (
@@ -20,7 +20,7 @@ export const LiveSearch = () => {
         ]}
       >
         <SpaceView mb={20} viewStyle={layoutStyle.alignCenter}>
-          <Image source={ICON.search} style={styles.iconSize48} />
+          <Image source={GIF_IMG.faceScan} style={styles.iconSize48} />
         </SpaceView>
 
         <View style={layoutStyle.alignCenter}>

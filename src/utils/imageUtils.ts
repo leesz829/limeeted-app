@@ -56,6 +56,10 @@ export const ICON = {
   currencyTooltip: require('assets/icon/icon-currency-tooltip.png'),
 };
 
+export const GIF_IMG = {
+  faceScan: require('assets/img/gif/face-scan.gif'),
+}
+
 export const IMAGE = {
   logo: require('assets/img/logo.png'),
   logoText: require('assets/img/logo_txt.png'),

@@ -3,7 +3,7 @@ import CommonHeader from 'component/CommonHeader';
 import { CommonInput } from 'component/CommonInput';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
-import { ScrollView, View, Modal, TouchableOpacity, Alert } from 'react-native';
+import { ScrollView, View, Modal, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import * as React from 'react';
 import { CommonBtn } from 'component/CommonBtn';
 import { StackParamList, ScreenNavigationProp, ColorType } from '@types';
@@ -22,9 +22,11 @@ import * as mbrReducer from 'redux/reducers/mbrReducer';
 import { ROUTES, STACK } from 'constants/routes';
 import { clearPrincipal } from 'redux/reducers/authReducer';
 import { useUserInfo } from 'hooks/useUserInfo';
-import { update_setting, member_logout } from 'api/models';
+import { update_setting, member_logout, update_member_exit } from 'api/models';
 import { usePopup } from 'Context';
 import { myProfile } from 'redux/reducers/authReducer';
+import { REFUSE, SUCCESS, SUCESSION } from 'constants/reusltcode';
+
 
 /* ################################################################################################################
 ###################################################################################################################
@@ -69,38 +71,40 @@ export const Profile = (props: Props) => {
 
 	// 회원탈퇴 버튼
 	const btnDeleteMyAccount = async () => {
-    const result = await axios
-		.post(
-			properties.api_domain + '/member/deleteMyAccount',
-			{
-				'api-key': 'U0FNR09CX1RPS0VOXzAx',
-				member_seq : memberBase.member_seq
-			},
-			{
-				headers: {
-					'jwt-token': jwtToken,
-				},
-			},
-		)
-		.then(function (response) {
-      if (response.data.result_code != '0000') {
-				return false;
-			} else {
-				deleteMyAccountComplete();
-			}
-		})
-		.catch(function (error) {
-			console.log('error ::: ', error);
-		});
+    try {
+      const { success, data } = await update_member_exit();
+      if(success) {
+        switch (data.result_code) {
+          case SUCCESS:
+            dispatch(clearPrincipal());
+            break;
+          default:
+            show({
+              content: '오류입니다. 관리자에게 문의해주세요.' ,
+              confirmCallback: function() {}
+            });
+            break;
+        }
+       
+      } else {
+        show({
+          content: '오류입니다. 관리자에게 문의해주세요.' ,
+          confirmCallback: function() {}
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      
+    }
 	}
 
   // 탈퇴 완료 버튼 클릭
 	const deleteMyAccountComplete = async () => {
 		// #todo pushtoken 비워줄 로그아웃 api
-		await AsyncStorage.clear();
-		dispatch(clearPrincipal());
+		
 		//#todo mbr base = > principal reducer
-		 navigation.navigate(STACK.AUTH, { screen: ROUTES.LOGIN });
+		//navigation.navigate(STACK.AUTH, { screen: ROUTES.LOGIN });
 	};
 
 	// 비밀번호 변경 버튼
@@ -233,26 +237,36 @@ export const Profile = (props: Props) => {
 					<CommonInput label={'계정 ID'} placeholder="heighten@kakao.com" rightPen={true} />
 				</SpaceView> */}
 
-          <SpaceView mb={24}>
+          <SpaceView mb={10}>
             <CommonInput
               label={'전화번호'}
               placeholder=""
               value={phoneNumber}
               disabled={true}
             />
+            <View style={[_styles.modfyHpBtn]}>
+              <CommonBtn value={'변경'} type={'primary'} height={35} width={70} fontSize={13}
+                          onPress={() => {
+                            navigation.navigate({
+                              name : 'NiceAuth',
+                              params : {
+                                type : 'MODFY'
+                              }
+                            });
+                          }} />
+            </View>
           </SpaceView>
-        </View>
+
+          <SpaceView>
+            <CommonBtn value={'로그아웃'} type={'primary'} onPress={logout} />
+            <View style={{ height: 6 }} />
+            <CommonBtn value={'비밀번호 변경'} type={'primary'} onPress={btnChangePassword} />
+            <View style={{ height: 6 }} />
+            <CommonBtn value={'탈퇴'} type={'purple'} onPress={btnDeleteMyAccount} />
+          </SpaceView>
+        </View>        
 
         <SpaceView mb={16}>
-          <CommonBtn value={'로그아웃'} type={'primary'} onPress={logout} />
-
-          {/* <View style={{ height: 6 }} />
-          <CommonBtn value={'탈퇴'} type={'primary'} onPress={btnDeleteMyAccount} /> */}
-
-          <View style={{ height: 6 }} />
-          <CommonBtn value={'비밀번호 변경'} type={'primary'} onPress={btnChangePassword} />
-          
-          <View style={{ height: 6 }} />
           <CommonBtn value={'저장'} type={'primary'} onPress={btnSave} />
         </SpaceView>
       </ScrollView>
@@ -299,3 +313,14 @@ export const Profile = (props: Props) => {
     </>
   );
 };
+
+const _styles = StyleSheet.create({
+  modfyHpBtn: {
+    position: 'absolute',
+    right: 0,
+    top: 12,
+    height: '100%',
+    justifyContent: 'center',
+  },
+
+});
