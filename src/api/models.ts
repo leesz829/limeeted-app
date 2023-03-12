@@ -44,6 +44,8 @@ import {
   UPDATE_PHONE_NUMBER,
   UPDATE_PASSWORD,
   MEMBER_EXIT,
+  EMAILDID_FROM_PHONENUMBER,
+  PASSWORD_FROM_EMAILID
 } from './route';
 
 /* ========================================================================================================
@@ -270,7 +272,19 @@ export async function update_member_exit() {
   return send(MEMBER_EXIT, 'POST', undefined, true, false);
 }
 
+// 아이디 찾기
+export async function select_emailId_from_phoneNumber(body: {
+  phoneNumber: string;
+}) {
+  return send(EMAILDID_FROM_PHONENUMBER, 'POST', body, true, false);
+}
 
+// 비밀번호 찾기
+export async function select_password_from_emailId(body: {
+  emailId: string;
+}) {
+  return send(PASSWORD_FROM_EMAILID, 'POST', body, true, false);
+}
 
 /* ========================================================================================================
 ==================================================== PROFILE

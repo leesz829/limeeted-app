@@ -17,7 +17,9 @@ import * as hooksMember from 'hooks/member';
 import { useDispatch } from 'react-redux';
 import { clearPrincipal } from 'redux/reducers/authReducer';
 import { useUserInfo } from 'hooks/useUserInfo';
-
+import { usePopup } from 'Context';
+import { REFUSE, SUCCESS, SUCESSION } from 'constants/reusltcode';
+import { select_emailId_from_phoneNumber, select_password_from_emailId } from 'api/models';
 
 /* ################################################################################################################
 ###################################################################################################################
@@ -32,7 +34,8 @@ interface Props {
 export const SearchIdAndPwd = (props : Props) => {
 	const [phoneNumber,	setPhoneNumber] = React.useState('');
 	const [emailId,    	setEmailId]     = React.useState('');
-
+	
+	const { show } = usePopup();
 
 	const jwtToken = hooksMember.getJwtToken(); // 토큰 추출
 	
@@ -44,58 +47,72 @@ export const SearchIdAndPwd = (props : Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 
 	// 아이디 찾기 버튼 클릭
-	const selectEmailIdFromPhoneNumber = async () => {
-		const result = await axios
-		.post(
-			properties.api_domain + '/member/selectEmailIdFromPhoneNumber',
-			{
-				'api-key': 'U0FNR09CX1RPS0VOXzAx',
-				phoneNumber: phoneNumber
-			},
-			{
-				headers: {
-					'jwt-token': jwtToken,
-				},
-			},
-		)
-		.then(function (response) {
-			if (response.data.result_code != '0000') {
-				return false;
-			} else {
-				
+	const btnSelectEmailIdFromPhoneNumber = async () => {
+		const body = {
+			phoneNumber: phoneNumber
+		};
+		
+		try {
+		  const { success, data } = await select_emailId_from_phoneNumber(body);
+		  if(success) {
+			switch (data.result_code) {
+			  case SUCCESS:
+				// 존재하지 않은 전화번호입니다.
+				break;
+			  default:
+				show({
+				  content: '오류입니다. 관리자에게 문의해주세요.' ,
+				  confirmCallback: function() {}
+				});
+				break;
 			}
-		})
-		.catch(function (error) {
-			console.log('error ::: ', error);
-		});		
-	};
+		   
+		  } else {
+			show({
+			  content: '오류입니다. 관리자에게 문의해주세요.' ,
+			  confirmCallback: function() {}
+			});
+		  }
+		} catch (error) {
+		  console.log(error);
+		} finally {
+		  
+		}
+	}
 
 	// 비밀번호 찾기 버튼 클릭
-	const selectPasswordFromEmailId = async () => {
-		const result = await axios
-		.post(
-			properties.api_domain + '/member/selectPasswordFromEmailId',
-			{
-				'api-key': 'U0FNR09CX1RPS0VOXzAx',
-				emailId: emailId
-			},
-			{
-				headers: {
-					'jwt-token': jwtToken,
-				},
-			},
-		)
-		.then(function (response) {
-			if (response.data.result_code != '0000') {
-				return false;
-			} else {
-
+	const btnSelectPasswordFromEmailId = async () => {
+		const body = {
+			emailId: emailId
+		};
+		
+		try {
+		  const { success, data } = await select_password_from_emailId(body);
+		  if(success) {
+			switch (data.result_code) {
+			  case SUCCESS:
+				// 존재하지 않은 전화번호입니다.
+				break;
+			  default:
+				show({
+				  content: '오류입니다. 관리자에게 문의해주세요.' ,
+				  confirmCallback: function() {}
+				});
+				break;
 			}
-		})
-		.catch(function (error) {
-			console.log('error ::: ', error);
-		});		
-	};
+		   
+		  } else {
+			show({
+			  content: '오류입니다. 관리자에게 문의해주세요.' ,
+			  confirmCallback: function() {}
+			});
+		  }
+		} catch (error) {
+		  console.log(error);
+		} finally {
+		  
+		}
+	}
 
 	return (
 		<>
@@ -142,7 +159,7 @@ export const SearchIdAndPwd = (props : Props) => {
 						value={'로그인하기'}
 						type={'primary'}
 						onPress={() => {
-							navigation.navigate('Login');
+//							navigation.navigate('Login');
 						}}
 					/>
 				</SpaceView>
@@ -166,7 +183,7 @@ export const SearchIdAndPwd = (props : Props) => {
 							<View style={modalStyle.modalBtnline} />
 								<TouchableOpacity 
 									style={modalStyle.modalBtn}
-									onPress={() => selectEmailIdFromPhoneNumber()}
+									onPress={() => btnSelectEmailIdFromPhoneNumber()}
 								>
 									<CommonText fontWeight={'500'}>
 										찾기
@@ -196,7 +213,7 @@ export const SearchIdAndPwd = (props : Props) => {
 							<View style={modalStyle.modalBtnline} />
 								<TouchableOpacity 
 									style={modalStyle.modalBtn}
-									onPress={() => selectPasswordFromEmailId()}
+									onPress={() => btnSelectPasswordFromEmailId()}
 								>
 									<CommonText fontWeight={'500'}>
 										찾기

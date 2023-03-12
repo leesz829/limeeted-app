@@ -37,7 +37,8 @@ export const MEMBER_AUTH_DETAIL = '/member/selectMemberSecondAuthDetailList';
 export const UPDATE_PHONE_NUMBER = '/member/modfyMemberPhoneNumber';
 export const MEMBER_EXIT = '/member/deleteMyAccount';
 export const UPDATE_PASSWORD = '/changePassword/updateNewPassword';
-
+export const EMAILDID_FROM_PHONENUMBER = '/member/selectEmailIdFromPhoneNumber';
+export const PASSWORD_FROM_EMAILID = '/member/selectPasswordFromEmailId';
 
 /**
  * PROFILE
