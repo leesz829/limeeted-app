@@ -201,6 +201,14 @@ export const Login01 = () => {
               }}
             />
           </SpaceView>
+          <SpaceView mb={5}>
+            <CommonBtn
+              value={'아이디/비밀번호 찾기'}
+              onPress={() => {
+                navigation.navigate('SearchIdAndPwd');
+              }}
+            />
+          </SpaceView>
           <CommonBtn
             value={'처음으로'}
             type={'kakao'}

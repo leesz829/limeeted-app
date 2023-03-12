@@ -22,6 +22,7 @@ import { Sample } from 'screens/sample/sample';
 import { Approval } from 'screens/signup/Approval';
 import { Storage } from 'screens/storage/index';
 import { StorageProfile } from 'screens/storage/StorageProfile';
+import { SearchIdAndPwd } from 'screens/login/SearchIdAndPwd';
 
 import React from 'react';
 import PointReward from 'screens/shop/PointReward';
@@ -52,6 +53,7 @@ const CommonNavigation = () => {
       <CommonStack.Screen name="StorageProfile" component={StorageProfile} />
       <CommonStack.Screen name="Storage" component={Storage} />
       <CommonStack.Screen name="PointReward" component={PointReward} />
+      <CommonStack.Screen name="SearchIdAndPwd" component={SearchIdAndPwd} />
     </CommonStack.Navigator>
   );
 };
