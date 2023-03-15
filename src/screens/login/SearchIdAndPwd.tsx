@@ -159,7 +159,7 @@ export const SearchIdAndPwd = (props : Props) => {
 						value={'로그인하기'}
 						type={'primary'}
 						onPress={() => {
-//							navigation.navigate('Login');
+							navigation.navigate('Login');
 						}}
 					/>
 				</SpaceView>
