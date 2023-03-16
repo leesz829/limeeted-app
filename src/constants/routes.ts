@@ -17,4 +17,5 @@ export const ROUTES = {
   SECOND_AUTH_POPUP: 'SecondAuthPopup',
   SIGNUP_POPUP2: 'SignupPopUp2',
   NICE_AUTH: 'NiceAuth',
+  SEARCH_IDPWD: 'SearchIdAndPwd',
 };

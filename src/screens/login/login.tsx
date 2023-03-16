@@ -21,7 +21,6 @@ import * as mbrReducer from 'redux/reducers/mbrReducer';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import { Modalize } from 'react-native-modalize';
 import { Color } from 'assets/styles/Color';
-import { SearchIdAndPwd } from 'screens/login/SearchIdAndPwd';
 
 GoogleSignin.configure({
   webClientId:
@@ -139,7 +138,8 @@ export const Login01 = () => {
   const { width, height } = Dimensions.get('window');
 
   return (
-    <ScrollView contentContainerStyle={[styles.scrollContainer]}>
+    <>
+      <ScrollView contentContainerStyle={[styles.scrollContainer]}>
       <View style={[styles.container]}>
         <View style={layoutStyle.alignCenter}>
           <SpaceView>
@@ -218,7 +218,9 @@ export const Login01 = () => {
           <SpaceView mb={5}>
             <CommonBtn
               value={'아이디/비밀번호 찾기'}
-              onPress={() => {SearchIdAndPwd_onOpen}}
+              onPress={() => {
+                navigation.navigate('SearchIdAndPwd');
+              }}
             />
           </SpaceView>
           <CommonBtn
@@ -231,49 +233,9 @@ export const Login01 = () => {
           />
         </SpaceView>
       </View>
-
-        {/* ###############################################
-                    아이디/비밀번호 찾기 팝업
-        ############################################### */}
-        <Modalize
-        ref={SearchIdAndPwd_modalizeRef}
-        handleStyle={modalStyle.modalHandleStyle}
-        modalStyle={modalStyle.modalContainer}
-        adjustToContentHeight={false}
-        FooterComponent={
-          <>
-            <SpaceView mb={16}>
-              <CommonBtn
-                value={'확인'}
-                type={'primary'}
-                onPress={SearchIdAndPwd_onClose}
-              />
-            </SpaceView>
-          </>
-        }
-        HeaderComponent={
-          <>
-            <View style={modalStyle.modalHeaderContainer}>
-              <CommonText fontWeight={'700'} type={'h3'}>
-                아이디/비밀번호 찾기
-              </CommonText>
-              <TouchableOpacity onPress={SearchIdAndPwd_onClose}>
-                <Image source={ICON.xBtn} style={styles.iconSize24} />
-              </TouchableOpacity>
-            </View>
-          </>
-        }
-      >
-        <View style={[modalStyle.modalBody, layoutStyle.flex1]}>
-          <SpaceView
-            mb={24}
-            viewStyle={{ width: width - 32, backgroundColor: Color.grayF8F8 }}
-          >
-            <SearchIdAndPwd />
-          </SpaceView>
-        </View>
-      </Modalize>
     </ScrollView>
+    
+    </>
   );
 };
 // const google_signIn = async () => {

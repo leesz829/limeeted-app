@@ -5,6 +5,7 @@ import { SignupPopUp2 } from 'screens/commonpopup/SignupPopUp2';
 import { Login } from 'screens/login';
 import { Login01 } from 'screens/login/login';
 import { NiceAuth } from 'screens/login/niceAuth';
+import { SearchIdAndPwd } from 'screens/login/SearchIdAndPwd';
 import { Signup00 } from 'screens/signup';
 import { Policy } from 'screens/signup/policy';
 import { Signup01 } from 'screens/signup/Signup01';
@@ -40,6 +41,7 @@ export default function AuthNavigation() {
       <AuthStack.Screen name={ROUTES.APPROVAL} component={Approval} />
       <AuthStack.Screen name={ROUTES.SIGNUP_POPUP2} component={SignupPopUp2} />
       <AuthStack.Screen name={ROUTES.NICE_AUTH} component={NiceAuth} />
+      <AuthStack.Screen name={ROUTES.SEARCH_IDPWD} component={SearchIdAndPwd} />
     </AuthStack.Navigator>
   );
 }
