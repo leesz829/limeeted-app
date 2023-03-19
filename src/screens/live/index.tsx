@@ -93,7 +93,8 @@ export const Live = () => {
     const body = {
       profile_score: clickFaceScore,
       face_code: clickFaceTypeCode,
-      member_seq: liveMemberInfo.member_seq
+      member_seq: liveMemberInfo.member_seq,
+      approval_profile_seq : liveMemberInfo.approval_profile_seq
     };
     try {
       const { success, data } = await regist_profile_evaluation(body);
@@ -175,7 +176,9 @@ export const Live = () => {
           default:
             show({
               content: '오류입니다. 관리자에게 문의해주세요.' ,
-              confirmCallback: function() {}
+              confirmCallback: function() {
+                getLiveMatchTrgt();
+              }
             });
             break;
         }
@@ -183,7 +186,9 @@ export const Live = () => {
       } else {
         show({
           content: '오류입니다. 관리자에게 문의해주세요.' ,
-          confirmCallback: function() {}
+          confirmCallback: function() {
+            getLiveMatchTrgt();
+          }
         });
       }
     } catch (error) {
@@ -208,12 +213,12 @@ export const Live = () => {
       <ScrollView>
         <SpaceView>
           <ViualSlider
-            isNew={liveMemberInfo.live_trgt_type == 'NEW' ? true : false}
+            isNew={liveMemberInfo.status == 'NEW' ? true : false}
             onlyImg={true}
             imgUrls={liveProfileImg}
             profileName={liveMemberInfo.name}
             age={liveMemberInfo.age}
-            status={liveMemberInfo.live_trgt_type}
+            status={liveMemberInfo.status}
             comment={liveMemberInfo.comment}
           />
         </SpaceView>

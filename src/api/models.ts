@@ -45,7 +45,8 @@ import {
   UPDATE_PASSWORD,
   MEMBER_EXIT,
   EMAILDID_FROM_PHONENUMBER,
-  PASSWORD_FROM_EMAILID
+  PASSWORD_FROM_EMAILID,
+  MEMBER_MSG_LIST
 } from './route';
 
 /* ========================================================================================================
@@ -285,6 +286,12 @@ export async function select_password_from_emailId(body: {
 }) {
   return send(PASSWORD_FROM_EMAILID, 'POST', body, true, false);
 }
+
+// 회원의 메시지 목록을 조회한다.
+export async function get_member_message_list() {
+  return send(MEMBER_MSG_LIST, 'POST', undefined, true, false);
+}
+
 
 /* ========================================================================================================
 ==================================================== PROFILE

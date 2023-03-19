@@ -80,7 +80,6 @@ export const Roby = (props: Props) => {
     };
     try {
       const { success, data } = await peek_member(body);
-      console.log('data :::::: ' , data);
       if(success) {
         if(data.result_code == '0000') {
           /* dispatch(setPartialPrincipal({
@@ -255,13 +254,13 @@ export const Roby = (props: Props) => {
             </TouchableOpacity>
           </SpaceView>
 
-          {memberBase?.reex_face_code_name != null ? (
+          {memberBase?.best_face != null ? (
             <SpaceView viewStyle={[layoutStyle.alignCenter, styles.profileContainer]} mb={10}>
               <CommonText color={ColorType.black2222} textStyle={layoutStyle.textCenter}>
                 리미티드의 회원 분들은 {memberBase?.nickname}님이
                 {'\n'}
                 <CommonText fontWeight={'700'} color={ColorType.purple}>
-                  {memberBase?.reex_face_code_name !== null ? memberBase?.reex_face_code_name : ''}
+                  {memberBase?.best_face !== null ? memberBase?.best_face : ''}
                 </CommonText>
                 {'\n'}
                 인상적이라고 생각하세요.

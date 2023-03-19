@@ -95,7 +95,7 @@ export type StackParamList = {
 
 export type BottomParamList = {
   Roby: undefined;
-  Mailbox: undefined;
+  Message: undefined;
   Cashshop: undefined;
   Storage: {
     headerType: String;
@@ -242,8 +242,9 @@ export const LiveMemberInfo  = {
   , name : ''
   , gender : ''
   , comment : ''
-  , live_trgt_type : ''
+  , status : ''
   , age : ''
+  , approval_profile_seq : ''
 };
 
 // Live 매칭 회원 프로필 사진 정보

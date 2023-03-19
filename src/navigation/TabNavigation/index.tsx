@@ -10,6 +10,7 @@ import { Matching } from 'screens/matching';
 import { Roby } from 'screens/roby';
 import { Shop } from 'screens/shop';
 import { Storage } from 'screens/storage';
+import { Message } from 'screens/message';
 
 import CustomTab from '../CustomTab';
 
@@ -43,21 +44,22 @@ const BottomNavigation = () => {
         }}
       />
       <Tab.Screen
-        name="Mailbox"
-        component={Shop}
+        name="Message"
+        component={Message}
         options={{
           tabBarLabel: '우편함',
           headerShown: false,
           tabBarShowLabel: true,
+          unmountOnBlur: true,
         }}
-        listeners={({ navigation }) => ({
+        /* listeners={({ navigation }) => ({
           tabPress: (e) => {
             e.preventDefault();
             show({ title: '알림', content: '준비중입니다.' });
             //busiUtils.goStoragePage(navigation);
             // Alert.alert('알림', '준비중입니다.', [{ text: '확인' }]);
           },
-        })}
+        })} */
       />
       <Tab.Screen
         name="Cashshop"

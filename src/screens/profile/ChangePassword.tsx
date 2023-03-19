@@ -8,15 +8,13 @@ import { ICON, IMAGE } from 'utils/imageUtils';
 import * as React from 'react';
 import { CommonBtn } from 'component/CommonBtn';
 import { StackParamList, ScreenNavigationProp, ColorType } from '@types';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp, useNavigation } from '@react-navigation/native';
-import axios from 'axios';
-import * as properties from 'utils/properties';
-import AsyncStorage from '@react-native-community/async-storage';
-import * as hooksMember from 'hooks/member';
 import { useDispatch } from 'react-redux';
-import { clearPrincipal } from 'redux/reducers/authReducer';
-import { useUserInfo } from 'hooks/useUserInfo';
+import { usePopup } from 'Context';
+import { update_member_password } from 'api/models';
+import { REFUSE, SUCCESS, SUCESSION } from 'constants/reusltcode';
+import { STACK } from 'constants/routes';
+import { myProfile } from 'redux/reducers/authReducer';
 
 
 /* ################################################################################################################
@@ -30,6 +28,12 @@ interface Props {
 }
 
 export const ChangePassword = (props : Props) => {
+
+	const navigation = useNavigation<ScreenNavigationProp>();
+	const { show } = usePopup();  // 공통 팝업
+	const dispatch = useDispatch();
+
+
 	const [oldPassword,    		setOldPassword]         = React.useState('');
 	const [compareOldPassword,  setCompareOldPassword]  = React.useState('');
 	const [newPassword,    		setNewPassword]    		= React.useState('');
@@ -50,85 +54,124 @@ export const ChangePassword = (props : Props) => {
 	const [isNewPassword,    setIsNewPassword]    = React.useState<boolean>(false);
 	const [isNewPasswordChk, setIsNewPasswordChk] = React.useState<boolean>(false);
 
-	const jwtToken = hooksMember.getJwtToken(); // 토큰 추출
 
-	// 회원 기본 정보
-	const memberBase = useUserInfo(); // 회원 기본정보
-	
-	// ################### 팝업 관련 #####################
-	const [newPasswordUpdatePopup,   setNewPasswordUpdatePopup]   = React.useState(false); // 비밀번호 변경 팝업
-	const [newPasswordCompletePopup, setNewPasswordCompletePopup] = React.useState(false); // 비밀번호 변경 완료 팝업
+	// ####################################################### 비밀번호 Validate 체크
+	const validatePassword = async () => {
 
-	const dispatch   = useDispatch();
-	const navigation = useNavigation<ScreenNavigationProp>();
+		setIsOldPassword(false);
+		setIsNewPassword(false);
+		setIsNewPasswordChk(false);
 
-	// 최초 실행
-	React.useEffect(() => {
-		// 현재 비빌번호 조회 및 셋팅
-		axios.post(
-				properties.api_domain + '/changePassword/selectOldPassword',
-				{
-					'api-key': 'U0FNR09CX1RPS0VOXzAx',
-					member_seq: memberBase.member_seq,
-				},
-				{
-					headers: {
-						'jwt-token': jwtToken,
-					},
-				},
-			)
-			.then(function (response) {
-				console.log("response setOldPassword ::: " + JSON.stringify(response.data));
+		setOldPasswordConfirmMessage("");
+		setNewPasswordConfirmMessage("");
+		setNewPasswordChkConfirmMessage("");
 
-				if(null != response.data.result.password) {
-//					Alert.alert('알림', response.data.result.password, [{ text: '확인' }]);
-//					setOldPassword(response.data.result.password);
-					setCompareOldPassword(response.data.result.password);
-				}
-			})
-			.catch(function (error) {
-				console.log('error ::: ', error);
-			});
-	}, []);
+		if(oldPassword == '') {
+			setOldPasswordConfirmMessage("현재 사용하고 계신 비밀번호를 입력해주세요.");
+			setOldPasswordConfirmMessageColor('#8854D2');
+			return;
+		}
 
-	// 새 비밀번호 변경 버튼 클릭
-	const updateNewPassword = async () => {
-		const result = await axios
-		.post(
-			properties.api_domain + '/changePassword/updateNewPassword',
-			{
-				'api-key': 'U0FNR09CX1RPS0VOXzAx',
-				member_seq : memberBase.member_seq,
-				newPassword: newPassword
+		if(newPassword == '') {
+			setIsNewPassword(true);
+			setNewPasswordConfirmMessage("새로 사용하실 비밀번호를 입력해주세요.");
+			setNewPasswordConfirmMessageColor('#8854D2');
+			return;
+		}
+
+		/* let regPass = /^(?=.*[a-zA-Z])(?=.*[0-9]).{8,25}$/;
+		if((!regPass.test(newPassword))){
+			setIsNewPassword(true);
+			setNewPasswordConfirmMessage("영문(소문자) + 숫자 + 특수문자 조합 8자리 이상 입력해주세요.");
+			setNewPasswordConfirmMessageColor('#E04136');
+			return;
+		} */
+
+		if(newPasswordChk == '') {
+			setIsNewPasswordChk(true);
+			setNewPasswordChkConfirmMessage("새 비밀번호를 재입력해주세요.");
+			setNewPasswordChkConfirmMessageColor('#8854D2');
+			return;
+		}
+
+		if (newPassword != newPasswordChk) {
+			setIsNewPasswordChk(true);
+			setNewPasswordChkConfirmMessage("새 비밀번호가 일치하지 않습니다.");
+			setNewPasswordChkConfirmMessageColor('#E04136');
+			return;
+		}
+
+		//setOldPasswordConfirmMessage("정상 입력되었습니다.");
+		setNewPasswordConfirmMessage("정상 입력되었습니다.");
+		setNewPasswordChkConfirmMessage("정상 입력되었습니다.");
+		setOldPasswordConfirmMessageColor('#43AB90');
+		setNewPasswordConfirmMessageColor('#43AB90');
+		setNewPasswordChkConfirmMessageColor('#43AB90');
+
+		show({ 
+			title: '비밀번호 변경',
+			content: '비밀번호 변경하시겠습니까?\n변경 처리 후 바로 로그인됩니다.' ,
+			cancelCallback: function() {
 			},
-			{
-				headers: {
-					'jwt-token': jwtToken,
-				},
-			},
-		)
-		.then(function (response) {
-			setNewPasswordUpdatePopup(false);
-
-			if (response.data.result_code != '0000') {
-				return false;
-			} else {
-				setNewPasswordCompletePopup(true);
+			confirmCallback: async function() {
+				updatePassword();
 			}
-		})
-		.catch(function (error) {
-			console.log('error ::: ', error);
-		});		
-	};
+		});
 
-	// 변경 완료 버튼 클릭
-	const updateNewPasswordComplete = async () => {
-		// #todo pushtoken 비워줄 로그아웃 api
-		await AsyncStorage.clear();
-		dispatch(clearPrincipal());
-		//#todo mbr base = > principal reducer
-		 navigation.navigate(STACK.AUTH, { screen: ROUTES.LOGIN });
-	};
+	}
+
+	// ####################################################### 비밀번호 변경
+	const updatePassword = async () => {
+		const body = {
+			old_password : oldPassword
+			, new_password : newPassword
+		};
+		try {
+		const { success, data } = await update_member_password(body);
+		if(success) {
+			switch (data.result_code) {
+			case SUCCESS:
+				show({
+					title: '변경완료',
+					content: '비밀번호 변경이 완료되었습니다.' ,
+					confirmCallback: async function() {
+						dispatch(myProfile());
+						navigation.navigate(STACK.TAB, {
+							screen: 'Roby',
+						});
+					}
+				});
+				break;
+			case "8001":
+				setIsOldPassword(true);
+				setOldPasswordConfirmMessage("비밀번호가 일치하지 않습니다.");
+				setOldPasswordConfirmMessageColor('#E04136');
+				break;
+			default:
+				show({
+				content: '오류입니다. 관리자에게 문의해주세요.' ,
+				confirmCallback: function() {}
+				});
+				break;
+			}
+			
+		} else {
+			show({
+			content: '오류입니다. 관리자에게 문의해주세요.' ,
+			confirmCallback: function() {}
+			});
+		}
+		} catch (error) {
+		console.log(error);
+		} finally {
+		
+		}
+	}
+
+	// ####################################################### 최초 실행
+	React.useEffect(() => {
+		
+	}, []);
 
 	return (
 		<>
@@ -153,7 +196,8 @@ export const ChangePassword = (props : Props) => {
 						maxLength={20}
 
 					/>
-					{isOldPassword && (<Text style={{color: oldPasswordConfirmMessageColor}}>{oldPasswordConfirmMessage}</Text>)}
+					{/* {isOldPassword && (<Text style={{color: oldPasswordConfirmMessageColor}}>{oldPasswordConfirmMessage}</Text>)} */}
+					{oldPasswordConfirmMessage !== '' && (<Text style={{color: oldPasswordConfirmMessageColor}}>{oldPasswordConfirmMessage}</Text>)}
 				</SpaceView>
 
 				<SpaceView mb={24}>
@@ -183,130 +227,10 @@ export const ChangePassword = (props : Props) => {
 						value={'비밀번호 변경'}
 						type={'primary'}
 						onPress={() => { 
-							setIsOldPassword(false);
-							setIsNewPassword(false);
-							setIsNewPasswordChk(false);
-
-							setOldPasswordConfirmMessage("");
-							setNewPasswordConfirmMessage("");
-							setNewPasswordChkConfirmMessage("");
-
-							if(oldPassword == '') {
-								setOldPasswordConfirmMessage("현재 사용하고 계신 비밀번호를 입력해주세요.");
-								setOldPasswordConfirmMessageColor('#8854D2');
-								return;
-							}
-
-							if(oldPassword != compareOldPassword) {
-								setIsOldPassword(true);
-								setOldPasswordConfirmMessage("비밀번호가 일치하지 않습니다.");
-								setOldPasswordConfirmMessageColor('#E04136');
-								return;
-							}
-
-							if(newPassword == '') {
-								setIsNewPassword(true);
-								setNewPasswordConfirmMessage("새로 사용하실 비밀번호를 입력해주세요.");
-								setNewPasswordConfirmMessageColor('#8854D2');
-								return;
-							}
-
-							let regPass = /^(?=.*[a-zA-Z])(?=.*[0-9]).{8,25}$/;
-							if((!regPass.test(newPassword))){
-								setIsNewPassword(true);
-								setNewPasswordConfirmMessage("영문(소문자) + 숫자 + 특수문자 조합 8자리 이상 입력해주세요.");
-								setNewPasswordConfirmMessageColor('#E04136');
-								return;
-							}
-
-							if(newPasswordChk == '') {
-								setIsNewPasswordChk(true);
-								setNewPasswordChkConfirmMessage("새 비밀번호를 재입력해주세요.");
-								setNewPasswordChkConfirmMessageColor('#8854D2');
-								return;
-							}
-
-							if (newPassword != newPasswordChk) {
-								setIsNewPasswordChk(true);
-								setNewPasswordChkConfirmMessage("새 비밀번호가 일치하지 않습니다.");
-								setNewPasswordChkConfirmMessageColor('#E04136');
-							 	return;
-							}
-
-							setOldPasswordConfirmMessage("정상 입력되었습니다.");
-							setNewPasswordConfirmMessage("정상 입력되었습니다.");
-							setNewPasswordChkConfirmMessage("정상 입력되었습니다.");
-							setOldPasswordConfirmMessageColor('#43AB90');
-							setNewPasswordConfirmMessageColor('#43AB90');
-							setNewPasswordChkConfirmMessageColor('#43AB90');
-
-							setNewPasswordUpdatePopup(true); 
+							validatePassword();
 						}}
 					/>
-				</SpaceView>
- 
-				<Modal visible={newPasswordUpdatePopup} transparent={true}>
-					<View style={modalStyle.modalBackground}>
-					<View style={modalStyle.modalStyle1}>
-						<SpaceView mb={16} viewStyle={layoutStyle.alignCenter}>
-							<CommonText fontWeight={'700'} type={'h4'}>
-								비밀번호 변경
-							</CommonText>
-						</SpaceView>
-
-						<SpaceView viewStyle={layoutStyle.alignCenter}>
-							<CommonText type={'h5'}>비밀번호 변경하시겠습니까?</CommonText>
-							<CommonText type={'h5'}>변경 처리 후 바로 로그인됩니다.</CommonText>
-						</SpaceView>
-
-						<View style={modalStyle.modalBtnContainer}>
-							<TouchableOpacity
-								style={modalStyle.modalBtn}
-								onPress={() => setNewPasswordUpdatePopup(false)}
-							>
-								<CommonText fontWeight={'500'}>취소</CommonText>
-							</TouchableOpacity>
-							<View style={modalStyle.modalBtnline} />
-								<TouchableOpacity 
-									style={modalStyle.modalBtn}
-									onPress={() => updateNewPassword()}
-								>
-									<CommonText fontWeight={'500'}>
-										변경
-									</CommonText>
-								</TouchableOpacity>
-							</View>
-						</View>
-					</View>
-				</Modal>
-
-				<Modal visible={newPasswordCompletePopup} transparent={true}>
-					<View style={modalStyle.modalBackground}>
-					<View style={modalStyle.modalStyle1}>
-						<SpaceView mb={16} viewStyle={layoutStyle.alignCenter}>
-							<CommonText fontWeight={'700'} type={'h4'}>
-								변경 완료
-							</CommonText>
-						</SpaceView>
-
-						<SpaceView viewStyle={layoutStyle.alignCenter}>
-							<CommonText type={'h5'}>비밀번호 변경이 완료되었습니다.</CommonText>
-						</SpaceView>
-
-						<View style={modalStyle.modalBtnContainer}>
-							<View style={modalStyle.modalBtnline} />
-								<TouchableOpacity 
-									style={modalStyle.modalBtn}
-									onPress={() => updateNewPasswordComplete()}
-								>
-									<CommonText fontWeight={'500'}>
-										확인
-									</CommonText>
-								</TouchableOpacity>
-							</View>
-						</View>
-					</View>
-				</Modal>				
+				</SpaceView>		
 
 			</ScrollView>
 		</>

@@ -44,7 +44,7 @@ export const BasePopup = (props: Props) => {
             </SpaceView>
 
             <SpaceView viewStyle={layoutStyle.alignCenter}>
-              <CommonText type={'h5'}>
+              <CommonText type={'h5'} textStyle={layoutStyle.textCenter}>
                 {typeof props.text != 'undefined' && props.text != ''
                   ? props.text
                   : ''}
