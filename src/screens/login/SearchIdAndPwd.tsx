@@ -82,7 +82,10 @@ export const SearchIdAndPwd = (props : Props) => {
 		  if(success) {
 			switch (data.result_code) {
 			  case SUCCESS:
-				// 존재하지 않은 전화번호입니다.
+				show({
+					content: data.emailId ,
+					confirmCallback: function() {}
+				});
 				break;
 			  default:
 				show({
@@ -116,7 +119,10 @@ export const SearchIdAndPwd = (props : Props) => {
 		  if(success) {
 			switch (data.result_code) {
 			  case SUCCESS:
-				// 존재하지 않은 전화번호입니다.
+				show({
+					content: '비밀번호 발급 완료!' ,
+					confirmCallback: function() {}
+				});
 				break;
 			  default:
 				show({
@@ -189,8 +195,6 @@ export const SearchIdAndPwd = (props : Props) => {
 							label={'비밀번호 찾기'}
 							value={emailId}
 							onChangeText={(emailId) => setEmailId(emailId)}
-							isMasking={true}
-							maxLength={13}
 							placeholder="이메일을 입력해주세요."
 							placeholderTextColor={'#c6ccd3'} />
 
