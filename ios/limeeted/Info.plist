@@ -41,12 +41,12 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
-  <key>CodePushDeploymentKey</key>
-  <string>${CODEPUSH_KEY}</string>
+	<key>CodePushDeploymentKey</key>
+	<string>${CODEPUSH_KEY}</string>
 	<key>KAKAO_APP_KEY</key>
 	<string>f33df8242ecffe96078d10be73b34567</string>
 	<key>LSApplicationCategoryType</key>
-	<string></string>
+	<string/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>kakaokompassauth</string>
@@ -73,22 +73,21 @@
 			</dict>
 		</dict>
 	</dict>
-  
-  <key>FirebaseAppDelegateProxyEnabled</key>
-  <false/>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
-  <key>FIREBASE_ANALYTICS_COLLECTION_ENABLED</key>
-  <string>NO</string>
-  <key>FIREBASE_ANALYTICS_COLLECTION_DEACTIVATED</key>
-  <string>YES</string>
-  <key>FirebaseScreenReportingEnabled</key>
-  <false/>
-  <key>UIBackgroundModes</key>
-  <array>
-      <string>fetch</string>
-      <string>remote-notification</string>
-  </array>
+	<string/>
+	<key>FIREBASE_ANALYTICS_COLLECTION_ENABLED</key>
+	<string>NO</string>
+	<key>FIREBASE_ANALYTICS_COLLECTION_DEACTIVATED</key>
+	<string>YES</string>
+	<key>FirebaseScreenReportingEnabled</key>
+	<false/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UIAppFonts</key>
 	<array>
 		<string>RIDIBatang.otf</string>
@@ -96,6 +95,7 @@
 		<string>AppleSDGothicNeoM00.ttf</string>
 		<string>AppleSDGothicNeoR00.ttf</string>
 		<string>AppleSDGothicNeoT00.ttf</string>
+		<string>AppleSDGothicNeoEB00.ttf</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>SplashScreen</string>
