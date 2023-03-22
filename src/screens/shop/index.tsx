@@ -52,6 +52,9 @@ interface Product {
 export const Shop = () => {
   const navigation = useNavigation<ScreenNavigationProp>();
 
+  const onPressInventory = () => {
+    navigation.navigate(STACK.COMMON, { screen: ROUTES.SHOP_INVENTORY });
+  };
   // const isFocusShop = useIsFocused();
 
   // const jwtToken = hooksMember.getJwtToken(); // 토큰
@@ -423,7 +426,7 @@ export const Shop = () => {
     <>
       <TopNavigation currentPath={''} />
 
-      <ScrollView stickyHeaderIndices={[3]}>
+      <ScrollView>
         <View style={styles.topBanner}>
           {/* 상단 배너 */}
           <BannerPannel />
@@ -437,6 +440,18 @@ export const Shop = () => {
         {/* 카테고리별 */}
         <CategoryShop data={['', '', '', '', '', '', '', '', '', '', '', '']} />
       </ScrollView>
+      <TouchableOpacity
+        onPress={onPressInventory}
+        style={{
+          backgroundColor: Color.purple,
+          width: 50,
+          height: 50,
+          borderRadius: 25,
+          position: 'absolute',
+          bottom: 10,
+          right: 10,
+        }}
+      />
     </>
   );
 };

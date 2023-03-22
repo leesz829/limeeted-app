@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   },
   titleStyle: {
     fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 20,
+    fontSize: 16,
     lineHeight: 32,
     color: Color.black2222,
   },
