@@ -36,74 +36,82 @@ export default function MileageShop() {
     setTab(value);
   };
 
-  const ListHeaderComponent = () => (
-    <View>
-      <View style={{ flex: 1 }}>
-        <View style={{ marginTop: 60, paddingHorizontal: 1 }}>
-          <BannerPannel />
-        </View>
-      </View>
-      <View style={styles.categoriesContainer}>
-        {categories?.map((item) => (
-          <TouchableOpacity
-            activeOpacity={0.8}
-            style={styles.categoryBorder(item.value === tab.value)}
-            onPress={() => onPressTab(item)}
-          >
-            <Text style={styles.categoryText(item.value === tab.value)}>
-              {item?.label}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    </View>
-  );
-  const renderItem = ({ item, index }) => {
-    return (
-      <View style={styles.renderItem}>
-        <View style={{ flexDirection: 'column' }}>
-          <Image style={styles.thumb} />
-
-          <View style={{ paddingHorizontal: 3 }}>
-            <Text style={styles.brandName}>브랜드명</Text>
-            <Text style={styles.productName}>제품 모델명</Text>
-            <View style={styles.textContainer}>
-              <Text style={styles.price}>50,000</Text>
-              <Text style={styles.hintText}>즉시 구매가</Text>
-            </View>
-            <View style={styles.textContainer}>
-              <Text style={styles.price}>50,000</Text>
-              <Text style={styles.hintText}>입찰가</Text>
-            </View>
-          </View>
-          <Text style={styles.remainText}>60분 남음</Text>
-        </View>
-      </View>
-    );
-  };
   return (
     <>
       <CommonHeader title="마일리지샵" />
-      <View
-        style={{ paddingHorizontal: 16, flex: 1, backgroundColor: 'white' }}
-      >
+      <View style={styles.root}>
         <SectionGrid
           itemDimension={(Dimensions.get('window').width - 72) / 3}
           sections={data}
           fixed={true}
-          ListHeaderComponent={ListHeaderComponent}
+          ListHeaderComponent={
+            <ListHeaderComponent onPressTab={onPressTab} tab={tab} />
+          }
           stickySectionHeadersEnabled={false}
-          renderSectionHeader={({ section }) => (
-            <View style={{ marginTop: 15 }}>
-              <Text>{section.title}</Text>
-            </View>
-          )}
+          renderSectionHeader={renderSectionHeader}
           renderItem={renderItem}
         />
       </View>
     </>
   );
 }
+
+const RenderCategory = ({ onPressTab, tab }) => {
+  return categories?.map((item) => (
+    <TouchableOpacity
+      activeOpacity={0.8}
+      style={styles.categoryBorder(item.value === tab.value)}
+      onPress={() => onPressTab(item)}
+    >
+      <Text style={styles.categoryText(item.value === tab.value)}>
+        {item?.label}
+      </Text>
+    </TouchableOpacity>
+  ));
+};
+function ListHeaderComponent({ onPressTab, tab }) {
+  return (
+    <View>
+      <View style={{ flex: 1 }}>
+        <View style={{ marginTop: 70, paddingHorizontal: 1 }}>
+          <BannerPannel />
+        </View>
+      </View>
+      <View style={styles.categoriesContainer}>
+        <RenderCategory onPressTab={onPressTab} tab={tab} />
+      </View>
+    </View>
+  );
+}
+const renderItem = ({ item, index }) => {
+  return (
+    <View style={styles.renderItem}>
+      <View style={{ flexDirection: 'column' }}>
+        <Image style={styles.thumb} />
+
+        <View style={{ paddingHorizontal: 3 }}>
+          <Text style={styles.brandName}>브랜드명</Text>
+          <Text style={styles.productName}>제품 모델명</Text>
+          <View style={styles.textContainer}>
+            <Text style={styles.price}>50,000</Text>
+            <Text style={styles.hintText}>즉시 구매가</Text>
+          </View>
+          <View style={styles.textContainer}>
+            <Text style={styles.price}>50,000</Text>
+            <Text style={styles.hintText}>입찰가</Text>
+          </View>
+        </View>
+        <Text style={styles.remainText}>60분 남음</Text>
+      </View>
+    </View>
+  );
+};
+const renderSectionHeader = ({ section }) => (
+  <View style={{ marginTop: 15 }}>
+    <Text>{section.title}</Text>
+  </View>
+);
+
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: 'white', paddingHorizontal: 16 },
   categoriesContainer: {

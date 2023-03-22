@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import {
   Dimensions,
   Image,
@@ -34,6 +34,7 @@ function FemalePannel() {
   const onPressMileageHistory = () => {
     navigation.navigate(STACK.COMMON, { screen: ROUTES.Mileage_History });
   };
+
   return (
     <View style={female.floatWrapper}>
       <View style={female.floatContainer}>
@@ -85,16 +86,7 @@ function FemalePannel() {
 
               <View>
                 <Text style={female.rate}>999,999</Text>
-                <Image
-                  style={{
-                    width: 12.7,
-                    height: 8.43,
-                    position: 'absolute',
-                    right: 0,
-                    top: 0,
-                  }}
-                  source={ICON.crown}
-                />
+                <Image style={female.crown} source={ICON.crown} />
               </View>
             </View>
           </View>
@@ -144,14 +136,14 @@ function MalePannel() {
 const male = StyleSheet.create({
   floatWrapper: {
     width: `100%`,
-    marginTop: -50,
+    marginTop: -60,
   },
   floatContainer: {
+    position: 'relative',
     padding: 25,
     backgroundColor: 'white',
-    width: Dimensions.get('window').width - 40,
-    height: 100,
-    marginHorizontal: 20,
+    width: '100%',
+    height: 120,
     borderRadius: 5,
     shadowColor: '#000',
     shadowOffset: {
@@ -210,14 +202,14 @@ const male = StyleSheet.create({
 const female = StyleSheet.create({
   floatWrapper: {
     width: `100%`,
-    marginTop: -50,
+    marginTop: -60,
   },
   floatContainer: {
     position: 'relative',
     padding: 25,
     backgroundColor: 'white',
     width: '100%',
-    height: 100,
+    height: 120,
     borderRadius: 5,
     shadowColor: '#000',
     shadowOffset: {
@@ -243,14 +235,13 @@ const female = StyleSheet.create({
     width: 25,
     height: 25,
     borderRadius: 13,
-    backgroundColor: Color.primary,
+
     marginRight: 8,
   },
   mileageOrderButton: {
     width: 25,
     height: 25,
     borderRadius: 13,
-    backgroundColor: Color.primary,
     marginRight: 8,
   },
   infoText: {
@@ -292,6 +283,7 @@ const female = StyleSheet.create({
   myBox: {
     flexDirection: `row`,
     alignItems: 'flex-end',
+    marginTop: 8,
   },
   rate: {
     fontFamily: 'AppleSDGothicNeoEB00',
@@ -301,5 +293,12 @@ const female = StyleSheet.create({
     letterSpacing: 0,
     textAlign: 'left',
     color: '#8657d4',
+  },
+  crown: {
+    width: 12.7,
+    height: 8.43,
+    position: 'absolute',
+    right: 0,
+    top: 0,
   },
 });
