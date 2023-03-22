@@ -7,12 +7,22 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import ProductModal from '../ProductModal';
 
-export default memo(CategoryShop);
-function CategoryShop({ data }) {
+export default function CategoryShop({ data }) {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [targetItem, setTargetItem] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
+
   const onPressCategory = (value) => {
     setSelectedCategory(value);
+  };
+  const openModal = (item) => {
+    setTargetItem(item);
+    setModalVisible(true);
+  };
+  const closeModal = () => {
+    setModalVisible(false);
   };
   return (
     <ScrollView style={styles.container}>
@@ -33,33 +43,43 @@ function CategoryShop({ data }) {
         ))}
       </View>
 
-      {data?.map((e) => (
-        <View style={styles.itemContainer}>
-          <View style={{ flexDirection: 'row' }}>
-            <View style={styles.tumbs} />
-            <View style={styles.textContainer}>
-              <Text style={styles.BESTText}>BEST</Text>
-              <Text style={{ fontSize: 13, fontWeight: 'bold' }}>
-                테스트 상품 리미티드 기획상품
-              </Text>
-              <View style={{ flexDirection: 'row' }}>
-                <Text style={styles.discountRate}>50%</Text>
-                <Text style={styles.price}>7,500 </Text>
-                <Text style={styles.originPrice}>15,000 </Text>
-              </View>
-              <View style={styles.boxWrapper}>
-                <View style={styles.box}>
-                  <Text style={styles.boxText}>특가할인</Text>
-                </View>
-              </View>
-            </View>
-          </View>
-        </View>
+      {data?.map((item) => (
+        <RednerItem item={item} openModal={openModal} />
       ))}
+      <ProductModal
+        isVisible={modalVisible}
+        item={targetItem}
+        closeModal={closeModal}
+      />
     </ScrollView>
   );
 }
-
+function RednerItem({ item, openModal }) {
+  const onPressItem = () => openModal(item);
+  return (
+    <TouchableOpacity style={styles.itemContainer} onPress={onPressItem}>
+      <View style={{ flexDirection: 'row' }}>
+        <View style={styles.tumbs} />
+        <View style={styles.textContainer}>
+          <Text style={styles.BESTText}>BEST</Text>
+          <Text style={{ fontSize: 13, fontWeight: 'bold' }}>
+            테스트 상품 리미티드 기획상품
+          </Text>
+          <View style={{ flexDirection: 'row' }}>
+            <Text style={styles.discountRate}>50%</Text>
+            <Text style={styles.price}>7,500 </Text>
+            <Text style={styles.originPrice}>15,000 </Text>
+          </View>
+          <View style={styles.boxWrapper}>
+            <View style={styles.box}>
+              <Text style={styles.boxText}>특가할인</Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+}
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',

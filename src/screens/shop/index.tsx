@@ -438,8 +438,6 @@ export const Shop = () => {
 };
 
 function ListHeaderComponent() {
-  console.log('render ListHeaderComponent');
-
   return (
     <View>
       {/* 상단 배너 */}
