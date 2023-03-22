@@ -54,11 +54,12 @@ export const ICON = {
   currency: require('assets/icon/icon-currency.png'),
   ticket: require('assets/icon/icon-ticket.png'),
   currencyTooltip: require('assets/icon/icon-currency-tooltip.png'),
+  floatingButton: require('assets/icon/icon-floating-button.png'),
 };
 
 export const GIF_IMG = {
   faceScan: require('assets/img/gif/face-scan.gif'),
-}
+};
 
 export const IMAGE = {
   logo: require('assets/img/logo.png'),

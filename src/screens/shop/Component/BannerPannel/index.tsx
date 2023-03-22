@@ -13,20 +13,20 @@ import { Slider } from '@miblanchard/react-native-slider';
 import { useNavigation } from '@react-navigation/native';
 import { ColorType, ScreenNavigationProp } from '@types';
 import { Color } from 'assets/styles/Color';
-import { STACK } from 'constants/routes';
+import { ROUTES, STACK } from 'constants/routes';
 import { useUserInfo } from 'hooks/useUserInfo';
 
 export default function BannerPannel() {
   const me = useUserInfo();
 
   if (!me) return null;
-  return me?.gender === 'M' ? <MalePannel /> : <FemalePannel />;
+  return me?.gender !== 'M' ? <MalePannel /> : <FemalePannel />;
 }
 
 function FemalePannel() {
   const navigation = useNavigation<ScreenNavigationProp>();
   const onPressLimitShop = () => {
-    navigation.navigate(STACK.COMMON, { screen: 'LimitShop' });
+    navigation.navigate(STACK.COMMON, { screen: ROUTES.Mileage_Shop });
   };
   return (
     <View style={female.floatWrapper}>
@@ -97,8 +97,7 @@ function MalePannel() {
 const male = StyleSheet.create({
   floatWrapper: {
     width: `100%`,
-    position: 'absolute',
-    bottom: -50,
+    marginTop: -50,
   },
   floatContainer: {
     padding: 25,
@@ -164,15 +163,14 @@ const male = StyleSheet.create({
 const female = StyleSheet.create({
   floatWrapper: {
     width: `100%`,
-    position: 'absolute',
-    bottom: -50,
+    marginTop: -50,
   },
   floatContainer: {
+    position: 'relative',
     padding: 25,
     backgroundColor: 'white',
-    width: Dimensions.get('window').width - 40,
+    width: '100%',
     height: 100,
-    marginHorizontal: 20,
     borderRadius: 5,
     shadowColor: '#000',
     shadowOffset: {
@@ -212,6 +210,7 @@ const female = StyleSheet.create({
     alignItems: `center`,
     justifyContent: `center`,
     marginTop: 10,
+    zIndex: 10,
   },
   lmtButtonText: {
     color: Color.primary,

@@ -426,32 +426,29 @@ export const Shop = () => {
     <>
       <TopNavigation currentPath={''} />
 
-      <ScrollView>
-        <View style={styles.topBanner}>
-          {/* 상단 배너 */}
-          <BannerPannel />
-        </View>
-        {/* spacer */}
-        <View style={{ height: 60 }} />
+      <FlatList
+        ListHeaderComponent={
+          <View>
+            <View style={styles.topBanner}>{/* 상단 배너 */}</View>
+            <View style={{ height: 50, paddingHorizontal: 16 }}>
+              <BannerPannel />
+            </View>
+            {/* spacer */}
 
-        {/* 추천상품 */}
-        <RecommandProduct data={['', '', '', '']} />
+            {/* 추천상품 */}
+            <RecommandProduct data={['', '', '', '']} />
 
-        {/* 카테고리별 */}
-        <CategoryShop data={['', '', '', '', '', '', '', '', '', '', '', '']} />
-      </ScrollView>
-      <TouchableOpacity
-        onPress={onPressInventory}
-        style={{
-          backgroundColor: Color.purple,
-          width: 50,
-          height: 50,
-          borderRadius: 25,
-          position: 'absolute',
-          bottom: 10,
-          right: 10,
-        }}
+            {/* 카테고리별 */}
+            <CategoryShop
+              data={['', '', '', '', '', '', '', '', '', '', '', '']}
+            />
+          </View>
+        }
       />
+
+      <TouchableOpacity onPress={onPressInventory}>
+        <Image source={ICON.floatingButton} style={styles.floatingButton} />
+      </TouchableOpacity>
     </>
   );
 };
@@ -461,6 +458,7 @@ const styles = StyleSheet.create({
     backgroundColor: Color.primary,
     width: `100%`,
     height: 200,
+    justifyContent: 'flex-end',
   },
   floatWrapper: {
     width: `100%`,
@@ -525,5 +523,14 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     resizeMode: 'contain',
+  },
+  floatingButton: {
+    backgroundColor: Color.purple,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
   },
 });

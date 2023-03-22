@@ -63,8 +63,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   backImg: {
-    width: 24,
-    height: 24,
+    width: 16,
+    height: 16,
+    resizeMode: 'contain',
   },
   titleStyle: {
     fontFamily: 'AppleSDGothicNeoB00',

@@ -19,4 +19,5 @@ export const ROUTES = {
   NICE_AUTH: 'NiceAuth',
   SEARCH_IDPWD: 'SearchIdAndPwd',
   SHOP_INVENTORY: 'Inventory',
+  Mileage_Shop: 'MileageShop',
 };

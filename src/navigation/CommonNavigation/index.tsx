@@ -26,6 +26,7 @@ import { StorageProfile } from 'screens/storage/StorageProfile';
 import React from 'react';
 import PointReward from 'screens/shop/PointReward';
 import Inventory from 'screens/shop/Inventory';
+import MileageShop from 'screens/shop/MileageShop';
 const CommonStack = createStackNavigator<StackParamList>();
 
 const CommonNavigation = () => {
@@ -54,6 +55,7 @@ const CommonNavigation = () => {
       <CommonStack.Screen name="Storage" component={Storage} />
       <CommonStack.Screen name="PointReward" component={PointReward} />
       <CommonStack.Screen name="Inventory" component={Inventory} />
+      <CommonStack.Screen name="MileageShop" component={MileageShop} />
     </CommonStack.Navigator>
   );
 };

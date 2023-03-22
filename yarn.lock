@@ -6642,7 +6642,7 @@ prompts@^2.0.1, prompts@^2.4.0:
     kleur "^3.0.3"
     sisteransi "^1.0.5"
 
-prop-types@*, prop-types@^15.5.7, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2, prop-types@^15.8.1:
+prop-types@*, prop-types@^15.5.7, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2, prop-types@^15.8.1:
   version "15.8.1"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.8.1.tgz#67d87bf1a694f48435cf332c24af10214a3140b5"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
@@ -6937,6 +6937,13 @@ react-native-splash-screen@3.3.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/react-native-splash-screen/-/react-native-splash-screen-3.3.0.tgz#3af71ed17afe50fee69590a45aec399d071ead02"
   integrity sha512-rGjt6HkoSXxMqH4SQUJ1gnPQlPJV8+J47+4yhgTIan4bVvAwJhEeJH7wWt9hXSdH4+VfwTS0GTaflj1Tw83IhA==
+
+react-native-super-grid@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-super-grid/-/react-native-super-grid-5.0.0.tgz#0cf9cfb86864198a1e6925d26496bd005b319e3e"
+  integrity sha512-iivBlleD7ufDtKSd74w1w86bvIzUXHaLjKwRuqMOUQwXxm5hoIGT8YtJiWtS5/bkH38xLw/T0eEn0NHFgzmYiA==
+  dependencies:
+    prop-types "^15.6.0"
 
 react-native-webview@11.22.2:
   version "11.22.2"

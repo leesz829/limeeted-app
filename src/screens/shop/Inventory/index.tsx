@@ -2,13 +2,14 @@ import { Color } from 'assets/styles/Color';
 import CommonHeader from 'component/CommonHeader';
 import React, { useState } from 'react';
 import {
-  TouchableOpacity,
-  View,
+  FlatList,
+  Image,
   StyleSheet,
   Text,
-  ScrollView,
-  FlatList,
+  TouchableOpacity,
+  View,
 } from 'react-native';
+import { ICON, IMAGE } from 'utils/imageUtils';
 
 const dummy = ['', '', '', ''];
 export default function Inventory() {
@@ -41,18 +42,23 @@ export default function Inventory() {
             <View style={{ height: 30 }} />
           </>
         }
-        renderItem={() => (
+        renderItem={({ item, index }) => (
           <View style={styles.renderItem}>
             <View style={{ flexDirection: 'row' }}>
-              <View style={styles.thumb} />
+              <Image style={styles.thumb} />
               <View style={{ marginLeft: 15 }}>
                 <Text style={styles.title}>패스 200</Text>
                 <Text style={styles.infoText}>
                   리미티드에서 보현적으로 사용하는 재화입니다.
                 </Text>
                 <View style={styles.buttonWrapper}>
-                  <TouchableOpacity style={styles.button}>
-                    <Text style={styles.buttonText}>사용/획득</Text>
+                  <TouchableOpacity
+                    style={styles.button(index % 2 == 0)}
+                    disabled={index % 2 != 0}
+                  >
+                    <Text style={styles.buttonText(index % 2 == 0)}>
+                      {index % 2 == 0 ? '사용/획득' : '사용중(20일남음)'}
+                    </Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -99,7 +105,7 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 5,
     backgroundColor: '#d1d1d1',
-    borderStyle: 'solid',
+
     borderWidth: 1,
     borderColor: '#e0e0e0',
   },
@@ -126,22 +132,26 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'flex-end',
   },
-  button: {
-    width: 90,
-    height: 29,
-    borderRadius: 5,
-    backgroundColor: '#742dfa',
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: `center`,
+  button: (used) => {
+    return {
+      width: 90,
+      height: 29,
+      borderRadius: 5,
+      backgroundColor: used ? '#742dfa' : '#f2f2f2',
+      flexDirection: `row`,
+      alignItems: `center`,
+      justifyContent: `center`,
+    };
   },
-  buttonText: {
-    fontSize: 11,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#ffffff',
+  buttonText: (used) => {
+    return {
+      fontSize: 11,
+      fontWeight: 'normal',
+      fontStyle: 'normal',
+      letterSpacing: 0,
+      textAlign: 'left',
+      color: used ? '#ffffff' : '#b5b5b5',
+    };
   },
 });
 
