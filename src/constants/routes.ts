@@ -21,4 +21,5 @@ export const ROUTES = {
   SHOP_INVENTORY: 'Inventory',
   Mileage_Shop: 'MileageShop',
   Mileage_History: 'MileageHistory',
+  Limit_Info: 'LimitInfo',
 };
