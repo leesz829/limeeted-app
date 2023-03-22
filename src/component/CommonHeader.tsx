@@ -5,9 +5,10 @@ import { Image, View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { StackScreenProp } from '@types';
 import { ICON } from 'utils/imageUtils';
 import { Color } from 'assets/styles/Color';
+import { Wallet } from './TopNavigation';
 
 export type NavigationHeaderProps = {
-  title: string;
+  title?: string;
   right?: React.ReactNode;
 };
 
@@ -39,7 +40,7 @@ function CommonHeader({ title, right }: NavigationHeaderProps) {
           <Text style={styles.titleStyle}>{title}</Text>
         </View>
       )}
-      {right && <View>{right}</View>}
+      <View>{right || <Wallet />}</View>
     </View>
   );
 }
