@@ -87,7 +87,7 @@ const TopNavigation: FC<Props> = (props) => {
     </View>
   );
 };
-export function Wallet({}) {
+export function Wallet({ textStyle }) {
   const memberBase = useUserInfo(); // 회원 기본정보
   return (
     <View
@@ -97,11 +97,15 @@ export function Wallet({}) {
     >
       <View style={[styles.itemContainer, { marginRight: 8 }]}>
         <Image style={styles.itemStyle} source={ICON.currency} />
-        <Text style={styles.statusText}>{memberBase.pass_has_amt}</Text>
+        <Text style={[styles.statusText, textStyle]}>
+          {memberBase.pass_has_amt}
+        </Text>
       </View>
       <View style={styles.itemContainer}>
         <Image style={styles.itemStyle} source={ICON.ticket} />
-        <Text style={styles.statusText}>{memberBase.royal_pass_has_amt}</Text>
+        <Text style={[styles.statusText, textStyle]}>
+          {memberBase.royal_pass_has_amt}
+        </Text>
       </View>
     </View>
   );

@@ -10,13 +10,22 @@ import { Wallet } from './TopNavigation';
 export type NavigationHeaderProps = {
   title?: string;
   right?: React.ReactNode;
+  containerStyle?: any;
+  backIcon?: any;
+  walletTextStyle?: any;
 };
 
 /**
  * 공통 헤더
  * @param {string} title 헤더 타이틀
  */
-function CommonHeader({ title, right }: NavigationHeaderProps) {
+function CommonHeader({
+  title,
+  right,
+  containerStyle,
+  backIcon,
+  walletTextStyle,
+}: NavigationHeaderProps) {
   const navigation = useNavigation<StackScreenProp>();
   const goHome = useCallback(() => {
     navigation.canGoBack()
@@ -30,9 +39,9 @@ function CommonHeader({ title, right }: NavigationHeaderProps) {
   }, [navigation]);
 
   return (
-    <View style={styles.headerContainer}>
+    <View style={{ ...styles.headerContainer, ...containerStyle }}>
       <TouchableOpacity onPress={goHome} style={styles.backContainer}>
-        <Image source={ICON.back} style={styles.backImg} />
+        <Image source={backIcon || ICON.back} style={styles.backImg} />
       </TouchableOpacity>
 
       {title && (
@@ -40,7 +49,7 @@ function CommonHeader({ title, right }: NavigationHeaderProps) {
           <Text style={styles.titleStyle}>{title}</Text>
         </View>
       )}
-      <View>{right || <Wallet />}</View>
+      <View>{right || <Wallet textStyle={walletTextStyle} />}</View>
     </View>
   );
 }
