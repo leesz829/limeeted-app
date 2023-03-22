@@ -76,27 +76,32 @@ export default function MileageShop() {
               <Text style={styles.hintText}>입찰가</Text>
             </View>
           </View>
+          <Text style={styles.remainText}>60분 남음</Text>
         </View>
       </View>
     );
   };
   return (
-    <View style={{ paddingHorizontal: 16, flex: 1, backgroundColor: 'white' }}>
+    <>
       <CommonHeader title="마일리지샵" />
-      <SectionGrid
-        itemDimension={(Dimensions.get('window').width - 72) / 3}
-        sections={data}
-        fixed={true}
-        ListHeaderComponent={ListHeaderComponent}
-        stickySectionHeadersEnabled={false}
-        renderSectionHeader={({ section }) => (
-          <View style={{ marginTop: 15 }}>
-            <Text>{section.title}</Text>
-          </View>
-        )}
-        renderItem={renderItem}
-      />
-    </View>
+      <View
+        style={{ paddingHorizontal: 16, flex: 1, backgroundColor: 'white' }}
+      >
+        <SectionGrid
+          itemDimension={(Dimensions.get('window').width - 72) / 3}
+          sections={data}
+          fixed={true}
+          ListHeaderComponent={ListHeaderComponent}
+          stickySectionHeadersEnabled={false}
+          renderSectionHeader={({ section }) => (
+            <View style={{ marginTop: 15 }}>
+              <Text>{section.title}</Text>
+            </View>
+          )}
+          renderItem={renderItem}
+        />
+      </View>
+    </>
   );
 }
 const styles = StyleSheet.create({
@@ -174,6 +179,13 @@ const styles = StyleSheet.create({
     letterSpacing: 0,
     textAlign: 'left',
     color: '#d3d3d3',
+  },
+  remainText: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    color: Color.gray8888,
+    fontSize: 9,
   },
 });
 

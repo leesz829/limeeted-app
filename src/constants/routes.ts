@@ -20,4 +20,5 @@ export const ROUTES = {
   SEARCH_IDPWD: 'SearchIdAndPwd',
   SHOP_INVENTORY: 'Inventory',
   Mileage_Shop: 'MileageShop',
+  Mileage_History: 'MileageHistory',
 };

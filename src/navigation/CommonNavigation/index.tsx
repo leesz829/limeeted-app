@@ -27,6 +27,7 @@ import React from 'react';
 import PointReward from 'screens/shop/PointReward';
 import Inventory from 'screens/shop/Inventory';
 import MileageShop from 'screens/shop/MileageShop';
+import MileageHistory from 'screens/shop/MilerageHistory';
 const CommonStack = createStackNavigator<StackParamList>();
 
 const CommonNavigation = () => {
@@ -56,6 +57,7 @@ const CommonNavigation = () => {
       <CommonStack.Screen name="PointReward" component={PointReward} />
       <CommonStack.Screen name="Inventory" component={Inventory} />
       <CommonStack.Screen name="MileageShop" component={MileageShop} />
+      <CommonStack.Screen name="MileageHistory" component={MileageHistory} />
     </CommonStack.Navigator>
   );
 };
