@@ -2,6 +2,7 @@ import { Color } from 'assets/styles/Color';
 import CommonHeader from 'component/CommonHeader';
 import React, { useState } from 'react';
 import {
+  Dimensions,
   FlatList,
   Image,
   StyleSheet,
@@ -18,60 +19,68 @@ export default function Inventory() {
   const onPressTab = (value) => {
     setTab(value);
   };
+
+  const ListHeaderComponent = () => (
+    <>
+      <View style={styles.categoriesContainer}>
+        {categories?.map((item) => (
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={styles.categoryBorder(item.value === tab.value)}
+            onPress={() => onPressTab(item)}
+          >
+            <Text style={styles.categoryText(item.value === tab.value)}>
+              {item?.label}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+      <View style={{ height: 30 }} />
+    </>
+  );
+  const renderItem = ({ item, index }) => (
+    <View style={styles.renderItem}>
+      <View style={{ flexDirection: 'row' }}>
+        <Image style={styles.thumb} />
+        <View style={{ marginLeft: 15, width: '65%' }}>
+          <Text style={styles.title}>패스 200</Text>
+          <Text style={styles.infoText}>
+            리미티드에서 보현적으로 사용하는 재화입니다.
+          </Text>
+          <View style={styles.buttonWrapper}>
+            <TouchableOpacity
+              style={styles.button(index % 2 == 0)}
+              disabled={index % 2 != 0}
+            >
+              <Text style={styles.buttonText(index % 2 == 0)}>
+                {index % 2 == 0 ? '사용/획득' : '사용중(20일남음)'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </View>
+  );
   return (
     <>
       <CommonHeader title="인벤토리" />
       <FlatList
         style={styles.root}
         data={data}
-        ListHeaderComponent={
-          <>
-            <View style={styles.categoriesContainer}>
-              {categories?.map((item) => (
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  style={styles.categoryBorder(item.value === tab.value)}
-                  onPress={() => onPressTab(item)}
-                >
-                  <Text style={styles.categoryText(item.value === tab.value)}>
-                    {item?.label}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-            <View style={{ height: 30 }} />
-          </>
-        }
-        renderItem={({ item, index }) => (
-          <View style={styles.renderItem}>
-            <View style={{ flexDirection: 'row' }}>
-              <Image style={styles.thumb} />
-              <View style={{ marginLeft: 15 }}>
-                <Text style={styles.title}>패스 200</Text>
-                <Text style={styles.infoText}>
-                  리미티드에서 보현적으로 사용하는 재화입니다.
-                </Text>
-                <View style={styles.buttonWrapper}>
-                  <TouchableOpacity
-                    style={styles.button(index % 2 == 0)}
-                    disabled={index % 2 != 0}
-                  >
-                    <Text style={styles.buttonText(index % 2 == 0)}>
-                      {index % 2 == 0 ? '사용/획득' : '사용중(20일남음)'}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
-          </View>
-        )}
+        ListHeaderComponent={ListHeaderComponent}
+        renderItem={renderItem}
       />
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: 'white', paddingHorizontal: 16 },
+  root: {
+    flex: 1,
+    backgroundColor: 'white',
+    paddingHorizontal: 16,
+    width: '100%',
+  },
   categoriesContainer: {
     marginTop: 15,
     flexDirection: `row`,
@@ -101,11 +110,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   thumb: {
-    width: 110,
-    height: 80,
+    width: '30%',
+    height: ((Dimensions.get('window').width - 32) * 8 * 0.3) / 11,
     borderRadius: 5,
     backgroundColor: '#d1d1d1',
-
     borderWidth: 1,
     borderColor: '#e0e0e0',
   },
@@ -122,14 +130,12 @@ const styles = StyleSheet.create({
     fontFamily: 'AppleSDGothicNeoM00',
     fontSize: 13,
     fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0,
     textAlign: 'left',
     color: '#939393',
   },
   buttonWrapper: {
-    marginTop: 12,
     width: '100%',
+    marginTop: 12,
     alignItems: 'flex-end',
   },
   button: (used) => {

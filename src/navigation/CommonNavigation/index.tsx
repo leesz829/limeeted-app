@@ -27,7 +27,8 @@ import React from 'react';
 import PointReward from 'screens/shop/PointReward';
 import Inventory from 'screens/shop/Inventory';
 import MileageShop from 'screens/shop/MileageShop';
-import MileageHistory from 'screens/shop/MilerageHistory';
+import MileageHistory from 'screens/shop/MileageHistory';
+
 const CommonStack = createStackNavigator<StackParamList>();
 
 const CommonNavigation = () => {
