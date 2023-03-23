@@ -49,7 +49,10 @@ export default function MileageShop() {
           }
           stickySectionHeadersEnabled={false}
           renderSectionHeader={renderSectionHeader}
-          renderItem={renderItem}
+          renderItem={({ item, index, rowIndex }) => (
+            <RenderItem type={tab.value} item={item} />
+          )}
+          keyExtractor={(item, index) => `mileage-item-${index}`}
         />
       </View>
     </>
@@ -83,7 +86,7 @@ function ListHeaderComponent({ onPressTab, tab }) {
     </View>
   );
 }
-const renderItem = ({ item, index }) => {
+const RenderItem = ({ item, index, type }) => {
   return (
     <View style={styles.renderItem}>
       <View style={{ flexDirection: 'column' }}>
@@ -92,14 +95,23 @@ const renderItem = ({ item, index }) => {
         <View style={{ paddingHorizontal: 3 }}>
           <Text style={styles.brandName}>브랜드명</Text>
           <Text style={styles.productName}>제품 모델명</Text>
-          <View style={styles.textContainer}>
+          <View style={[styles.textContainer, { marginTop: 5 }]}>
             <Text style={styles.price}>50,000</Text>
-            <Text style={styles.hintText}>즉시 구매가</Text>
+            {type !== 'gifticon' && (
+              <Text style={styles.hintText}>즉시 구매가</Text>
+            )}
           </View>
-          <View style={styles.textContainer}>
-            <Text style={styles.price}>50,000</Text>
-            <Text style={styles.hintText}>입찰가</Text>
-          </View>
+          {type === 'gifticon' ? (
+            <View style={styles.textContainer}>
+              <Text style={styles.hintText}>100개 남음</Text>
+              <Text style={styles.price}></Text>
+            </View>
+          ) : (
+            <View style={styles.textContainer}>
+              <Text style={styles.price}>50,000</Text>
+              <Text style={styles.hintText}>입찰가</Text>
+            </View>
+          )}
         </View>
         <Text style={styles.remainText}>60분 남음</Text>
       </View>

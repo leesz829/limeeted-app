@@ -64,7 +64,7 @@ export default function MileageHistory() {
               제품/모델명에 입찰
               <Text style={itemStyle.actionText}>하였습니다</Text>
             </Text>
-            <Text style={itemStyle.dateText}>23.01.24 15:10 | 차감</Text>
+            <Text style={itemStyle.dateText}>15:10 | 차감</Text>
             {/* 분기해서 쓰기 */}
             <Text style={itemStyle.targetTextNormal}>
               리밋수량
