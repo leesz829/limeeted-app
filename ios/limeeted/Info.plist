@@ -115,5 +115,12 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>서비스 동작을 위해 위치 정보가 필요합니다</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>서비스 동작을 위해 위치 정보가 필요합니다</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>서비스 동작을 위해 위치 정보가 필요합니다</string>
 </dict>
 </plist>

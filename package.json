@@ -44,6 +44,7 @@
     "react-native-code-push": "7.0.5",
     "react-native-custom-billing": "2.1.0",
     "react-native-draggable-flatlist": "^4.0.0",
+    "react-native-geolocation-service": "^5.3.1",
     "react-native-gesture-handler": "2.1.1",
     "react-native-iap": "12.4.4",
     "react-native-image-picker": "4.7.1",

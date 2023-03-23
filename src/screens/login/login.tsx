@@ -22,7 +22,6 @@ import { ICON, IMAGE } from 'utils/imageUtils';
 import { Modalize } from 'react-native-modalize';
 import { Color } from 'assets/styles/Color';
 import Geolocation from 'react-native-geolocation-service';
-import getLocationInfo from 'utils/geoLocation';
 
 
 GoogleSignin.configure({
