@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { api_domain } from './properties';
 
 // axios 인스턴스 생성
 const YahooClient = axios.create({
-  baseURL: 'https://apidojo-yahoo-finance-v1.p.rapidapi.com',
+  baseURL: api_domain,
   // timeout: 1000,
   headers: {
     // 커스텀헤더를 넣으면 오류남. 커스텀헤더에는 ' 가 생김.

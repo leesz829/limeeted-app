@@ -22,7 +22,7 @@ import {
   requestPurchase,
   getAvailablePurchases,
 } from 'react-native-iap';
-import { purchase_product } from 'api/models';
+import { get_banner_list, purchase_product } from 'api/models';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import * as properties from 'utils/properties';
@@ -433,15 +433,7 @@ export const Shop = () => {
 
       <TouchableOpacity
         onPress={onPressInventory}
-        style={{
-          backgroundColor: Color.purple,
-          width: 50,
-          height: 50,
-          borderRadius: 25,
-          position: 'absolute',
-          bottom: 10,
-          right: 10,
-        }}
+        style={styles.floatingButtonWrapper}
       >
         <Image source={ICON.floatingButton} style={styles.floatingButton} />
       </TouchableOpacity>
@@ -450,10 +442,30 @@ export const Shop = () => {
 };
 
 function ListHeaderComponent() {
+  const [banner, setBanner] = useState([]);
+  useEffect(() => {
+    const getBanner = async () => {
+      const { success, data } = await get_banner_list({ type: 'PROD' });
+      if (success) {
+        setBanner(data?.banner_list);
+      }
+    };
+    getBanner();
+  }, []);
   return (
     <View>
       {/* 상단 배너 */}
-      <Image style={styles.topBanner} />
+      <FlatList
+        data={banner}
+        horizontal
+        style={styles.bannerWrapper}
+        pagingEnabled
+        renderItem={({ item, index }) => {
+          const urlPath = item?.b_file_path + '/' + item?.b_file_name;
+          return <Image style={styles.topBanner} source={{ uri: urlPath }} />;
+        }}
+      />
+
       <View style={{ height: 50, paddingHorizontal: 16 }}>
         <BannerPannel />
       </View>
@@ -472,9 +484,14 @@ function ListFooterComponent() {
 }
 
 const styles = StyleSheet.create({
-  topBanner: {
+  bannerWrapper: {
     backgroundColor: Color.primary,
     width: `100%`,
+    height: 200,
+  },
+  topBanner: {
+    backgroundColor: Color.primary,
+    width: Dimensions.get('window').width,
     height: 200,
     justifyContent: 'flex-end',
   },
@@ -541,6 +558,15 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     resizeMode: 'contain',
+  },
+  floatingButtonWrapper: {
+    backgroundColor: Color.purple,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
   },
   floatingButton: {
     backgroundColor: Color.purple,

@@ -29,8 +29,12 @@ export default function RecommandProduct({ data }) {
         <Text style={styles.recommandText}>오늘은{'\n'}이상품 어때요?</Text>
       </TouchableOpacity>
       <ScrollView horizontal style={styles.recommanListdWrapper}>
-        {data?.map((item) => (
-          <RednerRecommend item={item} openModal={openModal} />
+        {data?.map((item, index) => (
+          <RednerRecommend
+            key={`RednerRecommend-${index}`}
+            item={item}
+            openModal={openModal}
+          />
         ))}
       </ScrollView>
       <ProductModal
