@@ -1,5 +1,5 @@
 import { Color } from 'assets/styles/Color';
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -8,7 +8,8 @@ import {
   View,
 } from 'react-native';
 
-export default function CategoryShop({ data }) {
+export default memo(CategoryShop);
+function CategoryShop({ data }) {
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
   const onPressCategory = (value) => {
     setSelectedCategory(value);

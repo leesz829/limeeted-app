@@ -283,4 +283,11 @@ const itemStyle = StyleSheet.create({
     textAlign: 'left',
     color: '#2c2c2c',
   },
+  crown: {
+    width: 12.7,
+    height: 8.43,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  },
 });

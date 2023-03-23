@@ -425,25 +425,9 @@ export const Shop = () => {
   return (
     <>
       <TopNavigation currentPath={''} />
-
       <FlatList
-        ListHeaderComponent={
-          <View>
-            <View style={styles.topBanner}>{/* 상단 배너 */}</View>
-            <View style={{ height: 50, paddingHorizontal: 16 }}>
-              <BannerPannel />
-            </View>
-            {/* spacer */}
-
-            {/* 추천상품 */}
-            <RecommandProduct data={['', '', '', '']} />
-
-            {/* 카테고리별 */}
-            <CategoryShop
-              data={['', '', '', '', '', '', '', '', '', '', '', '']}
-            />
-          </View>
-        }
+        ListHeaderComponent={ListHeaderComponent}
+        ListFooterComponent={ListFooterComponent}
       />
 
       <TouchableOpacity onPress={onPressInventory}>
@@ -452,6 +436,30 @@ export const Shop = () => {
     </>
   );
 };
+
+function ListHeaderComponent() {
+  console.log('render ListHeaderComponent');
+
+  return (
+    <View>
+      {/* 상단 배너 */}
+      <Image style={styles.topBanner} />
+      <View style={{ height: 50, paddingHorizontal: 16 }}>
+        <BannerPannel />
+      </View>
+    </View>
+  );
+}
+function ListFooterComponent() {
+  return (
+    <>
+      {/* 추천상품 */}
+      <RecommandProduct data={['', '', '', '']} />
+      {/* 카테고리별 */}
+      <CategoryShop data={['', '', '', '', '', '', '', '', '', '', '', '']} />
+    </>
+  );
+}
 
 const styles = StyleSheet.create({
   topBanner: {
