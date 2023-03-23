@@ -10,7 +10,7 @@ import {
 import { ICON } from 'utils/imageUtils';
 
 import { Slider } from '@miblanchard/react-native-slider';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { ColorType, ScreenNavigationProp } from '@types';
 import { Color } from 'assets/styles/Color';
 import { ROUTES, STACK } from 'constants/routes';
@@ -25,26 +25,59 @@ export default function BannerPannel() {
 
 function FemalePannel() {
   const navigation = useNavigation<ScreenNavigationProp>();
+  const route = useRoute();
+
   const onPressLimitShop = () => {
     navigation.navigate(STACK.COMMON, { screen: ROUTES.Mileage_Shop });
+  };
+  const onPressMilerageHistory = () => {
+    navigation.navigate(STACK.COMMON, { screen: ROUTES.Mileage_History });
   };
   return (
     <View style={female.floatWrapper}>
       <View style={female.floatContainer}>
         <View>
-          <Text style={female.pointText}>
-            방배동 아이유 <Text>✨</Text>
-          </Text>
+          <View
+            style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+          >
+            <Text style={female.pointText}>
+              방배동 아이유 <Text>✨</Text>
+            </Text>
+            {route.name === ROUTES.Mileage_Shop && (
+              <View style={{ flexDirection: 'row' }}>
+                <TouchableOpacity
+                  onPress={onPressMilerageHistory}
+                  style={{
+                    width: 25,
+                    height: 25,
+                    borderRadius: 13,
+                    backgroundColor: Color.primary,
+                    marginRight: 8,
+                  }}
+                ></TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    width: 25,
+                    height: 25,
+                    borderRadius: 13,
+                    backgroundColor: Color.primary,
+                  }}
+                ></TouchableOpacity>
+              </View>
+            )}
+          </View>
           <View style={female.row}>
-            <View>
-              <Text style={female.infoText}>방배동 아이유님의 공주력</Text>
-              <TouchableOpacity
-                style={female.lmtShopButton}
-                onPress={onPressLimitShop}
-              >
-                <Text style={female.lmtButtonText}>LIMIT shop +</Text>
-              </TouchableOpacity>
-            </View>
+            {route.name !== ROUTES.Mileage_Shop && (
+              <View>
+                <Text style={female.infoText}>방배동 아이유님의 공주력</Text>
+                <TouchableOpacity
+                  style={female.lmtShopButton}
+                  onPress={onPressLimitShop}
+                >
+                  <Text style={female.lmtButtonText}>LIMIT shop +</Text>
+                </TouchableOpacity>
+              </View>
+            )}
 
             <View style={{ flexDirection: 'column' }}>
               <Text style={female.infoText}>나의 공주력</Text>
