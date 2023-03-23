@@ -34,6 +34,9 @@ function FemalePannel() {
   const onPressMileageHistory = () => {
     navigation.navigate(STACK.COMMON, { screen: ROUTES.Mileage_History });
   };
+  const onPressLimitInfo = () => {
+    navigation.navigate(STACK.COMMON, { screen: ROUTES.Limit_Info });
+  };
 
   return (
     <View style={female.floatWrapper}>
@@ -76,13 +79,13 @@ function FemalePannel() {
             )}
 
             <View style={{ flexDirection: 'column' }}>
-              <View style={female.myBox}>
+              <TouchableOpacity style={female.myBox} onPress={onPressLimitInfo}>
                 <Text style={female.infoText}>나의 공주력</Text>
                 <Image
                   style={{ width: 14, height: 14 }}
                   source={ICON.currencyTooltip}
                 />
-              </View>
+              </TouchableOpacity>
 
               <View>
                 <Text style={female.rate}>999,999</Text>
