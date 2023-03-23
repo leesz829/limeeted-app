@@ -1,6 +1,7 @@
+import { Color } from 'assets/styles/Color';
 import CommonHeader from 'component/CommonHeader';
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, Dimensions, Image } from 'react-native';
 import { SectionGrid } from 'react-native-super-grid';
 
 const DATA = [
@@ -100,7 +101,75 @@ export default function MileageHistory() {
   );
   const renderItem = ({ item, index }) => {
     return (
-      <View style={{ backgroundColor: `red`, width: `90%`, height: 50 }} />
+      <View
+        style={{
+          padding: 10,
+
+          width: Dimensions.get('window').width - 32,
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        <View style={{ flexDirection: 'row' }}>
+          <Image
+            style={{ width: 19, height: 19, backgroundColor: Color.primary }}
+          />
+          <View style={{ marginLeft: 6 }}>
+            <Text
+              style={{
+                fontFamily: 'AppleSDGothicNeoB00',
+                fontSize: 13,
+                fontWeight: 'normal',
+              }}
+            >
+              제품/모델명에 입찰
+              <Text
+                style={{
+                  fontFamily: 'AppleSDGothicNeoR00',
+                  fontSize: 13,
+                  fontWeight: 'normal',
+                  color: '#575757',
+                }}
+              >
+                하였습니다
+              </Text>
+            </Text>
+            <Text
+              style={{
+                fontFamily: 'AppleSDGothicNeoR00',
+                fontSize: 11,
+                fontWeight: 'normal',
+                fontStyle: 'normal',
+                letterSpacing: 0,
+                textAlign: 'left',
+                color: '#bababa',
+                marginTop: 4,
+              }}
+            >
+              23.01.24 15:10 | 차감
+            </Text>
+            <Text
+              style={{
+                opacity: 0.57,
+                fontFamily: 'AppleSDGothicNeoB00',
+                fontSize: 11,
+                fontWeight: 'normal',
+                fontStyle: 'normal',
+                letterSpacing: 0,
+                textAlign: 'left',
+                color: '#575757',
+                marginTop: 12,
+              }}
+            >
+              리밋수량이 차감되었습니다
+            </Text>
+          </View>
+        </View>
+        <View>
+          <Text>-10,000</Text>
+        </View>
+      </View>
     );
   };
 
@@ -110,11 +179,16 @@ export default function MileageHistory() {
 
       <SectionGrid
         style={{ paddingHorizontal: 16 }}
-        itemDimension={Dimensions.get('window').width - 32}
+        itemDimension={Dimensions.get('window').width}
         sections={data}
         fixed={true}
         ListHeaderComponent={ListHeaderComponent}
         stickySectionHeadersEnabled={false}
+        ItemSeparatorComponent={() => (
+          <View
+            style={{ height: 1, opacity: 0.1, backgroundColor: '#707070' }}
+          />
+        )}
         renderSectionHeader={({ section }) => (
           <View
             style={{
