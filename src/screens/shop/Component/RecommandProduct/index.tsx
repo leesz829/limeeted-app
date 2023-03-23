@@ -1,25 +1,51 @@
 import { ColorType } from '@types';
 import { Color } from 'assets/styles/Color';
 
-import React from 'react';
-import { Dimensions, ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import {
+  Dimensions,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import ProductModal from '../ProductModal';
 
 export default function RecommandProduct({ data }) {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [targetItem, setTargetItem] = useState(null);
+  const openModal = (item) => {
+    setTargetItem(item);
+    setModalVisible(true);
+  };
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+
   return (
     <View style={styles.recommandContainer}>
-      <Text style={styles.recommandText}>오늘은{'\n'}이상품 어때요?</Text>
+      <TouchableOpacity>
+        <Text style={styles.recommandText}>오늘은{'\n'}이상품 어때요?</Text>
+      </TouchableOpacity>
       <ScrollView horizontal style={styles.recommanListdWrapper}>
         {data?.map((item) => (
-          <RednerRecommend item={item} />
+          <RednerRecommend item={item} openModal={openModal} />
         ))}
       </ScrollView>
+      <ProductModal
+        isVisible={modalVisible}
+        item={targetItem}
+        closeModal={closeModal}
+      />
     </View>
   );
 }
 
-function RednerRecommend({ item }) {
+function RednerRecommend({ item, openModal }) {
+  const onPressItem = () => openModal(item);
   return (
-    <View style={styles.recommandItem}>
+    <TouchableOpacity style={styles.recommandItem} onPress={onPressItem}>
       <View style={styles.thumbImage} />
       <Text style={styles.recommandTitle}>리미티드 기획상품</Text>
       <View style={styles.textContainer}>
@@ -27,7 +53,7 @@ function RednerRecommend({ item }) {
         <Text style={styles.salePrice}>7,500</Text>
         <Text style={styles.salePercent}>50%</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 
