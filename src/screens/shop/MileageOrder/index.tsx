@@ -52,15 +52,15 @@ export default function MileageOrder() {
           <Text style={styles.textRight}>99건</Text>
         </TouchableOpacity>
         <TouchableOpacity activeOpacity={1} style={styles.whiteBg}>
-          <Text style={[styles.textLeft, { color: '#9d9d9d' }]}>입찰완료</Text>
+          <Text style={[styles.textLeft, { color: '#9d9d9d' }]}>입찰실패</Text>
           <Text style={[styles.textRight, { color: '#9d9d9d' }]}>99건</Text>
         </TouchableOpacity>
         <TouchableOpacity activeOpacity={1} style={styles.whiteBg}>
-          <Text style={[styles.textLeft, { color: '#706afa' }]}>입찰완료</Text>
+          <Text style={[styles.textLeft, { color: '#706afa' }]}>발송준비</Text>
           <Text style={[styles.textRight, { color: '#706afa' }]}>99건</Text>
         </TouchableOpacity>
         <TouchableOpacity activeOpacity={1} style={styles.whiteBg}>
-          <Text style={[styles.textLeft, { color: '#742dfa' }]}>입찰완료</Text>
+          <Text style={[styles.textLeft, { color: '#742dfa' }]}>발송완료</Text>
           <Text style={[styles.textRight, { color: '#742dfa' }]}>99건</Text>
         </TouchableOpacity>
       </View>
@@ -77,9 +77,17 @@ export default function MileageOrder() {
         {['', '', '', ''].map((e) => (
           <View style={styles.itemBox}>
             <ImageBackground style={styles.thumb}>
-              <View style={styles.completeMark}>
-                <Text style={styles.completeText}>입찰완료</Text>
+              {/* 분기 */}
+              <View style={styles.bidCompleteMark}>
+                <Text style={styles.bidCompleteText}>입찰완료</Text>
               </View>
+              <View style={styles.readyMark}>
+                <Text style={styles.readyText}>발송준비</Text>
+              </View>
+              <View style={styles.completeMark}>
+                <Text style={styles.completeText}>배송완료</Text>
+              </View>
+              {/* 분기 */}
             </ImageBackground>
             <View style={styles.itemInfoBox}>
               <Text style={styles.brandName}>브랜드명</Text>
@@ -89,9 +97,11 @@ export default function MileageOrder() {
                   <Text style={styles.price}>10,000</Text>
                   <Image source={ICON.crown} style={styles.crown} />
                 </View>
+                {/* 조건부 */}
                 <View style={styles.copyCode}>
                   <Text style={styles.copyText}>송장번호 복사</Text>
                 </View>
+                {/* 조건부 */}
               </View>
             </View>
           </View>
@@ -305,7 +315,7 @@ const styles = StyleSheet.create({
     borderColor: '#e0e0e0',
     padding: 7,
   },
-  completeMark: {
+  bidCompleteMark: {
     width: '50%',
     borderRadius: 6.5,
     backgroundColor: '#742dfa',
@@ -314,7 +324,7 @@ const styles = StyleSheet.create({
     justifyContent: `center`,
     padding: 2,
   },
-  completeText: {
+  bidCompleteText: {
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 9,
     fontWeight: 'normal',
@@ -322,6 +332,45 @@ const styles = StyleSheet.create({
     letterSpacing: 0,
     textAlign: 'left',
     color: '#ffffff',
+  },
+  readyMark: {
+    width: '50%',
+    borderRadius: 6.5,
+    backgroundColor: '#ffffff',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderColor: '#ada9fc',
+    flexDirection: `row`,
+    alignItems: `center`,
+    justifyContent: `center`,
+    padding: 2,
+  },
+  readyText: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 7,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#ada9fc',
+  },
+  completeMark: {
+    width: '50%',
+    borderRadius: 6.5,
+    backgroundColor: '#f2f2f2',
+    flexDirection: `row`,
+    alignItems: `center`,
+    justifyContent: `center`,
+    padding: 2,
+  },
+  completeText: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 7,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#888888',
   },
   itemInfoBox: {
     flexDirection: 'column',

@@ -31,6 +31,7 @@ import MileageHistory from 'screens/shop/MileageHistory';
 import LimitInfo from 'screens/shop/LimitInfo';
 import AuctionDetail from 'screens/shop/AuctionDetail';
 import MileageOrder from 'screens/shop/MileageOrder';
+import GifticonDetail from 'screens/shop/GifticonDetail';
 
 const CommonStack = createStackNavigator<StackParamList>();
 
@@ -65,6 +66,7 @@ const CommonNavigation = () => {
       <CommonStack.Screen name="LimitInfo" component={LimitInfo} />
       <CommonStack.Screen name="AuctionDetail" component={AuctionDetail} />
       <CommonStack.Screen name="MileageOrder" component={MileageOrder} />
+      <CommonStack.Screen name="GifticonDetail" component={GifticonDetail} />
     </CommonStack.Navigator>
   );
 };

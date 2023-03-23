@@ -105,9 +105,10 @@ export default function AuctionDetail({ id }: Props) {
       />
       <View
         style={[
-          styles.bottomContainer,
+          // styles.bottomContainer,
           {
-            marginBottom: bottom + 10,
+            marginBottom: 10,
+            backgroundColor: 'transparent',
           },
         ]}
       >
@@ -149,6 +150,8 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: 'white',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
   },
 
   pagerView: {
@@ -208,6 +211,7 @@ const styles = StyleSheet.create({
     flexDirection: `row`,
     alignItems: `center`,
     justifyContent: 'space-around',
+    backgroundColor: 'transparent',
   },
   rowCenter: {
     flexDirection: `row`,
