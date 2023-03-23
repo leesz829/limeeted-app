@@ -14,13 +14,16 @@ import storeKey, { JWT_TOKEN } from 'constants/storeKey';
 import { usePopup } from 'Context';
 import { useUserInfo } from 'hooks/useUserInfo';
 import * as React from 'react';
-import { Dimensions, Image, ScrollView, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Image, ScrollView, TouchableOpacity, View, Platform, PermissionsAndroid } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { setPrincipal } from 'redux/reducers/authReducer';
 import * as mbrReducer from 'redux/reducers/mbrReducer';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import { Modalize } from 'react-native-modalize';
 import { Color } from 'assets/styles/Color';
+import Geolocation from 'react-native-geolocation-service';
+import getLocationInfo from 'utils/geoLocation';
+
 
 GoogleSignin.configure({
   webClientId:
@@ -40,12 +43,17 @@ export const Login01 = () => {
   const { show } = usePopup();
   const [id, setId] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [location, setLocation] = React.useState();
   const me = useUserInfo();
 
-  const loginProc = async () => {
+  const loginProc = async (latitude: number, longitude: number) => {
+    console.log('location ::::::: ', location);
+
     const body = {
       email_id: id,
       password,
+      latitude: latitude,
+      longitude: longitude
     };
     const { success, data } = await signin(body);
 
@@ -104,10 +112,6 @@ export const Login01 = () => {
             dispatch(mbrReducer.setIdealType(data.mbr_ideal_type));
             dispatch(mbrReducer.setInterview(data.mbr_interview_list));
             dispatch(mbrReducer.setUserInfo(data));
-
-            // navigation.navigate('Main', {
-            //   screen: 'Matching',
-            // });
           }
           break;
         case REFUSE:
@@ -125,15 +129,58 @@ export const Login01 = () => {
       }
     }
   };
+  
 
-  // 아이디/비밀번호 찾기 팝업
-  const SearchIdAndPwd_modalizeRef = React.useRef<Modalize>(null);
-  const SearchIdAndPwd_onOpen = () => {
-    SearchIdAndPwd_modalizeRef.current?.open();
-  };
-  const SearchIdAndPwd_onClose = () => {
-    SearchIdAndPwd_modalizeRef.current?.close();
-  };
+   // 사용자 위치 확인
+   async function requestPermissions() {
+    // TODO: ios 인 경우, 권한 설정 추가 필요. 안드로이드 빌드 이후 진행 예정. 2023.01.03
+    if (Platform.OS === 'ios') {
+       const auth = await Geolocation.requestAuthorization('whenInUse');
+    
+       Geolocation.getCurrentPosition(
+          position => {
+             const {latitude, longitude} = position.coords;
+             //setLocation(position.coords);
+             /* setLocation({
+                latitude
+                , longitude
+             }); */
+
+             loginProc(latitude, longitude);
+          },
+          error => {
+             console.log(error.code, error.message);
+          },
+          {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+       );   
+    }
+    
+    if (Platform.OS === 'android') {
+       const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+       );
+
+       Geolocation.getCurrentPosition(
+          position => {
+             // 위도, 경도
+             const {latitude, longitude} = position.coords;
+             //updateUserGeolocation(latitude, longitude);
+             //console.log('latitude :::::: ', latitude);
+             //console.log('longitude :::::: ', longitude);
+
+             //setLocation(position.coords);
+             loginProc(latitude, longitude);
+          },
+          error => {
+            console.log(error.code, error.message);
+          },
+          {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+       );
+    }
+ }
+
+
+
 
   const { width, height } = Dimensions.get('window');
 
@@ -210,7 +257,9 @@ export const Login01 = () => {
                   return show({ content: '비밀번호를 입력해 주세요.' });
                 }
 
-                loginProc();
+                requestPermissions();
+
+                //loginProc();
                 //dispatch(loginReduce(id, password));
               }}
             />

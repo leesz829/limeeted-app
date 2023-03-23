@@ -64,6 +64,9 @@ export const Live = () => {
   // 이상형 타입
   const [clickFaceType, setClickFaceType] = useState('');
 
+  // 회원간 거리값
+  const [distance, setDistance] = useState('');
+
   // 선택한 인상 점수
   let clickFaceScore = '';
 
@@ -169,6 +172,8 @@ export const Live = () => {
               tmpProfileImgList = tmpProfileImgList.filter((x) => x.url);
               setLiveProfileImg(tmpProfileImgList);
               setFaceTypeList(tmpFaceTypeList);
+              setDistance(data.distance_val);
+
               setIsLoad(true)
             }
 
@@ -220,6 +225,7 @@ export const Live = () => {
             age={liveMemberInfo.age}
             status={liveMemberInfo.status}
             comment={liveMemberInfo.comment}
+            distance={distance}
           />
         </SpaceView>
 

@@ -13,7 +13,6 @@ import {
   MEMBER_PROFILE_ATHENTICATION2,
   MEMBER_INTERVIEW,
   MEMBER_INTRODUCE,
-  ORDER,
   PEEK_MEMBER,
   PROFILE_IMAGE_GUIDE,
   PROFILE_ATHENTICATION2,
@@ -46,7 +45,18 @@ import {
   MEMBER_EXIT,
   EMAILDID_FROM_PHONENUMBER,
   PASSWORD_FROM_EMAILID,
-  MEMBER_MSG_LIST
+  ORDER,
+  ORDER_GOODS,
+  ORDER_AUCT,
+  ORDER_HISTORY,
+  ITEM_LIST,
+  USE_ITEM,
+  POINT_HISTORY,
+  PRODUCT_LIST,
+  PRODUCT_AUCT,
+  PRODUCT_AUCT_DETAIL,
+  PRODUCT_BM,
+  BANNER_LIST,
 } from './route';
 
 /* ========================================================================================================
@@ -58,15 +68,18 @@ export async function signin(body: { email_id: string; password: string }) {
   return send(LOGIN, 'POST', { ...body, push_token }, true, false);
 }
 //회원가입시 프로필 2차 인증에 대한 정보를 제공한다.
-export async function get_profile_secondary_authentication(body: { member_seq: any; second_auth_code: string;}) {
+export async function get_profile_secondary_authentication(body: {
+  member_seq: any;
+  second_auth_code: string;
+}) {
   return send(PROFILE_ATHENTICATION2, 'POST', body, false, false);
 }
 //회원가입시 프로필 사진에 대한 정보를 제공한다.
-export async function get_profile_imgage_guide(body: { member_seq: any; }) {
+export async function get_profile_imgage_guide(body: { member_seq: any }) {
   return send(PROFILE_IMAGE_GUIDE, 'POST', body, false, false);
 }
 //회원가입시 닉네임, 한줄소개, 관심사 정보를 제공한다.
-export async function get_member_introduce_guide(body: { member_seq: any; }) {
+export async function get_member_introduce_guide(body: { member_seq: any }) {
   return send(MEMBER_INTRODUCE_GUIDE, 'POST', body, false, false);
 }
 //회원의 기본정보를 신규 등록한다.
@@ -86,8 +99,8 @@ export async function regist_member_base_info(body: {
 
 //회원의 프로필 사진을 신규 등록한다.
 export async function regist_profile_image(body: {
-  member_seq : number;
-  file_list : any;
+  member_seq: number;
+  file_list: any;
   img_del_seq_str: string;
 }) {
   return send(REGIST_MEMBER_PROFILE_IMAGE, 'POST', body, false, false);
@@ -110,7 +123,6 @@ export async function regist_second_auth(body: {
 }) {
   return send(REGIST_MEMBER_SECOND_AUTH, 'POST', body, false, false);
 }
-
 
 /* ========================================================================================================
 ==================================================== USER
@@ -227,9 +239,7 @@ export async function get_member_interview(body: {
 }
 
 //회원의 소개 정보를 조회한다.
-export async function get_member_introduce(body: {
-  group_code: string;
-}) {
+export async function get_member_introduce(body: { group_code: string }) {
   return send(MEMBER_INTRODUCE, 'POST', body, true, false);
 }
 
@@ -240,15 +250,13 @@ export async function member_logout() {
 
 // 회원 2차 인증 상세 목록을 조회한다.
 export async function get_member_second_detail(body: {
-  second_auth_code : any;
+  second_auth_code: any;
 }) {
   return send(MEMBER_AUTH_DETAIL, 'POST', body, true, false);
 }
 
 // 회원 2차 인증을 저장한다.
-export async function save_profile_auth(body: {
-  file_list : any;
-}) {
+export async function save_profile_auth(body: { file_list: any }) {
   return send(SAVE_PROFILE_AUTH, 'POST', body, true, false);
 }
 
@@ -281,17 +289,9 @@ export async function select_emailId_from_phoneNumber(body: {
 }
 
 // 비밀번호 찾기
-export async function select_password_from_emailId(body: {
-  emailId: string;
-}) {
+export async function select_password_from_emailId(body: { emailId: string }) {
   return send(PASSWORD_FROM_EMAILID, 'POST', body, true, false);
 }
-
-// 회원의 메시지 목록을 조회한다.
-export async function get_member_message_list() {
-  return send(MEMBER_MSG_LIST, 'POST', undefined, true, false);
-}
-
 
 /* ========================================================================================================
 ==================================================== PROFILE
@@ -314,7 +314,6 @@ export async function get_member_face_rank() {
   return send(GET_MEMBER_FACE_RANK, 'POST', undefined, true, false);
 }
 
-
 /* ========================================================================================================
 ==================================================== MATCH
 ======================================================================================================== */
@@ -324,7 +323,7 @@ export async function get_daily_matched_info() {
 }
 
 //찐심/관심/거부 매칭 정보를 신규 등록한다.
-export async function regist_match_status(body: { 
+export async function regist_match_status(body: {
   active_type: string;
   res_member_seq: number;
 }) {
@@ -371,22 +370,29 @@ export async function get_matched_member_info(body: { match_seq: number }) {
   return send(MATCHED_MEMBER_INFO, 'POST', body, true, false);
 }
 
-
 /* ========================================================================================================
 ==================================================== ORDER
 ======================================================================================================== */
 
-//주문을 처리한다.
-
-export async function purchase_product(
-  device_gubun: any,
-  buy_price: any,
-  item_name: any,
-  item_code: any,
-  result_msg: any,
-  result_code: any,
-  receiptData: any
-) {
+//인앱 상품 주문
+export async function purchase_product(params: {
+  device_gubun: string;
+  buy_price: string;
+  item_name: string;
+  item_code: string;
+  result_msg: string;
+  result_code: string;
+  receiptData: any;
+}) {
+  const {
+    device_gubun,
+    buy_price,
+    item_name,
+    item_code,
+    result_msg,
+    result_code,
+    receiptData,
+  } = params;
   const receiptDataJson = JSON.parse(receiptData);
 
   const body = {
@@ -409,6 +415,90 @@ export async function purchase_product(
   return send(ORDER, 'POST', body, true, false);
 }
 
+//재고 상품 주문
+export async function order_goods(body: {
+  prod_seq: string;
+  modify_seq: string;
+  buy_price: string;
+  mobile_os: string;
+}) {
+  return send(ORDER_GOODS, 'POST', body, true, false);
+}
+
+//경매상품 주문
+export async function order_auct(body: {
+  prod_seq: string;
+  modify_seq: string;
+  req_bid_price: string;
+  now_buy_yn: string;
+  mobile_os: string;
+}) {
+  return send(ORDER_AUCT, 'POST', body, true, false);
+}
+
+//회원 주문 목록 조회
+export async function get_order_list() {
+  return send(ORDER_HISTORY, 'POST', undefined, true, false);
+}
+
+/* ========================================================================================================
+==================================================== ITEM
+======================================================================================================== */
+
+//인벤토리 보유 아이템 목록 조회
+export async function get_my_items() {
+  return send(ITEM_LIST, 'POST', undefined, true, false);
+}
+
+//아이템 사용
+export async function use_item(body: { item_seq: string }) {
+  return send(USE_ITEM, 'POST', body, true, false);
+}
+
+/* ========================================================================================================
+==================================================== POINT
+======================================================================================================== */
+
+//포인트 내역 조회
+export async function get_point_history() {
+  return send(POINT_HISTORY, 'POST', undefined, true, false);
+}
+
+/* ========================================================================================================
+==================================================== PRODUCT
+======================================================================================================== */
+
+//티아라샵 재고형 상품목록 조회
+export async function get_product_list() {
+  return send(PRODUCT_LIST, 'POST', undefined, true, false);
+}
+
+//경매 상품 목록 조회
+export async function get_auct_product() {
+  return send(PRODUCT_AUCT, 'POST', undefined, true, false);
+}
+
+//경매 상품 상세 조회
+export async function get_auct_detail(body: {
+  prod_seq: string;
+  modify_seq: string;
+}) {
+  return send(PRODUCT_AUCT_DETAIL, 'POST', body, true, false);
+}
+
+//BM 상품 조회
+export async function get_bm_product(body: { item_type_code: string }) {
+  return send(PRODUCT_BM, 'POST', body, true, false);
+}
+
+/* ========================================================================================================
+==================================================== 공통
+======================================================================================================== */
+
+//배너 목록 조회
+export async function get_banner_list(body: { item_type_code: string }) {
+  return send(BANNER_LIST, 'POST', body, true, false);
+}
 
 /* ========================================================================================================
 ==================================================== 공통

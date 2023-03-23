@@ -14,7 +14,6 @@ export const REGIST_MEMBER_PROFILE_IMAGE = '/join/insertMemberProfileImage';
 export const REGIST_MEMBER_INTEREST = '/join/insertMemberIntro';
 export const REGIST_MEMBER_SECOND_AUTH = '/join/insertMemberSecondAuth';
 
-
 /**
  * USER
  */
@@ -26,7 +25,8 @@ export const UPDATE_PREFERENCE = '/member/saveMemberIdealType';
 export const UPDATE_PROFILE = '/member/saveMemberProfile';
 export const UPDATE_PROFILE_ATHENTICATION2 = '/member/saveProfileSecondAuth';
 export const PEEK_MEMBER = '/member/getRealTimeMemberInfo';
-export const MEMBER_PROFILE_ATHENTICATION2 = '/member/getMemberProfileSecondAuth';
+export const MEMBER_PROFILE_ATHENTICATION2 =
+  '/member/getMemberProfileSecondAuth';
 export const MEMBER_INTERVIEW = '/member/getMemberInterviewList';
 export const MEMBER_INTRODUCE = '/member/getMemberIntroduce';
 export const UPDATE_INTERVIEW = '/member/saveMemberInterview';
@@ -49,7 +49,6 @@ export const REGIST_PROFILE_EVALUATION = '/profile/insertProfileAssessment';
 export const PROFILE_REEXAMINATION = '/profile/profileReexProc';
 export const GET_MEMBER_FACE_RANK = '/profile/getMemberFaceRankList';
 
-
 /**
  * MATCHING
  */
@@ -62,17 +61,42 @@ export const UPDATE_MATCH = '/match/updateMatchInfo';
 export const UPDATE_MATCH_STATUS = '/match/updateMatchStatus';
 export const RESOLVE_MATCH = '/match/procMatchMemberHpOpen';
 
-
 /**
  * ORDER
  */
 export const ORDER = '/order/payment';
+export const ORDER_GOODS = '/order/prod/goodsPayment';
+export const ORDER_AUCT = '/order/prod/auctPayment';
+export const ORDER_HISTORY = '/order/prod/selectOrderHistory';
 
+/**
+ * ITEM
+ */
+export const ITEM_LIST = '/item/selectinventoryList';
+export const USE_ITEM = '/item/useItem';
 
+/**
+ * POINT
+ */
+export const POINT_HISTORY = '/prod/selectMobileProdList';
+
+/**
+ * PRODUCT
+ */
+
+export const PRODUCT_LIST = '/prod/selectMobileProdList';
+export const PRODUCT_AUCT = '/prod/selectAuctProdList';
+export const PRODUCT_AUCT_DETAIL = '/prod/selectAuctProdDetail';
+export const PRODUCT_BM = '/bm/selectItemList';
+
+/**
+ * 베너
+ */
+export const BANNER_LIST = '/banner/selectBannerList';
 /**
  * COMMON
  */
 
 export const COMMON_CODE = '/common/selectGroupCodeList';
 export const BOARD_LIST = '/board/selectBoardList';
-export const NICE_AUTH = '/nice/authToken'
+export const NICE_AUTH = '/nice/authToken';
