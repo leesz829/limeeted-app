@@ -23,4 +23,5 @@ export const ROUTES = {
   Mileage_History: 'MileageHistory',
   Limit_Info: 'LimitInfo',
   Auction_Detail: 'AuctionDetail',
+  Mileage_Order: 'MileageOrder',
 };

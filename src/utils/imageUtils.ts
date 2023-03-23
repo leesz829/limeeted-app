@@ -61,6 +61,8 @@ export const ICON = {
   delevery: require('assets/icon/icon-delevery.png'),
   crown: require('assets/icon/icon-crown.png'),
   closeBlack: require('assets/icon/icon-close-black.png'),
+  backWhite: require('assets/icon/icon-back-white.png'),
+  pencil: require('assets/icon/icon-pencil.png'),
 };
 
 export const GIF_IMG = {

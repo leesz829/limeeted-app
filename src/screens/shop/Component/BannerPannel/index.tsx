@@ -37,6 +37,9 @@ function FemalePannel() {
   const onPressLimitInfo = () => {
     navigation.navigate(STACK.COMMON, { screen: ROUTES.Limit_Info });
   };
+  const onPressMileageOrder = () => {
+    navigation.navigate(STACK.COMMON, { screen: ROUTES.Mileage_Order });
+  };
 
   return (
     <View style={female.floatWrapper}>
@@ -56,7 +59,7 @@ function FemalePannel() {
                     source={ICON.mileageHistory}
                   />
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={onPressMileageOrder}>
                   <Image
                     style={female.mileageOrderButton}
                     source={ICON.mileageOrder}
