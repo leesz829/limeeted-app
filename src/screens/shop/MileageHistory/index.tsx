@@ -91,7 +91,9 @@ export default function MileageHistory() {
       </View>
     );
   };
-
+  const ItemSeparatorComponent = () => (
+    <View style={{ height: 1, opacity: 0.1, backgroundColor: '#707070' }} />
+  );
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
       <CommonHeader />
@@ -103,11 +105,7 @@ export default function MileageHistory() {
         fixed={true}
         ListHeaderComponent={ListHeaderComponent}
         stickySectionHeadersEnabled={false}
-        ItemSeparatorComponent={() => (
-          <View
-            style={{ height: 1, opacity: 0.1, backgroundColor: '#707070' }}
-          />
-        )}
+        ItemSeparatorComponent={ItemSeparatorComponent}
         renderSectionHeader={sectionHeader}
         renderItem={renderItem}
       />

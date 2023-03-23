@@ -60,6 +60,7 @@ export const ICON = {
   roundCrown: require('assets/icon/icon-round-crown.png'),
   delevery: require('assets/icon/icon-delevery.png'),
   crown: require('assets/icon/icon-crown.png'),
+  closeBlack: require('assets/icon/icon-close-black.png'),
 };
 
 export const GIF_IMG = {
