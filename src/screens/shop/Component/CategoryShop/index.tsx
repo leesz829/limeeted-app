@@ -16,8 +16,9 @@ export default function CategoryShop({ data }) {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.categoriesContainer}>
-        {categories?.map((item) => (
+        {categories?.map((item, index) => (
           <TouchableOpacity
+            key={`category-${index}`}
             activeOpacity={0.8}
             style={styles.categoryBorder(item.value === selectedCategory.value)}
             onPress={() => onPressCategory(item)}
