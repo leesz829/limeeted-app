@@ -21,7 +21,7 @@ function FemalePannel() {
   const navigation = useNavigation<ScreenNavigationProp>();
   const route = useRoute();
   const me = useUserInfo();
-
+  console.log(JSON.stringify(me));
   const onPressLimitShop = () => {
     navigation.navigate(STACK.COMMON, { screen: ROUTES.Mileage_Shop });
   };
@@ -86,7 +86,7 @@ function FemalePannel() {
 
               <View>
                 <Text style={female.rate}>
-                  {CommaFormat(me?.mbr_mileage_point)}
+                  {CommaFormat(me?.mileage_point)}
                 </Text>
                 <Image style={female.crown} source={ICON.crown} />
               </View>
