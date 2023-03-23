@@ -248,7 +248,6 @@ const female = StyleSheet.create({
     width: 25,
     height: 25,
     borderRadius: 13,
-    marginRight: 8,
   },
   infoText: {
     // marginTop: 8,

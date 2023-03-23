@@ -21,45 +21,18 @@ import { Color } from 'assets/styles/Color';
 
 const AnimatedPagerView = Animated.createAnimatedComponent(PagerView);
 
-const INTRO_DATA = [
-  {
-    key: '1',
-    title: 'App showcase ✨',
-    description:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-  },
-  {
-    key: '2',
-    title: 'Introduction screen 🎉',
-    description:
-      "Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. ",
-  },
-  {
-    key: '3',
-    title: 'And can be anything 🎈',
-    description:
-      'Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. ',
-  },
-  {
-    key: '4',
-    title: 'And can be anything 🎈',
-    description:
-      'Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. ',
-  },
-];
-
 export default function ViewPager({ style, data, renderItem }) {
   const width = Dimensions.get('window').width;
   const ref = React.useRef<PagerView>(null);
   const scrollOffsetAnimatedValue = React.useRef(new Animated.Value(0)).current;
   const positionAnimatedValue = React.useRef(new Animated.Value(0)).current;
-  const inputRange = [0, INTRO_DATA.length];
+  const inputRange = [0, data.length];
   const scrollX = Animated.add(
     scrollOffsetAnimatedValue,
     positionAnimatedValue
   ).interpolate({
     inputRange,
-    outputRange: [0, INTRO_DATA.length * width],
+    outputRange: [0, data.length * width],
   });
 
   const onPageScroll = React.useMemo(
@@ -92,7 +65,7 @@ export default function ViewPager({ style, data, renderItem }) {
         {data?.map(({ item, index }) => renderItem({ item, index }))}
       </AnimatedPagerView>
       <ExpandingDot
-        data={INTRO_DATA}
+        data={data}
         expandingDotWidth={20}
         //@ts-ignore
         scrollX={scrollX}
@@ -115,7 +88,7 @@ export default function ViewPager({ style, data, renderItem }) {
         <View style={styles.dotContainer}>
           <Text>Scaling Dot</Text>
           <ScalingDot
-            data={INTRO_DATA}
+            data={data}
             //@ts-ignore
             scrollX={scrollX}
             containerStyle={{
@@ -128,7 +101,7 @@ export default function ViewPager({ style, data, renderItem }) {
           <Text>Sliding Border</Text>
           <SlidingBorder
             containerStyle={{ top: 30 }}
-            data={INTRO_DATA}
+            data={data}
             //@ts-ignore
             scrollX={scrollX}
             dotSize={24}
@@ -139,7 +112,7 @@ export default function ViewPager({ style, data, renderItem }) {
           <SlidingDot
             marginHorizontal={3}
             containerStyle={{ top: 30 }}
-            data={INTRO_DATA}
+            data={data}
             //@ts-ignore
             scrollX={scrollX}
             dotSize={12}

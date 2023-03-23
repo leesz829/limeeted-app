@@ -1178,6 +1178,13 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
+"@kichiyaki/react-native-barcode-generator@^0.6.7":
+  version "0.6.7"
+  resolved "https://registry.yarnpkg.com/@kichiyaki/react-native-barcode-generator/-/react-native-barcode-generator-0.6.7.tgz#86a34213d271a653301907124fbc599be325d3bc"
+  integrity sha512-tBrL5rtOVYV1Y9vc6mUNFhC4J9KiWWwmo0yqb78dnVQ9Pn/r7OOwoWwbw1ZGA9OLbhEII83BQI0k8GmoDaU+BQ==
+  dependencies:
+    jsbarcode "^3.8.0"
+
 "@miblanchard/react-native-slider@^2.2.0":
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/@miblanchard/react-native-slider/-/react-native-slider-2.3.1.tgz#79e0f1f9b1ce43ef25ee51ee9256c012e5dfa412"
@@ -5398,6 +5405,11 @@ js-yaml@^3.13.1:
   dependencies:
     argparse "^1.0.7"
     esprima "^4.0.0"
+
+jsbarcode@^3.8.0:
+  version "3.11.5"
+  resolved "https://registry.yarnpkg.com/jsbarcode/-/jsbarcode-3.11.5.tgz#390b3efd0271f35b9d68c7b8af6e972445969014"
+  integrity sha512-zv3KsH51zD00I/LrFzFSM6dst7rDn0vIMzaiZFL7qusTjPZiPtxg3zxetp0RR7obmjTw4f6NyGgbdkBCgZUIrA==
 
 jsbn@~0.1.0:
   version "0.1.1"

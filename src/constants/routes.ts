@@ -24,4 +24,5 @@ export const ROUTES = {
   Limit_Info: 'LimitInfo',
   Auction_Detail: 'AuctionDetail',
   Mileage_Order: 'MileageOrder',
+  Gifticon_Detail: 'GifticonDetail',
 };

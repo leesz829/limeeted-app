@@ -54,6 +54,7 @@ export const Shop = () => {
 
   const onPressInventory = () => {
     navigation.navigate(STACK.COMMON, { screen: ROUTES.SHOP_INVENTORY });
+    // navigation.navigate(STACK.COMMON, { screen: ROUTES.Gifticon_Detail });
   };
   // const isFocusShop = useIsFocused();
 
@@ -430,7 +431,18 @@ export const Shop = () => {
         ListFooterComponent={ListFooterComponent}
       />
 
-      <TouchableOpacity onPress={onPressInventory}>
+      <TouchableOpacity
+        onPress={onPressInventory}
+        style={{
+          backgroundColor: Color.purple,
+          width: 50,
+          height: 50,
+          borderRadius: 25,
+          position: 'absolute',
+          bottom: 10,
+          right: 10,
+        }}
+      >
         <Image source={ICON.floatingButton} style={styles.floatingButton} />
       </TouchableOpacity>
     </>
@@ -535,8 +547,8 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    position: 'absolute',
-    bottom: 10,
-    right: 10,
+    // position: 'absolute',
+    // bottom: 10,
+    // right: 10,
   },
 });
