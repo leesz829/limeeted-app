@@ -5,6 +5,7 @@ export const formatDate = (time: string) => {
   return `${year}.${month}.${day}`;
 };
 export function CommaFormat(value: number | string) {
+  if (!value) return 0;
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 export const removeDuplicate = (arr: Array<any>, item: any) => {
