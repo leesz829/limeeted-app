@@ -96,6 +96,10 @@
 		<string>AppleSDGothicNeoR00.ttf</string>
 		<string>AppleSDGothicNeoT00.ttf</string>
 		<string>AppleSDGothicNeoEB00.ttf</string>
+		<string>AppleSDGothicNeoH00.ttf</string>
+		<string>AppleSDGothicNeoL00.ttf</string>
+		<string>AppleSDGothicNeoSB00.ttf</string>
+		<string>AppleSDGothicNeoUL00.ttf</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>SplashScreen</string>

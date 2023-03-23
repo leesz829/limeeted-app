@@ -55,6 +55,11 @@ export const ICON = {
   ticket: require('assets/icon/icon-ticket.png'),
   currencyTooltip: require('assets/icon/icon-currency-tooltip.png'),
   floatingButton: require('assets/icon/icon-floating-button.png'),
+  mileageHistory: require('assets/icon/icon-mileage-history.png'),
+  mileageOrder: require('assets/icon/icon-mileage-order.png'),
+  roundCrown: require('assets/icon/icon-round-crown.png'),
+  delevery: require('assets/icon/icon-delevery.png'),
+  crown: require('assets/icon/icon-crown.png'),
 };
 
 export const GIF_IMG = {

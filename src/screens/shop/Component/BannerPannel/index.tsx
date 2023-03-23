@@ -15,6 +15,7 @@ import { ColorType, ScreenNavigationProp } from '@types';
 import { Color } from 'assets/styles/Color';
 import { ROUTES, STACK } from 'constants/routes';
 import { useUserInfo } from 'hooks/useUserInfo';
+import { styles } from 'assets/styles/Styles';
 
 export default function BannerPannel() {
   const me = useUserInfo();
@@ -30,7 +31,7 @@ function FemalePannel() {
   const onPressLimitShop = () => {
     navigation.navigate(STACK.COMMON, { screen: ROUTES.Mileage_Shop });
   };
-  const onPressMilerageHistory = () => {
+  const onPressMileageHistory = () => {
     navigation.navigate(STACK.COMMON, { screen: ROUTES.Mileage_History });
   };
   return (
@@ -45,24 +46,18 @@ function FemalePannel() {
             </Text>
             {route.name === ROUTES.Mileage_Shop && (
               <View style={{ flexDirection: 'row' }}>
-                <TouchableOpacity
-                  onPress={onPressMilerageHistory}
-                  style={{
-                    width: 25,
-                    height: 25,
-                    borderRadius: 13,
-                    backgroundColor: Color.primary,
-                    marginRight: 8,
-                  }}
-                ></TouchableOpacity>
-                <TouchableOpacity
-                  style={{
-                    width: 25,
-                    height: 25,
-                    borderRadius: 13,
-                    backgroundColor: Color.primary,
-                  }}
-                ></TouchableOpacity>
+                <TouchableOpacity onPress={onPressMileageHistory}>
+                  <Image
+                    style={female.mileageHistoryButton}
+                    source={ICON.mileageHistory}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <Image
+                    style={female.mileageOrderButton}
+                    source={ICON.mileageOrder}
+                  />
+                </TouchableOpacity>
               </View>
             )}
           </View>
@@ -80,8 +75,27 @@ function FemalePannel() {
             )}
 
             <View style={{ flexDirection: 'column' }}>
-              <Text style={female.infoText}>나의 공주력</Text>
-              <Text style={female.rate}>999,999</Text>
+              <View style={female.myBox}>
+                <Text style={female.infoText}>나의 공주력</Text>
+                <Image
+                  style={{ width: 14, height: 14 }}
+                  source={ICON.currencyTooltip}
+                />
+              </View>
+
+              <View>
+                <Text style={female.rate}>999,999</Text>
+                <Image
+                  style={{
+                    width: 12.7,
+                    height: 8.43,
+                    position: 'absolute',
+                    right: 0,
+                    top: 0,
+                  }}
+                  source={ICON.crown}
+                />
+              </View>
             </View>
           </View>
         </View>
@@ -217,17 +231,39 @@ const female = StyleSheet.create({
     justifyContent: 'space-around',
   },
   pointText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    fontFamily: 'AppleSDGothicNeoM00',
-    color: '#000',
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 19,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#333333',
+  },
+  mileageHistoryButton: {
+    width: 25,
+    height: 25,
+    borderRadius: 13,
+    backgroundColor: Color.primary,
+    marginRight: 8,
+  },
+  mileageOrderButton: {
+    width: 25,
+    height: 25,
+    borderRadius: 13,
+    backgroundColor: Color.primary,
+    marginRight: 8,
   },
   infoText: {
-    marginTop: 8,
-    fontSize: 10,
-    fontWeight: 'bold',
+    // marginTop: 8,
+    opacity: 0.83,
     fontFamily: 'AppleSDGothicNeoM00',
-    color: Color.grayAAAA,
+    fontSize: 10,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#b1b1b1',
+    textAlignVertical: 'bottom',
   },
   row: {
     flexDirection: `row`,
@@ -235,23 +271,35 @@ const female = StyleSheet.create({
     justifyContent: 'space-between',
   },
   lmtShopButton: {
-    borderRadius: 10,
-    borderColor: Color.primary,
+    borderRadius: 5,
+    borderStyle: 'solid',
     borderWidth: 1,
-    paddingHorizontal: 1,
-    paddingVertical: 5,
+    borderColor: '#7986ee',
     alignItems: `center`,
     justifyContent: `center`,
     marginTop: 10,
-    zIndex: 10,
+    paddingVertical: 3,
   },
   lmtButtonText: {
-    color: Color.primary,
+    fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 10,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#7986ee',
+  },
+  myBox: {
+    flexDirection: `row`,
+    alignItems: 'flex-end',
   },
   rate: {
-    fontSize: 19,
-    color: Color.purple,
-    fontWeight: 'bold',
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 29,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#8657d4',
   },
 });
