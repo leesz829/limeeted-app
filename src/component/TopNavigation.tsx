@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
   logo1: { width: 105, height: 29 },
   tabContainer: {
     flexDirection: 'row',
-    paddingVertical: 10,
+    paddingVertical: 16,
     paddingLeft: 16,
     paddingRight: 16,
     backgroundColor: 'white',

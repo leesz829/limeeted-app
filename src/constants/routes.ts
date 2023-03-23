@@ -18,4 +18,5 @@ export const ROUTES = {
   SIGNUP_POPUP2: 'SignupPopUp2',
   NICE_AUTH: 'NiceAuth',
   SEARCH_IDPWD: 'SearchIdAndPwd',
+  SHOP_INVENTORY: 'Inventory',
 };
