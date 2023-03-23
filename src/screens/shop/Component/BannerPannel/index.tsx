@@ -1,12 +1,5 @@
-import React, { memo } from 'react';
-import {
-  Dimensions,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import React from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ICON } from 'utils/imageUtils';
 
 import { Slider } from '@miblanchard/react-native-slider';
@@ -15,7 +8,7 @@ import { ColorType, ScreenNavigationProp } from '@types';
 import { Color } from 'assets/styles/Color';
 import { ROUTES, STACK } from 'constants/routes';
 import { useUserInfo } from 'hooks/useUserInfo';
-import { styles } from 'assets/styles/Styles';
+import { CommaFormat } from 'utils/functions';
 
 export default function BannerPannel() {
   const me = useUserInfo();
@@ -27,6 +20,7 @@ export default function BannerPannel() {
 function FemalePannel() {
   const navigation = useNavigation<ScreenNavigationProp>();
   const route = useRoute();
+  const me = useUserInfo();
 
   const onPressLimitShop = () => {
     navigation.navigate(STACK.COMMON, { screen: ROUTES.Mileage_Shop });
@@ -49,7 +43,7 @@ function FemalePannel() {
             style={{ flexDirection: 'row', justifyContent: 'space-between' }}
           >
             <Text style={female.pointText}>
-              방배동 아이유 <Text>✨</Text>
+              {me?.name} <Text>✨</Text>
             </Text>
             {route.name === ROUTES.Mileage_Shop && (
               <View style={{ flexDirection: 'row' }}>
@@ -71,7 +65,7 @@ function FemalePannel() {
           <View style={female.row}>
             {route.name !== ROUTES.Mileage_Shop && (
               <View>
-                <Text style={female.infoText}>방배동 아이유님의 공주력</Text>
+                <Text style={female.infoText}>{me?.name}님의 공주력</Text>
                 <TouchableOpacity
                   style={female.lmtShopButton}
                   onPress={onPressLimitShop}
@@ -91,7 +85,9 @@ function FemalePannel() {
               </TouchableOpacity>
 
               <View>
-                <Text style={female.rate}>999,999</Text>
+                <Text style={female.rate}>
+                  {CommaFormat(me?.mbr_mileage_point)}
+                </Text>
                 <Image style={female.crown} source={ICON.crown} />
               </View>
             </View>

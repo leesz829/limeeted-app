@@ -1,6 +1,7 @@
+import { get_my_items } from 'api/models';
 import { Color } from 'assets/styles/Color';
 import CommonHeader from 'component/CommonHeader';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   FlatList,
@@ -16,6 +17,18 @@ const dummy = ['', '', '', ''];
 export default function Inventory() {
   const [tab, setTab] = useState(categories[0]);
   const [data, setData] = useState(dummy);
+
+  useEffect(() => {
+    async function fetchData() {
+      const { data, message } = await get_my_items();
+
+      if (data) {
+        // setData(data);
+      }
+    }
+    fetchData();
+  }, []);
+
   const onPressTab = (value) => {
     setTab(value);
   };

@@ -1,6 +1,6 @@
 import { Color } from 'assets/styles/Color';
 import CommonHeader from 'component/CommonHeader';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   Image,
@@ -15,6 +15,7 @@ import BannerPannel from '../Component/BannerPannel';
 import ProductModal from '../Component/ProductModal';
 import { useNavigation } from '@react-navigation/native';
 import { ROUTES, STACK } from 'constants/routes';
+import { get_auct_product } from 'api/models';
 
 const DATA = [
   {
@@ -37,6 +38,16 @@ const DATA = [
 export default function MileageShop() {
   const [tab, setTab] = useState(categories[0]);
   const [data, setData] = useState(DATA);
+
+  useEffect(() => {
+    async function fetch() {
+      const { success, data } = await get_auct_product();
+      if (success) {
+        // setData(data)
+      }
+    }
+  }, []);
+
   const onPressTab = (value) => {
     setTab(value);
   };

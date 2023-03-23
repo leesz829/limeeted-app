@@ -29,7 +29,7 @@ export default function CategoryShop({ data }) {
       <View style={styles.categoriesContainer}>
         {categories?.map((item, index) => (
           <TouchableOpacity
-            key={`category-${index}`}
+            key={`category-${item.value}-${index}`}
             activeOpacity={0.8}
             style={styles.categoryBorder(item.value === selectedCategory.value)}
             onPress={() => onPressCategory(item)}
@@ -43,8 +43,12 @@ export default function CategoryShop({ data }) {
         ))}
       </View>
 
-      {data?.map((item) => (
-        <RednerItem item={item} openModal={openModal} />
+      {data?.map((item, index) => (
+        <RednerItem
+          key={`product-${item.value}-${index}`}
+          item={item}
+          openModal={openModal}
+        />
       ))}
       <ProductModal
         isVisible={modalVisible}
@@ -161,14 +165,6 @@ const styles = StyleSheet.create({
 });
 
 const categories = [
-  //   {
-  //     label: '전체',
-  //     value: 'all',
-  //   },
-  //   {
-  //     label: '기획상품',
-  //     value: 'plan',
-  //   },
   {
     label: '패스상품',
     value: 'pass',
