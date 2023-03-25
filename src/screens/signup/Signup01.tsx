@@ -20,7 +20,7 @@ import axios from 'axios';
 import * as properties from 'utils/properties';
 import { usePopup } from 'Context';
 import { get_profile_secondary_authentication, regist_second_auth } from 'api/models';
-import { REFUSE, SUCCESS, SUCESSION } from 'constants/reusltcode';
+import { SUCCESS } from 'constants/reusltcode';
 
 
 /* ################################################################################################################

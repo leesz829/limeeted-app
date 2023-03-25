@@ -31,6 +31,8 @@ export type StackParamList = {
   Title00: undefined;
   NiceAuth: {
     type: string;
+    phoneNumber: string;
+    emailId: string;
   };
   Login01: undefined;
   Policy: undefined;
@@ -59,6 +61,8 @@ export type StackParamList = {
     memberSeq: Number;
     gender: string;
     accessType: string;
+    refuseImgCnt: Number;
+    refuseAuthCnt: Number;
   };
   SecondAuthPopup: undefined; // 2차 인증 팝업
   SignupPopUp2: undefined;

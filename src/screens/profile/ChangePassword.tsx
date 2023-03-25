@@ -12,7 +12,7 @@ import { RouteProp, useNavigation } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
 import { usePopup } from 'Context';
 import { update_member_password } from 'api/models';
-import { REFUSE, SUCCESS, SUCESSION } from 'constants/reusltcode';
+import { SUCCESS } from 'constants/reusltcode';
 import { STACK } from 'constants/routes';
 import { myProfile } from 'redux/reducers/authReducer';
 

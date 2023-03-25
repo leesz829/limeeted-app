@@ -13,6 +13,10 @@ export const REGIST_BASE_INFO = '/join/insertMemberInfo';
 export const REGIST_MEMBER_PROFILE_IMAGE = '/join/insertMemberProfileImage';
 export const REGIST_MEMBER_INTEREST = '/join/insertMemberIntro';
 export const REGIST_MEMBER_SECOND_AUTH = '/join/insertMemberSecondAuth';
+export const SEARCH_EMAIL_ID = '/login/searchEmailId';
+export const SEARCH_PASSWORD = '/login/searchPassword';
+export const CREATE_TEMP_PASSWORD = '/login/createTempPassword';
+
 
 /**
  * USER
@@ -37,8 +41,6 @@ export const MEMBER_AUTH_DETAIL = '/member/selectMemberSecondAuthDetailList';
 export const UPDATE_PHONE_NUMBER = '/member/modfyMemberPhoneNumber';
 export const MEMBER_EXIT = '/member/deleteMyAccount';
 export const UPDATE_PASSWORD = '/changePassword/updateNewPassword';
-export const EMAILDID_FROM_PHONENUMBER = '/login/selectEmailIdFromPhoneNumber';
-export const PASSWORD_FROM_EMAILID = '/login/createMailAndChangePassword';
 export const MEMBER_MSG_LIST = '/msg/selectMemberMessageList'
 
 

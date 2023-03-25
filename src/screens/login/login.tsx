@@ -8,7 +8,7 @@ import { CommonBtn } from 'component/CommonBtn';
 import { CommonInput } from 'component/CommonInput';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
-import { REFUSE, SUCCESS, SUCESSION } from 'constants/reusltcode';
+import { SUCCESS, LOGIN_REFUSE, LOGIN_EMPTY, LOGIN_WAIT, LOGIN_EXIT } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
 import storeKey, { JWT_TOKEN } from 'constants/storeKey';
 import { usePopup } from 'Context';
@@ -42,12 +42,9 @@ export const Login01 = () => {
   const { show } = usePopup();
   const [id, setId] = React.useState('');
   const [password, setPassword] = React.useState('');
-  const [location, setLocation] = React.useState();
   const me = useUserInfo();
 
   const loginProc = async (latitude: number, longitude: number) => {
-    console.log('location ::::::: ', location);
-
     const body = {
       email_id: id,
       password,
@@ -55,15 +52,34 @@ export const Login01 = () => {
       longitude: longitude
     };
     const { success, data } = await signin(body);
+    console.log('data ::::: ' , data);
 
     if (success) {
       switch (data.result_code) {
         case SUCCESS:
+          await AsyncStorage.setItem(JWT_TOKEN, data.token_param.jwt_token);
+          await AsyncStorage.setItem(
+            storeKey.MEMBER_SEQ,
+            data.mbr_base.member_seq + ''
+          );
+          delete data.result_code;
+          dispatch(setPrincipal(data));
+          dispatch(mbrReducer.setJwtToken(data.token_param.jwt_token));
+          dispatch(mbrReducer.setMemberSeq(data.mbr_base.member_seq));
+          dispatch(mbrReducer.setBase(data.mbr_base));
+          dispatch(mbrReducer.setProfileImg(data.mbr_img_list));
+          dispatch(mbrReducer.setSecondAuth(data.mbr_second_auth_list));
+          dispatch(mbrReducer.setIdealType(data.mbr_ideal_type));
+          dispatch(mbrReducer.setInterview(data.mbr_interview_list));
+          dispatch(mbrReducer.setUserInfo(data));
+          break;
+
+        case LOGIN_WAIT:
           let memberStatus = data.mbr_base.status;
           let joinStatus = data.mbr_base.join_status;
 
-          if (memberStatus == 'PROCEED' || memberStatus == 'APROVAL') {
-            if (memberStatus == 'APROVAL') {
+          if (memberStatus == 'PROCEED' || memberStatus == 'APPROVAL') {
+            if (memberStatus == 'APPROVAL') {
               navigation.navigate(ROUTES.APPROVAL, {
                 memberSeq: data.mbr_base.member_seq,
                 gender: data.mbr_base.gender,
@@ -95,43 +111,35 @@ export const Login01 = () => {
                 }
               }
             }
-          } else {
-            await AsyncStorage.setItem(JWT_TOKEN, data.token_param.jwt_token);
-            await AsyncStorage.setItem(
-              storeKey.MEMBER_SEQ,
-              data.mbr_base.member_seq + ''
-            );
-            delete data.result_code;
-            dispatch(setPrincipal(data));
-            dispatch(mbrReducer.setJwtToken(data.token_param.jwt_token));
-            dispatch(mbrReducer.setMemberSeq(data.mbr_base.member_seq));
-            dispatch(mbrReducer.setBase(data.mbr_base));
-            dispatch(mbrReducer.setProfileImg(data.mbr_img_list));
-            dispatch(mbrReducer.setSecondAuth(data.mbr_second_auth_list));
-            dispatch(mbrReducer.setIdealType(data.mbr_ideal_type));
-            dispatch(mbrReducer.setInterview(data.mbr_interview_list));
-            dispatch(mbrReducer.setUserInfo(data));
           }
           break;
-        case REFUSE:
-          show({ content: '일치하는 회원이 없습니다.' });
-          break;
-        case SUCESSION:
-          show({ content: '탈퇴 회원 입니다.' });
-          break;
-        default:
+
+        case LOGIN_REFUSE:
           navigation.navigate(ROUTES.APPROVAL, {
             memberSeq: data.mbr_base.member_seq,
             accessType: 'REFUSE',
+            refuseImgCnt: data.refuse_img_cnt,
+            refuseAuthCnt: data.refuse_auth_cnt,
           });
+          break;
+
+        case LOGIN_EMPTY:
+          show({ content: '일치하는 회원이 없습니다.' });
+          break;
+
+        case LOGIN_EXIT:
+          show({ content: '탈퇴 회원 입니다.' });
+          break;
+
+        default:
           break;
       }
     }
   };
   
 
-   // 사용자 위치 확인
-   async function requestPermissions() {
+  // 사용자 위치 확인
+  async function requestPermissions() {
     // TODO: ios 인 경우, 권한 설정 추가 필요. 안드로이드 빌드 이후 진행 예정. 2023.01.03
     if (Platform.OS === 'ios') {
        const auth = await Geolocation.requestAuthorization('whenInUse');
@@ -139,12 +147,6 @@ export const Login01 = () => {
        Geolocation.getCurrentPosition(
           position => {
              const {latitude, longitude} = position.coords;
-             //setLocation(position.coords);
-             /* setLocation({
-                latitude
-                , longitude
-             }); */
-
              loginProc(latitude, longitude);
           },
           error => {
@@ -154,29 +156,28 @@ export const Login01 = () => {
        );   
     }
     
-    if (Platform.OS === 'android') {
-       const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-       );
+    if(Platform.OS === 'android') {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      );
 
-       Geolocation.getCurrentPosition(
+      if(granted !== PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+        Geolocation.getCurrentPosition(
           position => {
              // 위도, 경도
              const {latitude, longitude} = position.coords;
-             //updateUserGeolocation(latitude, longitude);
-             //console.log('latitude :::::: ', latitude);
-             //console.log('longitude :::::: ', longitude);
-
-             //setLocation(position.coords);
              loginProc(latitude, longitude);
           },
           error => {
             console.log(error.code, error.message);
           },
-          {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
-       );
+          {enableHighAccuracy: false, timeout: 15000, maximumAge: 10000},
+        );
+      } else {
+        loginProc(null, null);
+      }
     }
- }
+  }
 
 
 

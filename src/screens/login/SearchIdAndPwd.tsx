@@ -5,6 +5,7 @@ import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import { ScrollView, View, Image, Modal, TouchableOpacity, Alert, Text, StyleSheet } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
+import { validateEmailChk } from 'utils/functions';
 import React, { useEffect } from 'react';
 import { CommonBtn } from 'component/CommonBtn';
 import { StackParamList, ScreenNavigationProp, ColorType } from '@types';
@@ -13,8 +14,8 @@ import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native
 import * as hooksMember from 'hooks/member';
 import { useDispatch } from 'react-redux';
 import { usePopup } from 'Context';
-import { REFUSE, SUCCESS, SUCESSION } from 'constants/reusltcode';
-import { select_emailId_from_phoneNumber, select_password_from_emailId } from 'api/models';
+import { SUCCESS } from 'constants/reusltcode';
+import { search_email_id, search_password } from 'api/models';
 
 
 /* ################################################################################################################
@@ -83,7 +84,7 @@ export const SearchIdAndPwd = (props : Props) => {
 		});
 	};
 
-	// 아이디 찾기 버튼 클릭
+	// ########################################################################### 아이디 찾기 버튼 클릭
 	const btnSelectEmailIdFromPhoneNumber = async () => {
 		if(phoneNumber == '') {
 			setSearchIdResult({
@@ -96,10 +97,10 @@ export const SearchIdAndPwd = (props : Props) => {
 		}
 
 		const body = {
-			phoneNumber: phoneNumber
+			phone_number: phoneNumber
 		};
 		try {
-		  const { success, data } = await select_emailId_from_phoneNumber(body);
+		  const { success, data } = await search_email_id(body);
 		  console.log(data);
 		  if(success) {
 			switch (data.result_code) {
@@ -132,7 +133,7 @@ export const SearchIdAndPwd = (props : Props) => {
 		}
 	}
 
-	// 비밀번호 찾기 버튼 클릭
+	// ########################################################################### 비밀번호 찾기 버튼 클릭
 	const btnSelectPasswordFromEmailId = async () => {
 		if(emailId == '') {
 			setSearchPwdResult({
@@ -144,22 +145,42 @@ export const SearchIdAndPwd = (props : Props) => {
 			return;
 		}
 
+		if(!validateEmailChk(emailId)) {
+			setSearchPwdResult({
+				code: '9999'
+				, message: '이메일 형식에 맞게 입력해주세요.'
+				, textColor: '#43AB90'
+			});
+
+			return;
+		}
+
 		const body = {
-			emailId: emailId
+			email_id: emailId
 		};
 		try {
-		  const { success, data } = await select_password_from_emailId(body);
+		  const { success, data } = await search_password(body);
+		  console.log('data ::::: ' , data);
 		  if(success) {
 			switch (data.result_code) {
 			  case SUCCESS:
-				setSearchPwResult({
+				navigation.navigate({
+					name : 'NiceAuth',
+					params : {
+						type : 'SEARCH'
+						, phoneNumber : data.phone_number
+						, emailId : emailId
+					}
+				});
+
+				/* setSearchPwdResult({
 					code: data.result_code
 					, message: '새 비밀번호가 전송되었습니다.'
 					, textColor: '#E04136'
-				});
+				}); */
 				break;
 			  default:
-				setSearchPwResult({
+				setSearchPwdResult({
 					code: data.result_code
 					, message: '존재하지 않은 이메일 입니다.'
 					, textColor: '#E04136'
@@ -185,7 +206,7 @@ export const SearchIdAndPwd = (props : Props) => {
 	// ####################################################### 아이디 입력 effect
 	React.useEffect(() => {
 		if (phoneNumber.length === 10) {
-			setPhoneNumber(phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3'))
+			setPhoneNumber(phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3'));
 		} else if (phoneNumber.length === 13) {
 			setPhoneNumber(phoneNumber.replace(/-/g, '').replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3'));
 		}

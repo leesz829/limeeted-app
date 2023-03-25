@@ -16,7 +16,7 @@ import { RadioCheckBox_2 } from 'component/RadioCheckBox_2';
 import * as properties from 'utils/properties';
 import { usePopup } from 'Context';
 import { regist_introduce, get_member_introduce_guide } from 'api/models';
-import { REFUSE, SUCCESS, SUCESSION } from 'constants/reusltcode';
+import { SUCCESS } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
 
 

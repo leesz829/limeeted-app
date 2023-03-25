@@ -31,7 +31,7 @@ import Interview from 'component/Interview';
 import { update_profile, get_member_face_rank } from 'api/models';
 import { usePopup } from 'Context';
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
-import { REFUSE, SUCCESS, SUCESSION } from 'constants/reusltcode';
+import { SUCCESS } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
 import { BarGrap } from 'component/BarGrap';
 import { Color } from 'assets/styles/Color';

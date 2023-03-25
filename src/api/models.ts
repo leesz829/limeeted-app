@@ -43,8 +43,9 @@ import {
   UPDATE_PHONE_NUMBER,
   UPDATE_PASSWORD,
   MEMBER_EXIT,
-  EMAILDID_FROM_PHONENUMBER,
-  PASSWORD_FROM_EMAILID,
+  SEARCH_EMAIL_ID,
+  SEARCH_PASSWORD,
+  CREATE_TEMP_PASSWORD,
   ORDER,
   ORDER_GOODS,
   ORDER_AUCT,
@@ -57,6 +58,7 @@ import {
   PRODUCT_AUCT_DETAIL,
   PRODUCT_BM,
   BANNER_LIST,
+  MEMBER_MSG_LIST,
 } from './route';
 
 /* ========================================================================================================
@@ -123,6 +125,29 @@ export async function regist_second_auth(body: {
 }) {
   return send(REGIST_MEMBER_SECOND_AUTH, 'POST', body, false, false);
 }
+
+// 아이디 찾기
+export async function search_email_id(body: {
+  phone_number: string;
+}) {
+  return send(SEARCH_EMAIL_ID, 'POST', body, false, false);
+}
+
+// 비밀번호 찾기
+export async function search_password(body: { 
+  email_id: string 
+}) {
+  return send(SEARCH_PASSWORD, 'POST', body, false, false);
+}
+
+// 비밀번호 찾기
+export async function create_temp_password(body: { 
+  email_id: string 
+  phone_number: string
+}) {
+  return send(CREATE_TEMP_PASSWORD, 'POST', body, false, false);
+}
+
 
 /* ========================================================================================================
 ==================================================== USER
@@ -281,17 +306,13 @@ export async function update_member_exit() {
   return send(MEMBER_EXIT, 'POST', undefined, true, false);
 }
 
-// 아이디 찾기
-export async function select_emailId_from_phoneNumber(body: {
-  phoneNumber: string;
-}) {
-  return send(EMAILDID_FROM_PHONENUMBER, 'POST', body, true, false);
+// 회원의 메시지 목록을 조회한다.
+export async function get_member_message_list() {
+  return send(MEMBER_MSG_LIST, 'POST', undefined, true, false);
 }
 
-// 비밀번호 찾기
-export async function select_password_from_emailId(body: { emailId: string }) {
-  return send(PASSWORD_FROM_EMAILID, 'POST', body, true, false);
-}
+
+
 
 /* ========================================================================================================
 ==================================================== PROFILE

@@ -29,7 +29,7 @@ import { myProfile } from 'redux/reducers/authReducer';
 import { Color } from 'assets/styles/Color';
 import { ICON } from 'utils/imageUtils';
 import { Modalize } from 'react-native-modalize';
-import { REFUSE, SUCCESS, SUCESSION } from 'constants/reusltcode';
+import { SUCCESS } from 'constants/reusltcode';
 
 
 /* ################################################################################################################

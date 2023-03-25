@@ -25,7 +25,7 @@ import { useUserInfo } from 'hooks/useUserInfo';
 import { update_setting, member_logout, update_member_exit } from 'api/models';
 import { usePopup } from 'Context';
 import { myProfile } from 'redux/reducers/authReducer';
-import { REFUSE, SUCCESS, SUCESSION } from 'constants/reusltcode';
+import { SUCCESS } from 'constants/reusltcode';
 
 
 /* ################################################################################################################

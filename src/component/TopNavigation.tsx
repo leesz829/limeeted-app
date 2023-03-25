@@ -98,13 +98,13 @@ export function Wallet({ textStyle }) {
       <View style={[styles.itemContainer, { marginRight: 8 }]}>
         <Image style={styles.itemStyle} source={ICON.currency} />
         <Text style={[styles.statusText, textStyle]}>
-          {memberBase.pass_has_amt}
+          {memberBase?.pass_has_amt}
         </Text>
       </View>
       <View style={styles.itemContainer}>
         <Image style={styles.itemStyle} source={ICON.ticket} />
         <Text style={[styles.statusText, textStyle]}>
-          {memberBase.royal_pass_has_amt}
+          {memberBase?.royal_pass_has_amt}
         </Text>
       </View>
     </View>

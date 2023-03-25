@@ -8,7 +8,7 @@ import * as properties from 'utils/properties';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ColorType, ScreenNavigationProp, BottomParamList } from '@types';
 import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
-import { REFUSE, SUCCESS, SUCESSION } from 'constants/reusltcode';
+import { SUCCESS } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
 import { get_member_message_list } from 'api/models';
 import { usePopup } from 'Context';

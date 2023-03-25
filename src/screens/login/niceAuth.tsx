@@ -6,9 +6,9 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { WebView } from 'react-native-webview';
 import axios from 'axios';
 import { usePopup } from 'Context';
-import { REFUSE, SUCCESS, SUCESSION } from 'constants/reusltcode';
+import { SUCCESS } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
-import { nice_auth, update_phone_number } from 'api/models';
+import { nice_auth, update_phone_number, create_temp_password } from 'api/models';
 import { useUserInfo } from 'hooks/useUserInfo';
 import { myProfile } from 'redux/reducers/authReducer';
 import { STACK } from 'constants/routes';
@@ -33,6 +33,8 @@ export const NiceAuth = (props: Props) => {
 
 	const type = props.route.params.type;
 	const memberBase = useUserInfo(); //hooksMember.getBase();
+	const phoneNumber = props.route.params.phoneNumber;
+	const emailId = props.route.params.emailId;
 
 	const [niceWebViewBody, setNiceWebViewBody] = React.useState(String);
 
@@ -48,7 +50,7 @@ export const NiceAuth = (props: Props) => {
 
 		let dataJson = JSON.parse(data);
 
-		if (dataJson.dupYn == 'Y') {
+		if (dataJson.dupYn == 'Y' && type !== 'SEARCH') {
 			show({ 
 				content: '이미 등록된 회원 입니다.' ,
 				confirmCallback: async function() {
@@ -99,6 +101,24 @@ export const NiceAuth = (props: Props) => {
 				} else {
 					updatePhoneNumber(dataJson);
 				}
+
+			// ########### 비밀번호 찾기
+			} else if(type == 'SEARCH') {
+				let phoneNumberFmt = phoneNumber.replace(/-/g, "");
+				console.log('phoneNumberFmt ::::: ', phoneNumberFmt);
+
+				if(phoneNumberFmt != dataJson.mobile) {
+					show({ 
+						content: '등록된 전화번호와 본인인증이 일치하지 않습니다.' ,
+						confirmCallback: async function() {
+							navigation.navigate('Login');
+						}
+					});
+				} else {
+
+					// 임시 비밀번호 생성
+					createTempPassword(phoneNumber, emailId);
+				}
 			}
 		}		
 	};
@@ -142,6 +162,45 @@ export const NiceAuth = (props: Props) => {
 		
 		}
 	}
+
+	// ######################################################### 전화번호 변경 실행
+	const createTempPassword = async (phoneNumber: string, emailId: string) => {
+
+		const body = {
+			email_id: emailId,
+			phone_number: phoneNumber
+		};
+		try {
+		  const { success, data } = await create_temp_password(body);
+		  console.log('data ::::: ' , data);
+		  if(success) {
+			switch (data.result_code) {
+			  case SUCCESS:
+				show({
+					content: '임시 비밀번호가 메일로 전송되었습니다.\n로그인 후 비밀번호 변경 부탁드립니다.' ,
+					confirmCallback: async function() {
+						navigation.navigate('Login');
+					}
+				});
+				break;
+			  default:
+				break;
+			}
+		   
+		  } else {
+			show({
+			  content: '오류입니다. 관리자에게 문의해주세요.' ,
+			  confirmCallback: function() {}
+			});
+		  }
+		} catch (error) {
+		  console.log(error);
+		} finally {
+		  
+		}
+	}
+
+
 
 	// ######################################################### 나이스 웹뷰 화면 생성
 	const createNiceWebViewBody = async () => {

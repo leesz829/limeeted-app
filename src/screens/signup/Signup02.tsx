@@ -17,7 +17,7 @@ import { ICON, PROFILE_IMAGE, findSourcePath } from 'utils/imageUtils';
 import { Modalize } from 'react-native-modalize';
 import { usePopup } from 'Context';
 import { get_profile_imgage_guide, regist_profile_image } from 'api/models';
-import { REFUSE, SUCCESS, SUCESSION } from 'constants/reusltcode';
+import { SUCCESS } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
 
 

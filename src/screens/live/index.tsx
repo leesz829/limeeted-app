@@ -26,7 +26,7 @@ import { get_live_members, regist_profile_evaluation, get_common_code } from 'ap
 import { useMemberseq } from 'hooks/useMemberseq';
 import { findSourcePath } from 'utils/imageUtils';
 import { usePopup } from 'Context';
-import { REFUSE, SUCCESS, SUCESSION } from 'constants/reusltcode';
+import { SUCCESS } from 'constants/reusltcode';
 
 
 

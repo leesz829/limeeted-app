@@ -22,7 +22,7 @@ import { useSecondAth } from 'hooks/useSecondAth';
 import storeKey from 'constants/storeKey';
 import { STACK } from 'constants/routes';
 import { verticalStackLayout } from 'react-native-reanimated-carousel/lib/typescript/layouts/stack';
-import { REFUSE, SUCCESS, SUCESSION } from 'constants/reusltcode';
+import { SUCCESS } from 'constants/reusltcode';
 
 
 /* ################################################################################################################
