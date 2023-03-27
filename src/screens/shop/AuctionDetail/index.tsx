@@ -1,6 +1,9 @@
+import { useRoute } from '@react-navigation/native';
+import { get_auct_detail } from 'api/models';
 import { Color } from 'assets/styles/Color';
 import CommonHeader from 'component/CommonHeader';
-import React from 'react';
+import { useUserInfo } from 'hooks/useUserInfo';
+import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   FlatList,
@@ -11,12 +14,12 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { CommaFormat, getRemainTime } from 'utils/functions';
 import { ICON } from 'utils/imageUtils';
 import ViewPager from '../Component/ViewPager';
+import dayjs from 'dayjs';
+import { api_domain } from 'utils/properties';
 
-interface Props {
-  id: string;
-}
 function indextToText(index) {
   switch (index) {
     case 0:
@@ -29,16 +32,39 @@ function indextToText(index) {
       return '';
   }
 }
-export default function AuctionDetail({ id }: Props) {
-  const { bottom } = useSafeAreaInsets();
+export default function AuctionDetail() {
+  const { prod_seq, modify_seq } = useRoute().params;
+  const [data, setData] = useState(null);
+  const me = useUserInfo();
 
-  const images = ['', '', ''];
+  useEffect(() => {
+    async function fetch() {
+      const body = { prod_seq, modify_seq };
+      const { success, data } = await get_auct_detail(body);
+      if (success) {
+        setData({
+          images: data?.prod_img_list,
+          ...data?.prod_detail,
+          auct_list: data?.auct_list,
+        });
+      }
+    }
+    fetch();
+  }, []);
+
+  const images = data?.images
+    ?.filter((e) => e.represent_yn == 'Y')
+    ?.map((img) => {
+      const imagePath = api_domain + img?.file_path + img?.file_name;
+      return imagePath;
+    });
+
   return (
     <View style={styles.root}>
       <CommonHeader title="경매" />
 
       <FlatList
-        data={['', '', '', '', '', '', '', '', '', '']}
+        data={data?.auct_list}
         style={{ flexGrow: 1 }}
         ListFooterComponent={<View style={{ height: 50 }} />}
         ListHeaderComponent={
@@ -49,12 +75,12 @@ export default function AuctionDetail({ id }: Props) {
               renderItem={() => <Image style={styles.itemImages} />}
             />
             <View style={styles.infoContainer}>
-              <Text style={styles.brandText}>브랜드</Text>
-              <Text style={styles.giftName}>제품 모델명</Text>
+              <Text style={styles.brandText}>{data?.brand_name}</Text>
+              <Text style={styles.giftName}>{data?.prod_name}</Text>
               <View style={styles.rowBetween}>
                 <Text style={styles.inventory}>제품 한 줄 설명</Text>
                 <View style={styles.rowCenter}>
-                  <Text style={styles.price}>10,000</Text>
+                  <Text style={styles.price}>{data?.asking_price}</Text>
                   <Image source={ICON.crown} style={styles.crown} />
                 </View>
               </View>
@@ -65,12 +91,17 @@ export default function AuctionDetail({ id }: Props) {
                 </View>
                 <View style={{ flexDirection: 'row' }}>
                   <Image style={styles.roundCrown} source={ICON.roundCrown} />
-                  <Text style={styles.currenyAmount}>999,999,999</Text>
+                  <Text style={styles.currenyAmount}>
+                    {CommaFormat(me?.mileage_point)}
+                  </Text>
                 </View>
               </View>
               <Text style={styles.duration}>
-                경매기간 : 01/01 ~ 01/07
-                <Text style={styles.durationSub}>(7일 후 닫힘)</Text>
+                경매기간 : {dayjs(data?.buy_start_dt).format('MM/DD')} ~{' '}
+                {dayjs(data?.buy_end_dt).format('MM/DD')}
+                <Text style={styles.durationSub}>
+                  {getRemainTime(data?.buy_end_dt, true)}
+                </Text>
               </Text>
               <View style={styles.dashline} />
               <View style={styles.tableHeader}>
@@ -96,7 +127,9 @@ export default function AuctionDetail({ id }: Props) {
             >
               {indextToText(index)}
             </Text>
-            <Text style={styles.ItemRowTextCenter}>15,000원</Text>
+            <Text style={styles.ItemRowTextCenter}>
+              {CommaFormat(item?.bid_price)}원
+            </Text>
             <Text style={styles.ItemRowTextRight}>
               {index === 0 && '20분 후 낙찰'}
             </Text>
@@ -105,7 +138,6 @@ export default function AuctionDetail({ id }: Props) {
       />
       <View
         style={[
-          // styles.bottomContainer,
           {
             marginBottom: 10,
             backgroundColor: 'transparent',
@@ -117,7 +149,9 @@ export default function AuctionDetail({ id }: Props) {
             <Text style={styles.puchageText}>구매</Text>
             <Seperator />
             <View>
-              <Text style={styles.priceText}>10,000</Text>
+              <Text style={styles.priceText}>
+                {CommaFormat(data?.now_buy_price)}
+              </Text>
               <Text style={styles.additionalText}>즉시구매가</Text>
             </View>
           </TouchableOpacity>
@@ -125,7 +159,9 @@ export default function AuctionDetail({ id }: Props) {
             <Text style={styles.puchageText}>입찰</Text>
             <Seperator />
             <View>
-              <Text style={styles.priceText}>10,000</Text>
+              <Text style={styles.priceText}>
+                {CommaFormat(data?.asking_price)}
+              </Text>
               <Text style={styles.additionalText}>입찰대기10분</Text>
             </View>
           </TouchableOpacity>

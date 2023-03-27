@@ -21,7 +21,7 @@ function FemalePannel() {
   const navigation = useNavigation<ScreenNavigationProp>();
   const route = useRoute();
   const me = useUserInfo();
-  console.log(JSON.stringify(me));
+
   const onPressLimitShop = () => {
     navigation.navigate(STACK.COMMON, { screen: ROUTES.Mileage_Shop });
   };

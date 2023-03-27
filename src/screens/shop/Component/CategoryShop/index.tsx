@@ -1,18 +1,40 @@
+import AsyncStorage from '@react-native-community/async-storage';
+import { get_bm_product } from 'api/models';
+import { STORAGE } from 'api/route';
 import { Color } from 'assets/styles/Color';
-import React, { memo, useState } from 'react';
+import storeKey from 'constants/storeKey';
+import { useUserInfo } from 'hooks/useUserInfo';
+import React, { memo, useEffect, useState } from 'react';
+import * as hooksMember from 'hooks/member';
 import {
+  Image,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+import { api_domain } from 'utils/properties';
 import ProductModal from '../ProductModal';
+import { CommaFormat } from 'utils/functions';
 
-export default function CategoryShop({ data }) {
+export default function CategoryShop() {
   const [modalVisible, setModalVisible] = useState(false);
   const [targetItem, setTargetItem] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    async function fetch() {
+      const body = { item_type_code: selectedCategory.value };
+      const { success, data } = await get_bm_product(body);
+      if (success) {
+        console.log(JSON.stringify(data));
+        setItems(data?.item_list);
+      }
+    }
+    fetch();
+  }, [selectedCategory]);
 
   const onPressCategory = (value) => {
     setSelectedCategory(value);
@@ -43,9 +65,9 @@ export default function CategoryShop({ data }) {
         ))}
       </View>
 
-      {data?.map((item, index) => (
+      {items?.map((item, index) => (
         <RednerItem
-          key={`product-${item.value}-${index}`}
+          key={`product-${item?.item_code}-${index}`}
           item={item}
           openModal={openModal}
         />
@@ -60,19 +82,33 @@ export default function CategoryShop({ data }) {
 }
 function RednerItem({ item, openModal }) {
   const onPressItem = () => openModal(item);
+
+  const imagePath = api_domain + item?.file_path + item?.file_name;
+
   return (
     <TouchableOpacity style={styles.itemContainer} onPress={onPressItem}>
       <View style={{ flexDirection: 'row' }}>
-        <View style={styles.tumbs} />
+        <Image
+          source={{
+            uri: imagePath,
+          }}
+          style={styles.tumbs}
+        />
         <View style={styles.textContainer}>
           <Text style={styles.BESTText}>BEST</Text>
           <Text style={{ fontSize: 13, fontWeight: 'bold' }}>
-            테스트 상품 리미티드 기획상품
+            {item?.item_name}
           </Text>
           <View style={{ flexDirection: 'row' }}>
-            <Text style={styles.discountRate}>50%</Text>
-            <Text style={styles.price}>7,500 </Text>
-            <Text style={styles.originPrice}>15,000 </Text>
+            <Text style={styles.discountRate}>
+              {(item?.shop_buy_price / item?.shop_buy_price) * 100}%
+            </Text>
+            <Text style={styles.price}>
+              {CommaFormat(item?.shop_buy_price)}
+            </Text>
+            <Text style={styles.originPrice}>
+              {CommaFormat(item?.shop_buy_price)}
+            </Text>
           </View>
           <View style={styles.boxWrapper}>
             <View style={styles.box}>
@@ -167,14 +203,14 @@ const styles = StyleSheet.create({
 const categories = [
   {
     label: '패스상품',
-    value: 'pass',
+    value: 'PASS',
   },
   {
     label: '구독상품',
-    value: 'subscription',
+    value: 'SUBSCRIPTION',
   },
   {
     label: '패키지',
-    value: 'package',
+    value: 'PACKAGE',
   },
 ];

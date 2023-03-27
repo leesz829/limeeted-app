@@ -23,7 +23,7 @@ export default function Inventory() {
       const { data, message } = await get_my_items();
 
       if (data) {
-        // setData(data);
+        setData(data?.inventory_list);
       }
     }
     fetchData();
@@ -56,17 +56,15 @@ export default function Inventory() {
       <View style={{ flexDirection: 'row' }}>
         <Image style={styles.thumb} />
         <View style={{ marginLeft: 15, width: '65%' }}>
-          <Text style={styles.title}>패스 200</Text>
-          <Text style={styles.infoText}>
-            리미티드에서 보현적으로 사용하는 재화입니다.
-          </Text>
+          <Text style={styles.title}>{item?.cate_name}</Text>
+          <Text style={styles.infoText}>{item?.cate_desc}</Text>
           <View style={styles.buttonWrapper}>
             <TouchableOpacity
               style={styles.button(index % 2 == 0)}
               disabled={index % 2 != 0}
             >
               <Text style={styles.buttonText(index % 2 == 0)}>
-                {index % 2 == 0 ? '사용/획득' : '사용중(20일남음)'}
+                {item?.use_yn == 'N' ? '사용/획득' : '사용중(20일남음)'}
               </Text>
             </TouchableOpacity>
           </View>
