@@ -38,6 +38,7 @@
     "@reduxjs/toolkit": "1.9.0",
     "ale-url-parser": "0.13.0",
     "axios": "0.26.1",
+    "dayjs": "^1.11.7",
     "react": "17.0.2",
     "react-native": "0.66.4",
     "react-native-animated-pagination-dots": "^0.1.73",

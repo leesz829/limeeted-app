@@ -15,7 +15,9 @@ import BannerPannel from '../Component/BannerPannel';
 import ProductModal from '../Component/ProductModal';
 import { useNavigation } from '@react-navigation/native';
 import { ROUTES, STACK } from 'constants/routes';
-import { get_auct_product } from 'api/models';
+import { get_auct_product, get_product_list } from 'api/models';
+import { api_domain } from 'utils/properties';
+import { CommaFormat, getRemainTime } from 'utils/functions';
 
 const DATA = [
   {
@@ -41,12 +43,20 @@ export default function MileageShop() {
 
   useEffect(() => {
     async function fetch() {
-      const { success, data } = await get_auct_product();
-      if (success) {
-        // setData(data)
+      if (tab.value === 'boutique') {
+        const { success: sa, data: ad } = await get_auct_product();
+        if (sa) {
+          setData(ad?.prod_list);
+        }
+      } else {
+        const { success: sp, data: pd } = await get_product_list();
+        if (sp) {
+          setData(pd?.prod_list);
+        }
       }
     }
-  }, []);
+    fetch();
+  }, [tab]);
 
   const onPressTab = (value) => {
     setTab(value);
@@ -65,9 +75,11 @@ export default function MileageShop() {
           }
           stickySectionHeadersEnabled={false}
           renderSectionHeader={renderSectionHeader}
-          renderItem={({ item, index, rowIndex }) => (
-            <RenderItem type={tab.value} item={item} />
-          )}
+          renderItem={(props) => {
+            console.log('props : ', JSON.stringify(props));
+            const { item, index, rowIndex } = props;
+            return <RenderItem type={tab.value} item={item} />;
+          }}
         />
       </View>
     </>
@@ -106,6 +118,8 @@ const RenderItem = ({ item, type }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [targetItem, setTargetItem] = useState(null);
 
+  const imagePath = api_domain + item?.file_path + item?.file_name;
+
   const onPressItem = (item) => {
     if (type === 'gifticon') {
       setTargetItem(item);
@@ -113,10 +127,15 @@ const RenderItem = ({ item, type }) => {
     } else
       navigation.navigate(STACK.COMMON, {
         screen: ROUTES.Auction_Detail,
-        params: item?.id,
+        params: { prod_seq: item?.prod_seq, modify_seq: item?.modify_seq },
       });
   };
   const closeModal = () => setModalVisible(false);
+
+  const remainTime = getRemainTime(
+    item?.sell_yn === 'Y' ? item?.buy_end_dt : item?.buy_start_dt,
+    item?.sell_yn === 'Y'
+  );
 
   return (
     <TouchableOpacity
@@ -125,13 +144,13 @@ const RenderItem = ({ item, type }) => {
       onPress={() => onPressItem(item)}
     >
       <View style={{ flexDirection: 'column' }}>
-        <Image style={styles.thumb} />
+        <Image style={styles.thumb} source={{ uri: imagePath }} />
 
         <View style={{ paddingHorizontal: 3 }}>
-          <Text style={styles.brandName}>브랜드명</Text>
-          <Text style={styles.productName}>제품 모델명</Text>
+          <Text style={styles.brandName}>{item?.brand_name}</Text>
+          <Text style={styles.productName}>{item?.prod_name}</Text>
           <View style={[styles.textContainer, { marginTop: 5 }]}>
-            <Text style={styles.price}>50,000</Text>
+            <Text style={styles.price}>{CommaFormat(item?.now_buy_price)}</Text>
             {type !== 'gifticon' && (
               <Text style={styles.hintText}>즉시 구매가</Text>
             )}
@@ -148,7 +167,7 @@ const RenderItem = ({ item, type }) => {
             </View>
           )}
         </View>
-        <Text style={styles.remainText}>60분 남음</Text>
+        <Text style={styles.remainText}>{remainTime}</Text>
       </View>
       <ProductModal
         isVisible={modalVisible}
@@ -158,11 +177,22 @@ const RenderItem = ({ item, type }) => {
     </TouchableOpacity>
   );
 };
-const renderSectionHeader = ({ section }) => (
-  <View style={{ marginTop: 15 }}>
-    <Text>{section.title}</Text>
-  </View>
-);
+const renderSectionHeader = (props) => {
+  const { section } = props;
+  const sample = section.data[0];
+
+  if (
+    !Array.isArray(sample) ||
+    sample.length === 0 ||
+    sample[0].sell_yn === 'Y'
+  )
+    return null;
+  return (
+    <View style={{ marginTop: 15 }}>
+      <Text>{section.title}</Text>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: 'white', paddingHorizontal: 16 },

@@ -25,9 +25,8 @@ export default function RecommandProduct({ data }) {
 
   return (
     <View style={styles.recommandContainer}>
-      <TouchableOpacity>
-        <Text style={styles.recommandText}>오늘은{'\n'}이상품 어때요?</Text>
-      </TouchableOpacity>
+      <Text style={styles.recommandText}>오늘은{'\n'}이상품 어때요?</Text>
+
       <ScrollView horizontal style={styles.recommanListdWrapper}>
         {data?.map((item, index) => (
           <RednerRecommend

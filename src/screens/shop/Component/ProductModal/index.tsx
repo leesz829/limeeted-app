@@ -12,6 +12,8 @@ import Modal from 'react-native-modal';
 import { ICON } from 'utils/imageUtils';
 import ViewPager from '../ViewPager';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { api_domain } from 'utils/properties';
+import { CommaFormat } from 'utils/functions';
 
 interface Props {
   isVisible: boolean;
@@ -22,7 +24,9 @@ interface Props {
 export default function ProductModal({ isVisible, closeModal, item }: Props) {
   const { bottom } = useSafeAreaInsets();
 
-  const images = item?.images || ['', '', ''];
+  //추후 데이터 배열로 변환시 변경필요
+  const images = [api_domain + item?.file_path + item?.file_name];
+
   return (
     <Modal isVisible={isVisible} style={modalStyle.modal}>
       <View style={modalStyle.root}>
@@ -38,11 +42,15 @@ export default function ProductModal({ isVisible, closeModal, item }: Props) {
         />
         <View style={modalStyle.infoContainer}>
           <Text style={modalStyle.brandText}>스타벅스</Text>
-          <Text style={modalStyle.giftName}>스타벅스 1만원권</Text>
+          <Text style={modalStyle.giftName}>{item?.item_name}</Text>
           <View style={modalStyle.rowBetween}>
-            <Text style={modalStyle.inventory}>100개남음</Text>
+            <Text style={modalStyle.inventory}>
+              {item?.buy_count_max}개남음
+            </Text>
             <View style={modalStyle.rowCenter}>
-              <Text style={modalStyle.price}>10,000</Text>
+              <Text style={modalStyle.price}>
+                {CommaFormat(item?.shop_buy_price)}
+              </Text>
               <Image source={ICON.crown} style={modalStyle.crown} />
             </View>
           </View>

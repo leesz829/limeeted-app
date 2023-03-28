@@ -478,7 +478,7 @@ function ListFooterComponent() {
       {/* 추천상품 */}
       <RecommandProduct data={['', '', '', '']} />
       {/* 카테고리별 */}
-      <CategoryShop data={['', '', '', '', '', '', '', '', '', '', '', '']} />
+      <CategoryShop />
     </>
   );
 }

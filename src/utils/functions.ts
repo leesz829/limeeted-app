@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 // 날짜 format
 export const formatDate = (time: string) => {
   const year = new Date(time).getFullYear();
@@ -62,11 +63,59 @@ export function phoneApplyhyphen(str: string) {
 
 // 이메일 벨리데이션 체크
 export function validateEmailChk(email: string) {
-  const regex = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
+  const regex =
+    /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
   return regex.test(email);
 }
 
+export const getRemainTime = (time, isOpen) => {
+  const remail = timeDiff(time);
 
+  if (!remail) return '';
+  if (isOpen) {
+    return `${remail}남음`;
+  }
+  return `${remail}후 열림`;
+};
+
+export const timeDiff = (time) => {
+  const difference = dayjs(time) - dayjs();
+
+  let timeLeft = {
+    days: '0',
+    hours: '0',
+    minutes: '0',
+    seconds: '0',
+  };
+
+  if (difference > 0) {
+    timeLeft = {
+      days: Math.floor(difference / (1000 * 60 * 60 * 24)).toString(),
+      hours: Math.floor((difference / (1000 * 60 * 60)) % 24)
+        .toString()
+        .padStart(2, '0'),
+      minutes: Math.floor((difference / 1000 / 60) % 60)
+        .toString()
+        .padStart(2, '0'),
+      seconds: Math.floor((difference / 1000) % 60)
+        .toString()
+        .padStart(2, '0'),
+    };
+  } else return '';
+
+  if (Number(timeLeft.days) > 0) {
+    return timeLeft.days + '일 ' + timeLeft.hours + '시간 ';
+  }
+  if (Number(timeLeft.hours) > 0) {
+    return timeLeft.hours + '시간 ' + timeLeft.minutes + '분 ';
+  }
+  if (Number(timeLeft.minutes) > 0) {
+    return timeLeft.minutes + '분 ' + timeLeft.seconds + '초 ';
+  }
+  if (Number(timeLeft.seconds) > 0) {
+    return '잠시 후 ';
+  }
+};
 
 export default {
   formatDate,
@@ -75,4 +124,5 @@ export default {
   leftPad,
   rightPad,
   validateEmailChk,
+  getRemainTime,
 };
