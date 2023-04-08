@@ -14,6 +14,8 @@ import { Image, ScrollView, StyleSheet, View } from 'react-native';
 import { ICON } from 'utils/imageUtils';
 import * as properties from 'utils/properties';
 import { usePopup } from 'Context';
+import { SUCCESS } from 'constants/reusltcode';
+import { regist_member_base_info } from 'api/models';
 
 
 interface Props {
@@ -58,6 +60,83 @@ export const Signup00 = (props: Props) => {
   const genderCallbackFn = (value: string) => {
     setGender(value);
   };
+
+  // ########################################## 회원가입
+  const register = async () => {
+    if (id == '') {
+      show({ content: '아이디를 입력해 주세요.' });
+      return;
+    }
+
+    let regEmail =
+      /^([0-9a-zA-Z_\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;
+    if (!regEmail.test(id)) {
+      show({ content: '이메일 형식의 아이디가 아닙니다.' });
+      return;
+    }
+
+    if (password == '') {
+      show({ content: '비밀번호를 입력해 주세요.' });
+      return;
+    }
+
+    let regPass = /^(?=.*[a-zA-Z])(?=.*[0-9]).{8,25}$/;
+    if (!regPass.test(password)) {
+      show({ content: '영문, 숫자 조합으로 8-20자리 입력해주세요.' });
+      return;
+    }
+
+    if (passwordChk == '') {
+      show({ content: '비밀번호 확인을 입력해 주세요.' });
+      return;
+    }
+    if (password != passwordChk) {
+      show({ content: '비밀번호 확인이 맞지 않습니다.' });
+      return;
+    }
+
+    const body = {
+      email_id: id,
+      password: password,
+      name: name,
+      gender: gender,
+      phone_number: mobile,
+      ci: ci,
+      birthday: birthday,
+      snsType: snsType,
+      snsToken: snsToken,
+    };
+    try {
+      const { success, data } = await regist_member_base_info(body);
+      console.log('data ::: ' , data);
+      if(success) {
+        switch (data.result_code) {
+          case SUCCESS:
+            navigation.navigate('Signup01', {
+              memberSeq: data.member_seq,
+              gender: gender
+            });
+            break;
+          default:
+            show({
+              content: '오류입니다. 관리자에게 문의해주세요.' ,
+              confirmCallback: function() {}
+            });
+            break;
+        }
+       
+      } else {
+        show({
+          content: '오류입니다. 관리자에게 문의해주세요.' ,
+          confirmCallback: function() {}
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      
+    }
+  }
 
   return (
     <>
@@ -164,64 +243,7 @@ export const Signup00 = (props: Props) => {
             value={'다음 (1/4)'}
             type={'primary'}
             onPress={() => {
-              if (id == '') {
-                show({ content: '아이디를 입력해 주세요.' });
-                return;
-              }
-
-              let regEmail =
-                /^([0-9a-zA-Z_\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;
-              if (!regEmail.test(id)) {
-                show({ content: '이메일 형식의 아이디가 아닙니다.' });
-                return;
-              }
-
-              if (password == '') {
-                show({ content: '비밀번호를 입력해 주세요.' });
-                return;
-              }
-
-              let regPass = /^(?=.*[a-zA-Z])(?=.*[0-9]).{8,25}$/;
-              if (!regPass.test(password)) {
-                show({ content: '영문, 숫자 조합으로 8-20자리 입력해주세요.' });
-                return;
-              }
-
-              if (passwordChk == '') {
-                show({ content: '비밀번호 확인을 입력해 주세요.' });
-                return;
-              }
-              if (password != passwordChk) {
-                show({ content: '비밀번호 확인이 맞지 않습니다.' });
-                return;
-              }
-
-              axios
-                .post(properties.api_domain + '/join/insertMemberInfo/', {
-                  kakao_id: id,
-                  password: password,
-                  name: name,
-                  age: age,
-                  gender: gender,
-                  phone_number: mobile,
-                  ci: ci,
-                  birthday: birthday,
-                  snsType: snsType,
-                  snsToken: snsToken,
-                })
-                .then(function (response) {
-                  console.log(response.data);
-
-                  if (response.data.result_code == '0000') {
-                    navigation.navigate('Signup01', {
-                      memberSeq: response.data.memberSeq,
-                      gender: gender
-                    });
-                  }
-                })
-                .catch(function (error) {
-                  console.log(error);
-                });
+              register();
             }}
           />
         </SpaceView>
