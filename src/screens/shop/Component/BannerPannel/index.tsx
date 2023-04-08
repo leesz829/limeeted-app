@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ICON } from 'utils/imageUtils';
 
@@ -9,14 +9,16 @@ import { Color } from 'assets/styles/Color';
 import { ROUTES, STACK } from 'constants/routes';
 import { useUserInfo } from 'hooks/useUserInfo';
 import { CommaFormat } from 'utils/functions';
+import { get_cashback_pay_info } from 'api/models';
 
 export default function BannerPannel() {
   const me = useUserInfo();
 
   if (!me) return null;
-  return me?.gender !== 'M' ? <MalePannel /> : <FemalePannel />;
+  return me?.gender !== 'M' ? <FemalePannel /> : <MalePannel />;
 }
 
+// ############################################################################################### 여성회원 Pannel
 function FemalePannel() {
   const navigation = useNavigation<ScreenNavigationProp>();
   const route = useRoute();
@@ -84,7 +86,7 @@ function FemalePannel() {
                 />
               </TouchableOpacity>
 
-              <View>
+              <View style={{ marginTop: 10 }}>
                 <Text style={female.rate}>
                   {CommaFormat(me?.mileage_point)}
                 </Text>
@@ -98,11 +100,50 @@ function FemalePannel() {
   );
 }
 
+// ############################################################################################### 남성회원 Pannel
+const PAY_INFO = {
+  member_buy_price: 0
+  , target_buy_price: 10
+  , price_persent: 0
+};
+
 function MalePannel() {
   const navigation = useNavigation<ScreenNavigationProp>();
+  const [payInfo, setPayInfo] = useState(PAY_INFO);
   const onPressPointReward = () => {
-    navigation.navigate(STACK.COMMON, { screen: 'PointReward' });
+    navigation.navigate(STACK.COMMON, { 
+      screen: 'PointReward'
+      , params: { 
+          member_buy_price: payInfo.member_buy_price 
+          , target_buy_price: payInfo.target_buy_price 
+          , price_persent: payInfo.price_persent 
+      } 
+    });
   };
+
+  useEffect(() => {
+    const getCashBackPayInfo = async () => {
+      const { success, data } = await get_cashback_pay_info();
+      if (success) {
+
+        let mbrPrice = data?.result.member_buy_price;
+        let trgtPrice = data?.result.target_buy_price;
+
+        let percent = (mbrPrice*100) / trgtPrice;
+        if(percent > 0) {
+         percent = percent / 100; 
+        }
+
+        setPayInfo({
+          member_buy_price: mbrPrice
+          , target_buy_price: trgtPrice
+          , price_persent: percent
+        });
+      }
+    };
+    getCashBackPayInfo();
+  }, []);
+
   return (
     <View style={male.floatWrapper}>
       <View style={male.floatContainer}>
@@ -111,18 +152,19 @@ function MalePannel() {
             리미티드 포인트 <Text>✌️</Text>
           </Text>
           <Text style={male.infoText}>
-            즐거운 <Text style={male.cashbackText}>캐시백</Text> 생활 9,000 /
-            10,000
+            즐거운 <Text style={male.cashbackText}>캐시백</Text> 생활 {CommaFormat(payInfo?.member_buy_price)} /
+            {CommaFormat(payInfo?.target_buy_price)}
           </Text>
         </View>
         <Slider
-          value={0.7}
+          value={payInfo?.price_persent}
           animateTransitions={true}
           renderThumbComponent={() => null}
           maximumTrackTintColor={ColorType.purple}
           minimumTrackTintColor={ColorType.purple}
           containerStyle={male.sliderContainer}
           trackStyle={male.sliderTrack}
+          trackClickable={false}
         />
         <TouchableOpacity
           onPress={onPressPointReward}
@@ -134,6 +176,14 @@ function MalePannel() {
     </View>
   );
 }
+
+
+
+
+
+{/* ################################################################################################################
+############### Style 영역
+################################################################################################################ */}
 
 const male = StyleSheet.create({
   floatWrapper: {

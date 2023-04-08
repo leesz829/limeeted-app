@@ -1,4 +1,5 @@
 import { get_my_items } from 'api/models';
+import { ColorType, ScreenNavigationProp } from '@types';
 import { Color } from 'assets/styles/Color';
 import CommonHeader from 'component/CommonHeader';
 import React, { useEffect, useState } from 'react';
@@ -12,26 +13,91 @@ import {
   View,
 } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
+import { use_item } from 'api/models';
+import { SUCCESS } from 'constants/reusltcode';
+import { usePopup } from 'Context';
+import { useDispatch } from 'react-redux';
+import { myProfile } from 'redux/reducers/authReducer';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { ROUTES, STACK } from 'constants/routes';
+import { findSourcePath } from 'utils/imageUtils';
+
+
 
 const dummy = ['', '', '', ''];
 export default function Inventory() {
+  const navigation = useNavigation<ScreenNavigationProp>();
+
   const [tab, setTab] = useState(categories[0]);
   const [data, setData] = useState(dummy);
 
+  const { show } = usePopup();  // 공통 팝업
+  const dispatch = useDispatch();
+
   useEffect(() => {
     async function fetchData() {
-      const { data, message } = await get_my_items();
+      const body = {
+        cate_group_code: tab.value
+      };
+      const { data, message } = await get_my_items(body);
+      console.log('data ::::::' , data);
 
-      if (data) {
+      if(data) {
         setData(data?.inventory_list);
       }
     }
     fetchData();
-  }, []);
+  }, [tab]);
 
   const onPressTab = (value) => {
     setTab(value);
   };
+
+  // ########################################## 아이템 사용
+  const useItem = async (item) => {
+    show({
+      title: '사용/획득',
+      content: item.cate_name + ' 사용/획득 하시겠습니까?' ,
+      cancelCallback: function() {
+        
+      },
+      confirmCallback: async function() {
+        console.log('item ::::: ', item);
+
+        const body = {
+          item_category_code: item.item_category_code,
+          cate_group_code: item.cate_group_code,
+          cate_common_code: item.cate_common_code
+        };
+        try {
+          const { success, data } = await use_item(body);
+          if(success) {
+            switch (data.result_code) {
+              case SUCCESS:
+                dispatch(myProfile());
+                navigation.navigate(STACK.TAB, { screen: 'Shop' });
+                break;
+              default:
+                show({
+                  content: '오류입니다. 관리자에게 문의해주세요.' ,
+                  confirmCallback: function() {}
+                });
+                break;
+            }
+          } else {
+            show({
+              content: '오류입니다. 관리자에게 문의해주세요.' ,
+              confirmCallback: function() {}
+            });
+          }
+        } catch (error) {
+          console.log(error);
+        } finally {
+          
+        }
+      }
+    });
+  }
 
   const ListHeaderComponent = () => (
     <>
@@ -54,22 +120,29 @@ export default function Inventory() {
   const renderItem = ({ item, index }) => (
     <View style={styles.renderItem}>
       <View style={{ flexDirection: 'row' }}>
-        <Image style={styles.thumb} />
+        <Image source={findSourcePath(item.file_path + item.file_name)} style={styles.thumb} />
         <View style={{ marginLeft: 15, width: '65%' }}>
           <Text style={styles.title}>{item?.cate_name}</Text>
           <Text style={styles.infoText}>{item?.cate_desc}</Text>
           <View style={styles.buttonWrapper}>
             <TouchableOpacity
-              style={styles.button(index % 2 == 0)}
-              disabled={index % 2 != 0}
+              style={styles.button(item?.use_yn == 'N')}
+              disabled={item?.use_yn == 'Y'}
+              onPress={() => {useItem(item);}}
             >
-              <Text style={styles.buttonText(index % 2 == 0)}>
-                {item?.use_yn == 'N' ? '사용/획득' : '사용중(20일남음)'}
+              <Text style={styles.buttonText(item?.use_yn == 'N')}>
+                {item?.use_yn == 'N' ? '사용/획득' : '사용중('+ item?.subscription_end_day +'일남음)'}
               </Text>
             </TouchableOpacity>
           </View>
         </View>
       </View>
+    </View>
+  );
+
+  const renderItemEmpty = () => (
+    <View style={styles.renderItem}>
+      <Text>인벤토리 상품이 없습니다.</Text>
     </View>
   );
   return (
@@ -79,11 +152,20 @@ export default function Inventory() {
         style={styles.root}
         data={data}
         ListHeaderComponent={ListHeaderComponent}
+        ListEmptyComponent={renderItemEmpty}
         renderItem={renderItem}
       />
     </>
   );
 }
+
+
+
+
+
+{/* ################################################################################################################
+############### Style 영역
+################################################################################################################ */}
 
 const styles = StyleSheet.create({
   root: {
@@ -175,14 +257,14 @@ const styles = StyleSheet.create({
 const categories = [
   {
     label: '전체',
-    value: 'all',
+    value: 'ALL',
   },
   {
     label: '패스',
-    value: 'pass',
+    value: 'PASS',
   },
   {
     label: '구독',
-    value: 'subscription',
+    value: 'SUBSCRIPTION',
   },
 ];

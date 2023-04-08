@@ -1,24 +1,21 @@
-import { useRoute } from '@react-navigation/native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import { get_auct_detail } from 'api/models';
 import { Color } from 'assets/styles/Color';
 import CommonHeader from 'component/CommonHeader';
 import { useUserInfo } from 'hooks/useUserInfo';
 import React, { useEffect, useState } from 'react';
-import {
-  Dimensions,
-  FlatList,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Dimensions, FlatList, Image, StyleSheet, Text, TouchableOpacity, View, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CommaFormat, getRemainTime } from 'utils/functions';
-import { ICON } from 'utils/imageUtils';
+import { ICON, findSourcePath } from 'utils/imageUtils';
 import ViewPager from '../Component/ViewPager';
 import dayjs from 'dayjs';
 import { api_domain } from 'utils/properties';
+import { order_auct } from 'api/models';
+import { usePopup } from 'Context';
+import { ROUTES, STACK } from 'constants/routes';
+
+
 
 function indextToText(index) {
   switch (index) {
@@ -33,9 +30,18 @@ function indextToText(index) {
   }
 }
 export default function AuctionDetail() {
+  const navigation = useNavigation();
+  const { show } = usePopup();  // 공통 팝업
+
   const { prod_seq, modify_seq } = useRoute().params;
+
   const [data, setData] = useState(null);
   const me = useUserInfo();
+
+  const images = data?.images?.filter((e) => e.represent_yn == 'Y')?.map((img) => {
+    const imagePath =  findSourcePath(img?.file_path + img?.file_name);
+    return imagePath;
+  });
 
   useEffect(() => {
     async function fetch() {
@@ -52,12 +58,58 @@ export default function AuctionDetail() {
     fetch();
   }, []);
 
-  const images = data?.images
-    ?.filter((e) => e.represent_yn == 'Y')
-    ?.map((img) => {
-      const imagePath = api_domain + img?.file_path + img?.file_name;
-      return imagePath;
-    });
+
+  // ######################################## 경매상품 구매하기 함수
+  const productPurchase = async (nowBuyYn:string) => {
+
+    let modalTitle = nowBuyYn == 'Y' ? '즉시 구매하기' : '입찰하기';
+    let modalContent = nowBuyYn == 'Y' ? '표기 된 리밋 수량을 소모하고\n 즉시구매 하시겠습니까?' : '표기 된 호가로 입찰 신청하시겠습니까?';
+
+    try {
+      show({
+        title: modalTitle,
+        content: modalContent,
+        cancelCallback: function() {
+          
+        },
+        confirmCallback: async function() {
+          const body = {
+            prod_seq: prod_seq,
+            modify_seq: modify_seq,
+            req_bid_price: data?.now_buy_price,
+            now_buy_yn: nowBuyYn,
+            mobile_os: Platform.OS,
+          }
+          const { success, data } = await order_auct(body);
+          console.log('data :::: ', data);
+          if (success) {
+            if(data.result_code == '0000') {
+              show({
+                content: '구매에 성공하였습니다.' ,
+                confirmCallback: function() { 
+                  navigation.navigate(STACK.TAB, { screen: 'Shop' });
+                }
+              });
+            } else {
+              show({
+                content: data.result_msg ,
+                confirmCallback: function() { }
+              });
+            }
+          } else {
+            show({
+              content: '오류입니다. 관리자에게 문의해주세요.' ,
+              confirmCallback: function() { }
+            });
+          }
+        }
+      });
+    } catch (err: any) {
+      console.warn(err.code, err.message);
+      //setErrMsg(JSON.stringify(err));
+    }
+  }
+
 
   return (
     <View style={styles.root}>
@@ -69,16 +121,19 @@ export default function AuctionDetail() {
         ListFooterComponent={<View style={{ height: 50 }} />}
         ListHeaderComponent={
           <>
-            <ViewPager
-              data={images}
-              style={styles.pagerView}
-              renderItem={() => <Image style={styles.itemImages} />}
-            />
+            {images != null ? (
+              <ViewPager
+                data={images}
+                style={styles.pagerView}
+                renderItem={() => <Image style={styles.itemImages} />}
+              />
+            ) : null}
+            
             <View style={styles.infoContainer}>
               <Text style={styles.brandText}>{data?.brand_name}</Text>
               <Text style={styles.giftName}>{data?.prod_name}</Text>
               <View style={styles.rowBetween}>
-                <Text style={styles.inventory}>제품 한 줄 설명</Text>
+                <Text style={styles.inventory}></Text>
                 <View style={styles.rowCenter}>
                   <Text style={styles.price}>{data?.asking_price}</Text>
                   <Image source={ICON.crown} style={styles.crown} />
@@ -145,7 +200,7 @@ export default function AuctionDetail() {
         ]}
       >
         <View style={styles.rowAround}>
-          <TouchableOpacity style={styles.puchageButton}>
+          <TouchableOpacity style={styles.puchageButton} onPress={() => productPurchase('Y')}>
             <Text style={styles.puchageText}>구매</Text>
             <Seperator />
             <View>
@@ -155,7 +210,7 @@ export default function AuctionDetail() {
               <Text style={styles.additionalText}>즉시구매가</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.bidButton}>
+          <TouchableOpacity style={styles.bidButton} onPress={() => productPurchase('N')}>
             <Text style={styles.puchageText}>입찰</Text>
             <Seperator />
             <View>
@@ -182,6 +237,13 @@ const Seperator = () => (
     }}
   />
 );
+
+
+
+{/* ################################################################################################################
+############### Style 영역
+################################################################################################################ */}
+
 const styles = StyleSheet.create({
   root: {
     flex: 1,

@@ -140,6 +140,8 @@ export const Login01 = () => {
 
   // 사용자 위치 확인
   async function requestPermissions() {
+    console.log('dddd');
+
     // TODO: ios 인 경우, 권한 설정 추가 필요. 안드로이드 빌드 이후 진행 예정. 2023.01.03
     if (Platform.OS === 'ios') {
        const auth = await Geolocation.requestAuthorization('whenInUse');
@@ -161,6 +163,8 @@ export const Login01 = () => {
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
       );
 
+      console.log('granted :::::: ', granted);
+
       if(granted !== PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
         Geolocation.getCurrentPosition(
           position => {
@@ -169,11 +173,14 @@ export const Login01 = () => {
              loginProc(latitude, longitude);
           },
           error => {
+            console.log('login333');
             console.log(error.code, error.message);
           },
-          {enableHighAccuracy: false, timeout: 15000, maximumAge: 10000},
+          //{enableHighAccuracy: false, timeout: 20000},
+          { enableHighAccuracy: true, timeout: 25000, maximumAge: 3600000 } ,
         );
       } else {
+        console.log('login11');
         loginProc(null, null);
       }
     }

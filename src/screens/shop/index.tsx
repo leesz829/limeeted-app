@@ -12,7 +12,7 @@ import {
   Text,
 } from 'react-native';
 import TopNavigation from 'component/TopNavigation';
-import { ICON } from 'utils/imageUtils';
+import { findSourcePath, ICON } from 'utils/imageUtils';
 import SpaceView from 'component/SpaceView';
 
 import { ColorType, ScreenNavigationProp } from '@types';
@@ -34,6 +34,8 @@ import CategoryShop from './Component/CategoryShop';
 import { ROUTES, STACK } from 'constants/routes';
 import BannerPannel from './Component/BannerPannel';
 
+
+
 interface Products {
   products: Product[];
 }
@@ -54,7 +56,7 @@ export const Shop = () => {
 
   const onPressInventory = () => {
     navigation.navigate(STACK.COMMON, { screen: ROUTES.SHOP_INVENTORY });
-    // navigation.navigate(STACK.COMMON, { screen: ROUTES.Gifticon_Detail });
+    //navigation.navigate(STACK.COMMON, { screen: ROUTES.Gifticon_Detail });
   };
   // const isFocusShop = useIsFocused();
 
@@ -445,7 +447,7 @@ function ListHeaderComponent() {
   const [banner, setBanner] = useState([]);
   useEffect(() => {
     const getBanner = async () => {
-      const { success, data } = await get_banner_list({ type: 'PROD' });
+      const { success, data } = await get_banner_list({ banner_type: 'PROD' });
       if (success) {
         setBanner(data?.banner_list);
       }
@@ -454,15 +456,15 @@ function ListHeaderComponent() {
   }, []);
   return (
     <View>
-      {/* 상단 배너 */}
+      {/* ############################################### 상단 배너 */}
       <FlatList
         data={banner}
         horizontal
         style={styles.bannerWrapper}
         pagingEnabled
         renderItem={({ item, index }) => {
-          const urlPath = item?.b_file_path + '/' + item?.b_file_name;
-          return <Image style={styles.topBanner} source={{ uri: urlPath }} />;
+          const urlPath =  findSourcePath(item?.s_file_path + item?.s_file_name);
+          return <Image style={styles.topBanner} source={urlPath} />;
         }}
       />
 
@@ -475,24 +477,31 @@ function ListHeaderComponent() {
 function ListFooterComponent() {
   return (
     <>
-      {/* 추천상품 */}
+      {/* ############################################### 추천상품 */}
       <RecommandProduct data={['', '', '', '']} />
-      {/* 카테고리별 */}
+      {/* ############################################### 카테고리별 */}
       <CategoryShop />
     </>
   );
 }
 
+
+
+
+{/* ################################################################################################################
+############### Style 영역
+################################################################################################################ */}
+
 const styles = StyleSheet.create({
   bannerWrapper: {
     backgroundColor: Color.primary,
     width: `100%`,
-    height: 200,
+    height: 250,
   },
   topBanner: {
     backgroundColor: Color.primary,
     width: Dimensions.get('window').width,
-    height: 200,
+    height: 250,
     justifyContent: 'flex-end',
   },
   floatWrapper: {

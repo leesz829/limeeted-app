@@ -13,11 +13,11 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp, useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import * as properties from 'utils/properties';
-import AsyncStorage from '@react-native-community/async-storage';
 import * as hooksMember from 'hooks/member';
-import { useDispatch } from 'react-redux';
-import * as mbrReducer from 'redux/reducers/mbrReducer';
-import { clearPrincipal } from 'redux/reducers/authReducer';
+import { insert_member_inquiry } from 'api/models';
+import { usePopup } from 'Context';
+import { SUCCESS } from 'constants/reusltcode';
+import { STACK } from 'constants/routes';
 //import Textarea from 'react-native-textarea';
 
 /* ################################################################################################################
@@ -32,6 +32,7 @@ interface Props {
 
 export const CustomerInquiry = (props : Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
+	const { show } = usePopup(); // 공통 팝업
 
 	const [title,    setTitle]    = React.useState('');
 	const [contents, setContents] = React.useState('');
@@ -44,40 +45,59 @@ export const CustomerInquiry = (props : Props) => {
 
 	 // 문의 저장
 	const insertCustomerInquiry = async () => {
-		const result = await axios
-		  .post(
-			properties.api_domain + '/customerInquiry/insertCustomerInquiry',
-			{
-			  'api-key': 'U0FNR09CX1RPS0VOXzAx',
-			  member_seq: memberSeq,
-			  title     : title,
-			  contents  : contents,
-			},
-			{
-			  headers: {
-				'jwt-token': jwtToken,
-			  },
-			}
-		  )
-		  .then(function (response) {
-			if (response.data.result_code != '0000') {
-				console.log(response.data.result_msg);
-			  	return false;
-			} else {
-				setCustomerInquiryCompletePopup(true);
-			}
-		  })
-		  .catch(function (error) {
-			console.log('error ::: ', error);
-		  });
-	};
 
-	// 문의 완료 팝업의 확인 버튼 클릭
-	const insertCustomerInquiryComplete = async () => {
-		setCustomerInquiryCompletePopup(false);
-		navigation.navigate('Main', {
-			screen: 'Roby',
-		});
+		console.log('title :::::::: ', title.length);
+
+		if(title.length < 10 || title.length > 30) {
+			show({
+				title: '알림',
+				content: '제목은 10_30글자 이내로 입력해 주셔야해요.' ,
+				confirmCallback: function() {
+
+				}
+			});
+		}
+
+		return;
+
+
+		const body = {
+			title: title
+			, contents: contents
+		};
+		try {
+			const { success, data } = await insert_member_inquiry(body);
+			if(success) {
+				switch (data.result_code) {
+					case SUCCESS:
+						show({
+							title: '문의 완료',
+							content: '문의하신 내용이 접수되었습니다.\n문의 내용은 관리자 확인 후 우편함으로\n답변드릴 예정입니다.' ,
+							confirmCallback: function() {
+								navigation.navigate(STACK.TAB, {
+									screen: 'Roby',
+								});
+							}
+						});
+						break;
+					default:
+						show({
+							content: '오류입니다. 관리자에게 문의해주세요.' ,
+							confirmCallback: function() {}
+						});
+						break;
+				}
+			} else {
+				show({
+					content: '오류입니다. 관리자에게 문의해주세요.' ,
+					confirmCallback: function() {}
+				});
+			}
+		} catch (error) {
+			console.log(error);
+		} finally {
+			
+		}
 	};
 
 	return (
@@ -124,36 +144,6 @@ export const CustomerInquiry = (props : Props) => {
           				/>
         			</SpaceView>
 				</SpaceView>
-
-				<Modal visible={customerInquiryCompletePopup} transparent={true}>
-					<View style={modalStyle.modalBackground}>
-					<View style={modalStyle.modalStyle1}>
-						<SpaceView mb={16} viewStyle={layoutStyle.alignCenter}>
-							<CommonText fontWeight={'700'} type={'h4'}>
-								문의 완료
-							</CommonText>
-						</SpaceView>
-
-						<SpaceView viewStyle={layoutStyle.alignCenter}>
-							<CommonText type={'h5'}>문의하신 내용이 접수되었습니다.{'\n'}
-							문의 내용은 관리자 확인 후 우편함으로 답변드릴 예정입니다.
-							</CommonText>
-						</SpaceView>
-
-						<View style={modalStyle.modalBtnContainer}>
-							<View style={modalStyle.modalBtnline} />
-								<TouchableOpacity 
-									style={modalStyle.modalBtn}
-									onPress={() => insertCustomerInquiryComplete()}
-								>
-									<CommonText fontWeight={'500'}>
-										확인
-									</CommonText>
-								</TouchableOpacity>
-							</View>
-						</View>
-					</View>
-				</Modal>
 
 			</ScrollView>
 		</>

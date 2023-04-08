@@ -76,6 +76,8 @@ export const IMAGE = {
   kakaoBtn: require('assets/img/kakao-btn.png'),
   main: require('assets/img/main.png'),
   common: require('assets/img/common.png'),
+  logoNew: require('assets/img/logo_new.png'),
+  heartIcon: require('assets/img/heart_icon.png'),
 };
 
 export const START_IMAGE = {

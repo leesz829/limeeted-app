@@ -110,28 +110,20 @@ export const Login = () => {
 	return (
 		<View style={[styles.container, layoutStyle.justifyCenter]}>
 			<View style={layoutStyle.alignCenter}>
-				{/* <SpaceView mb={8}>
-					<CommonText color={ColorType.grayAAAA} type={'h5'}>
-						LIMIT + MEET
-					</CommonText>
-				</SpaceView> */}
 				<SpaceView>
-					<Image source={IMAGE.logoMark} style={styles.logoMark} resizeMode="contain" />
+					<Image source={IMAGE.heartIcon} style={styles.logoMark} resizeMode="contain" />
+				</SpaceView>
+				<SpaceView>
+					<Image source={IMAGE.logoNew} style={styles.logo} resizeMode="contain" />
 				</SpaceView>
 				<SpaceView mb={200}>
-					<Image source={IMAGE.logoText} style={styles.logo} resizeMode="contain" />
+					<CommonText textStyle={styles.logoText} lineHeight={30}>믿음가는 사람들의 인연</CommonText>
 				</SpaceView>
-				{/* <SpaceView mb={150}>
-					<Image source={IMAGE.logo} style={styles.logo} resizeMode='contain' />
-				</SpaceView> */}
-				{/* <SpaceView mb={200}>
-					<CommonText>믿음가는 사람들의 인연</CommonText>
-				</SpaceView> */}
 			</View>
 			<SpaceView viewStyle={styles.bottomBtnContainer} mb={24}>
 				<SpaceView mb={16}>
 					<CommonBtn
-						value={'로그인'}
+						value={'LIMIT 계정으로 로그인'}
 						onPress={() => {
 							navigation.navigate('Login01');
 							//signInWithKakao();
@@ -154,6 +146,7 @@ export const Login = () => {
 						navigation.navigate('Policy');
 					}}
 				/>
+
 			</SpaceView>
 		</View>
 	);

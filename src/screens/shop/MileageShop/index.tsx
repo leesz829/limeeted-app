@@ -1,23 +1,17 @@
 import { Color } from 'assets/styles/Color';
 import CommonHeader from 'component/CommonHeader';
 import React, { useEffect, useState } from 'react';
-import {
-  Dimensions,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-
+import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View, Platform } from 'react-native';
+import { findSourcePath, ICON } from 'utils/imageUtils';
 import { SectionGrid } from 'react-native-super-grid';
 import BannerPannel from '../Component/BannerPannel';
 import ProductModal from '../Component/ProductModal';
 import { useNavigation } from '@react-navigation/native';
 import { ROUTES, STACK } from 'constants/routes';
-import { get_auct_product, get_product_list } from 'api/models';
-import { api_domain } from 'utils/properties';
+import { get_auct_product, get_product_list, order_goods } from 'api/models';
 import { CommaFormat, getRemainTime } from 'utils/functions';
+import { usePopup } from 'Context';
+
 
 const DATA = [
   {
@@ -37,6 +31,7 @@ const DATA = [
     data: ['Cheese Cake', 'Ice Cream'],
   },
 ];
+
 export default function MileageShop() {
   const [tab, setTab] = useState(categories[0]);
   const [data, setData] = useState(DATA);
@@ -44,11 +39,15 @@ export default function MileageShop() {
   useEffect(() => {
     async function fetch() {
       if (tab.value === 'boutique') {
+
+        // 경매 상품 목록 조회
         const { success: sa, data: ad } = await get_auct_product();
         if (sa) {
           setData(ad?.prod_list);
         }
       } else {
+
+        // 재고 상품 목록 조회
         const { success: sp, data: pd } = await get_product_list();
         if (sp) {
           setData(pd?.prod_list);
@@ -67,7 +66,7 @@ export default function MileageShop() {
       <CommonHeader title="마일리지샵" />
       <View style={styles.root}>
         <SectionGrid
-          itemDimension={(Dimensions.get('window').width - 72) / 3}
+          itemDimension={(Dimensions.get('window').width -75) / 3}
           sections={data}
           fixed={true}
           ListHeaderComponent={
@@ -76,7 +75,7 @@ export default function MileageShop() {
           stickySectionHeadersEnabled={false}
           renderSectionHeader={renderSectionHeader}
           renderItem={(props) => {
-            console.log('props : ', JSON.stringify(props));
+            //console.log('props : ', JSON.stringify(props));
             const { item, index, rowIndex } = props;
             return <RenderItem type={tab.value} item={item} />;
           }}
@@ -86,6 +85,7 @@ export default function MileageShop() {
   );
 }
 
+// ######################################################################### 카테고리 렌더링
 const RenderCategory = ({ onPressTab, tab }) => {
   return categories?.map((item) => (
     <TouchableOpacity
@@ -99,11 +99,13 @@ const RenderCategory = ({ onPressTab, tab }) => {
     </TouchableOpacity>
   ));
 };
+
+// ######################################################################### List Header 렌더링
 function ListHeaderComponent({ onPressTab, tab }) {
   return (
     <View>
       <View style={{ flex: 1 }}>
-        <View style={{ marginTop: 70, paddingHorizontal: 1 }}>
+        <View style={{ marginTop: 70, paddingHorizontal: 20 }}>
           <BannerPannel />
         </View>
       </View>
@@ -113,22 +115,28 @@ function ListHeaderComponent({ onPressTab, tab }) {
     </View>
   );
 }
+
+// ######################################################################### 상품 아이템 렌더링
 const RenderItem = ({ item, type }) => {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [targetItem, setTargetItem] = useState(null);
 
-  const imagePath = api_domain + item?.file_path + item?.file_name;
+  const { show } = usePopup();  // 공통 팝업
+
+  // 상품 이미지 경로
+  const imagePath = findSourcePath(item?.file_path + item?.file_name);
 
   const onPressItem = (item) => {
     if (type === 'gifticon') {
       setTargetItem(item);
       setModalVisible(true);
-    } else
+    } else {
       navigation.navigate(STACK.COMMON, {
         screen: ROUTES.Auction_Detail,
         params: { prod_seq: item?.prod_seq, modify_seq: item?.modify_seq },
       });
+    }
   };
   const closeModal = () => setModalVisible(false);
 
@@ -137,6 +145,54 @@ const RenderItem = ({ item, type }) => {
     item?.sell_yn === 'Y'
   );
 
+  // ######################################## 재고상품 구매하기 함수
+  const productPurchase = async (item:any) => {
+    try {
+      show({
+        title: '상품 구매',
+        content: '상품을 구매하시겠습니까?' ,
+        cancelCallback: function() {
+          closeModal();
+        },
+        confirmCallback: async function() {
+          const body = {
+            prod_seq: item.prod_seq,
+            modify_seq: item.modify_seq,
+            buy_price: item.buy_price,
+            mobile_os: Platform.OS,
+          }
+          const { success, data } = await order_goods(body);
+          console.log('data :::: ', data);
+          if (success) {
+            if(data.result_code == '0000') {
+              show({
+                content: '구매에 성공하였습니다.' ,
+                confirmCallback: function() { 
+                  closeModal(); 
+                  navigation.navigate(STACK.TAB, { screen: 'Shop' });
+                }
+              });
+            } else {
+              show({
+                content: data.result_msg ,
+                confirmCallback: function() { closeModal(); }
+              });
+            }
+          } else {
+            show({
+              content: '오류입니다. 관리자에게 문의해주세요.' ,
+              confirmCallback: function() { closeModal(); }
+            });
+          }
+        }
+      });
+    } catch (err: any) {
+      console.warn(err.code, err.message);
+      //setErrMsg(JSON.stringify(err));
+    }
+  }
+
+
   return (
     <TouchableOpacity
       activeOpacity={0.8}
@@ -144,7 +200,7 @@ const RenderItem = ({ item, type }) => {
       onPress={() => onPressItem(item)}
     >
       <View style={{ flexDirection: 'column' }}>
-        <Image style={styles.thumb} source={{ uri: imagePath }} />
+        <Image style={styles.thumb} source={imagePath} />
 
         <View style={{ paddingHorizontal: 3 }}>
           <Text style={styles.brandName}>{item?.brand_name}</Text>
@@ -169,38 +225,44 @@ const RenderItem = ({ item, type }) => {
         </View>
         <Text style={styles.remainText}>{remainTime}</Text>
       </View>
+
+      {/* ####################### 상품 팝업 */}
       <ProductModal
         isVisible={modalVisible}
+        type={type}
         item={targetItem}
         closeModal={closeModal}
+        productPurchase={productPurchase}
       />
     </TouchableOpacity>
   );
 };
+
 const renderSectionHeader = (props) => {
   const { section } = props;
   const sample = section.data[0];
 
-  if (
-    !Array.isArray(sample) ||
-    sample.length === 0 ||
-    sample[0].sell_yn === 'Y'
-  )
+  if (!Array.isArray(sample) ||
+      sample.length === 0) {
     return null;
-  return (
-    <View style={{ marginTop: 15 }}>
-      <Text>{section.title}</Text>
-    </View>
-  );
+  } else {
+    return (
+      <View style={{ marginTop: 30, paddingHorizontal: 16 }}>
+        <Text>{section.title}</Text>
+      </View>
+    );
+  }
 };
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: 'white', paddingHorizontal: 16 },
+  root: { flex: 1, backgroundColor: 'white', paddingHorizontal: 0 },
   categoriesContainer: {
     marginTop: 27,
+    marginBottom: 10,
     flexDirection: `row`,
     alignItems: `center`,
     justifyContent: 'flex-start',
+    paddingHorizontal: 10
   },
   categoryBorder: (isSelected: boolean) => {
     return {
@@ -219,8 +281,9 @@ const styles = StyleSheet.create({
     };
   },
   renderItem: {
-    width: (Dimensions.get('window').width - 72) / 3,
+    width: (Dimensions.get('window').width - 75) / 3,
     marginTop: 10,
+    flex: 1,
   },
   thumb: {
     width: (Dimensions.get('window').width - 72) / 3,

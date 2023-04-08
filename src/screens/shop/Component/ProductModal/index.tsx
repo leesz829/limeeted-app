@@ -9,23 +9,52 @@ import {
   View,
 } from 'react-native';
 import Modal from 'react-native-modal';
-import { ICON } from 'utils/imageUtils';
+import { findSourcePath, ICON } from 'utils/imageUtils';
 import ViewPager from '../ViewPager';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { api_domain } from 'utils/properties';
 import { CommaFormat } from 'utils/functions';
+import {
+  initConnection,
+  getProducts,
+  requestPurchase,
+  getAvailablePurchases,
+} from 'react-native-iap';
+
 
 interface Props {
   isVisible: boolean;
+  type: string; /* bm: bm상품, gifticon: 재고상품, boutique: 경매상품 */
   closeModal: () => void;
   item: any;
+  productPurchase: () => void;
 }
 
-export default function ProductModal({ isVisible, closeModal, item }: Props) {
+export default function ProductModal({ isVisible, type, closeModal, item, productPurchase }: Props) {
+  console.log('item :::::: ', item);
+
   const { bottom } = useSafeAreaInsets();
 
   //추후 데이터 배열로 변환시 변경필요
-  const images = [api_domain + item?.file_path + item?.file_name];
+  const images = [findSourcePath(item?.file_path + item?.file_name)];
+
+  // 브랜드명
+  const brand_name = item?.brand_name != null ? item?.brand_name : '리미티드';
+
+  // 상품명
+  const prod_name = type == 'bm' ? item?.item_name : item?.prod_name;
+
+  // 판매금액
+  const buy_price = type == 'bm' ? item?.shop_buy_price : item?.buy_price;
+
+  // 상품상세
+  const prod_content = type == 'bm' ? item?.item_contents : item?.prod_content;
+
+  // 아이템 코드(BM상품)
+  const item_code = item?.item_code;
+
+  // 상품번호(재고상품)
+  const prod_seq = item?.prod_seq;
 
   return (
     <Modal isVisible={isVisible} style={modalStyle.modal}>
@@ -38,21 +67,29 @@ export default function ProductModal({ isVisible, closeModal, item }: Props) {
         <ViewPager
           data={images}
           style={modalStyle.pagerView}
-          renderItem={() => <Image style={modalStyle.itemImages} />}
+          renderItem={(data) => <Image source={data} style={modalStyle.itemImages} />}
         />
         <View style={modalStyle.infoContainer}>
-          <Text style={modalStyle.brandText}>스타벅스</Text>
-          <Text style={modalStyle.giftName}>{item?.item_name}</Text>
+          {brand_name != '' && brand_name != null ? (
+            <Text style={modalStyle.brandText}>{brand_name}</Text>
+          ) : null}
+
+          <Text style={modalStyle.giftName}>{prod_name}</Text>
           <View style={modalStyle.rowBetween}>
             <Text style={modalStyle.inventory}>
-              {item?.buy_count_max}개남음
+              {type == 'gifticon' ? CommaFormat(item?.prod_cnt) + '개 남음' : null}
+
+              {/* {CommaFormat(item?.buy_count_max)}개 남음 */}
             </Text>
             <View style={modalStyle.rowCenter}>
               <Text style={modalStyle.price}>
-                {CommaFormat(item?.shop_buy_price)}
+                {CommaFormat(item?.shop_buy_price != null ? item?.shop_buy_price : item?.buy_price)}
               </Text>
               <Image source={ICON.crown} style={modalStyle.crown} />
-            </View>
+            </View>  
+          </View>
+          <View style={modalStyle.infoContents}>
+              <Text>{prod_content}</Text>
           </View>
           <View
             style={[
@@ -63,10 +100,10 @@ export default function ProductModal({ isVisible, closeModal, item }: Props) {
             ]}
           >
             <View style={modalStyle.rowBetween}>
-              <TouchableOpacity style={modalStyle.likeButton}>
+              {/* <TouchableOpacity style={modalStyle.likeButton}>
                 <Image source={ICON.storage} style={modalStyle.likeImage} />
-              </TouchableOpacity>
-              <TouchableOpacity style={modalStyle.puchageButton}>
+              </TouchableOpacity> */}
+              <TouchableOpacity style={modalStyle.puchageButton} onPress={() => productPurchase(item)}>
                 <Text style={modalStyle.puchageText}>구매하기</Text>
               </TouchableOpacity>
             </View>
@@ -76,6 +113,12 @@ export default function ProductModal({ isVisible, closeModal, item }: Props) {
     </Modal>
   );
 }
+
+
+
+{/* ################################################################################################################
+############### Style 영역
+################################################################################################################ */}
 
 const modalStyle = StyleSheet.create({
   modal: {
@@ -131,6 +174,7 @@ const modalStyle = StyleSheet.create({
   infoContainer: {
     flex: 1,
     backgroundColor: 'white',
+    marginTop: 13
   },
   brandText: {
     fontFamily: 'AppleSDGothicNeoM00',
@@ -140,7 +184,6 @@ const modalStyle = StyleSheet.create({
     letterSpacing: 0,
     textAlign: 'left',
     color: '#7986ee',
-    marginTop: 12,
   },
   giftName: {
     fontFamily: 'AppleSDGothicNeoM00',
@@ -183,6 +226,7 @@ const modalStyle = StyleSheet.create({
   crown: {
     width: 17.67,
     height: 11.73,
+    marginLeft: 5
   },
   bottomContainer: {
     flex: 1,
@@ -207,7 +251,8 @@ const modalStyle = StyleSheet.create({
     resizeMode: 'contain',
   },
   puchageButton: {
-    width: (Dimensions.get('window').width - 60) * 0.8,
+    //width: (Dimensions.get('window').width - 60) * 0.8,
+    width: (Dimensions.get('window').width) * 0.87,
     height: 56,
     borderRadius: 10,
     backgroundColor: '#262626',
@@ -227,4 +272,11 @@ const modalStyle = StyleSheet.create({
     textAlign: 'left',
     color: '#ffffff',
   },
+  infoContents: {
+    marginTop: 10,
+    paddingTop: 10,
+    borderTopColor: '#e3e3e3',
+    borderTopWidth: 1,
+  }
+
 });

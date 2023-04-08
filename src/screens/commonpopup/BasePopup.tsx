@@ -37,17 +37,13 @@ export const BasePopup = (props: Props) => {
           <View style={modalStyle.modalStyle1}>
             <SpaceView mb={16} viewStyle={layoutStyle.alignCenter}>
               <CommonText fontWeight={'700'} type={'h4'}>
-                {typeof props.title != 'undefined' && props.title != ''
-                  ? props.title
-                  : '알림'}
+                {typeof props.title != 'undefined' && props.title != '' ? props.title : '알림'}
               </CommonText>
             </SpaceView>
 
             <SpaceView viewStyle={layoutStyle.alignCenter}>
               <CommonText type={'h5'} textStyle={layoutStyle.textCenter}>
-                {typeof props.text != 'undefined' && props.text != ''
-                  ? props.text
-                  : ''}
+                {typeof props.text != 'undefined' && props.text != '' ? props.text : ''}
               </CommonText>
               {/* <CommonText type={'h5'} color={ColorType.red}>패스 x5</CommonText> */}
             </SpaceView>

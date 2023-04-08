@@ -59,6 +59,10 @@ import {
   PRODUCT_BM,
   BANNER_LIST,
   MEMBER_MSG_LIST,
+  INSERT_MEMBER_INQUIRY,
+  EVENT_CASHBACK_PAY,
+  EVENT_CASHBACK_DETAIL,
+  EVENT_CASHBACK_RECEIVE
 } from './route';
 
 /* ========================================================================================================
@@ -311,6 +315,14 @@ export async function get_member_message_list() {
   return send(MEMBER_MSG_LIST, 'POST', undefined, true, false);
 }
 
+// 회원 문의를 등록합니다.
+export async function insert_member_inquiry(body: {
+  title: string;
+  contents: string;
+}) {
+  return send(INSERT_MEMBER_INQUIRY, 'POST', body, true, false);
+}
+
 
 
 
@@ -422,14 +434,14 @@ export async function purchase_product(params: {
     buy_price: buy_price,
     item_name: item_name,
     item_code: item_code,
-    result_msg: JSON.stringify(result_msg),
+    result_msg: result_msg,
     result_code: result_code,
     acknowledged: receiptDataJson.acknowledged,
-    packageName: receiptDataJson.packageName,
-    productId: receiptDataJson.productId,
-    purchaseState: receiptDataJson.purchaseState,
-    purchaseTime: receiptDataJson.purchaseTime,
-    purchaseToken: receiptDataJson.purchaseToken,
+    package_name: receiptDataJson.packageName,
+    product_id: receiptDataJson.productId,
+    purchase_state: receiptDataJson.purchaseState,
+    purchase_time: receiptDataJson.purchaseTime,
+    purchase_token: receiptDataJson.purchaseToken,
     quantity: receiptDataJson.quantity,
   };
 
@@ -458,8 +470,10 @@ export async function order_auct(body: {
 }
 
 //회원 주문 목록 조회
-export async function get_order_list() {
-  return send(ORDER_HISTORY, 'POST', undefined, true, false);
+export async function get_order_list(body: {
+
+}) {
+  return send(ORDER_HISTORY, 'POST', body, true, false);
 }
 
 /* ========================================================================================================
@@ -467,12 +481,18 @@ export async function get_order_list() {
 ======================================================================================================== */
 
 //인벤토리 보유 아이템 목록 조회
-export async function get_my_items() {
-  return send(ITEM_LIST, 'POST', undefined, true, false);
+export async function get_my_items(body: {
+  cate_group_code: string;
+}) {
+  return send(ITEM_LIST, 'POST', body, true, false);
 }
 
 //아이템 사용
-export async function use_item(body: { item_seq: string }) {
+export async function use_item(body: { 
+  item_category_code: string;
+  cate_group_code: string;
+  cate_common_code: string;
+}) {
   return send(USE_ITEM, 'POST', body, true, false);
 }
 
@@ -513,12 +533,33 @@ export async function get_bm_product(body: { item_type_code: string }) {
 }
 
 /* ========================================================================================================
-==================================================== 공통
+==================================================== 배너
 ======================================================================================================== */
 
 //배너 목록 조회
-export async function get_banner_list(body: { item_type_code: string }) {
+export async function get_banner_list(body: { banner_type: string }) {
   return send(BANNER_LIST, 'POST', body, true, false);
+}
+
+/* ========================================================================================================
+==================================================== 이벤트
+======================================================================================================== */
+
+// 캐시백 이벤트 금액 정보 조회
+export async function get_cashback_pay_info() {
+  return send(EVENT_CASHBACK_PAY, 'POST', undefined, true, false);
+}
+
+// 캐시백 이벤트 템플릿 상세 정보 조회
+export async function get_cashback_detail_info() {
+  return send(EVENT_CASHBACK_DETAIL, 'POST', undefined, true, false);
+}
+
+// 캐시백 이벤트 아이템 수령
+export async function cashback_item_receive(body: {
+  event_tmplt_seq: string
+}) {
+  return send(EVENT_CASHBACK_RECEIVE, 'POST', body, true, false);
 }
 
 /* ========================================================================================================

@@ -42,6 +42,7 @@ export const UPDATE_PHONE_NUMBER = '/member/modfyMemberPhoneNumber';
 export const MEMBER_EXIT = '/member/deleteMyAccount';
 export const UPDATE_PASSWORD = '/changePassword/updateNewPassword';
 export const MEMBER_MSG_LIST = '/msg/selectMemberMessageList'
+export const INSERT_MEMBER_INQUIRY = '/customerInquiry/insertCustomerInquiry'
 
 
 /**
@@ -85,7 +86,6 @@ export const POINT_HISTORY = '/prod/selectMobileProdList';
 /**
  * PRODUCT
  */
-
 export const PRODUCT_LIST = '/prod/selectMobileProdList';
 export const PRODUCT_AUCT = '/prod/selectAuctProdList';
 export const PRODUCT_AUCT_DETAIL = '/prod/selectAuctProdDetail';
@@ -95,10 +95,17 @@ export const PRODUCT_BM = '/bm/selectItemList';
  * 베너
  */
 export const BANNER_LIST = '/banner/selectBannerList';
+
+/**
+ * 이벤트
+ */
+export const EVENT_CASHBACK_PAY = '/event/selectEventIndex';
+export const EVENT_CASHBACK_DETAIL = '/event/selectEventDetail';
+export const EVENT_CASHBACK_RECEIVE = '/event/receiveItem';
+
 /**
  * COMMON
  */
-
 export const COMMON_CODE = '/common/selectGroupCodeList';
 export const BOARD_LIST = '/board/selectBoardList';
 export const NICE_AUTH = '/nice/authToken';

@@ -61,8 +61,13 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     height: 40,
   },
-  logo: { width: 220, height: 90 },
-  logoMark: { width: 80, height: 80 },
+  logo: { width: 141, height: 26, marginBottom: 6 },
+  logoMark: { width: 53, height: 46, marginBottom: 18 },
+  logoText: { 
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 25,
+    color: '#393939'
+  },
   rotate90: { transform: [{ rotate: '90deg' }] },
   rotateN90: { transform: [{ rotate: '-90deg' }] },
   rotate180: { transform: [{ rotate: '180deg' }] },
@@ -466,7 +471,7 @@ export const modalStyle = StyleSheet.create({
     borderTopRightRadius: 24,
   },
   modalHeaderContainer: {
-    height: 56,
+    //height: 56,
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 24,
@@ -489,7 +494,7 @@ export const modalStyle = StyleSheet.create({
     width: width - 32,
     backgroundColor: 'white',
     borderRadius: 16,
-    height: 186,
+    height: 185,
     paddingTop: 32,
     paddingLeft: 16,
     paddingRight: 16,
