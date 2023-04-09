@@ -339,10 +339,12 @@ export const Introduce = (props: Props) => {
 
   // 첫 렌더링 때 실행
   React.useEffect(() => {
-    if (memberBase.business != '') {
+    getMemberIntroduce(memberBase.business);
+
+    //if (memberBase.business != '') {
       //getJobCodeList(memberBase.business);
-      getMemberIntroduce(memberBase.business);
-    }
+      //getMemberIntroduce(memberBase.business);
+    //}
   }, [isFocus]);
 
   return (

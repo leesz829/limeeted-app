@@ -442,7 +442,7 @@ export const Preference = (props: Props) => {
           </SpaceView>
         </SpaceView>
 
-        <SpaceView mb={32}>
+        {/* <SpaceView mb={32}>
           <SpaceView mb={16}>
             <CommonText fontWeight={'700'} type={'h4'}>
               직업
@@ -502,7 +502,7 @@ export const Preference = (props: Props) => {
               />
             </View>
           </SpaceView>
-        </SpaceView>
+        </SpaceView> */}
 
         <SpaceView mb={40}>
           <SpaceView mb={16}>

@@ -140,16 +140,19 @@ export const Roby = (props: Props) => {
     let starIntegerCnt = Math.floor(starCnt);
     let starDecimalScore = score - Math.floor(score);
 
+    console.log('starIntegerCnt :::: ' , starIntegerCnt);
+
     let starImgArr = [];
 
     for (let i = 1; i <= starIntegerCnt; i++) {
       starImgArr.push(<Image source={ICON.star} style={styles.iconSize24} />);
     }
 
-    if (starDecimalScore)
+    if (starDecimalScore) {
       starImgArr.push(
         <Image source={ICON.starHalf} style={styles.iconSize24} />
       );
+    }
 
     return starImgArr;
   };
@@ -502,7 +505,7 @@ export const Roby = (props: Props) => {
             />
           </View>
 
-          <View style={styles.rowStyle}>
+          {/* <View style={styles.rowStyle}>
             <ToolTip
               title={'아는 사람 소개'}
               desc={
@@ -515,7 +518,7 @@ export const Roby = (props: Props) => {
               }}
               isOn={memberBase?.friend_match_yn == 'Y' ? true : false}
             />
-          </View>
+          </View> */}
         </SpaceView>
 
         <SpaceView mb={40}>

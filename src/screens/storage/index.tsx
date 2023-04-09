@@ -32,6 +32,7 @@ import { useMemberseq } from 'hooks/useMemberseq';
 import { usePopup } from 'Context';
 import { STACK } from 'constants/routes';
 import CommonHeader from 'component/CommonHeader';
+import { myProfile } from 'redux/reducers/authReducer';
 
 
 
@@ -47,6 +48,7 @@ interface Props {
 export const Storage = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
   const isFocusStorage = useIsFocused();
+  const dispatch = useDispatch();
 
   const { show } = usePopup();  // 공통 팝업
 
@@ -233,11 +235,13 @@ export const Storage = (props: Props) => {
 
       if(success) {
         if (data.result_code == '0000') {
-          navigation.navigate('StorageProfile', {
+          dispatch(myProfile());
+          navigation.navigate(STACK.COMMON, { screen: 'StorageProfile', params: {
             matchSeq: detailMatchData.match_seq,
             tgtMemberSeq: detailMatchData.tgt_member_seq,
             type: detailMatchData.type,
-          });
+          } });
+
         } else if (data.result_code == '6010') {
           setProfileOpenPopup(false);
           show({ content: '보유 패스가 부족합니다.' });

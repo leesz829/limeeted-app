@@ -46,6 +46,8 @@ import { BarGrap } from 'component/BarGrap';
 import { get_daily_matched_info, report_matched_user, regist_match_status } from 'api/models';
 import { usePopup } from 'Context';
 import { Slider } from '@miblanchard/react-native-slider';
+import { myProfile } from 'redux/reducers/authReducer';
+import { useDispatch } from 'react-redux';
 
 
 /* ################################################################################################################
@@ -59,6 +61,7 @@ interface Props {
 export const Matching = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
   const isFocus = useIsFocused();
+  const dispatch = useDispatch();
 
   const scrollRef = useRef();
 
@@ -139,6 +142,7 @@ export const Matching = (props: Props) => {
 
       if(success) {
         if(data.result_code == '0000') {
+          dispatch(myProfile());
           getDailyMatchInfo();
           setInterestSendPopup(false);
           setSincereSendPopup(false);

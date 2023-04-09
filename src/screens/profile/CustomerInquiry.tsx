@@ -45,21 +45,18 @@ export const CustomerInquiry = (props : Props) => {
 
 	 // 문의 저장
 	const insertCustomerInquiry = async () => {
-
-		console.log('title :::::::: ', title.length);
-
+		
 		if(title.length < 10 || title.length > 30) {
 			show({
 				title: '알림',
-				content: '제목은 10_30글자 이내로 입력해 주셔야해요.' ,
+				content: '제목은 10~30글자 이내로 입력해 주셔야해요.' ,
 				confirmCallback: function() {
 
 				}
 			});
+
+			return;
 		}
-
-		return;
-
 
 		const body = {
 			title: title
