@@ -13,7 +13,7 @@ import { ROUTES } from 'constants/routes';
 import storeKey, { JWT_TOKEN } from 'constants/storeKey';
 import { usePopup } from 'Context';
 import { useUserInfo } from 'hooks/useUserInfo';
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dimensions, Image, ScrollView, TouchableOpacity, View, Platform, PermissionsAndroid } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { setPrincipal } from 'redux/reducers/authReducer';
@@ -43,8 +43,14 @@ export const Login01 = () => {
   const [id, setId] = React.useState('');
   const [password, setPassword] = React.useState('');
   const me = useUserInfo();
+  const { width, height } = Dimensions.get('window');
 
-  const loginProc = async (latitude: number, longitude: number) => {
+  const [latitude, setLatitude] = React.useState();     // 위도
+  const [longitude, setLongitude] = React.useState();   // 경도
+
+  const [granted, setGranted] = React.useState('');
+
+  const loginProc = async () => {
     const body = {
       email_id: id,
       password,
@@ -137,59 +143,41 @@ export const Login01 = () => {
     }
   };
   
-
   // 사용자 위치 확인
   async function requestPermissions() {
-    console.log('dddd');
-
-    // TODO: ios 인 경우, 권한 설정 추가 필요. 안드로이드 빌드 이후 진행 예정. 2023.01.03
-    if (Platform.OS === 'ios') {
-       const auth = await Geolocation.requestAuthorization('whenInUse');
-    
-       Geolocation.getCurrentPosition(
-          position => {
-             const {latitude, longitude} = position.coords;
-             loginProc(latitude, longitude);
-          },
-          error => {
-             console.log(error.code, error.message);
-          },
-          {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
-       );   
-    }
-    
-    if(Platform.OS === 'android') {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      );
-
-      console.log('granted :::::: ', granted);
-
-      if(granted !== PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
-        Geolocation.getCurrentPosition(
-          position => {
-             // 위도, 경도
-             const {latitude, longitude} = position.coords;
-             loginProc(latitude, longitude);
-          },
-          error => {
-            console.log('login333');
-            console.log(error.code, error.message);
-          },
-          //{enableHighAccuracy: false, timeout: 20000},
-          { enableHighAccuracy: true, timeout: 25000, maximumAge: 3600000 } ,
-        );
-      } else {
-        console.log('login11');
-        loginProc(null, null);
+    try {
+      // IOS 위치 정보 수집 권한 요청
+      if (Platform.OS === 'ios') {
+        return await Geolocation.requestAuthorization('whenInUse');
       }
+
+      // AOS 위치 정보 수집 권한 요청
+      if(Platform.OS === 'android') {
+        return await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        );
+      }
+    } catch(e) {
+      console.log(e);
     }
   }
 
+  useEffect(() => {
+    requestPermissions().then(result => {
+      Geolocation.getCurrentPosition(
+        position => {
+          const {latitude, longitude} = position.coords;
+          setLatitude(latitude);
+          setLongitude(longitude);
+        },
+        error => {
+           console.log(error.code, error.message);
+        },
+        {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+      );
+    });
+  }, []);
 
-
-
-  const { width, height } = Dimensions.get('window');
 
   return (
     <>
@@ -264,9 +252,9 @@ export const Login01 = () => {
                   return show({ content: '비밀번호를 입력해 주세요.' });
                 }
 
-                requestPermissions();
+                //requestPermissions();
 
-                //loginProc();
+                loginProc();
                 //dispatch(loginReduce(id, password));
               }}
             />

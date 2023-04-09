@@ -2,12 +2,12 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { JWT_TOKEN } from 'constants/storeKey';
 
 // api 서버 도메인
-export const api_domain = "http://59.5.92.43:9915";
-//export const api_domain = 'http://118.67.134.149:9915';
+//export const api_domain = "http://59.5.92.64:9915";
+export const api_domain = 'http://118.67.134.149:9915';
 // export const api_domain = 'http://59.5.92.43:8080';
 
 // 이미지 서버 경로
-export const img_domain = 'http://118.67.134.149:8080' + '/uploads';
+export const img_domain = 'http://118.67.134.149:9915' + '/uploads';
 
 // token 값
 export const jwt_token = () => {
