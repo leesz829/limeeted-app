@@ -375,7 +375,7 @@ export const Preference = (props: Props) => {
       <CommonHeader title={'내 선호 이성'} />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <SpaceView mb={32}>
-          <SpaceView mb={16}>
+          <SpaceView mb={0}>
             <CommonText fontWeight={'700'} type={'h4'}>
               나이
             </CommonText>
@@ -409,7 +409,7 @@ export const Preference = (props: Props) => {
         </SpaceView>
 
         <SpaceView mb={32}>
-          <SpaceView mb={16}>
+          <SpaceView mb={0}>
             <CommonText fontWeight={'700'} type={'h4'}>
               거리
             </CommonText>
@@ -505,7 +505,7 @@ export const Preference = (props: Props) => {
         </SpaceView> */}
 
         <SpaceView mb={40}>
-          <SpaceView mb={16}>
+          <SpaceView mb={0}>
             <CommonText fontWeight={'700'} type={'h4'}>
               인상
             </CommonText>
