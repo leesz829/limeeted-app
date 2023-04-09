@@ -70,11 +70,13 @@ const styles = StyleSheet.create({
   },
   inputStyle: {
     width: '100%',
-    height: 220,
-    borderColor: '#999',
+    height: 420,
     borderWidth: 1,
     borderRadius: 10,
     padding: 10,
     textAlignVertical: 'top',
+    backgroundColor: "#ffffff",
+    borderColor: "#ebe9ef",
+    borderStyle: "solid",
   },
 });

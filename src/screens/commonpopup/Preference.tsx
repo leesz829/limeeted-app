@@ -384,24 +384,24 @@ export const Preference = (props: Props) => {
           <SpaceView viewStyle={styles.halfContainer}>
             <View style={styles.halfItemLeft}>
               <CommonInput
-                label={'최소'}
+//              label={'최소'}
                 keyboardType="number-pad"
                 value={wantAgeMin}
                 onChangeText={(wantAgeMin) => setWantAgeMin(wantAgeMin)}
                 maxLength={2}
-                placeholder={'입력'}
+                placeholder={'최소'}
                 placeholderTextColor={'#c6ccd3'}
               />
             </View>
 
             <View style={styles.halfItemRight}>
               <CommonInput
-                label={'최대'}
+//              label={'최대'}
                 keyboardType="number-pad"
                 value={wantAgeMax}
                 onChangeText={(wantAgeMax) => setWantAgeMax(wantAgeMax)}
                 maxLength={2}
-                placeholder={'입력'}
+                placeholder={'최대'}
                 placeholderTextColor={'#c6ccd3'}
               />
             </View>
@@ -418,24 +418,24 @@ export const Preference = (props: Props) => {
           <SpaceView viewStyle={styles.halfContainer}>
             <View style={styles.halfItemLeft}>
               <CommonInput
-                label={'최소(km)'}
+//              label={'최소(km)'}
                 keyboardType="number-pad"
                 value={wantLocal1}
                 onChangeText={(wantLocal1) => setWantLocal1(wantLocal1)}
                 maxLength={2}
-                placeholder={'입력'}
+                placeholder={'최소(km)'}
                 placeholderTextColor={'#c6ccd3'}
               />
             </View>
 
             <View style={styles.halfItemRight}>
               <CommonInput
-                label={'최대(km)'}
+//              label={'최대(km)'}
                 keyboardType="number-pad"
                 value={wantLocal2}
                 onChangeText={(wantLocal2) => setWantLocal2(wantLocal2)}
                 maxLength={2}
-                placeholder={'입력'}
+                placeholder={'최대(km)'}
                 placeholderTextColor={'#c6ccd3'}
               />
             </View>
@@ -512,7 +512,7 @@ export const Preference = (props: Props) => {
           </SpaceView>
           <SpaceView mb={24}>
             <CommonSelect
-              label={'인상'}
+//            label={'인상'}
               items={memberBase?.gender == 'M' ? gFaceItemList : mFaceItemList}
               selectValue={wantPerson1}
               callbackFn={wantPerson1CallbackFn}
@@ -520,7 +520,7 @@ export const Preference = (props: Props) => {
           </SpaceView>
           <SpaceView mb={24}>
             <CommonSelect
-              label={'인상'}
+//            label={'인상'}
               items={memberBase?.gender == 'M' ? gFaceItemList : mFaceItemList}
               selectValue={wantPerson2}
               callbackFn={wantPerson2CallbackFn}
@@ -528,7 +528,7 @@ export const Preference = (props: Props) => {
           </SpaceView>
           <SpaceView>
             <CommonSelect
-              label={'인상'}
+//            label={'인상'}
               items={memberBase?.gender == 'M' ? gFaceItemList : mFaceItemList}
               selectValue={wantPerson3}
               callbackFn={wantPerson3CallbackFn}

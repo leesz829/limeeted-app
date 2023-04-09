@@ -4,7 +4,7 @@ import { CommonInput } from 'component/CommonInput';
 import { CommonTextarea } from 'component/CommonTextarea';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
-import { ScrollView, View, Image, Modal, TouchableOpacity, Alert, Text } from 'react-native';
+import { ScrollView, View, Image, Modal, TouchableOpacity, Alert, Text, StyleSheet } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import * as React from 'react';
 import { CommonBtn } from 'component/CommonBtn';
@@ -103,17 +103,17 @@ export const CustomerInquiry = (props : Props) => {
 			<ScrollView contentContainerStyle={[styles.scrollContainer]}>
 				<SpaceView mb={25}>
 					<View style={layoutStyle.alignStart}>
-						<CommonText type={'h4'}>등록해주신 문의내용은 관리자 확인 후{'\n'}우편함으로 답변드립니다.</CommonText>
+						<CommonText	type={'h4'}	textStyle={_styles.titleText}>궁금한점, 불편한점{'\n'}저희에게 문의주세요 :)</CommonText>
 					</View>
 				</SpaceView>
 				
 				<SpaceView>
-					<SpaceView mb={25} pl={10} pr={10}>	
+					<SpaceView pl={10} pr={10}>	
 						<CommonInput
-							label={'제목'}
+//							label={'제목'}
 							value={title}
 							onChangeText={(title) => setTitle(title)}
-							placeholder={'제목을 입력해 주세요.'}
+							placeholder={'문의 제목'}
 							placeholderTextColor={'#c6ccd3'}
 							maxLength={30}
 						/>
@@ -121,10 +121,10 @@ export const CustomerInquiry = (props : Props) => {
 
 					<SpaceView mb={35} pl={10} pr={10}>
 						<CommonTextarea
-							label={'내용'} 
+//							label={'내용'} 
 							value={contents}
 							onChangeText={(contents) => setContents(contents)}
-							placeholder={'내용을 입력해 주세요.'}
+							placeholder={'문의 내용'}
 							placeholderTextColor={'#c6ccd3'}
 							maxLength={240}
 							exceedCharCountColor={'#990606'}
@@ -133,8 +133,8 @@ export const CustomerInquiry = (props : Props) => {
 
 					<SpaceView mb={16} pl={8} pr={8}>
           				<CommonBtn
-            				value={'문의하기'}
-            				type={'primary'}
+            				value={'저장'}
+            				type={'black'}
             				onPress={() => {
               					insertCustomerInquiry();
             				}}
@@ -146,3 +146,16 @@ export const CustomerInquiry = (props : Props) => {
 		</>
 	);
 };
+
+const _styles = StyleSheet.create({
+	titleText: {
+		width: 250,
+		height: 61,
+		fontFamily: "AppleSDGothicNeoEB00",
+		fontSize: 23,
+		fontWeight: "normal",
+		fontStyle: "normal",
+		lineHeight: 30,
+		color: "#333333"
+	},
+  });
