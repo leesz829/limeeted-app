@@ -151,68 +151,52 @@ export default function CategoryShop() {
     //console.log('productId ::::::: ', targetItem.productId);
 
     try {
-      show({
-        title: '상품 구매',
-        content: '상품을 구매하시겠습니까?' ,
-        cancelCallback: function() {
-          closeModal();
-        },
-        confirmCallback: async function() {
-          try {
-
-            const result = await requestPurchase({
-              skus: ['royal_pass_10'],
-              andDangerouslyFinishTransactionAutomaticallyIOS: false,
-            });
-  
-            const body = {
-              device_gubun: Platform.OS,
-              buy_price: targetItem?.shop_buy_price,
-              item_name: targetItem?.item_name,
-              item_code: targetItem?.item_code,
-              result_msg: '성공',
-              result_code: '0000',
-              receiptData: result[0].transactionReceipt
-            }
-
-            const { success, data } = await purchase_product(body);
-            console.log('data :::: ', data);
-            if (success) {
-              if(data.result_code == '0000') {
-                show({
-                  content: '구매에 성공하였습니다.' ,
-                  confirmCallback: function() {
-                    closeModal(); 
-                    navigation.navigate(STACK.TAB, { screen: 'Shop' });
-                  }
-                });
-              } else {
-                show({
-                  content: data.result_msg ,
-                  confirmCallback: function() { closeModal(); }
-                });
-              }
-            } else {
-              show({
-                content: '오류입니다. 관리자에게 문의해주세요.' ,
-                confirmCallback: function() { closeModal(); }
-              });
-            }
-
-          } catch (err: any) {
-            console.warn(err.code, err.message);
-            show({
-              title: '알림',
-              content: '구매에 실패하였습니다.' ,
-              confirmCallback: function() { }
-            });
-          }
-        }
+      const result = await requestPurchase({
+        skus: ['royal_pass_10'],
+        andDangerouslyFinishTransactionAutomaticallyIOS: false,
       });
+
+      const body = {
+        device_gubun: Platform.OS,
+        buy_price: targetItem?.shop_buy_price,
+        item_name: targetItem?.item_name,
+        item_code: targetItem?.item_code,
+        result_msg: '성공',
+        result_code: '0000',
+        receiptData: result[0].transactionReceipt
+      }
+
+      const { success, data } = await purchase_product(body);
+      console.log('data :::: ', data);
+      if (success) {
+        if(data.result_code == '0000') {
+          show({
+            content: '구매에 성공하였습니다.' ,
+            confirmCallback: function() {
+              closeModal(); 
+              navigation.navigate(STACK.TAB, { screen: 'Shop' });
+            }
+          });
+        } else {
+          show({
+            content: data.result_msg ,
+            confirmCallback: function() { closeModal(); }
+          });
+        }
+      } else {
+        show({
+          content: '오류입니다. 관리자에게 문의해주세요.' ,
+          confirmCallback: function() { closeModal(); }
+        });
+      }
 
     } catch (err: any) {
       console.warn(err.code, err.message);
-      //setErrMsg(JSON.stringify(err));
+      show({
+        title: '알림',
+        content: '구매에 실패하였습니다.' ,
+        confirmCallback: function() { }
+      });
     }
   }
 

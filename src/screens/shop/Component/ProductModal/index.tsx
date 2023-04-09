@@ -1,5 +1,6 @@
+import { styles, modalStyle, layoutStyle } from 'assets/styles/Styles';
 import { Color } from 'assets/styles/Color';
-import React from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import {
   Dimensions,
   Image,
@@ -20,6 +21,8 @@ import {
   requestPurchase,
   getAvailablePurchases,
 } from 'react-native-iap';
+import { CommonText } from 'component/CommonText';
+import SpaceView from 'component/SpaceView';
 
 
 interface Props {
@@ -34,6 +37,8 @@ export default function ProductModal({ isVisible, type, closeModal, item, produc
   console.log('item :::::: ', item);
 
   const { bottom } = useSafeAreaInsets();
+
+  const [comfirmModalVisible, setComfirmModalVisible] = useState(false);
 
   //추후 데이터 배열로 변환시 변경필요
   const images = [findSourcePath(item?.file_path + item?.file_name)];
@@ -56,60 +61,101 @@ export default function ProductModal({ isVisible, type, closeModal, item, produc
   // 상품번호(재고상품)
   const prod_seq = item?.prod_seq;
 
+
+
+  const purchaseBtn = async () => {
+    setComfirmModalVisible(true);
+  }
+  
+
   return (
-    <Modal isVisible={isVisible} style={modalStyle.modal}>
-      <View style={modalStyle.root}>
-        <View style={modalStyle.closeContainer}>
+    <Modal isVisible={isVisible} style={modalStyleProduct.modal}>
+      <View style={modalStyleProduct.root}>
+        <View style={modalStyleProduct.closeContainer}>
           <TouchableOpacity onPress={closeModal}>
-            <Image source={ICON.closeBlack} style={modalStyle.close} />
+            <Image source={ICON.closeBlack} style={modalStyleProduct.close} />
           </TouchableOpacity>
         </View>
         <ViewPager
           data={images}
-          style={modalStyle.pagerView}
-          renderItem={(data) => <Image source={data} style={modalStyle.itemImages} />}
+          style={modalStyleProduct.pagerView}
+          renderItem={(data) => <Image source={data} style={modalStyleProduct.itemImages} />}
         />
-        <View style={modalStyle.infoContainer}>
+        <View style={modalStyleProduct.infoContainer}>
           {brand_name != '' && brand_name != null ? (
-            <Text style={modalStyle.brandText}>{brand_name}</Text>
+            <Text style={modalStyleProduct.brandText}>{brand_name}</Text>
           ) : null}
 
-          <Text style={modalStyle.giftName}>{prod_name}</Text>
-          <View style={modalStyle.rowBetween}>
-            <Text style={modalStyle.inventory}>
+          <Text style={modalStyleProduct.giftName}>{prod_name}</Text>
+          <View style={modalStyleProduct.rowBetween}>
+            <Text style={modalStyleProduct.inventory}>
               {type == 'gifticon' ? CommaFormat(item?.prod_cnt) + '개 남음' : null}
 
               {/* {CommaFormat(item?.buy_count_max)}개 남음 */}
             </Text>
-            <View style={modalStyle.rowCenter}>
-              <Text style={modalStyle.price}>
+            <View style={modalStyleProduct.rowCenter}>
+              <Text style={modalStyleProduct.price}>
                 {CommaFormat(item?.shop_buy_price != null ? item?.shop_buy_price : item?.buy_price)}
               </Text>
-              <Image source={ICON.crown} style={modalStyle.crown} />
+              <Image source={ICON.crown} style={modalStyleProduct.crown} />
             </View>  
           </View>
-          <View style={modalStyle.infoContents}>
+          <View style={modalStyleProduct.infoContents}>
               <Text>{prod_content}</Text>
           </View>
           <View
             style={[
-              modalStyle.bottomContainer,
+              modalStyleProduct.bottomContainer,
               {
                 marginBottom: bottom + 10,
               },
             ]}
           >
-            <View style={modalStyle.rowBetween}>
+            <View style={modalStyleProduct.rowBetween}>
               {/* <TouchableOpacity style={modalStyle.likeButton}>
                 <Image source={ICON.storage} style={modalStyle.likeImage} />
               </TouchableOpacity> */}
-              <TouchableOpacity style={modalStyle.puchageButton} onPress={() => productPurchase(item)}>
-                <Text style={modalStyle.puchageText}>구매하기</Text>
+              <TouchableOpacity style={modalStyleProduct.puchageButton} onPress={() => purchaseBtn()}>
+                <Text style={modalStyleProduct.puchageText}>구매하기</Text>
               </TouchableOpacity>
             </View>
           </View>
         </View>
       </View>
+
+      {/* ###################### 구매하기 Confirm 팝업 */}
+      <Modal isVisible={comfirmModalVisible} transparent={true} style={modalStyleProduct.modal}>
+					<View style={modalStyle.modalBackground}>
+					<View style={modalStyle.modalStyle1}>
+						<SpaceView mb={16} viewStyle={layoutStyle.alignCenter}>
+							<CommonText fontWeight={'700'} type={'h4'}>
+              상품 구매
+							</CommonText>
+						</SpaceView>
+
+						<SpaceView viewStyle={layoutStyle.alignCenter}>
+							<CommonText type={'h5'}>상품을 구매하시겠습니까?</CommonText>
+						</SpaceView>
+
+						<View style={modalStyle.modalBtnContainer}>
+							<TouchableOpacity
+								style={modalStyle.modalBtn}
+								onPress={() => setComfirmModalVisible(false)}>
+								<CommonText fontWeight={'500'}>취소</CommonText>
+							</TouchableOpacity>
+							<View style={modalStyle.modalBtnline} />
+								<TouchableOpacity 
+									style={modalStyle.modalBtn}
+									onPress={() => productPurchase()}>
+									<CommonText fontWeight={'500'}>
+										구매
+									</CommonText>
+								</TouchableOpacity>
+							</View>
+						</View>
+					</View>
+				</Modal>
+
     </Modal>
   );
 }
@@ -120,7 +166,7 @@ export default function ProductModal({ isVisible, type, closeModal, item, produc
 ############### Style 영역
 ################################################################################################################ */}
 
-const modalStyle = StyleSheet.create({
+const modalStyleProduct = StyleSheet.create({
   modal: {
     flex: 1,
     margin: 0,
