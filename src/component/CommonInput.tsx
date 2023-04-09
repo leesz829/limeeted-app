@@ -67,10 +67,16 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   labelStyle: {
+/*
     fontSize: 14,
     lineHeight: 20,
     fontFamily: 'AppleSDGothicNeoR00',
     color: Color.gray6666,
+*/
+    fontSize: 17,
+    lineHeight: 23,
+    fontFamily: 'AppleSDGothicNeoEB00',
+    color: Color.balck333333,
   },
   inputContainer: {
     paddingBottom: 8,

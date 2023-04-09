@@ -730,7 +730,7 @@ export const Matching = (props: Props) => {
 
         <View style={modalStyle.modalBody}>
           <SpaceView mb={16}>
-            <CommonText>신고 사유를 선택해주세요.</CommonText>
+            <CommonText textStyle={_styles.reportText}>신고사유를 알려주시면 더 좋은 리미티드를 만드는데 도움이 됩니다.</CommonText>
           </SpaceView>
 
           <SpaceView mb={24}>
@@ -747,9 +747,11 @@ export const Matching = (props: Props) => {
 
           <SpaceView mb={16}>
             <CommonBtn
-              value={'신고 및 차단하기'}
+              value={'신고하기'}
               onPress={popupReport}
-              type={'primary'}
+              type={'black'}
+              height={59} 
+              fontSize={19}
             />
           </SpaceView>
         </View>
@@ -986,5 +988,16 @@ const _styles = StyleSheet.create({
     height: 6,
     borderRadius: 3,
     backgroundColor: ColorType.grayDDDD,
+  },
+  reportText: {
+    width: 265,
+    height: 46,
+    fontFamily: "AppleSDGothicNeoB00",
+    fontSize: 17,
+    fontWeight: "normal",
+    fontStyle: "normal",
+    letterSpacing: -0.85,
+    textAlign: "left",
+    color: "#262626"
   },
 });

@@ -12,4 +12,6 @@ export const Color = {
   red: '#ff0000',
   white: '#fff',
   tabColor: 'rgb(38,38,38)',
+  balck262626:'#262626',
+  balck333333:'#333333',
 };

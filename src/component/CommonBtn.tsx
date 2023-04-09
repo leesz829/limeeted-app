@@ -106,6 +106,10 @@ const styles = (props: Props) => {
       textColor = Color.black2222;
       borderColor = Color.grayDDDD;
       break;
+    case 'black':
+        backgroundColor = Color.balck262626;
+        textColor = Color.white;
+      break;
     default:
       backgroundColor = Color.grayEEEE;
       textColor = Color.black2222;

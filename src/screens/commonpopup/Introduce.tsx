@@ -361,15 +361,9 @@ export const Introduce = (props: Props) => {
 
         <SpaceView mb={24}>
 					<SpaceView mb={8}>
-						<CommonText textStyle={_styles.labelStyle}>관심사</CommonText>
+						<CommonText textStyle={_styles.labelStyle2}>관심사</CommonText>
 					</SpaceView>
-          <SpaceView mb={15}>
-            <CommonBtn value={'관심사 변경'} 
-							          height={48} 
-								        type={'white'} 
-								        icon={ICON.plus}
-								        onPress={int_onOpen} />
-          </SpaceView>
+          
           <SpaceView mb={40} mt={15} viewStyle={[layoutStyle.row, layoutStyle.wrap]}>
             {checkIntList.map((i, index) => {
               return (
@@ -384,6 +378,14 @@ export const Introduce = (props: Props) => {
                 ) : null
               );
             })}
+          </SpaceView>
+
+          <SpaceView mb={15}>
+            <CommonBtn value={'관심사 변경'} 
+							          height={48} 
+								        type={'white'} 
+								        icon={ICON.plus}
+								        onPress={int_onOpen} />
           </SpaceView>
 				</SpaceView>
 
@@ -591,6 +593,12 @@ const _styles = StyleSheet.create({
     lineHeight: 20,
     fontFamily: 'AppleSDGothicNeoR00',
     color: Color.gray6666,
+  },
+  labelStyle2: {
+    fontSize: 17,
+    lineHeight: 23,
+    fontFamily: 'AppleSDGothicNeoEB00',
+    color: Color.balck333333,
   },
   rowStyle : {
 		flexDirection: 'row',
