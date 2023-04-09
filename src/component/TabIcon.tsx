@@ -18,7 +18,7 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
         return <Image style={style.iconSize} source={ICON.cashshop} />;
       }
     }
-    case 'Mailbox': {
+    case 'Message': {
       if (isFocused) {
         return <Image style={style.iconSize} source={ICON.mailboxOn} />;
       } else {
