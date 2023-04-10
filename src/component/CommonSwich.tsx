@@ -10,33 +10,33 @@ import { FC } from 'react';
  */
 
 interface Props {
-	callbackFn: (value: boolean) => void;
-	isOn: boolean;
+  callbackFn: (value: boolean) => void;
+  isOn: boolean;
 }
 
-export const CommonSwich : FC<Props> = (props) => {
-	const [value, setValue] = React.useState(false);
-	const [activeYn, setActiveYn] = React.useState('N');
-	
-	React.useEffect(() => {
-		if(activeYn == 'N') {
-			setValue(props.isOn);
-		}
-	});
+export const CommonSwich: FC<Props> = (props) => {
+  const [value, setValue] = React.useState(false);
+  const [activeYn, setActiveYn] = React.useState('N');
 
-	const toggleActive = async (value:boolean) => {
-		setActiveYn('Y');
-		setValue(value);
-		props.callbackFn(value);
-	}
+  React.useEffect(() => {
+    if (activeYn == 'N') {
+      setValue(props.isOn);
+    }
+  });
 
-	return (
-		<ToggleSwitch
-			isOn={value}
-			onColor={Color.primary}
-			offColor={Color.grayDDDD}
-			size="small"
-			onToggle={(isOn) => toggleActive(isOn)}
-		/>
-	);
+  const toggleActive = async (value: boolean) => {
+    setActiveYn('Y');
+    setValue(value);
+    props.callbackFn(value);
+  };
+
+  return (
+    <ToggleSwitch
+      isOn={value}
+      onColor={Color.primary}
+      offColor={Color.grayDDDD}
+      size="small"
+      onToggle={(isOn) => toggleActive(isOn)}
+    />
+  );
 };

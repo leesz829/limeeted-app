@@ -1,4 +1,9 @@
-import { TouchableOpacity, StyleSheet, Text, ImageSourcePropType } from 'react-native';
+import {
+  TouchableOpacity,
+  StyleSheet,
+  Text,
+  ImageSourcePropType,
+} from 'react-native';
 import { FC } from 'react';
 import * as React from 'react';
 import { Color } from 'assets/styles/Color';
@@ -6,15 +11,17 @@ import type { TouchableOpacityProps, StyleProp } from 'react-native';
 import { Image } from 'react-native';
 import SpaceView from './SpaceView';
 
-type BtnType = 'gray' | 'primary' | 'kakao' | 'purple' | 'white';
+type BtnType = 'gray' | 'primary' | 'kakao' | 'purple' | 'white' | 'danger';
 type Props = {
-	onPress?: () => void;
-	value: string;
-	type?: BtnType;
-	icon?: ImageSourcePropType;
-	iconSize?: number;
-	iconPosition?: 'left' | 'right';
-	height?: number;
+  onPress?: () => void;
+  value: string;
+  type?: BtnType;
+  icon?: ImageSourcePropType;
+  iconSize?: number;
+  iconPosition?: 'left' | 'right';
+  height?: number;
+  width?: number;
+  fontSize?: number;
 } & StyleProp<TouchableOpacityProps>;
 /**
  * 공통 버튼
@@ -29,87 +36,110 @@ type Props = {
  *
  */
 export const CommonBtn: FC<Props> = (props) => {
-	const style = styles(props);
-	return (
-		<TouchableOpacity activeOpacity={0.3} onPress={props.onPress} style={style.btnStyle} {...props}>
-			{props.icon && props.iconPosition !== 'right' && (
-				<SpaceView mr={4}>
-					<Image
-						source={props.icon}
-						style={[
-							style.iconStyle,
-							props.iconSize ? { width: props.iconSize, height: props.iconSize } : {},
-						]}
-					/>
-				</SpaceView>
-			)}
-			<Text style={style.btnText}>{props.value}</Text>
-			{props.icon && props.iconPosition === 'right' && (
-				<SpaceView ml={4}>
-					<Image
-						source={props.icon}
-						style={[
-							style.iconStyle,
-							props.iconSize ? { width: props.iconSize, height: props.iconSize } : {},
-						]}
-					/>
-				</SpaceView>
-			)}
-		</TouchableOpacity>
-	);
+  const style = styles(props);
+  return (
+    <TouchableOpacity
+      activeOpacity={0.3}
+      onPress={props.onPress}
+      style={style.btnStyle}
+      {...props}
+    >
+      {props.icon && props.iconPosition !== 'right' && (
+        <SpaceView mr={4}>
+          <Image
+            source={props.icon}
+            style={[
+              style.iconStyle,
+              props.iconSize
+                ? { width: props.iconSize, height: props.iconSize }
+                : {},
+            ]}
+          />
+        </SpaceView>
+      )}
+      <Text style={style.btnText}>{props.value}</Text>
+      {props.icon && props.iconPosition === 'right' && (
+        <SpaceView ml={4}>
+          <Image
+            source={props.icon}
+            style={[
+              style.iconStyle,
+              props.iconSize
+                ? { width: props.iconSize, height: props.iconSize }
+                : {},
+            ]}
+          />
+        </SpaceView>
+      )}
+    </TouchableOpacity>
+  );
 };
 
 const styles = (props: Props) => {
-	let backgroundColor = Color.grayEEEE;
-	let textColor = Color.black2222;
-	let borderColor = Color.grayEEEE;
-	switch (props.type) {
-		case 'gray':
-			backgroundColor = Color.grayEEEE;
-			textColor = Color.black2222;
-			break;
-		case 'primary':
-			backgroundColor = Color.primary;
-			textColor = 'white';
-			break;
-		case 'purple':
-			backgroundColor = Color.purple;
-			textColor = 'white';
-			break;
-		case 'kakao':
-			backgroundColor = '#FEE500';
-			textColor = Color.black2222;
-			break;
-		case 'white':
-			backgroundColor = 'white';
-			textColor = Color.black2222;
-			borderColor = Color.grayDDDD;
-			break;
-		default:
-			backgroundColor = Color.grayEEEE;
-			textColor = Color.black2222;
-			break;
-	}
-	return StyleSheet.create({
-		btnStyle: {
-			height: props.height ? props.height : 56,
-			borderRadius: 12,
-			backgroundColor: backgroundColor,
-			alignItems: 'center',
-			justifyContent: 'center',
-			borderWidth: 1,
-			borderColor,
-			flexDirection: 'row',
-		},
-		btnText: {
-			fontSize: 16,
-			lineHeight: 26,
-			color: textColor,
-			fontFamily: 'AppleSDGothicNeoM00',
-		},
-		iconStyle: {
-			width: 16,
-			height: 16,
-		},
-	});
+  let backgroundColor = Color.grayEEEE;
+  let textColor = Color.black2222;
+  let borderColor = Color.grayEEEE;
+  switch (props.type) {
+    case 'gray':
+      backgroundColor = Color.grayEEEE;
+      textColor = Color.black2222;
+      break;
+    case 'primary':
+      backgroundColor = Color.primary;
+      textColor = 'white';
+      break;
+    case 'purple':
+      backgroundColor = Color.purple;
+      textColor = 'white';
+      break;
+    case 'kakao':
+      backgroundColor = '#FEE500';
+      textColor = Color.black2222;
+      break;
+    case 'white':
+      backgroundColor = 'white';
+      textColor = Color.black2222;
+      borderColor = Color.grayDDDD;
+      break;
+    case 'blue':
+      backgroundColor = 'white';
+      textColor = Color.black2222;
+      borderColor = Color.grayDDDD;
+      break;
+    case 'black':
+      backgroundColor = Color.balck262626;
+      textColor = Color.white;
+      break;
+    case 'danger':
+      backgroundColor = Color.danger;
+      textColor = Color.white;
+      break;
+    default:
+      backgroundColor = Color.grayEEEE;
+      textColor = Color.black2222;
+      break;
+  }
+  return StyleSheet.create({
+    btnStyle: {
+      width: props.width ? props.width : '100%',
+      height: props.height ? props.height : 56,
+      borderRadius: 12,
+      backgroundColor: backgroundColor,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: 1,
+      borderColor,
+      flexDirection: 'row',
+    },
+    btnText: {
+      fontSize: props.fontSize ? props.fontSize : 16,
+      lineHeight: 26,
+      color: textColor,
+      fontFamily: 'AppleSDGothicNeoM00',
+    },
+    iconStyle: {
+      width: 16,
+      height: 16,
+    },
+  });
 };

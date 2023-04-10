@@ -140,8 +140,8 @@ android {
         applicationId "com.appsquad.limeeted"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 33
-        versionName "1.5.5"
+        versionCode 34
+        versionName "1.5.6"
         missingDimensionStrategy 'store', 'play'
     }
     splits {
@@ -235,6 +235,9 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+    // animated GIF support
+    implementation 'com.facebook.fresco:animated-gif:2.5.0'
 }
 
 // Run this once to be able to run the application with BUCK

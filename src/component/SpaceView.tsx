@@ -3,15 +3,15 @@ import { View, StyleSheet } from 'react-native';
 import type { ViewStyle, StyleProp } from 'react-native';
 import type { FC } from 'react';
 type Props = {
-	mb?: number;
-	mt?: number;
-	ml?: number;
-	mr?: number;
-	pl?: number;
-	pr?: number;
-	pb?: number;
-	pt?: number;
-	viewStyle?: StyleProp<ViewStyle>;
+  mb?: number;
+  mt?: number;
+  ml?: number;
+  mr?: number;
+  pl?: number;
+  pr?: number;
+  pb?: number;
+  pt?: number;
+  viewStyle?: StyleProp<ViewStyle>;
 };
 
 /**
@@ -28,75 +28,75 @@ type Props = {
  * @param {number} viewStyle view 스타일
  */
 const SpaceView: FC<Props> = (props) => {
-	const { mb, mt, ml, mr, pb, pt, pl, pr, children } = props;
-	const style = styles({
-		mb,
-		mt,
-		ml,
-		mr,
-		pb,
-		pt,
-		pl,
-		pr,
-	});
+  const { mb, mt, ml, mr, pb, pt, pl, pr, children } = props;
+  const style = styles({
+    mb,
+    mt,
+    ml,
+    mr,
+    pb,
+    pt,
+    pl,
+    pr,
+  });
 
-	return (
-		<View {...props} style={[props.viewStyle, style.viewStyle]}>
-			{children}
-		</View>
-	);
+  return (
+    <View {...props} style={[props.viewStyle, style.viewStyle]}>
+      {children}
+    </View>
+  );
 };
 
 const styles = ({
-	mb,
-	mt,
-	ml,
-	mr,
-	pb,
-	pt,
-	pl,
-	pr,
+  mb,
+  mt,
+  ml,
+  mr,
+  pb,
+  pt,
+  pl,
+  pr,
 }: {
-	mb?: number;
-	mt?: number;
-	ml?: number;
-	mr?: number;
-	pb?: number;
-	pt?: number;
-	pl?: number;
-	pr?: number;
+  mb?: number;
+  mt?: number;
+  ml?: number;
+  mr?: number;
+  pb?: number;
+  pt?: number;
+  pl?: number;
+  pr?: number;
 }) => {
-	const obj: any = {};
-	if (mb) {
-		obj.marginBottom = mb;
-	}
-	if (mt) {
-		obj.marginTop = mt;
-	}
-	if (ml) {
-		obj.marginLeft = ml;
-	}
-	if (mr) {
-		obj.marginRight = mr;
-	}
-	if (pb) {
-		obj.paddingBottom = pb;
-	}
-	if (pt) {
-		obj.paddingTop = pt;
-	}
-	if (pl) {
-		obj.paddingLeft = pl;
-	}
-	if (pr) {
-		obj.paddingRight = pr;
-	}
+  const obj: any = {};
+  if (mb) {
+    obj.marginBottom = mb;
+  }
+  if (mt) {
+    obj.marginTop = mt;
+  }
+  if (ml) {
+    obj.marginLeft = ml;
+  }
+  if (mr) {
+    obj.marginRight = mr;
+  }
+  if (pb) {
+    obj.paddingBottom = pb;
+  }
+  if (pt) {
+    obj.paddingTop = pt;
+  }
+  if (pl) {
+    obj.paddingLeft = pl;
+  }
+  if (pr) {
+    obj.paddingRight = pr;
+  }
 
-	return StyleSheet.create({
-		viewStyle: {
-			...obj,
-		},
-	});
+  return StyleSheet.create({
+    viewStyle: {
+      ...obj,
+    },
+  });
 };
 
 export default SpaceView;

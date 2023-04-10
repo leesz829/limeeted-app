@@ -1,16 +1,20 @@
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { ScreenNavigationProp } from '@types';
+import { Color } from 'assets/styles/Color';
+import { ROUTES, STACK } from 'constants/routes';
+import { usePopup } from 'Context';
+import { useUserInfo } from 'hooks/useUserInfo';
+import type { FC } from 'react';
 import * as React from 'react';
 import { useState } from 'react';
-import { Color } from 'assets/styles/Color';
-import type { FC } from 'react';
-import { ScreenNavigationProp } from '@types';
-import { useNavigation } from '@react-navigation/native';
-import { Image, Alert } from 'react-native';
-import { ICON, IMAGE } from 'utils/imageUtils';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { BasePopup } from 'screens/commonpopup/BasePopup';
-
+import { ICON } from 'utils/imageUtils';
+import Image from 'react-native-fast-image';
+import LinearGradient from 'react-native-linear-gradient';
 interface Props {
-	currentPath: string;
+  currentPath: string;
+  theme?: string;
 }
 /**
  * 상단 네비게이션
@@ -18,100 +22,182 @@ interface Props {
  * @returns
  */
 const TopNavigation: FC<Props> = (props) => {
-	const navigation = useNavigation<ScreenNavigationProp>();
-	const [currentNavi, setCurrentNavi] = useState<string>(props.currentPath);
+  const [currentNavi, setCurrentNavi] = useState<string>(props.currentPath);
 
-	const [basePopup, setBasePopup] = React.useState(false);			// 기본 팝업 state
-	const [basePopupText, setBasePopupText] = React.useState('');		// 기본 팝업 텍스트
+  const { show } = usePopup();
 
-	React.useEffect(() => {
-		setCurrentNavi(props.currentPath);
-	}, [props]);
+  // React.useEffect(() => {
+  //   setCurrentNavi(props.currentPath);
+  // }, [props]);
 
-	return (
-		<View style={styles.tabContainer}>
-			<TouchableOpacity
-				style={[styles.tab]}
-				onPress={() => {
-					//navigation.navigate('StartPage');
-					navigation.navigate('Main', {
-						screen: 'Matching',
-					});
-				}}
-			>
-				<Text style={[styles.tabText, currentNavi === 'LIMEETED' && styles.tabTextActive]}>
-					LIMEETED
-				</Text>
+  function onPressStory() {
+    show({ title: '스토리', content: '준비중입니다.' });
+  }
 
-				{/* <Image source={IMAGE.logoText} style={styles.logo1} resizeMode='contain' /> */}
-
-				{currentNavi === 'LIMEETED' && <View style={styles.activeDot} />}
-			</TouchableOpacity>
-			<TouchableOpacity
-				style={[styles.tab]}
-				onPress={() => {
-					navigation.navigate('Live');
-				}}
-			>
-				<Text style={[styles.tabText, currentNavi === 'LIVE' && styles.tabTextActive]}>LIVE</Text>
-				{currentNavi === 'LIVE' && <View style={styles.activeDot} />}
-			</TouchableOpacity>
-			<TouchableOpacity
-				style={[styles.tab]}
-				onPress={() => {
-					setBasePopupText('준비중입니다.');
-					setBasePopup(true);
-				}}
-				/* onPress={() => setCurrentNavi('STORY')} */
-			>
-				<Text style={[styles.tabText, currentNavi === 'STORY' && styles.tabTextActive]}>STORY</Text>
-				{currentNavi === 'STORY' && <View style={styles.activeDot} />}
-			</TouchableOpacity>
-
-			
-			
-			{/* ######################################################################
+  return props.theme ? (
+    <LinearGradient
+      colors={['#89b0fa', '#aaa1f7']}
+      style={{
+        width: '100%',
+      }}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+    >
+      <View style={styles.tabContainer}>
+        <NaviButtons navName={props.currentPath} theme={props.theme} />
+        {/* ######################################################################
 			##### 팝업 영역
 			###################################################################### */}
-
-			{/* ### 기본 팝업 */}
-			<BasePopup popupVisible={basePopup} setPopupVIsible={setBasePopup} title={''} text={basePopupText} />
-
-		</View>
-	);
+        <Wallet theme={props.theme} />
+      </View>
+    </LinearGradient>
+  ) : (
+    <View style={[styles.tabContainer, { backgroundColor: 'white' }]}>
+      <NaviButtons navName={props.currentPath} theme={props.theme} />
+      {/* ######################################################################
+			##### 팝업 영역
+			###################################################################### */}
+      <Wallet theme={props.theme} />
+    </View>
+  );
 };
+function NaviButtons({ navName, theme }: { navName: string; theme?: string }) {
+  function onPressLimeeted() {
+    navigation.navigate(STACK.TAB, {
+      screen: 'Matching',
+    });
+  }
+  function onPressLive() {
+    navigation.navigate('Live');
+  }
+  const navigation = useNavigation<ScreenNavigationProp>();
 
+  const limitedIcon = React.useMemo(() => {
+    return navName === 'LIMEETED'
+      ? ICON.limited_on
+      : theme != undefined
+      ? ICON.limited_off_white
+      : ICON.limited_off_gray;
+  }, [navName, theme]);
+  const liveIcon = React.useMemo(() => {
+    return navName === 'LIVE'
+      ? ICON.live_on
+      : theme != undefined
+      ? ICON.live_off_white
+      : ICON.live_off_gray;
+  }, [navName, theme]);
+
+  return (
+    <View style={{ flexDirection: 'row' }}>
+      <TouchableOpacity style={[styles.tab]} onPress={onPressLimeeted}>
+        <Image
+          style={styles.limitedIcon}
+          source={limitedIcon}
+          resizeMode="contain"
+        />
+      </TouchableOpacity>
+      <TouchableOpacity style={[styles.tab]} onPress={onPressLive}>
+        <Image style={styles.liveIcon} source={liveIcon} resizeMode="contain" />
+      </TouchableOpacity>
+    </View>
+  );
+}
+export function Wallet({ theme }) {
+  const memberBase = useUserInfo(); // 회원 기본정보
+
+  return (
+    <>
+      {typeof memberBase != 'undefined' && (
+        <View
+          style={{
+            flexDirection: 'row',
+          }}
+        >
+          <View style={[styles.itemContainer, { marginRight: 8 }]}>
+            <Image style={styles.itemStyle} source={ICON.currency} />
+            <Text
+              style={[
+                styles.statusText,
+                { color: theme ? 'white' : 'rgb(84, 84 , 86)' },
+              ]}
+            >
+              {memberBase?.pass_has_amt}
+            </Text>
+          </View>
+          <View style={styles.itemContainer}>
+            <Image style={styles.itemStyle} source={ICON.ticket} />
+            <Text
+              style={[
+                styles.statusText,
+                { color: theme ? 'white' : 'rgb(84, 84 , 86)' },
+              ]}
+            >
+              {memberBase?.royal_pass_has_amt}
+            </Text>
+          </View>
+        </View>
+      )}
+    </>
+  );
+}
 export default TopNavigation;
 
 const styles = StyleSheet.create({
-	logo1: { width: 105, height: 29 },
-	tabContainer: {
-		flexDirection: 'row',
-		paddingBottom: 16,
-		paddingTop: 24,
-		paddingLeft: 16,
-		paddingRight: 16,
-		backgroundColor: 'white',
-	},
-	tab: {
-		paddingRight: 24,
-	},
-	tabText: {
-		fontSize: 20,
-		lineHeight: 32,
-		color: Color.grayAAAA,
-		fontFamily: 'AppleSDGothicNeoB00',
-	},
-	tabTextActive: {
-		color: Color.black2222,
-	},
-	activeDot: {
-		right: 18,
-		top: 4,
-		position: 'absolute',
-		width: 4,
-		height: 4,
-		borderRadius: 20,
-		backgroundColor: Color.black2222,
-	},
+  logo1: { width: 105, height: 29 },
+  tabContainer: {
+    flexDirection: 'row',
+    paddingVertical: 16,
+    paddingLeft: 16,
+    paddingRight: 16,
+    // backgroundColor: 'white',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  tab: {
+    paddingRight: 16,
+  },
+  tabText: {
+    fontSize: 18,
+    lineHeight: 32,
+    color: Color.grayAAAA,
+    fontFamily: 'AppleSDGothicNeoB00',
+  },
+  tabTextActive: {
+    color: Color.primary,
+  },
+  activeDot: {
+    right: 18,
+    top: 4,
+    position: 'absolute',
+    width: 4,
+    height: 4,
+    borderRadius: 20,
+    backgroundColor: Color.black2222,
+  },
+  itemStyle: {
+    width: 18,
+    height: 18,
+    marginRight: 5,
+    resizeMode: 'contain',
+  },
+  itemContainer: {
+    flexDirection: `row`,
+    alignItems: `center`,
+    justifyContent: `center`,
+  },
+  statusText: {
+    fontSize: 14,
+    color: 'rgb(84, 84 , 86)',
+    fontWeight: 'bold',
+  },
+  limitedIcon: {
+    width: 100,
+    height: 29,
+    resizeMode: 'contain',
+  },
+  liveIcon: {
+    width: 39,
+    height: 29,
+    resizeMode: 'contain',
+  },
 });

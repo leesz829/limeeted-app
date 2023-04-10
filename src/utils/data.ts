@@ -8,8 +8,7 @@ export const getStorageListData = (
          match_seq: any;
          req_member_seq: any;
          res_member_seq: any;
-         file_name: any;
-         file_path: any;
+         img_file_path: any;
          int_after_day: any;
          special_interest_yn: any;
          req_profile_open_yn: any;
@@ -25,8 +24,7 @@ export const getStorageListData = (
          match_seq,
          req_member_seq,
          res_member_seq,
-         file_name,
-         file_path,
+         img_file_path,
          int_after_day,
          special_interest_yn,
          req_profile_open_yn,
@@ -35,14 +33,13 @@ export const getStorageListData = (
          match_seq: any;
          req_member_seq: any;
          res_member_seq: any;
-         file_name: any;
-         file_path: any;
+         img_file_path: any;
          int_after_day: any;
          special_interest_yn: any;
          req_profile_open_yn: any;
          res_profile_open_yn: any;
       }) => {
-         const img_path = properties.img_domain + file_path + file_name;
+         const img_path = properties.img_domain + img_file_path;
          const dataJson = { match_seq: '', req_member_seq: '', res_member_seq: '', img_path: '', dday: 0, special_interest_yn: '', req_profile_open_yn: '', res_profile_open_yn: '' };
          const dday_mod = 7 - Number(int_after_day);
 

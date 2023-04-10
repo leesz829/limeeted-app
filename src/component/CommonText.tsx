@@ -7,11 +7,11 @@ import { Color } from 'assets/styles/Color';
 
 type TextType = 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 export type TextProps = {
-	textStyle?: StyleProp<TextStyle>;
-	type?: TextType;
-	color?: ColorType;
-	fontWeight?: WeightType;
-	lineHeight?: number;
+  textStyle?: StyleProp<TextStyle>;
+  type?: TextType;
+  color?: ColorType;
+  fontWeight?: WeightType;
+  lineHeight?: number;
 };
 /**
  * 공통 인풋박스
@@ -24,69 +24,69 @@ export type TextProps = {
  *
  */
 export const CommonText: FC<TextProps> = (props) => {
-	const { textStyle, type, color, fontWeight, children, lineHeight } = props;
-	const style = styles({ type, color, fontWeight, lineHeight });
+  const { textStyle, type, color, fontWeight, children, lineHeight } = props;
+  const style = styles({ type, color, fontWeight, lineHeight });
 
-	return <Text style={[style.textStyle, textStyle]}>{children}</Text>;
+  return <Text style={[style.textStyle, textStyle]}>{children}</Text>;
 };
 
 const styles = ({
-	type,
-	color,
-	fontWeight,
-	lineHeight
+  type,
+  color,
+  fontWeight,
+  lineHeight,
 }: {
-	type?: string;
-	color?: ColorType;
-	fontWeight?: WeightType;
-	lineHeight?: number;
+  type?: string;
+  color?: ColorType;
+  fontWeight?: WeightType;
+  lineHeight?: number;
 }) => {
-	let fontSize = 16;
-	let fontFamily = 'AppleSDGothicNeoR00';
+  let fontSize = 16;
+  let fontFamily = 'AppleSDGothicNeoR00';
 
-	switch (type) {
-		case 'h2':
-			fontSize = 24;
-			break;
-		case 'h3':
-			fontSize = 20;
-			break;
-		case 'h4':
-			fontSize = 18;
-			break;
-		case 'h5':
-			fontSize = 14;
-			break;
-		case 'h6':
-			fontSize = 12;
-			break;
-	}
+  switch (type) {
+    case 'h2':
+      fontSize = 24;
+      break;
+    case 'h3':
+      fontSize = 20;
+      break;
+    case 'h4':
+      fontSize = 18;
+      break;
+    case 'h5':
+      fontSize = 14;
+      break;
+    case 'h6':
+      fontSize = 12;
+      break;
+  }
 
-	switch (fontWeight) {
-		case '300':
-			fontFamily = 'AppleSDGothicNeoT00';
-			break;
-		case '500':
-			fontFamily = 'AppleSDGothicNeoM00';
-			break;
-		case '700':
-			fontFamily = 'AppleSDGothicNeoB00';
-			break;
-	}
+  switch (fontWeight) {
+    case '300':
+      fontFamily = 'AppleSDGothicNeoT00';
+      break;
+    case '500':
+      fontFamily = 'AppleSDGothicNeoM00';
+      break;
+    case '700':
+      fontFamily = 'AppleSDGothicNeoB00';
+      break;
+  }
 
-	if(typeof lineHeight !== 'undefined') {
-		lineHeight = lineHeight;
-	} else {
-		lineHeight = fontSize + 8;
-	}
+  if (typeof lineHeight !== 'undefined') {
+    lineHeight = lineHeight;
+  } else {
+    lineHeight = fontSize + 8;
+  }
 
-	return StyleSheet.create({
-		textStyle: {
-			//lineHeight: fontSize + 8,
-			lineHeight: lineHeight,
-			color: color ? color : Color.black2222,
-			fontSize,
-			fontFamily,
-		},
-	});
+  return StyleSheet.create({
+    textStyle: {
+      //lineHeight: fontSize + 8,
+      lineHeight: lineHeight,
+      color: color ? color : Color.black2222,
+      fontSize,
+      fontFamily,
+    },
+  });
 };

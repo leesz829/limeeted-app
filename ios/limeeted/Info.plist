@@ -41,8 +41,16 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
-  <key>CodePushDeploymentKey</key>
-  <string>${CODEPUSH_KEY}</string>
+	<key>CodePushDeploymentKey</key>
+	<string>${CODEPUSH_KEY}</string>
+	<key>FIREBASE_ANALYTICS_COLLECTION_DEACTIVATED</key>
+	<string>YES</string>
+	<key>FIREBASE_ANALYTICS_COLLECTION_ENABLED</key>
+	<string>NO</string>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<true/>
+	<key>FirebaseScreenReportingEnabled</key>
+	<false/>
 	<key>KAKAO_APP_KEY</key>
 	<string>f33df8242ecffe96078d10be73b34567</string>
 	<key>LSApplicationCategoryType</key>
@@ -73,22 +81,12 @@
 			</dict>
 		</dict>
 	</dict>
-  
-  <key>FirebaseAppDelegateProxyEnabled</key>
-  <false/>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>서비스 동작을 위해 위치 정보가 필요합니다</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>서비스 동작을 위해 위치 정보가 필요합니다</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
-  <key>FIREBASE_ANALYTICS_COLLECTION_ENABLED</key>
-  <string>NO</string>
-  <key>FIREBASE_ANALYTICS_COLLECTION_DEACTIVATED</key>
-  <string>YES</string>
-  <key>FirebaseScreenReportingEnabled</key>
-  <false/>
-  <key>UIBackgroundModes</key>
-  <array>
-      <string>fetch</string>
-      <string>remote-notification</string>
-  </array>
+	<string>서비스 동작을 위해 위치 정보가 필요합니다</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>RIDIBatang.otf</string>
@@ -96,6 +94,16 @@
 		<string>AppleSDGothicNeoM00.ttf</string>
 		<string>AppleSDGothicNeoR00.ttf</string>
 		<string>AppleSDGothicNeoT00.ttf</string>
+		<string>AppleSDGothicNeoEB00.ttf</string>
+		<string>AppleSDGothicNeoH00.ttf</string>
+		<string>AppleSDGothicNeoL00.ttf</string>
+		<string>AppleSDGothicNeoSB00.ttf</string>
+		<string>AppleSDGothicNeoUL00.ttf</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>SplashScreen</string>

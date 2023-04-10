@@ -1,15 +1,92 @@
-{"payload":{"google.c.a.e":"1",
-"gcm.notification.body":"테스트 입니다!!!!",
-"com.google.firebase.iid.WakeLockHolder.wakefulintent":true,
-"google.message_id":"0:1670082232778075%c5ba1b4bc5ba1b4b",
-"gcm.notification.title":"리미티드 알림 입니다!!",
-"collapse_key":"com.appsquad.limeeted",
-"google.delivered_priority":"normal",
-"google.original_priority":"normal",
-"gcm.notification.e":"1",
-"google.sent_time":1670082232770,
-"from":"535563482959",
-"gcm.n.dnp":"1",
-"google.c.sender.id":"535563482959",
-"google.ttl":2419200},
-"identifier":"0:1670082232778075%c5ba1b4bc5ba1b4b"}
+{
+  "result_msg": "정상",
+  "interview_list": [
+    {
+      "order_seq": 1,
+      "answer": "오픈 준비",
+      "disp_yn": "Y",
+      "use_yn": "Y",
+      "member_interview_seq": 168,
+      "code_name": "요즘 나의 가장 큰 고민은?",
+      "common_code": "INTER_00"
+    }
+  ],
+  "second_auth_list": [],
+  "match_member_info": {
+    "profile_type": "NEW",
+    "gender": "M",
+    "name": "ROMEO_01",
+    "auth_acct_cnt": 0,
+    "face_code_name": "행복한 댕댕이",
+    "comment": "반가워요 테스트입니다.",
+    "social_grade": "7",
+    "profile_score": "7.0",
+    "face_code": "FACE_M_02",
+    "member_seq": 1,
+    "age": 29
+  },
+  "safe_royal_pass": 40000,
+  "result_code": "0000",
+  "interest_list": [],
+  "profile_img_list": [
+    {
+      "file_seq": 1,
+      "img_file_path": "/profile/TEST_IMG_M_001.png",
+      "profile_type": "NEW",
+      "name": "ROMEO_01",
+      "comment": "반가워요 테스트입니다.",
+      "member_seq": 1,
+      "age": 29
+    },
+    {
+      "file_seq": 2,
+      "img_file_path": "/profile/TEST_IMG_M_002.png",
+      "profile_type": "NEW",
+      "name": "ROMEO_01",
+      "comment": "반가워요 테스트입니다.",
+      "member_seq": 1,
+      "age": 29
+    },
+    {
+      "file_seq": 3,
+      "img_file_path": "/profile/TEST_IMG_M_003.png",
+      "profile_type": "NEW",
+      "name": "ROMEO_01",
+      "comment": "반가워요 테스트입니다.",
+      "member_seq": 1,
+      "age": 29
+    }
+  ],
+  "report_code_list": [
+    {
+      "group_code": "DECLAR",
+      "group_code_name": "신고타입",
+      "code_name": "허위 프로필",
+      "common_code": "PROFILE"
+    },
+    {
+      "group_code": "DECLAR",
+      "group_code_name": "신고타입",
+      "code_name": "과도한 성적 표현",
+      "common_code": "SEXUAL"
+    },
+    {
+      "group_code": "DECLAR",
+      "group_code_name": "신고타입",
+      "code_name": "불쾌감을 주는 표현",
+      "common_code": "RUDE"
+    },
+    {
+      "group_code": "DECLAR",
+      "group_code_name": "신고타입",
+      "code_name": "광고",
+      "common_code": "AD"
+    },
+    {
+      "group_code": "DECLAR",
+      "group_code_name": "신고타입",
+      "code_name": "기타",
+      "common_code": "ETC"
+    }
+  ]
+}
