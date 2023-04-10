@@ -8,13 +8,27 @@ import { CommonBtn } from 'component/CommonBtn';
 import { CommonInput } from 'component/CommonInput';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
-import { SUCCESS, LOGIN_REFUSE, LOGIN_EMPTY, LOGIN_WAIT, LOGIN_EXIT } from 'constants/reusltcode';
+import {
+  SUCCESS,
+  LOGIN_REFUSE,
+  LOGIN_EMPTY,
+  LOGIN_WAIT,
+  LOGIN_EXIT,
+} from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
 import storeKey, { JWT_TOKEN } from 'constants/storeKey';
 import { usePopup } from 'Context';
 import { useUserInfo } from 'hooks/useUserInfo';
 import React, { useEffect, useState } from 'react';
-import { Dimensions, Image, ScrollView, TouchableOpacity, View, Platform, PermissionsAndroid } from 'react-native';
+import {
+  Dimensions,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  View,
+  Platform,
+  PermissionsAndroid,
+} from 'react-native';
 import { useDispatch } from 'react-redux';
 import { setPrincipal } from 'redux/reducers/authReducer';
 import * as mbrReducer from 'redux/reducers/mbrReducer';
@@ -22,7 +36,6 @@ import { ICON, IMAGE } from 'utils/imageUtils';
 import { Modalize } from 'react-native-modalize';
 import { Color } from 'assets/styles/Color';
 import Geolocation from 'react-native-geolocation-service';
-
 
 GoogleSignin.configure({
   webClientId:
@@ -40,13 +53,13 @@ export const Login01 = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const { show } = usePopup();
-  const [id, setId] = React.useState('');
-  const [password, setPassword] = React.useState('');
+  const [id, setId] = React.useState('test09m');
+  const [password, setPassword] = React.useState('1234');
   const me = useUserInfo();
   const { width, height } = Dimensions.get('window');
 
-  const [latitude, setLatitude] = React.useState();     // 위도
-  const [longitude, setLongitude] = React.useState();   // 경도
+  const [latitude, setLatitude] = React.useState(); // 위도
+  const [longitude, setLongitude] = React.useState(); // 경도
 
   const [granted, setGranted] = React.useState('');
 
@@ -55,10 +68,10 @@ export const Login01 = () => {
       email_id: id,
       password,
       latitude: latitude,
-      longitude: longitude
+      longitude: longitude,
     };
     const { success, data } = await signin(body);
-    console.log('data ::::: ' , data);
+    console.log('data ::::: ', data);
 
     if (success) {
       switch (data.result_code) {
@@ -142,7 +155,7 @@ export const Login01 = () => {
       }
     }
   };
-  
+
   // 사용자 위치 확인
   async function requestPermissions() {
     try {
@@ -152,86 +165,85 @@ export const Login01 = () => {
       }
 
       // AOS 위치 정보 수집 권한 요청
-      if(Platform.OS === 'android') {
+      if (Platform.OS === 'android') {
         return await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
         );
       }
-    } catch(e) {
+    } catch (e) {
       console.log(e);
     }
   }
 
   useEffect(() => {
-    requestPermissions().then(result => {
+    requestPermissions().then((result) => {
       Geolocation.getCurrentPosition(
-        position => {
-          const {latitude, longitude} = position.coords;
+        (position) => {
+          const { latitude, longitude } = position.coords;
           setLatitude(latitude);
           setLongitude(longitude);
         },
-        error => {
-           console.log(error.code, error.message);
+        (error) => {
+          console.log(error.code, error.message);
         },
-        {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
       );
     });
   }, []);
 
-
   return (
     <>
       <ScrollView contentContainerStyle={[styles.scrollContainer]}>
-      <View style={[styles.container]}>
-        <View style={layoutStyle.alignCenter}>
-          <SpaceView>
-            <Image
-              source={IMAGE.logoMark}
-              style={styles.logoMark}
-              resizeMode="contain"
-            />
-          </SpaceView>
-          <SpaceView mb={15}>
-            <Image
-              source={IMAGE.logoText}
-              style={styles.logo}
-              resizeMode="contain"
-            />
-          </SpaceView>
-        </View>
-
-        <View>
-          <CommonInput
-            label="아이디"
-            value={id}
-            onChangeText={(id) => setId(id)}
-          />
-
-          <View style={styles.infoContainer}>
-            <SpaceView mt={4}>
-              <Image source={ICON.info} style={styles.iconSize} />
+        <View style={[styles.container]}>
+          <View style={layoutStyle.alignCenter}>
+            <SpaceView>
+              <Image
+                source={IMAGE.logoMark}
+                style={styles.logoMark}
+                resizeMode="contain"
+              />
             </SpaceView>
-
-            <SpaceView ml={8}>
-              <CommonText color={ColorType.gray6666}>
-                아이디는 이메일로 입력해 주세요.
-              </CommonText>
+            <SpaceView mb={15}>
+              <Image
+                source={IMAGE.logoText}
+                style={styles.logo}
+                resizeMode="contain"
+              />
             </SpaceView>
           </View>
 
-          <SpaceView mb={30}>
+          <View>
             <CommonInput
-              label="비밀번호"
-              value={password}
-              onChangeText={(password) => setPassword(password)}
-              isMasking={true}
-              maxLength={20}
+              label="아이디"
+              value={id}
+              onChangeText={(id) => setId(id)}
             />
-          </SpaceView>
-        </View>
 
-        <SpaceView mb={20}>
-          {/* {Platform.OS === 'ios' ? (
+            <View style={styles.infoContainer}>
+              <SpaceView mt={4}>
+                <Image source={ICON.info} style={styles.iconSize} />
+              </SpaceView>
+
+              <SpaceView ml={8}>
+                <CommonText color={ColorType.gray6666}>
+                  아이디는 이메일로 입력해 주세요.
+                </CommonText>
+              </SpaceView>
+            </View>
+
+            <SpaceView mb={30}>
+              <CommonInput
+                label="비밀번호"
+                value={password}
+                onChangeText={(password) => setPassword(password)}
+                isMasking={true}
+                maxLength={20}
+              />
+            </SpaceView>
+          </View>
+
+          <SpaceView mb={20}>
+            {/* {Platform.OS === 'ios' ? (
 							<SpaceView mb={5}>
 								<CommonBtn value={'애플로그인'} onPress={onAppleButtonPress} />
 							</SpaceView>
@@ -241,44 +253,43 @@ export const Login01 = () => {
 								<CommonBtn value={'구글로그인'} onPress={google_signIn} />
 							</SpaceView>
 						) : null} */}
-          <SpaceView mb={5}>
+            <SpaceView mb={5}>
+              <CommonBtn
+                value={'로그인'}
+                onPress={() => {
+                  if (id == '') {
+                    return show({ content: '아이디를 입력해 주세요.' });
+                  }
+                  if (password == '') {
+                    return show({ content: '비밀번호를 입력해 주세요.' });
+                  }
+
+                  //requestPermissions();
+
+                  loginProc();
+                  //dispatch(loginReduce(id, password));
+                }}
+              />
+            </SpaceView>
+            <SpaceView mb={5}>
+              <CommonBtn
+                value={'아이디/비밀번호 찾기'}
+                onPress={() => {
+                  navigation.navigate('SearchIdAndPwd');
+                }}
+              />
+            </SpaceView>
             <CommonBtn
-              value={'로그인'}
+              value={'처음으로'}
+              type={'kakao'}
+              iconSize={24}
               onPress={() => {
-                if (id == '') {
-                  return show({ content: '아이디를 입력해 주세요.' });
-                }
-                if (password == '') {
-                  return show({ content: '비밀번호를 입력해 주세요.' });
-                }
-
-                //requestPermissions();
-
-                loginProc();
-                //dispatch(loginReduce(id, password));
+                navigation.navigate('Login');
               }}
             />
           </SpaceView>
-          <SpaceView mb={5}>
-            <CommonBtn
-              value={'아이디/비밀번호 찾기'}
-              onPress={() => {
-                navigation.navigate('SearchIdAndPwd');
-              }}
-            />
-          </SpaceView>
-          <CommonBtn
-            value={'처음으로'}
-            type={'kakao'}
-            iconSize={24}
-            onPress={() => {
-              navigation.navigate('Login');
-            }}
-          />
-        </SpaceView>
-      </View>
-    </ScrollView>
-    
+        </View>
+      </ScrollView>
     </>
   );
 };

@@ -89,10 +89,10 @@ const TopNavigation: FC<Props> = (props) => {
 };
 export function Wallet({ textStyle }) {
   const memberBase = useUserInfo(); // 회원 기본정보
-  console.log('memberBase :::: ' , memberBase);
+
   return (
     <>
-      {typeof memberBase != 'undefined' &&
+      {typeof memberBase != 'undefined' && (
         <View
           style={{
             flexDirection: 'row',
@@ -111,7 +111,7 @@ export function Wallet({ textStyle }) {
             </Text>
           </View>
         </View>
-      }
+      )}
     </>
   );
 }

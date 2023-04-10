@@ -6,13 +6,14 @@ import * as React from 'react';
 import { Alert } from 'react-native';
 import { Live } from 'screens/live';
 import { LiveSearch } from 'screens/live/LiveSearch';
-import { Matching } from 'screens/matching';
+
 import { Roby } from 'screens/roby';
 import { Shop } from 'screens/shop';
 import { Storage } from 'screens/storage';
 import { Message } from 'screens/message';
 
 import CustomTab from '../CustomTab';
+import Matching from 'screens/matching';
 
 const Tab = createBottomTabNavigator<BottomParamList>();
 const Stack = createStackNavigator();

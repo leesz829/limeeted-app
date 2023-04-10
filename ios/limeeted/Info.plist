@@ -43,10 +43,18 @@
 	<string>1</string>
 	<key>CodePushDeploymentKey</key>
 	<string>${CODEPUSH_KEY}</string>
+	<key>FIREBASE_ANALYTICS_COLLECTION_DEACTIVATED</key>
+	<string>YES</string>
+	<key>FIREBASE_ANALYTICS_COLLECTION_ENABLED</key>
+	<string>NO</string>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
+	<key>FirebaseScreenReportingEnabled</key>
+	<false/>
 	<key>KAKAO_APP_KEY</key>
 	<string>f33df8242ecffe96078d10be73b34567</string>
 	<key>LSApplicationCategoryType</key>
-	<string/>
+	<string></string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>kakaokompassauth</string>
@@ -73,21 +81,12 @@
 			</dict>
 		</dict>
 	</dict>
-	<key>FirebaseAppDelegateProxyEnabled</key>
-	<false/>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>서비스 동작을 위해 위치 정보가 필요합니다</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>서비스 동작을 위해 위치 정보가 필요합니다</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
-	<key>FIREBASE_ANALYTICS_COLLECTION_ENABLED</key>
-	<string>NO</string>
-	<key>FIREBASE_ANALYTICS_COLLECTION_DEACTIVATED</key>
-	<string>YES</string>
-	<key>FirebaseScreenReportingEnabled</key>
-	<false/>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>fetch</string>
-		<string>remote-notification</string>
-	</array>
+	<string>서비스 동작을 위해 위치 정보가 필요합니다</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>RIDIBatang.otf</string>
@@ -100,6 +99,11 @@
 		<string>AppleSDGothicNeoL00.ttf</string>
 		<string>AppleSDGothicNeoSB00.ttf</string>
 		<string>AppleSDGothicNeoUL00.ttf</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>SplashScreen</string>
@@ -115,12 +119,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>서비스 동작을 위해 위치 정보가 필요합니다</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>서비스 동작을 위해 위치 정보가 필요합니다</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>서비스 동작을 위해 위치 정보가 필요합니다</string>
 </dict>
 </plist>

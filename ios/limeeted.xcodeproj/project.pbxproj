@@ -569,7 +569,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = limeeted/limeeted.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 2PTBRD7N36;
+				DEVELOPMENT_TEAM = 4HZDMH53SM;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = limeeted/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = LImeetED;
@@ -583,7 +583,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.appsquad.limeeted-ios";
+				PRODUCT_BUNDLE_IDENTIFIER = com.appsquad.limeeted;
 				PRODUCT_NAME = limeeted;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;

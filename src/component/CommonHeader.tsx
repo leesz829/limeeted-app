@@ -45,9 +45,9 @@ function CommonHeader({
       </TouchableOpacity>
 
       {title && (
-        <View style={{ flex: 1 }}>
+        <TouchableOpacity style={{ flex: 1 }} onPress={goHome}>
           <Text style={styles.titleStyle}>{title}</Text>
-        </View>
+        </TouchableOpacity>
       )}
       <View>{right || <Wallet textStyle={walletTextStyle} />}</View>
     </View>
