@@ -45,7 +45,7 @@ export const commonStyle = StyleSheet.create({
 });
 
 export const styles = StyleSheet.create({
-  bgColorGray : {
+  bgColorGray: {
     backgroundColor: Color.black2222,
   },
 
@@ -63,10 +63,10 @@ export const styles = StyleSheet.create({
   },
   logo: { width: 141, height: 26, marginBottom: 6 },
   logoMark: { width: 53, height: 46, marginBottom: 18 },
-  logoText: { 
+  logoText: {
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 25,
-    color: '#393939'
+    color: '#393939',
   },
   rotate90: { transform: [{ rotate: '90deg' }] },
   rotateN90: { transform: [{ rotate: '-90deg' }] },
@@ -131,8 +131,9 @@ export const styles = StyleSheet.create({
     marginBottom: 24,
   },
   iconSize: {
-    width: 16,
-    height: 16,
+    width: 8.4,
+    height: 15.3,
+    resizeMode: 'contain',
   },
   iconSize24: {
     width: 24,
