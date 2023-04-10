@@ -366,23 +366,25 @@ export const Introduce = (props: Props) => {
 						<CommonText textStyle={_styles.labelStyle2}>관심사</CommonText>
 					</SpaceView>
           
-          <SpaceView mb={40} mt={15} viewStyle={[layoutStyle.row, layoutStyle.wrap]}>
-            {checkIntList.map((i, index) => {
-              return (
-                i.code_name != "" ? (
-                  <SpaceView mr={index % 3 !== 2 ? 8 : 0} key={index + 'reg'}>
-                    <View style={[styles.interestBox, styles.boxActive]}>
-                      <CommonText color={ColorType.primary}>
-                        {i.code_name}
-                      </CommonText>
-                    </View>
-                  </SpaceView>
-                ) : null
-              );
-            })}
-          </SpaceView>
+          {checkIntList.length > 0 &&
+            <SpaceView mb={40} mt={15} viewStyle={[layoutStyle.row, layoutStyle.wrap]}>
+              {checkIntList.map((i, index) => {
+                return (
+                  i.code_name != "" ? (
+                    <SpaceView mr={index % 3 !== 2 ? 8 : 0} key={index + 'reg'}>
+                      <View style={[styles.interestBox, styles.boxActive]}>
+                        <CommonText color={ColorType.primary}>
+                          {i.code_name}
+                        </CommonText>
+                      </View>
+                    </SpaceView>
+                  ) : null
+                );
+              })}
+            </SpaceView>
+          }
 
-          <SpaceView mb={15}>
+          <SpaceView mb={15} mt={5}>
             <CommonBtn value={'관심사 변경'} 
 							          height={48} 
 								        type={'white'} 
@@ -411,7 +413,7 @@ export const Introduce = (props: Props) => {
           </View>
         </SpaceView>
 
-        <SpaceView mb={24}>
+        {/* <SpaceView mb={24}>
           <CommonInput
             label={'회사명'}
             value={job_name}
@@ -419,7 +421,7 @@ export const Introduce = (props: Props) => {
             placeholder={'회사명을 입력해 주세요.'}
             placeholderTextColor={'#c6ccd3'}
           />
-        </SpaceView>
+        </SpaceView> */}
 
         {/* <SpaceView mb={24} viewStyle={styles.halfContainer}>
 					<View style={styles.halfItemLeft}>

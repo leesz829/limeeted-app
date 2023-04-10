@@ -89,6 +89,7 @@ export const StorageProfile = (props: Props) => {
     profileImgList: [],
     secondAuthList: [],
     interviewList: [],
+    interestList: [],
   });
 
   /// 매칭 기본 정보
@@ -140,6 +141,7 @@ export const StorageProfile = (props: Props) => {
           let tmpProfileImgList = new Array(); // 프로필 이미지 목록
           let tmpSecondAuthList = new Array(); // 2차 인증 목록
           let tmpInterviewList = new Array(); // 인터뷰 목록
+          let tmpInterestList = new Array();     // 관심사 목록
 
           // 회원 프로필 이미지 정보 구성
           data?.mbr_img_list?.map(
@@ -166,6 +168,14 @@ export const StorageProfile = (props: Props) => {
             }
           );
 
+          // 회원 관심사 목록 정보 구성
+          data.interest_list?.map(
+            ({ interest_seq, common_code, code_name }: { interest_seq: any; common_code: any; code_name: any; }) => {
+              const dataJson = { interest_seq: interest_seq, common_code: common_code, code_name: code_name };
+              tmpInterestList.push(dataJson);
+            }
+          );
+
           setData({
             ...data,
             matchBase: data.match_base,
@@ -173,6 +183,7 @@ export const StorageProfile = (props: Props) => {
             profileImgList: tmpProfileImgList,
             secondAuthList: tmpSecondAuthList,
             interviewList: tmpInterviewList,
+            interestList: tmpInterestList,
           });
 
           // 신고사유 코드 목록 적용
@@ -541,6 +552,36 @@ export const StorageProfile = (props: Props) => {
 
           {data.secondAuthList && createSecondAuthListBody()}
 
+
+          {/* ###################################################################################################
+										관심사 영역
+					################################################################################################### */}
+          {data?.interestList?.length > 0 && 
+            <>
+              <SpaceView viewStyle={layoutStyle.rowBetween} mb={10}>
+                <View>
+                  <CommonText fontWeight={'700'} type={'h3'}>
+                    관심사
+                  </CommonText>
+                </View>
+              </SpaceView>
+
+              <SpaceView mb={40} mt={15} viewStyle={[layoutStyle.row, layoutStyle.wrap]}>
+                {data.interestList.map((i, index) => {
+                  return (
+                    <SpaceView mr={index % 3 !== 2 ? 8 : 0} key={index + 'reg'}>
+                      <View style={[styles.interestBox, styles.boxActive]}>
+                        <CommonText color={ColorType.primary}>
+                          {i.code_name}
+                        </CommonText>
+                      </View>
+                    </SpaceView>
+                  );
+                })}
+              </SpaceView>
+            </>
+          }
+
           {/* ###################################################################################
                ####### 프로필 평점 영역
                ################################################################################### */}
@@ -671,7 +712,7 @@ export const StorageProfile = (props: Props) => {
               <SpaceView viewStyle={layoutStyle.rowBetween} mb={29}>
                 <ToolTip
                   title={'프로필 평점'}
-                  desc={'프로필 평점에 대한 툴팁'}
+                  desc={'<라이브>에 소개된 내 프로필에 다른 이성들이 부여한 프로필 평점'}
                 />
 
                 <View>
@@ -723,9 +764,9 @@ export const StorageProfile = (props: Props) => {
             {/* ###############################################
                                  인터뷰 영역
                   ############################################### */}
-            <View style={styles.interviewContainer}>
-              {data?.interviewList?.length > 0 ? (
-                data.interviewList.map(
+            {data?.interviewList?.length > 0 && 
+              <View style={styles.interviewContainer}>
+                  {data.interviewList.map(
                   ({
                     common_code,
                     code_name,
@@ -767,21 +808,9 @@ export const StorageProfile = (props: Props) => {
                       </SpaceView>
                     </>
                   )
-                )
-              ) : (
-                <>
-                  <SpaceView mb={32} viewStyle={layoutStyle.row}>
-                    <SpaceView mr={16}>
-                      <Image source={ICON.manage} style={styles.iconSize40} />
-                    </SpaceView>
-
-                    <View style={styles.interviewLeftTextContainer}>
-                      <CommonText type={'h5'}>질문을 등록해주세요</CommonText>
-                    </View>
-                  </SpaceView>
-                </>
-              )}
-            </View>
+                )}
+              </View>
+            }
           </SpaceView>
 
           <SpaceView mb={40}>

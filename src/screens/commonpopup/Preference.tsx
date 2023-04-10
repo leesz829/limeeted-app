@@ -364,7 +364,6 @@ export const Preference = (props: Props) => {
     }
   }, [wantBusiness2]);
   React.useEffect(() => {
-    console.log('1212131');
     if (wantBusiness3 != '' && typeof wantBusiness3 !== 'undefined') {
       getJobCodeList('03');
     }
@@ -373,74 +372,83 @@ export const Preference = (props: Props) => {
   return (
     <>
       <CommonHeader title={'내 선호 이성'} />
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <SpaceView mb={32}>
-          <SpaceView mb={0}>
-            <CommonText fontWeight={'700'} type={'h4'}>
-              나이
-            </CommonText>
+      <ScrollView 
+        contentContainerStyle={[
+          styles.scrollContainer,
+          { justifyContent: 'space-between' },
+        ]}>
+
+        <View>  
+          <SpaceView mb={32}>
+            <SpaceView mb={0}>
+              <CommonText fontWeight={'700'} type={'h4'}>
+                나이
+              </CommonText>
+            </SpaceView>
+
+            <SpaceView viewStyle={styles.halfContainer}>
+              <View style={styles.halfItemLeft}>
+                <CommonInput
+  //              label={'최소'}
+                  keyboardType="number-pad"
+                  value={wantAgeMin}
+                  onChangeText={(wantAgeMin) => setWantAgeMin(wantAgeMin)}
+                  maxLength={2}
+                  placeholder={'최소'}
+                  placeholderTextColor={'#c6ccd3'}
+                />
+              </View>
+
+              <View style={styles.halfItemRight}>
+                <CommonInput
+  //              label={'최대'}
+                  keyboardType="number-pad"
+                  value={wantAgeMax}
+                  onChangeText={(wantAgeMax) => setWantAgeMax(wantAgeMax)}
+                  maxLength={2}
+                  placeholder={'최대'}
+                  placeholderTextColor={'#c6ccd3'}
+                />
+              </View>
+            </SpaceView>
+            
           </SpaceView>
 
-          <SpaceView viewStyle={styles.halfContainer}>
-            <View style={styles.halfItemLeft}>
-              <CommonInput
-//              label={'최소'}
-                keyboardType="number-pad"
-                value={wantAgeMin}
-                onChangeText={(wantAgeMin) => setWantAgeMin(wantAgeMin)}
-                maxLength={2}
-                placeholder={'최소'}
-                placeholderTextColor={'#c6ccd3'}
-              />
-            </View>
+          <SpaceView mb={32}>
+            <SpaceView mb={0}>
+              <CommonText fontWeight={'700'} type={'h4'}>
+                거리
+              </CommonText>
+            </SpaceView>
 
-            <View style={styles.halfItemRight}>
-              <CommonInput
-//              label={'최대'}
-                keyboardType="number-pad"
-                value={wantAgeMax}
-                onChangeText={(wantAgeMax) => setWantAgeMax(wantAgeMax)}
-                maxLength={2}
-                placeholder={'최대'}
-                placeholderTextColor={'#c6ccd3'}
-              />
-            </View>
+            <SpaceView viewStyle={styles.halfContainer}>
+              <View style={styles.halfItemLeft}>
+                <CommonInput
+  //              label={'최소(km)'}
+                  keyboardType="number-pad"
+                  value={wantLocal1}
+                  onChangeText={(wantLocal1) => setWantLocal1(wantLocal1)}
+                  maxLength={2}
+                  placeholder={'최소(km)'}
+                  placeholderTextColor={'#c6ccd3'}
+                />
+              </View>
+
+              <View style={styles.halfItemRight}>
+                <CommonInput
+  //              label={'최대(km)'}
+                  keyboardType="number-pad"
+                  value={wantLocal2}
+                  onChangeText={(wantLocal2) => setWantLocal2(wantLocal2)}
+                  maxLength={2}
+                  placeholder={'최대(km)'}
+                  placeholderTextColor={'#c6ccd3'}
+                />
+              </View>
+            </SpaceView>
           </SpaceView>
-        </SpaceView>
 
-        <SpaceView mb={32}>
-          <SpaceView mb={0}>
-            <CommonText fontWeight={'700'} type={'h4'}>
-              거리
-            </CommonText>
-          </SpaceView>
-
-          <SpaceView viewStyle={styles.halfContainer}>
-            <View style={styles.halfItemLeft}>
-              <CommonInput
-//              label={'최소(km)'}
-                keyboardType="number-pad"
-                value={wantLocal1}
-                onChangeText={(wantLocal1) => setWantLocal1(wantLocal1)}
-                maxLength={2}
-                placeholder={'최소(km)'}
-                placeholderTextColor={'#c6ccd3'}
-              />
-            </View>
-
-            <View style={styles.halfItemRight}>
-              <CommonInput
-//              label={'최대(km)'}
-                keyboardType="number-pad"
-                value={wantLocal2}
-                onChangeText={(wantLocal2) => setWantLocal2(wantLocal2)}
-                maxLength={2}
-                placeholder={'최대(km)'}
-                placeholderTextColor={'#c6ccd3'}
-              />
-            </View>
-          </SpaceView>
-        </SpaceView>
+        </View>
 
         {/* <SpaceView mb={32}>
           <SpaceView mb={16}>
@@ -504,7 +512,7 @@ export const Preference = (props: Props) => {
           </SpaceView>
         </SpaceView> */}
 
-        <SpaceView mb={40}>
+        {/* <SpaceView mb={40}>
           <SpaceView mb={0}>
             <CommonText fontWeight={'700'} type={'h4'}>
               인상
@@ -534,9 +542,9 @@ export const Preference = (props: Props) => {
               callbackFn={wantPerson3CallbackFn}
             />
           </SpaceView>
-        </SpaceView>
+        </SpaceView> */}
 
-        <SpaceView mb={16}>
+        <SpaceView mb={16} viewStyle={[layoutStyle.alignEnd]}>
           <CommonBtn
             value={'저장'}
             type={'primary'}

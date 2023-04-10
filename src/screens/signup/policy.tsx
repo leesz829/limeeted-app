@@ -20,6 +20,7 @@ import { Modalize } from 'react-native-modalize';
 import { Terms } from 'screens/commonpopup/terms';
 import { Privacy } from 'screens/commonpopup/privacy';
 import { LocationService } from 'screens/commonpopup/locationService';
+import ToggleSwitch from 'toggle-switch-react-native';
 
 
 /* ################################################################################################################
@@ -34,23 +35,28 @@ export const Policy = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
 
   const { show } = usePopup();  // 공통 팝업
+  const { width, height } = Dimensions.get('window');
 
   const [allAgree, setAllAgree] = useState<boolean>(false);
-  const [mrktAgree, setMrktAgree] = useState<boolean>(false);
+  const [termsAgree, setTermsAgree] = useState<boolean>(false); // 이용약관
+  const [privacyAgree, setPrivacyAgree] = useState<boolean>(false); // 개인정보처리방침
+  const [locationAgree, setLocationAgree] = useState<boolean>(false); // 위치기반서비스
+  const [mrktAgree, setMrktAgree] = useState<boolean>(false); // 마케팅 수신동의
 
   // 전체 동의
-  const allAgreeBtn = async (type: string, value: boolean) => {
-    console.log('value :::: ', value);
-
-    /* if(type === 'ALL') {
-      setAllAgree(value);
-      setMrktAgree(value);
-    } else if(type === 'MRKT') {
-      setMrktAgree(value);
-    } */
+  const allAgreeBtn = async (value: boolean) => {
+    if(value) {
+      setTermsAgree(true);
+      setPrivacyAgree(true);
+      setLocationAgree(true);
+      setMrktAgree(true);
+    } else {
+      setTermsAgree(false);
+      setPrivacyAgree(false);
+      setLocationAgree(false);
+      setMrktAgree(false);
+    }
   };
-  
-
   
   // 이용약관 팝업
   const terms_modalizeRef = useRef<Modalize>(null);
@@ -79,9 +85,18 @@ export const Policy = (props: Props) => {
     location_modalizeRef.current?.close();
   };
 
-
-
-  const { width, height } = Dimensions.get('window');
+  // toggle 활성화
+  const toggleActive = async (type:string, value: boolean) => {
+    if(type == 'terms') {
+      terms_onOpen();
+    } else if(type == 'privacy') {
+      privacy_onOpen();
+    } else if(type == 'location') {
+      location_onOpen();
+    } else if(type == 'marketing') {
+      setMrktAgree(value);
+    }
+  };
 
   return (
     <>
@@ -109,7 +124,7 @@ export const Policy = (props: Props) => {
                 전체동의  
               </CommonText>
               <CommonSwich
-                callbackFn={(value: boolean) => { allAgreeBtn('ALL', value); }}
+                callbackFn={(value: boolean) => { allAgreeBtn(value); }}
                 isOn={allAgree} />
             </View>
           </SpaceView>
@@ -122,9 +137,13 @@ export const Policy = (props: Props) => {
               <CommonText type={'h6'} textStyle={commonStyle.fontSize13}>(필수)이용약관</CommonText>
             </View>
             <View style={[layoutStyle.rowBetween]}>
-              <TouchableOpacity onPress={terms_onOpen}>
-                <CommonText type={'h6'} textStyle={commonStyle.fontSize13}>보기</CommonText>
-              </TouchableOpacity>
+              <ToggleSwitch
+                isOn={termsAgree}
+                onColor={Color.primary}
+                offColor={Color.grayDDDD}
+                size="small"
+                onToggle={(isOn) => toggleActive('terms', isOn)}
+              />
             </View>
           </SpaceView>
 
@@ -136,9 +155,13 @@ export const Policy = (props: Props) => {
               <CommonText type={'h6'} textStyle={commonStyle.fontSize13}>(필수)개인정보처리방침</CommonText>
             </View>
             <View style={[layoutStyle.rowBetween]}>
-              <TouchableOpacity onPress={privacy_onOpen}>
-                <CommonText type={'h6'} textStyle={commonStyle.fontSize13}>보기</CommonText>
-              </TouchableOpacity>
+              <ToggleSwitch
+                isOn={privacyAgree}
+                onColor={Color.primary}
+                offColor={Color.grayDDDD}
+                size="small"
+                onToggle={(isOn) => toggleActive('privacy', isOn)}
+              />
             </View>
           </SpaceView>
 
@@ -149,10 +172,19 @@ export const Policy = (props: Props) => {
               </View>
               <CommonText type={'h6'} textStyle={commonStyle.fontSize13}>(필수)위치기반서비스 이용약관</CommonText>
             </View>
+
             <View style={[layoutStyle.rowBetween]}>
-              <TouchableOpacity onPress={location_onOpen}>
+              <ToggleSwitch
+                isOn={locationAgree}
+                onColor={Color.primary}
+                offColor={Color.grayDDDD}
+                size="small"
+                onToggle={(isOn) => toggleActive('location', isOn)}
+              />
+
+              {/* <TouchableOpacity onPress={location_onOpen}>
                 <CommonText type={'h6'} textStyle={commonStyle.fontSize13}>보기</CommonText>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </SpaceView>
 
@@ -164,11 +196,19 @@ export const Policy = (props: Props) => {
               <CommonText type={'h6'} textStyle={commonStyle.fontSize13}>(선택)마케팅 수신동의</CommonText>
             </View>
             <View style={[layoutStyle.rowBetween]}>
-              <CommonSwich
+              <ToggleSwitch
+                isOn={mrktAgree}
+                onColor={Color.primary}
+                offColor={Color.grayDDDD}
+                size="small"
+                onToggle={(isOn) => toggleActive('marketing', isOn)}
+              />
+
+             {/*  <CommonSwich
                 callbackFn={(value: boolean) => {
                   allAgreeBtn('MRKT', value);
                 }}
-                isOn={mrktAgree} />
+                isOn={mrktAgree} /> */}
             </View>
           </SpaceView>
         </SpaceView>
@@ -178,6 +218,30 @@ export const Policy = (props: Props) => {
             value={'다음'}
             type={'primary'}
             onPress={() => {
+              if(!termsAgree) {
+                show({
+                  content: '이용약관에 동의해 주세요.' ,
+                  confirmCallback: function() { }
+                });
+                return;
+              }
+
+              if(!privacyAgree) {
+                show({
+                  content: '개인정보처리방침에 동의해 주세요.' ,
+                  confirmCallback: function() { }
+                });
+                return;
+              }
+
+              if(!locationAgree) {
+                show({
+                  content: '위치기반서비스 이용약관에 동의해 주세요.' ,
+                  confirmCallback: function() { }
+                });
+                return;
+              }
+
               navigation.navigate({
                 name : 'NiceAuth',
                 params : {
@@ -207,7 +271,10 @@ export const Policy = (props: Props) => {
                 <CommonBtn
                   value={'취소'}
                   type={'gray'}
-                  onPress={terms_onClose}
+                  onPress={() => {
+                    setTermsAgree(false);
+                    terms_onClose();
+                  }}
                   width={195}
                 />
               </View>
@@ -215,7 +282,10 @@ export const Policy = (props: Props) => {
                 <CommonBtn
                   value={'동의 후 닫기'}
                   type={'primary'}
-                  onPress={terms_onClose}
+                  onPress={() => {
+                    setTermsAgree(true);
+                    terms_onClose();
+                  }}
                   width={195}
                 />
               </View>
@@ -260,7 +330,10 @@ export const Policy = (props: Props) => {
                 <CommonBtn
                   value={'취소'}
                   type={'gray'}
-                  onPress={privacy_onClose}
+                  onPress={() => {
+                    setPrivacyAgree(false);
+                    privacy_onClose();
+                  }}
                   width={195}
                 />
               </View>
@@ -268,7 +341,10 @@ export const Policy = (props: Props) => {
                 <CommonBtn
                   value={'동의 후 닫기'}
                   type={'primary'}
-                  onPress={privacy_onClose}
+                  onPress={() => {
+                    setPrivacyAgree(true);
+                    privacy_onClose();
+                  }}
                   width={195}
                 />
               </View>
@@ -317,7 +393,10 @@ export const Policy = (props: Props) => {
                 <CommonBtn
                   value={'취소'}
                   type={'gray'}
-                  onPress={location_onClose}
+                  onPress={() => {
+                    setLocationAgree(false);
+                    location_onClose();
+                  }}
                   width={195}
                 />
               </View>
@@ -325,7 +404,10 @@ export const Policy = (props: Props) => {
                 <CommonBtn
                   value={'동의 후 닫기'}
                   type={'primary'}
-                  onPress={location_onClose}
+                  onPress={() => {
+                    setLocationAgree(true);
+                    location_onClose();
+                  }}
                   width={195}
                 />
               </View>
@@ -336,7 +418,7 @@ export const Policy = (props: Props) => {
           <>
             <View style={modalStyle.modalHeaderContainer}>
               <CommonText fontWeight={'700'} type={'h3'}>
-                개인정보 취급방침
+                위치기반 서비스 이용약관
               </CommonText>
               <TouchableOpacity onPress={location_onClose}>
                 <Image source={ICON.xBtn} style={styles.iconSize24} />
@@ -346,10 +428,6 @@ export const Policy = (props: Props) => {
         }
       >
         <View style={[modalStyle.modalBody, layoutStyle.flex1]}>
-          {/* <SpaceView mb={24}>
-						<CommonDatePicker />
-					</SpaceView> */}
-
           <SpaceView
             mb={24}
             viewStyle={{ width: width - 32, backgroundColor: Color.grayF8F8 }}

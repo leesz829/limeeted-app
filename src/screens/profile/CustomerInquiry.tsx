@@ -1,12 +1,12 @@
-import { styles, modalStyle, layoutStyle } from 'assets/styles/Styles';
+import { styles, modalStyle, layoutStyle, commonStyle } from 'assets/styles/Styles';
 import CommonHeader from 'component/CommonHeader';
 import { CommonInput } from 'component/CommonInput';
 import { CommonTextarea } from 'component/CommonTextarea';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
-import { ScrollView, View, Image, Modal, TouchableOpacity, Alert, Text, StyleSheet } from 'react-native';
+import { ScrollView, View, Image, Modal, TouchableOpacity, Alert, Text, StyleSheet, Dimensions } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
-import * as React from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { CommonBtn } from 'component/CommonBtn';
 import { StackParamList, ScreenNavigationProp, ColorType } from '@types';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -39,6 +39,8 @@ export const CustomerInquiry = (props : Props) => {
 	
 	const jwtToken  = hooksMember.getJwtToken();   // 토큰
 	const memberSeq = hooksMember.getMemberSeq(); // 회원번호
+
+	const [comfirmModalVisible, setComfirmModalVisible] = useState(false);
 	
 	// ################### 팝업 관련 #####################
 	const [customerInquiryCompletePopup, setCustomerInquiryCompletePopup] = React.useState(false); // 문의 완료 팝업
@@ -67,7 +69,8 @@ export const CustomerInquiry = (props : Props) => {
 			if(success) {
 				switch (data.result_code) {
 					case SUCCESS:
-						show({
+						setComfirmModalVisible(true);
+						/* show({
 							title: '문의 완료',
 							content: '문의하신 내용이 접수되었습니다.\n문의 내용은 관리자 확인 후 우편함으로\n답변드릴 예정입니다.' ,
 							confirmCallback: function() {
@@ -75,7 +78,7 @@ export const CustomerInquiry = (props : Props) => {
 									screen: 'Roby',
 								});
 							}
-						});
+						}); */
 						break;
 					default:
 						show({
@@ -96,6 +99,8 @@ export const CustomerInquiry = (props : Props) => {
 			
 		}
 	};
+
+	
 
 	return (
 		<>
@@ -143,10 +148,45 @@ export const CustomerInquiry = (props : Props) => {
 				</SpaceView>
 
 			</ScrollView>
+
+			{/* ###################### 구매하기 Confirm 팝업 */}
+			<Modal visible={comfirmModalVisible} transparent={true} style={modalStyleProduct.modal}>
+				<View style={modalStyle.modalBackground}>
+					<View style={modalStyleProduct.modalStyle1}>
+						<SpaceView mb={16} viewStyle={layoutStyle.alignCenter}>
+							<CommonText fontWeight={'700'} type={'h4'}>
+								문의 완료
+							</CommonText>
+						</SpaceView>
+
+						<SpaceView viewStyle={[layoutStyle.alignCenter]}>
+							<CommonText type={'h5'} textStyle={[commonStyle.textCenter]}>
+								문의하신 내용이 접수되었습니다.{'\n'}문의 내용은 관리자 확인 후 우편함으로{'\n'}답변드릴 예정입니다.
+							</CommonText>
+						</SpaceView>
+
+						<View style={modalStyle.modalBtnContainer}>
+							<View style={modalStyle.modalBtnline} />
+							<TouchableOpacity 
+								style={modalStyle.modalBtn}
+								onPress={() => {
+									setComfirmModalVisible(false);
+									navigation.navigate(STACK.TAB, {
+										screen: 'Roby',
+									});
+								}}>
+								<CommonText fontWeight={'500'}>
+									확인
+								</CommonText>
+							</TouchableOpacity>
+						</View>
+					</View>
+				</View>
+			</Modal>
 		</>
 	);
 };
-
+const { width, height } = Dimensions.get('window');
 const _styles = StyleSheet.create({
 	titleText: {
 		width: 250,
@@ -158,4 +198,36 @@ const _styles = StyleSheet.create({
 		lineHeight: 30,
 		color: "#333333"
 	},
+});
+
+const modalStyleProduct = StyleSheet.create({
+	modal: {
+	  flex: 1,
+	  margin: 0,
+	  justifyContent: 'flex-end',
+	},
+	close: {
+	  width: 19.5,
+	  height: 19.5,
+	},
+	infoContainer: {
+	  flex: 1,
+	  backgroundColor: 'white',
+	  marginTop: 13
+	},
+	rowBetween: {
+	  flexDirection: `row`,
+	  alignItems: `center`,
+	  justifyContent: 'space-between',
+	},
+	modalStyle1: {
+		width: width - 32,
+		backgroundColor: 'white',
+		borderRadius: 16,
+		height: 215,
+		paddingTop: 32,
+		paddingLeft: 16,
+		paddingRight: 16,
+	  },
   });
+  

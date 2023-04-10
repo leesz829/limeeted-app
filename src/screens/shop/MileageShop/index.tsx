@@ -194,47 +194,49 @@ const RenderItem = ({ item, type }) => {
 
 
   return (
-    <TouchableOpacity
-      activeOpacity={0.8}
-      style={styles.renderItem}
-      onPress={() => onPressItem(item)}
-    >
-      <View style={{ flexDirection: 'column' }}>
-        <Image style={styles.thumb} source={imagePath} />
+    <>
+      <TouchableOpacity
+        activeOpacity={0.8}
+        style={styles.renderItem}
+        onPress={() => onPressItem(item)}>
 
-        <View style={{ paddingHorizontal: 3 }}>
-          <Text style={styles.brandName}>{item?.brand_name}</Text>
-          <Text style={styles.productName}>{item?.prod_name}</Text>
-          <View style={[styles.textContainer, { marginTop: 5 }]}>
-            <Text style={styles.price}>{CommaFormat(item?.now_buy_price)}</Text>
-            {type !== 'gifticon' && (
-              <Text style={styles.hintText}>즉시 구매가</Text>
+        <View style={{ flexDirection: 'column' }}>
+          <Image style={styles.thumb} source={imagePath} />
+
+          <View style={{ paddingHorizontal: 3 }}>
+            <Text style={styles.brandName}>{item?.brand_name}</Text>
+            <Text style={styles.productName}>{item?.prod_name}</Text>
+            <View style={[styles.textContainer, { marginTop: 5 }]}>
+              <Text style={styles.price}>{CommaFormat(item?.now_buy_price)}</Text>
+              {type !== 'gifticon' && (
+                <Text style={styles.hintText}>즉시 구매가</Text>
+              )}
+            </View>
+            {type === 'gifticon' ? (
+              <View style={styles.textContainer}>
+                <Text style={styles.hintText}>100개 남음</Text>
+                <Text style={styles.price}></Text>
+              </View>
+            ) : (
+              <View style={styles.textContainer}>
+                <Text style={styles.price}>50,000</Text>
+                <Text style={styles.hintText}>입찰가</Text>
+              </View>
             )}
           </View>
-          {type === 'gifticon' ? (
-            <View style={styles.textContainer}>
-              <Text style={styles.hintText}>100개 남음</Text>
-              <Text style={styles.price}></Text>
-            </View>
-          ) : (
-            <View style={styles.textContainer}>
-              <Text style={styles.price}>50,000</Text>
-              <Text style={styles.hintText}>입찰가</Text>
-            </View>
-          )}
+          <Text style={styles.remainText}>{remainTime}</Text>
         </View>
-        <Text style={styles.remainText}>{remainTime}</Text>
-      </View>
 
-      {/* ####################### 상품 팝업 */}
-      <ProductModal
-        isVisible={modalVisible}
-        type={type}
-        item={targetItem}
-        closeModal={closeModal}
-        productPurchase={productPurchase}
-      />
-    </TouchableOpacity>
+        {/* ####################### 상품 팝업 */}
+        <ProductModal
+          isVisible={modalVisible}
+          type={type}
+          item={targetItem}
+          closeModal={closeModal}
+          productPurchase={productPurchase}
+        />
+      </TouchableOpacity>
+    </>
   );
 };
 

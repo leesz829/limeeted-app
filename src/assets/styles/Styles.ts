@@ -42,6 +42,7 @@ export const commonStyle = StyleSheet.create({
   textLeft: { textAlign: 'left' },
   textRight: { textAlign: 'right' },
   width100: { width: '100%' },
+  lineHeight23: { lineHeight: 23 }
 });
 
 export const styles = StyleSheet.create({

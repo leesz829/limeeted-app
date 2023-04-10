@@ -71,27 +71,35 @@ export const Profile = (props: Props) => {
 
 	// 회원탈퇴 버튼
 	const btnDeleteMyAccount = async () => {
+
     try {
-      const { success, data } = await update_member_exit();
-      if(success) {
-        switch (data.result_code) {
-          case SUCCESS:
-            dispatch(clearPrincipal());
-            break;
-          default:
+      show({
+        title: '탈퇴'
+        , content: '탈퇴는 24시간 뒤 완료처리 됩니다.\n단, 24시간 이내에 로그인 시 탈퇴는 취소됩니다.'
+        , cancelCallback: function() {}
+        , confirmCallback: function() {
+          const { success, data } = update_member_exit();
+          if(success) {
+            switch (data.result_code) {
+              case SUCCESS:
+                dispatch(clearPrincipal());
+                break;
+              default:
+                show({
+                  content: '오류입니다. 관리자에게 문의해주세요.' ,
+                  confirmCallback: function() {}
+                });
+                break;
+            }
+          
+          } else {
             show({
               content: '오류입니다. 관리자에게 문의해주세요.' ,
               confirmCallback: function() {}
             });
-            break;
+          }
         }
-       
-      } else {
-        show({
-          content: '오류입니다. 관리자에게 문의해주세요.' ,
-          confirmCallback: function() {}
-        });
-      }
+      });
     } catch (error) {
       console.log(error);
     } finally {
