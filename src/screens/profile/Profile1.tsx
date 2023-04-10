@@ -17,7 +17,14 @@ import { CommonText } from 'component/CommonText';
 import { ImagePicker } from 'component/ImagePicker';
 import SpaceView from 'component/SpaceView';
 import React, { useRef } from 'react';
-import { Alert, Image, ScrollView, TouchableOpacity, View, StyleSheet } from 'react-native';
+import {
+  Alert,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  View,
+  StyleSheet,
+} from 'react-native';
 import { findSourcePath, ICON } from 'utils/imageUtils';
 import { STACK } from 'constants/routes';
 import * as hooksMember from 'hooks/member';
@@ -36,7 +43,6 @@ import { ROUTES } from 'constants/routes';
 import { BarGrap } from 'component/BarGrap';
 import { Color } from 'assets/styles/Color';
 
-
 /* ################################################################################################################
 ###################################################################################################################
 ###### 프로필 관리
@@ -53,12 +59,12 @@ export const Profile1 = (props: Props) => {
   const isFocus = useIsFocused();
   const dispatch = useDispatch();
 
-  const { show } = usePopup();  // 공통 팝업
+  const { show } = usePopup(); // 공통 팝업
   const jwtToken = hooksMember.getJwtToken(); // 토큰
 
-  const memberBase = useUserInfo();           // 회원 기본정보
-  const mbrProfileImgList = useProfileImg();  // 회원 프로필 사진 정보
-  const mbrSecondAuthList = useSecondAth();   // 회원 2차 인증 정보
+  const memberBase = useUserInfo(); // 회원 기본정보
+  const mbrProfileImgList = useProfileImg(); // 회원 프로필 사진 정보
+  const mbrSecondAuthList = useSecondAth(); // 회원 2차 인증 정보
 
   // 프로필 사진
   const [imgData, setImgData] = React.useState<any>({
@@ -92,65 +98,53 @@ export const Profile1 = (props: Props) => {
   // 저장, 선택삭제 버튼 노출 구분
   const [isSaveBtn, setIsSaveBtn] = React.useState(true);
 
-
   // ################################################################ 프로필 이미지 파일 콜백 함수
-  const fileCallBack1 = (
-    uri: any,
-    base64: string
-  ) => {
-    let data = {file_uri: uri, file_base64: base64, order_seq: 1};
+  const fileCallBack1 = (uri: any, base64: string) => {
+    let data = { file_uri: uri, file_base64: base64, order_seq: 1 };
     imageDataApply(data);
   };
 
-  const fileCallBack2 = (
-    uri: any,
-    base64: string
-  ) => {
-    let data = {file_uri: uri, file_base64: base64, order_seq: 2};
+  const fileCallBack2 = (uri: any, base64: string) => {
+    let data = { file_uri: uri, file_base64: base64, order_seq: 2 };
     imageDataApply(data);
   };
 
-  const fileCallBack3 = (
-    uri: any,
-    base64: string
-  ) => {
-    let data = {file_uri: uri, file_base64: base64, order_seq: 3};
+  const fileCallBack3 = (uri: any, base64: string) => {
+    let data = { file_uri: uri, file_base64: base64, order_seq: 3 };
     imageDataApply(data);
   };
 
-  const fileCallBack4 = (
-    uri: any,
-    base64: string
-  ) => {
-    let data = {file_uri: uri, file_base64: base64, order_seq: 4};
+  const fileCallBack4 = (uri: any, base64: string) => {
+    let data = { file_uri: uri, file_base64: base64, order_seq: 4 };
     imageDataApply(data);
   };
 
-  const fileCallBack5 = (
-    uri: any,
-    base64: string
-  ) => {
-    let data = {file_uri: uri, file_base64: base64, order_seq: 5};
+  const fileCallBack5 = (uri: any, base64: string) => {
+    let data = { file_uri: uri, file_base64: base64, order_seq: 5 };
     imageDataApply(data);
   };
 
   // ################################################################ 프로필 이미지 데이터 적용
-  const imageDataApply  = (data: any) => {
+  const imageDataApply = (data: any) => {
     let dupChk = false;
-    profileImageList.map(({order_seq} : {order_seq: any;}) => {
-      if(order_seq == data.order_seq) { dupChk = true };
-    })
+    profileImageList.map(({ order_seq }: { order_seq: any }) => {
+      if (order_seq == data.order_seq) {
+        dupChk = true;
+      }
+    });
 
-    if(!dupChk) {
+    if (!dupChk) {
       setProfileImageList([...profileImageList, data]);
     } else {
       setProfileImageList((prev) =>
         prev.map((item: any) =>
-          item.order_seq === data.order_seq ? { ...item, uri: data.file_uri, file_base64: data.file_base64 } : item
+          item.order_seq === data.order_seq
+            ? { ...item, uri: data.file_uri, file_base64: data.file_base64 }
+            : item
         )
       );
     }
-  }
+  };
 
   // ############################################################ 사진삭제 컨트롤 변수
   const [isDelImgData, setIsDelImgData] = React.useState<any>({
@@ -217,11 +211,15 @@ export const Profile1 = (props: Props) => {
   // ############################################################  인터뷰 답변 작성 Callback 함수
   const callbackInterviewAnswer = async (seq: any, answer: any) => {
     let dupChk = false;
-    let data = {member_interview_seq: seq, answer: answer};
-    applyInterviewList.map(({member_interview_seq} : {member_interview_seq: any;}) => {
-      if(member_interview_seq == seq) { dupChk = true };
-    })
-    if(!dupChk) {
+    let data = { member_interview_seq: seq, answer: answer };
+    applyInterviewList.map(
+      ({ member_interview_seq }: { member_interview_seq: any }) => {
+        if (member_interview_seq == seq) {
+          dupChk = true;
+        }
+      }
+    );
+    if (!dupChk) {
       setApplyInterviewList([...applyInterviewList, data]);
     } else {
       setApplyInterviewList((prev) =>
@@ -230,17 +228,16 @@ export const Profile1 = (props: Props) => {
         )
       );
     }
-  }
+  };
 
   // ############################################################  인터뷰 삭제, 종료 버튼 클릭 Callback 함수
   const callbackInterviewDel = async (isDel: boolean) => {
-    if(isDel) {
+    if (isDel) {
       setIsSaveBtn(false);
     } else {
       setIsSaveBtn(true);
     }
-  }
-
+  };
 
   // ############################################################  프로필 관리 저장
   const saveMemberProfile = async () => {
@@ -250,7 +247,7 @@ export const Profile1 = (props: Props) => {
         tmpCnt++;
       }
     }
-    for(var key in profileImageList) {
+    for (var key in profileImageList) {
       tmpCnt++;
     }
 
@@ -260,88 +257,84 @@ export const Profile1 = (props: Props) => {
     }
 
     const body = {
-      file_list: profileImageList
-      , img_del_seq_str: imgDelSeqStr
-      , interview_list: applyInterviewList
+      file_list: profileImageList,
+      img_del_seq_str: imgDelSeqStr,
+      interview_list: applyInterviewList,
     };
     try {
       const { success, data } = await update_profile(body);
-      if(success) {
+      if (success) {
         switch (data.result_code) {
           case SUCCESS:
-            dispatch(setPartialPrincipal({
-              mbr_base : data.mbr_base
-              , mbr_img_list : data.mbr_img_list
-              , mbr_interview_list : data.mbr_interview_list
-            }));
-  
+            dispatch(
+              setPartialPrincipal({
+                mbr_base: data.mbr_base,
+                mbr_img_list: data.mbr_img_list,
+                mbr_interview_list: data.mbr_interview_list,
+              })
+            );
+
             show({
-              content: '저장되었습니다.' ,
-              confirmCallback: function() {
+              content: '저장되었습니다.',
+              confirmCallback: function () {
                 navigation.navigate(STACK.TAB, {
                   screen: 'Roby',
                 });
-              }
+              },
             });
             break;
           default:
             show({
-              content: '오류입니다. 관리자에게 문의해주세요.' ,
-              confirmCallback: function() {}
+              content: '오류입니다. 관리자에게 문의해주세요.',
+              confirmCallback: function () {},
             });
             break;
         }
-       
       } else {
         show({
-          content: '오류입니다. 관리자에게 문의해주세요.' ,
-          confirmCallback: function() {}
+          content: '오류입니다. 관리자에게 문의해주세요.',
+          confirmCallback: function () {},
         });
       }
     } catch (error) {
       console.log(error);
     } finally {
-      
     }
-      
   };
 
   // ############################################################  프로필 랭크 순위 조회
   const getMemberFaceRank = async () => {
     try {
       const { success, data } = await get_member_face_rank();
-      if(success) {
+      if (success) {
         switch (data.result_code) {
           case SUCCESS:
             setProfileFaceRankList(data.face_rank_list);
             break;
           default:
             show({
-              content: '오류입니다. 관리자에게 문의해주세요.' ,
-              confirmCallback: function() {}
+              content: '오류입니다. 관리자에게 문의해주세요.',
+              confirmCallback: function () {},
             });
             break;
         }
-       
       } else {
         show({
-          content: '오류입니다. 관리자에게 문의해주세요.' ,
-          confirmCallback: function() {}
+          content: '오류입니다. 관리자에게 문의해주세요.',
+          confirmCallback: function () {},
         });
       }
     } catch (error) {
       console.log(error);
     } finally {
-      
     }
-      
   };
 
   // ############################################################################# 최초 실행
   React.useEffect(() => {
     getMemberFaceRank();
     setProfileImageList([]);
-    
+
     if (mbrProfileImgList != null) {
       let imgData: any = {
         orgImgUrl01: { memer_img_seq: '', url: '', delYn: '' },
@@ -427,152 +420,233 @@ export const Profile1 = (props: Props) => {
     }
   }, [isFocus]);
 
-  
-
   return (
     <>
       <CommonHeader title={'프로필 관리'} />
+
       <ScrollView contentContainerStyle={styles.hasFloatingBtnContainer}>
         <SpaceView viewStyle={styles.container}>
-
           {/* ####################################################################################
 					####################### 프로필 이미지 영역
 					#################################################################################### */}
           <SpaceView mb={48} viewStyle={styles.halfContainer}>
-
             <View style={styles.halfItemLeft}>
-              {imgData.orgImgUrl01.url != '' && imgData.orgImgUrl01.delYn == 'N' ? (
-								<TouchableOpacity
-									onPress={() => {
-										imgDel_onOpen(imgData.orgImgUrl01.member_img_seq, 1);
-									}}
-								>
-									<Image
-										resizeMode="cover"
-										resizeMethod="scale"
-										style={styles.tempBoxBig}
-										key={imgData.orgImgUrl01.url}
-										source={imgData.orgImgUrl01.url}
-									/>
-								</TouchableOpacity>
-							) : (
-								<ImagePicker isBig={true} callbackFn={fileCallBack1} uriParam={''} />
-							)}
+              {imgData.orgImgUrl01.url != '' &&
+              imgData.orgImgUrl01.delYn == 'N' ? (
+                <TouchableOpacity
+                  onPress={() => {
+                    imgDel_onOpen(imgData.orgImgUrl01.member_img_seq, 1);
+                  }}
+                >
+                  <Image
+                    resizeMode="cover"
+                    resizeMethod="scale"
+                    style={styles.tempBoxBig}
+                    key={imgData.orgImgUrl01.url}
+                    source={imgData.orgImgUrl01.url}
+                  />
+                </TouchableOpacity>
+              ) : (
+                <ImagePicker
+                  isBig={true}
+                  callbackFn={fileCallBack1}
+                  uriParam={''}
+                />
+              )}
 
-							{imgData.orgImgUrl01.url != '' && imgData.orgImgUrl01.status == 'PROGRESS' ? (
-								<View style={styles.disabled}>
-									<CommonText fontWeight={'700'} type={'h4'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mt10, commonStyle.mr10]}>심사중</CommonText>
-								</View>
-							) : null}
+              {imgData.orgImgUrl01.url != '' &&
+              imgData.orgImgUrl01.status == 'PROGRESS' ? (
+                <View style={styles.disabled}>
+                  <CommonText
+                    fontWeight={'700'}
+                    type={'h4'}
+                    color={ColorType.gray8888}
+                    textStyle={[
+                      layoutStyle.textRight,
+                      commonStyle.mt10,
+                      commonStyle.mr10,
+                    ]}
+                  >
+                    심사중
+                  </CommonText>
+                </View>
+              ) : null}
             </View>
 
             <View style={styles.halfItemRight}>
               <SpaceView mb={16} viewStyle={layoutStyle.row}>
                 <SpaceView mr={8}>
+                  {imgData.orgImgUrl02.url != '' &&
+                  imgData.orgImgUrl02.delYn == 'N' ? (
+                    <TouchableOpacity
+                      onPress={() => {
+                        imgDel_onOpen(imgData.orgImgUrl02.member_img_seq, 2);
+                      }}
+                    >
+                      <Image
+                        resizeMode="cover"
+                        resizeMethod="scale"
+                        style={styles.tempBoxSmall}
+                        key={imgData.orgImgUrl02.url}
+                        source={imgData.orgImgUrl02.url}
+                      />
+                    </TouchableOpacity>
+                  ) : (
+                    <ImagePicker
+                      isBig={false}
+                      callbackFn={fileCallBack2}
+                      uriParam={''}
+                    />
+                  )}
 
-                  {imgData.orgImgUrl02.url != '' && imgData.orgImgUrl02.delYn == 'N' ? (
-										<TouchableOpacity
-											onPress={() => {
-												imgDel_onOpen(imgData.orgImgUrl02.member_img_seq, 2);
-											}}
-										>
-											<Image
-												resizeMode="cover"
-												resizeMethod="scale"
-												style={styles.tempBoxSmall}
-												key={imgData.orgImgUrl02.url}
-												source={imgData.orgImgUrl02.url}
-											/>
-										</TouchableOpacity>
-									) : (
-										<ImagePicker isBig={false} callbackFn={fileCallBack2} uriParam={''} />
-									)}
-
-									{imgData.orgImgUrl02.url != '' && imgData.orgImgUrl02.status == 'PROGRESS' ? (
-										<View style={styles.disabled}>
-											<CommonText fontWeight={'700'} type={'h4'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mr10, commonStyle.fontSize10]}>심사중</CommonText>
-										</View>
-									) : null}
+                  {imgData.orgImgUrl02.url != '' &&
+                  imgData.orgImgUrl02.status == 'PROGRESS' ? (
+                    <View style={styles.disabled}>
+                      <CommonText
+                        fontWeight={'700'}
+                        type={'h4'}
+                        color={ColorType.gray8888}
+                        textStyle={[
+                          layoutStyle.textRight,
+                          commonStyle.mr10,
+                          commonStyle.fontSize10,
+                        ]}
+                      >
+                        심사중
+                      </CommonText>
+                    </View>
+                  ) : null}
                 </SpaceView>
 
                 <SpaceView ml={8}>
-                  {imgData.orgImgUrl03.url != '' && imgData.orgImgUrl03.delYn == 'N' ? (
-										<TouchableOpacity
-											onPress={() => {
-												imgDel_onOpen(imgData.orgImgUrl03.member_img_seq, 3);
-											}}
-										>
-											<Image
-												resizeMode="cover"
-												resizeMethod="scale"
-												style={styles.tempBoxSmall}
-												key={imgData.orgImgUrl03.url}
-												source={imgData.orgImgUrl03.url}
-											/>
-										</TouchableOpacity>
-									) : (
-										<ImagePicker isBig={false} callbackFn={fileCallBack3} uriParam={''} />
-									)}
+                  {imgData.orgImgUrl03.url != '' &&
+                  imgData.orgImgUrl03.delYn == 'N' ? (
+                    <TouchableOpacity
+                      onPress={() => {
+                        imgDel_onOpen(imgData.orgImgUrl03.member_img_seq, 3);
+                      }}
+                    >
+                      <Image
+                        resizeMode="cover"
+                        resizeMethod="scale"
+                        style={styles.tempBoxSmall}
+                        key={imgData.orgImgUrl03.url}
+                        source={imgData.orgImgUrl03.url}
+                      />
+                    </TouchableOpacity>
+                  ) : (
+                    <ImagePicker
+                      isBig={false}
+                      callbackFn={fileCallBack3}
+                      uriParam={''}
+                    />
+                  )}
 
-									{imgData.orgImgUrl03.url != '' && imgData.orgImgUrl03.status == 'PROGRESS' ? (
-										<View style={styles.disabled}>
-											<CommonText fontWeight={'700'} type={'h4'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mr10, commonStyle.fontSize10]}>심사중</CommonText>
-										</View>
-									) : null}
+                  {imgData.orgImgUrl03.url != '' &&
+                  imgData.orgImgUrl03.status == 'PROGRESS' ? (
+                    <View style={styles.disabled}>
+                      <CommonText
+                        fontWeight={'700'}
+                        type={'h4'}
+                        color={ColorType.gray8888}
+                        textStyle={[
+                          layoutStyle.textRight,
+                          commonStyle.mr10,
+                          commonStyle.fontSize10,
+                        ]}
+                      >
+                        심사중
+                      </CommonText>
+                    </View>
+                  ) : null}
                 </SpaceView>
               </SpaceView>
 
               <SpaceView viewStyle={layoutStyle.row}>
                 <SpaceView mr={8}>
-                  {imgData.orgImgUrl04.url != '' && imgData.orgImgUrl04.delYn == 'N' ? (
-										<TouchableOpacity
-											onPress={() => {
-												imgDel_onOpen(imgData.orgImgUrl04.member_img_seq, 4);
-											}}
-										>
-											<Image
-												resizeMode="cover"
-												resizeMethod="scale"
-												style={styles.tempBoxSmall}
-												key={imgData.orgImgUrl04.url}
-												source={imgData.orgImgUrl04.url}
-											/>
-										</TouchableOpacity>
-									) : (
-										<ImagePicker isBig={false} callbackFn={fileCallBack4} uriParam={''} />
-									)}
+                  {imgData.orgImgUrl04.url != '' &&
+                  imgData.orgImgUrl04.delYn == 'N' ? (
+                    <TouchableOpacity
+                      onPress={() => {
+                        imgDel_onOpen(imgData.orgImgUrl04.member_img_seq, 4);
+                      }}
+                    >
+                      <Image
+                        resizeMode="cover"
+                        resizeMethod="scale"
+                        style={styles.tempBoxSmall}
+                        key={imgData.orgImgUrl04.url}
+                        source={imgData.orgImgUrl04.url}
+                      />
+                    </TouchableOpacity>
+                  ) : (
+                    <ImagePicker
+                      isBig={false}
+                      callbackFn={fileCallBack4}
+                      uriParam={''}
+                    />
+                  )}
 
-									{imgData.orgImgUrl04.url != '' && imgData.orgImgUrl04.status == 'PROGRESS' ? (
-										<View style={styles.disabled}>
-											<CommonText fontWeight={'700'} type={'h4'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mr10, commonStyle.fontSize10]}>심사중</CommonText>
-										</View>
-									) : null}
+                  {imgData.orgImgUrl04.url != '' &&
+                  imgData.orgImgUrl04.status == 'PROGRESS' ? (
+                    <View style={styles.disabled}>
+                      <CommonText
+                        fontWeight={'700'}
+                        type={'h4'}
+                        color={ColorType.gray8888}
+                        textStyle={[
+                          layoutStyle.textRight,
+                          commonStyle.mr10,
+                          commonStyle.fontSize10,
+                        ]}
+                      >
+                        심사중
+                      </CommonText>
+                    </View>
+                  ) : null}
                 </SpaceView>
 
                 <SpaceView ml={8}>
-                  {imgData.orgImgUrl05.url != '' && imgData.orgImgUrl05.delYn == 'N' ? (
-										<TouchableOpacity
-											onPress={() => {
-												imgDel_onOpen(imgData.orgImgUrl05.member_img_seq, 5);
-											}}
-										>
-											<Image
-												resizeMode="cover"
-												resizeMethod="scale"
-												style={styles.tempBoxSmall}
-												key={imgData.orgImgUrl05.url}
-												source={imgData.orgImgUrl05.url}
-											/>
-										</TouchableOpacity>
-									) : (
-										<ImagePicker isBig={false} callbackFn={fileCallBack5} uriParam={''} />
-									)}
+                  {imgData.orgImgUrl05.url != '' &&
+                  imgData.orgImgUrl05.delYn == 'N' ? (
+                    <TouchableOpacity
+                      onPress={() => {
+                        imgDel_onOpen(imgData.orgImgUrl05.member_img_seq, 5);
+                      }}
+                    >
+                      <Image
+                        resizeMode="cover"
+                        resizeMethod="scale"
+                        style={styles.tempBoxSmall}
+                        key={imgData.orgImgUrl05.url}
+                        source={imgData.orgImgUrl05.url}
+                      />
+                    </TouchableOpacity>
+                  ) : (
+                    <ImagePicker
+                      isBig={false}
+                      callbackFn={fileCallBack5}
+                      uriParam={''}
+                    />
+                  )}
 
-									{imgData.orgImgUrl05.url != '' && imgData.orgImgUrl05.status == 'PROGRESS' ? (
-										<View style={styles.disabled}>
-											<CommonText fontWeight={'700'} type={'h4'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mr10, commonStyle.fontSize10]}>심사중</CommonText>
-										</View>
-									) : null}
+                  {imgData.orgImgUrl05.url != '' &&
+                  imgData.orgImgUrl05.status == 'PROGRESS' ? (
+                    <View style={styles.disabled}>
+                      <CommonText
+                        fontWeight={'700'}
+                        type={'h4'}
+                        color={ColorType.gray8888}
+                        textStyle={[
+                          layoutStyle.textRight,
+                          commonStyle.mr10,
+                          commonStyle.fontSize10,
+                        ]}
+                      >
+                        심사중
+                      </CommonText>
+                    </View>
+                  ) : null}
                 </SpaceView>
               </SpaceView>
             </View>
@@ -589,41 +663,53 @@ export const Profile1 = (props: Props) => {
             </SpaceView>
 
             <View style={[_styles.profileContainer]}>
-
               {profileFaceRankList.length > 0 ? (
                 <>
                   <SpaceView viewStyle={layoutStyle.alignStart} mb={10}>
-                    <CommonText color={ColorType.black2222} textStyle={[layoutStyle.textCenter]}>
+                    <CommonText
+                      color={ColorType.black2222}
+                      textStyle={[layoutStyle.textCenter]}
+                    >
                       내 인상 투표 결과
                     </CommonText>
                   </SpaceView>
 
                   <SpaceView viewStyle={styles.container}>
-
-                    {profileFaceRankList.map((item : any) => (
+                    {profileFaceRankList.map((item: any) => (
                       <SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
                         <View style={[layoutStyle.rowBetween]}>
                           <View style={[styles.statusBtn, commonStyle.mr8]}>
-                            <CommonText type={'h6'} color={ColorType.white}>ICON</CommonText>
+                            <CommonText type={'h6'} color={ColorType.white}>
+                              ICON
+                            </CommonText>
                           </View>
-                          <CommonText type={'h6'} textStyle={commonStyle.fontSize13}>{item.face_code_name}</CommonText>
+                          <CommonText
+                            type={'h6'}
+                            textStyle={commonStyle.fontSize13}
+                          >
+                            {item.face_code_name}
+                          </CommonText>
                         </View>
                         <View style={[layoutStyle.rowBetween]}>
-                          <CommonText type={'h6'} textStyle={commonStyle.fontSize13} color={ColorType.gray6666}>{item.percent}%</CommonText>
+                          <CommonText
+                            type={'h6'}
+                            textStyle={commonStyle.fontSize13}
+                            color={ColorType.gray6666}
+                          >
+                            {item.percent}%
+                          </CommonText>
                         </View>
                       </SpaceView>
                     ))}
-
-                  </SpaceView> 
+                  </SpaceView>
                 </>
               ) : null}
 
               <SpaceView viewStyle={layoutStyle.rowBetween} mt={30} mb={29}>
                 <BarGrap score={memberBase?.profile_score} />
-              </SpaceView>        
+              </SpaceView>
             </View>
           </SpaceView>
-
 
           {/* ####################################################################################
 					####################### 프로필 2차 인증 영역
@@ -657,7 +743,7 @@ export const Profile1 = (props: Props) => {
                 </>
               ) : null}
             </SpaceView>
-            
+
             <SpaceView mb={48}>
               <SpaceView viewStyle={[layoutStyle.rowBetween]} mb={16}>
                 <View style={styles.profileBox}>
@@ -704,8 +790,10 @@ export const Profile1 = (props: Props) => {
           {/* ####################################################################################
 					####################### 인터뷰 영역
 					#################################################################################### */}
-          <Interview callbackAnswerFn={callbackInterviewAnswer} callbackOnDelFn={callbackInterviewDel} />
-
+          <Interview
+            callbackAnswerFn={callbackInterviewAnswer}
+            callbackOnDelFn={callbackInterviewDel}
+          />
         </SpaceView>
 
         <View style={styles.bottomBtnContainer}>
@@ -717,7 +805,7 @@ export const Profile1 = (props: Props) => {
                 saveMemberProfile();
               }}
             />
-          ) : null}          
+          ) : null}
         </View>
       </ScrollView>
 
@@ -760,10 +848,6 @@ export const Profile1 = (props: Props) => {
   );
 };
 
-
-
-
-
 const _styles = StyleSheet.create({
   profileContainer: {
     backgroundColor: Color.grayF8F8,
@@ -772,5 +856,4 @@ const _styles = StyleSheet.create({
     marginRight: 0,
     paddingBottom: 30,
   },
-
 });
