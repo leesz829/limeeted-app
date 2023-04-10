@@ -116,7 +116,8 @@ function PreFetcher(props) {
 
   return props.children;
 }
-export default codePush(codePushOptions)(withIAPContext(App));
+//export default codePush(codePushOptions)(withIAPContext(App));
+export default withIAPContext(App)
 
 const style = StyleSheet.create({
   container: {
