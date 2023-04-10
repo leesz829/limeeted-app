@@ -11,6 +11,7 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		1BF68695389334A4DB5B91D1 /* Pods_limeeted.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 394691A97AD5868C12C12422 /* Pods_limeeted.framework */; };
 		25C35DC76D544579A9ECB921 /* AppleSDGothicNeoUL00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 989501BE79244D0C985EDE1D /* AppleSDGothicNeoUL00.ttf */; };
 		5180791E571E4CA39FA2553B /* AppleSDGothicNeoL00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E86E82B682E3427CBE73A7D4 /* AppleSDGothicNeoL00.ttf */; };
 		7C4E08C4293BB73600242D71 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7C4E08C3293BB73600242D71 /* SplashScreen.storyboard */; };
@@ -25,9 +26,8 @@
 		7CEB068C29CB69A9007F724F /* AppleSDGothicNeoEB00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 63141EE5A8E940BCB34D9639 /* AppleSDGothicNeoEB00.ttf */; };
 		7CEB068D29CB69A9007F724F /* AppleSDGothicNeoH00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D23CDB4B619645389CE1FA18 /* AppleSDGothicNeoH00.ttf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		A6F99BD69E65E3CF7E8D7F1E /* Pods_limeeted.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A77B66D5BB858C8A558E854 /* Pods_limeeted.framework */; };
 		A86AF2A3CC014412B6DA2A8A /* AppleSDGothicNeoSB00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 36445508456E48D794395C87 /* AppleSDGothicNeoSB00.ttf */; };
-		D7DFCB6EACC298B59C80955A /* Pods_limeeted_limeetedTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00507A4ED029A46BB4EB9FA6 /* Pods_limeeted_limeetedTests.framework */; };
+		B0714BA3B73293F05732C9B3 /* Pods_limeeted_limeetedTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E59E69EA5CCB9601D80D4B79 /* Pods_limeeted_limeetedTests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,7 +41,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		00507A4ED029A46BB4EB9FA6 /* Pods_limeeted_limeetedTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_limeeted_limeetedTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356EE1AD99517003FC87E /* limeetedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = limeetedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* limeetedTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = limeetedTests.m; sourceTree = "<group>"; };
@@ -55,7 +54,7 @@
 		1786CE02C22F4178A2B51687 /* AppleSDGothicNeoB00.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AppleSDGothicNeoB00.ttf; path = ../src/assets/fonts/AppleSDGothicNeoB00.ttf; sourceTree = "<group>"; };
 		1D0AE47A65C8663E3B452821 /* Pods-limeeted-limeetedTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-limeeted-limeetedTests.release.xcconfig"; path = "Target Support Files/Pods-limeeted-limeetedTests/Pods-limeeted-limeetedTests.release.xcconfig"; sourceTree = "<group>"; };
 		36445508456E48D794395C87 /* AppleSDGothicNeoSB00.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AppleSDGothicNeoSB00.ttf; path = ../src/assets/fonts/AppleSDGothicNeoSB00.ttf; sourceTree = "<group>"; };
-		3A77B66D5BB858C8A558E854 /* Pods_limeeted.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_limeeted.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		394691A97AD5868C12C12422 /* Pods_limeeted.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_limeeted.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		63141EE5A8E940BCB34D9639 /* AppleSDGothicNeoEB00.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AppleSDGothicNeoEB00.ttf; path = ../src/assets/fonts/AppleSDGothicNeoEB00.ttf; sourceTree = "<group>"; };
 		670DB48B4B764396AB3C3ED5 /* AppleSDGothicNeoM00.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AppleSDGothicNeoM00.ttf; path = ../src/assets/fonts/AppleSDGothicNeoM00.ttf; sourceTree = "<group>"; };
 		6C97AB639B58BBB4B15BBE30 /* Pods-limeeted-limeetedTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-limeeted-limeetedTests.debug.xcconfig"; path = "Target Support Files/Pods-limeeted-limeetedTests/Pods-limeeted-limeetedTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -72,6 +71,7 @@
 		C8449447517BE5198005BF35 /* Pods-limeeted.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-limeeted.staging.xcconfig"; path = "Target Support Files/Pods-limeeted/Pods-limeeted.staging.xcconfig"; sourceTree = "<group>"; };
 		D00AAFFCFCFDA5787532823F /* Pods-limeeted.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-limeeted.release.xcconfig"; path = "Target Support Files/Pods-limeeted/Pods-limeeted.release.xcconfig"; sourceTree = "<group>"; };
 		D23CDB4B619645389CE1FA18 /* AppleSDGothicNeoH00.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AppleSDGothicNeoH00.ttf; path = ../src/assets/fonts/AppleSDGothicNeoH00.ttf; sourceTree = "<group>"; };
+		E59E69EA5CCB9601D80D4B79 /* Pods_limeeted_limeetedTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_limeeted_limeetedTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E86E82B682E3427CBE73A7D4 /* AppleSDGothicNeoL00.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AppleSDGothicNeoL00.ttf; path = ../src/assets/fonts/AppleSDGothicNeoL00.ttf; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F739A331B9B142E3995067D0 /* AppleSDGothicNeoR00.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AppleSDGothicNeoR00.ttf; path = ../src/assets/fonts/AppleSDGothicNeoR00.ttf; sourceTree = "<group>"; };
@@ -82,7 +82,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D7DFCB6EACC298B59C80955A /* Pods_limeeted_limeetedTests.framework in Frameworks */,
+				B0714BA3B73293F05732C9B3 /* Pods_limeeted_limeetedTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -91,7 +91,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7CA540462937A4A30071FB41 /* StoreKit.framework in Frameworks */,
-				A6F99BD69E65E3CF7E8D7F1E /* Pods_limeeted.framework in Frameworks */,
+				1BF68695389334A4DB5B91D1 /* Pods_limeeted.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -152,8 +152,8 @@
 			children = (
 				7CA540452937A4A30071FB41 /* StoreKit.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				3A77B66D5BB858C8A558E854 /* Pods_limeeted.framework */,
-				00507A4ED029A46BB4EB9FA6 /* Pods_limeeted_limeetedTests.framework */,
+				394691A97AD5868C12C12422 /* Pods_limeeted.framework */,
+				E59E69EA5CCB9601D80D4B79 /* Pods_limeeted_limeetedTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -537,6 +537,7 @@
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = limeeted/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = LImeetED;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -566,6 +567,7 @@
 				DEVELOPMENT_TEAM = 2PTBRD7N36;
 				INFOPLIST_FILE = limeeted/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = LImeetED;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -656,6 +658,7 @@
 				DEVELOPMENT_TEAM = 2PTBRD7N36;
 				INFOPLIST_FILE = limeeted/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = LImeetED;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
