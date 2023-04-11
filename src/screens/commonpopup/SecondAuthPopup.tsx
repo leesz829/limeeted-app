@@ -245,7 +245,7 @@ export const SecondAuthPopup = (props: Props) => {
       </View>
 
       <View style={modalStyle.modalBody}>
-        {itemNm != '' ? (
+        {/* {itemNm != '' ? (
           <View>
             <SpaceView mb={32}>
               <CommonInput
@@ -256,7 +256,7 @@ export const SecondAuthPopup = (props: Props) => {
               />
             </SpaceView>
           </View>
-        ) : null}
+        ) : null} */}
 
         <SpaceView mb={24}>
           <SpaceView mb={16}>

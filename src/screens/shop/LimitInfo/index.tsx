@@ -25,15 +25,21 @@ const DATA = [
     condition: '받은 관심 수락',
     amount: '보통',
   },
-  {
+  /* {
     condition: '뽑기권 아이템 사용',
     amount: '작음',
-  },
+  }, */
   {
     condition: '일일 출석',
     amount: '보통',
   },
+
+
   {
+    condition: '찐심 수락',
+    amount: '보통',
+  },
+  /* {
     condition: '찐심 LV1 수락',
     amount: '보통',
   },
@@ -52,7 +58,7 @@ const DATA = [
   {
     condition: '찐심 LV5 수락',
     amount: '매우높음',
-  },
+  }, */
   {
     condition: '찐심 보내기',
     amount: '높음',

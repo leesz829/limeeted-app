@@ -47,7 +47,7 @@ function FemalePannel() {
             <Text style={female.pointText}>
               {me?.name} <Text>✨</Text>
             </Text>
-            {route.name === ROUTES.Mileage_Shop && (
+            {/* {route.name === ROUTES.Mileage_Shop && (
               <View style={{ flexDirection: 'row' }}>
                 <TouchableOpacity onPress={onPressMileageHistory}>
                   <Image
@@ -62,18 +62,18 @@ function FemalePannel() {
                   />
                 </TouchableOpacity>
               </View>
-            )}
+            )} */}
           </View>
           <View style={female.row}>
             {route.name !== ROUTES.Mileage_Shop && (
               <View>
-                <Text style={female.infoText}>{me?.name}님의 공주력</Text>
-                <TouchableOpacity
+                {/* <Text style={female.infoText}>{me?.nickname}님의 공주력</Text> */}
+                {/* <TouchableOpacity
                   style={female.lmtShopButton}
                   onPress={onPressLimitShop}
                 >
-                  <Text style={female.lmtButtonText}>LIMIT shop +</Text>
-                </TouchableOpacity>
+                  <Text style={female.lmtButtonText2}>리밋샵 미리보기</Text>
+                </TouchableOpacity> */}
               </View>
             )}
 
@@ -335,6 +335,17 @@ const female = StyleSheet.create({
     textAlign: 'left',
     color: '#7986ee',
   },
+  lmtButtonText2: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 12,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#7986ee',
+    paddingHorizontal: 10,
+    paddingVertical: 3
+  },
   myBox: {
     flexDirection: `row`,
     alignItems: 'flex-end',
@@ -346,7 +357,7 @@ const female = StyleSheet.create({
     fontWeight: 'normal',
     fontStyle: 'normal',
     letterSpacing: 0,
-    textAlign: 'left',
+    textAlign: 'right',
     color: '#8657d4',
   },
   crown: {

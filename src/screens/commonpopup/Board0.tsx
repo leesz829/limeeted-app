@@ -30,16 +30,16 @@ export const Board0 = (props: Props) => {
 				{noticeList.map(
 					({
 						board_seq,
-						board_code,
+						board_type_name,
 						title,
-						contents,
+						content,
 					}: {
 						board_seq: any;
-						board_code: string;
+						board_type_name: string;
 						title: string;
-						contents: string;
+						content: string;
 					}) => (
-						<EventRow key={board_seq} label="공지" title={title} desc={contents} />
+						<EventRow key={board_seq} label={board_type_name} title={title} desc={content} />
 					),
 				)}
 			</ScrollView>

@@ -203,21 +203,18 @@ export const Roby = (props: Props) => {
 
         <SpaceView mb={48} viewStyle={layoutStyle.alignCenter}>
           <SpaceView mb={8}>
-            <Image
-              source={{ uri: properties.img_domain + memberBase?.mst_img_path }}
-              style={styles.profileImg}
-            />
-            {/* <Image source={PROFILE_IMAGE.profileM1} style={styles.profileImg} /> */}
-            {/* <Image source={{uri : props.route.params.mstImg}} style={styles.profileImg} /> */}
-            <View style={styles.profilePenContainer}>
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate(STACK.COMMON, { screen: 'Introduce' });
-                }}
-              >
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate(STACK.COMMON, { screen: 'Introduce' });
+              }} >
+              <Image
+                source={{ uri: properties.img_domain + memberBase?.mst_img_path }}
+                style={styles.profileImg}
+              />
+              <View style={styles.profilePenContainer}>
                 <Image source={ICON.pen} style={styles.iconSize24} />
-              </TouchableOpacity>
-            </View>
+              </View>
+            </TouchableOpacity>
           </SpaceView>
 
           <SpaceView mb={4}>
@@ -552,16 +549,7 @@ export const Roby = (props: Props) => {
   
                       // 게시판 목록 셋팅
                       let boardList = new Array();
-                      /* response.data?.boardList?.map(({ board_seq, board_code, title, contents }: { board_seq: any, board_code: any, title: any, contents: any }) => {
-                        const dataJson = { req_member_seq : String, img_path : '' };
-  
-                        dataJson.req_member_seq(req_member_seq);
-                        dataJson.img_path = img_path;
-  
-                        resLikeDataList.push(dataJson);
-                      }); */
-
-
+                    
                     } else {
                       show({
                         content: '오류입니다. 관리자에게 문의해주세요.' ,
@@ -675,6 +663,7 @@ export const Roby = (props: Props) => {
         handleStyle={modalStyle.modalHandleStyle}
         modalStyle={modalStyle.modalContainer}
         adjustToContentHeight={false}
+        modalHeight={height - 150}
         FooterComponent={
           <>
             <SpaceView mb={16}>
@@ -721,6 +710,7 @@ export const Roby = (props: Props) => {
         handleStyle={modalStyle.modalHandleStyle}
         modalStyle={modalStyle.modalContainer}
         adjustToContentHeight={false}
+        modalHeight={height - 150}
         FooterComponent={
           <>
             <SpaceView mb={16}>

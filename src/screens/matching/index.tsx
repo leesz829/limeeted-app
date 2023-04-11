@@ -72,6 +72,7 @@ export const Matching = (props: Props) => {
 
   // 로딩 상태 체크
   const [isLoad, setIsLoad] = useState(false);
+  const [isEmpty, setIsEmpty] = useState(false);
 
   const [royalPassAmt, setRoyalPassAmt] = useState<any>();
 
@@ -250,9 +251,7 @@ export const Matching = (props: Props) => {
 
     try {
       const { success, data } = await get_daily_matched_info();
-
       if(success) {
-        
         if(data.result_code == '0000') {
           
           let tmpProfileImgList = new Array();    // 프로필 이미지 목록
@@ -322,7 +321,10 @@ export const Matching = (props: Props) => {
 
           // Load
           setIsLoad(true);
-          
+        
+        } else if(data.result_code == '9998') {
+          setIsLoad(false);
+          setIsEmpty(true);
         } else {
           show({ content: '시스템 오류입니다.\n관리자에게 문의해 주세요!' });
           return false;
@@ -408,6 +410,7 @@ export const Matching = (props: Props) => {
   useEffect(() => {
     if (!isLoad) {
       // 데일리 매칭 정보 조회
+      setIsEmpty(false);
       getDailyMatchInfo();
     }
   }, [isFocus]);
@@ -650,7 +653,56 @@ export const Matching = (props: Props) => {
               </View>
             </SpaceView>
 
-            <View style={styles.interviewContainer}>
+
+            {data?.interviewList?.length > 0 && 
+              <View style={styles.interviewContainer}>
+                {data.interviewList.map(
+                  ({
+                    common_code,
+                    code_name,
+                    answer,
+                  }: {
+                    common_code: any;
+                    code_name: any;
+                    answer: any;
+                  }) => (
+                    <>
+                      <SpaceView mb={32} viewStyle={layoutStyle.row}>
+                        <SpaceView mr={16}>
+                          <Image
+                            source={ICON.manage}
+                            style={styles.iconSize40}
+                          />
+                        </SpaceView>
+
+                        <View style={styles.interviewLeftTextContainer}>
+                          <CommonText type={'h5'}>{code_name}</CommonText>
+                        </View>
+                      </SpaceView>
+
+                      <SpaceView
+                        mb={32}
+                        viewStyle={[layoutStyle.row, layoutStyle.selfEnd]}
+                      >
+                        <SpaceView
+                          viewStyle={styles.interviewRightTextContainer}
+                          mr={16}
+                        >
+                          <CommonText type={'h5'} color={ColorType.white}>
+                            {answer != null ? answer : '미등록 답변입니다.'}
+                          </CommonText>
+                        </SpaceView>
+                        <SpaceView>
+                          <Image source={ICON.boy} style={styles.iconSize40} />
+                        </SpaceView>
+                      </SpaceView>
+                    </>
+                  )
+                )}
+              </View>
+            }
+
+            {/* <View style={styles.interviewContainer}>
               {data?.interviewList?.length > 0 ? (
                 data.interviewList.map(
                   ({
@@ -695,20 +747,8 @@ export const Matching = (props: Props) => {
                     </>
                   )
                 )
-              ) : (
-                <>
-                  <SpaceView mb={32} viewStyle={layoutStyle.row}>
-                    <SpaceView mr={16}>
-                      <Image source={ICON.manage} style={styles.iconSize40} />
-                    </SpaceView>
-
-                    <View style={styles.interviewLeftTextContainer}>
-                      <CommonText type={'h5'}>질문을 등록해주세요</CommonText>
-                    </View>
-                  </SpaceView>
-                </>
-              )}
-            </View>
+              ) : null}
+            </View> */}
           </SpaceView>
 
           <SpaceView mb={15}>
@@ -957,7 +997,7 @@ export const Matching = (props: Props) => {
       </Modal>
     </>
   ) : (
-    <MatchSearch />
+    <MatchSearch isEmpty={isEmpty} />
   );
 };
 

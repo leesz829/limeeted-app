@@ -26,7 +26,7 @@ import { get_live_members, regist_profile_evaluation, get_common_code } from 'ap
 import { useMemberseq } from 'hooks/useMemberseq';
 import { findSourcePath } from 'utils/imageUtils';
 import { usePopup } from 'Context';
-import { SUCCESS } from 'constants/reusltcode';
+import { SUCCESS, NODATA } from 'constants/reusltcode';
 
 
 
@@ -44,6 +44,7 @@ export const Live = () => {
 
   // 로딩 상태 체크
   const [isLoad, setIsLoad] = useState(false);
+  const [isEmpty, setIsEmpty] = useState(false);
 
   // 회원 인상 정보
   const [faceTypeList, setFaceTypeList] = useState([LabelObj]);
@@ -178,6 +179,10 @@ export const Live = () => {
             }
 
             break;
+          case NODATA:
+            setIsLoad(false);
+            setIsEmpty(false);
+            break;
           default:
             show({
               content: '오류입니다. 관리자에게 문의해주세요.' ,
@@ -253,6 +258,6 @@ export const Live = () => {
       )}
     </>
   ) : (
-    <LiveSearch />
+    <LiveSearch isEmpty={isEmpty} />
   );
 };
