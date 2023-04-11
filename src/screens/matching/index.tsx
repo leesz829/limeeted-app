@@ -524,9 +524,9 @@ export const Matching = (props: Props) => {
 								</CommonText>
               </SpaceView> */}
 
-                <CommonText color={ColorType.gray8888} textStyle={styles_m.textCenter}>
+                <CommonText color={ColorType.gray8888} textStyle={styles_m.textCenter} > 
 									리미티드에서 내 대표 인상 {'\n'}
-                  <CommonText fontWeight={'700'} color={ColorType.purple}>
+                  <CommonText fontWeight={'700'} color={ColorType.purple} type={'h3'}>
 										{data.memberBase?.face_code_name !== null ? data.memberBase?.face_code_name : ''}
 									</CommonText>
 

@@ -270,7 +270,7 @@ export const Roby = (props: Props) => {
                   인상적이라고 생각하세요.
                 */}
                 리미티드에서 내 대표 인상 {'\n'}
-                <CommonText fontWeight={'700'} color={ColorType.purple}>
+                <CommonText fontWeight={'700'} color={ColorType.purple} type={'h3'}>
                   {memberBase?.best_face !== null ? memberBase?.best_face : ''}
                 </CommonText>
 

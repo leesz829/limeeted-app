@@ -263,10 +263,10 @@ function RenderItem({ item, openModal }) {
               {item?.discount_rate && item.discount_rate != 0 ? item.discount_rate + '%':''}
             </Text>
             <Text style={styles.price}>
-              {CommaFormat(item?.shop_buy_price)}
+              {CommaFormat(item?.shop_buy_price) + '원'}
             </Text>
             <Text style={styles.originPrice}>
-              {CommaFormat(item?.original_price)}
+              {item?.discount_rate && item.discount_rate != 0 ? CommaFormat(item?.original_price) + '원':''}
             </Text>
           </View>
           <View style={styles.boxWrapper}>
