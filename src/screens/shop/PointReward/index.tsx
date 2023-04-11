@@ -27,6 +27,7 @@ export default function PointReward(element) {
     member_buy_price: element.route.params.member_buy_price
     , target_buy_price: element.route.params.target_buy_price
     , price_persent: element.route.params.price_persent
+    , tmplt_name: element.route.params.tmplt_name
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -74,11 +75,12 @@ export default function PointReward(element) {
   useEffect(() => {
     const getCashBackPayInfo = async () => {
       const { success, data } = await get_cashback_detail_info();
-      console.log('data :::: ', data);
+      console.log('data.result :::: ', data);
       if (success) {
         setTmplList(data.result);
       }
     };
+    
     getCashBackPayInfo();
   }, []);
 
@@ -88,7 +90,7 @@ export default function PointReward(element) {
       <ScrollView style={styles.scroll}>
         <View style={styles.inner}>
           <View style={styles.gradeContainer}>
-            <Text style={styles.gradeText}>A</Text>
+            <Text style={styles.gradeText}>{PAY_INFO?.tmplt_name}</Text>
           </View>
           <View style={styles.rankBox}>
             <Text style={styles.rankText}>RANK</Text>
@@ -152,20 +154,24 @@ export default function PointReward(element) {
               ) : (
                 <Text style={styles.moreText}>포인트 모으기</Text>
               )} */}
+                
 
-              {item.receive_flag == 'Y' ? (
-                <Text style={styles.completeText}>보상 완료!</Text>
-              ) : item.target_buy_price < item.buy_price ? (
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  style={styles.rewardButton}
-                  onPress={() => {onPressGetReward(item.event_tmplt_seq);}}
-                >
-                  <Text style={styles.rewardButtonText}>보상받기</Text>
-                </TouchableOpacity>
-              ) : (
-                <Text style={styles.moreText}>포인트 모으기</Text>
-              )}
+              {
+                item.receive_flag == 'Y' ? (
+                  <Text style={styles.completeText}>보상 완료!</Text>
+                ) : item.target_buy_price > item.member_buy_price ? (
+                  <Text style={styles.moreText}>포인트 모으기</Text>
+                ) : (
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    style={styles.rewardButton}
+                    onPress={() => {onPressGetReward(item.event_tmplt_seq);}}
+                  >
+                    <Text style={styles.rewardButtonText}>보상받기</Text>
+                  </TouchableOpacity>
+                )
+              }
+			  
             </View>
           ))}
 
