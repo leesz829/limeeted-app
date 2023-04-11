@@ -30,7 +30,7 @@ const options: Action = {
   options: {
     //maxHeight: 200,
     //maxWidth: 200,
-    selectionLimit: 0,
+    selectionLimit: 1,
     mediaType: 'photo',
     includeBase64: true,
     includeExtra,

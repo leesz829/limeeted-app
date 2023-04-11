@@ -26,7 +26,7 @@ export const Board0 = (props: Props) => {
 	return (
 		<>
 			<CommonHeader title={'최근 소식'} />
-			<ScrollView contentContainerStyle={styles.container}>
+			<ScrollView contentContainerStyle={styles.scrollContainer}>
 				{noticeList.map(
 					({
 						board_seq,
