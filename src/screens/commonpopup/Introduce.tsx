@@ -2,7 +2,7 @@ import { styles, layoutStyle, modalStyle } from 'assets/styles/Styles';
 import CommonHeader from 'component/CommonHeader';
 import { CommonInput } from 'component/CommonInput';
 import SpaceView from 'component/SpaceView';
-import { ScrollView, View, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { ScrollView, View, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native';
 import * as React from 'react';
 import { FC, useState, useEffect, useRef } from 'react';
 import { CommonSelect } from 'component/CommonSelect';
@@ -47,8 +47,8 @@ export const Introduce = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
   const isFocus = useIsFocused();
   const dispatch = useDispatch();
-
   const { show } = usePopup();  // 공통 팝업
+  const { width, height } = Dimensions.get('window');
 
   const memberBase = useUserInfo(); // 회원 기본정보
 
@@ -58,7 +58,7 @@ export const Introduce = (props: Props) => {
   const [job_name, setJob_name] = React.useState<any>(memberBase.job_name);
   //const [birthLocal, setBirthLocal] = React.useState(props.route.params.birth_local);
   //const [activeLocal, setActiveLocal] = React.useState(props.route.params.active_local);
-  const [height, setHeight] = React.useState<any>(memberBase.height);
+  const [mbrHeight, setMbrHeight] = React.useState<any>(memberBase.height);
   const [form_body, setForm_body] = React.useState<any>(memberBase.form_body);
   const [religion, setReligion] = React.useState<any>(memberBase.religion);
   const [drinking, setDrinking] = React.useState<any>(memberBase.drinking);
@@ -277,7 +277,7 @@ export const Introduce = (props: Props) => {
       business: business,
       job: job,
       job_name: job_name,
-      height: height,
+      height: mbrHeight,
       form_body: form_body,
       religion: religion,
       drinking: drinking,
@@ -447,8 +447,8 @@ export const Introduce = (props: Props) => {
           <CommonInput
             label={'키'}
             keyboardType="number-pad"
-            value={height}
-            onChangeText={(height) => setHeight(height)}
+            value={mbrHeight}
+            onChangeText={(mbrHeight) => setMbrHeight(mbrHeight)}
             placeholder={'키를 입력해 주세요.'}
             placeholderTextColor={'#c6ccd3'}
             maxLength={3}
@@ -516,6 +516,7 @@ export const Introduce = (props: Props) => {
 				adjustToContentHeight = {false}
 				handleStyle={modalStyle.modalHandleStyle}
 				modalStyle={modalStyle.modalContainer}
+        modalHeight={height - 150}
 				FooterComponent={
 					<>
 						<SpaceView mb={16}>

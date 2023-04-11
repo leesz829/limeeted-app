@@ -41,7 +41,8 @@ export const MatchSearch = ( data ) => {
             styles.whiteBack,
           ]}>
           <SpaceView mb={20} viewStyle={layoutStyle.alignCenter}>
-            <Image source={GIF_IMG.faceScan} style={styles.iconSize48} />
+            {/* <Image source={GIF_IMG.faceScan} style={styles.iconSize48} /> */}
+            <Image source={IMAGE.logoMark} style={styles.iconSize48} />
           </SpaceView>
           <View style={layoutStyle.alignCenter}>
             <CommonText type={'h4'}>다음 매칭 회원을 찾고 있어요.</CommonText>
