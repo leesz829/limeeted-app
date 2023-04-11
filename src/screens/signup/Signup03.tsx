@@ -196,6 +196,7 @@ export const Signup03 = (props : Props) => {
 									placeholder={'닉네임을 입력해 주세요.'}
 									placeholderTextColor={'#c6ccd3'}
 									value={nickname}
+									maxLength={10}
 									onChangeText={nickname => setNickname(nickname)}  />
 				</SpaceView>
 
@@ -204,8 +205,9 @@ export const Signup03 = (props : Props) => {
 									placeholder={'한줄 소개를 입력해 주세요.'}
 									placeholderTextColor={'#c6ccd3'}
 									value={comment}
+									maxLength={20}
 									onChangeText={comment => setComment(comment)}
-									maxLength={20} />
+									 />
 				</SpaceView>
 
 				<SpaceView mb={24}>

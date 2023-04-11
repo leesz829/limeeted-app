@@ -260,7 +260,7 @@ function RenderItem({ item, openModal }) {
           </Text>
           <View style={{ flexDirection: 'row' }}>
             <Text style={styles.discountRate}>
-              {item?.discount_rate}%
+              {item?.discount_rate && item.discount_rate != 0 ? item.discount_rate + '%':''}
             </Text>
             <Text style={styles.price}>
               {CommaFormat(item?.shop_buy_price)}
@@ -270,9 +270,11 @@ function RenderItem({ item, openModal }) {
             </Text>
           </View>
           <View style={styles.boxWrapper}>
-            <View style={styles.box}>
-              <Text style={styles.boxText}>특가할인</Text>
-            </View>
+            {
+              (item?.discount_rate && item.discount_rate != 0 ? true : false) && <View style={styles.box}>
+                <Text style={styles.boxText}>특가할인</Text>
+              </View>
+            }
           </View>
         </View>
       </View>

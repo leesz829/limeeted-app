@@ -260,13 +260,20 @@ export const Roby = (props: Props) => {
           {memberBase?.best_face != null ? (
             <SpaceView viewStyle={[layoutStyle.alignCenter, styles.profileContainer]} mb={10}>
               <CommonText color={ColorType.black2222} textStyle={layoutStyle.textCenter}>
-                리미티드의 회원 분들은 {memberBase?.nickname}님이
-                {'\n'}
+                {/*
+                  리미티드의 회원 분들은 {memberBase?.nickname}님이
+                  {'\n'}
+                  <CommonText fontWeight={'700'} color={ColorType.purple}>
+                    {memberBase?.best_face !== null ? memberBase?.best_face : ''}
+                  </CommonText>
+                  {'\n'}
+                  인상적이라고 생각하세요.
+                */}
+                리미티드에서 내 대표 인상 {'\n'}
                 <CommonText fontWeight={'700'} color={ColorType.purple}>
                   {memberBase?.best_face !== null ? memberBase?.best_face : ''}
                 </CommonText>
-                {'\n'}
-                인상적이라고 생각하세요.
+
               </CommonText>
             </SpaceView>
           ) : null}

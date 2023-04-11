@@ -252,6 +252,7 @@ export const Matching = (props: Props) => {
       const { success, data } = await get_daily_matched_info();
 
       if(success) {
+        
         if(data.result_code == '0000') {
           
           let tmpProfileImgList = new Array();    // 프로필 이미지 목록
@@ -524,13 +525,20 @@ export const Matching = (props: Props) => {
               </SpaceView> */}
 
                 <CommonText color={ColorType.gray8888} textStyle={styles_m.textCenter}>
-									리미티드의 여러 회원 분들에게
+									리미티드에서 내 대표 인상 {'\n'}
+                  <CommonText fontWeight={'700'} color={ColorType.purple}>
+										{data.memberBase?.face_code_name !== null ? data.memberBase?.face_code_name : ''}
+									</CommonText>
+
+                  {/*
+                  리미티드의 여러 회원 분들에게
                   {'\n'}
 									<CommonText fontWeight={'700'} color={ColorType.purple}>
 										{data.memberBase?.face_code_name !== null ? data.memberBase?.face_code_name : ''}
 									</CommonText>
 									{'\n'}
 									매력있다고 생각하세요.
+                  */}
 								</CommonText>
               </SpaceView>
 
@@ -589,7 +597,7 @@ export const Matching = (props: Props) => {
                       }
                     />
                     <CommonText fontWeight={'700'} type={'h2'}>
-                      {data.memberBase?.social_grade}
+                      {data.memberBase?.social_grade.toFixed(1)}
                     </CommonText>
                   </View>
                   <Slider
