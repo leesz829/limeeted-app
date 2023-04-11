@@ -95,9 +95,9 @@ export default function ProductModal({ isVisible, type, closeModal, item, produc
             </Text>
             <View style={modalStyleProduct.rowCenter}>
               <Text style={modalStyleProduct.price}>
-                {CommaFormat(item?.shop_buy_price != null ? item?.shop_buy_price : item?.buy_price)}
+                {CommaFormat(item?.shop_buy_price != null ? item?.shop_buy_price : item?.buy_price) + '원'}
               </Text>
-              <Image source={ICON.crown} style={modalStyleProduct.crown} />
+              {/*<Image source={ICON.crown} style={modalStyleProduct.crown} />*/}
             </View>  
           </View>
           <View style={modalStyleProduct.infoContents}>

@@ -11,6 +11,7 @@ import {
   modalStyle,
   styles,
 } from 'assets/styles/Styles';
+import { ToolTip } from 'component/Tooltip';
 import { CommonBtn } from 'component/CommonBtn';
 import CommonHeader from 'component/CommonHeader';
 import { CommonText } from 'component/CommonText';
@@ -311,6 +312,8 @@ export const Profile1 = (props: Props) => {
     try {
       const { success, data } = await get_member_face_rank();
       if(success) {
+        console.log('data.face_rank_list :: ' , data.face_rank_list);
+
         switch (data.result_code) {
           case SUCCESS:
             setProfileFaceRankList(data.face_rank_list);
@@ -600,11 +603,11 @@ export const Profile1 = (props: Props) => {
 
                   <SpaceView viewStyle={styles.container}>
 
-                    {profileFaceRankList.map((item : any) => (
+                    {profileFaceRankList.map((item : any, index) => (
                       <SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
                         <View style={[layoutStyle.rowBetween]}>
                           <View style={[styles.statusBtn, commonStyle.mr8]}>
-                            <CommonText type={'h6'} color={ColorType.white}>ICON</CommonText>
+                            <CommonText type={'h6'} color={ColorType.white}>{index+1}위</CommonText>
                           </View>
                           <CommonText type={'h6'} textStyle={commonStyle.fontSize13}>{item.face_code_name}</CommonText>
                         </View>
@@ -613,14 +616,25 @@ export const Profile1 = (props: Props) => {
                         </View>
                       </SpaceView>
                     ))}
-
                   </SpaceView> 
                 </>
               ) : null}
 
-              <SpaceView viewStyle={layoutStyle.rowBetween} mt={30} mb={29}>
-                <BarGrap score={memberBase?.profile_score} />
-              </SpaceView>        
+              <SpaceView viewStyle={layoutStyle.rowBetween} mb={29} mt={20}>
+                <ToolTip
+                  title={'프로필 평점'}
+                  desc={
+                    '다른 회원들이 바라보는\n내 프로필 사진의 인기 지수'
+                  }
+                />
+
+                <View>
+                  <CommonText fontWeight={'700'} type={'h2'}>
+                    {memberBase?.profile_score}
+                  </CommonText>
+                </View>
+              </SpaceView>
+              <BarGrap score={memberBase?.profile_score} />
             </View>
           </SpaceView>
 

@@ -105,6 +105,7 @@ const PAY_INFO = {
   member_buy_price: 0
   , target_buy_price: 10
   , price_persent: 0
+  , tmplt_name: ''
 };
 
 function MalePannel() {
@@ -117,6 +118,7 @@ function MalePannel() {
           member_buy_price: payInfo.member_buy_price 
           , target_buy_price: payInfo.target_buy_price 
           , price_persent: payInfo.price_persent 
+          , tmplt_name: payInfo.tmplt_name
       } 
     });
   };
@@ -126,6 +128,7 @@ function MalePannel() {
       const { success, data } = await get_cashback_pay_info();
       if (success) {
 
+        let lettmpltName = data?.result.tmplt_name;
         let mbrPrice = data?.result.member_buy_price;
         let trgtPrice = data?.result.target_buy_price;
 
@@ -138,6 +141,7 @@ function MalePannel() {
           member_buy_price: mbrPrice
           , target_buy_price: trgtPrice
           , price_persent: percent
+          , tmplt_name: lettmpltName
         });
       }
     };
