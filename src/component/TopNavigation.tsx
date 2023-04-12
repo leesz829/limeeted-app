@@ -11,6 +11,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { BasePopup } from 'screens/commonpopup/BasePopup';
 import { ICON } from 'utils/imageUtils';
 import Image from 'react-native-fast-image';
+import LinearGradient from 'react-native-linear-gradient';
 interface Props {
   currentPath: string;
   theme?: string;
@@ -33,13 +34,30 @@ const TopNavigation: FC<Props> = (props) => {
     show({ title: '스토리', content: '준비중입니다.' });
   }
 
-  return (
+  return props.theme ? (
+    <LinearGradient
+      colors={['#89b0fa', '#aaa1f7']}
+      style={{
+        width: '100%',
+      }}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+    >
+      <View style={styles.tabContainer}>
+        <NaviButtons navName={props.currentPath} theme={props.theme} />
+        {/* ######################################################################
+			##### 팝업 영역
+			###################################################################### */}
+        <Wallet theme={props.theme} />
+      </View>
+    </LinearGradient>
+  ) : (
     <View style={styles.tabContainer}>
       <NaviButtons navName={props.currentPath} theme={props.theme} />
       {/* ######################################################################
 			##### 팝업 영역
 			###################################################################### */}
-      <Wallet />
+      <Wallet theme={props.theme} />
     </View>
   );
 };
@@ -84,7 +102,7 @@ function NaviButtons({ navName, theme }: { navName: string; theme?: string }) {
     </View>
   );
 }
-export function Wallet({ textStyle }) {
+export function Wallet({ theme }) {
   const memberBase = useUserInfo(); // 회원 기본정보
 
   return (
@@ -97,13 +115,23 @@ export function Wallet({ textStyle }) {
         >
           <View style={[styles.itemContainer, { marginRight: 8 }]}>
             <Image style={styles.itemStyle} source={ICON.currency} />
-            <Text style={[styles.statusText, textStyle]}>
+            <Text
+              style={[
+                styles.statusText,
+                { color: theme ? 'white' : 'rgb(84, 84 , 86)' },
+              ]}
+            >
               {memberBase?.pass_has_amt}
             </Text>
           </View>
           <View style={styles.itemContainer}>
             <Image style={styles.itemStyle} source={ICON.ticket} />
-            <Text style={[styles.statusText, textStyle]}>
+            <Text
+              style={[
+                styles.statusText,
+                { color: theme ? 'white' : 'rgb(84, 84 , 86)' },
+              ]}
+            >
               {memberBase?.royal_pass_has_amt}
             </Text>
           </View>
@@ -121,7 +149,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingLeft: 16,
     paddingRight: 16,
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
