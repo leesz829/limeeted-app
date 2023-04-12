@@ -82,6 +82,12 @@ export const ICON = {
   sns_off: require('assets/icon/certification/sns_off.png'),
   vehicle_on: require('assets/icon/certification/vehicle_on.png'),
   vehicle_off: require('assets/icon/certification/vehicle_off.png'),
+  limited_on: require('assets/icon/limited_on.png'),
+  limited_off_white: require('assets/icon/limited_off_white.png'),
+  limited_off_gray: require('assets/icon/limited_off_gray.png'),
+  live_on: require('assets/icon/live_on.png'),
+  live_off_white: require('assets/icon/live_off_white.png'),
+  live_off_gray: require('assets/icon/live_off_gray.png'),
 };
 
 export const GIF_IMG = {

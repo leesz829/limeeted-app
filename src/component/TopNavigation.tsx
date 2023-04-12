@@ -7,12 +7,13 @@ import { useUserInfo } from 'hooks/useUserInfo';
 import type { FC } from 'react';
 import * as React from 'react';
 import { useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { BasePopup } from 'screens/commonpopup/BasePopup';
 import { ICON } from 'utils/imageUtils';
-
+import Image from 'react-native-fast-image';
 interface Props {
   currentPath: string;
+  theme?: string;
 }
 /**
  * 상단 네비게이션
@@ -20,15 +21,29 @@ interface Props {
  * @returns
  */
 const TopNavigation: FC<Props> = (props) => {
-  const navigation = useNavigation<ScreenNavigationProp>();
   const [currentNavi, setCurrentNavi] = useState<string>(props.currentPath);
 
   const { show } = usePopup();
 
-  React.useEffect(() => {
-    setCurrentNavi(props.currentPath);
-  }, [props]);
+  // React.useEffect(() => {
+  //   setCurrentNavi(props.currentPath);
+  // }, [props]);
 
+  function onPressStory() {
+    show({ title: '스토리', content: '준비중입니다.' });
+  }
+
+  return (
+    <View style={styles.tabContainer}>
+      <NaviButtons navName={props.currentPath} theme={props.theme} />
+      {/* ######################################################################
+			##### 팝업 영역
+			###################################################################### */}
+      <Wallet />
+    </View>
+  );
+};
+function NaviButtons({ navName, theme }: { navName: string; theme?: string }) {
   function onPressLimeeted() {
     navigation.navigate(STACK.TAB, {
       screen: 'Matching',
@@ -37,56 +52,38 @@ const TopNavigation: FC<Props> = (props) => {
   function onPressLive() {
     navigation.navigate('Live');
   }
-  function onPressStory() {
-    show({ title: '스토리', content: '준비중입니다.' });
-  }
+  const navigation = useNavigation<ScreenNavigationProp>();
+
+  const limitedIcon = React.useMemo(() => {
+    return navName === 'LIMEETED'
+      ? ICON.limited_on
+      : theme != undefined
+      ? ICON.limited_off_white
+      : ICON.limited_off_gray;
+  }, [navName, theme]);
+  const liveIcon = React.useMemo(() => {
+    return navName === 'LIVE'
+      ? ICON.live_on
+      : theme != undefined
+      ? ICON.live_off_white
+      : ICON.live_off_gray;
+  }, [navName, theme]);
 
   return (
-    <View style={styles.tabContainer}>
-      <View style={{ flexDirection: 'row' }}>
-        <TouchableOpacity style={[styles.tab]} onPress={onPressLimeeted}>
-          <Text
-            style={[
-              styles.tabText,
-              currentNavi === 'LIMEETED' && styles.tabTextActive,
-            ]}
-          >
-            LIMEETED
-          </Text>
-
-          {currentNavi === 'LIMEETED' && <View style={styles.activeDot} />}
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.tab]} onPress={onPressLive}>
-          <Text
-            style={[
-              styles.tabText,
-              currentNavi === 'LIVE' && styles.tabTextActive,
-            ]}
-          >
-            LIVE
-          </Text>
-          {currentNavi === 'LIVE' && <View style={styles.activeDot} />}
-        </TouchableOpacity>
-        {/* <TouchableOpacity style={[styles.tab]} onPress={onPressStory}>
-          <Text
-            style={[
-              styles.tabText,
-              currentNavi === 'STORY' && styles.tabTextActive,
-            ]}
-          >
-            STORY
-          </Text>
-          {currentNavi === 'STORY' && <View style={styles.activeDot} />}
-        </TouchableOpacity> */}
-      </View>
-
-      {/* ######################################################################
-			##### 팝업 영역
-			###################################################################### */}
-      <Wallet />
+    <View style={{ flexDirection: 'row' }}>
+      <TouchableOpacity style={[styles.tab]} onPress={onPressLimeeted}>
+        <Image
+          style={styles.limitedIcon}
+          source={limitedIcon}
+          resizeMode="contain"
+        />
+      </TouchableOpacity>
+      <TouchableOpacity style={[styles.tab]} onPress={onPressLive}>
+        <Image style={styles.liveIcon} source={liveIcon} resizeMode="contain" />
+      </TouchableOpacity>
     </View>
   );
-};
+}
 export function Wallet({ textStyle }) {
   const memberBase = useUserInfo(); // 회원 기본정보
 
@@ -164,5 +161,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'rgb(84, 84 , 86)',
     fontWeight: 'bold',
+  },
+  limitedIcon: {
+    width: 100,
+    height: 29,
+    resizeMode: 'contain',
+  },
+  liveIcon: {
+    width: 39,
+    height: 29,
+    resizeMode: 'contain',
   },
 });
