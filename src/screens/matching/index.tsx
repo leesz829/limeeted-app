@@ -51,6 +51,7 @@ import { myProfile } from 'redux/reducers/authReducer';
 import { MatchSearch } from 'screens/matching/MatchSearch';
 import { findSourcePath, ICON } from 'utils/imageUtils';
 import { Slider } from '@miblanchard/react-native-slider';
+import ProfileAuth from 'component/ProfileAuth';
 const { width, height } = Dimensions.get('window');
 interface Props {
   navigation: StackNavigationProp<BottomParamList, 'Roby'>;
@@ -201,6 +202,7 @@ export default function Matching(props: Props) {
     }
   };
 
+<<<<<<< HEAD
   const renderAuthInfo = ({ item }: { item: auth }) => (
     <View
       style={
@@ -843,6 +845,8 @@ export default function Matching(props: Props) {
 >>>>>>> d5b224ca9fd214d51a6f8636a9455babbe30b903
   );
 
+=======
+>>>>>>> origin/dev
   return (
     <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
       <TopNavigation currentPath={'LIMEETED'} />
@@ -868,24 +872,8 @@ export default function Matching(props: Props) {
           </Text>
         </View>
         {/* 프로필 인증 */}
-        <View style={styles.profileTitleContainer}>
-          <Text style={styles.title}>프로필 인증</Text>
-          <View style={styles.levelBadge}>
-            <Text style={[styles.levelText, { color: 'white' }]}>LV.7</Text>
-          </View>
-        </View>
-        <SimpleGrid
-          style={{ marginTop: 10 }}
-          staticDimension={width}
-          itemContainerStyle={{
-            width: '32%',
-          }}
-          spacing={width * 0.01}
-          data={
-            data?.second_auth_list?.length > 0 ? data?.second_auth_list : dummy
-          }
-          renderItem={renderAuthInfo}
-        />
+        <ProfileAuth data={data} />
+
         <Text style={styles.title}>방배동아이유님의 관심사</Text>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 20 }}>
           {interest.map((item, index) => {
@@ -1054,6 +1042,17 @@ const styles = StyleSheet.create({
     alignItems: `center`,
     justifyContent: `center`,
   },
+  title: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 19,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    // lineHeight: 26,
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#333333',
+    marginTop: 20,
+  },
   redBadge: {
     width: 43,
     height: 21,
@@ -1204,100 +1203,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     color: '#8e8e8e',
   },
-  profileTitleContainer: {
-    marginTop: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  title: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 19,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    // lineHeight: 26,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#333333',
-    // marginTop: 20,
-  },
-  levelBadge: {
-    width: 51,
-    height: 21,
-    borderRadius: 5,
-    backgroundColor: '#7986ee',
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: `center`,
-    marginLeft: 8,
-  },
-  levelText: {
-    // opacity: 0.83,
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 10,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    // letterSpacing: 0,
-    textAlign: 'left',
-    color: 'white',
-  },
 
-  certificateItemContainerOn: {
-    width: '100%',
-    height: 39,
-    borderRadius: 5,
-    backgroundColor: '#ffffff',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderColor: '#7986ee',
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: 'space-between',
-    paddingHorizontal: 12,
-  },
-  certificateItemContainerOff: {
-    width: '100%',
-    height: 39,
-    borderRadius: 5,
-    backgroundColor: '#ffffff',
-    borderStyle: 'dashed',
-    borderWidth: 1,
-    borderColor: '#b7b7b9',
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: 'space-between',
-    paddingHorizontal: 12,
-  },
-  certificateItemImage: {
-    width: 15.6,
-    height: 13.9,
-  },
-  certificateItemTextOn: {
-    marginLeft: 5,
-    fontFamily: 'AppleSDGothicNeoR00',
-    fontSize: 15,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    lineHeight: 22,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#7986ee',
-  },
-  certificateItemTextOff: {
-    marginLeft: 5,
-    fontFamily: 'AppleSDGothicNeoR00',
-    fontSize: 15,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    lineHeight: 22,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#b1b1b1',
-  },
-  rowCenter: {
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: `center`,
-  },
   levelText: {
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 10,
@@ -1475,35 +1381,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const dummy = [
-  {
-    member_auth_seq: 26,
-    auth_level: 1,
-    auth_status: 'ACCEPT',
-    code_name: '직업',
-    member_seq: 9,
-    common_code: 'JOB',
-  },
-  {
-    member_auth_seq: 25,
-    auth_level: 1,
-    auth_status: 'ACCEPT',
-    code_name: '학업',
-    member_seq: 9,
-    common_code: 'EDU',
-  },
-  { code_name: '소득', common_code: 'INCOME' },
-  {
-    member_auth_seq: 27,
-    auth_level: 1,
-    auth_status: 'ACCEPT',
-    code_name: '자산',
-    member_seq: 9,
-    common_code: 'ASSET',
-  },
-  { code_name: 'SNS', common_code: 'SNS' },
-  { code_name: '차량', common_code: 'VEHICLE' },
-];
 const interest = [
   {
     code_name: '공연보기',
@@ -1548,32 +1425,4 @@ interface auth {
   code_name: string;
   member_seq: number;
   common_code: string;
-}
-function convertTypeToImage(auth: auth) {
-  switch (auth.common_code) {
-    case 'JOB':
-      if (auth.auth_status === 'ACCEPT') return ICON.job_on;
-      else return ICON.job_off;
-
-    case 'EDU':
-      if (auth.auth_status === 'ACCEPT') return ICON.degree_on;
-      else return ICON.degree_off;
-
-    case 'INCOME':
-      if (auth.auth_status === 'ACCEPT') return ICON.income_on;
-      else return ICON.income_off;
-    case 'ASSET':
-      if (auth.auth_status === 'ACCEPT') return ICON.asset_on;
-      else return ICON.asset_off;
-
-    case 'SNS':
-      if (auth.auth_status === 'ACCEPT') return ICON.sns_on;
-      else return ICON.sns_off;
-
-    case 'VEHICLE':
-      if (auth.auth_status === 'ACCEPT') return ICON.vehicle_on;
-      else return ICON.vehicle_off;
-    default:
-      break;
-  }
 }

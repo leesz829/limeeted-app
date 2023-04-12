@@ -1,80 +1,59 @@
 {
-  "interview_list": [],
   "result_msg": "정상",
-  "second_auth_list": [
+  "interview_list": [
     {
-      "member_auth_seq": 26,
-      "auth_level": 1,
-      "auth_status": "ACCEPT",
-      "code_name": "직업",
-      "member_seq": 9,
-      "common_code": "JOB"
-    },
-    {
-      "member_auth_seq": 25,
-      "auth_level": 1,
-      "auth_status": "ACCEPT",
-      "code_name": "학업",
-      "member_seq": 9,
-      "common_code": "EDU"
-    },
-    { "code_name": "소득", "common_code": "INCOME" },
-    {
-      "member_auth_seq": 27,
-      "auth_level": 1,
-      "auth_status": "ACCEPT",
-      "code_name": "자산",
-      "member_seq": 9,
-      "common_code": "ASSET"
-    },
-    { "code_name": "SNS", "common_code": "SNS" },
-    { "code_name": "차량", "common_code": "VEHICLE" }
-  ],
-  "match_member_info": {
-    "profile_type": "NEW",
-    "gender": "W",
-    "name": "JULIET_13",
-    "auth_acct_cnt": 0,
-    "comment": "롤 버스 태워줄 사람?",
-    "profile_score": "0.0",
-    "member_seq": 33,
-    "age": 29
-  },
-  "safe_royal_pass": 20000,
-  "interest_list": [
-    {
-      "interest_seq": 454,
-      "code_name": "인스타그램",
-      "common_code": "CONC_06_00"
+      "order_seq": 1,
+      "answer": "오픈 준비",
+      "disp_yn": "Y",
+      "use_yn": "Y",
+      "member_interview_seq": 168,
+      "code_name": "요즘 나의 가장 큰 고민은?",
+      "common_code": "INTER_00"
     }
   ],
+  "second_auth_list": [],
+  "match_member_info": {
+    "profile_type": "NEW",
+    "gender": "M",
+    "name": "ROMEO_01",
+    "auth_acct_cnt": 0,
+    "face_code_name": "행복한 댕댕이",
+    "comment": "반가워요 테스트입니다.",
+    "social_grade": "7",
+    "profile_score": "7.0",
+    "face_code": "FACE_M_02",
+    "member_seq": 1,
+    "age": 29
+  },
+  "safe_royal_pass": 40000,
   "result_code": "0000",
+  "interest_list": [],
   "profile_img_list": [
     {
-      "file_seq": 97,
-      "img_file_path": "/profile/TEST_IMG_F_011.png",
+      "file_seq": 1,
+      "img_file_path": "/profile/TEST_IMG_M_001.png",
       "profile_type": "NEW",
-      "name": "JULIET_13",
-      "comment": "롤 버스 태워줄 사람?",
-      "member_seq": 33,
+      "name": "ROMEO_01",
+      "comment": "반가워요 테스트입니다.",
+      "member_seq": 1,
       "age": 29
     },
     {
-      "file_seq": 98,
-      "img_file_path": "/profile/TEST_IMG_F_012.png",
+      "file_seq": 2,
+      "img_file_path": "/profile/TEST_IMG_M_002.png",
       "profile_type": "NEW",
-      "name": "JULIET_13",
-      "comment": "롤 버스 태워줄 사람?",
-      "member_seq": 33,
+      "name": "ROMEO_01",
+      "comment": "반가워요 테스트입니다.",
+      "member_seq": 1,
       "age": 29
     },
     {
-      "file_seq": 99,
-      "img_file_path": "/profile/TEST_IMG_F_013.png",
+      "file_seq": 3,
+      "img_file_path": "/profile/TEST_IMG_M_003.png",
       "profile_type": "NEW",
-      "name": "JULIET_13",
-      "comment": "롤 버스 태워줄 사람?",
-      "member_seq": 33,
+      "name": "ROMEO_01",
+      "comment": "반가워요 테스트입니다.",
+      "member_seq": 1,
       "age": 29
     }
   ],

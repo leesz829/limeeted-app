@@ -99,6 +99,7 @@ function PreFetcher(props) {
   const dispatch = useDispatch();
   useEffect(() => {
     authCheck();
+    // AsyncStorage.clear();
   }, []);
 
   async function authCheck() {

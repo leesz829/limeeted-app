@@ -10,8 +10,9 @@ export const Color = {
   grayAAAA: '#aaaaaa',
   paleBlue: '#eff3fe',
   red: '#ff0000',
+  danger: '#fe0456',
   white: '#fff',
   tabColor: 'rgb(38,38,38)',
-  balck262626:'#262626',
-  balck333333:'#333333',
+  balck262626: '#262626',
+  balck333333: '#333333',
 };

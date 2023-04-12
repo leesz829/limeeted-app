@@ -11,7 +11,7 @@ import type { TouchableOpacityProps, StyleProp } from 'react-native';
 import { Image } from 'react-native';
 import SpaceView from './SpaceView';
 
-type BtnType = 'gray' | 'primary' | 'kakao' | 'purple' | 'white';
+type BtnType = 'gray' | 'primary' | 'kakao' | 'purple' | 'white' | 'danger';
 type Props = {
   onPress?: () => void;
   value: string;
@@ -107,8 +107,12 @@ const styles = (props: Props) => {
       borderColor = Color.grayDDDD;
       break;
     case 'black':
-        backgroundColor = Color.balck262626;
-        textColor = Color.white;
+      backgroundColor = Color.balck262626;
+      textColor = Color.white;
+      break;
+    case 'danger':
+      backgroundColor = Color.danger;
+      textColor = Color.white;
       break;
     default:
       backgroundColor = Color.grayEEEE;

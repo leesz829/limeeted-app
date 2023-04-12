@@ -89,6 +89,10 @@ export const ICON = {
   live_off_white: require('assets/icon/live_off_white.png'),
   live_off_gray: require('assets/icon/live_off_gray.png'),
   arrow_right: require('assets/icon/arrow_right.png'),
+  plus_primary: require('assets/icon/plus.png'),
+  fashion: require('assets/icon/impression/fashion.png'),
+  fond: require('assets/icon/impression/fond.png'),
+  smile: require('assets/icon/impression/smile.png'),
 };
 
 export const GIF_IMG = {
@@ -154,8 +158,14 @@ export const PROFILE_IMAGE = {
 
 export function findSourcePath(img_file_path: any) {
   if (img_file_path) {
-    const path = properties.img_domain + img_file_path;
-    return { uri: path };
+    if (img_file_path.startsWith('http')) {
+      return { uri: img_file_path };
+    } else if (img_file_path.startsWith('file:///')) {
+      return { uri: img_file_path };
+    } else {
+      const path = properties.img_domain + img_file_path;
+      return { uri: path };
+    }
   }
   return img_file_path;
 }
