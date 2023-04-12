@@ -29,6 +29,7 @@ import SpaceView from 'component/SpaceView';
 import { CommonBtn } from 'component/CommonBtn';
 import { CommonSelect } from 'component/CommonSelect';
 import { CommonInput } from 'component/CommonInput';
+import { CommonRoundInput } from 'component/CommonRoundInput';
 import { Color } from 'assets/styles/Color';
 import { useDispatch } from 'react-redux';
 import { useUserInfo } from 'hooks/useUserInfo';
@@ -380,16 +381,16 @@ export const Preference = (props: Props) => {
 
         <View>  
           <SpaceView mb={32}>
-            <SpaceView mb={0}>
+            {/* <SpaceView mb={0}>
               <CommonText fontWeight={'700'} type={'h4'}>
                 나이
               </CommonText>
-            </SpaceView>
+            </SpaceView> */}
 
             <SpaceView viewStyle={styles.halfContainer}>
               <View style={styles.halfItemLeft}>
-                <CommonInput
-  //              label={'최소'}
+                <CommonRoundInput
+                  label={'최소'}
                   keyboardType="number-pad"
                   value={wantAgeMin}
                   onChangeText={(wantAgeMin) => setWantAgeMin(wantAgeMin)}
@@ -400,8 +401,8 @@ export const Preference = (props: Props) => {
               </View>
 
               <View style={styles.halfItemRight}>
-                <CommonInput
-  //              label={'최대'}
+                <CommonRoundInput
+                  label={'최대'}
                   keyboardType="number-pad"
                   value={wantAgeMax}
                   onChangeText={(wantAgeMax) => setWantAgeMax(wantAgeMax)}
@@ -415,16 +416,16 @@ export const Preference = (props: Props) => {
           </SpaceView>
 
           <SpaceView mb={32}>
-            <SpaceView mb={0}>
+            {/* <SpaceView mb={0}>
               <CommonText fontWeight={'700'} type={'h4'}>
                 거리
               </CommonText>
-            </SpaceView>
+            </SpaceView> */}
 
             <SpaceView viewStyle={styles.halfContainer}>
               <View style={styles.halfItemLeft}>
-                <CommonInput
-  //              label={'최소(km)'}
+                <CommonRoundInput
+                  label={'최소(km)'}
                   keyboardType="number-pad"
                   value={wantLocal1}
                   onChangeText={(wantLocal1) => setWantLocal1(wantLocal1)}
@@ -435,8 +436,8 @@ export const Preference = (props: Props) => {
               </View>
 
               <View style={styles.halfItemRight}>
-                <CommonInput
-  //              label={'최대(km)'}
+                <CommonRoundInput
+                  label={'최대(km)'}
                   keyboardType="number-pad"
                   value={wantLocal2}
                   onChangeText={(wantLocal2) => setWantLocal2(wantLocal2)}
