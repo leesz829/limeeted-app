@@ -108,7 +108,9 @@ export const ViualSlider: FC<Props> = (props: Props) => {
           <SpaceView mb={16}>
             {props.distance ? (
               <View style={layoutStyle.row}>
-                <CommonText color={ColorType.white}>{props.distance}km</CommonText>
+                <CommonText color={ColorType.white}>
+                  {props.distance}km
+                </CommonText>
                 <Image source={ICON.distance} style={styles.iconSize} />
               </View>
             ) : null}
@@ -176,10 +178,7 @@ const RenderItem = (imgObj: any) => {
           style={styles.visualImage}
         />
       ) : (
-        <Image
-          source={imgObj.imgUrl.item.url}
-          style={styles.visualImage}
-        />
+        <Image source={imgObj.imgUrl.item.url} style={styles.visualImage} />
       )}
 
       {/* {
@@ -218,6 +217,7 @@ const styles = StyleSheet.create({
   visualImage: {
     width,
     height: 480,
+    borderRadius: 20,
   },
   pagingContainer: {
     position: 'absolute',

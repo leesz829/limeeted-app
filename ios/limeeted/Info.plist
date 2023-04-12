@@ -126,6 +126,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+<<<<<<< HEAD
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app requires access to the photo library.</string>
 	<key>NSMicrophoneUsageDescription</key>
@@ -140,5 +141,7 @@
 	<string>서비스 동작을 위해 위치 정보가 필요합니다</string>
 	<key>UIUserInterfaceStyle</key>
 	<string>Light</string>
+=======
+>>>>>>> d5b224ca9fd214d51a6f8636a9455babbe30b903
 </dict>
 </plist>

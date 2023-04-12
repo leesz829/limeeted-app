@@ -1,25 +1,113 @@
 {
+  "interview_list": [],
   "result_msg": "정상",
-  "prod_img_list": [
+  "second_auth_list": [
     {
-      "file_path": "/prod/",
-      "file_name": "121332_product06.png",
-      "represent_yn": "Y"
+      "member_auth_seq": 26,
+      "auth_level": 1,
+      "auth_status": "ACCEPT",
+      "code_name": "직업",
+      "member_seq": 9,
+      "common_code": "JOB"
+    },
+    {
+      "member_auth_seq": 25,
+      "auth_level": 1,
+      "auth_status": "ACCEPT",
+      "code_name": "학업",
+      "member_seq": 9,
+      "common_code": "EDU"
+    },
+    { "code_name": "소득", "common_code": "INCOME" },
+    {
+      "member_auth_seq": 27,
+      "auth_level": 1,
+      "auth_status": "ACCEPT",
+      "code_name": "자산",
+      "member_seq": 9,
+      "common_code": "ASSET"
+    },
+    { "code_name": "SNS", "common_code": "SNS" },
+    { "code_name": "차량", "common_code": "VEHICLE" }
+  ],
+  "match_member_info": {
+    "profile_type": "NEW",
+    "gender": "W",
+    "name": "JULIET_13",
+    "auth_acct_cnt": 0,
+    "comment": "롤 버스 태워줄 사람?",
+    "profile_score": "0.0",
+    "member_seq": 33,
+    "age": 29
+  },
+  "safe_royal_pass": 20000,
+  "interest_list": [
+    {
+      "interest_seq": 454,
+      "code_name": "인스타그램",
+      "common_code": "CONC_06_00"
     }
   ],
-  "prod_detail": {
-    "modify_seq": 1,
-    "prod_seq": 80000110,
-    "buy_end_dt": "2023-03-11 12:00:00",
-    "sell_yn": "Y",
-    "buy_start_dt": "2023-03-10 12:00:00",
-    "brand_name": "경매상품 브랜드 테스트 case05",
-    "now_buy_price": 1000,
-    "buy_price": 210,
-    "prod_info_seq": 321,
-    "asking_price": 160,
-    "prod_name": "경매상품 테스트 case05"
-  },
-  "auct_list": [{ "current_bid_yn": "Y", "bid_price": 1000 }],
-  "result_code": "0000"
+  "result_code": "0000",
+  "profile_img_list": [
+    {
+      "file_seq": 97,
+      "img_file_path": "/profile/TEST_IMG_F_011.png",
+      "profile_type": "NEW",
+      "name": "JULIET_13",
+      "comment": "롤 버스 태워줄 사람?",
+      "member_seq": 33,
+      "age": 29
+    },
+    {
+      "file_seq": 98,
+      "img_file_path": "/profile/TEST_IMG_F_012.png",
+      "profile_type": "NEW",
+      "name": "JULIET_13",
+      "comment": "롤 버스 태워줄 사람?",
+      "member_seq": 33,
+      "age": 29
+    },
+    {
+      "file_seq": 99,
+      "img_file_path": "/profile/TEST_IMG_F_013.png",
+      "profile_type": "NEW",
+      "name": "JULIET_13",
+      "comment": "롤 버스 태워줄 사람?",
+      "member_seq": 33,
+      "age": 29
+    }
+  ],
+  "report_code_list": [
+    {
+      "group_code": "DECLAR",
+      "group_code_name": "신고타입",
+      "code_name": "허위 프로필",
+      "common_code": "PROFILE"
+    },
+    {
+      "group_code": "DECLAR",
+      "group_code_name": "신고타입",
+      "code_name": "과도한 성적 표현",
+      "common_code": "SEXUAL"
+    },
+    {
+      "group_code": "DECLAR",
+      "group_code_name": "신고타입",
+      "code_name": "불쾌감을 주는 표현",
+      "common_code": "RUDE"
+    },
+    {
+      "group_code": "DECLAR",
+      "group_code_name": "신고타입",
+      "code_name": "광고",
+      "common_code": "AD"
+    },
+    {
+      "group_code": "DECLAR",
+      "group_code_name": "신고타입",
+      "code_name": "기타",
+      "common_code": "ETC"
+    }
+  ]
 }
