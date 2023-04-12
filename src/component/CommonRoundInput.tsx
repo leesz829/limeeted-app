@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     color: "#262626"
   },
   inputContainer: {
-    // paddingBottom: 8,
+    paddingBottom: 8,
     // borderBottomWidth: 1,
     // borderBottomColor: Color.grayDDDD,
     width: 156,
@@ -103,8 +103,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
     color: Color.black2222,
-    padding: 0,
+    padding: 10,
     margin: 0,
     fontFamily: 'AppleSDGothicNeoM00',
+    textAlignVertical: "center",
   },
 });
