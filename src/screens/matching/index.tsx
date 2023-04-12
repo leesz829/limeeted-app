@@ -871,7 +871,7 @@ export default function Matching(props: Props) {
         <View style={styles.profileTitleContainer}>
           <Text style={styles.title}>프로필 인증</Text>
           <View style={styles.levelBadge}>
-            <Text style={styles.levelText}>LV.7</Text>
+            <Text style={[styles.levelText, { color: 'white' }]}>LV.7</Text>
           </View>
         </View>
         <SimpleGrid
@@ -1161,7 +1161,6 @@ const styles = StyleSheet.create({
   },
   boostPannel: {
     width: '100%',
-    height: 89,
     borderRadius: 10,
     backgroundColor: '#f6f7fe',
     paddingHorizontal: 20,
@@ -1215,11 +1214,11 @@ const styles = StyleSheet.create({
     fontSize: 19,
     fontWeight: 'normal',
     fontStyle: 'normal',
-    lineHeight: 26,
+    // lineHeight: 26,
     letterSpacing: 0,
     textAlign: 'left',
     color: '#333333',
-    marginTop: 20,
+    // marginTop: 20,
   },
   levelBadge: {
     width: 51,
@@ -1232,14 +1231,14 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   levelText: {
-    opacity: 0.83,
+    // opacity: 0.83,
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 10,
     fontWeight: 'normal',
     fontStyle: 'normal',
-    letterSpacing: 0,
+    // letterSpacing: 0,
     textAlign: 'left',
-    color: '#ffffff',
+    color: 'white',
   },
 
   certificateItemContainerOn: {
