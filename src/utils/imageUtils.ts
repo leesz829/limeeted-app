@@ -88,6 +88,7 @@ export const ICON = {
   live_on: require('assets/icon/live_on.png'),
   live_off_white: require('assets/icon/live_off_white.png'),
   live_off_gray: require('assets/icon/live_off_gray.png'),
+  arrow_right: require('assets/icon/arrow_right.png'),
 };
 
 export const GIF_IMG = {
