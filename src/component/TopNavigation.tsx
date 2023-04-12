@@ -52,7 +52,7 @@ const TopNavigation: FC<Props> = (props) => {
       </View>
     </LinearGradient>
   ) : (
-    <View style={styles.tabContainer}>
+    <View style={[styles.tabContainer, { backgroundColor: 'white' }]}>
       <NaviButtons navName={props.currentPath} theme={props.theme} />
       {/* ######################################################################
 			##### 팝업 영역
