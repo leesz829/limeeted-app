@@ -136,6 +136,12 @@ export const CustomerInquiry = (props : Props) => {
 						/>
 					</SpaceView>
 
+					<SpaceView mb={25}>
+						<View style={layoutStyle.alignStart}>
+							<CommonText	textStyle={_styles.bottomText}>등록해주신 문의내용은 관리자 확인 후 우편함으로 답변드립니다.</CommonText>
+						</View>
+					</SpaceView>
+
 					<SpaceView mb={16} pl={8} pr={8}>
           				<CommonBtn
             				value={'저장'}
@@ -198,6 +204,17 @@ const _styles = StyleSheet.create({
 		lineHeight: 30,
 		color: "#333333"
 	},
+	bottomText: {
+		width: 352,
+		height: 17,
+		fontFamily: "AppleSDGothicNeoM00",
+		fontSize: 14,
+		fontWeight: "normal",
+		fontStyle: "normal",
+		letterSpacing: 0,
+		textAlign: "left",
+		color: "#c7c7c7"
+	}
 });
 
 const modalStyleProduct = StyleSheet.create({
@@ -230,4 +247,3 @@ const modalStyleProduct = StyleSheet.create({
 		paddingRight: 16,
 	  },
   });
-  
