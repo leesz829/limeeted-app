@@ -251,194 +251,6 @@ export const Roby = (props: Props) => {
     <>
       <TopNavigation currentPath={''} theme />
 
-<<<<<<< HEAD
-        <SpaceView mb={48} viewStyle={layoutStyle.alignCenter}>
-          <SpaceView mb={8}>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate(STACK.COMMON, { screen: 'Introduce' });
-              }} >
-              <Image
-                source={{ uri: properties.img_domain + memberBase?.mst_img_path }}
-                style={styles.profileImg}
-              />
-              <View style={styles.profilePenContainer}>
-                <Image source={ICON.pen} style={styles.iconSize24} />
-              </View>
-            </TouchableOpacity>
-          </SpaceView>
-
-          <SpaceView mb={4}>
-            <CommonText fontWeight={'700'} type={'h4'}>
-              {memberBase?.nickname}, {memberBase?.age}
-            </CommonText>
-          </SpaceView>
-
-          {memberBase?.auth_acct_cnt > 0 ? (
-            <>
-              <SpaceView mb={16} viewStyle={styles.levelContainer}>
-                <CommonText color={ColorType.gray6666} type={'h6'}>
-                  LV.{memberBase?.auth_acct_cnt}
-                </CommonText>
-              </SpaceView>
-            </>
-          ) : null}
-
-          <CommonText color={ColorType.gray6666}>
-            {memberBase?.comment}
-          </CommonText>
-        </SpaceView>
-
-        {/* ################################################################################ 프로필 관리 영역 */}
-        <View>
-          <SpaceView mb={16}>
-            <TouchableOpacity
-              style={[layoutStyle.row, layoutStyle.alignCenter]}
-              onPress={() => {
-                navigation.navigate(STACK.COMMON, { screen: 'Profile1' });
-              }}
-            >
-              <CommonText type={'h3'} fontWeight={'700'}>
-                프로필 관리
-              </CommonText>
-              <Image source={ICON.arrRight} style={styles.iconSize} />
-            </TouchableOpacity>
-          </SpaceView>
-
-          {memberBase?.best_face != null ? (
-            <SpaceView viewStyle={[layoutStyle.alignCenter, styles.profileContainer]} mb={10}>
-              <CommonText color={ColorType.black2222} textStyle={layoutStyle.textCenter}>
-                {/*
-                  리미티드의 회원 분들은 {memberBase?.nickname}님이
-                  {'\n'}
-                  <CommonText fontWeight={'700'} color={ColorType.purple}>
-                    {memberBase?.best_face !== null ? memberBase?.best_face : ''}
-                  </CommonText>
-                  {'\n'}
-                  인상적이라고 생각하세요.
-                */}
-                리미티드에서 내 대표 인상 {'\n'}
-                <CommonText fontWeight={'700'} color={ColorType.purple} type={'h3'}>
-                  {memberBase?.best_face !== null ? memberBase?.best_face : ''}
-                </CommonText>
-
-              </CommonText>
-            </SpaceView>
-          ) : null}
-
-          <SpaceView mb={16} viewStyle={styles.halfContainer}>
-            <View
-              style={[
-                styles.halfItemLeft,
-                styles.profileContainer,
-                layoutStyle.alignCenter,
-              ]}
-            >
-              <SpaceView mb={4}>
-                <CommonText fontWeight={'700'} type={'h2'}>
-                  {memberBase?.profile_score}
-                </CommonText>
-              </SpaceView>
-
-              <SpaceView mb={24} viewStyle={layoutStyle.rowCenter}>
-                {/* <Image source={ICON.star} style={styles.iconSize24} /> */}
-                {memberBase?.profile_score < 1 ? (
-                  <Image source={ICON.star} style={styles.iconSize24} />
-                ) : (
-                  showStarImg(memberBase?.profile_score)
-                )}
-              </SpaceView>
-              <ToolTip
-                position={'bottomLeft'}
-                title={'프로필 평점'}
-                desc={
-                  '<라이브>에 소개된 내 프로필에 다른 이성들이 부여한 프로필 평점'
-                }
-              />
-            </View>
-
-            <View
-              style={[
-                styles.halfItemRight,
-                styles.profileContainer,
-                layoutStyle.alignCenter,
-              ]}
-            >
-              <SpaceView mb={4}>
-                <CommonText fontWeight={'700'} type={'h2'}>
-                  0.0
-                </CommonText>
-              </SpaceView>
-              <SpaceView mb={24} viewStyle={layoutStyle.rowCenter}>
-                <Image source={ICON.star} style={styles.iconSize24} />
-              </SpaceView>
-              <ToolTip
-                position={'topLeft'}
-                title={'소셜 평점'}
-                desc={'LIMEETED에서 발생한 활동 지표를 통해 부여된 소셜 평점'}
-              />
-            </View>
-          </SpaceView>
-
-          <SpaceView mb={40}>
-            {memberBase?.reex_yn === 'Y' ? (
-            <SpaceView mb={48}>
-              <CommonBtn
-                type="primary"
-                value={memberBase?.reex_cnt + '명의 회원님이 평가를 남겨주셨어요'}
-                icon={ICON.starEmpty}
-                iconSize={24}
-                iconPosition={'right'}
-              />
-            </SpaceView>
-            ) : (
-              <CommonBtn
-                type="purple"
-                value="프로필 재심사"
-                icon={ICON.refresh}
-                iconSize={24}
-                iconPosition={'right'}
-                onPress={() => setProfileReAprPopup(true)}
-              />
-            )}
-          </SpaceView>
-
-        </View>
-
-        {/* <SpaceView mb={48}>
-          <SpaceView mb={16}>
-            <SpaceView mb={16}>
-              <CommonText fontWeight={'700'} type={'h3'}>
-                내 소셜 평점
-              </CommonText>
-              <View
-                style={[
-                  styles.profileContainer,
-                  layoutStyle.alignCenter,
-                  { marginTop: 16 },
-                ]}
-              >
-                <SpaceView mb={4} viewStyle={_styles.colCenter}>
-                  <CommonText>
-                    "매칭되면 후회하지 않을 듯한 느낌이 들어요."
-                  </CommonText>
-                </SpaceView>
-                <View style={_styles.socialScoreContainer}>
-                  <CommonText>소셜 평점</CommonText>
-
-                  <CommonText fontWeight={'700'} type={'h2'}>
-                    {memberBase?.profile_score}
-                  </CommonText>
-                </View>
-                <Slider
-                  value={0.73}
-                  animateTransitions={true}
-                  renderThumbComponent={() => null}
-                  maximumTrackTintColor={ColorType.purple}
-                  minimumTrackTintColor={ColorType.purple}
-                  containerStyle={_styles.indicatorContainer}
-                  trackStyle={_styles.trackStyle}
-=======
       <ScrollView
         bounces={false}
         showsVerticalScrollIndicator={false}
@@ -470,7 +282,6 @@ export const Roby = (props: Props) => {
                     uri: properties.img_domain + memberBase?.mst_img_path,
                   }}
                   style={styles.profileImg}
->>>>>>> e629b8adc2b2dc81b261bb2498780f306598b96e
                 />
               </View>
 
@@ -626,45 +437,6 @@ export const Roby = (props: Props) => {
               </CommonText>
             </View>
 
-<<<<<<< HEAD
-        <SpaceView mb={40}>
-          <SpaceView mb={16}>
-            <CommonText fontWeight={'700'} type={'h3'}>
-              그 외
-            </CommonText>
-          </SpaceView>
-          <TouchableOpacity
-            style={styles.rowStyle}
-            onPress={() => {
-              // 실시간성 회원 데이터 조회
-              const goPage = async () => {
-                try {
-                  const { success, data } = await get_board_list();
-                  if(success) {
-                    if(data.result_code == '0000') {
-                      navigation.navigate(STACK.COMMON, {
-                        screen: 'Board0' 
-                        , params: {
-                          'boardList': data.boardList,
-                        }
-                      });
-  
-                      // 게시판 목록 셋팅
-                      let boardList = new Array();
-                    
-                    } else {
-                      show({
-                        content: '오류입니다. 관리자에게 문의해주세요.' ,
-                        confirmCallback: function() {}
-                      });
-                      return false;
-                    }
-                  }
-                } catch (error) {
-                  console.log(error);
-                } finally {
-                  
-=======
             <TouchableOpacity
               style={_styles.manageProfile}
               onPress={onPressPreferneces}
@@ -699,7 +471,6 @@ export const Roby = (props: Props) => {
                 title={'아는 사람 소개'}
                 desc={
                   '아는 사람에게 내 프로필을 공개할지 설정할지 하는 기능입니다.'
->>>>>>> e629b8adc2b2dc81b261bb2498780f306598b96e
                 }
               />
               <CommonSwich
@@ -778,7 +549,6 @@ export const Roby = (props: Props) => {
             adjustToContentHeight={false}
             handleStyle={modalStyle.modalHandleStyle}
             modalStyle={modalStyle.modalContainer}>
-
             <Preference onCloseFn={ideal_onClose} idealTypeData={member.idealType} />
          </Modalize> */}
 
@@ -832,7 +602,6 @@ export const Roby = (props: Props) => {
         handleStyle={modalStyle.modalHandleStyle}
         modalStyle={modalStyle.modalContainer}
         adjustToContentHeight={false}
-        modalHeight={height - 150}
         FooterComponent={
           <>
             <SpaceView mb={16}>
@@ -879,7 +648,6 @@ export const Roby = (props: Props) => {
         handleStyle={modalStyle.modalHandleStyle}
         modalStyle={modalStyle.modalContainer}
         adjustToContentHeight={false}
-        modalHeight={height - 150}
         FooterComponent={
           <>
             <SpaceView mb={16}>
