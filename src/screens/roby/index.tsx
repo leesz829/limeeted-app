@@ -128,9 +128,13 @@ export const Roby = (props: Props) => {
   // 프로필 재심사 실행
   const profileReexProc = async () => {
     const { success, data } = await request_reexamination();
-    if (success) {
+    
+    setProfileReAprPopup(false);
+
+    if (data.result_code != '0000') {
+      show({ content: data.result_msg });
+    }else{
       dispatch(myProfile());
-      setProfileReAprPopup(false);
     }
   };
 
