@@ -43,7 +43,7 @@ import { MatchSearch } from 'screens/matching/MatchSearch';
 import * as hooksMember from 'hooks/member';
 import { ToolTip } from 'component/Tooltip';
 import { BarGrap } from 'component/BarGrap';
-import { get_daily_matched_info, report_matched_user, regist_match_status } from 'api/models';
+import { get_daily_matched_info, report_matched_user, regist_match_status , report_check_user, report_check_user_confirm} from 'api/models';
 import { usePopup } from 'Context';
 import { Slider } from '@miblanchard/react-native-slider';
 import { myProfile } from 'redux/reducers/authReducer';
@@ -399,6 +399,39 @@ export const Matching = (props: Props) => {
 
   };
 
+  const reportCheckUserConfirm = () => {
+    const body = {
+      report_member_seq: data.memberBase.member_seq
+    };
+
+    report_check_user_confirm(body);
+  }
+
+  const checkUserReport = async () => {
+
+    const body = {
+      report_member_seq: data.memberBase.member_seq
+    };
+
+    try {
+      const { success, data } = await report_check_user(body);
+
+      if(success) {
+        if(data.report_cnt < 10) return false;
+        
+        show({ title: '신고 경고 문구', content: '이 주의 신고 건수가 10건 이상이 되어\n 제재되상이 되었습니다.', confirmCallback : reportCheckUserConfirm() });
+        /*
+        confirmCallback: Function | undefined;
+        cancelCallback: Function | undefined;
+        */
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      
+    }
+
+  };
 
   // ############################################################ 팝업 관련
   const [interestSendPopup, setInterestSendPopup] = useState(false); // 관심 보내기 팝업
@@ -408,6 +441,8 @@ export const Matching = (props: Props) => {
 
   // ################################## 렌더링시 마다 실행
   useEffect(() => {
+    checkUserReport();
+    
     if (!isLoad) {
       // 데일리 매칭 정보 조회
       setIsEmpty(false);

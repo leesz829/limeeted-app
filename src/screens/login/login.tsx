@@ -8,7 +8,7 @@ import { CommonBtn } from 'component/CommonBtn';
 import { CommonInput } from 'component/CommonInput';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
-import { SUCCESS, LOGIN_REFUSE, LOGIN_EMPTY, LOGIN_WAIT, LOGIN_EXIT } from 'constants/reusltcode';
+import { SUCCESS, LOGIN_REFUSE, LOGIN_EMPTY, LOGIN_WAIT, LOGIN_EXIT, SANCTIONS } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
 import storeKey, { JWT_TOKEN } from 'constants/storeKey';
 import { usePopup } from 'Context';
@@ -58,8 +58,7 @@ export const Login01 = () => {
       longitude: longitude
     };
     const { success, data } = await signin(body);
-    console.log('data ::::: ' , data);
-
+    
     if (success) {
       switch (data.result_code) {
         case SUCCESS:
@@ -137,6 +136,10 @@ export const Login01 = () => {
           show({ content: '탈퇴 회원 입니다.' });
           break;
 
+        case SANCTIONS:
+          show({ titem: '제재 알림', content: '<이용 약관>에 근거하여 회원 제재 상태로 전환되었습니다. \n' + data.sanctions.sanctions_msg});
+          break;
+          
         default:
           break;
       }

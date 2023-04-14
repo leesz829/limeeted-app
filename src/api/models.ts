@@ -2,6 +2,8 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { send, send_file } from 'api';
 import { FCM_TOKEN } from 'constants/storeKey';
 import {
+  CHECK_REPORT_CONFIRM,
+  CHECK_REPORT,
   GET_POINT,
   LIVE_MEMBERS,
   LOGIN,
@@ -362,6 +364,21 @@ export async function regist_match_status(body: {
 }) {
   return send(REGIST_MATCHING_INFO, 'POST', body, true, false);
 }
+
+//회원 신고 경고를 위한 신고 횟수 조회
+export async function report_check_user(body: {
+  report_member_seq: number;
+}) {
+  return send(CHECK_REPORT, 'POST', body, true, false);
+}
+
+//회원 신고 경고 유저 확인
+export async function report_check_user_confirm(body: {
+  report_member_seq: number;
+}) {
+  return send(CHECK_REPORT_CONFIRM, 'POST', body, true, false);
+}
+
 
 //매칭 회원을 신고한다.
 export async function report_matched_user(body: {
