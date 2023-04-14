@@ -125,8 +125,10 @@ export const Signup01 = (props: Props) => {
       member_seq: props.route.params.memberSeq
       , second_auth_code: type
     };
+
     try {
       const { success, data } = await get_profile_secondary_authentication(body);
+
       if(success) {
         switch (data.result_code) {
           case SUCCESS:
@@ -186,6 +188,20 @@ export const Signup01 = (props: Props) => {
       member_seq: props.route.params.memberSeq,
       file_list: file_list
     };
+
+    let imgCnt = 0;
+
+    for(let key in filePathData){
+      if(filePathData[key]){
+        imgCnt++;
+      }
+    }
+
+    if((file_list.length + imgCnt) < 1){
+      show({ content: '인증 심사를 위한 증빙 자료 이미지를 올려주세요.' });
+       return false;
+    }
+
     try {
       const { success, data } = await regist_second_auth(body);
 
