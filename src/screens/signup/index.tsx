@@ -2,7 +2,7 @@ import { RouteProp, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
 import { Color } from 'assets/styles/Color';
-import { styles } from 'assets/styles/Styles';
+import { commonStyle, styles } from 'assets/styles/Styles';
 import axios from 'axios';
 import { CommonBtn } from 'component/CommonBtn';
 import CommonHeader from 'component/CommonHeader';
@@ -11,7 +11,7 @@ import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
 import { Image, ScrollView, StyleSheet, View } from 'react-native';
-import { ICON } from 'utils/imageUtils';
+import { ICON, IMAGE } from 'utils/imageUtils';
 import * as properties from 'utils/properties';
 import { usePopup } from 'Context';
 import { SUCCESS } from 'constants/reusltcode';
@@ -28,28 +28,28 @@ export const Signup00 = (props: Props) => {
 
   const { show } = usePopup();  // 공통 팝업
 
-  const [ci, setCi] = React.useState(props.route.params.ci);
+  const [ci, setCi] = React.useState(props.route.params?.ci);
   const [id, setId] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [passwordChk, setPasswordChk] = React.useState('');
-  const [name, setName] = React.useState(props.route.params.name);
+  const [name, setName] = React.useState(props.route.params?.name);
   const [age, setAge] = React.useState(function () {
     let age_d;
     let today = new Date();
-    let birthDay = props.route.params.birthday;
-    let birthYear = birthDay.substring(0, 4);
+    let birthDay = props.route.params?.birthday;
+    let birthYear = birthDay?.substring(0, 4);
     age_d = Number(today.getFullYear()) - Number(birthYear) + 1;
     return age_d.toString();
   });
-  const [gender, setGender] = React.useState(props.route.params.gender);
+  const [gender, setGender] = React.useState(props.route.params?.gender);
   const [mobile, setMobile] = React.useState(
-    props.route.params.mobile
+    props.route.params?.mobile
       .replace(/[^0-9]/g, '')
       .replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`)
   );
-  const [birthday, setBirthday] = React.useState(props.route.params.birthday);
-  const [snsType, setSnsType] = React.useState(props.route.params.sns_type);
-  const [snsToken, setSnsToken] = React.useState(props.route.params.sns_token);
+  const [birthday, setBirthday] = React.useState(props.route.params?.birthday);
+  const [snsType, setSnsType] = React.useState(props.route.params?.sns_type);
+  const [snsToken, setSnsToken] = React.useState(props.route.params?.sns_token);
 
   // 성별 항목 목록
   const genderItemList = [
@@ -63,6 +63,12 @@ export const Signup00 = (props: Props) => {
 
   // ########################################## 회원가입
   const register = async () => {
+
+    if(typeof ci == 'undefined') {
+      show({ content: '본인인증을 다시 진행해 주세요.' });
+      return;
+    }
+
     if (id == '') {
       show({ content: '아이디를 입력해 주세요.' });
       return;
@@ -141,107 +147,132 @@ export const Signup00 = (props: Props) => {
   return (
     <>
       <CommonHeader title={'가입정보'} />
-      <ScrollView contentContainerStyle={[styles.scrollContainer]}>
-        <SpaceView mb={24}>
-          <CommonText>
-            본인 인증을 기반으로 회원님의 정보가{'\n'}
-            자동입력됩니다.
+      <ScrollView contentContainerStyle={[styles.scrollContainerAll]}>
+        <SpaceView mb={45} viewStyle={[commonStyle.paddingHorizontal20]}>
+          <SpaceView mb={15}>
+            <Image source={IMAGE.signImg} style={styles.signImg} resizeMode="contain" />
+          </SpaceView>
+          <CommonText type={'h3'} fontWeight={'200'}>
+            본인 인증을 기반으로{'\n'}회원님의 정보가 자동입력됩니다.
           </CommonText>
         </SpaceView>
 
-        <CommonInput
-          label="아이디"
-          value={id}
-          onChangeText={(id) => setId(id)}
-        />
+        <SpaceView viewStyle={[commonStyle.paddingHorizontal20, commonStyle.mb70]}>
 
-        <View style={styles.infoContainer}>
-          <SpaceView mt={4}>
-            <Image source={ICON.info} style={styles.iconSize} />
+          <SpaceView mb={24}>
+            <CommonInput
+              label="아이디"
+              value={id}
+              onChangeText={(id) => setId(id)}
+              maxLength={50}
+              placeholderTextColor={'#c6ccd3'}
+              borderBottomType={'black'}
+            />
           </SpaceView>
 
-          <SpaceView ml={8}>
-            <CommonText color={ColorType.gray6666}>
-              아이디는 이메일로 입력해 주세요.
-            </CommonText>
+          {/* <View style={styles.infoContainer}>
+            <SpaceView mt={4}>
+              <Image source={ICON.info} style={styles.iconSize} />
+            </SpaceView>
+
+            <SpaceView ml={8}>
+              <CommonText color={ColorType.gray6666}>
+                아이디는 이메일로 입력해 주세요.
+              </CommonText>
+            </SpaceView>
+          </View> */}
+
+          <SpaceView mb={24}>
+            <CommonInput
+              label="비밀번호"
+              value={password}
+              onChangeText={(password) => setPassword(password)}
+              isMasking={true}
+              maxLength={20}
+              placeholderTextColor={'#c6ccd3'}
+              borderBottomType={'black'}
+            />
           </SpaceView>
-        </View>
 
-        <SpaceView mb={24}>
-          <CommonInput
-            label="비밀번호"
-            value={password}
-            onChangeText={(password) => setPassword(password)}
-            isMasking={true}
-            maxLength={20}
-          />
-        </SpaceView>
+          <SpaceView mb={24}>
+            <CommonInput
+              label="비밀번호 확인"
+              value={passwordChk}
+              onChangeText={(passwordChk) => setPasswordChk(passwordChk)}
+              isMasking={true}
+              maxLength={20}
+              placeholderTextColor={'#c6ccd3'}
+              borderBottomType={'black'}
+            />
+          </SpaceView>
 
-        <SpaceView mb={24}>
-          <CommonInput
-            label="비밀번호 확인"
-            value={passwordChk}
-            onChangeText={(passwordChk) => setPasswordChk(passwordChk)}
-            isMasking={true}
-            maxLength={20}
-          />
-        </SpaceView>
+          <SpaceView mb={24}>
+            <CommonInput
+              label="이름"
+              value={name}
+              onChangeText={(name) => setName(name)}
+              maxLength={5}
+              disabled={true}
+              placeholderTextColor={'#c6ccd3'}
+              borderBottomType={'black'}
+            />
+          </SpaceView>
 
-        <SpaceView mb={24}>
-          <CommonInput
-            label="이름"
-            value={name}
-            onChangeText={(name) => setName(name)}
-            maxLength={5}
-            disabled={true}
-          />
-        </SpaceView>
+          <SpaceView mb={24}>
+            <View style={styles.halfContainer}>
+              <View style={styles.halfItemLeft}>
+                <CommonInput
+                  label="나이"
+                  value={age}
+                  keyboardType="number-pad"
+                  onChangeText={(age) => setAge(age)}
+                  disabled={true}
+                  maxLength={2}
+                  placeholderTextColor={'#c6ccd3'}
+                  borderBottomType={'black'}
+                />
+              </View>
+              <View style={styles.halfItemRight}>
+                <CommonInput
+                  label="성별"
+                  value={gender == 'M' ? '남자' : '여자'}
+                  disabled={true}
+                  placeholderTextColor={'#c6ccd3'}
+                  borderBottomType={'black'}
+                />
 
-        <SpaceView mb={24}>
-          <View style={styles.halfContainer}>
-            <View style={styles.halfItemLeft}>
-              <CommonInput
-                label="나이"
-                value={age}
-                keyboardType="number-pad"
-                onChangeText={(age) => setAge(age)}
-                disabled={true}
-                maxLength={2}
-              />
+                {/* <View style={selectStyles.selectContainer}>
+                  <View>
+                    <CommonSelect label={'성별'} items={genderItemList} selectValue={gender} callbackFn={genderCallbackFn} />
+                  </View>
+                  <View style={selectStyles.selectImgContainer}>
+                    <Image source={ICON.arrRight} style={selectStyles.icon} />
+                  </View>
+                </View> */}
+              </View>
             </View>
-            <View style={styles.halfItemRight}>
-              <CommonInput
-                label="성별"
-                value={gender == 'M' ? '남자' : '여자'}
-                disabled={true}
-              />
+          </SpaceView>
 
-              {/* <View style={selectStyles.selectContainer}>
-								<View>
-									<CommonSelect label={'성별'} items={genderItemList} selectValue={gender} callbackFn={genderCallbackFn} />
-								</View>
-								<View style={selectStyles.selectImgContainer}>
-									<Image source={ICON.arrRight} style={selectStyles.icon} />
-								</View>
-							</View> */}
-            </View>
-          </View>
+          <SpaceView mb={24}>
+            <CommonInput
+              label="전화번호"
+              value={mobile}
+              onChangeText={(mobile) => setMobile(mobile)}
+              keyboardType="number-pad"
+              maxLength={13}
+              disabled={true}
+              placeholderTextColor={'#c6ccd3'}
+              borderBottomType={'black'}
+            />
+          </SpaceView>
         </SpaceView>
-
-        <SpaceView mb={24}>
-          <CommonInput
-            label="전화번호"
-            value={mobile}
-            onChangeText={(mobile) => setMobile(mobile)}
-            keyboardType="number-pad"
-            maxLength={13}
-            disabled={true}
-          />
-        </SpaceView>
-        <SpaceView mb={24}>
+        
+        <SpaceView>
           <CommonBtn
             value={'다음 (1/4)'}
             type={'primary'}
+            height={60}
+            borderRadius={1}
             onPress={() => {
               register();
             }}

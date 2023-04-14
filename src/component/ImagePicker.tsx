@@ -1,6 +1,6 @@
 import { styles } from 'assets/styles/Styles';
 import React from 'react';
-import { Image, TouchableOpacity } from 'react-native';
+import { Image, TouchableOpacity, StyleSheet } from 'react-native';
 import {
   launchImageLibrary,
   ImageLibraryOptions,
@@ -65,7 +65,6 @@ export const ImagePicker: FC<Props> = (props) => {
             style={props.isBig ? styles.tempBoxBig : styles.tempBoxSmall}
             key={uri}
             source={{ uri }}
-            
           />
         ))
       ) : props.uriParam != null && props.uriParam != '' ? (
@@ -77,8 +76,14 @@ export const ImagePicker: FC<Props> = (props) => {
           source={props.uriParam}
         />
       ) : (
-        <Image source={ICON.purplePlus} style={styles.boxPlusIcon} />
+        <Image source={ICON.plus_primary} style={styles.boxPlusIcon} />
       )}
     </TouchableOpacity>
   );
 };
+
+
+
+const _styles = StyleSheet.create({
+
+})

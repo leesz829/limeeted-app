@@ -119,12 +119,15 @@ export enum ColorType {
   gray6666 = '#666666',
   grayEEEE = '#eeeeee',
   black2222 = '#222222',
+  black3333 = '#333333',
   purple = '#8854d1',
   grayDDDD = '#dddddd',
   grayF8F8 = '#f8f8f8',
   gray8888 = '#888888',
   grayAAAA = '#aaaaaa',
+  grayb1b1 = '#b1b1b1',
   red = '#ff0000',
+  blue697A = '#697AE6',
 }
 
 export type WeightType =

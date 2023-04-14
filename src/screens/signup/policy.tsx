@@ -101,8 +101,8 @@ export const Policy = (props: Props) => {
   return (
     <>
       <CommonHeader title={'서비스 정책'} />
-      <ScrollView contentContainerStyle={[styles.scrollContainer]}>
-        <SpaceView mb={20}>
+      <ScrollView contentContainerStyle={[styles.scrollContainerAll]}>
+        <SpaceView mb={20} viewStyle={{paddingHorizontal:16}}>
           <CommonText textStyle={_styles.title}>
             아래 서비스 정책에 동의해주세요.
           </CommonText>
@@ -112,7 +112,7 @@ export const Policy = (props: Props) => {
           </CommonText>
         </SpaceView>
 
-        <SpaceView mb={24} viewStyle={styles.container}>
+        <SpaceView mb={24} viewStyle={[_styles.container]}>
           <SpaceView viewStyle={layoutStyle.rowBetween} mb={30}>
             <View>
               <CommonText fontWeight={'700'} type={'h4'}>
@@ -213,10 +213,12 @@ export const Policy = (props: Props) => {
           </SpaceView>
         </SpaceView>
 
-        <SpaceView mb={24}>
+        <SpaceView>
           <CommonBtn
             value={'다음'}
-            type={'primary'}
+            type={'blue'}
+            height={60}
+            borderRadius={1}
             onPress={() => {
               if(!termsAgree) {
                 show({
@@ -264,6 +266,7 @@ export const Policy = (props: Props) => {
         handleStyle={modalStyle.modalHandleStyle}
         modalStyle={modalStyle.modalContainer}
         adjustToContentHeight={false}
+        modalHeight={height - 150}
         FooterComponent={
           <>
             <SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
@@ -323,6 +326,7 @@ export const Policy = (props: Props) => {
         handleStyle={modalStyle.modalHandleStyle}
         modalStyle={modalStyle.modalContainer}
         adjustToContentHeight={false}
+        modalHeight={height - 150}
         FooterComponent={
           <>
             <SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
@@ -386,6 +390,7 @@ export const Policy = (props: Props) => {
         handleStyle={modalStyle.modalHandleStyle}
         modalStyle={modalStyle.modalContainer}
         adjustToContentHeight={false}
+        modalHeight={height - 150}
         FooterComponent={
           <>
             <SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
@@ -445,9 +450,13 @@ export const Policy = (props: Props) => {
 
 
 
-
-
 const _styles = StyleSheet.create({
+  container: {
+    paddingTop: 24,
+    paddingHorizontal: 16,
+    backgroundColor: 'white',
+    flex: 1,
+  },
   title: {
     fontSize: 18,
     marginBottom: 15

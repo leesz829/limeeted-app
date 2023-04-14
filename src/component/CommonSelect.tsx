@@ -130,26 +130,19 @@ const styles = StyleSheet.create({
     position: 'absolute',
     height: '100%',
     justifyContent: 'center',
-    right: 2,
-    bottom: 0,
+    right: 5,
+    bottom: 5,
   },
   selectContainer: {},
   labelContainer: {
     marginBottom: 8,
   },
   labelStyle: {
-/*
-    fontSize: 14,
-    lineHeight: 20,
-    fontFamily: 'AppleSDGothicNeoR00',
-    color: Color.gray6666,
-    marginBottom: 8,
-*/
     fontSize: 17,
     lineHeight: 26,
     fontFamily: 'AppleSDGothicNeoEB00',
     color: Color.balck333333,
-    marginBottom: 8,
+    marginBottom: 15,
   },
   inputContainer: {
     paddingBottom: 8,

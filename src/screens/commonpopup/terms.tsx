@@ -16,7 +16,7 @@ interface Props {}
 
 export const Terms: FC<Props> = (props) => {
 	return (
-		<CommonText>
+		<CommonText type={'h5'}>
 			1. 목적{'\n'}
 			{'\n'}이 약관은 ㈜앱스쿼드 (이하 ”회사“) 가 제공하는 프리미엄 온라인 데이팅 앱 리미티드 (이하 ”서비스“)
 			이용과 관련하여 회사와 이용자의 사용 시 권리와 의무, 책임 사항 등 기타 필요한 제반 사항을

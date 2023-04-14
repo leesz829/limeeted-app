@@ -16,8 +16,16 @@ export const ICON = {
   asset: require('assets/icon/icon-asset.png'),
   sns: require('assets/icon/icon-sns.png'),
   vehicle: require('assets/icon/icon-vehicle.png'),
+  jobNew: require('assets/icon/icon-job-new.png'),
+  degreeNew: require('assets/icon/icon-degree-new.png'),
+  incomeNew: require('assets/icon/icon-income-new.png'),
+  assetNew: require('assets/icon/icon-asset-new.png'),
+  snsNew: require('assets/icon/icon-sns-new.png'),
+  vehicleNew: require('assets/icon/icon-vehicle-new.png'),
   arrRight: require('assets/icon/icon-arr-right.png'),
+  arrBottom: require('assets/icon/icon-arrow-bottom.png'),
   xBtn: require('assets/icon/icon-x.png'),
+  xBtn2: require('assets/icon/icon-x2.png'),
   plus: require('assets/icon/icon-plus.png'),
   distance: require('assets/icon/icon-distance.png'),
   close: require('assets/icon/icon-close.png'),
@@ -69,6 +77,7 @@ export const ICON = {
   closeCircle: require('assets/icon/closeCircle.png'),
   ticketCircle: require('assets/icon/ticketCircle.png'),
   heartCircle: require('assets/icon/heartCircle.png'),
+  heartPurple: require('assets/icon/heartPurple.png'),
   starCircle: require('assets/icon/starCircle.png'),
   asset_on: require('assets/icon/certification/asset_on.png'),
   asset_off: require('assets/icon/certification/asset_off.png'),
@@ -90,9 +99,11 @@ export const ICON = {
   live_off_gray: require('assets/icon/live_off_gray.png'),
   arrow_right: require('assets/icon/arrow_right.png'),
   plus_primary: require('assets/icon/plus.png'),
+  plus_gray: require('assets/icon/plus_gray.png'),
   fashion: require('assets/icon/impression/fashion.png'),
   fond: require('assets/icon/impression/fond.png'),
   smile: require('assets/icon/impression/smile.png'),
+  icon_smile: require('assets/icon/icon_smail.png'),
 };
 
 export const GIF_IMG = {
@@ -108,6 +119,9 @@ export const IMAGE = {
   common: require('assets/img/common.png'),
   logoNew: require('assets/img/logo_new.png'),
   heartIcon: require('assets/img/heart_icon.png'),
+  logoRenew: require('assets/img/logo_renew.png'),
+  logoMarkRenew: require('assets/img/logo_mark_renew.png'),
+  signImg: require('assets/img/sign_img.png'),
 };
 
 export const START_IMAGE = {
@@ -154,6 +168,7 @@ export const PROFILE_IMAGE = {
   womanTmp6: require('assets/img/tmp/profile_w_06.jpg'),
   womanTmp7: require('assets/img/tmp/profile_w_07.jpg'),
   profileM1: require('assets/img/tmp/robby_tmp.jpg'),
+  womanSample1: require('assets/img/tmp/womanSample1.jpg'),
 };
 
 export function findSourcePath(img_file_path: any) {

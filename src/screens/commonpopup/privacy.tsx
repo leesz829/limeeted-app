@@ -20,7 +20,7 @@ export const Privacy : FC<Props> = (props) => {
 	
 	return (
 		
-		<CommonText>
+		<CommonText type={'h5'}>
 						1. 개인정보의 처리목적 및 수집항목
 							주식회사 앱스쿼드 ('http://www.limeeted.com'이하 'Limeeted 프리미엄 데이팅 앱')은(는) 다음의 목적을 위하여 개인정보를 처리합니다. 처리하고 있는 개인정보는 다음의 목적 이외의 용도로는 이용되지 않으며 이용 목적이 변경되는 경우에는 「개인정보 보호법」 제18조에 따라 별도의 동의를 받는 등 필요한 조치를 이행할 예정입니다.
 							{'\n'}{'\n'}

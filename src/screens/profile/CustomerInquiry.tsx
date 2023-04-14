@@ -106,14 +106,14 @@ export const CustomerInquiry = (props : Props) => {
 		<>
 			<CommonHeader title={'고객문의'} />
 			<ScrollView contentContainerStyle={[styles.scrollContainer]}>
-				<SpaceView mb={25}>
+				<SpaceView>
 					<View style={layoutStyle.alignStart}>
 						<CommonText	type={'h4'}	textStyle={_styles.titleText}>궁금한점, 불편한점{'\n'}저희에게 문의주세요 :)</CommonText>
 					</View>
 				</SpaceView>
 				
 				<SpaceView>
-					<SpaceView pl={10} pr={10}>	
+					<SpaceView>	
 						<CommonInput
 //							label={'제목'}
 							value={title}
@@ -124,7 +124,7 @@ export const CustomerInquiry = (props : Props) => {
 						/>
 					</SpaceView>
 
-					<SpaceView mb={35} pl={10} pr={10}>
+					<SpaceView mb={15}>
 						<CommonTextarea
 //							label={'내용'} 
 							value={contents}
@@ -136,13 +136,7 @@ export const CustomerInquiry = (props : Props) => {
 						/>
 					</SpaceView>
 
-					<SpaceView mb={25}>
-						<View style={layoutStyle.alignStart}>
-							<CommonText	textStyle={_styles.bottomText}>등록해주신 문의내용은 관리자 확인 후 우편함으로 답변드립니다.</CommonText>
-						</View>
-					</SpaceView>
-
-					<SpaceView mb={16} pl={8} pr={8}>
+					<SpaceView mb={16}>
           				<CommonBtn
             				value={'저장'}
             				type={'black'}
@@ -151,6 +145,12 @@ export const CustomerInquiry = (props : Props) => {
             				}}
           				/>
         			</SpaceView>
+
+					<SpaceView mb={45}>
+						<View style={_styles.bottomArea}>
+							<CommonText type={'h3'} textStyle={_styles.bottomText}>등록해주신 문의내용은 관리자 확인 후 우편함으로 답변드립니다.</CommonText>
+						</View>
+					</SpaceView>
 				</SpaceView>
 
 			</ScrollView>
@@ -204,16 +204,21 @@ const _styles = StyleSheet.create({
 		lineHeight: 30,
 		color: "#333333"
 	},
+	bottomArea: {
+		backgroundColor: '#F6F7FE',
+		paddingHorizontal: 5,
+		paddingVertical: 15,
+		borderRadius: 20,
+	},
 	bottomText: {
-		width: 352,
-		height: 17,
 		fontFamily: "AppleSDGothicNeoM00",
-		fontSize: 14,
+		fontSize: 13,
 		fontWeight: "normal",
 		fontStyle: "normal",
 		letterSpacing: 0,
-		textAlign: "left",
-		color: "#c7c7c7"
+		textAlign: "center",
+		color: "#C7C7C7",
+		
 	}
 });
 

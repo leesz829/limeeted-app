@@ -1,4 +1,4 @@
-import { styles, layoutStyle, modalStyle } from 'assets/styles/Styles';
+import { styles, layoutStyle, modalStyle, commonStyle } from 'assets/styles/Styles';
 import CommonHeader from 'component/CommonHeader';
 import { CommonInput } from 'component/CommonInput';
 import SpaceView from 'component/SpaceView';
@@ -350,158 +350,168 @@ export const Introduce = (props: Props) => {
   return (
     <>
       <CommonHeader title={'내 소개하기'} />
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <SpaceView mb={24}>
-          <CommonInput
-            label={'한줄 소개'}
-            value={comment}
-            onChangeText={(comment) => setComment(comment)}
-            placeholder={'한줄 소개를 입력해 주세요.'}
-            placeholderTextColor={'#c6ccd3'}
-          />
-        </SpaceView>
-
-        <SpaceView mb={24}>
-					<SpaceView mb={8}>
-						<CommonText textStyle={_styles.labelStyle2}>관심사</CommonText>
-					</SpaceView>
-          
-          {checkIntList.length > 0 &&
-            <SpaceView mb={40} mt={15} viewStyle={[layoutStyle.row, layoutStyle.wrap]}>
-              {checkIntList.map((i, index) => {
-                return (
-                  i.code_name != "" ? (
-                    <SpaceView mr={index % 3 !== 2 ? 8 : 0} key={index + 'reg'}>
-                      <View style={[styles.interestBox, styles.boxActive]}>
-                        <CommonText color={ColorType.primary}>
-                          {i.code_name}
-                        </CommonText>
-                      </View>
-                    </SpaceView>
-                  ) : null
-                );
-              })}
-            </SpaceView>
-          }
-
-          <SpaceView mb={15} mt={5}>
-            <CommonBtn value={'관심사 변경'} 
-							          height={48} 
-								        type={'white'} 
-								        icon={ICON.plus}
-								        onPress={int_onOpen} />
+      <ScrollView contentContainerStyle={styles.scrollContainerAll}>
+        <View style={commonStyle.paddingHorizontal20}>
+          <SpaceView mb={24}>
+            <CommonInput
+              label={'한줄 소개'}
+              value={comment}
+              onChangeText={(comment) => setComment(comment)}
+              placeholder={'내용을 입력해 주세요.'}
+              placeholderTextColor={'#c6ccd3'}
+              borderBottomType={'black'}
+            />
           </SpaceView>
-				</SpaceView>
 
-        <SpaceView mb={24} viewStyle={styles.halfContainer}>
-          <View style={styles.halfItemLeft}>
-            <CommonSelect
-              label={'업종'}
-              items={busiGrpCdList}
-              selectValue={business}
-              callbackFn={busiCdCallbackFn}
-            />
-          </View>
-
-          <View style={styles.halfItemRight}>
-            <CommonSelect
-              label={'직업'}
-              items={jobCdList}
-              selectValue={job}
-              callbackFn={jobCdCallbackFn}
-            />
-          </View>
-        </SpaceView>
-
-        {/* <SpaceView mb={24}>
-          <CommonInput
-            label={'회사명'}
-            value={job_name}
-            onChangeText={(jobName) => setJob_name(jobName)}
-            placeholder={'회사명을 입력해 주세요.'}
-            placeholderTextColor={'#c6ccd3'}
-          />
-        </SpaceView> */}
-
-        {/* <SpaceView mb={24} viewStyle={styles.halfContainer}>
-					<View style={styles.halfItemLeft}>
-						<CommonSelect label={'출신지'} items={bLocalGrpCdList} setValue={bir} />
-					</View>
-
-					<View style={styles.halfItemRight}>
-						<CommonSelect label={''} />
-					</View>
-				</SpaceView> */}
-
-        {/* <SpaceView mb={24} viewStyle={styles.halfContainer}>
-					<View style={styles.halfItemLeft}>
-						<CommonSelect label={'활동지역'} />
-					</View>
-
-					<View style={styles.halfItemRight}>
-						<CommonSelect label={''} />
-					</View>
-				</SpaceView> */}
-
-        <SpaceView mb={24}>
-          <CommonInput
-            label={'키'}
-            keyboardType="number-pad"
-            value={mbrHeight}
-            onChangeText={(mbrHeight) => setMbrHeight(mbrHeight)}
-            placeholder={'키를 입력해 주세요.'}
-            placeholderTextColor={'#c6ccd3'}
-            maxLength={3}
-          />
-        </SpaceView>
-
-        <SpaceView mb={24}>
-          <CommonSelect
-            label={'체형'}
-            items={
-              memberBase.gender == 'M' ? manBodyItemList : womanBodyItemList
+          <SpaceView mb={24}>
+            <SpaceView mb={8}>
+              <CommonText textStyle={_styles.labelStyle2}>관심사</CommonText>
+            </SpaceView>
+            
+            {checkIntList.length > 0 &&
+              <SpaceView mb={10} mt={15} viewStyle={[layoutStyle.row, layoutStyle.wrap]}>
+                {checkIntList.map((i, index) => {
+                  return (
+                    i.code_name != "" ? (
+                      <SpaceView mr={5} key={index + 'reg'}>
+                        <View style={[styles.interestBox, styles.boxActive]}>
+                          <CommonText color={ColorType.blue697A}>
+                            {i.code_name}
+                          </CommonText>
+                        </View>
+                      </SpaceView>
+                    ) : null
+                  );
+                })}
+              </SpaceView>
             }
-            selectValue={form_body}
-            callbackFn={bodyCdCallbackFn}
-          />
-        </SpaceView>
 
-        <SpaceView mb={24}>
-          <CommonSelect
-            label={'종교'}
-            items={religionItemList}
-            selectValue={religion}
-            callbackFn={religionCdCallbackFn}
-          />
-        </SpaceView>
+            <SpaceView mb={15} mt={5}>
 
-        <SpaceView mb={24}>
-          <CommonSelect
-            label={'음주'}
-            items={drinkItemList}
-            selectValue={drinking}
-            callbackFn={drinkCdCallbackFn}
-          />
-        </SpaceView>
+              <TouchableOpacity style={_styles.btnStyle} onPress={int_onOpen}>
+                <CommonText color={'#C7C7C7'} type={'h5'} fontWeight={'200'} textStyle={{marginLeft: 5}}>관심사 변경</CommonText>
+              </TouchableOpacity>
 
-        <SpaceView mb={40}>
-          <CommonSelect
-            label={'흡연'}
-            items={smokItemList}
-            selectValue={smoking}
-            callbackFn={smokCdCallbackFn}
-          />
-        </SpaceView>
+            {/*  <CommonBtn value={'관심사 변경'} 
+                          height={48} 
+                          type={'white'} 
+                          icon={ICON.plus}
+                          onPress={int_onOpen} /> */}
+            </SpaceView>
+          </SpaceView>
 
-        <SpaceView mb={16}>
+          <SpaceView mb={24} viewStyle={styles.halfContainer}>
+            <View style={styles.halfItemLeft}>
+              <CommonSelect
+                label={'업종'}
+                items={busiGrpCdList}
+                selectValue={business}
+                callbackFn={busiCdCallbackFn}
+              />
+            </View>
+
+            <View style={styles.halfItemRight}>
+              <CommonSelect
+                label={'직업'}
+                items={jobCdList}
+                selectValue={job}
+                callbackFn={jobCdCallbackFn}
+              />
+            </View>
+          </SpaceView>
+
+          {/* <SpaceView mb={24}>
+            <CommonInput
+              label={'회사명'}
+              value={job_name}
+              onChangeText={(jobName) => setJob_name(jobName)}
+              placeholder={'회사명을 입력해 주세요.'}
+              placeholderTextColor={'#c6ccd3'}
+            />
+          </SpaceView> */}
+
+          {/* <SpaceView mb={24} viewStyle={styles.halfContainer}>
+            <View style={styles.halfItemLeft}>
+              <CommonSelect label={'출신지'} items={bLocalGrpCdList} setValue={bir} />
+            </View>
+
+            <View style={styles.halfItemRight}>
+              <CommonSelect label={''} />
+            </View>
+          </SpaceView> */}
+
+          {/* <SpaceView mb={24} viewStyle={styles.halfContainer}>
+            <View style={styles.halfItemLeft}>
+              <CommonSelect label={'활동지역'} />
+            </View>
+
+            <View style={styles.halfItemRight}>
+              <CommonSelect label={''} />
+            </View>
+          </SpaceView> */}
+
+          <SpaceView mb={24}>
+            <CommonInput
+              label={'키'}
+              keyboardType="number-pad"
+              value={mbrHeight}
+              onChangeText={(mbrHeight) => setMbrHeight(mbrHeight)}
+              placeholder={'키를 입력해 주세요.'}
+              placeholderTextColor={'#c6ccd3'}
+              maxLength={3}
+            />
+          </SpaceView>
+
+          <SpaceView mb={24}>
+            <CommonSelect
+              label={'체형'}
+              items={
+                memberBase.gender == 'M' ? manBodyItemList : womanBodyItemList
+              }
+              selectValue={form_body}
+              callbackFn={bodyCdCallbackFn}
+            />
+          </SpaceView>
+
+          <SpaceView mb={24}>
+            <CommonSelect
+              label={'종교'}
+              items={religionItemList}
+              selectValue={religion}
+              callbackFn={religionCdCallbackFn}
+            />
+          </SpaceView>
+
+          <SpaceView mb={24}>
+            <CommonSelect
+              label={'음주'}
+              items={drinkItemList}
+              selectValue={drinking}
+              callbackFn={drinkCdCallbackFn}
+            />
+          </SpaceView>
+
+          <SpaceView mb={40}>
+            <CommonSelect
+              label={'흡연'}
+              items={smokItemList}
+              selectValue={smoking}
+              callbackFn={smokCdCallbackFn}
+            />
+          </SpaceView>
+        </View>
+
+        <SpaceView>
           <CommonBtn
             value={'저장'}
             type={'primary'}
+            height={60}
+            borderRadius={1}
             onPress={() => {
               saveMemberAddInfo();
             }}
           />
-        </SpaceView>
+        </SpaceView>        
       </ScrollView>
 
 
@@ -522,6 +532,8 @@ export const Introduce = (props: Props) => {
 						<SpaceView mb={16}>
 							<CommonBtn value={'저장'} 
 										type={'primary'}
+                    height={60}
+										borderRadius={1}
 										onPress={int_confirm}/>
 						</SpaceView>
 					</>
@@ -529,11 +541,11 @@ export const Introduce = (props: Props) => {
 				HeaderComponent={
 					<>
 						<View style={modalStyle.modalHeaderContainer}>
-							<CommonText fontWeight={'700'} type={'h3'}>
+							<CommonText fontWeight={'700'} type={'h4'}>
 								관심사 등록
 							</CommonText>
 							<TouchableOpacity onPress={int_onClose}>
-								<Image source={ICON.xBtn} style={styles.iconSize24} />
+								<Image source={ICON.xBtn2} style={styles.iconSize18} />
 							</TouchableOpacity>
 						</View>
 					</>
@@ -541,12 +553,12 @@ export const Introduce = (props: Props) => {
 
 				<View style={modalStyle.modalBody}>
 					{intList.map((item, index) => (
-						<SpaceView mb={24} key={item.group_code + '_' + index}>
+						<SpaceView mt={20} mb={10} key={item.group_code + '_' + index}>
 							<SpaceView mb={16}>
-								<CommonText fontWeight={'500'}>{item.group_code_name}</CommonText>
+								<CommonText fontWeight={'700'}>{item.group_code_name}</CommonText>
 							</SpaceView>
 
-							<View style={[_styles.rowStyle, layoutStyle.justifyBetween]}>
+							<View style={[_styles.rowStyle]}>
 								{item.list.map((i, idx) => {
 									let tmpCommonCode = '';
 									let tmpCnt = 0;
@@ -560,7 +572,7 @@ export const Introduce = (props: Props) => {
 									}
 
 									return (
-										<SpaceView key={i.common_code}>
+										<SpaceView key={i.common_code} mr={5}>
 											<TouchableOpacity style={[styles.interestBox, i.common_code === tmpCommonCode && styles.boxActive]}
 																onPress={() => {
 																	if(i.common_code === tmpCommonCode){
@@ -571,7 +583,7 @@ export const Introduce = (props: Props) => {
 																}}>
 												<CommonText
 													fontWeight={'500'}
-													color={i.common_code === tmpCommonCode ? ColorType.primary : ColorType.gray8888} >
+													color={i.common_code === tmpCommonCode ? ColorType.blue697A : ColorType.grayb1b1} >
 													{i.code_name}
 												</CommonText>
 											</TouchableOpacity>
@@ -608,5 +620,16 @@ const _styles = StyleSheet.create({
   rowStyle : {
 		flexDirection: 'row',
 		flexWrap: 'wrap'
-	}
+	},
+  btnStyle: {
+		width: '100%',
+		height: 50,
+		borderRadius: 15,
+		alignItems: 'center',
+		justifyContent: 'center',
+		borderWidth: 1,
+		borderStyle: 'dotted',
+		borderColor: '#C7C7C7',
+		flexDirection: 'row',
+  },
 });

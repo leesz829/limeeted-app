@@ -12,6 +12,8 @@ type Props = {
   disabled?: boolean;
   isMasking?: boolean;
   maxLength?: number;
+  placeholderTextColor?: string;
+  borderBottomType?: string;
 } & StyleProp<TextInputProps>;
 
 /**
@@ -24,15 +26,17 @@ type Props = {
  *
  */
 export const CommonInput: FC<Props> = (props: any) => {
+  const style = styles(props);
+
   return (
     <View>
-      <View style={styles.labelContainer}>
-        <Text style={styles.labelStyle}>{props.label}</Text>
+      <View style={style.labelContainer}>
+        <Text style={style.labelStyle}>{props.label}</Text>
       </View>
-      <View style={styles.inputContainer}>
+      <View style={style.inputContainer}>
         <TextInput
           autoCapitalize="none"
-          style={styles.inputStyle}
+          style={style.inputStyle}
           placeholder={props.placeholder || ''}
           placeholderTextColor={Color.black2222}
           {...props}
@@ -43,52 +47,61 @@ export const CommonInput: FC<Props> = (props: any) => {
       </View>
 
       {props.rightPen && (
-        <View style={styles.penContainer}>
-          <Image source={ICON.penGray} style={styles.iconSize} />
+        <View style={style.penContainer}>
+          <Image source={ICON.penGray} style={style.iconSize} />
         </View>
       )}
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  penContainer: {
-    position: 'absolute',
-    right: 16,
-    top: 12,
-    height: '100%',
-    justifyContent: 'center',
-  },
-  iconSize: {
-    width: 18,
-    height: 18,
-  },
-  labelContainer: {
-    marginBottom: 8,
-  },
-  labelStyle: {
-/*
-    fontSize: 14,
-    lineHeight: 20,
-    fontFamily: 'AppleSDGothicNeoR00',
-    color: Color.gray6666,
-*/
-    fontSize: 17,
-    lineHeight: 23,
-    fontFamily: 'AppleSDGothicNeoEB00',
-    color: Color.balck333333,
-  },
-  inputContainer: {
-    paddingBottom: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: Color.grayDDDD,
-  },
-  inputStyle: {
-    fontSize: 16,
-    lineHeight: 24,
-    color: Color.black2222,
-    padding: 0,
-    margin: 0,
-    fontFamily: 'AppleSDGothicNeoM00',
-  },
-});
+const styles = (props: Props) => {
+  let bordrBottomWIdth = 1;
+  let borderBottomColor = Color.grayDDDD;
+
+  switch (props.borderBottomType) {
+    case 'black':
+      bordrBottomWIdth = 1;
+      borderBottomColor = Color.black0000;
+      break;
+
+    default:
+      break;
+  }
+  return StyleSheet.create({
+    penContainer: {
+      position: 'absolute',
+      right: 16,
+      top: 16,
+      height: '100%',
+      justifyContent: 'center',
+    },
+    iconSize: {
+      width: 18,
+      height: 18,
+    },
+    labelContainer: {
+      marginBottom: 13,
+    },
+    labelStyle: {
+      fontSize: 17,
+      lineHeight: 23,
+      fontFamily: 'AppleSDGothicNeoB00',
+      color: Color.balck333333,
+    },
+    inputContainer: {
+      paddingBottom: 3,
+      borderBottomWidth: bordrBottomWIdth,
+      borderBottomColor: borderBottomColor,
+    },
+    inputStyle: {
+      fontSize: 16,
+      lineHeight: 30,
+      color: Color.balck4848,
+      padding: 0,
+      margin: 0,
+      fontFamily: 'AppleSDGothicNeoM00',
+    },
+
+  })
+};

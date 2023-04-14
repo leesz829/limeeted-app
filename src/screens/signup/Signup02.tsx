@@ -1,12 +1,12 @@
 import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
-import { layoutStyle, styles, modalStyle } from 'assets/styles/Styles';
+import { layoutStyle, styles, modalStyle, commonStyle } from 'assets/styles/Styles';
 import { CommonBtn } from 'component/CommonBtn';
 import CommonHeader from 'component/CommonHeader';
 import { CommonText } from 'component/CommonText';
 import { ImagePicker } from 'component/ImagePicker';
 import SpaceView from 'component/SpaceView';
 import React, { useRef } from 'react';
-import { View, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { View, ScrollView, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import {
   RouteProp,
   useNavigation,
@@ -20,7 +20,6 @@ import { get_profile_imgage_guide, regist_profile_image } from 'api/models';
 import { SUCCESS } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
 
-
 /* ################################################################################################################
 ###################################################################################################################
 ###### 근사한 프로필 만들기
@@ -32,11 +31,13 @@ interface Props {
   route: RouteProp<StackParamList, 'Signup02'>;
 }
 
+const { width } = Dimensions.get('window');
+
 export const Signup02 = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
 
   const isFocus = useIsFocused();
-  const { show } = usePopup();  // 공통 팝업
+  const { show } = usePopup(); // 공통 팝업
 
   const [profileImageList, setProfileImageList] = React.useState([]); // 프로필 이미지 목록
 
@@ -47,70 +48,64 @@ export const Signup02 = (props: Props) => {
     orgImgUrl03: { memer_img_seq: '', url: '', delYn: '' },
     orgImgUrl04: { memer_img_seq: '', url: '', delYn: '' },
     orgImgUrl05: { memer_img_seq: '', url: '', delYn: '' },
+    orgImgUrl06: { memer_img_seq: '', url: '', delYn: '' },
   });
 
   // 프로필 이미지 삭제 시퀀스 문자열
   const [imgDelSeqStr, setImgDelSeqStr] = React.useState('');
 
-
   // ################################################################ 프로필 이미지 파일 콜백 함수
-  const fileCallBack1 = (
-    uri: any,
-    base64: string
-  ) => {
-    let data = {file_uri: uri, file_base64: base64, order_seq: 1};
+  const fileCallBack1 = (uri: any, base64: string) => {
+    let data = { file_uri: uri, file_base64: base64, order_seq: 1 };
     imageDataApply(data);
   };
 
-  const fileCallBack2 = (
-    uri: any,
-    base64: string
-  ) => {
-    let data = {file_uri: uri, file_base64: base64, order_seq: 2};
+  const fileCallBack2 = (uri: any, base64: string) => {
+    let data = { file_uri: uri, file_base64: base64, order_seq: 2 };
     imageDataApply(data);
   };
 
-  const fileCallBack3 = (
-    uri: any,
-    base64: string
-  ) => {
-    let data = {file_uri: uri, file_base64: base64, order_seq: 3};
+  const fileCallBack3 = (uri: any, base64: string) => {
+    let data = { file_uri: uri, file_base64: base64, order_seq: 3 };
     imageDataApply(data);
   };
 
-  const fileCallBack4 = (
-    uri: any,
-    base64: string
-  ) => {
-    let data = {file_uri: uri, file_base64: base64, order_seq: 4};
+  const fileCallBack4 = (uri: any, base64: string) => {
+    let data = { file_uri: uri, file_base64: base64, order_seq: 4 };
     imageDataApply(data);
   };
 
-  const fileCallBack5 = (
-    uri: any,
-    base64: string
-  ) => {
-    let data = {file_uri: uri, file_base64: base64, order_seq: 5};
+  const fileCallBack5 = (uri: any, base64: string) => {
+    let data = { file_uri: uri, file_base64: base64, order_seq: 5 };
+    imageDataApply(data);
+  };
+
+  const fileCallBack6 = (uri: any, base64: string) => {
+    let data = { file_uri: uri, file_base64: base64, order_seq: 6 };
     imageDataApply(data);
   };
 
   // ################################################################ 프로필 이미지 데이터 적용
-  const imageDataApply  = (data: any) => {
+  const imageDataApply = (data: any) => {
     let dupChk = false;
-    profileImageList.map(({order_seq} : {order_seq: any;}) => {
-      if(order_seq == data.order_seq) { dupChk = true };
-    })
+    profileImageList.map(({ order_seq }: { order_seq: any }) => {
+      if (order_seq == data.order_seq) {
+        dupChk = true;
+      }
+    });
 
-    if(!dupChk) {
+    if (!dupChk) {
       setProfileImageList([...profileImageList, data]);
     } else {
       setProfileImageList((prev) =>
         prev.map((item: any) =>
-          item.order_seq === data.order_seq ? { ...item, uri: data.file_uri, file_base64: data.file_base64 } : item
+          item.order_seq === data.order_seq
+            ? { ...item, uri: data.file_uri, file_base64: data.file_base64 }
+            : item
         )
       );
     }
-  }
+  };
 
   // ############################################################################# 사진삭제 컨트롤 변수
   const [isDelImgData, setIsDelImgData] = React.useState<any>({
@@ -163,6 +158,12 @@ export const Signup02 = (props: Props) => {
         orgImgUrl05: { ...imgData.orgImgUrl05, delYn: 'Y' },
       });
     }
+    if (isDelImgData.order_seq == '6') {
+      setImgData({
+        ...imgData,
+        orgImgUrl06: { ...imgData.orgImgUrl06, delYn: 'Y' },
+      });
+    }
 
     let delArr = imgDelSeqStr;
     if (delArr == '') {
@@ -175,13 +176,13 @@ export const Signup02 = (props: Props) => {
   };
 
   // ############################################################################# 프로필 이미지 정보 조회
-  const getProfileImage = async() => {
+  const getProfileImage = async () => {
     const body = {
-      member_seq: props.route.params.memberSeq
+      member_seq: props.route.params.memberSeq,
     };
     try {
       const { success, data } = await get_profile_imgage_guide(body);
-      if(success) {
+      if (success) {
         switch (data.result_code) {
           case SUCCESS:
             if (null != data.imgList) {
@@ -191,8 +192,9 @@ export const Signup02 = (props: Props) => {
                 orgImgUrl03: { memer_img_seq: '', url: '', delYn: '' },
                 orgImgUrl04: { memer_img_seq: '', url: '', delYn: '' },
                 orgImgUrl05: { memer_img_seq: '', url: '', delYn: '' },
+                orgImgUrl06: { memer_img_seq: '', url: '', delYn: '' },
               };
-    
+
               data?.imgList?.map(
                 ({
                   member_img_seq,
@@ -208,48 +210,59 @@ export const Signup02 = (props: Props) => {
                     url: findSourcePath(img_file_path),
                     delYn: 'N',
                   };
-                  if (order_seq == 1) { imgData.orgImgUrl01 = data; }
-                  if (order_seq == 2) { imgData.orgImgUrl02 = data; }
-                  if (order_seq == 3) { imgData.orgImgUrl03 = data; }
-                  if (order_seq == 4) { imgData.orgImgUrl04 = data; }
-                  if (order_seq == 5) { imgData.orgImgUrl05 = data; }
+                  if (order_seq == 1) {
+                    imgData.orgImgUrl01 = data;
+                  }
+                  if (order_seq == 2) {
+                    imgData.orgImgUrl02 = data;
+                  }
+                  if (order_seq == 3) {
+                    imgData.orgImgUrl03 = data;
+                  }
+                  if (order_seq == 4) {
+                    imgData.orgImgUrl04 = data;
+                  }
+                  if (order_seq == 5) {
+                    imgData.orgImgUrl05 = data;
+                  }
+                  if (order_seq == 6) {
+                    imgData.orgImgUrl06 = data;
+                  }
                 }
               );
-    
+
               setImgData({ ...imgData, imgData });
             }
 
             break;
           default:
             show({
-              content: '오류입니다. 관리자에게 문의해주세요.' ,
-              confirmCallback: function() {}
+              content: '오류입니다. 관리자에게 문의해주세요.',
+              confirmCallback: function () {},
             });
             break;
         }
-       
       } else {
         show({
-          content: '오류입니다. 관리자에게 문의해주세요.' ,
-          confirmCallback: function() {}
+          content: '오류입니다. 관리자에게 문의해주세요.',
+          confirmCallback: function () {},
         });
       }
     } catch (error) {
       console.log(error);
     } finally {
-      
     }
-  } 
+  };
 
   // ############################################################################# 프로필 이미지 저장
-  const saveProfileImage = async() => {
+  const saveProfileImage = async () => {
     let tmpCnt = 0;
     for (var key in imgData) {
       if (imgData[key].delYn == 'N' && (imgData[key].url || imgData[key].uri)) {
         tmpCnt++;
       }
     }
-    for(var key in profileImageList) {
+    for (var key in profileImageList) {
       tmpCnt++;
     }
 
@@ -259,13 +272,13 @@ export const Signup02 = (props: Props) => {
     }
 
     const body = {
-      member_seq: props.route.params.memberSeq
-      , file_list: profileImageList
-      , img_del_seq_str: imgDelSeqStr
+      member_seq: props.route.params.memberSeq,
+      file_list: profileImageList,
+      img_del_seq_str: imgDelSeqStr,
     };
     try {
       const { success, data } = await regist_profile_image(body);
-      if(success) {
+      if (success) {
         switch (data.result_code) {
           case SUCCESS:
             navigation.navigate(ROUTES.SIGNUP03, {
@@ -275,27 +288,25 @@ export const Signup02 = (props: Props) => {
             break;
           default:
             show({
-              content: '오류입니다. 관리자에게 문의해주세요.' ,
-              confirmCallback: function() {}
+              content: '오류입니다. 관리자에게 문의해주세요.',
+              confirmCallback: function () {},
             });
             break;
         }
-       
       } else {
         show({
-          content: '오류입니다. 관리자에게 문의해주세요.' ,
-          confirmCallback: function() {}
+          content: '오류입니다. 관리자에게 문의해주세요.',
+          confirmCallback: function () {},
         });
       }
     } catch (error) {
       console.log(error);
     } finally {
-      
     }
-  }
+  };
 
-   // ############################################################################# 최초 실행
-   React.useEffect(() => {
+  // ############################################################################# 최초 실행
+  React.useEffect(() => {
     setProfileImageList([]);
     setImgDelSeqStr('');
     getProfileImage();
@@ -303,28 +314,27 @@ export const Signup02 = (props: Props) => {
 
   return (
     <>
-      <CommonHeader title={'근사한 프로필 만들기'} />
-      <ScrollView contentContainerStyle={[styles.scrollContainer]}>
-        <SpaceView mb={24}>
-          <CommonText fontWeight={'500'}>
-            다양한 분위기의 내 모습이 담긴 사진을{'\n'}
-            등록해보세요.
+      <CommonHeader title={'프로필 만들기'} />
+      <ScrollView contentContainerStyle={[styles.scrollContainerAll]}>
+        <SpaceView mb={10} viewStyle={[commonStyle.paddingHorizontal20, layoutStyle.row]}>
+          <CommonText fontWeight={'700'} type={'h3'}>
+            다양한 분위기의 내 모습이 담긴{'\n'}사진을 등록해보세요
+            <Image source={ICON.icon_smile} style={styles.smailIon} />
           </CommonText>
         </SpaceView>
 
-        <SpaceView mb={48} viewStyle={styles.halfContainer}>
-          <View style={styles.halfItemLeft}>
+        <SpaceView viewStyle={[_styles.wrapper, commonStyle.paddingHorizontal15]}>
+          <View style={_styles.container}>
             {imgData.orgImgUrl01.url != '' &&
             imgData.orgImgUrl01.delYn == 'N' ? (
               <TouchableOpacity
                 onPress={() => {
                   imgDel_onOpen(imgData.orgImgUrl01.member_img_seq, 1);
-                }}
-              >
+                }}>
                 <Image
                   resizeMode="cover"
                   resizeMethod="scale"
-                  style={styles.tempBoxBig}
+                  style={_styles.imageStyle}
                   key={imgData.orgImgUrl01.url}
                   source={imgData.orgImgUrl01.url}
                 />
@@ -336,247 +346,224 @@ export const Signup02 = (props: Props) => {
                 uriParam={''}
               />
             )}
-
-            {/* <ImagePicker isBig={true} callbackFn={fileCallBack1} uriParam={orgImgUrl01} /> */}
           </View>
-
-          <View style={styles.halfItemRight}>
-            <SpaceView mb={16} viewStyle={layoutStyle.row}>
-              <SpaceView mr={8}>
-                {imgData.orgImgUrl02.url != '' &&
-                imgData.orgImgUrl02.delYn == 'N' ? (
-                  <TouchableOpacity
-                    onPress={() => {
-                      imgDel_onOpen(imgData.orgImgUrl02.member_img_seq, 2);
-                    }}
-                  >
-                    <Image
-                      resizeMode="cover"
-                      resizeMethod="scale"
-                      style={styles.tempBoxSmall}
-                      key={imgData.orgImgUrl02.url}
-                      source={imgData.orgImgUrl02.url}
-                    />
-                  </TouchableOpacity>
-                ) : (
-                  <ImagePicker
-                    isBig={false}
-                    callbackFn={fileCallBack2}
-                    uriParam={''}
-                  />
-                )}
-              </SpaceView>
-              <SpaceView ml={8}>
-                {imgData.orgImgUrl03.url != '' &&
-                imgData.orgImgUrl03.delYn == 'N' ? (
-                  <TouchableOpacity
-                    onPress={() => {
-                      imgDel_onOpen(imgData.orgImgUrl03.member_img_seq, 3);
-                    }}
-                  >
-                    <Image
-                      resizeMode="cover"
-                      resizeMethod="scale"
-                      style={styles.tempBoxSmall}
-                      key={imgData.orgImgUrl03.url}
-                      source={imgData.orgImgUrl03.url}
-                    />
-                  </TouchableOpacity>
-                ) : (
-                  <ImagePicker
-                    isBig={false}
-                    callbackFn={fileCallBack3}
-                    uriParam={''}
-                  />
-                )}
-              </SpaceView>
-            </SpaceView>
-
-            <SpaceView viewStyle={layoutStyle.row}>
-              <SpaceView mr={8}>
-                {imgData.orgImgUrl04.url != '' &&
-                imgData.orgImgUrl04.delYn == 'N' ? (
-                  <TouchableOpacity
-                    onPress={() => {
-                      imgDel_onOpen(imgData.orgImgUrl04.member_img_seq, 4);
-                    }}
-                  >
-                    <Image
-                      resizeMode="cover"
-                      resizeMethod="scale"
-                      style={styles.tempBoxSmall}
-                      key={imgData.orgImgUrl04.url}
-                      source={imgData.orgImgUrl04.url}
-                    />
-                  </TouchableOpacity>
-                ) : (
-                  <ImagePicker
-                    isBig={false}
-                    callbackFn={fileCallBack4}
-                    uriParam={''}
-                  />
-                )}
-              </SpaceView>
-              <SpaceView ml={8}>
-                {imgData.orgImgUrl05.url != '' &&
-                imgData.orgImgUrl05.delYn == 'N' ? (
-                  <TouchableOpacity
-                    onPress={() => {
-                      imgDel_onOpen(imgData.orgImgUrl05.member_img_seq, 5);
-                    }}
-                  >
-                    <Image
-                      resizeMode="cover"
-                      resizeMethod="scale"
-                      style={styles.tempBoxSmall}
-                      key={imgData.orgImgUrl05.url}
-                      source={imgData.orgImgUrl05.url}
-                    />
-                  </TouchableOpacity>
-                ) : (
-                  <ImagePicker
-                    isBig={false}
-                    callbackFn={fileCallBack5}
-                    uriParam={''}
-                  />
-                )}
-              </SpaceView>
-            </SpaceView>
+          <View style={_styles.container}>
+            {imgData.orgImgUrl02.url != '' &&
+            imgData.orgImgUrl02.delYn == 'N' ? (
+              <TouchableOpacity
+                onPress={() => {
+                  imgDel_onOpen(imgData.orgImgUrl02.member_img_seq, 2);
+                }}>
+                <Image
+                  resizeMode="cover"
+                  resizeMethod="scale"
+                  style={_styles.imageStyle}
+                  key={imgData.orgImgUrl02.url}
+                  source={imgData.orgImgUrl02.url}
+                />
+              </TouchableOpacity>
+            ) : (
+              <ImagePicker
+                isBig={true}
+                callbackFn={fileCallBack2}
+                uriParam={''}
+              />
+            )}
+          </View>
+          <View style={_styles.container}>
+            {imgData.orgImgUrl03.url != '' &&
+            imgData.orgImgUrl03.delYn == 'N' ? (
+              <TouchableOpacity
+                onPress={() => {
+                  imgDel_onOpen(imgData.orgImgUrl03.member_img_seq, 3);
+                }}>
+                <Image
+                  resizeMode="cover"
+                  resizeMethod="scale"
+                  style={_styles.imageStyle}
+                  key={imgData.orgImgUrl03.url}
+                  source={imgData.orgImgUrl03.url}
+                />
+              </TouchableOpacity>
+            ) : (
+              <ImagePicker
+                isBig={true}
+                callbackFn={fileCallBack3}
+                uriParam={''}
+              />
+            )}
+          </View>
+          <View style={_styles.container}>
+            {imgData.orgImgUrl04.url != '' &&
+            imgData.orgImgUrl04.delYn == 'N' ? (
+              <TouchableOpacity
+                onPress={() => {
+                  imgDel_onOpen(imgData.orgImgUrl04.member_img_seq, 4);
+                }}>
+                <Image
+                  resizeMode="cover"
+                  resizeMethod="scale"
+                  style={_styles.imageStyle}
+                  key={imgData.orgImgUrl04.url}
+                  source={imgData.orgImgUrl04.url}
+                />
+              </TouchableOpacity>
+            ) : (
+              <ImagePicker
+                isBig={true}
+                callbackFn={fileCallBack4}
+                uriParam={''}
+              />
+            )}
+          </View>
+          <View style={_styles.container}>
+            {imgData.orgImgUrl05.url != '' &&
+            imgData.orgImgUrl05.delYn == 'N' ? (
+              <TouchableOpacity
+                onPress={() => {
+                  imgDel_onOpen(imgData.orgImgUrl05.member_img_seq, 5);
+                }}>
+                <Image
+                  resizeMode="cover"
+                  resizeMethod="scale"
+                  style={_styles.imageStyle}
+                  key={imgData.orgImgUrl05.url}
+                  source={imgData.orgImgUrl05.url}
+                />
+              </TouchableOpacity>
+            ) : (
+              <ImagePicker
+                isBig={true}
+                callbackFn={fileCallBack5}
+                uriParam={''}
+              />
+            )}
+          </View>
+          <View style={_styles.container}>
+            {imgData.orgImgUrl06.url != '' &&
+            imgData.orgImgUrl06.delYn == 'N' ? (
+              <TouchableOpacity
+                onPress={() => {
+                  imgDel_onOpen(imgData.orgImgUrl06.member_img_seq, 6);
+                }}>
+                <Image
+                  resizeMode="cover"
+                  resizeMethod="scale"
+                  style={_styles.imageStyle}
+                  key={imgData.orgImgUrl06.url}
+                  source={imgData.orgImgUrl06.url}
+                />
+              </TouchableOpacity>
+            ) : (
+              <ImagePicker
+                isBig={true}
+                callbackFn={fileCallBack6}
+                uriParam={''}
+              />
+            )}
           </View>
         </SpaceView>
 
-        <SpaceView mb={24}>
+        <SpaceView mt={20} mb={10} viewStyle={commonStyle.paddingHorizontal20}>
           <SpaceView mb={8}>
-            <CommonText fontWeight={'500'}>
+            <CommonText fontWeight={'500'} color={'#6E6E6E'}>
               어떤 사진을 올려야 할까요?
             </CommonText>
           </SpaceView>
-          <CommonText color={ColorType.gray6666}>
-            얼굴이 선명히 나오는 사진은 최소 1장 필수에요.{'\n'}
-            멋진 무드 속에 담긴 모습이 좋아요.
+          <CommonText textStyle={_styles.textDesc} color={'#989898'} type={'h5'}>
+            • 얼굴이 선명히 나오는 사진은 최소 1장 필수에요.{'\n'}     멋진 무드 속에 담긴 모습이 좋아요.
           </CommonText>
         </SpaceView>
 
-        <SpaceView mb={40}>
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            {props.route.params.gender == 'M' ? (
-              <>
-                <SpaceView mr={16}>
-                  <View style={styles.tempBoxMiddle}>
-                    <Image
-                      source={PROFILE_IMAGE.manTmp1}
-                      style={styles.profileTmpImg}
-                    />
-                  </View>
-                </SpaceView>
-                <SpaceView mr={16}>
-                  <View style={styles.tempBoxMiddle}>
-                    <Image
-                      source={PROFILE_IMAGE.manTmp2}
-                      style={styles.profileTmpImg}
-                    />
-                  </View>
-                </SpaceView>
-                <SpaceView mr={16}>
-                  <View style={styles.tempBoxMiddle}>
-                    <Image
-                      source={PROFILE_IMAGE.manTmp3}
-                      style={styles.profileTmpImg}
-                    />
-                  </View>
-                </SpaceView>
-                <SpaceView mr={16}>
-                  <View style={styles.tempBoxMiddle}>
-                    <Image
-                      source={PROFILE_IMAGE.manTmp4}
-                      style={styles.profileTmpImg}
-                    />
-                  </View>
-                </SpaceView>
-                <SpaceView mr={16}>
-                  <View style={styles.tempBoxMiddle}>
-                    <Image
-                      source={PROFILE_IMAGE.manTmp5}
-                      style={styles.profileTmpImg}
-                    />
-                  </View>
-                </SpaceView>
-                <SpaceView mr={16}>
-                  <View style={styles.tempBoxMiddle}>
-                    <Image
-                      source={PROFILE_IMAGE.manTmp6}
-                      style={styles.profileTmpImg}
-                    />
-                  </View>
-                </SpaceView>
-              </>
-            ) : (
-              <>
-                <SpaceView mr={16}>
-                  <View style={styles.tempBoxMiddle}>
-                    <Image
-                      source={PROFILE_IMAGE.womanTmp1}
-                      style={styles.profileTmpImg}
-                    />
-                  </View>
-                </SpaceView>
-                <SpaceView mr={16}>
-                  <View style={styles.tempBoxMiddle}>
-                    <Image
-                      source={PROFILE_IMAGE.womanTmp2}
-                      style={styles.profileTmpImg}
-                    />
-                  </View>
-                </SpaceView>
-                <SpaceView mr={16}>
-                  <View style={styles.tempBoxMiddle}>
-                    <Image
-                      source={PROFILE_IMAGE.womanTmp3}
-                      style={styles.profileTmpImg}
-                    />
-                  </View>
-                </SpaceView>
-                <SpaceView mr={16}>
-                  <View style={styles.tempBoxMiddle}>
-                    <Image
-                      source={PROFILE_IMAGE.womanTmp4}
-                      style={styles.profileTmpImg}
-                    />
-                  </View>
-                </SpaceView>
-                <SpaceView mr={16}>
-                  <View style={styles.tempBoxMiddle}>
-                    <Image
-                      source={PROFILE_IMAGE.womanTmp5}
-                      style={styles.profileTmpImg}
-                    />
-                  </View>
-                </SpaceView>
-                <SpaceView mr={16}>
-                  <View style={styles.tempBoxMiddle}>
-                    <Image
-                      source={PROFILE_IMAGE.womanTmp6}
-                      style={styles.profileTmpImg}
-                    />
-                  </View>
-                </SpaceView>
-                <SpaceView mr={16}>
-                  <View style={styles.tempBoxMiddle}>
-                    <Image
-                      source={PROFILE_IMAGE.womanTmp7}
-                      style={styles.profileTmpImg}
-                    />
-                  </View>
-                </SpaceView>
-              </>
-            )}
-          </ScrollView>
-        </SpaceView>
+        <View style={[_styles.wrapper, commonStyle.paddingHorizontal15, commonStyle.mb30]}>
 
-        <SpaceView mb={24}>
+          {props.route.params.gender == 'M' ? (
+            <>
+              <SpaceView viewStyle={_styles.tmpContainer}>
+                <Image
+                  source={PROFILE_IMAGE.manTmp1}
+                  style={_styles.tmpImageStyle}
+                />
+              </SpaceView>
+              <SpaceView viewStyle={_styles.tmpContainer}>
+                <Image
+                  source={PROFILE_IMAGE.manTmp2}
+                  style={_styles.tmpImageStyle}
+                />
+              </SpaceView>
+              <SpaceView viewStyle={_styles.tmpContainer}>
+                <Image
+                  source={PROFILE_IMAGE.manTmp3}
+                  style={_styles.tmpImageStyle}
+                />
+              </SpaceView>
+              <SpaceView viewStyle={_styles.tmpContainer}>
+                <Image
+                  source={PROFILE_IMAGE.manTmp4}
+                  style={_styles.tmpImageStyle}
+                />
+              </SpaceView>
+              <SpaceView viewStyle={_styles.tmpContainer}>
+                <Image
+                  source={PROFILE_IMAGE.manTmp5}
+                  style={_styles.tmpImageStyle}
+                />
+              </SpaceView>
+              <SpaceView viewStyle={_styles.tmpContainer}>
+                <Image
+                  source={PROFILE_IMAGE.manTmp6}
+                  style={_styles.tmpImageStyle}
+                />
+              </SpaceView>
+            </>
+          ) : (
+            <>
+              <SpaceView viewStyle={_styles.tmpContainer}>
+                <Image
+                  source={PROFILE_IMAGE.womanTmp1}
+                  style={_styles.tmpImageStyle}
+                />
+              </SpaceView>
+              <SpaceView viewStyle={_styles.tmpContainer}>
+                <Image
+                  source={PROFILE_IMAGE.womanTmp2}
+                  style={_styles.tmpImageStyle}
+                />
+              </SpaceView>
+              <SpaceView viewStyle={_styles.tmpContainer}>
+                <Image
+                  source={PROFILE_IMAGE.womanTmp3}
+                  style={_styles.tmpImageStyle}
+                />
+              </SpaceView>
+              <SpaceView viewStyle={_styles.tmpContainer}>
+                <Image
+                  source={PROFILE_IMAGE.womanTmp4}
+                  style={_styles.tmpImageStyle}
+                />
+              </SpaceView>
+              <SpaceView viewStyle={_styles.tmpContainer}>
+                <Image
+                  source={PROFILE_IMAGE.womanTmp5}
+                  style={_styles.tmpImageStyle}
+                />
+              </SpaceView>
+              <SpaceView viewStyle={_styles.tmpContainer}>
+                <Image
+                  source={PROFILE_IMAGE.womanTmp6}
+                  style={_styles.tmpImageStyle}
+                />
+              </SpaceView>
+            </>
+          )}
+        </View>
+
+        <SpaceView>
           <CommonBtn
             value={'다음 (3/4)'}
             type={'primary'}
+            height={60}
+            borderRadius={1}
             onPress={() => {
               saveProfileImage();
             }}
@@ -622,3 +609,109 @@ export const Signup02 = (props: Props) => {
     </>
   );
 };
+
+
+
+
+const _styles = StyleSheet.create({
+  titArea: {
+    flexDirection: 'row',
+  },
+  wrapper: {
+    width: '100%',
+    padding: 10,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  container: {
+    width: (width - 60) / 3,
+    height: (width - 60) / 3,
+    backgroundColor: 'rgba(155, 165, 242, 0.12)',
+    margin: 5,
+    borderRadius: 20,
+    flexDirection: `row`,
+    alignItems: `center`,
+    justifyContent: `center`,
+  },
+  plusStyle: {
+    width: (width - 80) / 10,
+    height: (width - 80) / 10,
+  },
+  imageStyle: {
+    width: (width - 60) / 3,
+    height: (width - 60) / 3,
+    margin: 0,
+    borderRadius: 10,
+  },
+  dim: {
+    position: 'absolute',
+    width: (width - 80) / 3,
+    height: (width - 80) / 3,
+    margin: 10,
+    borderRadius: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
+  text: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 12,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    lineHeight: 26,
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#ffffff',
+  },
+  close: {
+    width: 24,
+    height: 24,
+  },
+  modalContainer: {
+    margin: 0,
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+  },
+  modalInnerView: {
+    width: '100%',
+    backgroundColor: 'white',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 30,
+    paddingBottom: 50,
+  },
+  title: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  titleText: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 20,
+  },
+  margin: {
+    marginTop: 30,
+  },
+  textDesc : {
+    backgroundColor: '#F4F4F4',
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    marginTop: 5
+  },
+  tmpContainer: {
+    width: (width - 60) / 3,
+    height: (width - 60) / 3,
+    margin: 5,
+    borderRadius: 20,
+    flexDirection: `row`,
+    alignItems: `center`,
+    justifyContent: `center`,
+  },
+  tmpImageStyle: {
+    width: (width - 60) / 3,
+    height: (width - 60) / 3,
+    margin: 0,
+    borderRadius: 15,
+  },
+});

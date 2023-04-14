@@ -63,6 +63,9 @@ const styles = ({
   }
 
   switch (fontWeight) {
+    case '200':
+      fontFamily = 'AppleSDGothicNeoEB00';
+      break;
     case '300':
       fontFamily = 'AppleSDGothicNeoT00';
       break;

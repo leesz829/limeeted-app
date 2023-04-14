@@ -1,12 +1,12 @@
 import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
-import { layoutStyle, styles, modalStyle } from 'assets/styles/Styles';
+import { layoutStyle, styles, modalStyle, commonStyle } from 'assets/styles/Styles';
 import { CommonBtn } from 'component/CommonBtn';
 import CommonHeader from 'component/CommonHeader';
 import { CommonInput } from 'component/CommonInput';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import React, { useRef, useState } from 'react';
-import { View, Image, ScrollView, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+import { View, Image, ScrollView, TouchableOpacity, StyleSheet, FlatList, Text, Dimensions } from 'react-native';
 import { ICON } from 'utils/imageUtils';
 import { Modalize } from 'react-native-modalize';
 import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
@@ -35,6 +35,8 @@ interface Props {
 export const Signup03 = (props : Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 	const [currentIndex, setCurrentIndex] = React.useState(0);
+
+	const { width, height } = Dimensions.get('window');
 
 	const { show } = usePopup();  // 공통 팝업
 	const isFocus = useIsFocused();
@@ -183,93 +185,73 @@ export const Signup03 = (props : Props) => {
 	return (
 		<>
 			<CommonHeader title={'닉네임과 소개'} />
-			<ScrollView contentContainerStyle={[styles.scrollContainer]}>
-				<SpaceView mb={24}>
-					<CommonText>
-						LIMEETED에서 사용할 닉네임과{'\n'}
-						한줄소개를 입력해주세요.
-					</CommonText>
-				</SpaceView>
-
-				<SpaceView mb={24}>
-					<CommonInput label="닉네임" 
-									placeholder={'닉네임을 입력해 주세요.'}
-									placeholderTextColor={'#c6ccd3'}
-									value={nickname}
-									maxLength={10}
-									onChangeText={nickname => setNickname(nickname)}  />
-				</SpaceView>
-
-				<SpaceView mb={48}>
-					<CommonInput label="한줄 소개" 
-									placeholder={'한줄 소개를 입력해 주세요.'}
-									placeholderTextColor={'#c6ccd3'}
-									value={comment}
-									maxLength={20}
-									onChangeText={comment => setComment(comment)}
-									 />
-				</SpaceView>
-
-				<SpaceView mb={24}>
-					<SpaceView mb={8}>
-						<CommonText>관심사 표현하기</CommonText>
+			<ScrollView contentContainerStyle={[
+							styles.scrollContainerAll,
+							{ justifyContent: 'space-between' },
+						]}>
+				<View style={commonStyle.paddingHorizontal20}>
+					<SpaceView mb={60}>
+						<CommonText>LIMEETED에서 사용할</CommonText>
+						<CommonText fontWeight={'700'}>닉네임과 한줄소개를 입력해주세요.</CommonText>
 					</SpaceView>
-					<CommonText color={ColorType.gray6666}>
-						같은 관심사를 가진 이성을 소개할 수 있도록{'\n'}
-						도와드릴게요.
-					</CommonText>
-				</SpaceView>
 
-				<SpaceView mb={24}>
-					<CommonBtn value={'등록 및 수정'} 
-								height={48} 
-								type={'white'} 
-								icon={ICON.plus}
-								onPress={int_onOpen} />
-				</SpaceView>
+					<SpaceView mb={24}>
+						<CommonInput label="닉네임" 
+										placeholder={'닉네임을 입력해 주세요.'}
+										placeholderTextColor={'#c6ccd3'}
+										value={nickname}
+										maxLength={10}
+										onChangeText={nickname => setNickname(nickname)}  />
+					</SpaceView>
 
-				{/* <SpaceView mb={40} mt={24} viewStyle={[layoutStyle.row, layoutStyle.wrap]}>
-					{[
-						{ text: '스타일1', isActive: false },
-						{ text: '해외축구', isActive: false },
-						{ text: '영화3', isActive: true },
-						{ text: '해외축구', isActive: true },
-						{ text: '영화1', isActive: false },
-						{ text: '영화1', isActive: false },
-						{ text: '영화1', isActive: false },
-						{ text: '영화1', isActive: false },
-					].map((i, index) => {
-						return (
-							<SpaceView mr={index % 3 !== 2 ? 8 : 0} key={index + 'reg'}>
-								<TouchableOpacity style={[styles.interestBox, i.isActive && styles.boxActive]}>
-									<CommonText color={i.isActive ? ColorType.primary : ColorType.gray8888}>
-										{i.text}
-									</CommonText>
-								</TouchableOpacity>
-							</SpaceView>
-						);
-					})}
-				</SpaceView> */}
+					<SpaceView mb={90}>
+						<CommonInput label="한줄 소개" 
+										placeholder={'한줄 소개를 입력해 주세요.'}
+										placeholderTextColor={'#c6ccd3'}
+										value={comment}
+										maxLength={20}
+										onChangeText={comment => setComment(comment)}
+										/>
+					</SpaceView>
 
-				<SpaceView mb={40} mt={15} viewStyle={[layoutStyle.row, layoutStyle.wrap]}>
-					{checkIntList.map((i, index) => {
-						return (
-							i.code_name != "" ? (
-								<SpaceView mr={index % 3 !== 2 ? 8 : 0} key={index + 'reg'}>
-									<TouchableOpacity style={[styles.interestBox]}>
-										<CommonText color={ColorType.gray8888}>
-											{i.code_name}
-										</CommonText>
-									</TouchableOpacity>
-								</SpaceView>
-							) : null
-						);
-					})}
-				</SpaceView>
+					<SpaceView mb={15}>
+						<SpaceView mb={1}>
+							<CommonText type={'h4'} fontWeight={'200'}>관심사 표현하기</CommonText>
+						</SpaceView>
+						<CommonText color={'#B1B1B1'} type={'h5'}>
+							같은 관심사를 가진 이성을 소개할 수 있도록 도와드릴게요!
+						</CommonText>
+					</SpaceView>
 
-				<SpaceView mb={24}>
+					<SpaceView mb={10}>
+						<TouchableOpacity style={_styles.btnStyle} onPress={int_onOpen}>
+							<Image source={ICON.plus_gray} style={styles.iconSize18} />
+							<CommonText color={'#C7C7C7'} type={'h5'} fontWeight={'200'} textStyle={{marginLeft: 5}}>관심사 등록</CommonText>
+						</TouchableOpacity>
+					</SpaceView>
+
+					<SpaceView mb={40} mt={5} viewStyle={[layoutStyle.row, layoutStyle.wrap]}>
+						{checkIntList.map((i, index) => {
+							return (
+								i.code_name != "" ? (
+									<SpaceView mr={5} key={index + 'reg'}>
+										<TouchableOpacity style={[styles.interestBox, styles.boxActive]}>
+											<CommonText color={ColorType.blue697A}>
+												{i.code_name}
+											</CommonText>
+										</TouchableOpacity>
+									</SpaceView>
+								) : null
+							);
+						})}
+					</SpaceView>
+				</View>
+
+				<SpaceView>
 					<CommonBtn value={'다음 (4/4)'} 
 								type={'primary'}
+								height={60}
+								borderRadius={1}
 								onPress={() => {
 									saveInterest();
 								}} 
@@ -287,11 +269,14 @@ export const Signup03 = (props : Props) => {
 				adjustToContentHeight = {false}
 				handleStyle={modalStyle.modalHandleStyle}
 				modalStyle={modalStyle.modalContainer}
+				modalHeight={height - 150}
 				FooterComponent={
 					<>
-						<SpaceView mb={16}>
+						<SpaceView>
 							<CommonBtn value={'저장'} 
 										type={'primary'}
+										height={60}
+										borderRadius={1}
 										onPress={int_confirm}/>
 						</SpaceView>
 					</>
@@ -299,34 +284,24 @@ export const Signup03 = (props : Props) => {
 				HeaderComponent={
 					<>
 						<View style={modalStyle.modalHeaderContainer}>
-							<CommonText fontWeight={'700'} type={'h3'}>
+							<CommonText fontWeight={'700'} type={'h4'}>
 								관심사 등록
 							</CommonText>
 							<TouchableOpacity onPress={int_onClose}>
-								<Image source={ICON.xBtn} style={styles.iconSize24} />
+								<Image source={ICON.xBtn2} style={styles.iconSize18} />
 							</TouchableOpacity>
 						</View>
 					</>
 				} >	
 
-				<View style={modalStyle.modalBody}>
-
-					{/* <FlatList
-						onScroll={handleScroll}
-						showsHorizontalScrollIndicator={false}
-						pagingEnabled={true}
-						horizontal={false}
-						data={intList}
-						renderItem={(data) => <RenderItem obj={data} callbackFn={okFn} checkIntList={checkIntList} />}
-					/> */}
-					
+				<View style={[modalStyle.modalBody]}>
 					{intList.map((item, index) => (
-						<SpaceView mb={24} key={item.group_code + '_' + index}>
+						<SpaceView mt={20} mb={10} key={item.group_code + '_' + index}>
 							<SpaceView mb={16}>
-								<CommonText fontWeight={'500'}>{item.group_code_name}</CommonText>
+								<CommonText fontWeight={'700'}>{item.group_code_name}</CommonText>
 							</SpaceView>
 
-							<View style={[_styles.rowStyle, layoutStyle.justifyBetween]}>
+							<View style={[_styles.rowStyle]}>
 								{item.list.map((i, idx) => {
 									let tmpCommonCode = '';
 									let tmpCnt = 0;
@@ -340,7 +315,7 @@ export const Signup03 = (props : Props) => {
 									}
 
 									return (
-										<SpaceView key={i.common_code}>
+										<SpaceView key={i.common_code} mr={5}>
 											<TouchableOpacity style={[styles.interestBox, i.common_code === tmpCommonCode && styles.boxActive]}
 																onPress={() => {
 																	if(i.common_code === tmpCommonCode){
@@ -351,7 +326,7 @@ export const Signup03 = (props : Props) => {
 																}}>
 												<CommonText
 													fontWeight={'500'}
-													color={i.common_code === tmpCommonCode ? ColorType.primary : ColorType.gray8888} >
+													color={i.common_code === tmpCommonCode ? ColorType.blue697A : ColorType.grayb1b1} >
 													{i.code_name}
 												</CommonText>
 											</TouchableOpacity>
@@ -417,5 +392,16 @@ const _styles = StyleSheet.create({
 	rowStyle : {
 		flexDirection: 'row',
 		flexWrap: 'wrap'
-	}
+	},
+	btnStyle: {
+		width: '100%',
+		height: 50,
+		borderRadius: 15,
+		alignItems: 'center',
+		justifyContent: 'center',
+		borderWidth: 1,
+		borderStyle: 'dotted',
+		borderColor: '#C7C7C7',
+		flexDirection: 'row',
+	  },
   });

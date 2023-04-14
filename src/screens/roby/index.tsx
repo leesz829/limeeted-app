@@ -602,12 +602,15 @@ export const Roby = (props: Props) => {
         handleStyle={modalStyle.modalHandleStyle}
         modalStyle={modalStyle.modalContainer}
         adjustToContentHeight={false}
+        modalHeight={height - 150}
         FooterComponent={
           <>
-            <SpaceView mb={16}>
+            <SpaceView>
               <CommonBtn
                 value={'확인'}
                 type={'primary'}
+                height={60}
+								borderRadius={1}
                 onPress={terms_onClose}
               />
             </SpaceView>
@@ -616,11 +619,11 @@ export const Roby = (props: Props) => {
         HeaderComponent={
           <>
             <View style={modalStyle.modalHeaderContainer}>
-              <CommonText fontWeight={'700'} type={'h3'}>
+              <CommonText fontWeight={'700'} type={'h4'}>
                 이용약관
               </CommonText>
               <TouchableOpacity onPress={terms_onClose}>
-                <Image source={ICON.xBtn} style={styles.iconSize24} />
+                <Image source={ICON.xBtn2} style={styles.iconSize18} />
               </TouchableOpacity>
             </View>
           </>
@@ -631,10 +634,7 @@ export const Roby = (props: Props) => {
             <CommonDatePicker />
           </SpaceView> */}
 
-          <SpaceView
-            mb={24}
-            viewStyle={{ width: width - 32, backgroundColor: Color.grayF8F8 }}
-          >
+          <SpaceView mb={24}>
             <Terms />
           </SpaceView>
         </View>
@@ -648,12 +648,15 @@ export const Roby = (props: Props) => {
         handleStyle={modalStyle.modalHandleStyle}
         modalStyle={modalStyle.modalContainer}
         adjustToContentHeight={false}
+        modalHeight={height - 150}
         FooterComponent={
           <>
-            <SpaceView mb={16}>
+            <SpaceView>
               <CommonBtn
                 value={'확인'}
                 type={'primary'}
+                height={60}
+								borderRadius={1}
                 onPress={privacy_onClose}
               />
             </SpaceView>
@@ -662,11 +665,11 @@ export const Roby = (props: Props) => {
         HeaderComponent={
           <>
             <View style={modalStyle.modalHeaderContainer}>
-              <CommonText fontWeight={'700'} type={'h3'}>
+              <CommonText fontWeight={'700'} type={'h4'}>
                 개인정보 취급방침
               </CommonText>
               <TouchableOpacity onPress={privacy_onClose}>
-                <Image source={ICON.xBtn} style={styles.iconSize24} />
+                <Image source={ICON.xBtn2} style={styles.iconSize18} />
               </TouchableOpacity>
             </View>
           </>
@@ -677,10 +680,7 @@ export const Roby = (props: Props) => {
             <CommonDatePicker />
           </SpaceView> */}
 
-          <SpaceView
-            mb={24}
-            viewStyle={{ width: width - 32, backgroundColor: Color.grayF8F8 }}
-          >
+          <SpaceView mb={24}>
             <Privacy />
           </SpaceView>
         </View>

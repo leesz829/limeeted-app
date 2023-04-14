@@ -111,6 +111,10 @@ export const Login = () => {
 		<View style={[styles.container, layoutStyle.justifyCenter]}>
 			<View style={layoutStyle.alignCenter}>
 				<SpaceView>
+					<Image source={IMAGE.logoRenew} style={styles.logoRenew} resizeMode="contain" />
+				</SpaceView>
+
+				{/* <SpaceView>
 					<Image source={IMAGE.heartIcon} style={styles.logoMark} resizeMode="contain" />
 				</SpaceView>
 				<SpaceView>
@@ -118,12 +122,14 @@ export const Login = () => {
 				</SpaceView>
 				<SpaceView mb={200}>
 					<CommonText textStyle={styles.logoText} lineHeight={30}>믿음가는 사람들의 인연</CommonText>
-				</SpaceView>
+				</SpaceView> */}
 			</View>
 			<SpaceView viewStyle={styles.bottomBtnContainer} mb={24}>
-				<SpaceView mb={16}>
+				<SpaceView mb={10} viewStyle={{paddingHorizontal: '7%'}}>
 					<CommonBtn
-						value={'LIMIT 계정으로 로그인'}
+						value={'리미티드 계정으로 로그인'}
+						type={'g_blue'}
+						isGradient={true}
 						onPress={() => {
 							navigation.navigate('Login01');
 							//signInWithKakao();
@@ -138,14 +144,16 @@ export const Login = () => {
 								signInWithKakao();
 							}}
 				/> */}
-				<CommonBtn
-					value={'회원가입'}
-					type={'kakao'}
-					iconSize={24}
-					onPress={() => {
-						navigation.navigate('Policy');
-					}}
-				/>
+				<SpaceView mb={16} viewStyle={{paddingHorizontal: '7%'}}>
+					<CommonBtn
+						value={'회원가입'}
+						type={'white'}
+						iconSize={24}
+						onPress={() => {
+							navigation.navigate('Policy');
+						}}
+					/>
+				</SpaceView>
 
 			</SpaceView>
 		</View>

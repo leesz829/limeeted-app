@@ -24,31 +24,32 @@ export const EventRow: FC<Props> = (props) => {
   const [openRow, setOpenRow] = useState(false);
 
   return (
-    <View>
+    <View style={{marginBottom: 30}}>
       <View style={styles.rowContainer}>
         <TouchableOpacity
           style={styles.inner}
           onPress={() => setOpenRow(!openRow)}
-          activeOpacity={0.3}
-        >
+          activeOpacity={0.3} >
           <View style={styles.labelContainer}>
-            <CommonText type={'h5'} color={ColorType.gray6666}>
+            <CommonText type={'h4'} color={ColorType.black3333} fontWeight={'200'}>
               {props.label}
             </CommonText>
           </View>
           <View style={[styles.titleContainer, openRow && styles.active]}>
-            <CommonText fontWeight={'500'}>{props.title}</CommonText>
+            <CommonText fontWeight={'500'} type={'h5'}>{props.title}</CommonText>
           </View>
+
+          
         </TouchableOpacity>
 
         <View style={[styles.iconContainer, openRow && styles.activeIcon]}>
-          <Image source={ICON.arrRight} style={styles.iconStyle} />
+          <Image source={ICON.arrBottom} style={styles.iconStyle} />
         </View>
       </View>
 
       {openRow && (
         <View style={styles.descContainer}>
-          <CommonText>{props.desc}</CommonText>
+          <CommonText textStyle={styles.descText} type={'h5'}>{props.desc}</CommonText>
         </View>
       )}
     </View>
@@ -57,17 +58,18 @@ export const EventRow: FC<Props> = (props) => {
 
 const styles = StyleSheet.create({
   iconContainer: {
-    right: 32,
-    transform: [{ rotate: '90deg' }],
+    top: 20,
+    right: 40,
+    transform: [{ rotate: '360deg' }],
   },
   activeIcon: {
-    transform: [{ rotate: '-90deg' }],
+    transform: [{ rotate: '180deg' }],
   },
   inner: {
     width: '100%',
   },
   labelContainer: {
-    marginBottom: 8,
+    marginBottom: 12,
   },
   rowContainer: {
     flexDirection: 'row',
@@ -76,19 +78,34 @@ const styles = StyleSheet.create({
     height: 84,
   },
   iconStyle: {
-    width: 24,
-    height: 24,
+    width: 18,
+    height: 10,
   },
   titleContainer: {
-    paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderColor: Color.grayDDDD,
+    borderWidth: 1,
+    borderColor: Color.grayEBE,
+    borderRadius: 15,
+    paddingHorizontal: 15,
+    paddingVertical: 15,
   },
   active: {
     borderBottomWidth: 0,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
   },
   descContainer: {
-    backgroundColor: Color.grayF8F8,
-    padding: 16,
+    //padding: 16,
+    paddingHorizontal: 10,
+    paddingBottom: 20,
+    borderWidth: 1,
+    borderTopWidth: 0,
+    borderColor: Color.grayEBE,
+    borderBottomLeftRadius: 15,
+    borderBottomRightRadius: 15,
   },
+  descText: {
+    backgroundColor: Color.grayF8F8,
+    paddingHorizontal: 15,
+    paddingVertical: 20,
+  }
 });

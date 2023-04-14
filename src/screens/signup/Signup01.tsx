@@ -1,11 +1,11 @@
-import { styles, layoutStyle, modalStyle } from 'assets/styles/Styles';
+import { styles, layoutStyle, modalStyle, commonStyle } from 'assets/styles/Styles';
 import { CommonBtn } from 'component/CommonBtn';
 import CommonHeader from 'component/CommonHeader';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import React, { useRef } from 'react';
 import { View, Image, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
-import { ICON, findSourcePath } from 'utils/imageUtils';
+import { ICON, findSourcePath, IMAGE } from 'utils/imageUtils';
 import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
 import {
   RouteProp,
@@ -245,15 +245,24 @@ export const Signup01 = (props: Props) => {
   return (
     <>
       <CommonHeader title={'프로필 2차 인증'} />
-      <ScrollView contentContainerStyle={[styles.scrollContainer]}>
-        <SpaceView mb={24}>
+      <ScrollView contentContainerStyle={[styles.scrollContainerAll]}>
+        <SpaceView mb={35} viewStyle={[commonStyle.paddingHorizontal20]}>
+          <SpaceView mb={15}>
+            <Image source={IMAGE.signImg} style={styles.signImg} resizeMode="contain" />
+          </SpaceView>
+          <CommonText type={'h3'} fontWeight={'200'}>
+            아래 버튼을 선택 후{'\n'}인증 뱃지를 등록 할 수 있습니다.
+          </CommonText>
+        </SpaceView>
+
+        {/* <SpaceView mb={24}>
           <CommonText>
             아래 버튼 선택 후 인증 뱃지를 등록할 수 있습니다.{'\n'}
             뱃지를 추가하여 자신을 어필해보세요.
           </CommonText>
-        </SpaceView>
+        </SpaceView> */}
 
-        <SpaceView mb={24}>
+        <SpaceView mb={24} viewStyle={commonStyle.paddingHorizontal20}>
           <SpaceView mb={16}>
             <View style={styles.halfContainer}>
               {/* ############################################################## 직업인증 */}
@@ -285,10 +294,12 @@ export const Signup01 = (props: Props) => {
           </SpaceView>
         </SpaceView>
 
-        <SpaceView mb={24}>
+        <SpaceView>
           <CommonBtn
             value={'다음 (2/4)'}
             type={'primary'}
+            height={60}
+            borderRadius={1}
             onPress={() => {
               navigation.navigate('Signup02', {
                 memberSeq: props.route.params.memberSeq,
@@ -427,22 +438,22 @@ const AuthItemRender = (dataObj: any) => {
   let authDesc = '';
 
   if(data.common_code == 'JOB') {
-    imgSrc = ICON.job;
+    imgSrc = ICON.jobNew;
     authDesc = '내 커리어를 확인할 수 있는 명함 또는 증명서를 올려주세요';
   } else if(data.common_code == 'EDU') {
-    imgSrc = ICON.degree;
+    imgSrc = ICON.degreeNew;
     authDesc = '대학교/대학원의 재학증명서/졸업증명를 올려주세요.';
   } else if(data.common_code == 'INCOME') {
-    imgSrc = ICON.income;
+    imgSrc = ICON.incomeNew;
     authDesc = '내 소득 자료를 올려주세요.';
   } else if(data.common_code == 'ASSET') {
-    imgSrc = ICON.asset;
+    imgSrc = ICON.assetNew;
     authDesc = '은행에서 발급해주는 잔고 증명서를 올려주세요.';
   } else if(data.common_code == 'SNS') { 
-    imgSrc = ICON.sns;
+    imgSrc = ICON.snsNew;
     authDesc = '내 인스타 ID가 보이는 스크린샷을 올려주세요.';
   } else if(data.common_code == 'VEHICLE') {
-    imgSrc = ICON.vehicle;
+    imgSrc = ICON.vehicleNew;
     authDesc = '차량 등록등 또는 자동차보험가입 증빙 자료를 올려주세요.';
   }
 
@@ -450,26 +461,13 @@ const AuthItemRender = (dataObj: any) => {
     <TouchableOpacity style={styles.halfItemLeft} onPress={dataObj.pressFn} >
       <View style={styles.badgeBox}>
         <SpaceView mb={16}>
-          <Image source={imgSrc} style={styles.iconSize40} />
+          <Image source={imgSrc} style={styles.iconSize60} />
         </SpaceView>
 
-        {data.auth_level !== '' && typeof data.auth_level !== 'undefined' ? (
-          <View style={[layoutStyle.row, _styles.levelArea]}>
-            <CommonText textStyle={_styles.levelAreaLevelName}>LV</CommonText>
-            <CommonText textStyle={_styles.levelAreaLevelValue}>{data.auth_level}</CommonText>
-          </View>
-        ) : null}
-
-        <View style={[layoutStyle.row, _styles.statusArea]}>
-          {data.auth_status == 'PROGRESS' ? <CommonText>심사중</CommonText> : null}
-          {/* {typeof data.auth_status == 'undefined' ? <CommonText>인증안함</CommonText> : null} */}
-        </View>
-        
-
-        <SpaceView mb={8}>
+        <SpaceView>
           <View style={[layoutStyle.row, layoutStyle.alignCenter]}>
-            <CommonText>{data.code_name}</CommonText>
-            <Image source={ICON.arrRight} style={styles.iconSize} />
+            <CommonText type={'h4'} fontWeight={'700'}>{data.code_name}</CommonText>
+            <Image source={ICON.arrRight} style={styles.arrowIcon} />
           </View>
         </SpaceView>
 

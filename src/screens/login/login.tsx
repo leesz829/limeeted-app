@@ -3,7 +3,7 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { useNavigation } from '@react-navigation/native';
 import { ColorType } from '@types';
 import { signin } from 'api/models';
-import { layoutStyle, modalStyle, styles } from 'assets/styles/Styles';
+import { layoutStyle, modalStyle, styles, commonStyle } from 'assets/styles/Styles';
 import { CommonBtn } from 'component/CommonBtn';
 import { CommonInput } from 'component/CommonInput';
 import { CommonText } from 'component/CommonText';
@@ -28,6 +28,7 @@ import {
   View,
   Platform,
   PermissionsAndroid,
+  StyleSheet
 } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { setPrincipal } from 'redux/reducers/authReducer';
@@ -53,7 +54,7 @@ export const Login01 = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const { show } = usePopup();
-  const [id, setId] = React.useState('test09m');
+  const [id, setId] = React.useState('zoon9801@gmail.com');
   const [password, setPassword] = React.useState('1234');
   const me = useUserInfo();
   const { width, height } = Dimensions.get('window');
@@ -194,55 +195,63 @@ export const Login01 = () => {
   return (
     <>
       <ScrollView contentContainerStyle={[styles.scrollContainer]}>
-        <View style={[styles.container]}>
-          <View style={layoutStyle.alignCenter}>
+        <View style={[styles.container, layoutStyle.justifyCenter]}>
+
+          {/* ############################################################### 타이틀 */}
+          <View style={[commonStyle.mb70]}>
             <SpaceView>
               <Image
-                source={IMAGE.logoMark}
+                source={IMAGE.logoMarkRenew}
                 style={styles.logoMark}
-                resizeMode="contain"
+                resizeMode="center"
               />
             </SpaceView>
-            <SpaceView mb={15}>
-              <Image
-                source={IMAGE.logoText}
-                style={styles.logo}
-                resizeMode="contain"
-              />
+            <SpaceView ml={10}>
+              <CommonText type={'h2'} fontWeight={'700'} lineHeight={30}>믿음가는 사람들의 인연</CommonText>
             </SpaceView>
           </View>
 
-          <View>
-            <CommonInput
-              label="아이디"
-              value={id}
-              onChangeText={(id) => setId(id)}
-            />
+          {/* ############################################################### 텍스트 입력 */}
+          <View style={[layoutStyle.alignCenter, commonStyle.paddingHorizontal20, commonStyle.mb15]}>
+            <SpaceView viewStyle={[commonStyle.width100]}>
+              <CommonInput
+                label=""
+                value={id}
+                onChangeText={(id) => setId(id)}
+                maxLength={50}
+                placeholder={'이메일 주소'}
+                placeholderTextColor={'#c6ccd3'}
+                borderBottomType={'black'}
+              />
+            </SpaceView>
 
-            <View style={styles.infoContainer}>
+            {/* <View style={styles.infoContainer}>
               <SpaceView mt={4}>
                 <Image source={ICON.info} style={styles.iconSize} />
               </SpaceView>
-
               <SpaceView ml={8}>
                 <CommonText color={ColorType.gray6666}>
                   아이디는 이메일로 입력해 주세요.
                 </CommonText>
               </SpaceView>
-            </View>
+            </View> */}
 
-            <SpaceView mb={30}>
+            <SpaceView mb={30} mt={10} viewStyle={[commonStyle.width100]}>
               <CommonInput
-                label="비밀번호"
+                label=""
                 value={password}
                 onChangeText={(password) => setPassword(password)}
                 isMasking={true}
                 maxLength={20}
+                placeholder={'비밀번호'}
+                placeholderTextColor={'#c6ccd3'}
+                borderBottomType={'black'}
               />
             </SpaceView>
           </View>
 
-          <SpaceView mb={20}>
+          {/* ############################################################### 버튼 */}
+          <SpaceView viewStyle={[commonStyle.paddingHorizontal15]}>
             {/* {Platform.OS === 'ios' ? (
 							<SpaceView mb={5}>
 								<CommonBtn value={'애플로그인'} onPress={onAppleButtonPress} />
@@ -256,6 +265,8 @@ export const Login01 = () => {
             <SpaceView mb={5}>
               <CommonBtn
                 value={'로그인'}
+                type={'g_blue'}
+						    isGradient={true}
                 onPress={() => {
                   if (id == '') {
                     return show({ content: '아이디를 입력해 주세요.' });
@@ -264,29 +275,40 @@ export const Login01 = () => {
                     return show({ content: '비밀번호를 입력해 주세요.' });
                   }
 
-                  //requestPermissions();
-
                   loginProc();
                   //dispatch(loginReduce(id, password));
                 }}
               />
+
+              <SpaceView viewStyle={_styles.joinText}>
+                <CommonText type={"h5"}>계정이 없으신가요?</CommonText>
+                <View style={_styles.joinTextLine} />
+                <TouchableOpacity onPress={() => { navigation.navigate('Policy'); }}>
+                  <CommonText type={"h5"} color={Color.blue01} fontWeight={'700'}>회원가입</CommonText>
+                </TouchableOpacity>
+              </SpaceView>
+
             </SpaceView>
             <SpaceView mb={5}>
               <CommonBtn
                 value={'아이디/비밀번호 찾기'}
+                type={'g_blue'}
+						    isGradient={true}
                 onPress={() => {
                   navigation.navigate('SearchIdAndPwd');
                 }}
               />
             </SpaceView>
-            <CommonBtn
-              value={'처음으로'}
-              type={'kakao'}
-              iconSize={24}
-              onPress={() => {
-                navigation.navigate('Login');
-              }}
-            />
+            <SpaceView>
+              <CommonBtn
+                value={'처음으로'}
+                type={'white'}
+                iconSize={24}
+                onPress={() => {
+                  navigation.navigate('Login');
+                }}
+              />
+            </SpaceView>
           </SpaceView>
         </View>
       </ScrollView>
@@ -349,3 +371,21 @@ export const Login01 = () => {
 //     // user is authenticated
 //   }
 // };
+
+
+
+const _styles = StyleSheet.create({
+  joinText: {
+    width: '100%',
+    paddingVertical: 10,
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  joinTextLine: {
+    borderRightWidth: 1,
+    borderRightColor: '#656565',
+    height: 15,
+    marginHorizontal: 10,
+    marginTop: 5
+  }
+});

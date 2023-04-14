@@ -1,9 +1,9 @@
-import { styles, modalStyle, layoutStyle } from 'assets/styles/Styles';
+import { styles, modalStyle, layoutStyle, commonStyle } from 'assets/styles/Styles';
 import CommonHeader from 'component/CommonHeader';
 import { CommonInput } from 'component/CommonInput';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
-import { ScrollView, View, Modal, TouchableOpacity, Alert, StyleSheet } from 'react-native';
+import { ScrollView, View, Modal, TouchableOpacity, Alert, StyleSheet, Dimensions } from 'react-native';
 import * as React from 'react';
 import { CommonBtn } from 'component/CommonBtn';
 import { StackParamList, ScreenNavigationProp, ColorType } from '@types';
@@ -42,6 +42,7 @@ interface Props {
 export const Profile = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
   const dispatch = useDispatch();
+  const { width, height } = Dimensions.get('window');
 
   const { show } = usePopup(); // 공통 팝업
 
@@ -49,6 +50,7 @@ export const Profile = (props: Props) => {
   
   const jwtToken = hooksMember.getJwtToken(); // 토큰 추출
 
+  const [emailId, setEmailId] = React.useState<any>(memberBase?.email_id);
   const [nickname, setNickname] = React.useState<any>(memberBase?.nickname);
   const [name, setName] = React.useState<any>(memberBase?.name);
   const [gender, setGender] = React.useState<any>(memberBase?.gender);
@@ -199,12 +201,49 @@ export const Profile = (props: Props) => {
       <CommonHeader title={'내 계정 정보'} />
       <ScrollView
         contentContainerStyle={[
-          styles.scrollContainer,
+          styles.scrollContainerAll,
           { justifyContent: 'space-between' },
         ]}
       >
-        <View>
-          <SpaceView mb={24}>
+        <View style={commonStyle.paddingHorizontal20}>
+          <SpaceView mb={40}>
+            <CommonInput
+              label={'계정'}
+              value={emailId}
+              disabled={true}
+            />
+          </SpaceView>
+
+          <SpaceView mb={40}>
+
+            <View style={{width: (width) / 1.4}}>
+              <CommonInput
+                label={'전화번호'}
+                placeholder=""
+                value={phoneNumber}
+                disabled={true} />
+            </View>
+
+            <View style={[_styles.modfyHpBtn]}>
+              <CommonBtn 
+                value={'변경'} 
+                type={'white'} 
+                height={40} 
+                width={70} 
+                fontSize={14}
+                borderRadius={5}
+                onPress={() => {
+                  navigation.navigate({
+                    name : 'NiceAuth',
+                    params : {
+                      type : 'MODFY'
+                    }
+                  });
+                }} />
+            </View>
+          </SpaceView>
+
+          <SpaceView mb={40}>
             <CommonInput
               label={'닉네임'}
               placeholder=""
@@ -213,7 +252,8 @@ export const Profile = (props: Props) => {
               rightPen={true}
             />
           </SpaceView>
-          <SpaceView mb={24}>
+
+          <SpaceView mb={40}>
             <CommonInput
               label={'이름'}
               placeholder=""
@@ -252,38 +292,44 @@ export const Profile = (props: Props) => {
 					<CommonInput label={'계정 ID'} placeholder="heighten@kakao.com" rightPen={true} />
 				</SpaceView> */}
 
-          <SpaceView mb={10}>
-            <CommonInput
-              label={'전화번호'}
-              placeholder=""
-              value={phoneNumber}
-              disabled={true}
-            />
-            <View style={[_styles.modfyHpBtn]}>
-              <CommonBtn value={'변경'} type={'primary'} height={35} width={70} fontSize={13}
-                          onPress={() => {
-                            navigation.navigate({
-                              name : 'NiceAuth',
-                              params : {
-                                type : 'MODFY'
-                              }
-                            });
-                          }} />
-            </View>
-          </SpaceView>
+        </View>
 
-          <SpaceView>
-            <CommonBtn value={'로그아웃'} type={'primary'} onPress={logout} />
-            <View style={{ height: 6 }} />
-            <CommonBtn value={'비밀번호 변경'} type={'primary'} onPress={btnChangePassword} />
-            <View style={{ height: 6 }} />
-            <CommonBtn value={'탈퇴'} type={'purple'} onPress={btnDeleteMyAccount} />
-          </SpaceView>
-        </View>        
+        <SpaceView viewStyle={commonStyle.paddingHorizontal20} mb={100} mt={20}>
+          <View style={{marginBottom: 10}}>
+            <CommonBtn 
+              value={'비밀번호 변경'} 
+              type={'blackW'}
+              borderRadius={12}
+              onPress={btnChangePassword} />
+          </View>
 
-        <SpaceView mb={16}>
-          <CommonBtn value={'저장'} type={'primary'} onPress={btnSave} />
+          <CommonBtn 
+            value={'탈퇴하기'} 
+            type={'blackW'}
+            borderRadius={12}
+            onPress={btnDeleteMyAccount} />
         </SpaceView>
+
+        <SpaceView viewStyle={layoutStyle.rowBetween}>
+          <View >
+            <CommonBtn
+              value={'로그아웃'} 
+              type={'black'} 
+              width={width - 190}
+              borderRadius={1}
+              onPress={logout} />
+          </View>
+
+          <View >
+            <CommonBtn 
+              value={'저장'} 
+              type={'primary'}
+              width={width - 200}
+              borderRadius={1}
+              onPress={btnSave} />
+          </View>
+        </SpaceView>
+
       </ScrollView>
 
       {/* ###############################################
