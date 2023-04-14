@@ -582,13 +582,13 @@ export const Matching = (props: Props) => {
                 >
                   <SpaceView mb={4} viewStyle={_styles.colCenter}>
                     <CommonText>
-                      {data.memberBase?.social_grade > 9 && '더 이상 어떤 분을 소개시켜 드려야할 지 자신이 없어요.'}
-                      {data.memberBase?.social_grade > 8 && data.memberBase?.social_grade <= 9 && '꼭! 이분에게 관심을 표현하시길 바래요..!'}
-                      {data.memberBase?.social_grade > 7 && data.memberBase?.social_grade <= 8 && '매칭되면 후회하지 않을 듯한 느낌이 들어요.'}
-                      {data.memberBase?.social_grade > 6 && data.memberBase?.social_grade <= 7 && '좋은 분이실지도 몰라서 소개시켜드려요.'}
-                      {data.memberBase?.social_grade > 5 && data.memberBase?.social_grade <= 6 && '사람의 코드는 예상치 못 하게 맞는 법이잖아요? 조심스럽게 소개시켜드려요.'}
-                      {data.memberBase?.social_grade > 4 && data.memberBase?.social_grade <= 5 && '신중한 관심 표현을 권장드려요.'}
-                      {data.memberBase?.social_grade <= 4 && '이 회원분에게 소셜 평점을 높이라고 당부에 당부를 드리는 중입니다.'}
+                      {data.memberBase?.social_grade > 9 && '천상계와 신계 그 어딘가의 존재'}
+                      {data.memberBase?.social_grade > 8 && data.memberBase?.social_grade <= 9 && '미세먼지없이 맑은 하늘 위에 숨쉬는 존재'}
+                      {data.memberBase?.social_grade > 7 && data.memberBase?.social_grade <= 8 && '쾌청한 하늘 아래 맑은 바닷물과 어울리는 분'}
+                      {data.memberBase?.social_grade > 6 && data.memberBase?.social_grade <= 7 && '따사로운 햇살이 비치는 꽃길을 걷는 분'}
+                      {data.memberBase?.social_grade > 5 && data.memberBase?.social_grade <= 6 && '어두운 골목과 화려한 조명의 조화 속에 숨은 사람'}
+                      {data.memberBase?.social_grade > 4 && data.memberBase?.social_grade <= 5 && '심해로 통하는 어두운 바다에 몸을 담근 자'}
+                      {data.memberBase?.social_grade <= 4 && '깊이를 알수없는 심해를 탐험하는 자'}
                     </CommonText>
                   </SpaceView>
                   
@@ -782,7 +782,7 @@ export const Matching = (props: Props) => {
 
         <View style={modalStyle.modalBody}>
           <SpaceView mb={16}>
-            <CommonText textStyle={_styles.reportText}>신고사유를 알려주시면 더 좋은 리미티드를 만드는데 도움이 됩니다.</CommonText>
+            <CommonText textStyle={_styles.reportText}>신고사유를 알려주시면 더 좋은{'\n'}리미티드를 만드는데 도움이 됩니다.</CommonText>
           </SpaceView>
 
           <SpaceView mb={24}>

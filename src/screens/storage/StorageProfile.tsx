@@ -618,7 +618,7 @@ export const StorageProfile = (props: Props) => {
                       color={ColorType.gray8888}
                       textStyle={styles_m.textCenter}
                     >
-                      꼭! 이분에게 관심을 표현하시길 바래요..!
+                      미세먼지없이 맑은 하늘 위에 숨쉬는 존재
                     </CommonText>
                   </>
                 ) : (
@@ -632,7 +632,7 @@ export const StorageProfile = (props: Props) => {
                       color={ColorType.gray8888}
                       textStyle={styles_m.textCenter}
                     >
-                      매칭되면 후회하지 않을 듯한 느낌이 들어요.
+                      쾌청한 하늘 아래 맑은 바닷물과 어울리는 분
                     </CommonText>
                   </>
                 ) : (
@@ -646,7 +646,7 @@ export const StorageProfile = (props: Props) => {
                       color={ColorType.gray8888}
                       textStyle={styles_m.textCenter}
                     >
-                      좋은 분이실지도 몰라서 소개시켜드려요.
+                      따사로운 햇살이 비치는 꽃길을 걷는 분
                     </CommonText>
                   </>
                 ) : (
@@ -660,8 +660,7 @@ export const StorageProfile = (props: Props) => {
                       color={ColorType.gray8888}
                       textStyle={styles_m.textCenter}
                     >
-                      사람의 코드는 예상치 못 하게 맞는 법이잖아요?{'\n'}
-                      조심스럽게 소개시켜드려요.
+                      어두운 골목과 화려한 조명의 조화 속에 숨은 사람
                     </CommonText>
                   </>
                 ) : (
@@ -675,7 +674,7 @@ export const StorageProfile = (props: Props) => {
                       color={ColorType.gray8888}
                       textStyle={styles_m.textCenter}
                     >
-                      신중한 관심 표현을 권장드려요.
+                      심해로 통하는 어두운 바다에 몸을 담근 자
                     </CommonText>
                   </>
                 ) : (
@@ -688,8 +687,7 @@ export const StorageProfile = (props: Props) => {
                       color={ColorType.gray8888}
                       textStyle={styles_m.textCenter}
                     >
-                      이 회원분에게 소셜 평점을 높이라고 당부에 당부를 드리는
-                      중입니다.
+                      깊이를 알수없는 심해를 탐험하는 자
                     </CommonText>
                   </>
                 ) : (
