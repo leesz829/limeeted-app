@@ -119,14 +119,13 @@ export default function Matching(props: Props) {
   const getDailyMatchInfo = async () => {
     try {
       const { success, data } = await get_daily_matched_info();
-      console.log('item_list :::: ', data.item_list);
+      console.log('data :::: ', data);
       if (success) {
         if (data.result_code == '0000') {
           setData(data);
           setIsLoad(true);
         } else {
-          show({ content: '시스템 오류입니다.\n관리자에게 문의해 주세요!' });
-          return false;
+          setIsEmpty(true);
         }
       }
     } catch (error) {
@@ -267,7 +266,7 @@ export default function Matching(props: Props) {
   const checkUserReport = async () => {
 
     const body = {
-      report_member_seq: data.memberBase.member_seq
+      report_member_seq: data.match_member_info.member_seq
     };
 
     try {
@@ -291,7 +290,7 @@ export default function Matching(props: Props) {
 
   const reportCheckUserConfirm = () => {
     const body = {
-      report_member_seq: data.memberBase.member_seq
+      report_member_seq: data.match_member_info.member_seq
     };
     report_check_user_confirm(body);
   }
