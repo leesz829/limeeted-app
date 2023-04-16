@@ -264,7 +264,7 @@ const categories = [
     value: 'PASS',
   },
   {
-    label: '구독',
+    label: '부스팅',
     value: 'SUBSCRIPTION',
   },
 ];

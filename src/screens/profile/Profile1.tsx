@@ -1,14 +1,16 @@
 import { Slider } from '@miblanchard/react-native-slider';
 import { RouteProp, useIsFocused, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { StackParamList, ScreenNavigationProp } from '@types';
+import { StackParamList, ScreenNavigationProp, ColorType } from '@types';
 import { get_member_face_rank, update_profile } from 'api/models';
 import { Color } from 'assets/styles/Color';
 import { CommonBtn } from 'component/CommonBtn';
 import CommonHeader from 'component/CommonHeader';
+import { CommonText } from 'component/CommonText';
 import Interview from 'component/Interview';
 import ProfileAuth from 'component/ProfileAuth';
 import { usePopup } from 'Context';
+import { commonStyle, layoutStyle, styles, modalStyle } from 'assets/styles/Styles';
 import { useProfileImg } from 'hooks/useProfileImg';
 import { useSecondAth } from 'hooks/useSecondAth';
 import React, { useEffect, useMemo, useState, useRef  } from 'react';
@@ -485,6 +487,11 @@ export const Profile1 = (props: Props) => {
                   key={imgData.orgImgUrl01.url}
                   source={imgData.orgImgUrl01.url}
                 />
+                {imgData.orgImgUrl01url != '' && imgData.orgImgUrl01.status == 'PROGRESS' && (
+                  <View style={styles.disabled}>
+                    <CommonText fontWeight={'700'} type={'h5'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mt10, commonStyle.mr10]}>심사중</CommonText>
+                  </View>
+                )}
               </TouchableOpacity>
             ) : (
               <ImagePicker
@@ -508,6 +515,11 @@ export const Profile1 = (props: Props) => {
                   key={imgData.orgImgUrl02.url}
                   source={imgData.orgImgUrl02.url}
                 />
+                {imgData.orgImgUrl02url != '' && imgData.orgImgUrl02.status == 'PROGRESS' && (
+                  <View style={styles.disabled}>
+                    <CommonText fontWeight={'700'} type={'h5'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mt10, commonStyle.mr10]}>심사중</CommonText>
+                  </View>
+                )}
               </TouchableOpacity>
             ) : (
               <ImagePicker
@@ -531,6 +543,11 @@ export const Profile1 = (props: Props) => {
                   key={imgData.orgImgUrl03.url}
                   source={imgData.orgImgUrl03.url}
                 />
+                {imgData.orgImgUrl03url != '' && imgData.orgImgUrl03.status == 'PROGRESS' && (
+                  <View style={styles.disabled}>
+                    <CommonText fontWeight={'700'} type={'h5'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mt10, commonStyle.mr10]}>심사중</CommonText>
+                  </View>
+                )}
               </TouchableOpacity>
             ) : (
               <ImagePicker
@@ -554,6 +571,12 @@ export const Profile1 = (props: Props) => {
                   key={imgData.orgImgUrl04.url}
                   source={imgData.orgImgUrl04.url}
                 />
+
+                {imgData.orgImgUrl04url != '' && imgData.orgImgUrl04.status == 'PROGRESS' && (
+                  <View style={styles.disabled}>
+                    <CommonText fontWeight={'700'} type={'h5'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mt10, commonStyle.mr10]}>심사중</CommonText>
+                  </View>
+                )}
               </TouchableOpacity>
             ) : (
               <ImagePicker
@@ -577,6 +600,12 @@ export const Profile1 = (props: Props) => {
                   key={imgData.orgImgUrl05.url}
                   source={imgData.orgImgUrl05.url}
                 />
+
+                {imgData.orgImgUrl05url != '' && imgData.orgImgUrl05.status == 'PROGRESS' && (
+                  <View style={styles.disabled}>
+                    <CommonText fontWeight={'700'} type={'h5'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mt10, commonStyle.mr10]}>심사중</CommonText>
+                  </View>
+                )}
               </TouchableOpacity>
             ) : (
               <ImagePicker
@@ -600,13 +629,26 @@ export const Profile1 = (props: Props) => {
                   key={imgData.orgImgUrl06.url}
                   source={imgData.orgImgUrl06.url}
                 />
+                {imgData.orgImgUrl06url != '' && imgData.orgImgUrl06.status == 'PROGRESS' && (
+                  <View style={styles.disabled}>
+                    <CommonText fontWeight={'700'} type={'h5'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mt10, commonStyle.mr10]}>심사중</CommonText>
+                  </View>
+                )}
               </TouchableOpacity>
             ) : (
-              <ImagePicker
-                isAuth={false}
-                callbackFn={fileCallBack6}
-                uriParam={''}
-              />
+              <>
+                <ImagePicker
+                  isAuth={false}
+                  callbackFn={fileCallBack6}
+                  uriParam={''}/>
+
+                {/* {imageDataApplyChk.img06Yn == 'Y' && (
+                  <View style={styles.disabled}>
+                    <CommonText fontWeight={'700'} type={'h5'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mt10, commonStyle.mr10]}>심사중</CommonText>
+                  </View>
+                )} */}
+                
+              </>
             )}
           </View>
         </View>
@@ -616,7 +658,7 @@ export const Profile1 = (props: Props) => {
           {/* ####################################################################################
 					####################### 프로필 인증 영역
 					#################################################################################### */}
-          <ProfileAuth level={memberBase?.auth_acct_cnt} data={mbrSecondAuthList} />
+          <ProfileAuth level={memberBase?.auth_acct_cnt} data={mbrSecondAuthList} isButton={true} />
 
           {/* ####################################################################################
 					####################### 인상 투표 결과 영역
@@ -630,7 +672,10 @@ export const Profile1 = (props: Props) => {
                 {profileFaceRankList.map((item : any, index) => (
                     <View style={_styles.itemRow}>
                     <View style={_styles.subRow}>
-                      <Image source={ICON.fashion} style={_styles.icon} />
+                      {/* <Image source={ICON.fashion} style={_styles.icon} /> */}
+                      <Text style={{backgroundColor: '#4472C4', color: Color.white, paddingHorizontal: 5, fontSize: 12, borderRadius: 8, paddingVertical: 3}}>
+                        {index+1}위
+                      </Text>
                       <Text style={_styles.contentsText}>{item.face_code_name}</Text>
                     </View>
                     <View style={_styles.fashionPercent}>
@@ -670,6 +715,43 @@ export const Profile1 = (props: Props) => {
         </View>
         <View style={{ height: 10 }} />
       </ScrollView>
+
+      {/* ###############################################
+							사진 삭제 팝업
+			############################################### */}
+      <Modalize
+        ref={imgDel_modalizeRef}
+        adjustToContentHeight={true}
+        handleStyle={modalStyle.modalHandleStyle}
+        modalStyle={modalStyle.modalContainer}
+      >
+        <View style={modalStyle.modalHeaderContainer}>
+          <CommonText fontWeight={'700'} type={'h3'}>
+            프로필 사진 삭제
+          </CommonText>
+          <TouchableOpacity onPress={imgDel_onClose}>
+            <Image source={ICON.xBtn2} style={styles.iconSize20} />
+          </TouchableOpacity>
+        </View>
+
+        <View
+          style={[modalStyle.modalBody, layoutStyle.flex1, layoutStyle.mb20]}
+        >
+          <View>
+            <CommonBtn
+              value={'사진 삭제'}
+              type={'primary'}
+              onPress={imgDelProc}
+            />
+            <CommonBtn
+              value={'취소'}
+              type={'primary'}
+              onPress={imgDel_onClose}
+            />
+          </View>
+        </View>
+      </Modalize>
+
     </>
   );
 };

@@ -4,23 +4,36 @@ import { StackParamList, ScreenNavigationProp } from '@types';
 import { Dimensions, Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { SimpleGrid } from 'react-native-super-grid';
 import { ICON } from 'utils/imageUtils';
+import { CommonBtn } from './CommonBtn';
+import { CommonText } from 'component/CommonText';
+
+
 const { width } = Dimensions.get('window');
 
-export default function ProfileAuth({ level, data }) {
+export default function ProfileAuth({ level, data, isButton }) {
 
-  console.log('data ::::: ' ,data);
+  console.log('isButton ::::: ' , isButton);
 
   const navigation = useNavigation<ScreenNavigationProp>();
 
   return (
     <>
       <View style={styles.profileTitleContainer}>
-        <TouchableOpacity onPress={() => { navigation.navigate('SecondAuth'); }}>
-          <Text style={styles.title}>프로필 인증</Text>
-        </TouchableOpacity>
-        <View style={styles.levelBadge}>
+        <Text style={styles.title}>프로필 인증</Text>
+        <View style={[styles.levelBadge, {marginRight: 90, marginTop: 1}]}>
           <Text style={[styles.levelText, { color: 'white' }]}>LV.{level}</Text>
         </View>
+        
+        {typeof isButton != 'undefined' && isButton && 
+          <TouchableOpacity onPress={() => { navigation.navigate('SecondAuth'); }} style={{marginTop: 1}}>
+            <CommonText 
+              type={'h6'} 
+              fontWeight={'200'}
+              textStyle={{borderWidth: 1, borderRadius: 5, borderColor: '#C7C7C7', color: '#C7C7C7', paddingHorizontal: 7, paddingVertical: 1}}>
+              프로필 인증 변경
+            </CommonText>
+          </TouchableOpacity>
+        }
       </View>
       <SimpleGrid
         style={{ marginTop: 10 }}
@@ -84,6 +97,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
   title: {
     fontFamily: 'AppleSDGothicNeoEB00',
@@ -208,27 +222,28 @@ const dummy = [
 function convertTypeToImage(auth: auth) {
   switch (auth.common_code) {
     case 'JOB':
-      if (auth.auth_status === 'ACCEPT') return ICON.job_on;
-      else return ICON.job_off;
+      if (auth.auth_status === 'ACCEPT') return ICON.jobNew;
+      else return ICON.jobNew;
 
     case 'EDU':
-      if (auth.auth_status === 'ACCEPT') return ICON.degree_on;
-      else return ICON.degree_off;
+      if (auth.auth_status === 'ACCEPT') return ICON.degreeNew;
+      else return ICON.degreeNew;
 
     case 'INCOME':
-      if (auth.auth_status === 'ACCEPT') return ICON.income_on;
-      else return ICON.income_off;
+      if (auth.auth_status === 'ACCEPT') return ICON.incomeNew;
+      else return ICON.incomeNew;
+      
     case 'ASSET':
-      if (auth.auth_status === 'ACCEPT') return ICON.asset_on;
-      else return ICON.asset_off;
+      if (auth.auth_status === 'ACCEPT') return ICON.assetNew;
+      else return ICON.assetNew;
 
     case 'SNS':
-      if (auth.auth_status === 'ACCEPT') return ICON.sns_on;
-      else return ICON.sns_off;
+      if (auth.auth_status === 'ACCEPT') return ICON.snsNew;
+      else return ICON.snsNew;
 
     case 'VEHICLE':
-      if (auth.auth_status === 'ACCEPT') return ICON.vehicle_on;
-      else return ICON.vehicle_off;
+      if (auth.auth_status === 'ACCEPT') return ICON.vehicleNew;
+      else return ICON.vehicleNew;
     default:
       break;
   }

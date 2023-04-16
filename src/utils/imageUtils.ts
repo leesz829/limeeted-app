@@ -107,6 +107,7 @@ export const ICON = {
   smile: require('assets/icon/impression/smile.png'),
   icon_smile: require('assets/icon/icon_smail.png'),
   confirmation: require('assets/icon/confirmation.png'),
+  match_succ_icon: require('assets/icon/match_succ_icon.png'),
 };
 
 export const GIF_IMG = {

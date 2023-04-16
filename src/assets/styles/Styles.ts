@@ -324,6 +324,16 @@ export const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: 'rgba(0,0,0,0.7)',
     borderRadius: 16,
+
+    /* position: 'absolute',
+    width: (width - 80) / 3,
+    height: (width - 50) / 3,
+    margin: 10,
+    borderRadius: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'flex-end', */
   },
   interviewContainer: {
     paddingVertical: 20,
