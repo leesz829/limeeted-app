@@ -3,21 +3,23 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>369959009315-44q2i0a8ov52bdbmhb38j906ho577i94.apps.googleusercontent.com</string>
+	<string>535563482959-fngnvuv1o4ab1b5tjfnk6g7onnaem3bg.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.369959009315-44q2i0a8ov52bdbmhb38j906ho577i94</string>
+	<string>com.googleusercontent.apps.535563482959-fngnvuv1o4ab1b5tjfnk6g7onnaem3bg</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>535563482959-05umt613oevcdc9akk5oro2heja2r7qm.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>AIzaSyAmRAqCIBwVYn47ke3Drfc6gQCz-CUDcks</string>
+	<string>AIzaSyDzI4h1QGq1o2lbRU_gNhghJw8kymaKxhk</string>
 	<key>GCM_SENDER_ID</key>
-	<string>369959009315</string>
+	<string>535563482959</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.limeeted</string>
+	<string>com.appsquad.limeeted</string>
 	<key>PROJECT_ID</key>
-	<string>limeeted-4e4a6</string>
+	<string>limeeted-ea344</string>
 	<key>STORAGE_BUCKET</key>
-	<string>limeeted-4e4a6.appspot.com</string>
+	<string>limeeted-ea344.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:369959009315:ios:802e7fb636fab23aa14596</string>
+	<string>1:535563482959:ios:00cf6b28970ee68c07b73a</string>
 </dict>
 </plist>
