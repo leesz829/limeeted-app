@@ -205,7 +205,7 @@ const categories = [
     value: 'pass',
   },
   {
-    label: '구독상품',
+    label: '부스팅',
     value: 'subscription',
   },
   {

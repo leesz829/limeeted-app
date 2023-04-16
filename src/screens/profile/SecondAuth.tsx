@@ -576,7 +576,7 @@ const AuthItemRender = (dataObj) => {
         ) : null}
 
         {data.auth_status == 'PROGRESS' || typeof data.auth_status == 'undefined' ? (
-          <View style={[layoutStyle.row, _styles.statusArea]}>
+          <View style={[layoutStyle.row, _styles.statusArea2]}>
             <CommonText
               type={'h7'} 
               fontWeight={'500'} 
@@ -627,6 +627,16 @@ const _styles = StyleSheet.create({
   statusArea: {
     position: 'absolute',
     top: 10,
+    right: 10,
+    backgroundColor: '#697AE6',
+    borderWidth: 1,
+    borderColor: '#697AE6',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+  },
+  statusArea2: {
+    position: 'absolute',
+    bottom: 65,
     right: 10,
     backgroundColor: '#697AE6',
     borderWidth: 1,

@@ -18,6 +18,7 @@ export const Color = {
   grayC3C3C3: '#C3C3C3',
   paleBlue: '#eff3fe',
   red: '#ff0000',
+  red2: '#FE0456',
   danger: '#fe0456',
   white: '#fff',
   blue01: '#7986EE',

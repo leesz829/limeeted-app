@@ -192,7 +192,18 @@ export const Storage = (props: Props) => {
         type: type,
         profile_open_yn: profile_open_yn,
       });
-      setProfileOpenPopup(true);
+
+      show({
+        title: '프로필 열람',
+        content: '패스를 소모하여 프로필을 열람하시겠습니까?\n패스 x5',
+        cancelCallback: function() {
+
+        },
+        confirmCallback: function() {
+          goProfileOpen();
+        },
+      });
+
     } else {
       /* navigation.reset({routes: [{name: "StorageProfile", params: {
             matchSeq: match_seq,

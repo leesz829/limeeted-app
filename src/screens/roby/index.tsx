@@ -6,7 +6,7 @@ import {
 } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { BottomParamList, ColorType, ScreenNavigationProp } from '@types';
-import { request_reexamination } from 'api/models';
+import { request_reexamination, peek_member, get_board_list, update_setting } from 'api/models';
 import { Color } from 'assets/styles/Color';
 import { layoutStyle, modalStyle, styles } from 'assets/styles/Styles';
 import axios from 'axios';
@@ -39,7 +39,6 @@ import { Privacy } from 'screens/commonpopup/privacy';
 import { Terms } from 'screens/commonpopup/terms';
 import { findSourcePath, ICON, IMAGE } from 'utils/imageUtils';
 import * as properties from 'utils/properties';
-import { peek_member, get_board_list } from 'api/models';
 import { usePopup } from 'Context';
 import LinearGradient from 'react-native-linear-gradient';
 import { Rating, AirbnbRating } from 'react-native-ratings';
@@ -371,16 +370,26 @@ export const Roby = (props: Props) => {
             </TouchableOpacity> */}
 
             <View style={_styles.cardContainer}>
-              <RatingCard
-                title={'프로필 심사중'}
-                desc={`내 프로필을 평가한\n이성들의 평균 점수 입니다`}
-                value={memberBase?.profile_score}
-                isPennding={reassessment}
-              />
+
+              {memberBase?.reex_yn == 'Y' ? (
+                <RatingCard
+                  title={'프로필 심사중'}
+                  desc={`내 프로필을 평가한\n이성들의 평균 점수 입니다`}
+                  value={memberBase?.profile_score}
+                  isPennding={reassessment}
+                />
+              ) : (
+                <RatingCard
+                  title={'프로필 평점'}
+                  desc={`내 프로필을 평가한\n이성들의 평균 점수 입니다`}
+                  value={memberBase?.profile_score}
+                  isPennding={reassessment}
+                />
+              )}
               <RatingCard
                 title={'기여평점'}
                 desc={`내 프로필을 평가한\n이성들의 평균 점수 입니다`}
-                value={memberBase?.social_grade}
+                value={memberBase?.social_grade.toFixed(1)}
                 isPennding={reassessment}
               />
             </View>
@@ -417,7 +426,7 @@ export const Roby = (props: Props) => {
               </View>
             </TouchableOpacity>
 
-            <ScrollView horizontal={true}>
+            {/* <ScrollView horizontal={true}>
               {resLikeList?.map((item, index) => (
                 <SpaceView
                   key={`likes-${index}`}
@@ -429,7 +438,7 @@ export const Roby = (props: Props) => {
                   />
                 </SpaceView>
               ))}
-            </ScrollView>
+            </ScrollView> */}
 
             <TouchableOpacity
               style={_styles.manageProfile}
@@ -478,9 +487,7 @@ export const Roby = (props: Props) => {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={_styles.manageProfile}
-              onPress={onPressPreferneces}
-            >
+              style={_styles.manageProfile}>
               <ToolTip
                 title={'내 프로필 공개'}
                 desc={'내 프로필을 이성들에게 공개할지 설정하는 기능입니다.'}
@@ -493,10 +500,8 @@ export const Roby = (props: Props) => {
               />
             </TouchableOpacity>
 
-            <TouchableOpacity
-              style={_styles.manageProfile}
-              onPress={onPressPreferneces}
-            >
+            {/* <TouchableOpacity
+              style={_styles.manageProfile}>
               <ToolTip
                 title={'아는 사람 소개'}
                 desc={
@@ -509,7 +514,7 @@ export const Roby = (props: Props) => {
                 }}
                 isOn={memberBase?.friend_match_yn == 'Y' ? true : false}
               />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </SpaceView>
 
           <SpaceView mb={40}>

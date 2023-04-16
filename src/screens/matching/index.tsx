@@ -142,7 +142,7 @@ export default function Matching(props: Props) {
     if (activeType == 'interest') {
       show({
 				title: '관심 보내기',
-				content: '패스를 소모하여 관심을 보내시겠습니까?\n패스 x5' ,
+				content: '패스를 소모하여 관심을 보내시겠습니까?\n패스 x15' ,
         cancelCallback: function() {
 
         },
@@ -153,7 +153,7 @@ export default function Matching(props: Props) {
     } else if (activeType == 'sincere') {
       show({
 				title: '찐심 보내기',
-				content: '보유 찐심\nx' + data?.safe_royal_pass ,
+				content: '패스를 소모하여 찐심을 보내시겠습니까?\n로얄패스 x2' ,
         cancelCallback: function() {
 
         },
@@ -298,244 +298,244 @@ export default function Matching(props: Props) {
 
   return (
     data.profile_img_list.length > 0 && isLoad ? (
+      <>
+        <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
+          <TopNavigation currentPath={'LIMEETED'} />
 
-      <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
-        <TopNavigation currentPath={'LIMEETED'} />
+          {/* ####################################################################################
+          ####################### 상단 영역
+          #################################################################################### */}
+          <View>
+            <FlatList
+              data={data?.profile_img_list}
+              renderItem={RenderItem}
+              horizontal
+              pagingEnabled
+            />
 
-        {/* ####################################################################################
-        ####################### 상단 영역
-        #################################################################################### */}
-        <View>
-          <FlatList
-            data={data?.profile_img_list}
-            renderItem={RenderItem}
-            horizontal
-            pagingEnabled
-          />
+            <View style={styles.absoluteView}>
+              <View style={styles.badgeContainer}>
 
-          <View style={styles.absoluteView}>
-            <View style={styles.badgeContainer}>
-
-              {data.second_auth_list.length > 0 && 
-                <View style={styles.authBadge}>
-                  <Text style={styles.whiteText}>인증 완료</Text>
-                </View>
-              }
-
-              {/* 고평점 이성 소개받기 구독 아이템 표시 */}
-              {/* <View style={styles.redBadge}>
-                <Image source={ICON.whiteCrown} style={styles.crownIcon} />
-                <Text style={styles.whiteText}>{data.match_member_info?.profile_score}</Text>
-              </View> */}
-            </View>
-            <View style={styles.nameContainer}>
-              <Text style={styles.nameText}>{data.match_member_info?.nickname}, {data.match_member_info?.age}</Text>
-              <Image source={ICON.checkICon} style={styles.checkIcon} />
-            </View>
-            {/* <View style={styles.distanceContainer}>
-              <Image source={ICON.marker} style={styles.markerIcon} />
-              <Text style={styles.regionText}>경기도 수원시 12.9Km</Text>
-            </View> */}
-            <View style={styles.buttonsContainer}>
-              <TouchableOpacity onPress={() => { popupActive('pass'); }}>
-                <Image source={ICON.closeCircle} style={styles.smallButton} />
-              </TouchableOpacity>
-
-              <TouchableOpacity onPress={() => { popupActive('sincere'); }}>
-                <Image source={ICON.ticketCircle} style={styles.largeButton} />
-              </TouchableOpacity >
-
-              <TouchableOpacity onPress={() => { popupActive('interest'); }} style={styles.freePassContainer}>
-                <Image source={ICON.heartCircle} style={styles.largeButton} />
-
-                {data.item_list.length > 0 && (
-                  <View style={styles.freePassBage}>
-                    <Text style={styles.freePassText}>자유이용권 ON</Text>
+                {data.second_auth_list.length > 0 && 
+                  <View style={styles.authBadge}>
+                    <Text style={styles.whiteText}>인증 완료</Text>
                   </View>
-                )}
-              </TouchableOpacity>
+                }
 
-              {/* 마킹 버튼 */}
-              {/* <TouchableOpacity>
-                <Image source={ICON.starCircle} style={styles.smallButton} />
-              </TouchableOpacity> */}
-            </View>
-          </View>
-
-          {/* <AbsoluteView member={data.match_member_info}  /> */}
-        </View>
-
-        <View style={styles.padding}>
-          {/* 부스트 */}
-          {data.match_member_info.boost_yn === 'Y' && (
-            <View style={styles.boostPannel}>
-              <View style={styles.boostBadge}>
-                <Text style={styles.boostBadgeText}>BOOST</Text>
+                {/* 고평점 이성 소개받기 구독 아이템 표시 */}
+                {/* <View style={styles.redBadge}>
+                  <Image source={ICON.whiteCrown} style={styles.crownIcon} />
+                  <Text style={styles.whiteText}>{data.match_member_info?.profile_score}</Text>
+                </View> */}
               </View>
-              <Text style={styles.boostTitle}>부스터 회원을 만났습니다.</Text>
-              <Text style={styles.boostDescription}>
-                관심이나 찐심을 보내면 소셜 평점 보너스가 부여됩니다.
-              </Text>
-            </View>
-          )}
-          
-          {/* 프로필 인증 */}
-          <ProfileAuth level={data.match_member_info.auth_acct_cnt} data={data.second_auth_list} />
+              <View style={styles.nameContainer}>
+                <Text style={styles.nameText}>{data.match_member_info?.nickname}, {data.match_member_info?.age}</Text>
+                <Image source={ICON.checkICon} style={styles.checkIcon} />
+              </View>
+              {/* <View style={styles.distanceContainer}>
+                <Image source={ICON.marker} style={styles.markerIcon} />
+                <Text style={styles.regionText}>경기도 수원시 12.9Km</Text>
+              </View> */}
+              <View style={styles.buttonsContainer}>
+                <TouchableOpacity onPress={() => { popupActive('pass'); }}>
+                  <Image source={ICON.closeCircle} style={styles.smallButton} />
+                </TouchableOpacity>
 
-          {data.interest_list.length > 0 && (
-            <>
-              <Text style={styles.title}>방배동아이유님의 관심사</Text>
-              <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 20 }}>
-                {data.interest_list.map((item, index) => {
-                  const isOn = true;
-                  return (
-                    <View style={styles.interestItem(isOn)}>
-                      <Text style={styles.interestText(isOn)}>{item.code_name}</Text>
+                <TouchableOpacity onPress={() => { popupActive('sincere'); }}>
+                  <Image source={ICON.ticketCircle} style={styles.largeButton} />
+                </TouchableOpacity >
+
+                <TouchableOpacity onPress={() => { popupActive('interest'); }} style={styles.freePassContainer}>
+                  <Image source={ICON.heartCircle} style={styles.largeButton} />
+
+                  {data.item_list.length > 0 && (
+                    <View style={styles.freePassBage}>
+                      <Text style={styles.freePassText}>자유이용권 ON</Text>
                     </View>
-                  );
-                })}
-              </View>
-            </>
-          )}
+                  )}
+                </TouchableOpacity>
 
-          <Text style={styles.title}>프로필 활동지수</Text>
-          <View style={styles.profileActivePannel}>
-            <Text style={styles.profileEverageText}>프로필 평점</Text>
-            <Text style={styles.profileActiveText1}>
-              리미티드에 퍼진{' '}
-              <Text style={{ fontFamily: 'AppleSDGothicNeoEB00' }}>
-                {data.match_member_info.nickname}
+                {/* 마킹 버튼 */}
+                {/* <TouchableOpacity>
+                  <Image source={ICON.starCircle} style={styles.smallButton} />
+                </TouchableOpacity> */}
+              </View>
+            </View>
+
+            {/* <AbsoluteView member={data.match_member_info}  /> */}
+          </View>
+
+          <View style={styles.padding}>
+            {/* 부스트 */}
+            {data.match_member_info.boost_yn === 'Y' && (
+              <View style={styles.boostPannel}>
+                <View style={styles.boostBadge}>
+                  <Text style={styles.boostBadgeText}>BOOST</Text>
+                </View>
+                <Text style={styles.boostTitle}>부스터 회원을 만났습니다.</Text>
+                <Text style={styles.boostDescription}>
+                  관심이나 찐심을 보내면 소셜 평점 보너스가 부여됩니다.
+                </Text>
+              </View>
+            )}
+            
+            {/* 프로필 인증 */}
+            <ProfileAuth level={data.match_member_info.auth_acct_cnt} data={data.second_auth_list} />
+
+            {data.interest_list.length > 0 && (
+              <>
+                <Text style={styles.title}>{data.match_member_info.nickname}님의 관심사</Text>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 20 }}>
+                  {data.interest_list.map((item, index) => {
+                    const isOn = true;
+                    return (
+                      <View style={styles.interestItem(isOn)}>
+                        <Text style={styles.interestText(isOn)}>{item.code_name}</Text>
+                      </View>
+                    );
+                  })}
+                </View>
+              </>
+            )}
+
+            <Text style={styles.title}>프로필 활동지수</Text>
+            <View style={styles.profileActivePannel}>
+              <Text style={styles.profileEverageText}>프로필 평점</Text>
+              <Text style={styles.profileActiveText1}>
+                리미티드에 퍼진{' '}
+                <Text style={{ fontFamily: 'AppleSDGothicNeoEB00' }}>
+                  {data.match_member_info.nickname}
+                </Text>
+                님의 인상
               </Text>
-              님의 인상
-            </Text>
-            <Text style={styles.profileActiveText2}>{data.match_member_info.face_code_name}</Text>
-            <View style={styles.sliderContainer}>
-              <Text style={styles.sliderText}>프로필 평점 {data.match_member_info.profile_score}</Text>
-              <Slider
-                value={data.match_member_info.profile_score/10}
-                animateTransitions={true}
-                renderThumbComponent={() => null}
-                maximumTrackTintColor={ColorType.purple}
-                minimumTrackTintColor={ColorType.purple}
-                containerStyle={styles.sliderContainerStyle}
-                trackStyle={styles.sliderThumbStyle}
-                trackClickable={false}
-              />
-              <View style={styles.gageContainer}>
-                <Text style={styles.gageText}>0</Text>
-                <Text style={styles.gageText}>5</Text>
-                <Text style={styles.gageText}>10</Text>
+              <Text style={styles.profileActiveText2}>{data.match_member_info.face_code_name}</Text>
+              <View style={styles.sliderContainer}>
+                <Text style={styles.sliderText}>프로필 평점 {data.match_member_info.profile_score}</Text>
+                <Slider
+                  value={data.match_member_info.profile_score/10}
+                  animateTransitions={true}
+                  renderThumbComponent={() => null}
+                  maximumTrackTintColor={ColorType.purple}
+                  minimumTrackTintColor={ColorType.purple}
+                  containerStyle={styles.sliderContainerStyle}
+                  trackStyle={styles.sliderThumbStyle}
+                  trackClickable={false}
+                />
+                <View style={styles.gageContainer}>
+                  <Text style={styles.gageText}>0</Text>
+                  <Text style={styles.gageText}>5</Text>
+                  <Text style={styles.gageText}>10</Text>
+                </View>
               </View>
             </View>
-          </View>
 
-          <View style={styles.socialContainer}>
-            <Text style={styles.socialEverageText}>내 소셜 평점</Text>
-            <Text style={[styles.socialText1, { fontFamily: 'AppleSDGothicNeoEB00' }]}>
-              {data.match_member_info?.social_grade > 9 && '천상계와 신계 그 어딘가의 존재'}
-              {data.match_member_info?.social_grade > 8 && data.match_member_info?.social_grade <= 9 && '미세먼지없이 맑은 하늘 위에 숨쉬는 존재'}
-              {data.match_member_info?.social_grade > 7 && data.match_member_info?.social_grade <= 8 && '쾌청한 하늘 아래 맑은 바닷물과 어울리는 분'}
-              {data.match_member_info?.social_grade > 6 && data.match_member_info?.social_grade <= 7 && '따사로운 햇살이 비치는 꽃길을 걷는 분'}
-              {data.match_member_info?.social_grade > 5 && data.match_member_info?.social_grade <= 6 && '어두운 골목과 화려한 조명의 조화 속에 숨은 사람'}
-              {data.match_member_info?.social_grade > 4 && data.match_member_info?.social_grade <= 5 && '심해로 통하는 어두운 바다에 몸을 담근 자'}
-              {data.match_member_info?.social_grade <= 4 && '깊이를 알수없는 심해를 탐험하는 자'}
-            </Text>
-            {/* <Text style={styles.socialText1}>매칭되면</Text>
-            <Text style={styles.socialText1}>
-              <Text style={{ fontFamily: 'AppleSDGothicNeoEB00' }}>
-                후회하지 않을듯한
-              </Text>{' '}
-              느낌이 들어요
-            </Text> */}
-            <View style={styles.sliderContainer}>
-              <Text style={styles.sliderText}>소셜 평점 {data.match_member_info.social_grade}</Text>
-              <Slider
-                value={data.match_member_info.social_grade/10}
-                animateTransitions={true}
-                renderThumbComponent={() => null}
-                maximumTrackTintColor={'#fe0456'}
-                minimumTrackTintColor={'#ff9fbe'}
-                containerStyle={styles.socialSliderContainerStyle}
-                trackStyle={styles.socialSliderThumbStyle}
-                trackClickable={false}
-              />
-              <View style={styles.gageContainer}>
-                <Text style={styles.gageText}>0</Text>
-                <Text style={styles.gageText}>5</Text>
-                <Text style={styles.gageText}>10</Text>
+            <View style={styles.socialContainer}>
+              <Text style={styles.socialEverageText}>내 소셜 평점</Text>
+              <Text style={[styles.socialText1, { fontFamily: 'AppleSDGothicNeoEB00' }]}>
+                {data.match_member_info?.social_grade > 9 && '천상계와 신계 그 어딘가의 존재'}
+                {data.match_member_info?.social_grade > 8 && data.match_member_info?.social_grade <= 9 && '미세먼지없이 맑은 하늘 위에 숨쉬는 존재'}
+                {data.match_member_info?.social_grade > 7 && data.match_member_info?.social_grade <= 8 && '쾌청한 하늘 아래 맑은 바닷물과 어울리는 분'}
+                {data.match_member_info?.social_grade > 6 && data.match_member_info?.social_grade <= 7 && '따사로운 햇살이 비치는 꽃길을 걷는 분'}
+                {data.match_member_info?.social_grade > 5 && data.match_member_info?.social_grade <= 6 && '어두운 골목과 화려한 조명의 조화 속에 숨은 사람'}
+                {data.match_member_info?.social_grade > 4 && data.match_member_info?.social_grade <= 5 && '심해로 통하는 어두운 바다에 몸을 담근 자'}
+                {data.match_member_info?.social_grade <= 4 && '깊이를 알수없는 심해를 탐험하는 자'}
+              </Text>
+              {/* <Text style={styles.socialText1}>매칭되면</Text>
+              <Text style={styles.socialText1}>
+                <Text style={{ fontFamily: 'AppleSDGothicNeoEB00' }}>
+                  후회하지 않을듯한
+                </Text>{' '}
+                느낌이 들어요
+              </Text> */}
+              <View style={styles.sliderContainer}>
+                <Text style={styles.sliderText}>소셜 평점 {data.match_member_info.social_grade.toFixed(1)}</Text>
+                <Slider
+                  value={data.match_member_info.social_grade/10}
+                  animateTransitions={true}
+                  renderThumbComponent={() => null}
+                  maximumTrackTintColor={'#fe0456'}
+                  minimumTrackTintColor={'#ff9fbe'}
+                  containerStyle={styles.socialSliderContainerStyle}
+                  trackStyle={styles.socialSliderThumbStyle}
+                  trackClickable={false}
+                />
+                <View style={styles.gageContainer}>
+                  <Text style={styles.gageText}>0</Text>
+                  <Text style={styles.gageText}>5</Text>
+                  <Text style={styles.gageText}>10</Text>
+                </View>
               </View>
             </View>
-          </View>
 
-          {/* 인터뷰 영역 */}
-          <SpaceView mt={30}>
-            <InterviewRender data={data?.interview_list} />
-          </SpaceView>
-          
-          {/* <View>
-            {data.interview_list?.map((e, index) => (
-              <View style={[style.contentItemContainer, index % 2 !== 0 && style.itemActive]}>
-                {mode === 'delete' ? (
-                  <TouchableOpacity
-                    onPress={() => onSelectDeleteItem(e)}
-                    style={[
-                      style.checkContainer,
-                      deleteList.includes(e) && style.active,
-                    ]} >
-                    <Image
-                      source={deleteList.includes(e) ? ICON.checkOn : ICON.checkOff}
-                      style={style.checkIconStyle}
+            {/* 인터뷰 영역 */}
+            <SpaceView mt={30}>
+              <InterviewRender data={data?.interview_list} />
+            </SpaceView>
+            
+            {/* <View>
+              {data.interview_list?.map((e, index) => (
+                <View style={[style.contentItemContainer, index % 2 !== 0 && style.itemActive]}>
+                  {mode === 'delete' ? (
+                    <TouchableOpacity
+                      onPress={() => onSelectDeleteItem(e)}
+                      style={[
+                        style.checkContainer,
+                        deleteList.includes(e) && style.active,
+                      ]} >
+                      <Image
+                        source={deleteList.includes(e) ? ICON.checkOn : ICON.checkOff}
+                        style={style.checkIconStyle}
+                      />
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity
+                      onPress={() => onPressRegist(e.common_code)}
+                      style={style.penPosition}
+                    >
+                      <Image source={ICON.pen} style={style.penImage} />
+                    </TouchableOpacity>
+                  )}
+                  <View style={style.questionRow}>
+                    <Text style={style.questionText}>Q.</Text>
+                    <Text style={style.questionBoldText}>
+                      {indexToKr[index]}번째 질문 입니다.
+                      <Text style={style.questionNormalText}> {e?.code_name}</Text>
+                    </Text>
+                  </View>
+                  <View style={style.answerRow}>
+                    <Text style={style.answerText}>A.</Text>
+                    <TextInput
+                      defaultValue={e?.answer}
+                      onChangeText={(text) =>
+                        answerChangeHandler(e.member_interview_seq, text)
+                      }
+                      style={[style.answerNormalText]}
+                      multiline={true}
+                      placeholder={'대답을 등록해주세요!'}
+                      placeholderTextColor={'#c6ccd3'}
+                      numberOfLines={3}
+                      maxLength={200}
                     />
-                  </TouchableOpacity>
-                ) : (
-                  <TouchableOpacity
-                    onPress={() => onPressRegist(e.common_code)}
-                    style={style.penPosition}
-                  >
-                    <Image source={ICON.pen} style={style.penImage} />
-                  </TouchableOpacity>
-                )}
-                <View style={style.questionRow}>
-                  <Text style={style.questionText}>Q.</Text>
-                  <Text style={style.questionBoldText}>
-                    {indexToKr[index]}번째 질문 입니다.
-                    <Text style={style.questionNormalText}> {e?.code_name}</Text>
-                  </Text>
+                  </View>
                 </View>
-                <View style={style.answerRow}>
-                  <Text style={style.answerText}>A.</Text>
-                  <TextInput
-                    defaultValue={e?.answer}
-                    onChangeText={(text) =>
-                      answerChangeHandler(e.member_interview_seq, text)
-                    }
-                    style={[style.answerNormalText]}
-                    multiline={true}
-                    placeholder={'대답을 등록해주세요!'}
-                    placeholderTextColor={'#c6ccd3'}
-                    numberOfLines={3}
-                    maxLength={200}
-                  />
-                </View>
+              ))}
+
+            </View> */}
+
+            {/* 신고하기 영역 */}
+            <TouchableOpacity onPress={() => { report_onOpen(); }}>
+              <View style={styles.reportButton}>
+                <Text style={styles.reportTextBtn}>신고하기</Text>
               </View>
-            ))}
+            </TouchableOpacity>
+          </View>
 
-          </View> */}
-
-          {/* 신고하기 영역 */}
-          <TouchableOpacity onPress={() => { report_onOpen(); }}>
-            <View style={styles.reportButton}>
-              <Text style={styles.reportTextBtn}>신고하기</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-
-        <View style={{ height: 50 }} />
-
+          <View style={{ height: 50 }} />
+        </ScrollView>
 
         {/* ###############################################
-                          사용자 신고하기 팝업
-              ############################################### */}
+                    사용자 신고하기 팝업
+        ############################################### */}
         <Modalize
           ref={report_modalizeRef}
           adjustToContentHeight={false}
@@ -585,8 +585,7 @@ export default function Matching(props: Props) {
             </SpaceView>
           </View>
         </Modalize>
-
-      </ScrollView>
+      </>
     ) : (
       <MatchSearch isEmpty={isEmpty} />
     )

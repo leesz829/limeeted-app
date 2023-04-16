@@ -373,7 +373,7 @@ const categories = [
     value: 'PASS',
   },
   {
-    label: '구독상품',
+    label: '부스팅상품',
     value: 'SUBSCRIPTION',
   },
   {

@@ -211,9 +211,9 @@ export const Login01 = () => {
                 resizeMode="center"
               />
             </SpaceView>
-            <SpaceView ml={10}>
+            {/* <SpaceView ml={10}>
               <CommonText type={'h2'} fontWeight={'700'} lineHeight={30}>믿음가는 사람들의 인연</CommonText>
-            </SpaceView>
+            </SpaceView> */}
           </View>
 
           {/* ############################################################### 텍스트 입력 */}

@@ -13,7 +13,7 @@ import SpaceView from './SpaceView';
 import LinearGradient from 'react-native-linear-gradient';
 
 
-type BtnType = 'gray' | 'primary' | 'kakao' | 'purple' | 'white' | 'blue' | 'blue2' | 'g_blue' | 'black' | 'blackW';
+type BtnType = 'gray' | 'gray2' | 'primary' | 'kakao' | 'purple' | 'white' | 'blue' | 'blue2' | 'g_blue' | 'black' | 'blackW' | 'red';
 type Props = {
   onPress?: () => void;
   value: string;
@@ -72,7 +72,7 @@ export const CommonBtn: FC<Props> = (props) => {
         <TouchableOpacity
           activeOpacity={0.3}
           onPress={props.onPress}
-          style={style.btnStyle}
+          style={[style.btnStyle]}
           {...props} >
 
           {props.icon && props.iconPosition !== 'right' && (
@@ -120,6 +120,11 @@ const styles = (props: Props) => {
       backgroundColor = Color.grayEEEE;
       textColor = Color.black2222;
       break;
+    case 'gray2':
+      backgroundColor = Color.white;
+      textColor = '#C7C7C7';
+      borderColor = '#C7C7C7';
+      break;
     case 'primary':
       backgroundColor = Color.primary;
       textColor = 'white';
@@ -161,6 +166,10 @@ const styles = (props: Props) => {
       textColor = Color.black0000;
       borderColor = Color.black0000;
       break;
+    case 'red':
+      backgroundColor = Color.red2;
+      textColor = Color.white;
+      break;
     default:
       backgroundColor = Color.grayEEEE;
       textColor = Color.black2222;
@@ -175,7 +184,7 @@ const styles = (props: Props) => {
       alignItems: 'center',
       justifyContent: 'center',
       borderWidth: 1,
-      borderColor,
+      borderColor: borderColor,
       flexDirection: 'row',
     },
     btnStyle_gradient: {
