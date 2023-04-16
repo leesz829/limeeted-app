@@ -37,7 +37,7 @@ use_flipper!({'Flipper' => '0.75.1', 'Flipper-Folly' => '2.5.3', 'Flipper-RSocke
         target.build_configurations.each do |config|
           config.build_settings['CODE_SIGNING_ALLOWED'] = "NO"
           config.build_settings['CODE_SIGNING_REQUIRED'] = "NO"
-          config.build_settings['EXPANDED_CODE_SIGN_IDENTITY'] = ""
+          config.build_settings['EXPANDED_CODE_SIGN_IDENTITY'] = "9.0"
         end
       end
   end

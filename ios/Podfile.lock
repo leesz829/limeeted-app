@@ -1,5 +1,5 @@
 PODS:
-  - Alamofire (5.6.3)
+  - Alamofire (5.6.4)
   - AppAuth (1.6.0):
     - AppAuth/Core (= 1.6.0)
     - AppAuth/ExternalUserAgent (= 1.6.0)
@@ -431,7 +431,7 @@ PODS:
     - React-Core
   - react-native-notifications (4.3.3):
     - React-Core
-  - react-native-pager-view (6.1.4):
+  - react-native-pager-view (6.2.0):
     - React-Core
   - react-native-safe-area-context (3.3.2):
     - React-Core
@@ -562,7 +562,7 @@ PODS:
   - RNScreens (3.10.1):
     - React-Core
     - React-RCTImage
-  - RNSVG (13.8.0):
+  - RNSVG (13.9.0):
     - React-Core
   - SSZipArchive (2.2.3)
   - Yoga (1.14.0)
@@ -807,7 +807,7 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  Alamofire: 8b7a946e9db6f76e93eaa0d4c84e3751633959c9
+  Alamofire: 4e95d97098eacb88856099c4fc79b526a299e48c
   AppAuth: 8fca6b5563a5baef2c04bee27538025e4ceb2add
   Base64: cecfb41a004124895a7bcee567a89bae5a89d49b
   boost: a7c83b31436843459a1961bfd74b96033dc77234
@@ -867,7 +867,7 @@ SPEC CHECKSUMS:
   react-native-geolocation-service: 608e1da71a1ac31b4de64d9ef2815f697978c55b
   react-native-image-picker: 5fe0a96bef4935bbdfb02f59b910bf40d5526109
   react-native-notifications: 83b4fd4a127a6c918fc846cae90da60f84819e44
-  react-native-pager-view: b58cb9e9f42f64e50cab3040815772c1d119a2e2
+  react-native-pager-view: 0ccb8bf60e2ebd38b1f3669fa3650ecce81db2df
   react-native-safe-area-context: 584dc04881deb49474363f3be89e4ca0e854c057
   react-native-splash-screen: 4312f786b13a81b5169ef346d76d33bc0c6dc457
   react-native-webview: 159034a856a6e95995f5bf2eed40d70b103d6572
@@ -896,11 +896,11 @@ SPEC CHECKSUMS:
   RNIap: 3bcd6982cf99503339cf9243e4ba70a45ea2cf72
   RNReanimated: da3860204e5660c0dd66739936732197d359d753
   RNScreens: 522705f2e5c9d27efb17f24aceb2bf8335bc7b8e
-  RNSVG: c1e76b81c76cdcd34b4e1188852892dc280eb902
+  RNSVG: 53c661b76829783cdaf9b7a57258f3d3b4c28315
   SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
   Yoga: e7dc4e71caba6472ff48ad7d234389b91dadc280
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 0d375d8ac31ce8cdcb2bbc15ee98bb4a322e2612
+PODFILE CHECKSUM: 448cf8d8f2828d44d47627d0b9fad3903e856f18
 
-COCOAPODS: 1.12.0
+COCOAPODS: 1.11.3
