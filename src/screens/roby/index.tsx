@@ -37,7 +37,7 @@ import { useDispatch } from 'react-redux';
 import { myProfile } from 'redux/reducers/authReducer';
 import { Privacy } from 'screens/commonpopup/privacy';
 import { Terms } from 'screens/commonpopup/terms';
-import { findSourcePath, ICON } from 'utils/imageUtils';
+import { findSourcePath, ICON, IMAGE } from 'utils/imageUtils';
 import * as properties from 'utils/properties';
 import { peek_member, get_board_list } from 'api/models';
 import { usePopup } from 'Context';
@@ -129,14 +129,7 @@ export const Roby = (props: Props) => {
     }
   };
 
-  // 프로필 재심사 실행
-  const profileReexProc = async () => {
-    const { success, data } = await request_reexamination();
-    if (success) {
-      dispatch(myProfile());
-      setProfileReAprPopup(false);
-    }
-  };
+  
 
   // 별점 이미지 적용
   const showStarImg = (score: number) => {
@@ -159,6 +152,28 @@ export const Roby = (props: Props) => {
     }
 
     return starImgArr;
+  };
+
+  // ############################################################ 프로필 재심사 팝업 활성화
+  const profileReexPopupOpen = async () => {
+    show({
+      title: '프로필 재심사',
+      content: '프로필 재심사 대기열에 등록하시겠습니까?\n패스 x10',
+      cancelCallback: function() {
+
+      },
+      confirmCallback: function () {
+        profileReexProc();
+      },
+    });
+  }
+
+  // ############################################################ 프로필 재심사 실행
+  const profileReexProc = async () => {
+    const { success, data } = await request_reexamination();
+    if (success) {
+      dispatch(myProfile());
+    }
   };
 
   // ####################################################### 팝업 관련 #######################################################
@@ -275,20 +290,19 @@ export const Roby = (props: Props) => {
             viewStyle={[layoutStyle.alignCenter, { marginTop: -46 }]}
           >
             <SpaceView mb={8}>
-              <View style={_styles.profileImageWrap}>
-                <Image
-                  source={{
-                    uri: properties.img_domain + memberBase?.mst_img_path,
-                  }}
-                  style={styles.profileImg}
-                />
-              </View>
-
-              <View style={styles.profilePenContainer}>
-                <TouchableOpacity onPress={onPressEditProfile}>
-                  <Image source={ICON.pen} style={styles.iconSize24} />
-                </TouchableOpacity>
-              </View>
+              <TouchableOpacity onPress={onPressEditProfile}>
+                <View style={_styles.profileImageWrap}>
+                  <Image
+                    source={{
+                      uri: properties.img_domain + memberBase?.mst_img_path,
+                    }}
+                    style={styles.profileImg}
+                  />
+                </View>
+                <View style={styles.profilePenContainer}>
+                    <Image source={ICON.pen} style={styles.iconSize24} />
+                </View>
+              </TouchableOpacity>
             </SpaceView>
 
             <View style={_styles.profileInfoContainer}>
@@ -309,28 +323,42 @@ export const Roby = (props: Props) => {
 
           {/* ################################################################################ 프로필 관리 영역 */}
           <View>
-            <View
-              style={{
-                width: '100%',
-                height: 95,
-                borderWidth: 1,
-                borderRadius: 20,
-                borderColor: ColorType.grayEEEE,
-              }}
-            />
+            {memberBase?.reex_yn == 'N' && memberBase?.best_face != null && (
+              <>
+                <View
+                  style={{
+                    width: '100%',
+                    height: 95,
+                    borderRadius: 20,
+                    backgroundColor: memberBase.gender == 'W' ? '#ECEFFE' : '#FEEFF2',
+                    overflow: 'hidden',
+                    position: 'relative',
+                  }}>
+                    <SpaceView>
+                      <Image source={memberBase.gender == 'W' ? IMAGE.robyMaleImg : IMAGE.robyFemaleImg} style={{width: '100%', height: 100}} />
+                      <SpaceView viewStyle={{position: 'absolute', top: 10, left: 15}}>
+                        <CommonText 
+                          color={ColorType.white}
+                          fontWeight={'200'}
+                          textStyle={{ backgroundColor: memberBase.gender == 'W' ? '#7986EE' : '#FE0456', borderRadius: 20, textAlign: 'center', width: 100, fontSize: 10}}>리미티드 회원님들이</CommonText>
+                        <CommonText type={'h5'} fontWeight={'700'} textStyle={{marginTop: 3}}>{memberBase?.nickname}님을</CommonText>
+                        <CommonText type={'h5'} fontWeight={'200'} color={memberBase.gender == 'W' ? '#7986EE' : '#FE0456'} textStyle={{marginTop: 0}}>{memberBase.best_face}이라고 생각해요!</CommonText>
+                      </SpaceView>
+                    </SpaceView>
+                </View>
+              </>
+            )}
 
             <TouchableOpacity
               style={_styles.manageProfile}
-              onPress={onPressMangeProfile}
-            >
+              onPress={onPressMangeProfile}>
               <Text style={_styles.profileText}>프로필 관리</Text>
               <Image source={ICON.arrow_right} style={styles.iconSize} />
             </TouchableOpacity>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={_styles.manageProfile}
-              onPress={onPressMangeProfile}
-            >
+              onPress={onPressMangeProfile}>
               <Text style={_styles.profileText}>나에게 관심 있는 이성</Text>
               <View style={_styles.row}>
                 <View style={_styles.badge}>
@@ -338,33 +366,35 @@ export const Roby = (props: Props) => {
                 </View>
                 <Image source={ICON.arrow_right} style={styles.iconSize} />
               </View>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             <View style={_styles.cardContainer}>
               <RatingCard
                 title={'프로필 심사중'}
-                desc={`내 프로필을 평가한
-이성들의 평균 점수 입니다`}
-                value={7.5}
+                desc={`내 프로필을 평가한\n이성들의 평균 점수 입니다`}
+                value={memberBase?.profile_score}
                 isPennding={reassessment}
               />
               <RatingCard
                 title={'기여평점'}
-                desc={`내 프로필을 평가한
-이성들의 평균 점수 입니다`}
-                value={8.8}
+                desc={`내 프로필을 평가한\n이성들의 평균 점수 입니다`}
+                value={memberBase?.social_grade}
                 isPennding={reassessment}
               />
             </View>
           </View>
-          <TouchableOpacity
-            onPress={() => setReassessment(!reassessment)}
-            style={reassessment ? _styles.pennding : _styles.submitBtn}
-          >
-            <Text style={_styles.submitText}>
-              {reassessment ? '내 프로필을 심사중이에요!' : '내 프로필 재심사'}
-            </Text>
-          </TouchableOpacity>
+
+          {memberBase?.reex_yn == 'Y' ? (
+            <TouchableOpacity style={_styles.pennding}>
+              <Text style={_styles.submitText}>내 프로필을 심사중이에요!</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+            onPress={() => profileReexPopupOpen()}
+              style={_styles.submitBtn}>
+              <Text style={_styles.submitText}>내 프로필 재심사</Text>
+            </TouchableOpacity>
+          )}          
 
           {/* ################################################################################ 보관함 영역 */}
           <View style={{ marginTop: 16 }}>
@@ -374,7 +404,7 @@ export const Roby = (props: Props) => {
 
             <TouchableOpacity
               style={_styles.manageProfile}
-              onPress={onPressMangeProfile}
+              onPress={onPressStorage}
             >
               <Text style={_styles.profileText}>새 관심</Text>
               <View style={_styles.row}>
@@ -390,8 +420,7 @@ export const Roby = (props: Props) => {
                 <SpaceView
                   key={`likes-${index}`}
                   viewStyle={styles.circleBox}
-                  mr={16}
-                >
+                  mr={16}>
                   <Image
                     source={findSourcePath(item.img_file_path)}
                     style={styles.circleBoxImg}
@@ -413,7 +442,7 @@ export const Roby = (props: Props) => {
               </View>
             </TouchableOpacity>
 
-            <ScrollView horizontal={true}>
+            {/* <ScrollView horizontal={true}>
               {matchTrgtList?.map((item, index) => (
                 <SpaceView
                   key={`matches-${index}`}
@@ -426,7 +455,7 @@ export const Roby = (props: Props) => {
                   />
                 </SpaceView>
               ))}
-            </ScrollView>
+            </ScrollView> */}
           </View>
 
           <SpaceView mb={48}>
@@ -826,6 +855,26 @@ const _styles = StyleSheet.create({
     letterSpacing: 0,
     textAlign: 'left',
     color: '#ffffff',
+  },
+  rowTextHalfLeft: {
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 15,
+    lineHeight: 20,
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#4B4B4B',
+    width: '40%',
+    paddingVertical: 5,
+  },
+  rowTextHalfRight: {
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 15,
+    lineHeight: 20,
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#4B4B4B',
+    width: '60%',
+    paddingVertical: 5,
   },
 });
 function RedDot() {

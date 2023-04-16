@@ -6,11 +6,11 @@ import { SimpleGrid } from 'react-native-super-grid';
 import { ICON } from 'utils/imageUtils';
 const { width } = Dimensions.get('window');
 
-export default function ProfileAuth({ data }) {
+export default function ProfileAuth({ level, data }) {
+
+  console.log('data ::::: ' ,data);
 
   const navigation = useNavigation<ScreenNavigationProp>();
-
-  console.log('data :::: ' , data);
 
   return (
     <>
@@ -19,7 +19,7 @@ export default function ProfileAuth({ data }) {
           <Text style={styles.title}>프로필 인증</Text>
         </TouchableOpacity>
         <View style={styles.levelBadge}>
-          <Text style={[styles.levelText, { color: 'white' }]}>LV.7</Text>
+          <Text style={[styles.levelText, { color: 'white' }]}>LV.{level}</Text>
         </View>
       </View>
       <SimpleGrid
@@ -30,7 +30,7 @@ export default function ProfileAuth({ data }) {
         }}
         spacing={width * 0.01}
         data={
-          data?.second_auth_list?.length > 0 ? data?.second_auth_list : dummy
+          data?.length > 0 ? data : dummy
         }
         renderItem={renderAuthInfo}
       />
@@ -44,8 +44,8 @@ const renderAuthInfo = ({ item }: { item: auth }) => (
       item?.auth_status === 'ACCEPT'
         ? styles.certificateItemContainerOn
         : styles.certificateItemContainerOff
-    }
-  >
+    }>
+
     <View style={styles.rowCenter}>
       <Image
         source={convertTypeToImage(item)}
@@ -61,6 +61,7 @@ const renderAuthInfo = ({ item }: { item: auth }) => (
         {item.code_name}
       </Text>
     </View>
+
     {item?.auth_status === 'ACCEPT' && (
       <Text style={styles.levelText}>
         LV.

@@ -40,7 +40,7 @@ export const CommonCheckBox: FC<Props> = (props) => {
         />
       </View>
       <SpaceView ml={8}>
-        <CommonText fontWeight={'500'}>{props.label}</CommonText>
+        <CommonText fontWeight={'500'} color={check ? '#697AE6' : '#B2B2B2'}>{props.label}</CommonText>
       </SpaceView>
     </TouchableOpacity>
   );

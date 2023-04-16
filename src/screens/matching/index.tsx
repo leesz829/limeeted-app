@@ -8,7 +8,6 @@ import {
   BottomParamList,
   ColorType,
   CommonCode,
-  Interview,
   MemberBaseData,
   ProfileImg,
   ScreenNavigationProp,
@@ -53,6 +52,9 @@ import { MatchSearch } from 'screens/matching/MatchSearch';
 import { findSourcePath, ICON } from 'utils/imageUtils';
 import { Slider } from '@miblanchard/react-native-slider';
 import ProfileAuth from 'component/ProfileAuth';
+import InterviewRender from 'component/InterviewRender';
+
+
 const { width, height } = Dimensions.get('window');
 interface Props {
   navigation: StackNavigationProp<BottomParamList, 'Roby'>;
@@ -77,6 +79,7 @@ export default function Matching(props: Props) {
     interest_list: [],
     report_code_list: [],
     safe_royal_pass: Number,
+    item_list: [],
   });
 
   // 신고목록
@@ -108,7 +111,7 @@ export default function Matching(props: Props) {
   const getDailyMatchInfo = async () => {
     try {
       const { success, data } = await get_daily_matched_info();
-
+      console.log('item_list :::: ', data.item_list);
       if (success) {
         if (data.result_code == '0000') {
           setData(data);
@@ -271,13 +274,18 @@ export default function Matching(props: Props) {
 
         <View style={styles.absoluteView}>
           <View style={styles.badgeContainer}>
-            <View style={styles.authBadge}>
-              <Text style={styles.whiteText}>인증 완료</Text>
-            </View>
-            <View style={styles.redBadge}>
+
+            {data.second_auth_list.length > 0 && 
+              <View style={styles.authBadge}>
+                <Text style={styles.whiteText}>인증 완료</Text>
+              </View>
+            }
+
+            {/* 고평점 이성 소개받기 구독 아이템 표시 */}
+            {/* <View style={styles.redBadge}>
               <Image source={ICON.whiteCrown} style={styles.crownIcon} />
               <Text style={styles.whiteText}>{data.match_member_info?.profile_score}</Text>
-            </View>
+            </View> */}
           </View>
           <View style={styles.nameContainer}>
             <Text style={styles.nameText}>{data.match_member_info?.nickname}, {data.match_member_info?.age}</Text>
@@ -291,18 +299,25 @@ export default function Matching(props: Props) {
             <TouchableOpacity onPress={() => { popupActive('pass'); }}>
               <Image source={ICON.closeCircle} style={styles.smallButton} />
             </TouchableOpacity>
+
             <TouchableOpacity onPress={() => { popupActive('sincere'); }}>
               <Image source={ICON.ticketCircle} style={styles.largeButton} />
             </TouchableOpacity >
+
             <TouchableOpacity onPress={() => { popupActive('interest'); }} style={styles.freePassContainer}>
               <Image source={ICON.heartCircle} style={styles.largeButton} />
-              <View style={styles.freePassBage}>
-                <Text style={styles.freePassText}>자유이용권 ON</Text>
-              </View>
+
+              {data.item_list.length > 0 && (
+                <View style={styles.freePassBage}>
+                  <Text style={styles.freePassText}>자유이용권 ON</Text>
+                </View>
+              )}
             </TouchableOpacity>
-            <TouchableOpacity>
+
+            {/* 마킹 버튼 */}
+            {/* <TouchableOpacity>
               <Image source={ICON.starCircle} style={styles.smallButton} />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </View>
 
@@ -324,7 +339,7 @@ export default function Matching(props: Props) {
         )}
         
         {/* 프로필 인증 */}
-        <ProfileAuth data={data.second_auth_list} />
+        <ProfileAuth level={data.match_member_info.auth_acct_cnt} data={data.second_auth_list} />
 
         {data.interest_list.length > 0 && (
           <>
@@ -402,9 +417,65 @@ export default function Matching(props: Props) {
           </View>
         </View>
 
+        {/* 인터뷰 영역 */}
+        <SpaceView mt={30}>
+          <InterviewRender data={data?.interview_list} />
+        </SpaceView>
+        
+        {/* <View>
+          {data.interview_list?.map((e, index) => (
+            <View style={[style.contentItemContainer, index % 2 !== 0 && style.itemActive]}>
+              {mode === 'delete' ? (
+                <TouchableOpacity
+                  onPress={() => onSelectDeleteItem(e)}
+                  style={[
+                    style.checkContainer,
+                    deleteList.includes(e) && style.active,
+                  ]} >
+                  <Image
+                    source={deleteList.includes(e) ? ICON.checkOn : ICON.checkOff}
+                    style={style.checkIconStyle}
+                  />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  onPress={() => onPressRegist(e.common_code)}
+                  style={style.penPosition}
+                >
+                  <Image source={ICON.pen} style={style.penImage} />
+                </TouchableOpacity>
+              )}
+              <View style={style.questionRow}>
+                <Text style={style.questionText}>Q.</Text>
+                <Text style={style.questionBoldText}>
+                  {indexToKr[index]}번째 질문 입니다.
+                  <Text style={style.questionNormalText}> {e?.code_name}</Text>
+                </Text>
+              </View>
+              <View style={style.answerRow}>
+                <Text style={style.answerText}>A.</Text>
+                <TextInput
+                  defaultValue={e?.answer}
+                  onChangeText={(text) =>
+                    answerChangeHandler(e.member_interview_seq, text)
+                  }
+                  style={[style.answerNormalText]}
+                  multiline={true}
+                  placeholder={'대답을 등록해주세요!'}
+                  placeholderTextColor={'#c6ccd3'}
+                  numberOfLines={3}
+                  maxLength={200}
+                />
+              </View>
+            </View>
+          ))}
+
+        </View> */}
+
+        {/* 신고하기 영역 */}
         <TouchableOpacity onPress={() => { report_onOpen(); }}>
           <View style={styles.reportButton}>
-            <Text style={styles.reportText}>신고하기</Text>
+            <Text style={styles.reportTextBtn}>신고하기</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -417,22 +488,38 @@ export default function Matching(props: Props) {
             ############################################### */}
       <Modalize
         ref={report_modalizeRef}
-        adjustToContentHeight={true}
+        adjustToContentHeight={false}
         handleStyle={modalStyle.modalHandleStyle}
-        modalStyle={modalStyle.modalContainer}
-      >
+        modalStyle={[modalStyle.modalContainer, {borderRadius: 0, borderTopLeftRadius: 50, borderTopRightRadius: 50}]}
+        modalHeight={height - 270}
+				FooterComponent={
+					<>
+						<SpaceView>
+							<CommonBtn value={'신고하기'} 
+                    type={'black'}
+                    height={59} 
+                    fontSize={19}
+                    borderRadius={1}
+										onPress={popupReport}/>
+						</SpaceView>
+					</>
+				}>
+
         <View style={modalStyle.modalHeaderContainer}>
           <CommonText fontWeight={'700'} type={'h3'}>
             사용자 신고하기
           </CommonText>
           <TouchableOpacity onPress={report_onClose}>
-            <Image source={ICON.xBtn} style={styles.iconSize24} />
+            <Image source={ICON.xBtn2} style={{width: 20, height: 20}} />
           </TouchableOpacity>
         </View>
 
-        <View style={modalStyle.modalBody}>
-          <SpaceView mb={13}>
-            <CommonText textStyle={[styles.reportText, {color: ColorType.black0000}]}>신고사유를 알려주시면 더 좋은{'\n'}리미티드를 만드는데 도움이 됩니다.</CommonText>
+        <View style={[modalStyle.modalBody, {paddingBottom: 0, paddingHorizontal: 30}]}>
+          <SpaceView mb={13} viewStyle={{borderBottomWidth: 1, borderColor: '#e0e0e0', paddingBottom: 20}}>
+            <CommonText 
+              textStyle={[styles.reportText, {color: ColorType.black0000}]}
+              type={'h5'}>
+              신고사유를 알려주시면 더 좋은 리미티드를{'\n'}만드는데 도움이 됩니다.</CommonText>
           </SpaceView>
 
           <SpaceView mb={24}>
@@ -445,16 +532,6 @@ export default function Matching(props: Props) {
                   callBackFunction={reportCheckCallbackFn}
                 />
               ))}
-          </SpaceView>
-
-          <SpaceView mb={16}>
-            <CommonBtn
-              value={'신고하기'}
-              onPress={popupReport}
-              type={'black'}
-              height={59} 
-              fontSize={19}
-            />
           </SpaceView>
         </View>
       </Modalize>
@@ -887,7 +964,7 @@ const styles = StyleSheet.create({
     justifyContent: `center`,
     marginTop: 20,
   },
-  reportText: {
+  reportTextBtn: {
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 14,
     fontWeight: 'normal',
@@ -895,6 +972,11 @@ const styles = StyleSheet.create({
     letterSpacing: 0,
     textAlign: 'left',
     color: '#ffffff',
+  },
+  reportText: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 17,
+    textAlign: 'left',
   },
 });
 

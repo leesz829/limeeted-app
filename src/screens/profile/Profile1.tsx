@@ -81,6 +81,9 @@ export const Profile1 = (props: Props) => {
   // 프로필 이미지 목록
   const [profileImageList, setProfileImageList] = React.useState([]);
 
+  // 프로필 인상 순위 목록
+  const [profileFaceRankList, setProfileFaceRankList] = React.useState([]);
+
   // 적용할 인터뷰 목록
   const [applyInterviewList, setApplyInterviewList] = React.useState<any>([]);
 
@@ -235,6 +238,7 @@ export const Profile1 = (props: Props) => {
     try {
       const { success, data } = await get_member_face_rank();
       if (success) {
+        setProfileFaceRankList(data.face_rank_list);
       } else {
         show({
           content: '오류입니다. 관리자에게 문의해주세요.',
@@ -612,57 +616,51 @@ export const Profile1 = (props: Props) => {
           {/* ####################################################################################
 					####################### 프로필 인증 영역
 					#################################################################################### */}
-          <ProfileAuth data={mbrSecondAuthList} />
+          <ProfileAuth level={memberBase?.auth_acct_cnt} data={mbrSecondAuthList} />
 
           {/* ####################################################################################
 					####################### 인상 투표 결과 영역
 					#################################################################################### */}
-          <Text style={_styles.title}>내 인상 투표 결과</Text>
-          <View style={_styles.impressionContainer}>
-            <View style={_styles.itemRow}>
-              <View style={_styles.subRow}>
-                <Image source={ICON.fashion} style={_styles.icon} />
-                <Text style={_styles.contentsText}>패션감각이 좋아 보여요</Text>
+
+          {profileFaceRankList.length > 0 && (
+            <>
+              <Text style={_styles.title}>내 인상 투표 결과</Text>
+              <View style={_styles.impressionContainer}>
+
+                {profileFaceRankList.map((item : any, index) => (
+                    <View style={_styles.itemRow}>
+                    <View style={_styles.subRow}>
+                      <Image source={ICON.fashion} style={_styles.icon} />
+                      <Text style={_styles.contentsText}>{item.face_code_name}</Text>
+                    </View>
+                    <View style={_styles.fashionPercent}>
+                      <Text style={_styles.percentText}>{item.percent}%</Text>
+                    </View>
+                  </View>
+                ))}
               </View>
-              <View style={_styles.fashionPercent}>
-                <Text style={_styles.percentText}>59%</Text>
-              </View>
-            </View>
-            <DashSpacer />
-            <View style={_styles.itemRow}>
-              <View style={_styles.subRow}>
-                <Image source={ICON.fond} style={_styles.icon} />
-                <Text style={_styles.contentsText}>다정해 보여요</Text>
-              </View>
-              <View style={_styles.fontPercent}>
-                <Text style={_styles.percentText}>59%</Text>
-              </View>
-            </View>
-            <DashSpacer />
-            <View style={_styles.itemRow}>
-              <View style={_styles.subRow}>
-                <Image source={ICON.smile} style={_styles.icon} />
-                <Text style={_styles.contentsText}>웃는 모습이 이뻐요</Text>
-              </View>
-              <View style={_styles.smilePercent}>
-                <Text style={_styles.percentText}>59%</Text>
-              </View>
-            </View>
-            <DashSpacer />
-            <View style={_styles.myImpressionContainer}>
-              <Text style={_styles.title}>내 평점은?</Text>
-              <Slider
-                value={7.5 / 10}
-                animateTransitions={true}
-                renderThumbComponent={() => null}
-                maximumTrackTintColor={'#e3e3e3'}
-                minimumTrackTintColor={'#8854d2'}
-                containerStyle={_styles.sliderContainerStyle}
-                trackStyle={_styles.trackStyle}
-                trackClickable={false}
-              />
+            </>
+          )}
+
+          <View style={_styles.myImpressionContainer}>
+            <Text style={_styles.title}>내 평점은?</Text>
+            <Slider
+              value={7.5 / 10}
+              animateTransitions={true}
+              renderThumbComponent={() => null}
+              maximumTrackTintColor={'#e3e3e3'}
+              minimumTrackTintColor={'#8854d2'}
+              containerStyle={_styles.sliderContainerStyle}
+              trackStyle={_styles.trackStyle}
+              trackClickable={false}
+            />
+            <View style={_styles.gageContainer}>
+              <Text style={_styles.gageText}>0</Text>
+              <Text style={_styles.gageText}>5</Text>
+              <Text style={_styles.gageText}>10</Text>
             </View>
           </View>
+
           <View style={{ height: 30 }} />
 
           {/* ####################################################################################
@@ -893,8 +891,8 @@ const _styles = StyleSheet.create({
   },
   myImpressionContainer: {
     width: '100%',
-    marginTop: 20,
-    marginBottom: 30,
+    marginTop: 0,
+    marginBottom: 0,
   },
   sliderContainerStyle: {
     width: '100%',
@@ -906,6 +904,22 @@ const _styles = StyleSheet.create({
     width: '100%',
     height: 27,
     borderRadius: 13,
+  },
+  gageContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  gageText: {
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 10,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    lineHeight: 32,
+    letterSpacing: 0,
+    textAlign: 'center',
+    color: '#d0d0d0',
   },
 });
 

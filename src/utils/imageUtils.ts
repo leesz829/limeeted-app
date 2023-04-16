@@ -125,6 +125,8 @@ export const IMAGE = {
   logoRenew: require('assets/img/logo_renew.png'),
   logoMarkRenew: require('assets/img/logo_mark_renew.png'),
   signImg: require('assets/img/sign_img.png'),
+  robyFemaleImg: require('assets/img/roby_female_img.png'),
+  robyMaleImg: require('assets/img/roby_male_img.png'),
 };
 
 export const START_IMAGE = {
