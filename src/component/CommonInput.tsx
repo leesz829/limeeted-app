@@ -90,7 +90,7 @@ const styles = (props: Props) => {
       color: Color.balck333333,
     },
     inputContainer: {
-      paddingBottom: 10,
+      paddingBottom: 5,
       borderBottomWidth: bordrBottomWIdth,
       borderBottomColor: borderBottomColor,
     },
