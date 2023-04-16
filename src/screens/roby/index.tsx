@@ -478,9 +478,7 @@ export const Roby = (props: Props) => {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={_styles.manageProfile}
-              onPress={onPressPreferneces}
-            >
+              style={_styles.manageProfile}>
               <ToolTip
                 title={'내 프로필 공개'}
                 desc={'내 프로필을 이성들에게 공개할지 설정하는 기능입니다.'}
@@ -493,10 +491,8 @@ export const Roby = (props: Props) => {
               />
             </TouchableOpacity>
 
-            <TouchableOpacity
-              style={_styles.manageProfile}
-              onPress={onPressPreferneces}
-            >
+            {/* <TouchableOpacity
+              style={_styles.manageProfile}>
               <ToolTip
                 title={'아는 사람 소개'}
                 desc={
@@ -509,7 +505,7 @@ export const Roby = (props: Props) => {
                 }}
                 isOn={memberBase?.friend_match_yn == 'Y' ? true : false}
               />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </SpaceView>
 
           <SpaceView mb={40}>
