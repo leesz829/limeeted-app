@@ -90,13 +90,13 @@ const styles = (props: Props) => {
       color: Color.balck333333,
     },
     inputContainer: {
-      paddingBottom: 3,
+      paddingBottom: 10,
       borderBottomWidth: bordrBottomWIdth,
       borderBottomColor: borderBottomColor,
     },
     inputStyle: {
       fontSize: 16,
-      lineHeight: 30,
+      lineHeight: 20,
       color: Color.balck4848,
       padding: 0,
       margin: 0,
