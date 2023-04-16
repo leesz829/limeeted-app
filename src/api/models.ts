@@ -62,7 +62,9 @@ import {
   INSERT_MEMBER_INQUIRY,
   EVENT_CASHBACK_PAY,
   EVENT_CASHBACK_DETAIL,
-  EVENT_CASHBACK_RECEIVE
+  EVENT_CASHBACK_RECEIVE,
+  CHECK_REPORT,
+  CHECK_REPORT_CONFIRM,
 } from './route';
 
 /* ========================================================================================================
@@ -323,6 +325,19 @@ export async function insert_member_inquiry(body: {
   return send(INSERT_MEMBER_INQUIRY, 'POST', body, true, false);
 }
 
+//회원 신고 경고를 위한 신고 횟수 조회
+export async function report_check_user(body: {
+  report_member_seq: number;
+}) {
+  return send(CHECK_REPORT, 'POST', body, true, false);
+}
+
+//회원 신고 경고 유저 확인
+export async function report_check_user_confirm(body: {
+  report_member_seq: number;
+}) {
+  return send(CHECK_REPORT_CONFIRM, 'POST', body, true, false);
+}
 
 
 
@@ -346,6 +361,7 @@ export async function request_reexamination() {
 export async function get_member_face_rank() {
   return send(GET_MEMBER_FACE_RANK, 'POST', undefined, true, false);
 }
+
 
 /* ========================================================================================================
 ==================================================== MATCH
@@ -402,6 +418,8 @@ export async function resolve_match(body: { match_seq: string }) {
 export async function get_matched_member_info(body: { match_seq: number }) {
   return send(MATCHED_MEMBER_INFO, 'POST', body, true, false);
 }
+
+
 
 /* ========================================================================================================
 ==================================================== ORDER

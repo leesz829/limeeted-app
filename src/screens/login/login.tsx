@@ -14,6 +14,7 @@ import {
   LOGIN_EMPTY,
   LOGIN_WAIT,
   LOGIN_EXIT,
+  SANCTIONS
 } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
 import storeKey, { JWT_TOKEN } from 'constants/storeKey';
@@ -54,8 +55,8 @@ export const Login01 = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const { show } = usePopup();
-  const [id, setId] = React.useState('zoon9801@gmail.com');
-  const [password, setPassword] = React.useState('1234');
+  const [id, setId] = React.useState('');
+  const [password, setPassword] = React.useState('');
   const me = useUserInfo();
   const { width, height } = Dimensions.get('window');
 
@@ -149,6 +150,10 @@ export const Login01 = () => {
 
         case LOGIN_EXIT:
           show({ content: '탈퇴 회원 입니다.' });
+          break;
+
+        case SANCTIONS:
+          show({ titem: '제재 알림', content: '<이용 약관>에 근거하여 회원 제재 상태로 전환되었습니다. \n' + data.sanctions.sanctions_msg});
           break;
 
         default:

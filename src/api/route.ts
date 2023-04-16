@@ -43,6 +43,8 @@ export const MEMBER_EXIT = '/member/deleteMyAccount';
 export const UPDATE_PASSWORD = '/changePassword/updateNewPassword';
 export const MEMBER_MSG_LIST = '/msg/selectMemberMessageList'
 export const INSERT_MEMBER_INQUIRY = '/customerInquiry/insertCustomerInquiry'
+export const CHECK_REPORT = '/member/selectCheckReport';
+export const CHECK_REPORT_CONFIRM = '/member/updateCheckReportConfirm';
 
 
 /**

@@ -241,6 +241,20 @@ export const SecondAuth = () => {
 
   // ############################################################################# 2차인증 저장 함수
   const saveSecondAuth = async(type: string, file_list: any) => {
+
+    let imgCnt = 0;
+
+    for(let key in file_list){
+      if(file_list[key]){
+        imgCnt++;
+      }
+    }
+
+    if((file_list.length + imgCnt) < 1){
+      show({ content: '인증 심사를 위한 증빙 자료 이미지를 올려주세요.' });
+       return false;
+    }
+
     const body = {
       file_list: file_list
     };

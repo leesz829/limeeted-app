@@ -7,6 +7,8 @@ export const LOGIN_EMPTY = "0001";    // 일치하는 회원이 없음
 export const LOGIN_WAIT = "0002";     // 가입진행 및 가입승인 대기상태 회원
 export const LOGIN_REFUSE = "0003";   // 반려회원
 export const LOGIN_EXIT = "0004";     // 탈퇴회원
+export const SANCTIONS = "0005";     // 제재회원
+
 
 export default {
   SUCCESS,
@@ -17,4 +19,5 @@ export default {
   LOGIN_WAIT,
   LOGIN_REFUSE,
   LOGIN_EXIT,
+  SANCTIONS
 };

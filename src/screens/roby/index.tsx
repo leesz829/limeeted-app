@@ -173,6 +173,8 @@ export const Roby = (props: Props) => {
     const { success, data } = await request_reexamination();
     if (success) {
       dispatch(myProfile());
+    } else {
+      show({ content: data.result_msg });
     }
   };
 
