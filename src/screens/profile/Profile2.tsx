@@ -2,7 +2,7 @@ import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native
 import { ColorType, ScreenNavigationProp } from '@types';
 import { Color } from 'assets/styles/Color';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { layoutStyle, styles } from 'assets/styles/Styles';
+import { commonStyle, layoutStyle, styles } from 'assets/styles/Styles';
 import { CommonBtn } from 'component/CommonBtn';
 import CommonHeader from 'component/CommonHeader';
 import { CommonSwich } from 'component/CommonSwich';
@@ -16,9 +16,10 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Text,
+  Dimensions,
 } from 'react-native';
 import { ICON } from 'utils/imageUtils';
-
 import { useInterView } from 'hooks/useInterView';
 import DraggableFlatList, {
   ScaleDecorator,
@@ -28,6 +29,7 @@ import { usePopup } from 'Context';
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
 import { useDispatch } from 'react-redux';
 import { STACK } from 'constants/routes';
+import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 
 
 /* ################################################################################################################
@@ -45,6 +47,11 @@ enum Mode {
   view = 'view',
   edit = 'edit',
 }
+
+const { width, height } = Dimensions.get('window');
+
+
+
 export const Profile2 = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
   const tgtCode = props.route.params.tgtCode;
@@ -89,11 +96,13 @@ export const Profile2 = (props: Props) => {
       }
     })
 
-    if(isChk) {
+    /* if(isChk) {
       show({content: '이미 등록된 질문이에요.'});
     } else {
       setTarget(_item);
-    }
+    } */
+
+    setTarget(_item);
   }
 
   // ############################################# 순서 Drag UI Function
@@ -154,8 +163,6 @@ export const Profile2 = (props: Props) => {
       item.order_seq = index+1;
       applyInterviewList.push(item);
     })
-
-    console.log('applyInterviewList :::::: ', applyInterviewList);
 
     saveAPI(applyInterviewList, function() {
       navigation.navigate(STACK.COMMON, { screen: 'Profile1' });
@@ -238,29 +245,42 @@ export const Profile2 = (props: Props) => {
       <View
         style={{
           paddingTop: 24,
-          paddingLeft: 16,
-          paddingRight: 16,
           backgroundColor: 'white',
           flex: 1,
-        }}
-      >
+        }}>
+
         <SpaceView viewStyle={layoutStyle.rowCenter} mb={32}>
           <SpaceView viewStyle={styles.questionContainer} mr={16}>
-            <CommonText textStyle={layoutStyle.textCenter}>
+            <CommonText 
+              textStyle={layoutStyle.textCenter}
+              type={'h4'} 
+              fontWeight={'700'}
+              color={target?.use_yn == 'Y' ? Color.grayC3C3C3 : Color.black2222}>
+
               {target !== null && Object.keys(target).length > 0
                 ? target?.code_name
-                : `첫번째 질문이에요${'\n'}질문에 성실하게 답해주세요`}
+                : `질문을 선택해주세요!`}
             </CommonText>
+            
+            {target?.use_yn == 'Y' ? (
+              <CommonText textStyle={_style.targetDupTxt} fontWeight={'200'}>
+                  이미 등록된 질문이에요!
+              </CommonText>
+            ) : (
+              <CommonText textStyle={_style.targetBaseTxt} fontWeight={'200'}>
+                  질문에 성실하게 답해주세요.
+              </CommonText>
+            )}
           </SpaceView>
-          <TouchableOpacity onPress={onPressResetTarget}>
+          {/* <TouchableOpacity onPress={onPressResetTarget}>
             <Image source={ICON.refreshDark} style={styles.iconSize24} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </SpaceView>
 
-        <SpaceView viewStyle={styles.interviewContainer}>
+        <SpaceView viewStyle={styles.interviewContainer} mb={20}>
           {/* <SpaceView viewStyle={{ alignItems: 'flex-end' }}>
             <TouchableOpacity
-              style={style.modifyButton}
+              style={_style.modifyButton}
               onPress={onPressModify}
             >
               <CommonText
@@ -278,11 +298,11 @@ export const Profile2 = (props: Props) => {
                 value={text}
                 onChangeText={(e) => setText(e)}
                 style={styles.searchInput}
-                placeholder={'검색'}
-                placeholderTextColor={Color.gray6666}
+                placeholder={'검색어를 입력하세요.'}
+                placeholderTextColor={Color.grayE5E5E5}
               />
               <View style={styles.searchInputIconContainer}>
-                <Image source={ICON.searchGray} style={styles.iconSize24} />
+                <Image source={ICON.searchBlue} style={styles.iconSize22} />
               </View>
               {text.length > 0 && (
                 <TouchableOpacity
@@ -296,19 +316,27 @@ export const Profile2 = (props: Props) => {
           </SpaceView>
 
           <DraggableFlatList
-            data={list}
+            data={interview}
             showsVerticalScrollIndicator={false}
-            containerStyle={{ marginBottom: 100 }}
-            renderItem={({ item, drag, isActive }) => (
-              <ScaleDecorator>
-                <SpaceView
-                  viewStyle={layoutStyle.rowBetween}
-                  mb={16}
-                  mr={8}
-                  ml={8}
-                >
+            containerStyle={{ marginBottom: 60 }}
+            keyExtractor={(item, index) => index}
+            //onDragEnd={onDragEnd}
+            onDragEnd={({ data }) => {
+              setInterview(data);
+            }}
+            renderItem = {({ item, drag, isActive }) => (
+              <ScaleDecorator activeScale={0.95}>
+                <SpaceView viewStyle={[layoutStyle.rowBetween, !isActive ? _style.itemArea: _style.itemAreaActive]} mb={5}>
+
                   <TouchableOpacity onPress={() => onPressTarget(item)}>
-                    {item.use_yn === 'Y' ? (
+                    <View style={_style.questionRow}>
+                      <Text style={[_style.questionText, item?.use_yn === 'Y' && _style.questionActive]}>Q.</Text>
+                      <Text style={_style.questionBoldText}>
+                      <Text style={[_style.questionNormalText, item?.use_yn === 'Y' && _style.questionActive]}>{item?.code_name}</Text>
+                      </Text>
+                    </View>
+
+                    {/* {item.use_yn === 'Y' ? (
                       <SpaceView viewStyle={styles.questionItemTextContainerActive}>
                         <CommonText color={Color.white}>{item?.code_name}</CommonText>
                       </SpaceView>
@@ -316,7 +344,7 @@ export const Profile2 = (props: Props) => {
                       <SpaceView viewStyle={styles.questionItemTextContainer}>
                         <CommonText>{item?.code_name}</CommonText>
                       </SpaceView>
-                    )}
+                    )} */}
                   </TouchableOpacity>
 
                   <View style={styles.questionIconContainer}>
@@ -336,22 +364,66 @@ export const Profile2 = (props: Props) => {
                 </SpaceView>
               </ScaleDecorator>
             )}
-            keyExtractor={(item, index) => index.toString()}
-            onDragEnd={onDragEnd}
           />
         </SpaceView>
+
+        <SpaceView mb={10} viewStyle={commonStyle.paddingHorizontal15}>
+          <CommonBtn 
+            value={'저장'} 
+            type={'black'}
+            onPress={saveAllInterview} />
+        </SpaceView>
       </View>
-      <SpaceView>
-        <CommonBtn 
-          value={'저장'} 
-          type={'primary'}
-          onPress={saveAllInterview} />
-      </SpaceView>
     </View>
   );
 };
 
-const style = StyleSheet.create({
+
+
+
+
+const renderItem = gestureHandlerRootHOC(({ item, drag, isActive }) => {
+  return (
+    <ScaleDecorator activeScale={0.95}>
+      <SpaceView viewStyle={[layoutStyle.rowBetween, !isActive ? _style.itemArea: _style.itemAreaActive]} mb={5}>
+
+        <TouchableOpacity onPress={() => onPressTarget(item)}>
+          <View style={_style.questionRow}>
+            <Text style={[_style.questionText, item?.use_yn === 'Y' && _style.questionActive]}>Q.</Text>
+            <Text style={_style.questionBoldText}>
+            <Text style={[_style.questionNormalText, item?.use_yn === 'Y' && _style.questionActive]}>{item?.code_name}</Text>
+            </Text>
+          </View>
+
+          {/* {item.use_yn === 'Y' ? (
+            <SpaceView viewStyle={styles.questionItemTextContainerActive}>
+              <CommonText color={Color.white}>{item?.code_name}</CommonText>
+            </SpaceView>
+          ) : (
+            <SpaceView viewStyle={styles.questionItemTextContainer}>
+              <CommonText>{item?.code_name}</CommonText>
+            </SpaceView>
+          )} */}
+        </TouchableOpacity>
+
+        <View style={styles.questionIconContainer}>
+          <TouchableOpacity onPressIn={drag} disabled={isActive}>
+            <Image source={ICON.align} style={styles.iconSize24} />
+          </TouchableOpacity>
+        </View>
+      </SpaceView>
+    </ScaleDecorator>
+  )
+});
+
+
+{/* #######################################################################################################
+###########################################################################################################
+##################### Style 영역
+###########################################################################################################
+####################################################################################################### */}
+
+const _style = StyleSheet.create({
   modifyButton: {
     paddingHorizontal: 16,
     paddingVertical: 5,
@@ -359,4 +431,79 @@ const style = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 5,
   },
+  itemArea: {
+    backgroundColor: ColorType.white,
+    borderWidth: 1,
+    borderColor: ColorType.white,
+    borderRadius: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    marginHorizontal: 3,
+  },
+  itemAreaActive : {
+    backgroundColor: ColorType.white,
+    borderWidth: 1,
+    borderColor: ColorType.white,
+    borderRadius: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    marginHorizontal: 3,
+  },
+  questionRow: {
+    flexDirection: 'row',
+    width: width - 150,
+  },
+  questionText: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 12,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    lineHeight: 22,
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: ColorType.black0000,
+  },
+  questionActive: {
+    color: ColorType.blue7986,
+  },
+  questionBoldText: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 13,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    lineHeight: 19,
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#272727',
+    marginLeft: 10,
+    marginTop: 2,
+  },
+  questionNormalText: {
+    fontFamily: 'AppleSDGothicNeoR00',
+    fontSize: 13,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    lineHeight: 19,
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: ColorType.black0000,
+  },
+  targetBaseTxt: {
+    textAlign: 'center',
+    marginTop: 10,
+    fontSize: 13,
+    marginHorizontal: 70,
+    textAlignVertical: 'center',
+    color: Color.grayC3C3C3,
+  },
+  targetDupTxt: {
+    textAlign: 'center',
+    marginTop: 10,
+    borderWidth: 1,
+    borderRadius: 30,
+    borderColor: ColorType.black0000,
+    fontSize: 11,
+    marginHorizontal: 70,
+    textAlignVertical: 'center',
+  }
 });

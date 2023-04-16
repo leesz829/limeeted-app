@@ -1,9 +1,11 @@
 import { ColorType } from '@types';
+import { Color } from 'assets/styles/Color';
 import { layoutStyle, modalStyle } from 'assets/styles/Styles';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
 import { Modal, TouchableOpacity, View } from 'react-native';
+import { color } from 'react-native-reanimated';
 
 /* ################################################################################################################
 ###################################################################################################################
@@ -19,6 +21,8 @@ interface Props {
   text?: string; // 팝업 문구
   confirmCallbackFunc?: Function | undefined; // 확인 Callback 함수
   cancelCallbackFunc?: Function | undefined;
+  cancelBtnText?: string;
+  cancelConfirmText?: string;
 }
 
 export const BasePopup = (props: Props) => {
@@ -35,14 +39,14 @@ export const BasePopup = (props: Props) => {
       <Modal visible={props.popupVisible} transparent={true}>
         <View style={modalStyle.modalBackground}>
           <View style={modalStyle.modalStyle1}>
-            <SpaceView mb={16} viewStyle={layoutStyle.alignCenter}>
-              <CommonText fontWeight={'700'} type={'h4'}>
+            <SpaceView viewStyle={[layoutStyle.alignCenter, modalStyle.modalHeader]}>
+              <CommonText fontWeight={'700'} type={'h5'} color={'#676767'}>
                 {typeof props.title != 'undefined' && props.title != '' ? props.title : '알림'}
               </CommonText>
             </SpaceView>
 
-            <SpaceView viewStyle={layoutStyle.alignCenter}>
-              <CommonText type={'h5'} textStyle={layoutStyle.textCenter}>
+            <SpaceView viewStyle={[layoutStyle.alignCenter, modalStyle.modalBody]}>
+              <CommonText type={'h6'} textStyle={layoutStyle.textCenter} color={'#646464'}>
                 {typeof props.text != 'undefined' && props.text != '' ? props.text : ''}
               </CommonText>
               {/* <CommonText type={'h5'} color={ColorType.red}>패스 x5</CommonText> */}
@@ -52,29 +56,30 @@ export const BasePopup = (props: Props) => {
               {props.isConfirm ? (
                 <>
                   <TouchableOpacity
-                    style={modalStyle.modalBtn}
-                    onPress={onPressCancel}
-                  >
-                    <CommonText fontWeight={'500'}>취소</CommonText>
+                    style={[modalStyle.modalBtn, {backgroundColor: Color.grayD6D3D3, borderBottomLeftRadius: 5}]}
+                    onPress={onPressCancel}>
+                    <CommonText type={'h5'} fontWeight={'500'} color={ColorType.white}>
+                      {typeof props.cancelBtnText != 'undefined' ? props.cancelBtnText : '취소 할래요!'}
+                    </CommonText>
                   </TouchableOpacity>
+
                   <View style={modalStyle.modalBtnline} />
+
                   <TouchableOpacity
-                    style={modalStyle.modalBtn}
-                    onPress={onPressConfirm}
-                  >
-                    <CommonText fontWeight={'500'} color={ColorType.red}>
-                      확인
+                    style={[modalStyle.modalBtn, {backgroundColor: Color.blue02, borderBottomRightRadius: 5}]}
+                    onPress={onPressConfirm}>
+                    <CommonText type={'h5'} fontWeight={'500'} color={ColorType.white}>
+                      {typeof props.cancelConfirmText != 'undefined' ? props.cancelConfirmText : '확인하기'}
                     </CommonText>
                   </TouchableOpacity>
                 </>
               ) : (
                 <>
                   <TouchableOpacity
-                    style={modalStyle.modalBtn}
-                    onPress={onPressConfirm}
-                  >
-                    <CommonText fontWeight={'500'} color={ColorType.red}>
-                      확인
+                    style={[modalStyle.modalBtn, {backgroundColor: Color.blue02, borderBottomLeftRadius: 5, borderBottomRightRadius: 5}]}
+                    onPress={onPressConfirm}>
+                    <CommonText type={'h5'} fontWeight={'500'} color={Color.white}>
+                      {typeof props.cancelConfirmText != 'undefined' ? props.cancelConfirmText : '확인'}
                     </CommonText>
                   </TouchableOpacity>
                 </>

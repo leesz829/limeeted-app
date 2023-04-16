@@ -121,7 +121,7 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 22,
     width: width - 150,
-    color: Color.white,
+    color: Color.black0000dd,
     flexShrink: 1,
   },
   bottomBtnContainer: {
@@ -162,6 +162,14 @@ export const styles = StyleSheet.create({
   iconSize18: {
     width: 18,
     height: 18,
+  },
+  iconSize20: {
+    width: 20,
+    height: 20,
+  },
+  iconSize22: {
+    width: 22,
+    height: 22,
   },
   iconSize24: {
     width: 24,
@@ -242,11 +250,20 @@ export const styles = StyleSheet.create({
     width: (width - 100) / 10,
     height: (width - 100) / 10,
   },
-  tempBoxBig: {
+  tempBoxBase: {
     width: (width - 160) / 2,
     height: (width - 160) / 2,
-    //backgroundColor: Color.grayF8F8,
     borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  tempBoxAuth: {
+    width: (width - 160) / 2,
+    height: (width - 160) / 2,
+    borderWidth: 1,
+    borderRadius: 16,
+    borderColor: '#C7C7C7',
+    borderStyle: 'dotted',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -310,12 +327,11 @@ export const styles = StyleSheet.create({
   },
   interviewContainer: {
     paddingVertical: 20,
-    paddingHorizontal: 16,
-    width,
-    left: -16,
+    paddingHorizontal: 10,
+    marginHorizontal: 15,
     backgroundColor: Color.paleBlue,
-    borderTopLeftRadius: 32,
-    borderTopRightRadius: 32,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     flex: 1,
   },
   interviewLeftTextContainer: {
@@ -391,11 +407,8 @@ export const styles = StyleSheet.create({
   },
   questionContainer: {
     backgroundColor: 'white',
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: Color.grayEEEE,
     paddingVertical: 16,
-    paddingHorizontal: 60,
+    paddingHorizontal: 30,
   },
   questionItemTextContainer: {
     flex: 1,
@@ -441,7 +454,7 @@ export const styles = StyleSheet.create({
   searchInputContainer: {
     flex: 1,
     backgroundColor: 'white',
-    borderRadius: 16,
+    borderRadius: 30,
     borderWidth: 1,
     borderColor: Color.grayEEEE,
     paddingLeft: 16,
@@ -460,7 +473,7 @@ export const styles = StyleSheet.create({
   searchInput: {
     padding: 0,
     margin: 0,
-    fontSize: 14,
+    fontSize: 13,
     fontFamily: 'AppleSDGothicNeoR00',
     color: Color.black2222,
   },
@@ -511,8 +524,7 @@ export const modalStyle = StyleSheet.create({
   },
   modalContainer: {
     paddingTop: 30,
-    borderTopLeftRadius: 40,
-    borderTopRightRadius: 40,
+    borderRadius: 40,
   },
   modalHeaderContainer: {
     //height: 56,
@@ -523,8 +535,8 @@ export const modalStyle = StyleSheet.create({
     alignItems: 'center',
   },
   modalBody: {
-    paddingLeft: 30,
-    paddingRight: 30,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
     zIndex: 10,
   },
   modalBackground: {
@@ -536,27 +548,25 @@ export const modalStyle = StyleSheet.create({
   modalStyle1: {
     width: width - 32,
     backgroundColor: 'white',
-    borderRadius: 16,
-    height: 185,
-    paddingTop: 32,
-    paddingLeft: 16,
-    paddingRight: 16,
+    borderRadius: 5,
+    paddingHorizontal: 0,
+  },
+  modalHeader: {
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderColor: '#EDEDED',
   },
   modalBtnContainer: {
     width: width - 32,
-    position: 'absolute',
-    bottom: 0,
     borderTopWidth: 1,
     borderTopColor: Color.grayEEEE,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    left: 0,
   },
   modalBtn: {
-    flex: 1,
+    flex: 2,
     alignItems: 'center',
-    paddingTop: 16,
-    paddingBottom: 16,
+    paddingVertical: 10,
   },
   modalBtnline: {
     borderRightWidth: 1,

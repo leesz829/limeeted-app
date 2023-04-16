@@ -60,6 +60,9 @@ const styles = ({
     case 'h6':
       fontSize = 12;
       break;
+    case 'h7':
+      fontSize = 10;
+      break;
   }
 
   switch (fontWeight) {
@@ -71,6 +74,9 @@ const styles = ({
       break;
     case '500':
       fontFamily = 'AppleSDGothicNeoM00';
+      break;
+    case '600':
+      fontFamily = 'AppleSDGothicNeoR00';
       break;
     case '700':
       fontFamily = 'AppleSDGothicNeoB00';

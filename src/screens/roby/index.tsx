@@ -43,7 +43,8 @@ import { peek_member, get_board_list } from 'api/models';
 import { usePopup } from 'Context';
 import LinearGradient from 'react-native-linear-gradient';
 import { Rating, AirbnbRating } from 'react-native-ratings';
-const { width } = Dimensions.get('window');
+
+const { width, height } = Dimensions.get('window');
 
 /* ################################################################################################################
 ###### 로비
@@ -191,8 +192,6 @@ export const Roby = (props: Props) => {
   const privacy_onClose = () => {
     privacy_modalizeRef.current?.close();
   };
-
-  const { width, height } = Dimensions.get('window');
 
   const onPressEditProfile = () => {
     navigation.navigate(STACK.COMMON, { screen: 'Introduce' });

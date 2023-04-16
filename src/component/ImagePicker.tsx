@@ -15,12 +15,13 @@ interface Action {
 }
 
 interface Props {
-  isBig: boolean;
+  isAuth?: boolean;
   callbackFn: (
     uri: any,
     base64: string
   ) => void;
   uriParam?: string;
+  plusBtnType?: string;
 }
 
 const includeExtra = true;
@@ -55,14 +56,14 @@ export const ImagePicker: FC<Props> = (props) => {
   return (
     <TouchableOpacity
       onPress={onButtonPress}
-      style={props.isBig ? styles.tempBoxBig : styles.tempBoxSmall}
-    >
+      style={props.isAuth ? styles.tempBoxAuth : styles.tempBoxBase} >
+
       {response?.assets ? (
         response?.assets.map(({ uri }: { uri: any }) => (
           <Image
             resizeMode="cover"
             resizeMethod="scale"
-            style={props.isBig ? styles.tempBoxBig : styles.tempBoxSmall}
+            style={styles.tempBoxBase}
             key={uri}
             source={{ uri }}
           />
@@ -71,12 +72,12 @@ export const ImagePicker: FC<Props> = (props) => {
         <Image
           resizeMode="cover"
           resizeMethod="scale"
-          style={props.isBig ? styles.tempBoxBig : styles.tempBoxSmall}
+          style={styles.tempBoxBase}
           key={props.uriParam}
           source={props.uriParam}
         />
       ) : (
-        <Image source={ICON.plus_primary} style={styles.boxPlusIcon} />
+        <Image source={props.plusBtnType == '02' ? ICON.plus2 : ICON.plus_primary} style={styles.boxPlusIcon} />
       )}
     </TouchableOpacity>
   );

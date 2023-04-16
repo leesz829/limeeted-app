@@ -4,7 +4,7 @@ import CommonHeader from 'component/CommonHeader';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import React, { useRef } from 'react';
-import { View, Image, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Image, ScrollView, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { ICON, findSourcePath, IMAGE } from 'utils/imageUtils';
 import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
 import {
@@ -41,6 +41,7 @@ export const Signup01 = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
   const isFocus = useIsFocused();
   const { show } = usePopup();  // 공통 팝업
+  const { width, height } = Dimensions.get('window');
 
   // ############################################################################# 프로필 2차 인증 데이터
   const [secondData, setSecondData] = React.useState({
@@ -315,11 +316,13 @@ export const Signup01 = (props: Props) => {
 			############################################### */}
       <Modalize
         ref={job_modalizeRef}
-        adjustToContentHeight={true}
+        adjustToContentHeight={false}
         handleStyle={modalStyle.modalHandleStyle}
         modalStyle={modalStyle.modalContainer}
+        modalHeight={height - 130}
       >
         <SecondAuthPopup
+          modalHeight={height - 130}
           type={'JOB'}
           onCloseFn={job_onClose}
           saveFn={saveSecondAuth}
@@ -334,11 +337,13 @@ export const Signup01 = (props: Props) => {
 			############################################### */}
       <Modalize
         ref={edu_modalizeRef}
-        adjustToContentHeight={true}
+        adjustToContentHeight={false}
         handleStyle={modalStyle.modalHandleStyle}
         modalStyle={modalStyle.modalContainer}
+        modalHeight={height - 130}
       >
         <SecondAuthPopup
+          modalHeight={height - 130}
           type={'EDU'}
           onCloseFn={edu_onClose}
           saveFn={saveSecondAuth}
@@ -353,11 +358,13 @@ export const Signup01 = (props: Props) => {
 			############################################### */}
       <Modalize
         ref={income_modalizeRef}
-        adjustToContentHeight={true}
+        adjustToContentHeight={false}
         handleStyle={modalStyle.modalHandleStyle}
         modalStyle={modalStyle.modalContainer}
+        modalHeight={height - 130}
       >
         <SecondAuthPopup
+          modalHeight={height - 130}
           type={'INCOME'}
           onCloseFn={income_onClose}
           saveFn={saveSecondAuth}
@@ -372,11 +379,13 @@ export const Signup01 = (props: Props) => {
 			############################################### */}
       <Modalize
         ref={asset_modalizeRef}
-        adjustToContentHeight={true}
+        adjustToContentHeight={false}
         handleStyle={modalStyle.modalHandleStyle}
         modalStyle={modalStyle.modalContainer}
+        modalHeight={height - 130}
       >
         <SecondAuthPopup
+          modalHeight={height - 130}
           type={'ASSET'}
           onCloseFn={asset_onClose}
           saveFn={saveSecondAuth}
@@ -391,11 +400,13 @@ export const Signup01 = (props: Props) => {
 			############################################### */}
       <Modalize
         ref={sns_modalizeRef}
-        adjustToContentHeight={true}
+        adjustToContentHeight={false}
         handleStyle={modalStyle.modalHandleStyle}
         modalStyle={modalStyle.modalContainer}
+        modalHeight={height - 130}
       >
         <SecondAuthPopup
+          modalHeight={height - 130}
           type={'SNS'}
           onCloseFn={sns_onClose}
           saveFn={saveSecondAuth}
@@ -410,11 +421,13 @@ export const Signup01 = (props: Props) => {
 			############################################### */}
       <Modalize
         ref={vehicle_modalizeRef}
-        adjustToContentHeight={true}
+        adjustToContentHeight={false}
         handleStyle={modalStyle.modalHandleStyle}
         modalStyle={modalStyle.modalContainer}
+        modalHeight={height - 130}
       >
         <SecondAuthPopup
+          modalHeight={height - 130}
           type={'VEHICLE'}
           onCloseFn={vehicle_onClose}
           saveFn={saveSecondAuth}

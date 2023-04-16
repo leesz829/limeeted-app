@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { get_member_interview, update_interview } from 'api/models';
 import { usePopup } from 'Context';
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
+import { CommonInput } from './CommonInput';
 
 interface InterviewProps {
   title?: string;
@@ -179,15 +180,14 @@ export default function Interview({
         </SpaceView>
 
         {interview?.map((e, index) => (
-          <View style={style.contentItemContainer}>
+          <View style={[style.contentItemContainer, index % 2 !== 0 && style.itemActive]}>
             {mode === 'delete' ? (
               <TouchableOpacity
                 onPress={() => onSelectDeleteItem(e)}
                 style={[
                   style.checkContainer,
                   deleteList.includes(e) && style.active,
-                ]}
-              >
+                ]} >
                 <Image
                   source={deleteList.includes(e) ? ICON.checkOn : ICON.checkOff}
                   style={style.checkIconStyle}
@@ -210,9 +210,18 @@ export default function Interview({
             </View>
             <View style={style.answerRow}>
               <Text style={style.answerText}>A.</Text>
-              <Text style={style.answerNormalText}>
-                {e?.answer || '답변을 입력해주세요'}
-              </Text>
+              <TextInput
+                defaultValue={e?.answer}
+                onChangeText={(text) =>
+                  answerChangeHandler(e.member_interview_seq, text)
+                }
+                style={[style.answerNormalText]}
+                multiline={true}
+                placeholder={'대답을 등록해주세요!'}
+                placeholderTextColor={'#c6ccd3'}
+                numberOfLines={3}
+                maxLength={200}
+              />
             </View>
           </View>
         ))}
@@ -238,6 +247,14 @@ export default function Interview({
     </>
   );
 }
+
+
+
+{/* #######################################################################################################
+###########################################################################################################
+##################### Style 영역
+###########################################################################################################
+####################################################################################################### */}
 
 const style = StyleSheet.create({
   registerButton: {
@@ -296,6 +313,11 @@ const style = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#f9f9f9',
     padding: 20,
+    marginBottom: 10,
+  },
+  itemActive: {
+    backgroundColor: '#fff',
+    borderColor: '#F7F7F7',
   },
   questionRow: {
     flexDirection: 'row',
@@ -336,6 +358,7 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     width: '80%',
     marginTop: 10,
+    position: 'relative',
   },
   answerText: {
     fontFamily: 'AppleSDGothicNeoB00',
@@ -357,6 +380,11 @@ const style = StyleSheet.create({
     textAlign: 'left',
     color: '#7986ee',
     marginLeft: 10,
+    marginTop: -7,
+    
+    /* position: 'absolute',
+    top: 1, */
+    textAlignVertical: 'top',
   },
   penPosition: {
     position: 'absolute',
@@ -369,10 +397,8 @@ const style = StyleSheet.create({
     resizeMode: 'contain',
   },
   selectedDelete: {
-    marginTop: 50,
-    width: '100%',
-    height: 43,
-    borderRadius: 21.5,
+    paddingVertical: 15,
+    borderRadius: 22,
     backgroundColor: '#363636',
     flexDirection: `row`,
     alignItems: `center`,

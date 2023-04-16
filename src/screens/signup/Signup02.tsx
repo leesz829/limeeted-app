@@ -341,7 +341,7 @@ export const Signup02 = (props: Props) => {
               </TouchableOpacity>
             ) : (
               <ImagePicker
-                isBig={true}
+                isAuth={false}
                 callbackFn={fileCallBack1}
                 uriParam={''}
               />
@@ -364,7 +364,7 @@ export const Signup02 = (props: Props) => {
               </TouchableOpacity>
             ) : (
               <ImagePicker
-                isBig={true}
+                isAuth={false}
                 callbackFn={fileCallBack2}
                 uriParam={''}
               />
@@ -387,7 +387,7 @@ export const Signup02 = (props: Props) => {
               </TouchableOpacity>
             ) : (
               <ImagePicker
-                isBig={true}
+                isAuth={false}
                 callbackFn={fileCallBack3}
                 uriParam={''}
               />
@@ -410,7 +410,7 @@ export const Signup02 = (props: Props) => {
               </TouchableOpacity>
             ) : (
               <ImagePicker
-                isBig={true}
+                isAuth={false}
                 callbackFn={fileCallBack4}
                 uriParam={''}
               />
@@ -433,7 +433,7 @@ export const Signup02 = (props: Props) => {
               </TouchableOpacity>
             ) : (
               <ImagePicker
-                isBig={true}
+                isAuth={false}
                 callbackFn={fileCallBack5}
                 uriParam={''}
               />
@@ -456,7 +456,7 @@ export const Signup02 = (props: Props) => {
               </TouchableOpacity>
             ) : (
               <ImagePicker
-                isBig={true}
+                isAuth={false}
                 callbackFn={fileCallBack6}
                 uriParam={''}
               />

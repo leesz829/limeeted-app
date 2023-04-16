@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import type { FC, useState, useEffect } from 'react';
-import { Image, TouchableOpacity, View } from 'react-native';
+import { Image, TouchableOpacity, View, ScrollView, Text, StyleSheet } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { Modalize } from 'react-native-modalize';
 import CommonHeader from 'component/CommonHeader';
@@ -33,6 +33,7 @@ import { useSecondAth } from 'hooks/useSecondAth';
 ################################################################################################################ */
 
 interface Props {
+  modalHeight: number
   type: string;
   onCloseFn: () => void;
   saveFn: (
@@ -58,6 +59,7 @@ export const SecondAuthPopup = (props: Props) => {
   let placeholderTxt = '';
   let etcTxt01 = '';
   let etcTxt02 = '';
+  let etcTxt03 = '';
 
   const fileInfo = { uri: '', fileName: '', fileSize: 0, type: '', base64: '' };
   const [fileDataList, setFileDataList] = React.useState([]);
@@ -72,32 +74,40 @@ export const SecondAuthPopup = (props: Props) => {
     title = '직업';
     itemNm = '직업';
     placeholderTxt = '직업을 입력해주세요. (예 : 삼성전자 마케팅)';
-    etcTxt01 = '자신의 커리어를 증명할 수 있는 명함 또는 증명서를 올려주세요.';
-    etcTxt02 = '허용 증명서 : 재직 증명서, 건강보헝 자격 득실 증명서, 직업 라이선스';
+    etcTxt01 = '심사에 요구되는 증빙자료를 올려주세요.';
+    etcTxt02 = '재직증명서, 공무원증, 사업자등록증, 재무재표, 부가가치세표준증명원, 기타 입증자료';
+    etcTxt03 = '아래 기준에 기초하여 인증 레벨이 부여됩니다.';
   } else if (type == 'EDU') {
     title = '학업';
     itemNm = '교육기관';
     placeholderTxt = '출신 교육기관을 입력해주세요. (예 : 서울대 컴퓨터 공학과)';
-    etcTxt01 = '자신의 출식 대학교 또는 대학원 등의 재학증명서 또는 졸업 증명서 등을 올려주세요.';
-    etcTxt02 = '그외의 고등 교육기관의 경우는 관리자의 주관적 판단에 의해 결정될 수 있으니 참고바랍니다.';
+    etcTxt01 = '심사에 요구되는 증빙자료를 올려주세요.';
+    etcTxt02 = '졸업 증명서, 재학 증명서, 학위 증명서';
+    etcTxt03 = 'THE에서 최근에 발표한 세계대학순위에 기초하여 학력 레벨이 부여됩니다.';
   } else if (type == 'INCOME') {
     title = '소득';
-    etcTxt01 = '가장 최근의 급여 명세서를 올려주세요.';
-    etcTxt02 = '직업 인증과 이름이 다를 경우 관리자의 판단에 따라 반려될 수 있으니 참고해주세요.';
+    etcTxt01 = '심사에 요구되는 증빙자료를 올려주세요.';
+    etcTxt02 = '소득금액증명원, 근로소득원천징수증, 부가가치세증명원, 기타소득입증자료, 근로계약서';
+    etcTxt03 = '건강보험 기준, 직장인 가입자(연봉), 지역 가입자(연소득) 별로 레벨이 부여됩니다.';
   } else if (type == 'ASSET') {
     title = '자산';
-    etcTxt01 = '은행에서 발급 받을 수 있는 잔고 증명서를 올려주세요. 잔고가 5억 이상인 경우 프로필 2차 인증을 승인 받을 수 있습니다.';
+    etcTxt01 = '심사에 요구되는 증빙자료를 올려주세요.';
+    etcTxt02 = '은행 직인이 찍힌 잔고 증명서 및 확인 가능한 부동산 관련 서류 또는 그 외에 확인 가능한 자산 입증 서류';
+    etcTxt03 = '아래 기준에 기초하여 인증 레벨이 부여됩니다.';
   } else if (type == 'SNS') {
     title = 'SNS';
     itemNm = '인스타ID';
     placeholderTxt = '인스타그램 ID를 입력해주세요.';
-    etcTxt01 = '자신의 인스타 계정을 연동시켜주세요.\n팔로워 수 10000명 이상이 되면 프로필 2차 인증이 승인됩니다.';
-    etcTxt02 = 'ID를 정확히 입력해주셔야 인증 승인이 가능합니다.';
+    etcTxt01 = '심사에 요구되는 증빙자료를 올려주세요.';
+    etcTxt02 = '대중적 SNS인 인스타그램, 틱톡, 트위치 등에서 개인 메시지 수신이 가능한 계정이 노출된 스크린샷';
+    etcTxt03 = '가장 높은 팔로워 수를 보유한 SNS 매체를 기준으로 레벨이 부여됩니다.';
   } else if (type == 'VEHICLE') {
     title = '차량';
     itemNm = '모델명';
     placeholderTxt = '소유중인 차량 모델을 입력해주세요. (예 : 제네시스 G80)';
-    etcTxt01 = '소유차량을 증명할 수 있는 차량 등록등 또는 자동차 보험 가입 현황을 올려주세요.';
+    etcTxt01 = '심사에 요구되는 증빙자료를 올려주세요.';
+    etcTxt02 = '자동차 등록증, 최근 자동차 보험 납부 기록';
+    etcTxt03 = '증빙 자료로 제출한 자동차의 출고가에 따라 레벨이 부여됩니다.';
   }
 
   // ################################################################ 인증 파일 콜백 함수
@@ -234,88 +244,473 @@ export const SecondAuthPopup = (props: Props) => {
 
 
   return (
-    <View style={layoutStyle.flex1}>
-      <View style={modalStyle.modalHeaderContainer}>
+    <>
+
+      {/* ######################### header */}
+      <View style={[modalStyle.modalHeaderContainer]}>
         <CommonText fontWeight={'700'} type={'h3'}>
-          {title} 인증
+          {title}인증
         </CommonText>
         <TouchableOpacity onPress={props.onCloseFn}>
-          <Image source={ICON.xBtn} style={styles.iconSize24} />
+          <Image source={ICON.xBtn2} style={styles.iconSize18} />
         </TouchableOpacity>
       </View>
 
-      <View style={modalStyle.modalBody}>
-        {/* {itemNm != '' ? (
-          <View>
-            <SpaceView mb={32}>
-              <CommonInput
-                label={itemNm}
-                placeholder={placeholderTxt}
-                onChangeText={(item) => setItem(item)}
-                value={item}
-              />
+      {/* ######################### body */}
+      <ScrollView style={{height: props.modalHeight - 132}}>
+        <SpaceView viewStyle={[commonStyle.paddingHorizontal20]}>
+          <SpaceView mb={24}>
+            <SpaceView mb={16} viewStyle={layoutStyle.row}>
+              <Image source={ICON.confirmation} style={[styles.iconSize20, {marginTop: 3}]} />
+              <CommonText 
+                color={ColorType.blue697A}
+                fontWeight={'700'}
+                textStyle={{marginLeft: 5, textAlignVertical: 'center'}}>증명방법 !</CommonText>
             </SpaceView>
-          </View>
-        ) : null} */}
 
-        <SpaceView mb={24}>
-          <SpaceView mb={16}>
-            <View style={styles.dotTextContainer}>
-              <View style={styles.dot} />
-              <CommonText color={ColorType.gray6666}>{etcTxt01}</CommonText>
+            <SpaceView mb={12}>
+              <View style={styles.dotTextContainer}>
+                <View style={styles.dot} />
+                <CommonText
+                  color={'#6E6E6E'} 
+                  fontWeight={'500'}
+                  lineHeight={17}
+                  type={'h5'}
+                  textStyle={{marginTop: 4}}>{etcTxt01}</CommonText>
+              </View>
+            </SpaceView>
+            
+            {etcTxt02 != '' ? (
+              <SpaceView>
+                <View style={styles.dotTextContainer}>
+                  <View style={styles.dot} />
+                  <CommonText 
+                    color={'#6E6E6E'} 
+                    fontWeight={'500'}
+                    lineHeight={17}
+                    type={'h5'}
+                    textStyle={{marginTop: 4}}>{etcTxt02}</CommonText>
+                </View>
+              </SpaceView>
+            ) : null}
+          </SpaceView>
+
+          {/* <SpaceView mb={24}>
+            <CommonBtn value={'등록 및 수정'} height={48} type={'white'} icon={ICON.plus} />
+          </SpaceView> */}
+
+          <SpaceView mb={30} viewStyle={[layoutStyle.alignCenter]}>
+            <View style={[layoutStyle.row]}>
+              <View>
+                <ImagePicker
+                  isAuth={true}
+                  plusBtnType={'02'}
+                  callbackFn={fileCallBackFn01}
+                  uriParam={props.filePath01}
+                />
+              </View>
+              <View style={[commonStyle.mr10, commonStyle.ml10]}>
+                <ImagePicker
+                  isAuth={true}
+                  plusBtnType={'02'}
+                  callbackFn={fileCallBackFn02}
+                  uriParam={props.filePath02}
+                />
+              </View>
+              <View>
+                <ImagePicker
+                  isAuth={true}
+                  plusBtnType={'02'}
+                  callbackFn={fileCallBackFn03}
+                  uriParam={props.filePath03}
+                />
+              </View>
             </View>
           </SpaceView>
 
-          {etcTxt02 != '' ? (
-            <SpaceView>
+          <SpaceView mb={24}>
+            <SpaceView mb={16} viewStyle={layoutStyle.row}>
+              <Image source={ICON.confirmation} style={[styles.iconSize20, {marginTop: 3}]} />
+              <CommonText 
+                color={ColorType.blue697A}
+                fontWeight={'700'}
+                textStyle={{marginLeft: 5, textAlignVertical: 'center'}}>{title} 인증 심사 기준</CommonText>
+            </SpaceView>
+
+            <SpaceView mb={12}>
               <View style={styles.dotTextContainer}>
                 <View style={styles.dot} />
-                <CommonText color={ColorType.gray6666}>{etcTxt02}</CommonText>
+                <CommonText
+                  color={'#6E6E6E'} 
+                  fontWeight={'500'}
+                  lineHeight={17}
+                  type={'h5'}
+                  textStyle={{marginTop: 4}}>아래 기준에 기초하여 인증 레벨이 부여됩니다.</CommonText>
               </View>
             </SpaceView>
-          ) : null}
+            
+            <SpaceView mb={15}>
+
+              {type == 'JOB' && (
+                <>
+                  <SpaceView mb={12}>
+                    <View style={styles.dotTextContainer}>
+                      <View style={styles.dot} />
+                      <CommonText
+                        color={'#6E6E6E'} 
+                        fontWeight={'500'}
+                        lineHeight={17}
+                        type={'h5'}
+                        textStyle={{marginTop: 4}}>직업 심사 기준</CommonText>
+                    </View>
+                  </SpaceView>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextHalfLeft}>사기업</Text>
+                    <Text style={_styles.rowTextHalfRight}>중소기업, 중견기업, 대기업</Text>
+                  </View>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextHalfLeft}>공무원</Text>
+                    <Text style={_styles.rowTextHalfRight}></Text>
+                  </View>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextHalfLeft}>전문직</Text>
+                    <Text style={_styles.rowTextHalfRight}>의사, 법조인, 약무, 동물치료, 세무, 무역, 부동산, 기술사</Text>
+                  </View>
+                  <SpaceView mb={12} mt={20}>
+                    <View style={styles.dotTextContainer}>
+                      <View style={styles.dot} />
+                      <CommonText
+                        color={'#6E6E6E'} 
+                        fontWeight={'500'}
+                        lineHeight={17}
+                        type={'h5'}
+                        textStyle={{marginTop: 4}}>세부 기준</CommonText>
+                    </View>
+                  </SpaceView>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextHalfLeft}>사기업</Text>
+                    <Text style={_styles.rowTextHalfRight}>팀원, 팀장급, 임원급, 대표급</Text>
+                  </View>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextHalfLeft}>공무원</Text>
+                    <Text style={_styles.rowTextHalfRight}>9급 - 7급 - 5급</Text>
+                  </View>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextHalfLeft}>전문직</Text>
+                    <Text style={_styles.rowTextHalfRight}>자격 1년 - 3년 - 5년 - 7년 이상</Text>
+                  </View>
+                </>
+              )}
+
+              {type == 'EDU' && (
+                <>
+                  <SpaceView mb={12}>
+                    <View style={styles.dotTextContainer}>
+                      <View style={styles.dot} />
+                      <CommonText
+                        color={'#6E6E6E'} 
+                        fontWeight={'500'}
+                        lineHeight={17}
+                        type={'h5'}
+                        textStyle={{marginTop: 4}}>학력 심사 기준</CommonText>
+                    </View>
+                  </SpaceView>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextHalfLeft}>서울대</Text>
+                    <Text style={_styles.rowTextHalfRight}>서울대</Text>
+                  </View>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextHalfLeft}>최상위대학</Text>
+                    <Text style={_styles.rowTextHalfRight}>국내 대학랭킹 2~10위</Text>
+                  </View>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextHalfLeft}>명문대</Text>
+                    <Text style={_styles.rowTextHalfRight}>국내 대학랭킹 11~30위</Text>
+                  </View>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextHalfLeft}>인서울4년제</Text>
+                    <Text style={_styles.rowTextHalfRight}>서울 소재 대학</Text>
+                  </View>
+                  <SpaceView mb={12} mt={20}>
+                    <View style={styles.dotTextContainer}>
+                      <View style={styles.dot} />
+                      <CommonText
+                        color={'#6E6E6E'} 
+                        fontWeight={'500'}
+                        lineHeight={17}
+                        type={'h5'}
+                        textStyle={{marginTop: 4}}>세부 기준</CommonText>
+                    </View>
+                  </SpaceView>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextHalfLeft}>일반</Text>
+                    <Text style={_styles.rowTextHalfRight}>학사 -  석사 - 박사</Text>
+                  </View>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextHalfLeft}>특수</Text>
+                    <Text style={_styles.rowTextHalfRight}>의대, 법대</Text>
+                  </View>
+                </>
+              )}
+
+              {type == 'INCOME' && (
+                <>
+                  <SpaceView mb={12}>
+                    <View style={styles.dotTextContainer}>
+                      <View style={styles.dot} />
+                      <CommonText
+                        color={'#6E6E6E'} 
+                        fontWeight={'500'}
+                        lineHeight={17}
+                        type={'h5'}
+                        textStyle={{marginTop: 4}}>소득 심사 기준(단위: 만원)</CommonText>
+                    </View>
+                  </SpaceView>
+                  <View style={[_styles.rowStyle, _styles.rowHeader]}>
+                    <Text style={[_styles.rowTextLeft, {color: '#fff'}]}>레벨</Text>
+                    <Text style={[_styles.rowTextCenter, {color: '#fff'}]}>연봉</Text>
+                    <Text style={[_styles.rowTextRight, {color: '#fff'}]}>연소득</Text>
+                  </View>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextLeft}>1</Text>
+                    <Text style={_styles.rowTextCenter}>3,000</Text>
+                    <Text style={_styles.rowTextRight}>4,000</Text>
+                  </View>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextLeft}>2</Text>
+                    <Text style={_styles.rowTextCenter}>5,000</Text>
+                    <Text style={_styles.rowTextRight}>4,000</Text>
+                  </View>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextLeft}>3</Text>
+                    <Text style={_styles.rowTextCenter}>8,000</Text>
+                    <Text style={_styles.rowTextRight}>10,000</Text>
+                  </View>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextLeft}>4</Text>
+                    <Text style={_styles.rowTextCenter}>10,000</Text>
+                    <Text style={_styles.rowTextRight}>13,000</Text>
+                  </View>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextLeft}>5</Text>
+                    <Text style={_styles.rowTextCenter}>20,000</Text>
+                    <Text style={_styles.rowTextRight}>35,000</Text>
+                  </View>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextLeft}>6</Text>
+                    <Text style={_styles.rowTextCenter}>45,000</Text>
+                    <Text style={_styles.rowTextRight}>65,000</Text>
+                  </View>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextLeft}>7</Text>
+                    <Text style={_styles.rowTextCenter}>70,000</Text>
+                    <Text style={_styles.rowTextRight}>100,000</Text>
+                  </View>
+                </>
+              )}
+
+              {type == 'ASSET' && (
+                <>
+                  <SpaceView mb={12}>
+                    <View style={styles.dotTextContainer}>
+                      <View style={styles.dot} />
+                      <CommonText
+                        color={'#6E6E6E'} 
+                        fontWeight={'500'}
+                        lineHeight={17}
+                        type={'h5'}
+                        textStyle={{marginTop: 4}}>자산 심사 기준(단위: 억원)</CommonText>
+                    </View>
+                  </SpaceView>
+                  <View style={[_styles.rowStyle, _styles.rowHeader]}>
+                    <Text style={[_styles.rowTextLeft, {color: '#fff'}]}>레벨</Text>
+                    <Text style={[_styles.rowTextCenter, {color: '#fff'}]}>현금</Text>
+                    <Text style={[_styles.rowTextRight, {color: '#fff'}]}>부동산</Text>
+                  </View>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextLeft}>1</Text>
+                    <Text style={_styles.rowTextCenter}>1</Text>
+                    <Text style={_styles.rowTextRight}>5</Text>
+                  </View>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextLeft}>2</Text>
+                    <Text style={_styles.rowTextCenter}>3</Text>
+                    <Text style={_styles.rowTextRight}>10</Text>
+                  </View>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextLeft}>3</Text>
+                    <Text style={_styles.rowTextCenter}>5</Text>
+                    <Text style={_styles.rowTextRight}>20</Text>
+                  </View>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextLeft}>4</Text>
+                    <Text style={_styles.rowTextCenter}>10</Text>
+                    <Text style={_styles.rowTextRight}>30</Text>
+                  </View>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextLeft}>5</Text>
+                    <Text style={_styles.rowTextCenter}>30</Text>
+                    <Text style={_styles.rowTextRight}>50</Text>
+                  </View>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextLeft}>6</Text>
+                    <Text style={_styles.rowTextCenter}>50</Text>
+                    <Text style={_styles.rowTextRight}>100</Text>
+                  </View>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextLeft}>7</Text>
+                    <Text style={_styles.rowTextCenter}>100</Text>
+                    <Text style={_styles.rowTextRight}>200</Text>
+                  </View>
+                </>
+              )}
+
+              {type == 'SNS' && (
+                <>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextHalfLeft}>파플러</Text>
+                    <Text style={_styles.rowTextHalfRight}>1,000명</Text>
+                  </View>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextHalfLeft}>인플루언서</Text>
+                    <Text style={_styles.rowTextHalfRight}>1만명</Text>
+                  </View>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextHalfLeft}>셀럽</Text>
+                    <Text style={_styles.rowTextHalfRight}>10만명 이상</Text>
+                  </View>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextHalfLeft}>스타</Text>
+                    <Text style={_styles.rowTextHalfRight}>50만명 이상</Text>
+                  </View>
+                </>
+              )}
+
+              {type == 'VEHICLE' && (
+                <>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextHalfLeft}>고급</Text>
+                    <Text style={_styles.rowTextHalfRight}>7,000</Text>
+                  </View>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextHalfLeft}>최고급</Text>
+                    <Text style={_styles.rowTextHalfRight}>10,000</Text>
+                  </View>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextHalfLeft}>최고급+</Text>
+                    <Text style={_styles.rowTextHalfRight}>20,000</Text>
+                  </View>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextHalfLeft}>슈퍼카</Text>
+                    <Text style={_styles.rowTextHalfRight}>브랜드 및 성능 기준이 슈퍼카 조건에 충족하는 자동차</Text>
+                  </View>
+                </>
+              )}
+
+
+            </SpaceView>
+          </SpaceView>
         </SpaceView>
 
-        {/* <SpaceView mb={24}>
-					<CommonBtn value={'등록 및 수정'} height={48} type={'white'} icon={ICON.plus} />
-				</SpaceView> */}
+      </ScrollView>
 
-        <SpaceView mb={24} viewStyle={[layoutStyle.alignCenter]}>
-          <View style={[layoutStyle.row]}>
-            <View>
-              <ImagePicker
-                isBig={false}
-                callbackFn={fileCallBackFn01}
-                uriParam={props.filePath01}
-              />
-            </View>
-            <View style={[commonStyle.mr10, commonStyle.ml10]}>
-              <ImagePicker
-                isBig={false}
-                callbackFn={fileCallBackFn02}
-                uriParam={props.filePath02}
-              />
-            </View>
-            <View>
-              <ImagePicker
-                isBig={false}
-                callbackFn={fileCallBackFn03}
-                uriParam={props.filePath03}
-              />
-            </View>
-          </View>
-        </SpaceView>
-
-        <SpaceView mb={16}>
-          <CommonBtn
-            value={'심사 요청'}
-            type={'primary'}
-            onPress={() => {
-              saveSecondAuth();
-            }}
-          />
-        </SpaceView>
+      {/* ######################### footer */}
+      <View>
+        <CommonBtn
+          value={'심사 요청'}
+          type={'primary'}
+          borderRadius={1}
+          onPress={() => {
+            saveSecondAuth();
+          }}
+        />
       </View>
-    </View>
+    </>
   );
 };
+
+
+{/* #######################################################################################################
+###########################################################################################################
+##################### Style 영역
+###########################################################################################################
+####################################################################################################### */}
+
+const _styles = StyleSheet.create({
+  rowHeader: {
+    backgroundColor: '#7986EE',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    borderWidth: 0,
+    paddingHorizontal: 20,
+  },
+  rowStyle: {
+    width: '100%',
+    borderStyle: 'solid',
+    flexDirection: `row`,
+    alignItems: `center`,
+    justifyContent: 'space-between',
+    borderBottomWidth: 1,
+    borderBottomColor: '#DEDEDE',
+    paddingVertical: 5,
+    paddingHorizontal: 20,
+  },
+  rowTextLeft: {
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 15,
+    lineHeight: 30,
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#4B4B4B',
+    width: '33%',
+  },
+  rowTextCenter: {
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 15,
+    lineHeight: 30,
+    letterSpacing: 0,
+    textAlign: 'center',
+    color: '#4B4B4B',
+    width: '33%',
+  },
+  rowTextRight: {
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 15,
+    lineHeight: 30,
+    letterSpacing: 0,
+    textAlign: 'right',
+    color: '#4B4B4B',
+    width: '33%',
+  },
+  ItemRowTextLeft: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 14,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    lineHeight: 27,
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#7b7b7b',
+    width: '33%',
+  },
+  rowTextHalfLeft: {
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 15,
+    lineHeight: 20,
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#4B4B4B',
+    width: '40%',
+    paddingVertical: 5,
+  },
+  rowTextHalfRight: {
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 15,
+    lineHeight: 20,
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#4B4B4B',
+    width: '60%',
+    paddingVertical: 5,
+  },
+})

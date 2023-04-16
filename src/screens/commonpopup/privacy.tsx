@@ -1,16 +1,6 @@
 import React, { useRef } from 'react';
 import type { FC, useState, useEffect } from 'react';
-import { Image, TouchableOpacity, View } from 'react-native';
-import { Modalize } from 'react-native-modalize';
-import CommonHeader from 'component/CommonHeader';
-import { layoutStyle, modalStyle, styles } from 'assets/styles/Styles';
 import { CommonText } from 'component/CommonText';
-import { ICON } from 'utils/imageUtils';
-import { CommonInput } from 'component/CommonInput';
-import SpaceView from 'component/SpaceView';
-import { CommonBtn } from 'component/CommonBtn';
-import { ColorType } from '@types';
-import { ImagePicker } from 'component/ImagePicker';
 
 interface Props {
 	

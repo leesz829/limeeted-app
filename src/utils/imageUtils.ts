@@ -27,6 +27,7 @@ export const ICON = {
   xBtn: require('assets/icon/icon-x.png'),
   xBtn2: require('assets/icon/icon-x2.png'),
   plus: require('assets/icon/icon-plus.png'),
+  plus2: require('assets/icon/icon-plus2.png'),
   distance: require('assets/icon/icon-distance.png'),
   close: require('assets/icon/icon-close.png'),
   like: require('assets/icon/icon-like.png'),
@@ -56,6 +57,7 @@ export const ICON = {
   penCircleGray: require('assets/icon/icon-penCircleGray.png'),
   align: require('assets/icon/icon-align.png'),
   searchGray: require('assets/icon/icon-search-gray.png'),
+  searchBlue: require('assets/icon/icon-search-blue.png'),
   wait: require('assets/icon/icon-wait.png'),
   pass: require('assets/icon/icon-pass.png'),
   purplePlus: require('assets/icon/icon-purple-plus.png'),
@@ -104,6 +106,7 @@ export const ICON = {
   fond: require('assets/icon/impression/fond.png'),
   smile: require('assets/icon/impression/smile.png'),
   icon_smile: require('assets/icon/icon_smail.png'),
+  confirmation: require('assets/icon/confirmation.png'),
 };
 
 export const GIF_IMG = {

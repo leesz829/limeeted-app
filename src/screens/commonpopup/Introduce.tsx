@@ -529,7 +529,7 @@ export const Introduce = (props: Props) => {
         modalHeight={height - 150}
 				FooterComponent={
 					<>
-						<SpaceView mb={16}>
+						<SpaceView>
 							<CommonBtn value={'저장'} 
 										type={'primary'}
                     height={60}

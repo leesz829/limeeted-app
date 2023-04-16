@@ -1,14 +1,23 @@
 import * as React from 'react';
-import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
+import { RouteProp, useIsFocused, useNavigation } from '@react-navigation/native';
+import { StackParamList, ScreenNavigationProp } from '@types';
+import { Dimensions, Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { SimpleGrid } from 'react-native-super-grid';
 import { ICON } from 'utils/imageUtils';
 const { width } = Dimensions.get('window');
 
 export default function ProfileAuth({ data }) {
+
+  const navigation = useNavigation<ScreenNavigationProp>();
+
+  console.log('data :::: ' , data);
+
   return (
     <>
       <View style={styles.profileTitleContainer}>
-        <Text style={styles.title}>프로필 인증</Text>
+        <TouchableOpacity onPress={() => { navigation.navigate('SecondAuth'); }}>
+          <Text style={styles.title}>프로필 인증</Text>
+        </TouchableOpacity>
         <View style={styles.levelBadge}>
           <Text style={[styles.levelText, { color: 'white' }]}>LV.7</Text>
         </View>
@@ -60,6 +69,14 @@ const renderAuthInfo = ({ item }: { item: auth }) => (
     )}
   </View>
 );
+
+
+
+{/* #######################################################################################################
+###########################################################################################################
+##################### Style 영역
+###########################################################################################################
+####################################################################################################### */}
 
 const styles = StyleSheet.create({
   profileTitleContainer: {

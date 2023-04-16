@@ -11,11 +11,8 @@ import { CommonInput } from 'component/CommonInput';
 import SpaceView from 'component/SpaceView';
 import { CommonBtn } from 'component/CommonBtn';
 import { ColorType } from '@types';
-import { ImagePicker } from 'component/ImagePicker';
-import { save_profile_auth, get_member_second_detail } from 'api/models';
 import { usePopup } from 'Context';
 import { useDispatch } from 'react-redux';
-import { setPartialPrincipal } from 'redux/reducers/authReducer';
 import { useSecondAth } from 'hooks/useSecondAth';
 
 

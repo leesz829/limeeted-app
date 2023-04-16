@@ -69,8 +69,7 @@ export const CustomerInquiry = (props : Props) => {
 			if(success) {
 				switch (data.result_code) {
 					case SUCCESS:
-						setComfirmModalVisible(true);
-						/* show({
+						show({
 							title: '문의 완료',
 							content: '문의하신 내용이 접수되었습니다.\n문의 내용은 관리자 확인 후 우편함으로\n답변드릴 예정입니다.' ,
 							confirmCallback: function() {
@@ -78,7 +77,7 @@ export const CustomerInquiry = (props : Props) => {
 									screen: 'Roby',
 								});
 							}
-						}); */
+						});
 						break;
 					default:
 						show({
@@ -154,41 +153,6 @@ export const CustomerInquiry = (props : Props) => {
 				</SpaceView>
 
 			</ScrollView>
-
-			{/* ###################### 구매하기 Confirm 팝업 */}
-			<Modal visible={comfirmModalVisible} transparent={true} style={modalStyleProduct.modal}>
-				<View style={modalStyle.modalBackground}>
-					<View style={modalStyleProduct.modalStyle1}>
-						<SpaceView mb={16} viewStyle={layoutStyle.alignCenter}>
-							<CommonText fontWeight={'700'} type={'h4'}>
-								문의 완료
-							</CommonText>
-						</SpaceView>
-
-						<SpaceView viewStyle={[layoutStyle.alignCenter]}>
-							<CommonText type={'h5'} textStyle={[commonStyle.textCenter]}>
-								문의하신 내용이 접수되었습니다.{'\n'}문의 내용은 관리자 확인 후 우편함으로{'\n'}답변드릴 예정입니다.
-							</CommonText>
-						</SpaceView>
-
-						<View style={modalStyle.modalBtnContainer}>
-							<View style={modalStyle.modalBtnline} />
-							<TouchableOpacity 
-								style={modalStyle.modalBtn}
-								onPress={() => {
-									setComfirmModalVisible(false);
-									navigation.navigate(STACK.TAB, {
-										screen: 'Roby',
-									});
-								}}>
-								<CommonText fontWeight={'500'}>
-									확인
-								</CommonText>
-							</TouchableOpacity>
-						</View>
-					</View>
-				</View>
-			</Modal>
 		</>
 	);
 };

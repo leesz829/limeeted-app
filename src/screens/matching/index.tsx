@@ -32,6 +32,7 @@ import { usePopup } from 'Context';
 import * as hooksMember from 'hooks/member';
 import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
+import { modalStyle } from 'assets/styles/Styles';
 import {
   Dimensions,
   FlatList,
@@ -69,11 +70,13 @@ export default function Matching(props: Props) {
 
   // 매칭 회원 관련 데이터
   const [data, setData] = useState<any>({
-    memberBase: {},
-    profileImgList: [],
-    secondAuthList: [],
-    interviewList: [],
-    interestList: [],
+    match_member_info: {},
+    profile_img_list: [],
+    second_auth_list: [],
+    interview_list: [],
+    interest_list: [],
+    report_code_list: [],
+    safe_royal_pass: Number,
   });
 
   // 신고목록
@@ -81,12 +84,19 @@ export default function Matching(props: Props) {
     { text: '', value: '' },
   ]);
 
-  // ############################################################ 팝업 관련
-  const [interestSendPopup, setInterestSendPopup] = useState(false); // 관심 보내기 팝업
-  const [sincereSendPopup, setSincereSendPopup] = useState(false); // 찐심 보내기 팝업
-  const [cancelPopup, setCancelPopup] = useState(false); // 찐심 보내기 팝업
-  const [reportPopup, setReportPopup] = useState(false); // 찐심 보내기 팝업
+  // 선택된 신고하기 타입
+  const [checkReportType, setCheckReportType] = useState(['']);
 
+  // 신고 Pop
+  const report_modalizeRef = useRef<Modalize>(null);
+  const report_onOpen = () => {
+    report_modalizeRef.current?.open();
+  };
+  const report_onClose = () => {
+    report_modalizeRef.current?.close();
+  };
+
+  // ################################################################ 초기 실행 함수
   useEffect(() => {
     if (isFocus) {
       // 데일리 매칭 정보 조회
@@ -94,6 +104,7 @@ export default function Matching(props: Props) {
     }
   }, [isFocus]);
 
+  // ############################################################ 데일리 매칭 정보 조회
   const getDailyMatchInfo = async () => {
     try {
       const { success, data } = await get_daily_matched_info();
@@ -112,9 +123,144 @@ export default function Matching(props: Props) {
     }
   };
 
+  /* #############################################
+	##### 거부/찐심/관심 팝업 함수
+	##### - activeType : pass(거부), sincere(찐심), interest(관심)
+	############################################# */
+  const popupActive = (activeType: string) => {
+    if (activeType == 'interest') {
+      show({
+				title: '관심 보내기',
+				content: '패스를 소모하여 관심을 보내시겠습니까?\n패스 x5' ,
+        cancelCallback: function() {
+
+        },
+				confirmCallback: function() {
+          insertMatchInfo(activeType);
+				}
+			});
+    } else if (activeType == 'sincere') {
+      show({
+				title: '찐심 보내기',
+				content: '보유 찐심\nx' + data?.safe_royal_pass ,
+        cancelCallback: function() {
+
+        },
+				confirmCallback: function() {
+          insertMatchInfo(activeType);
+				}
+			});
+    } else if (activeType == 'pass') {
+      show({
+				title: '매칭 취소',
+				content: '이성을 거부하시겠습니까?' ,
+        cancelCallback: function() {
+
+        },
+				confirmCallback: function() {
+          insertMatchInfo(activeType);
+				}
+			});
+    }
+  };
+
+  // ############################################################ 찐심/관심/거부 저장
+  const insertMatchInfo = async (activeType: string) => {
+
+    const body = {
+      active_type: activeType,
+      res_member_seq: data.match_member_info.member_seq,
+    };
+    try {
+      const { success, data } = await regist_match_status(body);
+
+      if(success) {
+        if(data.result_code == '0000') {
+          dispatch(myProfile());
+          getDailyMatchInfo();
+          //setIsLoad(false);
+        } else if (data.result_code == '6010') {
+          show({ content: '보유 패스가 부족합니다.' });
+          return false;
+        } else {
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+    }
+  };
+
+  // ############################################################ 사용자 신고하기 - 신고사유 체크 Callback 함수
+  const reportCheckCallbackFn = (reportType: string, check: boolean) => {
+    if (check) {
+      checkReportType.push(reportType);
+      setCheckReportType(
+        checkReportType.filter((e, index) => checkReportType.indexOf(e) === index && e)
+      );
+    } else {
+      setCheckReportType(
+        checkReportType.filter((e) => e != reportType && e)
+      );
+    }
+  };
+
+  // ############################################################ 사용자 신고하기 - 팝업 활성화
+  const popupReport = () => {
+    if (!checkReportType.length) {
+      show({ content: '신고항목을 선택해주세요.' });
+      return false;
+    } else {
+      report_onOpen();
+    }
+  };
+
+  // ############################################################ 사용자 신고하기 등록
+  const insertReport = async () => {
+
+    const body = {
+      report_type_code_list: checkReportType.join(),
+      report_member_seq: data.memberBase.member_seq
+    };
+    try {
+      const { success, data } = await report_matched_user(body);
+
+      if(success) {
+        if (data.result_code != '0000') {
+          console.log(data.result_msg);
+          return false;
+        }
+
+        show({ content: '신고 처리 되었습니다.' });
+
+        setCheckReportType([]);
+        //setReportPopup(false);
+        getDailyMatchInfo();
+        //setIsLoad(false);
+
+        // 스크롤 최상단 이동
+        /* scrollRef.current?.scrollTo({
+          y: 0,
+          animated: false,
+        }); */
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      
+    }
+
+  };
+
+
   return (
     <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
       <TopNavigation currentPath={'LIMEETED'} />
+
+      {/* ####################################################################################
+      ####################### 상단 영역
+      #################################################################################### */}
       <View>
         <FlatList
           data={data?.profile_img_list}
@@ -122,49 +268,95 @@ export default function Matching(props: Props) {
           horizontal
           pagingEnabled
         />
-        <AbsoluteView />
+
+        <View style={styles.absoluteView}>
+          <View style={styles.badgeContainer}>
+            <View style={styles.authBadge}>
+              <Text style={styles.whiteText}>인증 완료</Text>
+            </View>
+            <View style={styles.redBadge}>
+              <Image source={ICON.whiteCrown} style={styles.crownIcon} />
+              <Text style={styles.whiteText}>{data.match_member_info?.profile_score}</Text>
+            </View>
+          </View>
+          <View style={styles.nameContainer}>
+            <Text style={styles.nameText}>{data.match_member_info?.nickname}, {data.match_member_info?.age}</Text>
+            <Image source={ICON.checkICon} style={styles.checkIcon} />
+          </View>
+          {/* <View style={styles.distanceContainer}>
+            <Image source={ICON.marker} style={styles.markerIcon} />
+            <Text style={styles.regionText}>경기도 수원시 12.9Km</Text>
+          </View> */}
+          <View style={styles.buttonsContainer}>
+            <TouchableOpacity onPress={() => { popupActive('pass'); }}>
+              <Image source={ICON.closeCircle} style={styles.smallButton} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => { popupActive('sincere'); }}>
+              <Image source={ICON.ticketCircle} style={styles.largeButton} />
+            </TouchableOpacity >
+            <TouchableOpacity onPress={() => { popupActive('interest'); }} style={styles.freePassContainer}>
+              <Image source={ICON.heartCircle} style={styles.largeButton} />
+              <View style={styles.freePassBage}>
+                <Text style={styles.freePassText}>자유이용권 ON</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Image source={ICON.starCircle} style={styles.smallButton} />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* <AbsoluteView member={data.match_member_info}  /> */}
       </View>
 
       <View style={styles.padding}>
         {/* 부스트 */}
-        <View style={styles.boostPannel}>
-          <View style={styles.boostBadge}>
-            <Text style={styles.boostBadgeText}>BOOST</Text>
+        {data.match_member_info.boost_yn === 'Y' && (
+          <View style={styles.boostPannel}>
+            <View style={styles.boostBadge}>
+              <Text style={styles.boostBadgeText}>BOOST</Text>
+            </View>
+            <Text style={styles.boostTitle}>부스터 회원을 만났습니다.</Text>
+            <Text style={styles.boostDescription}>
+              관심이나 찐심을 보내면 소셜 평점 보너스가 부여됩니다.
+            </Text>
           </View>
-          <Text style={styles.boostTitle}>부스터 회원을 만났습니다.</Text>
-          <Text style={styles.boostDescription}>
-            관심이나 찐심을 보내면 소셜 평점 보너스가 부여됩니다.
-          </Text>
-        </View>
+        )}
+        
         {/* 프로필 인증 */}
-        <ProfileAuth data={data} />
+        <ProfileAuth data={data.second_auth_list} />
 
-        <Text style={styles.title}>방배동아이유님의 관심사</Text>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 20 }}>
-          {interest.map((item, index) => {
-            const isOn = true;
-            return (
-              <View style={styles.interestItem(isOn)}>
-                <Text style={styles.interestText(isOn)}>{item.code_name}</Text>
-              </View>
-            );
-          })}
-        </View>
+        {data.interest_list.length > 0 && (
+          <>
+            <Text style={styles.title}>방배동아이유님의 관심사</Text>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 20 }}>
+              {data.interest_list.map((item, index) => {
+                const isOn = true;
+                return (
+                  <View style={styles.interestItem(isOn)}>
+                    <Text style={styles.interestText(isOn)}>{item.code_name}</Text>
+                  </View>
+                );
+              })}
+            </View>
+          </>
+        )}
+
         <Text style={styles.title}>프로필 활동지수</Text>
         <View style={styles.profileActivePannel}>
           <Text style={styles.profileEverageText}>프로필 평점</Text>
           <Text style={styles.profileActiveText1}>
             리미티드에 퍼진{' '}
             <Text style={{ fontFamily: 'AppleSDGothicNeoEB00' }}>
-              리미티드닉네임열글자
+              {data.match_member_info.nickname}
             </Text>
             님의 인상
           </Text>
-          <Text style={styles.profileActiveText2}>중독성 있는 퇴폐미</Text>
+          <Text style={styles.profileActiveText2}>{data.match_member_info.face_code_name}</Text>
           <View style={styles.sliderContainer}>
-            <Text style={styles.sliderText}>프로필 평점 8.0</Text>
+            <Text style={styles.sliderText}>프로필 평점 {data.match_member_info.profile_score}</Text>
             <Slider
-              value={0.8}
+              value={data.match_member_info.profile_score/10}
               animateTransitions={true}
               renderThumbComponent={() => null}
               maximumTrackTintColor={ColorType.purple}
@@ -191,9 +383,9 @@ export default function Matching(props: Props) {
             느낌이 들어요
           </Text>
           <View style={styles.sliderContainer}>
-            <Text style={styles.sliderText}>소셜 평점 8.0</Text>
+            <Text style={styles.sliderText}>소셜 평점 {data.match_member_info.social_grade}</Text>
             <Slider
-              value={0.8}
+              value={data.match_member_info.social_grade/10}
               animateTransitions={true}
               renderThumbComponent={() => null}
               maximumTrackTintColor={'#fe0456'}
@@ -210,13 +402,65 @@ export default function Matching(props: Props) {
           </View>
         </View>
 
-        <View style={styles.reportButton}>
-          <Text style={styles.reportText}>신고하기</Text>
-        </View>
+        <TouchableOpacity onPress={() => { report_onOpen(); }}>
+          <View style={styles.reportButton}>
+            <Text style={styles.reportText}>신고하기</Text>
+          </View>
+        </TouchableOpacity>
       </View>
 
       <View style={{ height: 50 }} />
+
+
+      {/* ###############################################
+                        사용자 신고하기 팝업
+            ############################################### */}
+      <Modalize
+        ref={report_modalizeRef}
+        adjustToContentHeight={true}
+        handleStyle={modalStyle.modalHandleStyle}
+        modalStyle={modalStyle.modalContainer}
+      >
+        <View style={modalStyle.modalHeaderContainer}>
+          <CommonText fontWeight={'700'} type={'h3'}>
+            사용자 신고하기
+          </CommonText>
+          <TouchableOpacity onPress={report_onClose}>
+            <Image source={ICON.xBtn} style={styles.iconSize24} />
+          </TouchableOpacity>
+        </View>
+
+        <View style={modalStyle.modalBody}>
+          <SpaceView mb={13}>
+            <CommonText textStyle={[styles.reportText, {color: ColorType.black0000}]}>신고사유를 알려주시면 더 좋은{'\n'}리미티드를 만드는데 도움이 됩니다.</CommonText>
+          </SpaceView>
+
+          <SpaceView mb={24}>
+            {data.report_code_list.length &&
+              data.report_code_list.map((i, index) => (
+                <CommonCheckBox
+                  label={i.code_name}
+                  value={i.common_code}
+                  key={index + '_' + i.common_code}
+                  callBackFunction={reportCheckCallbackFn}
+                />
+              ))}
+          </SpaceView>
+
+          <SpaceView mb={16}>
+            <CommonBtn
+              value={'신고하기'}
+              onPress={popupReport}
+              type={'black'}
+              height={59} 
+              fontSize={19}
+            />
+          </SpaceView>
+        </View>
+      </Modalize>
+
     </ScrollView>
+    
   );
 }
 /**
@@ -241,7 +485,7 @@ function RenderItem({ item }) {
 /**
  *  이미지 위 정보들
  */
-function AbsoluteView() {
+function AbsoluteView(data:any) {
   return (
     <View style={styles.absoluteView}>
       <View style={styles.badgeContainer}>
@@ -250,17 +494,17 @@ function AbsoluteView() {
         </View>
         <View style={styles.redBadge}>
           <Image source={ICON.whiteCrown} style={styles.crownIcon} />
-          <Text style={styles.whiteText}>1.0</Text>
+          <Text style={styles.whiteText}>{data.member?.profile_score}</Text>
         </View>
       </View>
       <View style={styles.nameContainer}>
-        <Text style={styles.nameText}>방배동 아이유, 29</Text>
+        <Text style={styles.nameText}>{data.member?.nickname}, {data.member?.age}</Text>
         <Image source={ICON.checkICon} style={styles.checkIcon} />
       </View>
       <View style={styles.distanceContainer}>
         <Image source={ICON.marker} style={styles.markerIcon} />
         <Text style={styles.regionText}>경기도 수원시 12.9Km</Text>
-      </View>
+      </View> 
       <View style={styles.buttonsContainer}>
         <TouchableOpacity>
           <Image source={ICON.closeCircle} style={styles.smallButton} />
@@ -281,10 +525,18 @@ function AbsoluteView() {
     </View>
   );
 }
+
+
+
+{/* #######################################################################################################
+###########################################################################################################
+##################### Style 영역
+###########################################################################################################
+####################################################################################################### */}
+
 const styles = StyleSheet.create({
   absoluteView: {
     position: 'absolute',
-
     left: 0,
     right: 0,
     bottom: -width * 0.15,
