@@ -26,32 +26,26 @@ export const RadioCheckBox_3: FC<Props> = (props) => {
 
         return (
           <SpaceView
-            key={index + 'check'}
-          >
+            key={index + 'check'}>
             <TouchableOpacity
               style={[
                 styles.checkWrap,
               ]}
-              onPress={() => onPressFn(index, item.value)}
-            >
+              onPress={() => onPressFn(index, item.value)}>
               
               <View
                 style={[
                   styles.checkContainer,
                   index === checkIndex && styles.active,
-                ]}
-              >
+                ]}>
                 <Image
                   source={index === checkIndex ? ICON.checkOn : ICON.checkOff}
-                  style={styles.iconStyle}
-                />
+                  style={styles.iconStyle}/>
               </View>
-
 
               <SpaceView ml={8}>
                 <CommonText fontWeight={'500'} color={index === checkIndex ? '#697AE6' : '#B2B2B2'}>{item.label}</CommonText>
               </SpaceView>
-
               
             </TouchableOpacity>
           </SpaceView>

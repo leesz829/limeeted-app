@@ -43,6 +43,7 @@ import { usePopup } from 'Context';
 import LinearGradient from 'react-native-linear-gradient';
 import { Rating, AirbnbRating } from 'react-native-ratings';
 
+
 const { width, height } = Dimensions.get('window');
 
 /* ################################################################################################################
@@ -273,13 +274,15 @@ export const Roby = (props: Props) => {
           backgroundColor: 'white',
           flexGrow: 1,
         }}
-        style={{ backgroundColor: 'white' }}
-      >
+        style={{ backgroundColor: 'white' }} >
+
         <LinearGradient
           colors={['#89b0fa', '#aaa1f7']}
           style={{
             width: '100%',
-            height: 171,
+            height: 151,
+            borderTopWidth: 1,
+            borderTopColor: '#00FFFF'
           }}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
@@ -338,11 +341,7 @@ export const Roby = (props: Props) => {
                     <SpaceView>
                       <Image source={memberBase.gender == 'M' ? IMAGE.robyMaleImg : IMAGE.robyFemaleImg} style={{width: '100%', height: 100}} />
                       <SpaceView viewStyle={{position: 'absolute', top: 10, left: 15}}>
-                        <CommonText 
-                          color={ColorType.white}
-                          fontWeight={'200'}
-                          textStyle={{ backgroundColor: memberBase.gender == 'M' ? '#7986EE' : '#FE0456', borderRadius: 20, textAlign: 'center', width: 100, fontSize: 10}}>리미티드 회원님들이</CommonText>
-                        <CommonText type={'h5'} fontWeight={'700'} textStyle={{marginTop: 3}}>{memberBase?.nickname}님을</CommonText>
+                        <CommonText type={'h5'} fontWeight={'700'} textStyle={{marginTop: 3, marginBottom: 5, lineHeight: 18}}>{memberBase?.nickname}님의{'\n'}리미티드 대표 인상</CommonText>
                         <CommonText type={'h5'} fontWeight={'200'} color={memberBase.gender == 'M' ? '#7986EE' : '#FE0456'} textStyle={{marginTop: 0}}>{memberBase.best_face}이라고 생각해요!</CommonText>
                       </SpaceView>
                     </SpaceView>
@@ -374,9 +373,9 @@ export const Roby = (props: Props) => {
               {memberBase?.reex_yn == 'Y' ? (
                 <RatingCard
                   title={'프로필 심사중'}
-                  desc={`내 프로필을 평가한\n이성들의 평균 점수 입니다`}
+                  desc={'내 프로필을 ' + memberBase?.profile_eval_cnt + '명의 회원님이\n평가를 남겨주셨어요.'}
                   value={memberBase?.profile_score}
-                  isPennding={reassessment}
+                  isPennding={true}
                 />
               ) : (
                 <RatingCard
@@ -387,8 +386,16 @@ export const Roby = (props: Props) => {
                 />
               )}
               <RatingCard
-                title={'기여평점'}
-                desc={`내 프로필을 평가한\n이성들의 평균 점수 입니다`}
+                title={'소셜 평점'}
+                desc={
+                  memberBase?.social_grade > 9 && '천상계와 신계 그 어딘가의 존재' ||
+                  memberBase?.social_grade > 8 && memberBase?.social_grade <= 9 && '미세먼지없이 맑은 하늘 위에 숨쉬는 존재' ||
+                  memberBase?.social_grade > 7 && memberBase?.social_grade <= 8 && '쾌청한 하늘 아래 맑은 바닷물과 어울리는 분' ||
+                  memberBase?.social_grade > 6 && memberBase?.social_grade <= 7 && '따사로운 햇살이 비치는 꽃길을 걷는 분' ||
+                  memberBase?.social_grade > 5 && memberBase?.social_grade <= 6 && '어두운 골목과 화려한 조명의 조화 속에 숨은 사람' ||
+                  memberBase?.social_grade > 4 && memberBase?.social_grade <= 5 && '심해로 통하는 어두운 바다에 몸을 담근 자' ||
+                  memberBase?.social_grade <= 4 && '깊은 심해를 탐험하는 자'
+                }
                 value={memberBase?.social_grade.toFixed(1)}
                 isPennding={reassessment}
               />
@@ -905,22 +912,27 @@ function RatingCard({ title, desc, value, isPennding }) {
     <View style={ratingCard.cardStyle}>
       <Text style={ratingCard.cardTitle}>{title}</Text>
       <View style={ratingCard.middleBox}>
-        <Text
-          style={isPennding ? ratingCard.pendingText : ratingCard.ratingText}
-        >
+        <Text style={isPennding ? ratingCard.pendingText : ratingCard.ratingText}>
           {value}
         </Text>
         {isPennding ? (
-          <Slider
-            value={value / 10}
-            animateTransitions={true}
-            renderThumbComponent={() => null}
-            maximumTrackTintColor={'#8854d2'}
-            minimumTrackTintColor={'#8854d2'}
-            containerStyle={ratingCard.sliderContainer}
-            trackStyle={ratingCard.sliderTrack}
-            trackClickable={false}
-          />
+          <>
+            <Slider
+              value={value / 10}
+              animateTransitions={true}
+              renderThumbComponent={() => null}
+              maximumTrackTintColor={'#8854d2'}
+              minimumTrackTintColor={'#8854d2'}
+              containerStyle={ratingCard.sliderContainer}
+              trackStyle={ratingCard.sliderTrack}
+              trackClickable={false}
+            />
+            <View style={ratingCard.gageContainer}>
+              <Text style={ratingCard.gageText}>0</Text>
+              <Text style={ratingCard.gageText}>5</Text>
+              <Text style={ratingCard.gageText}>10</Text>
+            </View>
+          </>
         ) : (
           <Rating
             readonly
@@ -983,6 +995,7 @@ const ratingCard = StyleSheet.create({
     letterSpacing: 0,
     textAlign: 'left',
     color: '#7986ee',
+    marginTop: 12,
   },
   desc: {
     fontFamily: 'AppleSDGothicNeoM00',
@@ -992,17 +1005,40 @@ const ratingCard = StyleSheet.create({
     letterSpacing: 0,
     textAlign: 'left',
     color: '#aaabbf',
+    height: 40
+    
   },
   sliderContainer: {
     width: '100%',
-    marginTop: 10,
-    height: 6,
-    borderRadius: 3,
+    marginTop: 13,
+    height: 20,
+    borderRadius: 13,
     backgroundColor: ColorType.primary,
   },
   sliderTrack: {
-    height: 6,
-    borderRadius: 3,
+    height: 20,
+    borderRadius: 13,
     backgroundColor: ColorType.grayDDDD,
+  },
+  gageContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  gageText: {
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 10,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    lineHeight: 15,
+    letterSpacing: 0,
+    textAlign: 'center',
+    color: '#AAABBF',
+  },
+  myImpressionContainer: {
+    width: '100%',
+    marginTop: 0,
+    marginBottom: 0,
   },
 });

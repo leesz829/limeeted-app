@@ -128,6 +128,8 @@ export const IMAGE = {
   signImg: require('assets/img/sign_img.png'),
   robyFemaleImg: require('assets/img/roby_female_img.png'),
   robyMaleImg: require('assets/img/roby_male_img.png'),
+  royalpassImg: require('assets/img/royalpass_img.png'),
+  passImg: require('assets/img/pass_img.png'),
 };
 
 export const START_IMAGE = {

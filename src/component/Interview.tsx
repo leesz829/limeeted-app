@@ -115,6 +115,7 @@ export default function Interview({
     };
     try {
       const { success, data } = await update_interview(body);
+      console.log('data ::::: ' , data);
       if (success) {
         if (data.result_code == '0000') {
           dispatch(
@@ -380,7 +381,7 @@ const style = StyleSheet.create({
     textAlign: 'left',
     color: '#7986ee',
     marginLeft: 10,
-    marginTop: -7,
+    marginTop: -10,
     
     /* position: 'absolute',
     top: 1, */

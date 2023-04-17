@@ -406,11 +406,10 @@ export default function Matching(props: Props) {
             <View style={styles.profileActivePannel}>
               <Text style={styles.profileEverageText}>프로필 평점</Text>
               <Text style={styles.profileActiveText1}>
-                리미티드에 퍼진{' '}
                 <Text style={{ fontFamily: 'AppleSDGothicNeoEB00' }}>
                   {data.match_member_info.nickname}
                 </Text>
-                님의 인상
+                님의 리미티드 대표 인상
               </Text>
               <Text style={styles.profileActiveText2}>{data.match_member_info.face_code_name}</Text>
               <View style={styles.sliderContainer}>
@@ -434,7 +433,7 @@ export default function Matching(props: Props) {
             </View>
 
             <View style={styles.socialContainer}>
-              <Text style={styles.socialEverageText}>내 소셜 평점</Text>
+              <Text style={styles.socialEverageText}>소셜 평점</Text>
               <Text style={[styles.socialText1, { fontFamily: 'AppleSDGothicNeoEB00' }]}>
                 {data.match_member_info?.social_grade > 9 && '천상계와 신계 그 어딘가의 존재'}
                 {data.match_member_info?.social_grade > 8 && data.match_member_info?.social_grade <= 9 && '미세먼지없이 맑은 하늘 위에 숨쉬는 존재'}
@@ -442,7 +441,7 @@ export default function Matching(props: Props) {
                 {data.match_member_info?.social_grade > 6 && data.match_member_info?.social_grade <= 7 && '따사로운 햇살이 비치는 꽃길을 걷는 분'}
                 {data.match_member_info?.social_grade > 5 && data.match_member_info?.social_grade <= 6 && '어두운 골목과 화려한 조명의 조화 속에 숨은 사람'}
                 {data.match_member_info?.social_grade > 4 && data.match_member_info?.social_grade <= 5 && '심해로 통하는 어두운 바다에 몸을 담근 자'}
-                {data.match_member_info?.social_grade <= 4 && '깊이를 알수없는 심해를 탐험하는 자'}
+                {data.match_member_info?.social_grade <= 4 && '깊은 심해를 탐험하는 자'}
               </Text>
               {/* <Text style={styles.socialText1}>매칭되면</Text>
               <Text style={styles.socialText1}>

@@ -541,19 +541,19 @@ const AuthItemRender = (dataObj:any) => {
 
   if(data.common_code == 'JOB') {
     imgSrc = ICON.jobNew;
-    authDesc = '내 커리어를 확인할 수 있는 명함 또는 증명서를 올려주세요';
+    authDesc = '커리어를 확인할 수 있는 명함 또는 증명서를 올려주세요';
   } else if(data.common_code == 'EDU') {
     imgSrc = ICON.degreeNew;
     authDesc = '대학교/대학원의 재학증명서/졸업증명를 올려주세요.';
   } else if(data.common_code == 'INCOME') {
     imgSrc = ICON.incomeNew;
-    authDesc = '내 소득 자료를 올려주세요.';
+    authDesc = '소득 자료를 올려주세요.';
   } else if(data.common_code == 'ASSET') {
     imgSrc = ICON.assetNew;
     authDesc = '은행에서 발급해주는 잔고 증명서를 올려주세요.';
   } else if(data.common_code == 'SNS') { 
     imgSrc = ICON.snsNew;
-    authDesc = '내 인스타 ID가 보이는 스크린샷을 올려주세요.';
+    authDesc = '인스타 ID가 보이는 스크린샷을 올려주세요.';
   } else if(data.common_code == 'VEHICLE') {
     imgSrc = ICON.vehicleNew;
     authDesc = '차량 등록등 또는 자동차보험가입 증빙 자료를 올려주세요.';
@@ -566,23 +566,31 @@ const AuthItemRender = (dataObj:any) => {
           <Image source={imgSrc} style={styles.iconSize60} />
         </SpaceView>
 
-        {data.auth_level !== '' && typeof data.auth_level !== 'undefined' ? (
+        {typeof data.auth_status == 'undefined' || data.auth_status == 'REFUSE' ? (
+          <>
+            <View style={[layoutStyle.row, _styles.levelArea, {backgroundColor: '#697AE6'}]}>
+              <CommonText 
+                type={'h7'} 
+                fontWeight={'500'} 
+                color={ColorType.white}>미인증</CommonText>
+            </View>
+          </>
+        ) : data.auth_level !== '' && typeof data.auth_level !== 'undefined' && (
           <View style={[layoutStyle.row, _styles.levelArea]}>
             <CommonText 
               type={'h7'} 
-              fontWeight={'500'} 
+              fontWeight={'700'} 
               color={'#697AE6'}>LV. {data.auth_level}</CommonText>
           </View>
-        ) : null}
+        )}
 
-        {data.auth_status == 'PROGRESS' || typeof data.auth_status == 'undefined' ? (
+        {data.auth_status == 'PROGRESS' ? (
           <View style={[layoutStyle.row, _styles.statusArea2]}>
             <CommonText
               type={'h7'} 
               fontWeight={'500'} 
               color={ColorType.white}>
-                  {data.auth_status == 'PROGRESS' && '심사중'}
-                  {typeof data.auth_status == 'undefined' && '인증안함'}
+                심사중
             </CommonText>
           </View>
         ) : null}

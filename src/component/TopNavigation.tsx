@@ -9,7 +9,7 @@ import * as React from 'react';
 import { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { BasePopup } from 'screens/commonpopup/BasePopup';
-import { ICON } from 'utils/imageUtils';
+import { ICON, IMAGE } from 'utils/imageUtils';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 interface Props {
@@ -114,7 +114,7 @@ export function Wallet({ theme }) {
           }}
         >
           <View style={[styles.itemContainer, { marginRight: 8 }]}>
-            <Image style={styles.itemStyle} source={ICON.currency} />
+            <Image style={styles.itemStyle} source={IMAGE.passImg} />
             <Text
               style={[
                 styles.statusText,
@@ -125,7 +125,7 @@ export function Wallet({ theme }) {
             </Text>
           </View>
           <View style={styles.itemContainer}>
-            <Image style={styles.itemStyle} source={ICON.ticket} />
+            <Image style={styles.itemStyle} source={IMAGE.royalpassImg} />
             <Text
               style={[
                 styles.statusText,
@@ -175,8 +175,8 @@ const styles = StyleSheet.create({
     backgroundColor: Color.black2222,
   },
   itemStyle: {
-    width: 18,
-    height: 18,
+    width: 22,
+    height: 22,
     marginRight: 5,
     resizeMode: 'contain',
   },

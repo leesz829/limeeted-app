@@ -79,13 +79,13 @@ export const ChangePassword = (props : Props) => {
 			return;
 		}
 
-		/* let regPass = /^(?=.*[a-zA-Z])(?=.*[0-9]).{8,25}$/;
+		let regPass = /^(?=.*[a-zA-Z])(?=.*[0-9]).{8,25}$/;
 		if((!regPass.test(newPassword))){
 			setIsNewPassword(true);
-			setNewPasswordConfirmMessage("영문(소문자) + 숫자 + 특수문자 조합 8자리 이상 입력해주세요.");
+			setNewPasswordConfirmMessage("영문, 숫자 조합으로 8-20자리 입력해주세요.");
 			setNewPasswordConfirmMessageColor('#E04136');
 			return;
-		} */
+		}
 
 		if(newPasswordChk == '') {
 			setIsNewPasswordChk(true);
@@ -100,6 +100,14 @@ export const ChangePassword = (props : Props) => {
 			setNewPasswordChkConfirmMessageColor('#E04136');
 			return;
 		}
+
+		if(oldPassword == newPassword) {
+			setIsNewPassword(true);
+			setNewPasswordConfirmMessage("동일한 비밀번호는 사용하실 수 없습니다.");
+			setNewPasswordChkConfirmMessageColor('#E04136');
+			return;
+		}
+
 
 		//setOldPasswordConfirmMessage("정상 입력되었습니다.");
 		setNewPasswordConfirmMessage("정상 입력되었습니다.");
@@ -177,17 +185,16 @@ export const ChangePassword = (props : Props) => {
 		<>
 			<CommonHeader title={'비밀번호 변경'} />
 			<ScrollView contentContainerStyle={[styles.scrollContainer]}>
-				
 				<View style={layoutStyle.alignCenter}>
-					<SpaceView>
-						<Image source={IMAGE.logoMark} style={styles.logoMark} resizeMode="contain" />
+					<SpaceView mt={30}>
+						<Image source={IMAGE.logoMarkRenew} style={styles.logoMark} />
 					</SpaceView>
-					<SpaceView mb={15}>
+					{/* <SpaceView mb={15}>
 						<Image source={IMAGE.logoText} style={styles.logo} resizeMode="contain" />
-					</SpaceView>
+					</SpaceView> */}
 				</View>
 
-				<SpaceView mb={24}>
+				<SpaceView mb={24} mt={60}>
 					<CommonInput
 						label="현재 비밀번호"
 						value={oldPassword}
@@ -197,7 +204,7 @@ export const ChangePassword = (props : Props) => {
 
 					/>
 					{/* {isOldPassword && (<Text style={{color: oldPasswordConfirmMessageColor}}>{oldPasswordConfirmMessage}</Text>)} */}
-					{oldPasswordConfirmMessage !== '' && (<Text style={{color: oldPasswordConfirmMessageColor}}>{oldPasswordConfirmMessage}</Text>)}
+					{oldPasswordConfirmMessage !== '' && (<Text style={{marginTop: 10}}>{oldPasswordConfirmMessage}</Text>)}
 				</SpaceView>
 
 				<SpaceView mb={24}>
@@ -208,7 +215,7 @@ export const ChangePassword = (props : Props) => {
 						isMasking={true}
 						maxLength={20}
 					/>
-					{isNewPassword && (<Text style={{color: newPasswordConfirmMessageColor}}>{newPasswordConfirmMessage}</Text>)}
+					{isNewPassword && (<Text style={{color: newPasswordConfirmMessageColor, marginTop: 10}}>{newPasswordConfirmMessage}</Text>)}
 				</SpaceView>
 
 				<SpaceView mb={24}>
@@ -219,7 +226,7 @@ export const ChangePassword = (props : Props) => {
 						isMasking={true}
 						maxLength={20}
 					/>
-					{isNewPasswordChk && (<Text style={{color: newPasswordChkConfirmMessageColor}}>{newPasswordChkConfirmMessage}</Text>)}
+					{isNewPasswordChk && (<Text style={{color: newPasswordChkConfirmMessageColor, marginTop: 10}}>{newPasswordChkConfirmMessage}</Text>)}
 				</SpaceView>
 
 				<SpaceView mb={24}>

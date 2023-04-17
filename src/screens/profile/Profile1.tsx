@@ -670,7 +670,7 @@ export const Profile1 = (props: Props) => {
               <View style={_styles.impressionContainer}>
 
                 {profileFaceRankList.map((item : any, index) => (
-                    <View style={_styles.itemRow}>
+                  <View style={_styles.itemRow}>
                     <View style={_styles.subRow}>
                       {/* <Image source={ICON.fashion} style={_styles.icon} /> */}
                       <Text style={{backgroundColor: '#4472C4', color: Color.white, paddingHorizontal: 5, fontSize: 12, borderRadius: 8, paddingVertical: 3}}>

@@ -39,9 +39,7 @@ export const EventRow: FC<Props> = (props) => {
           
           <View style={[styles.titleContainer, openRow && styles.active]}>
             <CommonText fontWeight={'500'} type={'h5'}>{props.title}</CommonText>
-          </View>
-
-          
+          </View>          
         </TouchableOpacity>
 
         <View style={[styles.iconContainer, openRow && styles.activeIcon]}>
@@ -65,6 +63,7 @@ const styles = StyleSheet.create({
     transform: [{ rotate: '360deg' }],
   },
   activeIcon: {
+    top: -20,
     transform: [{ rotate: '180deg' }],
   },
   inner: {

@@ -204,12 +204,11 @@ export const Login01 = () => {
         <View style={[styles.container, layoutStyle.justifyCenter]}>
 
           {/* ############################################################### 타이틀 */}
-          <View style={[commonStyle.mb70]}>
+          <View style={[commonStyle.mb70, commonStyle.paddingHorizontal20]}>
             <SpaceView>
               <Image
                 source={IMAGE.logoMarkRenew}
                 style={styles.logoMark}
-                resizeMode="center"
               />
             </SpaceView>
             {/* <SpaceView ml={10}>

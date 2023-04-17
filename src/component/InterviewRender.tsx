@@ -40,16 +40,11 @@ export default function InterviewRender({ title, data }) {
           <View style={[style.contentItemContainer, index % 2 !== 0 && style.itemActive]}>
             <View style={style.questionRow}>
               <Text style={style.questionText}>Q.</Text>
-              <Text style={style.questionBoldText}>
-                {indexToKr[index]}번째 질문 입니다.
-                <Text style={style.questionNormalText}> {e?.code_name}</Text>
-              </Text>
+              <Text style={[style.questionBoldText, {marginTop: 2}]}> {e?.code_name}</Text>
             </View>
             <View style={style.answerRow}>
               <Text style={style.answerText}>A.</Text>
-              <Text style={[style.questionBoldText, {marginTop: 2}]}>
-                <Text style={style.questionNormalText}> {e?.answer}</Text>
-              </Text>
+              <Text style={[style.questionBoldText, {marginLeft: 11, color: '#7986EE'}]}> {e?.answer}</Text>
             </View>
           </View>
         ))}

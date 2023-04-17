@@ -6,33 +6,37 @@ import { SimpleGrid } from 'react-native-super-grid';
 import { ICON } from 'utils/imageUtils';
 import { CommonBtn } from './CommonBtn';
 import { CommonText } from 'component/CommonText';
+import SpaceView from './SpaceView';
 
 
 const { width } = Dimensions.get('window');
 
 export default function ProfileAuth({ level, data, isButton }) {
-
-  console.log('isButton ::::: ' , isButton);
-
   const navigation = useNavigation<ScreenNavigationProp>();
 
   return (
     <>
       <View style={styles.profileTitleContainer}>
-        <Text style={styles.title}>프로필 인증</Text>
-        <View style={[styles.levelBadge, {marginRight: 500, marginTop: 1}]}>
-          <Text style={[styles.levelText, { color: 'white' }]}>LV.{level}</Text>
-        </View>
+        <SpaceView viewStyle={{flexDirection: `row`, alignItems: `center`, justifyContent: `center`,}}>
+          <Text style={styles.title}>프로필 인증</Text>
+          <View style={[styles.levelBadge, {marginRight: 0, marginTop: 1}]}>
+            <Text style={[styles.levelText, { color: 'white' }]}>LV.{level}</Text>
+          </View>
+        </SpaceView>
         
         {typeof isButton != 'undefined' && isButton && 
-          <TouchableOpacity onPress={() => { navigation.navigate('SecondAuth'); }} style={{marginTop: 1}}>
-            <CommonText 
-              type={'h6'} 
-              fontWeight={'200'}
-              textStyle={{borderWidth: 1, borderRadius: 5, borderColor: '#C7C7C7', color: '#C7C7C7', paddingHorizontal: 7, paddingVertical: 1}}>
-              프로필 인증 변경
-            </CommonText>
-          </TouchableOpacity>
+          <SpaceView viewStyle={{flexDirection: `row`, alignItems: `center`, justifyContent: `center`,}}>
+            <TouchableOpacity 
+              onPress={() => { navigation.navigate('SecondAuth'); }} 
+              style={{marginTop: 1, borderWidth:1, borderColor: '#C7C7C7', borderRadius: 7, paddingHorizontal: 5}}>
+              <CommonText 
+                type={'h6'} 
+                color={'#C7C7C7'}
+                fontWeight={'200'}>
+                프로필 인증 변경
+              </CommonText>
+            </TouchableOpacity>
+          </SpaceView>
         }
       </View>
       <SimpleGrid

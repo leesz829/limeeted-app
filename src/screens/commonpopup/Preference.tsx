@@ -381,11 +381,11 @@ export const Preference = (props: Props) => {
 
         <View>  
           <SpaceView mb={32}>
-            {/* <SpaceView mb={0}>
+            <SpaceView mb={15}>
               <CommonText fontWeight={'700'} type={'h4'}>
                 나이
               </CommonText>
-            </SpaceView> */}
+            </SpaceView>
 
             <SpaceView viewStyle={styles.halfContainer}>
               <View style={styles.halfItemLeft}>
@@ -395,7 +395,7 @@ export const Preference = (props: Props) => {
                   value={wantAgeMin}
                   onChangeText={(wantAgeMin) => setWantAgeMin(wantAgeMin)}
                   maxLength={2}
-                  placeholder={'최소'}
+                  placeholder={''}
                   placeholderTextColor={'#c6ccd3'}
                 />
               </View>
@@ -407,7 +407,7 @@ export const Preference = (props: Props) => {
                   value={wantAgeMax}
                   onChangeText={(wantAgeMax) => setWantAgeMax(wantAgeMax)}
                   maxLength={2}
-                  placeholder={'최대'}
+                  placeholder={''}
                   placeholderTextColor={'#c6ccd3'}
                 />
               </View>
@@ -416,33 +416,33 @@ export const Preference = (props: Props) => {
           </SpaceView>
 
           <SpaceView mb={32}>
-            {/* <SpaceView mb={0}>
+            <SpaceView mb={15}>
               <CommonText fontWeight={'700'} type={'h4'}>
                 거리
               </CommonText>
-            </SpaceView> */}
+            </SpaceView>
 
             <SpaceView viewStyle={styles.halfContainer}>
               <View style={styles.halfItemLeft}>
                 <CommonRoundInput
-                  label={'최소(km)'}
+                  label={'Km'}
                   keyboardType="number-pad"
                   value={wantLocal1}
                   onChangeText={(wantLocal1) => setWantLocal1(wantLocal1)}
                   maxLength={2}
-                  placeholder={'최소(km)'}
+                  placeholder={'최소'}
                   placeholderTextColor={'#c6ccd3'}
                 />
               </View>
 
               <View style={styles.halfItemRight}>
                 <CommonRoundInput
-                  label={'최대(km)'}
+                  label={'Km'}
                   keyboardType="number-pad"
                   value={wantLocal2}
                   onChangeText={(wantLocal2) => setWantLocal2(wantLocal2)}
                   maxLength={2}
-                  placeholder={'최대(km)'}
+                  placeholder={'최대'}
                   placeholderTextColor={'#c6ccd3'}
                 />
               </View>

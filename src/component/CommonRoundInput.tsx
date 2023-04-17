@@ -26,20 +26,22 @@ type Props = {
 export const CommonRoundInput: FC<Props> = (props: any) => {
   return (
     <View>
-      <View style={styles.labelContainer}>
+      {/* <View style={styles.labelContainer}>
         <Text style={styles.labelStyle}>{props.label}</Text>
-      </View>
+      </View> */}
       <View style={styles.inputContainer}>
         <TextInput
           autoCapitalize="none"
           style={styles.inputStyle}
           placeholder={props.placeholder || ''}
           placeholderTextColor={Color.black2222}
+          
           {...props}
           editable={props.disabled ? false : true}
           secureTextEntry={props.isMasking ? true : false}
-          maxLength={props.maxLength ? props.maxLength : 1000}
-        />
+          maxLength={props.maxLength ? props.maxLength : 1000} />
+
+        <Text style={styles.labelStyle2}>{props.label}</Text>
       </View>
 
       {props.rightPen && (
@@ -87,25 +89,36 @@ const styles = StyleSheet.create({
     color: "#262626"
   },
   inputContainer: {
-    paddingBottom: 8,
+    position: 'relative',
+    paddingBottom: 0,
     // borderBottomWidth: 1,
     // borderBottomColor: Color.grayDDDD,
     width: 156,
-    height: 47,
-    opacity: 0.24,
+    height: 45,
+    opacity: 1,
     borderRadius: 10,
     backgroundColor: "#ffffff",
     borderStyle: "solid",
     borderWidth: 1,
-    borderColor: "#707070"
+    borderColor: "#e0e0e0",
   },
   inputStyle: {
     fontSize: 16,
-    lineHeight: 24,
+    lineHeight: 20,
     color: Color.black2222,
-    padding: 10,
-    margin: 0,
+    paddingLeft: 15,
+    paddingRight: 20,
+    marginTop: 0,
+    height: 45,
     fontFamily: 'AppleSDGothicNeoM00',
     textAlignVertical: "center",
   },
+  labelStyle2: {
+    position: 'absolute',
+    top: 10,
+    right: 8,
+    fontSize: 15,
+    color: '#919191',
+    fontFamily: 'AppleSDGothicNeoB00',
+  }
 });
