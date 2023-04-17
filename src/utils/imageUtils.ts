@@ -108,6 +108,8 @@ export const ICON = {
   icon_smile: require('assets/icon/icon_smail.png'),
   confirmation: require('assets/icon/confirmation.png'),
   match_succ_icon: require('assets/icon/match_succ_icon.png'),
+  passIconNew: require('assets/icon/pass_icon_new.png'),
+  royalPassIconNew: require('assets/icon/loyalpass_icon_new.png'),
 };
 
 export const GIF_IMG = {

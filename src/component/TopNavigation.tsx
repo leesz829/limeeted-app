@@ -111,27 +111,27 @@ export function Wallet({ theme }) {
         <View
           style={{
             flexDirection: 'row',
-          }}
-        >
+          }}>
+
           <View style={[styles.itemContainer, { marginRight: 8 }]}>
-            <Image style={styles.itemStyle} source={IMAGE.passImg} />
+            <Image style={styles.itemStyle} source={ICON.passIconNew} resizeMode={'contain'} />
             <Text
               style={[
                 styles.statusText,
-                { color: theme ? 'white' : 'rgb(84, 84 , 86)' },
-              ]}
-            >
+                { color: theme ? 'white' : '#7a7dbb', lineHeight: 13 },
+              ]}>
+
               {memberBase?.pass_has_amt}
             </Text>
           </View>
           <View style={styles.itemContainer}>
-            <Image style={styles.itemStyle} source={IMAGE.royalpassImg} />
+            <Image style={styles.itemStyle2} source={ICON.royalPassIconNew} resizeMode={'contain'}  />
             <Text
               style={[
                 styles.statusText,
-                { color: theme ? 'white' : 'rgb(84, 84 , 86)' },
-              ]}
-            >
+                { color: theme ? 'white' : '#da88ad', lineHeight: 13 },
+              ]}>
+
               {memberBase?.royal_pass_has_amt}
             </Text>
           </View>
@@ -175,18 +175,22 @@ const styles = StyleSheet.create({
     backgroundColor: Color.black2222,
   },
   itemStyle: {
-    width: 22,
-    height: 22,
-    marginRight: 5,
-    resizeMode: 'contain',
+    width: 25,
+    height: 20,
+    marginRight: 1,
+  },
+  itemStyle2: {
+    width: 33,
+    height: 20,
+    marginRight: 1,
   },
   itemContainer: {
-    flexDirection: `row`,
-    alignItems: `center`,
+    flexDirection: `column`,
+    alignItems: `flex-end`,
     justifyContent: `center`,
   },
   statusText: {
-    fontSize: 14,
+    fontSize: 13,
     color: 'rgb(84, 84 , 86)',
     fontWeight: 'bold',
   },
