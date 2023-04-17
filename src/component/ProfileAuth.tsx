@@ -20,7 +20,7 @@ export default function ProfileAuth({ level, data, isButton }) {
     <>
       <View style={styles.profileTitleContainer}>
         <Text style={styles.title}>프로필 인증</Text>
-        <View style={[styles.levelBadge, {marginRight: 90, marginTop: 1}]}>
+        <View style={[styles.levelBadge, {marginRight: 500, marginTop: 1}]}>
           <Text style={[styles.levelText, { color: 'white' }]}>LV.{level}</Text>
         </View>
         
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     fontStyle: 'normal',
     // letterSpacing: 0,
     textAlign: 'left',
-    color: 'white',
+    //color: 'white',
   },
 
   certificateItemContainerOn: {

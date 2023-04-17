@@ -24,6 +24,7 @@ import { Color } from 'assets/styles/Color';
 import { BarGrap } from 'component/BarGrap';
 import { CommonBtn } from 'component/CommonBtn';
 import { CommonCheckBox } from 'component/CommonCheckBox';
+import { RadioCheckBox_3 } from 'component/RadioCheckBox_3';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import { ToolTip } from 'component/Tooltip';
@@ -31,6 +32,7 @@ import TopNavigation from 'component/TopNavigation';
 import { ViualSlider } from 'component/ViualSlider';
 import { usePopup } from 'Context';
 import * as hooksMember from 'hooks/member';
+import { useUserInfo } from 'hooks/useUserInfo';
 import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { modalStyle } from 'assets/styles/Styles';
@@ -76,6 +78,9 @@ export default function Matching(props: Props) {
   const [isLoad, setIsLoad] = useState(false);
   const [isEmpty, setIsEmpty] = useState(false);
 
+  // 본인 데이터
+  const memberBase = useUserInfo(); //hooksMember.getBase();
+
   // 매칭 회원 관련 데이터
   const [data, setData] = useState<any>({
     match_member_info: {},
@@ -94,15 +99,18 @@ export default function Matching(props: Props) {
   ]);
 
   // 선택된 신고하기 타입
-  const [checkReportType, setCheckReportType] = useState(['']);
+  const [checkReportType, setCheckReportType] = useState('');
 
   // 신고 Pop
   const report_modalizeRef = useRef<Modalize>(null);
   const report_onOpen = () => {
     report_modalizeRef.current?.open();
+    setCheckReportType('');
   };
+
   const report_onClose = () => {
     report_modalizeRef.current?.close();
+    setCheckReportType('');
   };
 
   // ################################################################ 초기 실행 함수
@@ -119,7 +127,9 @@ export default function Matching(props: Props) {
   const getDailyMatchInfo = async () => {
     try {
       const { success, data } = await get_daily_matched_info();
-      console.log('data :::: ', data);
+      
+      console.log('get_daily_matched_info data :::: ', data.memberBase);
+      
       if (success) {
         if (data.result_code == '0000') {
           setData(data);
@@ -204,36 +214,30 @@ export default function Matching(props: Props) {
   };
 
   // ############################################################ 사용자 신고하기 - 신고사유 체크 Callback 함수
-  const reportCheckCallbackFn = (reportType: string, check: boolean) => {
-    if (check) {
-      checkReportType.push(reportType);
-      setCheckReportType(
-        checkReportType.filter((e, index) => checkReportType.indexOf(e) === index && e)
-      );
-    } else {
-      setCheckReportType(
-        checkReportType.filter((e) => e != reportType && e)
-      );
-    }
+  const reportCheckCallbackFn = (value: string) => {
+    setCheckReportType(value);
   };
 
   // ############################################################ 사용자 신고하기 - 팝업 활성화
   const popupReport = () => {
-    if (!checkReportType.length) {
+    if (!checkReportType) {
       show({ content: '신고항목을 선택해주세요.' });
       return false;
     } else {
-      report_onOpen();
+      insertReport();
     }
   };
 
   // ############################################################ 사용자 신고하기 등록
   const insertReport = async () => {
-
+    
     const body = {
-      report_type_code_list: checkReportType.join(),
-      report_member_seq: data.memberBase.member_seq
+      report_type_code: checkReportType,
+      report_member_seq: memberBase.member_seq
     };
+
+    console.log('insertReport ::: ' , insertReport);
+    
     try {
       const { success, data } = await report_matched_user(body);
 
@@ -245,7 +249,7 @@ export default function Matching(props: Props) {
 
         show({ content: '신고 처리 되었습니다.' });
 
-        setCheckReportType([]);
+        setCheckReportType('');
         getDailyMatchInfo();
         setIsLoad(false);
 
@@ -525,7 +529,7 @@ export default function Matching(props: Props) {
             {/* 신고하기 영역 */}
             <TouchableOpacity onPress={() => { report_onOpen(); }}>
               <View style={styles.reportButton}>
-                <Text style={styles.reportTextBtn}>신고하기</Text>
+                <Text style={styles.reportTextBtn}>신고 및 차단하기</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -545,7 +549,7 @@ export default function Matching(props: Props) {
           FooterComponent={
             <>
               <SpaceView>
-                <CommonBtn value={'신고하기'} 
+                <CommonBtn value={'신고 및 차단하기'} 
                       type={'black'}
                       height={59} 
                       fontSize={19}
@@ -557,7 +561,7 @@ export default function Matching(props: Props) {
 
           <View style={modalStyle.modalHeaderContainer}>
             <CommonText fontWeight={'700'} type={'h3'}>
-              사용자 신고하기
+              사용자 신고 및 차단하기
             </CommonText>
             <TouchableOpacity onPress={report_onClose}>
               <Image source={ICON.xBtn2} style={{width: 20, height: 20}} />
@@ -572,16 +576,11 @@ export default function Matching(props: Props) {
                 신고사유를 알려주시면 더 좋은 리미티드를{'\n'}만드는데 도움이 됩니다.</CommonText>
             </SpaceView>
 
-            <SpaceView mb={24}>
-              {data.report_code_list.length &&
-                data.report_code_list.map((i, index) => (
-                  <CommonCheckBox
-                    label={i.code_name}
-                    value={i.common_code}
-                    key={index + '_' + i.common_code}
-                    callBackFunction={reportCheckCallbackFn}
-                  />
-                ))}
+            <SpaceView>
+            <RadioCheckBox_3
+                items={data.report_code_list}
+                callBackFunction={reportCheckCallbackFn}
+            />
             </SpaceView>
           </View>
         </Modalize>

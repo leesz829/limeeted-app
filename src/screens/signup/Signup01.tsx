@@ -128,6 +128,7 @@ export const Signup01 = (props: Props) => {
     };
     try {
       const { success, data } = await get_profile_secondary_authentication(body);
+
       if(success) {
         switch (data.result_code) {
           case SUCCESS:
@@ -137,11 +138,11 @@ export const Signup01 = (props: Props) => {
             let filePath03 = '';
             data.auth_detail_list.map(({img_file_path, order_seq} : {img_file_path: any; order_seq: any;}) => {
               if(order_seq == 1) {
-                filePath01 = img_file_path;
+                filePath01 = findSourcePath(img_file_path);
               } else if(order_seq == 2) {
-                filePath02 = img_file_path;
+                filePath02 = findSourcePath(img_file_path);
               } else if(order_seq == 3) {
-                filePath03 = img_file_path;
+                filePath03 = findSourcePath(img_file_path);
               }
             });
 

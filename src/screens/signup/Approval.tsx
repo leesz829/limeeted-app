@@ -8,6 +8,7 @@ import { IMAGE, PROFILE_IMAGE, ICON } from 'utils/imageUtils';
 import { RouteProp, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
+import { findSourcePath } from 'utils/imageUtils';
 import { ROUTES } from 'constants/routes';
 
 
@@ -18,12 +19,13 @@ interface Props {
 
 export const Approval = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
-
+  
   const memberSeq = props.route.params.memberSeq;         // 회원 번호
   const gender = props.route.params.gender;               // 회원 성별
   const accessType = props.route.params.accessType;       // 접근 유형
   const refuseImgCnt = props.route.params.refuseImgCnt;   // 반려 이미지 갯수
   const refuseAuthCnt = props.route.params.refuseAuthCnt; // 반려 인증 갯수
+  const mstImgPath = props.route.params.mstImgPath; // 대표이미지
 
   // 반려 사유 데이터
   const getRefuseData = function() {
@@ -49,7 +51,7 @@ export const Approval = (props: Props) => {
       <View style={layoutStyle.alignCenter}>
         <SpaceView mb={40} viewStyle={{position: 'relative'}}>
           <Image
-            source={PROFILE_IMAGE.womanSample1}
+            source={findSourcePath(mstImgPath)}
             style={styles.tmpImg} />
           <View style={{position: 'absolute', top: 35, left: -30}}>
             <Image

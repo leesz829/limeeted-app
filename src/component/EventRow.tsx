@@ -24,17 +24,19 @@ export const EventRow: FC<Props> = (props) => {
   const [openRow, setOpenRow] = useState(false);
 
   return (
-    <View style={{marginBottom: 30}}>
+    <View style={{marginBottom: 10}}>
       <View style={styles.rowContainer}>
         <TouchableOpacity
           style={styles.inner}
           onPress={() => setOpenRow(!openRow)}
           activeOpacity={0.3} >
+          {/* 
           <View style={styles.labelContainer}>
             <CommonText type={'h4'} color={ColorType.black3333} fontWeight={'200'}>
               {props.label}
             </CommonText>
-          </View>
+          </View> */}
+          
           <View style={[styles.titleContainer, openRow && styles.active]}>
             <CommonText fontWeight={'500'} type={'h5'}>{props.title}</CommonText>
           </View>
@@ -74,8 +76,9 @@ const styles = StyleSheet.create({
   rowContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    height: 84,
+    
+    // alignItems: 'center',
+    // height: 84,
   },
   iconStyle: {
     width: 18,

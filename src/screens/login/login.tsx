@@ -74,7 +74,7 @@ export const Login01 = () => {
     };
     const { success, data } = await signin(body);
     console.log('data ::::: ', data);
-
+    
     if (success) {
       switch (data.result_code) {
         case SUCCESS:
@@ -104,6 +104,7 @@ export const Login01 = () => {
               navigation.navigate(ROUTES.APPROVAL, {
                 memberSeq: data.mbr_base.member_seq,
                 gender: data.mbr_base.gender,
+                mstImgPath : data.mbr_base.mst_img_path,
                 accessType: 'LOGIN',
               });
             } else {

@@ -63,6 +63,7 @@ export type StackParamList = {
     accessType: string;
     refuseImgCnt: Number;
     refuseAuthCnt: Number;
+    mstImgPath: string;
   };
   SecondAuthPopup: undefined; // 2차 인증 팝업
   SignupPopUp2: undefined;

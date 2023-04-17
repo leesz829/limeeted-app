@@ -1,5 +1,5 @@
 import { ColorType, BottomParamList, ScreenNavigationProp } from '@types';
-import { styles, layoutStyle, modalStyle } from 'assets/styles/Styles';
+import { commonStyle, styles, layoutStyle, modalStyle } from 'assets/styles/Styles';
 import { CommonSwich } from 'component/CommonSwich';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
@@ -370,6 +370,19 @@ export const Storage = (props: Props) => {
                                   }}
                                   style={styles.favoriteImg}
                                 />
+                 
+                                {req_profile_open_yn == 'N'?(
+                                    <View style={styles.darkDisabled}>
+                                      <CommonText
+                                        fontWeight={'700'}
+                                        type={'h5'}
+                                        color={ColorType.gray8888}
+                                        textStyle={[layoutStyle.textRight, commonStyle.mt70, commonStyle.mr30]}>
+                                      터치하고 프로필 열기
+                                      </CommonText>
+                                    </View>
+                                  ) : null
+                                }
 
                                 {/* 썸네일 이미지 그라데이션 효과 */}
                                 <LinearGradient

@@ -331,19 +331,19 @@ export const Roby = (props: Props) => {
                     width: '100%',
                     height: 95,
                     borderRadius: 20,
-                    backgroundColor: memberBase.gender == 'W' ? '#ECEFFE' : '#FEEFF2',
+                    backgroundColor: memberBase.gender == 'M' ? '#ECEFFE' : '#FEEFF2',
                     overflow: 'hidden',
                     position: 'relative',
                   }}>
                     <SpaceView>
-                      <Image source={memberBase.gender == 'W' ? IMAGE.robyMaleImg : IMAGE.robyFemaleImg} style={{width: '100%', height: 100}} />
+                      <Image source={memberBase.gender == 'M' ? IMAGE.robyMaleImg : IMAGE.robyFemaleImg} style={{width: '100%', height: 100}} />
                       <SpaceView viewStyle={{position: 'absolute', top: 10, left: 15}}>
                         <CommonText 
                           color={ColorType.white}
                           fontWeight={'200'}
-                          textStyle={{ backgroundColor: memberBase.gender == 'W' ? '#7986EE' : '#FE0456', borderRadius: 20, textAlign: 'center', width: 100, fontSize: 10}}>리미티드 회원님들이</CommonText>
+                          textStyle={{ backgroundColor: memberBase.gender == 'M' ? '#7986EE' : '#FE0456', borderRadius: 20, textAlign: 'center', width: 100, fontSize: 10}}>리미티드 회원님들이</CommonText>
                         <CommonText type={'h5'} fontWeight={'700'} textStyle={{marginTop: 3}}>{memberBase?.nickname}님을</CommonText>
-                        <CommonText type={'h5'} fontWeight={'200'} color={memberBase.gender == 'W' ? '#7986EE' : '#FE0456'} textStyle={{marginTop: 0}}>{memberBase.best_face}이라고 생각해요!</CommonText>
+                        <CommonText type={'h5'} fontWeight={'200'} color={memberBase.gender == 'M' ? '#7986EE' : '#FE0456'} textStyle={{marginTop: 0}}>{memberBase.best_face}이라고 생각해요!</CommonText>
                       </SpaceView>
                     </SpaceView>
                 </View>

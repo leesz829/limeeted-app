@@ -83,7 +83,7 @@ export const SecondAuthPopup = (props: Props) => {
     placeholderTxt = '출신 교육기관을 입력해주세요. (예 : 서울대 컴퓨터 공학과)';
     etcTxt01 = '심사에 요구되는 증빙자료를 올려주세요.';
     etcTxt02 = '졸업 증명서, 재학 증명서, 학위 증명서';
-    etcTxt03 = 'THE에서 최근에 발표한 세계대학순위에 기초하여 학력 레벨이 부여됩니다.';
+    etcTxt03 = 'THE에서 최근에 발표한 세계대학 순위에 기초하여 학력 레벨이 부여됩니다.'
   } else if (type == 'INCOME') {
     title = '소득';
     etcTxt01 = '심사에 요구되는 증빙자료를 올려주세요.';
@@ -479,7 +479,7 @@ export const SecondAuthPopup = (props: Props) => {
                   <View style={_styles.rowStyle}>
                     <Text style={_styles.rowTextLeft}>2</Text>
                     <Text style={_styles.rowTextCenter}>5,000</Text>
-                    <Text style={_styles.rowTextRight}>4,000</Text>
+                    <Text style={_styles.rowTextRight}>6,500</Text>
                   </View>
                   <View style={_styles.rowStyle}>
                     <Text style={_styles.rowTextLeft}>3</Text>

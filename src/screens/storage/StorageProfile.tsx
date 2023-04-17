@@ -311,7 +311,7 @@ export const StorageProfile = (props: Props) => {
   // ############################################################ 연락처 열기
   const goHpOpen = async () => {
     const body = {
-      match_seq: data.matchBase.match_seq
+      match_seq: data.match_base.match_seq
     };
     try {
       const { success, data } = await resolve_match(body);
@@ -400,7 +400,8 @@ export const StorageProfile = (props: Props) => {
           </View>
         </View>
 
-        <SpaceView viewStyle={[styles.container, {paddingLeft: 17, paddingRight: 45}]}>
+        {/* <SpaceView viewStyle={[styles.container, {paddingLeft: 17, paddingRight: 45}]}> */}
+        <SpaceView viewStyle={[styles.container, {paddingLeft: 20}]}>
 
           {/* ############################################## 받은 관심 */}
           {props.route.params.type == 'REQ' ? (
@@ -457,7 +458,7 @@ export const StorageProfile = (props: Props) => {
             <>
               <SpaceView viewStyle={_styles.matchSuccArea}>
                 <SpaceView mb={8} viewStyle={{alignItems: 'center'}}>
-                  <Image source={ICON.match_succ_icon} style={{width: 50, height: 70}} />
+                  <Image source={ICON.match_succ_icon} style={{width: 40, height: 40}} />
                 </SpaceView>
 
                 <SpaceView mb={16} viewStyle={{alignItems: 'center'}}>
@@ -584,7 +585,7 @@ export const StorageProfile = (props: Props) => {
           {/* 신고하기 영역 */}
           <TouchableOpacity onPress={() => { report_onOpen(); }}>
             <View style={_styles.reportButton}>
-              <Text style={_styles.reportTextBtn}>신고하기</Text>
+              <Text style={_styles.reportTextBtn}>신고 및 차단하기</Text>
             </View>
           </TouchableOpacity>
 
@@ -606,7 +607,7 @@ export const StorageProfile = (props: Props) => {
           FooterComponent={
             <>
               <SpaceView>
-                <CommonBtn value={'신고하기'} 
+                <CommonBtn value={'신고 및 차단하기'} 
                       type={'black'}
                       height={59} 
                       fontSize={19}
@@ -618,7 +619,7 @@ export const StorageProfile = (props: Props) => {
 
           <View style={modalStyle.modalHeaderContainer}>
             <CommonText fontWeight={'700'} type={'h3'}>
-              사용자 신고하기
+              사용자 신고 및 차단하기
             </CommonText>
             <TouchableOpacity onPress={report_onClose}>
               <Image source={ICON.xBtn2} style={{width: 20, height: 20}} />

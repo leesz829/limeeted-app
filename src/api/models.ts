@@ -381,7 +381,7 @@ export async function regist_match_status(body: {
 
 //매칭 회원을 신고한다.
 export async function report_matched_user(body: {
-  report_type_code_list: string;
+  report_type_code: string;
   report_member_seq: number;
 }) {
   return send(REPORT, 'POST', body, true, false);
