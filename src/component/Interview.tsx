@@ -95,12 +95,32 @@ export default function Interview({
   // 저장버튼
   async function submit() {
     if (deleteList.length > 0) {
+
+      //deleteList?.filter((item: any) => (item.use_yn = 'N'));
+      let applyInterviewList = [];
+      const copiedDeleteList = deleteList.slice();
+      deleteList.map((item: any, index) => {
+        item.use_yn = 'N';
+
+        let map = {
+          code_name: item.code_name
+          ,common_code: item.common_code
+           ,disp_yn: item.disp_yn
+           , member_interview_seq: item.member_interview_seq
+           , order_seq: item.order_seq
+           , use_yn: 'N'
+        }
+
+        console.log('map ::::: ' , map);
+        applyInterviewList.push(map);
+      });
+
       show({
         content: '선택한 인터뷰 아이템을 삭제하시겠습니까?',
         cancelCallback: function () {},
         confirmCallback: function () {
-          deleteList?.filter((item: any) => (item.use_yn = 'N'));
-          saveAPI();
+          
+          saveAPI(applyInterviewList);
         },
       });
     } else {
@@ -109,10 +129,14 @@ export default function Interview({
   }
 
   // ############################################# 인터뷰 정보 저장 API 호출
-  const saveAPI = async () => {
+  const saveAPI = async (applyInterviewList:any) => {
+
+    console.log('applyInterviewList :::::::::: ', applyInterviewList);
+
     const body = {
-      interview_list: deleteList,
+      interview_list: applyInterviewList,
     };
+
     try {
       const { success, data } = await update_interview(body);
       console.log('data ::::: ' , data);
@@ -123,7 +147,9 @@ export default function Interview({
           );
           show({
             content: '삭제되었습니다.',
-            confirmCallback: function () {},
+            confirmCallback: function () {
+
+            },
           });
         } else {
           show({
