@@ -80,13 +80,21 @@ export const ImagePicker: FC<Props> = (props) => {
             </View>
           </>
         ) : props.uriParam != null && props.uriParam != '' ? (
-          <Image
-            resizeMode="cover"
-            resizeMethod="scale"
-            style={styles.tempBoxBase}
-            key={props.uriParam}
-            source={props.uriParam}
-          />
+          <>
+            <Image
+              resizeMode="cover"
+              resizeMethod="scale"
+              style={styles.tempBoxBase}
+              key={props.uriParam}
+              source={props.uriParam}
+            />
+
+            {props.isAuth && 
+              <View style={styles.disabled}>
+                <CommonText fontWeight={'700'} type={'h5'} color={ColorType.gray8888} textStyle={{textAlign: 'right', marginTop: 10, marginRight: 10}}>심사중</CommonText>
+              </View>
+            }
+          </>
         ) : (
           <Image source={props.plusBtnType == '02' ? ICON.plus2 : ICON.plus_primary} style={styles.boxPlusIcon} />
         )}

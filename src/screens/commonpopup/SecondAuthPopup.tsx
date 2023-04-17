@@ -43,9 +43,12 @@ interface Props {
   filePath01: string
   filePath02: string
   filePath03: string
+  auth_status: string
 }
 
 export const SecondAuthPopup = (props: Props) => {
+
+  console.log('auth_status11111 ::::: ' , props.auth_status);
 
   const dispatch = useDispatch();
   const { show } = usePopup();  // 공통 팝업
@@ -306,7 +309,7 @@ export const SecondAuthPopup = (props: Props) => {
                   isAuth={true}
                   plusBtnType={'02'}
                   callbackFn={fileCallBackFn01}
-                  uriParam={props.filePath01}
+                  uriParam={props.auth_status == 'PROGRESS' && props.filePath01}
                 />
               </View>
               <View style={[commonStyle.mr10, commonStyle.ml10]}>
@@ -314,7 +317,7 @@ export const SecondAuthPopup = (props: Props) => {
                   isAuth={true}
                   plusBtnType={'02'}
                   callbackFn={fileCallBackFn02}
-                  uriParam={props.filePath02}
+                  uriParam={props.auth_status == 'PROGRESS' && props.filePath02}
                 />
               </View>
               <View>
@@ -322,7 +325,7 @@ export const SecondAuthPopup = (props: Props) => {
                   isAuth={true}
                   plusBtnType={'02'}
                   callbackFn={fileCallBackFn03}
-                  uriParam={props.filePath03}
+                  uriParam={props.auth_status == 'PROGRESS' && props.filePath03}
                 />
               </View>
             </View>

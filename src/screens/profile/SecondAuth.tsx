@@ -55,9 +55,10 @@ export const SecondAuth = () => {
 
   // 이미지 파일
   const [filePathData, setFilePathData] = React.useState({
-    filePath01 : ''
-    , filePath02 : ''
-    , filePath03 : ''
+    filePath01 : '',
+    filePath02 : '',
+    filePath03 : '',
+    auth_status: ''
   });
 
   // 직업 Pop
@@ -176,9 +177,10 @@ export const SecondAuth = () => {
   // ############################################################################# 2차인증 상세 목록 조회
   const getMemberSecondDetail = async (type: string) => {
     setFilePathData({
-      filePath01: ''
-      , filePath02: ''
-      , filePath03: ''
+      filePath01: '',
+      filePath02: '',
+      filePath03: '',
+      auth_status: '',
     });
 
     const body = {
@@ -193,7 +195,14 @@ export const SecondAuth = () => {
             let filePath01 = '';
             let filePath02 = '';
             let filePath03 = '';
-            data.auth_detail_list.map(({img_file_path, order_seq} : {img_file_path: any; order_seq: any;}) => {
+            let auth_status_real = '';
+
+            data.auth_detail_list.map(({img_file_path, order_seq, auth_status} : {img_file_path: any; order_seq: any; auth_status: any}) => {
+              
+              if(auth_status !== '') {
+                auth_status_real = auth_status;
+              }
+
               if(order_seq == 1) {
                 filePath01 = findSourcePath(img_file_path);
               } else if(order_seq == 2) {
@@ -207,6 +216,7 @@ export const SecondAuth = () => {
               filePath01: filePath01
               , filePath02: filePath02
               , filePath03: filePath03
+              , auth_status: auth_status_real
             });
 
             if(type === 'JOB') { job_modalizeRef.current?.open();
@@ -427,6 +437,7 @@ export const SecondAuth = () => {
           filePath01={filePathData.filePath01}
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
+          auth_status={filePathData.auth_status}
         />
       </Modalize>
 
@@ -446,6 +457,7 @@ export const SecondAuth = () => {
           filePath01={filePathData.filePath01}
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
+          auth_status={filePathData.auth_status}
         />
       </Modalize>
 
@@ -466,6 +478,7 @@ export const SecondAuth = () => {
           filePath01={filePathData.filePath01}
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
+          auth_status={filePathData.auth_status}
         />
       </Modalize>
 
@@ -485,6 +498,7 @@ export const SecondAuth = () => {
           filePath01={filePathData.filePath01}
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
+          auth_status={filePathData.auth_status}
         />
       </Modalize>
 
@@ -504,6 +518,7 @@ export const SecondAuth = () => {
           filePath01={filePathData.filePath01}
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
+          auth_status={filePathData.auth_status}
         />
       </Modalize>
 
@@ -523,6 +538,7 @@ export const SecondAuth = () => {
           filePath01={filePathData.filePath01}
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
+          auth_status={filePathData.auth_status}
         />
       </Modalize>
     </>
