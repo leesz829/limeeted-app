@@ -56,25 +56,73 @@ export default function CategoryShop() {
   const [items, setItems] = useState([]);
 
   // ########################## 인앱 getProduct
-  // 패스상품
-  const passProduct = Platform.select({
-    ios: ['cash_100', 'cash_200'],
+   const passProduct = Platform.select({
+    ios: [
+      'prod_pass_a001'
+      , 'prod_pack_a002'
+      , 'prod_pass_a002'
+      , 'prod_pack_a003'
+      , 'prod_pass_a003'
+      , 'prod_pack_a004'
+      , 'prod_pass_a004'
+      , 'prod_subs_b001'
+      , 'prod_pack_a005'
+      , 'prod_pass_a005'
+      , 'prod_subs_b002'
+      , 'prod_pass_a006'
+      , 'prod_subs_b003'
+      , 'prod_pass_b001'
+      , 'prod_pass_b002'
+      , 'prod_pass_b003'
+      , 'prod_pack_a010'
+      , 'prod_pass_b004'
+      , 'prod_pack_a011'
+      , 'prod_pass_b005'
+      , 'prod_pack_a012'
+      , 'prod_pass_b006'
+      , 'prod_pack_a013'
+      , 'prod_pass_b007'
+      , 'prod_pack_a014'
+      , 'prod_pass_b008'
+      , 'prod_pass_b009'
+      , 'prod_subs_e001'
+      , 'prod_subs_e002'
+      , 'prod_subs_e003'
+    ],
     android: [
-      'cash_100',
-      'pass_30',
-      'pass_50_10',
-      'pass_100_20',
-      'pass_300_60',
-      'pass_500_100',
-      'pass_1000_200',
-      'royal_pass_10',
-      'royal_pass_20_10',
-      'royal_pass_50_20',
-      'royal_pass_90_40',
-      'royal_pass_150_60',
-      'royal_pass_250_120',
+      'prod_pass_a001'
+      , 'prod_pack_a002'
+      , 'prod_pass_a002'
+      , 'prod_pack_a003'
+      , 'prod_pass_a003'
+      , 'prod_pack_a004'
+      , 'prod_pass_a004'
+      , 'prod_subs_b001'
+      , 'prod_pack_a005'
+      , 'prod_pass_a005'
+      , 'prod_subs_b002'
+      , 'prod_pass_a006'
+      , 'prod_subs_b003'
+      , 'prod_pass_b001'
+      , 'prod_pass_b002'
+      , 'prod_pass_b003'
+      , 'prod_pack_a010'
+      , 'prod_pass_b004'
+      , 'prod_pack_a011'
+      , 'prod_pass_b005'
+      , 'prod_pack_a012'
+      , 'prod_pass_b006'
+      , 'prod_pack_a013'
+      , 'prod_pass_b007'
+      , 'prod_pack_a014'
+      , 'prod_pass_b008'
+      , 'prod_pass_b009'
+      , 'prod_subs_e001'
+      , 'prod_subs_e002'
+      , 'prod_subs_e003'
     ],
   });
+  
 
   // 구독상품
   const subsProduct = Platform.select({
@@ -147,12 +195,15 @@ export default function CategoryShop() {
   };
 
   // ######################################################### 인앱상품 구매하기 함수
-  const productPurchase = async () => {
+  const productPurchase = async (item_code:string) => {
     //console.log('productId ::::::: ', targetItem.productId);
+    // 개발지점
+
+    console.log('여기까진 맞지? item_code ::: ' , item_code);
 
     try {
       const result = await requestPurchase({
-        skus: ['royal_pass_10'],
+        skus: [item_code],
         andDangerouslyFinishTransactionAutomaticallyIOS: false,
       });
 
@@ -241,8 +292,6 @@ export default function CategoryShop() {
 
 // ######################################################### 상품 RenderItem
 function RenderItem({ item, openModal }) {
-  console.log('item :::::: ', item);
-
   const onPressItem = () => openModal(item);
 
   const imagePath = findSourcePath(item?.file_path + item?.file_name);

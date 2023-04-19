@@ -30,7 +30,7 @@ interface Props {
   type: string; /* bm: bm상품, gifticon: 재고상품, boutique: 경매상품 */
   closeModal: () => void;
   item: any;
-  productPurchase: () => void;
+  productPurchase: (item_code: string) => void;
 }
 
 export default function ProductModal({ isVisible, type, closeModal, item, productPurchase }: Props) {
@@ -146,7 +146,7 @@ export default function ProductModal({ isVisible, type, closeModal, item, produc
 							<View style={modalStyle.modalBtnline} />
 								<TouchableOpacity 
 									style={modalStyle.modalBtn}
-									onPress={() => productPurchase()}>
+									onPress={() => productPurchase(item_code && item_code)}>
 									<CommonText fontWeight={'500'}>
 										구매
 									</CommonText>
