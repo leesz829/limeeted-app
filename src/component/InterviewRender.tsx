@@ -24,31 +24,34 @@ const indexToKr = [
   '열네',
 ];
 export default function InterviewRender({ title, data }) {
+  console.log('data ::::: ' , data);
   
   return (
     <>
-      <SpaceView>
-        <SpaceView viewStyle={[layoutStyle.rowBetween]} mb={16}>
-          <View>
-            <CommonText fontWeight={'700'} type={'h3'}>
-              {title || '인터뷰'}
-            </CommonText>
-          </View>
-        </SpaceView>
+      {data.answer != "" && data.answer != null && 
+        <SpaceView>
+          <SpaceView viewStyle={[layoutStyle.rowBetween]} mb={16}>
+            <View>
+              <CommonText fontWeight={'700'} type={'h3'}>
+                {title || '인터뷰'}
+              </CommonText>
+            </View>
+          </SpaceView>
 
-        {data.map((e, index) => (
-          <View style={[style.contentItemContainer, index % 2 !== 0 && style.itemActive]}>
-            <View style={style.questionRow}>
-              <Text style={style.questionText}>Q.</Text>
-              <Text style={[style.questionBoldText, {marginTop: 2}]}> {e?.code_name}</Text>
+          {data.map((e, index) => (
+            <View style={[style.contentItemContainer, index % 2 !== 0 && style.itemActive]}>
+              <View style={style.questionRow}>
+                <Text style={style.questionText}>Q.</Text>
+                <Text style={[style.questionBoldText, {marginTop: 2}]}> {e?.code_name}</Text>
+              </View>
+              <View style={style.answerRow}>
+                <Text style={style.answerText}>A.</Text>
+                <Text style={[style.questionBoldText, {marginLeft: 11, color: '#7986EE'}]}> {e?.answer}</Text>
+              </View>
             </View>
-            <View style={style.answerRow}>
-              <Text style={style.answerText}>A.</Text>
-              <Text style={[style.questionBoldText, {marginLeft: 11, color: '#7986EE'}]}> {e?.answer}</Text>
-            </View>
-          </View>
-        ))}
-      </SpaceView>
+          ))}
+        </SpaceView>
+      }
     </>
   );
 }

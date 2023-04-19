@@ -56,6 +56,7 @@ export type StackParamList = {
   Signup03: {
     memberSeq: Number;
     gender: string;
+    mstImgPath: string;
   };
   Approval: {
     memberSeq: Number;
@@ -129,6 +130,7 @@ export enum ColorType {
   grayAAAA = '#aaaaaa',
   grayb1b1 = '#b1b1b1',
   red = '#ff0000',
+  redF20456 = '#fe0456',
   blue697A = '#697AE6',
   blue7986 = '#7986EE',
 }

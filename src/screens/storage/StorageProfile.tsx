@@ -54,6 +54,8 @@ import { ROUTES, STACK } from 'constants/routes';
 import { Slider } from '@miblanchard/react-native-slider';
 import ProfileAuth from 'component/ProfileAuth';
 import InterviewRender from 'component/InterviewRender';
+import { useDispatch } from 'react-redux';
+import { myProfile } from 'redux/reducers/authReducer';
 
 
 /* ################################################################################################################
@@ -73,6 +75,7 @@ export const StorageProfile = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
   const isFocus = useIsFocused();
   const { show } = usePopup();  // 공통 팝업
+  const dispatch = useDispatch();
 
   const memberSeq = hooksMember.getMemberSeq(); // 회원번호
 
@@ -143,94 +146,35 @@ export const StorageProfile = (props: Props) => {
 
   // ############################################################ 매칭 상태 변경(수락, 거절)
   const updateMatchStatus = async (status: any) => {
-    const body = {
-      match_seq: matchSeq,
-      match_status: status
-    };
-    try {
-      const { success, data } = await update_match_status(body);
-      if(success) {
-        if(data.result_code == '0000') {
-          navigation.navigate(STACK.TAB, {
-            screen: 'Storage',
-          });
-        } else {
-          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+
+    show({ 
+      content: status == 'ACCEPT' ? '매칭을 수락하시나요?' : '다음 기회로 미룰까요?' ,
+      cancelCallback: function() {
+        
+      },
+      confirmCallback: async function() {
+        const body = {
+          match_seq: matchSeq,
+          match_status: status
+        };
+        try {
+          const { success, data } = await update_match_status(body);
+          if(success) {
+            if(data.result_code == '0000') {
+              dispatch(myProfile());
+              navigation.navigate(STACK.TAB, {
+                screen: 'Storage',
+              });
+            } else {
+              show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+            }
+          }
+        } catch (error) {
+          console.log(error);
+        } finally {
         }
       }
-    } catch (error) {
-      console.log(error);
-    } finally {
-    }
-  };
-
-  /* #############################################
-	##### 거부/찐심/관심 팝업 함수
-	##### - activeType : pass(거부), sincere(찐심), interest(관심)
-	############################################# */
-  const popupActive = (activeType: string) => {
-    if (activeType == 'interest') {
-      show({
-				title: '관심 보내기',
-				content: '패스를 소모하여 관심을 보내시겠습니까?\n패스 x15' ,
-        cancelCallback: function() {
-
-        },
-				confirmCallback: function() {
-          insertMatchInfo(activeType);
-				}
-			});
-    } else if (activeType == 'sincere') {
-      show({
-				title: '찐심 보내기',
-				content: '패스를 소모하여 찐심을 보내시겠습니까?\n로얄패스 x2' ,
-        cancelCallback: function() {
-
-        },
-				confirmCallback: function() {
-          insertMatchInfo(activeType);
-				}
-			});
-    } else if (activeType == 'pass') {
-      show({
-				title: '매칭 취소',
-				content: '이성을 거부하시겠습니까?' ,
-        cancelCallback: function() {
-
-        },
-				confirmCallback: function() {
-          insertMatchInfo(activeType);
-				}
-			});
-    }
-  };
-
-  // ############################################################ 찐심/관심/거부 저장
-  const insertMatchInfo = async (activeType: string) => {
-
-    const body = {
-      active_type: activeType,
-      res_member_seq: data.match_member_info.member_seq,
-    };
-    try {
-      const { success, data } = await regist_match_status(body);
-
-      if(success) {
-        if(data.result_code == '0000') {
-          dispatch(myProfile());
-          getDailyMatchInfo();
-          //setIsLoad(false);
-        } else if (data.result_code == '6010') {
-          show({ content: '보유 패스가 부족합니다.' });
-          return false;
-        } else {
-          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-    }
+    });
   };
 
   // ############################################################ 사용자 신고하기 - 신고사유 체크 Callback 함수
@@ -295,10 +239,14 @@ export const StorageProfile = (props: Props) => {
     }
   };
 
+  // ############################################################ 연락처 열기 팝업 활성화
   const hpOpenPopup = async () => {
+
+    console.log('special_interest_yn :::: ', data.match_base.special_interest_yn);
+
     show({ 
       title: '연락처 공개',
-      content: '현재 보고 계신 프로필의 연락처를 확인하시겠어요?',
+      content: '현재 보고 계신 프로필의 연락처를 확인하시겠어요?\n패스 x' + (data.match_base.special_interest_yn == 'Y' ? '40' : '100'),
       cancelCallback: function() {
 
       },
@@ -318,9 +266,14 @@ export const StorageProfile = (props: Props) => {
 
       if(success) {
         if (data.result_code == '0000') {
+          dispatch(myProfile());
           selectMatchMemberInfo();
         } else {
-          show({ content: '보유 패스가 부족합니다.' });
+          show({
+            title: '재화 부족',
+            content: '보유 재화가 부족합니다.',
+            confirmCallback: function () {},
+          });
         }
       }
     } catch (error) {
@@ -371,14 +324,23 @@ export const StorageProfile = (props: Props) => {
                 <Text style={styles.whiteText}>{data.match_member_info?.profile_score}</Text>
               </View> */}
             </View>
+
+            {data.distance_val != null && 
+              <View style={_styles.distanceContainer}>
+                <Image source={ICON.marker} style={_styles.markerIcon} />
+                <Text style={_styles.regionText}>{data.distance_val}Km</Text>
+              </View>
+            }
+
             <View style={_styles.nameContainer}>
               <Text style={_styles.nameText}>{data.match_member_info?.nickname}, {data.match_member_info?.age}</Text>
               <Image source={ICON.checkICon} style={_styles.checkIcon} />
             </View>
-            {/* <View style={styles.distanceContainer}>
-              <Image source={ICON.marker} style={styles.markerIcon} />
-              <Text style={styles.regionText}>경기도 수원시 12.9Km</Text>
-            </View> */}
+
+            <View style={_styles.distanceContainer}>
+              <Text style={_styles.regionText}>{data.match_member_info?.comment}</Text>
+            </View>
+
             <View style={_styles.buttonsContainer}>
               {/* <TouchableOpacity onPress={() => { popupActive('pass'); }}>
                 <Image source={ICON.closeCircle} style={_styles.smallButton} />
@@ -406,8 +368,8 @@ export const StorageProfile = (props: Props) => {
           {/* ############################################## 받은 관심 */}
           {props.route.params.type == 'REQ' ? (
             <>
-              <SpaceView viewStyle={[styles.halfContainer]}>
-                <View style={{marginRight: 3}}>
+              <SpaceView viewStyle={[styles.rowStyle]}>
+                <View style={{marginRight: 3, flex: 1}}>
                   <CommonBtn
                     value={'거절'}
                     width={'100%'}
@@ -418,7 +380,7 @@ export const StorageProfile = (props: Props) => {
                     }}
                   />
                 </View>
-                <View>
+                <View style={{flex: 1}}>
                   <CommonBtn
                     value={'수락'}
                     type={'primary'}
@@ -458,7 +420,7 @@ export const StorageProfile = (props: Props) => {
             <>
               <SpaceView viewStyle={_styles.matchSuccArea}>
                 <SpaceView mb={8} viewStyle={{alignItems: 'center'}}>
-                  <Image source={ICON.match_succ_icon} style={{width: 40, height: 40}} />
+                  <Image source={ICON.match_succ_icon} style={{width: 30, height: 30}} />
                 </SpaceView>
 
                 <SpaceView mb={16} viewStyle={{alignItems: 'center'}}>
@@ -467,8 +429,8 @@ export const StorageProfile = (props: Props) => {
                   </CommonText>
                 </SpaceView>
 
-                {data.match_base.res_member_seq == memberSeq ||
-                data.match_base.phone_open_yn == 'Y' ? (
+                {data.match_base.res_member_seq == memberSeq && data.match_base.res_phone_open_yn == 'Y' ||
+                data.match_base.req_member_seq == memberSeq && data.match_base.req_phone_open_yn == 'Y' ? (
                   <>
                     <SpaceView viewStyle={{marginBottom: 15}}>
                       <CommonText
@@ -657,16 +619,20 @@ export const StorageProfile = (props: Props) => {
 function RenderItem({ item }) {
   const url = findSourcePath(item?.img_file_path);
   return (
-    <View>
-      <Image
-        source={url}
-        style={{
-          width: width,
-          height: height * 0.7,
-          borderRadius: 20,
-        }}
-      />
-    </View>
+    <>
+      {item.status == 'ACCEPT' &&
+        <View>
+          <Image
+            source={url}
+            style={{
+              width: width,
+              height: height * 0.7,
+              borderRadius: 20,
+            }}
+          />
+        </View>
+      }
+    </>
   );
 }
 

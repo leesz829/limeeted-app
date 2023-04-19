@@ -117,9 +117,9 @@ export const SecondAuth = () => {
 
   // ############################################################################# 최초 실행
   React.useEffect(() => {
-    authDataSet(mbrSecondAuthList);
+    //authDataSet(mbrSecondAuthList);
 
-    //getMemberProfileSecondAuth();
+    getMemberProfileSecondAuth();
   }, [isFocus]);
 
   // ############################################################################# 프로필 2차 인증 정보 조회 함수
@@ -212,6 +212,8 @@ export const SecondAuth = () => {
               }
             });
 
+            console.log('filePath01 ::::::::: ' , filePath01);
+
             setFilePathData({
               filePath01: filePath01
               , filePath02: filePath02
@@ -276,6 +278,7 @@ export const SecondAuth = () => {
           show({
             content: '심사 요청 되었습니다.' ,
             confirmCallback: function() {
+              getMemberProfileSecondAuth();
               if(type == 'JOB') { job_onClose(); }
               else if(type == 'EDU') { edu_onClose(); }
               else if(type == 'INCOME') { income_onClose(); }

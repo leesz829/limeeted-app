@@ -241,6 +241,8 @@ export default function CategoryShop() {
 
 // ######################################################### 상품 RenderItem
 function RenderItem({ item, openModal }) {
+  console.log('item :::::: ', item);
+
   const onPressItem = () => openModal(item);
 
   const imagePath = findSourcePath(item?.file_path + item?.file_name);
@@ -263,10 +265,10 @@ function RenderItem({ item, openModal }) {
               {item?.discount_rate && item.discount_rate != 0 ? item.discount_rate + '%':''}
             </Text>
             <Text style={styles.price}>
-              {CommaFormat(item?.shop_buy_price) + '원'}
+              {CommaFormat(item?.shop_buy_price) + (item.money_type_code == 'PASS' ? '패스' : '원')}
             </Text>
             <Text style={styles.originPrice}>
-              {item?.discount_rate && item.discount_rate != 0 ? CommaFormat(item?.original_price) + '원':''}
+              {item?.discount_rate && item.discount_rate != 0 ? CommaFormat(item?.original_price) + (item.money_type_code == 'PASS' ? '패스' : '원') : ''}
             </Text>
           </View>
           <View style={styles.boxWrapper}>

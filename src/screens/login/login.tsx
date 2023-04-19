@@ -123,11 +123,13 @@ export const Login01 = () => {
                   navigation.navigate(ROUTES.SIGNUP03, {
                     memberSeq: data.mbr_base.member_seq,
                     gender: data.mbr_base.gender,
+                    mstImgPath: data.mbr_base.mstImgPath,
                   });
                 } else if (joinStatus == '04') {
                   navigation.navigate(ROUTES.APPROVAL, {
                     memberSeq: data.mbr_base.member_seq,
                     gender: data.mbr_base.gender,
+                    mstImgPath: data.mbr_base.mstImgPath,
                     accessType: 'LOGIN',
                   });
                 }

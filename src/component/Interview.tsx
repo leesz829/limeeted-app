@@ -1,7 +1,7 @@
 import { layoutStyle, styles } from 'assets/styles/Styles';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Image, StyleSheet, TouchableOpacity, View, Text } from 'react-native';
 import { ICON } from 'utils/imageUtils';
 //import AsyncStorage from '@react-native-community/async-storage';
@@ -20,7 +20,7 @@ import { CommonInput } from './CommonInput';
 interface InterviewProps {
   title?: string;
   callbackAnswerFn?: Function;
-  callbackOnDelFn?: Function;
+  callbackScrollBottomFn?: Function;
 }
 
 enum Mode {
@@ -43,7 +43,7 @@ const indexToKr = [
 export default function Interview({
   title,
   callbackAnswerFn,
-  callbackOnDelFn,
+  callbackScrollBottomFn,
 }: InterviewProps) {
   const origin = useInterView();
 
@@ -72,14 +72,19 @@ export default function Interview({
     });
   }
 
+  const scrollViewRef = useRef();
+
+
   function onPressToggleMode() {
     if (mode === Mode.view) {
       setMode(Mode.delete);
-      callbackOnDelFn && callbackOnDelFn(true);
+      //callbackOnDelFn && callbackOnDelFn(true);
+      //scrollViewRef.current.scrollToEnd({animated: true})
+      callbackScrollBottomFn();
     } else {
       setMode(Mode.view);
       setDeleteList([]);
-      callbackOnDelFn && callbackOnDelFn(false);
+      //callbackOnDelFn && callbackOnDelFn(false);
     }
   }
 
@@ -287,8 +292,8 @@ const style = StyleSheet.create({
   registerButton: {
     borderColor: '#7986ee',
     borderWidth: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 3,
+    paddingHorizontal: 15,
+    paddingVertical: 2,
     flexDirection: `row`,
     alignItems: `center`,
     justifyContent: `center`,
@@ -296,11 +301,12 @@ const style = StyleSheet.create({
   },
   registerText: {
     color: Color.primary,
+    fontSize: 13,
   },
   deleteButton: {
     backgroundColor: '#7986ee',
-    paddingHorizontal: 20,
-    paddingVertical: 3,
+    paddingHorizontal: 15,
+    paddingVertical: 2,
     flexDirection: `row`,
     alignItems: `center`,
     justifyContent: `center`,
@@ -309,6 +315,7 @@ const style = StyleSheet.create({
   },
   deleteText: {
     color: Color.white,
+    fontSize: 13,
   },
 
   checkIconStyle: {
@@ -402,15 +409,11 @@ const style = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'normal',
     fontStyle: 'normal',
-    lineHeight: 22,
     letterSpacing: 0,
     textAlign: 'left',
     color: '#7986ee',
     marginLeft: 10,
-    marginTop: -10,
-    
-    /* position: 'absolute',
-    top: 1, */
+    marginTop: -7,
     textAlignVertical: 'top',
   },
   penPosition: {

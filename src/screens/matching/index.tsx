@@ -35,7 +35,7 @@ import * as hooksMember from 'hooks/member';
 import { useUserInfo } from 'hooks/useUserInfo';
 import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
-import { modalStyle } from 'assets/styles/Styles';
+import { modalStyle, layoutStyle, commonStyle } from 'assets/styles/Styles';
 import {
   Dimensions,
   FlatList,
@@ -53,7 +53,7 @@ import { SimpleGrid } from 'react-native-super-grid';
 import { useDispatch } from 'react-redux';
 import { myProfile } from 'redux/reducers/authReducer';
 import { MatchSearch } from 'screens/matching/MatchSearch';
-import { findSourcePath, ICON } from 'utils/imageUtils';
+import { findSourcePath, ICON, IMAGE } from 'utils/imageUtils';
 import { Slider } from '@miblanchard/react-native-slider';
 import ProfileAuth from 'component/ProfileAuth';
 import InterviewRender from 'component/InterviewRender';
@@ -128,7 +128,7 @@ export default function Matching(props: Props) {
     try {
       const { success, data } = await get_daily_matched_info();
       
-      console.log('get_daily_matched_info data :::: ', data.memberBase);
+      console.log('get_daily_matched_info data :::: ', data);
       
       if (success) {
         if (data.result_code == '0000') {
@@ -163,7 +163,7 @@ export default function Matching(props: Props) {
     } else if (activeType == 'sincere') {
       show({
 				title: '찐심 보내기',
-				content: '패스를 소모하여 찐심을 보내시겠습니까?\n로얄패스 x2' ,
+				content: '로얄패스를 소모하여 찐심을 보내시겠습니까?\n로얄패스 x2' ,
         cancelCallback: function() {
 
         },
@@ -199,7 +199,7 @@ export default function Matching(props: Props) {
         if(data.result_code == '0000') {
           dispatch(myProfile());
           getDailyMatchInfo();
-          //setIsLoad(false);
+          setIsLoad(false);
         } else if (data.result_code == '6010') {
           show({ content: '보유 패스가 부족합니다.' });
           return false;
@@ -275,11 +275,14 @@ export default function Matching(props: Props) {
 
     try {
       const { success, data } = await report_check_user(body);
-
+      console.log('data ::::::: ' , data);
       if(success) {
         if(data.report_cnt < 10) return false;
         
-        show({ title: '신고 경고 문구', content: '이 주의 신고 건수가 10건 이상이 되어\n 제재되상이 되었습니다.', confirmCallback : reportCheckUserConfirm() });
+        show({ 
+          title: '제제 알림'
+          , content: '<이용 약관>에 근거하여 회원 제제 상태로 전환되었습니다.\n상대에 대한 배려를 당부드려요'
+          , confirmCallback : reportCheckUserConfirm() });
         /*
         confirmCallback: Function | undefined;
         cancelCallback: Function | undefined;
@@ -320,11 +323,11 @@ export default function Matching(props: Props) {
             <View style={styles.absoluteView}>
               <View style={styles.badgeContainer}>
 
-                {data.second_auth_list.length > 0 && 
+                {/* {data.second_auth_list.length > 0 && 
                   <View style={styles.authBadge}>
                     <Text style={styles.whiteText}>인증 완료</Text>
                   </View>
-                }
+                } */}
 
                 {/* 고평점 이성 소개받기 구독 아이템 표시 */}
                 {/* <View style={styles.redBadge}>
@@ -332,14 +335,23 @@ export default function Matching(props: Props) {
                   <Text style={styles.whiteText}>{data.match_member_info?.profile_score}</Text>
                 </View> */}
               </View>
+
+              {data.distance_val != null &&
+                <View style={styles.distanceContainer}>
+                  <Image source={ICON.marker} style={styles.markerIcon} />
+                  <Text style={styles.regionText}>12.9Km</Text>
+                </View>
+              }
+
               <View style={styles.nameContainer}>
                 <Text style={styles.nameText}>{data.match_member_info?.nickname}, {data.match_member_info?.age}</Text>
                 <Image source={ICON.checkICon} style={styles.checkIcon} />
               </View>
-              {/* <View style={styles.distanceContainer}>
-                <Image source={ICON.marker} style={styles.markerIcon} />
-                <Text style={styles.regionText}>경기도 수원시 12.9Km</Text>
-              </View> */}
+
+              <View style={styles.distanceContainer}>
+                <Text style={styles.regionText}>{data.match_member_info.comment}</Text>
+              </View>
+
               <View style={styles.buttonsContainer}>
                 <TouchableOpacity onPress={() => { popupActive('pass'); }}>
                   <Image source={ICON.closeCircle} style={styles.smallButton} />
@@ -585,9 +597,45 @@ export default function Matching(props: Props) {
         </Modalize>
       </>
     ) : (
-      <MatchSearch isEmpty={isEmpty} />
+      <>
+        <TopNavigation currentPath={'LIMEETED'} />
+        {isEmpty ? (
+          <View
+            style={[
+              layoutStyle.alignCenter,
+              layoutStyle.justifyCenter,
+              layoutStyle.flex1,
+              {backgroundColor: 'white'},
+            ]}>
+            <SpaceView mb={20} viewStyle={layoutStyle.alignCenter}>
+              <Image source={IMAGE.logoMark} style={{width: 48, height: 48}} />
+            </SpaceView>
+            <View style={[layoutStyle.alignCenter]}>
+              <CommonText type={'h4'} textStyle={[layoutStyle.textCenter, commonStyle.fontSize16, commonStyle.lineHeight23]}>
+                오늘 소개해드릴 데일리뷰가 마감되었어요.{"\n"}
+                데일리뷰에서 제공해드릴 프로필 카드는 {"\n"}운영 정책에 따라 늘려 나갈 예정이니 기대해주세요.
+              </CommonText>
+            </View>
+          </View>
+        ) : (
+          <View
+            style={[
+              layoutStyle.alignCenter,
+              layoutStyle.justifyCenter,
+              layoutStyle.flex1,
+              {backgroundColor: 'white'},
+            ]}>
+            <SpaceView mb={20} viewStyle={layoutStyle.alignCenter}>
+              {/* <Image source={GIF_IMG.faceScan} style={styles.iconSize48} /> */}
+              <Image source={IMAGE.logoMark} style={{width: 48, height: 48}} />
+            </SpaceView>
+            <View style={layoutStyle.alignCenter}>
+              <CommonText type={'h4'}>다음 매칭 회원을 찾고 있어요.</CommonText>
+            </View>
+          </View>
+        )}
+      </>
     )
-    
   );
 }
 /**
@@ -596,16 +644,20 @@ export default function Matching(props: Props) {
 function RenderItem({ item }) {
   const url = findSourcePath(item?.img_file_path);
   return (
-    <View>
-      <Image
-        source={url}
-        style={{
-          width: width,
-          height: height * 0.7,
-          borderRadius: 20,
-        }}
-      />
-    </View>
+    <>
+      {item.status == 'ACCEPT' && 
+        <View>
+          <Image
+            source={url}
+            style={{
+              width: width,
+              height: height * 0.7,
+              borderRadius: 20,
+            }}
+          />
+        </View>
+      }
+    </>
   );
 }
 

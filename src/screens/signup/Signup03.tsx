@@ -70,7 +70,7 @@ export const Signup03 = (props : Props) => {
 			show({ content: '한줄 소개를 입력해 주세요.' });
 			return;
 		}
-		if(checkIntList.length < 2){
+		if(checkIntList.length < 1){
 			show({ content: '관심사를 입력해 주세요.' });
 			return;
 		}
@@ -95,7 +95,8 @@ export const Signup03 = (props : Props) => {
 								name: ROUTES.APPROVAL
 								, params: {
 									memberSeq: props.route.params.memberSeq,
-									accessType: 'JOIN'
+									accessType: 'JOIN',
+									mstImgPath: props.route.params.mstImgPath,
 								}
 							}
 						]

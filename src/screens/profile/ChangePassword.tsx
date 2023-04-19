@@ -82,7 +82,7 @@ export const ChangePassword = (props : Props) => {
 		let regPass = /^(?=.*[a-zA-Z])(?=.*[0-9]).{8,25}$/;
 		if((!regPass.test(newPassword))){
 			setIsNewPassword(true);
-			setNewPasswordConfirmMessage("영문, 숫자 조합으로 8-20자리 입력해주세요.");
+			setNewPasswordConfirmMessage("새 비밀번호를 올바르게 입력해주세요.");
 			setNewPasswordConfirmMessageColor('#E04136');
 			return;
 		}
@@ -118,7 +118,7 @@ export const ChangePassword = (props : Props) => {
 
 		show({ 
 			title: '비밀번호 변경',
-			content: '비밀번호 변경하시겠습니까?\n변경 처리 후 바로 로그인됩니다.' ,
+			content: '비밀번호 변경하시겠습니까?\n변경 처리 후 로그인 상태는 유지됩니다.' ,
 			cancelCallback: function() {
 			},
 			confirmCallback: async function() {

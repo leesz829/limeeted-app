@@ -278,12 +278,14 @@ export const Signup02 = (props: Props) => {
     };
     try {
       const { success, data } = await regist_profile_image(body);
+      console.log('data ::::: ', data);
       if (success) {
         switch (data.result_code) {
           case SUCCESS:
             navigation.navigate(ROUTES.SIGNUP03, {
               memberSeq: props.route.params.memberSeq,
               gender: props.route.params.gender,
+              mstImgPath: data.mst_img_path,
             });
             break;
           default:

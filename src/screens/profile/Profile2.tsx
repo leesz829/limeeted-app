@@ -268,7 +268,7 @@ export const Profile2 = (props: Props) => {
               </CommonText>
             ) : (
               <CommonText textStyle={_style.targetBaseTxt} fontWeight={'200'}>
-                  질문에 성실하게 답해주세요.
+                  선택 질문 저장 후 답변 등록화면이 나타나요.
               </CommonText>
             )}
           </SpaceView>
@@ -492,7 +492,7 @@ const _style = StyleSheet.create({
     textAlign: 'center',
     marginTop: 10,
     fontSize: 13,
-    marginHorizontal: 70,
+    marginHorizontal: 20,
     textAlignVertical: 'center',
     color: Color.grayC3C3C3,
   },

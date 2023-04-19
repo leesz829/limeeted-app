@@ -156,16 +156,27 @@ export const Roby = (props: Props) => {
 
   // ############################################################ 프로필 재심사 팝업 활성화
   const profileReexPopupOpen = async () => {
-    show({
-      title: '프로필 재심사',
-      content: '프로필 재심사 대기열에 등록하시겠습니까?\n패스 x10',
-      cancelCallback: function() {
 
-      },
-      confirmCallback: function () {
-        profileReexProc();
-      },
-    });
+    if(memberBase?.pass_has_amt < 30) {
+      show({
+        title: '재화 부족',
+        content: '보유 재화가 부족합니다.',
+        confirmCallback: function () {},
+      });
+    } else {
+      show({
+        title: '프로필 재심사',
+        content: '프로필 재심사 대기열에 등록하시겠습니까?\n패스 x30',
+        cancelCallback: function() {
+  
+        },
+        confirmCallback: function () {
+          profileReexProc();
+        },
+      });
+    }
+
+    
   }
 
   // ############################################################ 프로필 재심사 실행
@@ -342,7 +353,7 @@ export const Roby = (props: Props) => {
                       <Image source={memberBase.gender == 'M' ? IMAGE.robyMaleImg : IMAGE.robyFemaleImg} style={{width: '100%', height: 100}} />
                       <SpaceView viewStyle={{position: 'absolute', top: 10, left: 15}}>
                         <CommonText type={'h5'} fontWeight={'700'} textStyle={{marginTop: 3, marginBottom: 5, lineHeight: 18}}>{memberBase?.nickname}님의{'\n'}리미티드 대표 인상</CommonText>
-                        <CommonText type={'h5'} fontWeight={'200'} color={memberBase.gender == 'M' ? '#7986EE' : '#FE0456'} textStyle={{marginTop: 0}}>{memberBase.best_face}이라고 생각해요!</CommonText>
+                        <CommonText type={'h5'} fontWeight={'200'} color={memberBase.gender == 'M' ? '#7986EE' : '#FE0456'} textStyle={{marginTop: 0}}>"{memberBase.best_face}"</CommonText>
                       </SpaceView>
                     </SpaceView>
                 </View>
@@ -403,7 +414,7 @@ export const Roby = (props: Props) => {
           </View>
 
           {memberBase?.reex_yn == 'Y' ? (
-            <TouchableOpacity style={_styles.pennding}>
+            <TouchableOpacity style={[_styles.pennding, layoutStyle.mb20]}>
               <Text style={_styles.submitText}>내 프로필을 심사중이에요!</Text>
             </TouchableOpacity>
           ) : (
@@ -412,7 +423,7 @@ export const Roby = (props: Props) => {
               style={_styles.submitBtn}>
               <Text style={_styles.submitText}>내 프로필 재심사</Text>
             </TouchableOpacity>
-          )}          
+          )}
 
           {/* ################################################################################ 보관함 영역 */}
           <View style={{ marginTop: 16 }}>

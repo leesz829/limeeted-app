@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Image, View } from 'react-native';
 import TopNavigation from 'component/TopNavigation';
 import { layoutStyle, styles, commonStyle } from 'assets/styles/Styles';
@@ -8,13 +9,16 @@ import SpaceView from 'component/SpaceView';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 export const MatchSearch = ( data ) => {
+  console.log('ismepty ::::: ', data.isEmpty);
+
   const route = useRoute();
+  const [isEmpty, setIsEmpty] = useState(data?.isEmpty);
 
   return (
     <>
       <TopNavigation currentPath={'LIMEETED'} />
 
-      {data.isEmpty ? (
+      {isEmpty ? (
         <View
           style={[
             layoutStyle.alignCenter,

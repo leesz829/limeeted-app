@@ -67,10 +67,21 @@ export const Profile = (props: Props) => {
         screen: 'Roby',
       });
     } else {
-      setNicknameUpdatePopup(true);
+      show({
+        title: '닉네임 변경',
+        content: '닉네임을 변경하시겠습니까?\n패스 x25',
+        cancelCallback: function() {
+  
+        },
+        confirmCallback: function() {
+          saveMemberBase();
+        },
+      });
     }
   };
 
+
+  // ###################################################################### 탈퇴 처리
   const exitProc = async () => {
     const { success, data } = await update_member_exit();
     console.log('success ::: ', success);
@@ -97,7 +108,7 @@ export const Profile = (props: Props) => {
   }
 
 
-	// 회원탈퇴 버튼
+	// ###################################################################### 탈퇴 버튼
 	const btnDeleteMyAccount = async () => {
 
     try {
@@ -114,49 +125,34 @@ export const Profile = (props: Props) => {
     } finally {
       
     }
-	}
+  }
 
-  // 탈퇴 완료 버튼 클릭
-	const deleteMyAccountComplete = async () => {
-		// #todo pushtoken 비워줄 로그아웃 api
-		
-		//#todo mbr base = > principal reducer
-		//navigation.navigate(STACK.AUTH, { screen: ROUTES.LOGIN });
-	};
-
-	// 비밀번호 변경 버튼
+	// ###################################################################### 비밀번호 변경 버튼
 	const btnChangePassword = async () => {
 		navigation.navigate('ChangePassword', {});
 	}
 
-  // ############### 내 계정 정보 저장
+  // ###################################################################### 내 계정 정보 저장
   const saveMemberBase = async () => {
     const body = {
       nickname: nickname,
-      comment: '',
-      match_yn: '',
       use_pass_yn: 'Y',
-      friend_mathch_yn: '',
     };
     try {
       const { success, data } = await update_setting(body);
 
       if (success) {
         if (data.result_code == '0000') {
-          setNicknameUpdatePopup(false);
           dispatch(myProfile());
           show({ content: '저장되었습니다.' });
 
-          //dispatch(mbrReducer.setBase(JSON.stringify(data.base)));
-          /* navigation.navigate('Main', {
+          navigation.navigate(STACK.TAB, {
             screen: 'Roby',
-          }); */
+          });
         } else if (data.result_code == '6010') {
-          setNicknameUpdatePopup(false);
           show({ content: '보유 패스가 부족합니다.' });
           return false;
         } else {
-          setNicknameUpdatePopup(false);
           show({ content: '오류입니다. 관리자에게 문의해주세요.' });
           return false;
         }
@@ -164,7 +160,6 @@ export const Profile = (props: Props) => {
     } catch (error) {
       console.log(error);
     } finally {
-      setNicknameUpdatePopup(false);
     }
   };
 
@@ -294,7 +289,7 @@ export const Profile = (props: Props) => {
 
         </View>
 
-        <SpaceView viewStyle={commonStyle.paddingHorizontal20} mb={100} mt={20}>
+        <SpaceView viewStyle={commonStyle.paddingHorizontal20} mb={40} mt={20}>
           <View style={{marginBottom: 10}}>
             <CommonBtn 
               value={'비밀번호 변경'} 
@@ -331,46 +326,6 @@ export const Profile = (props: Props) => {
         </SpaceView>
 
       </ScrollView>
-
-      {/* ###############################################
-                        닉네임 변경 팝업
-            ############################################### */}
-      <Modal visible={nickNameUpdatePopup} transparent={true}>
-        <View style={modalStyle.modalBackground}>
-          <View style={modalStyle.modalStyle1}>
-            <SpaceView mb={16} viewStyle={layoutStyle.alignCenter}>
-              <CommonText fontWeight={'700'} type={'h4'}>
-                닉네임 변경
-              </CommonText>
-            </SpaceView>
-
-            <SpaceView viewStyle={layoutStyle.alignCenter}>
-              <CommonText type={'h5'}>닉네임을 변경하시겠습니까?</CommonText>
-              <CommonText type={'h5'} color={ColorType.red}>
-                패스 x5
-              </CommonText>
-            </SpaceView>
-
-            <View style={modalStyle.modalBtnContainer}>
-              <TouchableOpacity
-                style={modalStyle.modalBtn}
-                onPress={() => setNicknameUpdatePopup(false)}
-              >
-                <CommonText fontWeight={'500'}>취소</CommonText>
-              </TouchableOpacity>
-              <View style={modalStyle.modalBtnline} />
-              <TouchableOpacity
-                style={modalStyle.modalBtn}
-                onPress={() => saveMemberBase()}
-              >
-                <CommonText fontWeight={'500'} color={ColorType.red}>
-                  확인
-                </CommonText>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
     </>
   );
 };

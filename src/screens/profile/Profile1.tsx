@@ -60,6 +60,8 @@ export const Profile1 = (props: Props) => {
   const myImages = useProfileImg();
   const dispatch = useDispatch();
   const navigation = useNavigation<ScreenNavigationProp>();
+  const scrollViewRef = useRef();
+
 
   const [images, setImages] = useState([]);
 
@@ -234,6 +236,13 @@ export const Profile1 = (props: Props) => {
       );
     }
   }
+
+  // ############################################################  인터뷰 답변 작성 Callback 함수
+  const callbackScrollBottom = async () => {
+    scrollViewRef.current.scrollToEnd({animated: true})
+  }
+
+
 
   // ############################################################  프로필 랭크 순위 조회
   const getMemberFaceRank = async () => {
@@ -461,7 +470,7 @@ export const Profile1 = (props: Props) => {
           </TouchableOpacity>
         }
       />
-      <ScrollView style={{ backgroundColor: 'white', flexGrow: 1 }}>
+      <ScrollView ref={scrollViewRef} style={{ backgroundColor: 'white', flexGrow: 1 }}>
 
         {/* ####################################################################################
 					####################### 프로필 이미지 영역
@@ -487,9 +496,13 @@ export const Profile1 = (props: Props) => {
                   key={imgData.orgImgUrl01.url}
                   source={imgData.orgImgUrl01.url}
                 />
-                {imgData.orgImgUrl01url != '' && imgData.orgImgUrl01.status == 'PROGRESS' && (
+                {imgData.orgImgUrl01.url != '' && (imgData.orgImgUrl01.status == 'PROGRESS' || imgData.orgImgUrl01.status == 'REFUSE') && (
                   <View style={styles.disabled}>
-                    <CommonText fontWeight={'700'} type={'h5'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mt10, commonStyle.mr10]}>심사중</CommonText>
+                    {imgData.orgImgUrl01.status == 'PROGRESS' ? (
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.gray8888} textStyle={[_styles.imageDimText]}>심사중</CommonText>
+                    ) : imgData.orgImgUrl01.status == 'REFUSE' && (
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.redF20456} textStyle={[_styles.imageDimText]}>반려</CommonText>
+                    )}
                   </View>
                 )}
               </TouchableOpacity>
@@ -515,9 +528,13 @@ export const Profile1 = (props: Props) => {
                   key={imgData.orgImgUrl02.url}
                   source={imgData.orgImgUrl02.url}
                 />
-                {imgData.orgImgUrl02url != '' && imgData.orgImgUrl02.status == 'PROGRESS' && (
+                {imgData.orgImgUrl02.url != '' && (imgData.orgImgUrl02.status == 'PROGRESS' || imgData.orgImgUrl02.status == 'REFUSE') && (
                   <View style={styles.disabled}>
-                    <CommonText fontWeight={'700'} type={'h5'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mt10, commonStyle.mr10]}>심사중</CommonText>
+                    {imgData.orgImgUrl02.status == 'PROGRESS' ? (
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.gray8888} textStyle={[_styles.imageDimText]}>심사중</CommonText>
+                    ) : imgData.orgImgUrl02.status == 'REFUSE' && (
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.redF20456} textStyle={[_styles.imageDimText]}>반려</CommonText>
+                    )}
                   </View>
                 )}
               </TouchableOpacity>
@@ -543,9 +560,13 @@ export const Profile1 = (props: Props) => {
                   key={imgData.orgImgUrl03.url}
                   source={imgData.orgImgUrl03.url}
                 />
-                {imgData.orgImgUrl03url != '' && imgData.orgImgUrl03.status == 'PROGRESS' && (
+                {imgData.orgImgUrl03.url != '' && (imgData.orgImgUrl03.status == 'PROGRESS' || imgData.orgImgUrl03.status == 'REFUSE') && (
                   <View style={styles.disabled}>
-                    <CommonText fontWeight={'700'} type={'h5'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mt10, commonStyle.mr10]}>심사중</CommonText>
+                    {imgData.orgImgUrl03.status == 'PROGRESS' ? (
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.gray8888} textStyle={[_styles.imageDimText]}>심사중</CommonText>
+                    ) : imgData.orgImgUrl03.status == 'REFUSE' && (
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.redF20456} textStyle={[_styles.imageDimText]}>반려</CommonText>
+                    )}
                   </View>
                 )}
               </TouchableOpacity>
@@ -571,10 +592,13 @@ export const Profile1 = (props: Props) => {
                   key={imgData.orgImgUrl04.url}
                   source={imgData.orgImgUrl04.url}
                 />
-
-                {imgData.orgImgUrl04url != '' && imgData.orgImgUrl04.status == 'PROGRESS' && (
+                {imgData.orgImgUrl04.url != '' && (imgData.orgImgUrl04.status == 'PROGRESS' || imgData.orgImgUrl04.status == 'REFUSE') && (
                   <View style={styles.disabled}>
-                    <CommonText fontWeight={'700'} type={'h5'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mt10, commonStyle.mr10]}>심사중</CommonText>
+                    {imgData.orgImgUrl04.status == 'PROGRESS' ? (
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.gray8888} textStyle={[_styles.imageDimText]}>심사중</CommonText>
+                    ) : imgData.orgImgUrl04.status == 'REFUSE' && (
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.redF20456} textStyle={[_styles.imageDimText]}>반려</CommonText>
+                    )}
                   </View>
                 )}
               </TouchableOpacity>
@@ -600,10 +624,13 @@ export const Profile1 = (props: Props) => {
                   key={imgData.orgImgUrl05.url}
                   source={imgData.orgImgUrl05.url}
                 />
-
-                {imgData.orgImgUrl05url != '' && imgData.orgImgUrl05.status == 'PROGRESS' && (
+                {imgData.orgImgUrl05.url != '' && (imgData.orgImgUrl05.status == 'PROGRESS' || imgData.orgImgUrl05.status == 'REFUSE') && (
                   <View style={styles.disabled}>
-                    <CommonText fontWeight={'700'} type={'h5'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mt10, commonStyle.mr10]}>심사중</CommonText>
+                    {imgData.orgImgUrl05.status == 'PROGRESS' ? (
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.gray8888} textStyle={[_styles.imageDimText]}>심사중</CommonText>
+                    ) : imgData.orgImgUrl05.status == 'REFUSE' && (
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.redF20456} textStyle={[_styles.imageDimText]}>반려</CommonText>
+                    )}
                   </View>
                 )}
               </TouchableOpacity>
@@ -711,7 +738,9 @@ export const Profile1 = (props: Props) => {
           {/* ####################################################################################
 					####################### 인터뷰 영역
 					#################################################################################### */}
-          <Interview title={memberBase.nickname + `님을\n알려주세요!`} callbackAnswerFn={callbackInterviewAnswer} />
+          <Interview title={memberBase.nickname + `님을\n알려주세요!`} 
+                      callbackAnswerFn={callbackInterviewAnswer}
+                      callbackScrollBottomFn={callbackScrollBottom} />
         </View>
         <View style={{ height: 10 }} />
       </ScrollView>
@@ -1003,6 +1032,12 @@ const _styles = StyleSheet.create({
     textAlign: 'center',
     color: '#d0d0d0',
   },
+  imageDimText: {
+    textAlign: 'right',
+    marginTop: 10,
+    marginRight: 10,
+  },
+
 });
 
 

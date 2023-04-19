@@ -48,8 +48,6 @@ interface Props {
 
 export const SecondAuthPopup = (props: Props) => {
 
-  console.log('auth_status11111 ::::: ' , props.auth_status);
-
   const dispatch = useDispatch();
   const { show } = usePopup();  // 공통 팝업
   const isFocus = useIsFocused();
@@ -348,7 +346,7 @@ export const SecondAuthPopup = (props: Props) => {
                   fontWeight={'500'}
                   lineHeight={17}
                   type={'h5'}
-                  textStyle={{marginTop: 4}}>아래 기준에 기초하여 인증 레벨이 부여됩니다.</CommonText>
+                  textStyle={{marginTop: 4}}>{etcTxt03}</CommonText>
               </View>
             </SpaceView>
             
@@ -477,7 +475,7 @@ export const SecondAuthPopup = (props: Props) => {
                   <View style={_styles.rowStyle}>
                     <Text style={_styles.rowTextLeft}>1</Text>
                     <Text style={_styles.rowTextCenter}>3,000</Text>
-                    <Text style={_styles.rowTextRight}>4,000</Text>
+                    <Text style={_styles.rowTextRight}>6,500</Text>
                   </View>
                   <View style={_styles.rowStyle}>
                     <Text style={_styles.rowTextLeft}>2</Text>

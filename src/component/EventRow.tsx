@@ -8,6 +8,7 @@ import { ICON } from 'utils/imageUtils';
 import { Color } from 'assets/styles/Color';
 
 interface Props {
+  key: number;
   title: string;
   desc: string;
   label: string;
@@ -23,12 +24,22 @@ interface Props {
 export const EventRow: FC<Props> = (props) => {
   const [openRow, setOpenRow] = useState(false);
 
+  const [activeIndex, setActiveIndex] = useState(-1);
+
+  const toggleAccordion = (index) => {
+    setActiveIndex(activeIndex === index ? -1 : index);
+  };
+
+
   return (
     <View style={{marginBottom: 10}}>
       <View style={styles.rowContainer}>
         <TouchableOpacity
           style={styles.inner}
-          onPress={() => setOpenRow(!openRow)}
+          onPress={() => { 
+            toggleAccordion(props.key);
+          }}
+          //onPress={() => setOpenRow(!openRow)}
           activeOpacity={0.3} >
           {/* 
           <View style={styles.labelContainer}>
@@ -37,17 +48,17 @@ export const EventRow: FC<Props> = (props) => {
             </CommonText>
           </View> */}
           
-          <View style={[styles.titleContainer, openRow && styles.active]}>
+          <View style={[styles.titleContainer, activeIndex === props.key && styles.active]}>
             <CommonText fontWeight={'500'} type={'h5'}>{props.title}</CommonText>
           </View>          
         </TouchableOpacity>
 
-        <View style={[styles.iconContainer, openRow && styles.activeIcon]}>
+        <View style={[styles.iconContainer, activeIndex === props.key && styles.activeIcon]}>
           <Image source={ICON.arrBottom} style={styles.iconStyle} />
         </View>
       </View>
 
-      {openRow && (
+      {activeIndex === props.key && (
         <View style={styles.descContainer}>
           <CommonText textStyle={styles.descText} type={'h5'}>{props.desc}</CommonText>
         </View>

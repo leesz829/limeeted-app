@@ -118,7 +118,7 @@ export function Wallet({ theme }) {
             <Text
               style={[
                 styles.statusText,
-                { color: theme ? '#7a7dbb' : '#7a7dbb', lineHeight: 13 },
+                { color: theme ? '#fff' : '#7a7dbb', lineHeight: 13 },
               ]}>
 
               {memberBase?.pass_has_amt}
@@ -129,7 +129,7 @@ export function Wallet({ theme }) {
             <Text
               style={[
                 styles.statusText,
-                { color: theme ? '#da88ad' : '#da88ad', lineHeight: 13 },
+                { color: theme ? '#fff' : '#da88ad', lineHeight: 13 },
               ]}>
 
               {memberBase?.royal_pass_has_amt}

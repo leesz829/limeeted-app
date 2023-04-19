@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import { layoutStyle, styles, commonStyle } from 'assets/styles/Styles';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
@@ -7,11 +8,13 @@ import { Image, View } from 'react-native';
 import { ICON, GIF_IMG, IMAGE } from 'utils/imageUtils';
 
 export const LiveSearch = ( data ) => {
+  const [isEmpty, setIsEmpty] = useState(data?.isEmpty);
+
   return (
     <>
       <TopNavigation currentPath={'LIVE'} />
 
-      {data.isEmpty ? (
+      {isEmpty ? (
         <View
           style={[
             layoutStyle.alignCenter,

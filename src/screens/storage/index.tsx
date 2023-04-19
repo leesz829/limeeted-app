@@ -195,7 +195,7 @@ export const Storage = (props: Props) => {
 
       show({
         title: '프로필 열람',
-        content: '패스를 소모하여 프로필을 열람하시겠습니까?\n패스 x5',
+        content: '패스를 소모하여 프로필을 열람하시겠습니까?\n패스 x15',
         cancelCallback: function() {
 
         },
@@ -205,23 +205,11 @@ export const Storage = (props: Props) => {
       });
 
     } else {
-      /* navigation.reset({routes: [{name: "StorageProfile", params: {
-            matchSeq: match_seq,
-            tgtMemberSeq: tgt_member_seq,
-            type: type
-         }}]}); */
-
       navigation.navigate(STACK.COMMON, { screen: 'StorageProfile', params: {
         matchSeq: match_seq,
         tgtMemberSeq: tgt_member_seq,
         type: type,
       } });
-
-      /* navigation.navigate('StorageProfile', {
-        matchSeq: match_seq,
-        tgtMemberSeq: tgt_member_seq,
-        type: type,
-      }); */
     }
   };
 
@@ -243,7 +231,7 @@ export const Storage = (props: Props) => {
     };
     try {
       const { success, data } = await update_match(body);
-
+      console.log('data ::::: ' , data);
       if(success) {
         if (data.result_code == '0000') {
           dispatch(myProfile());
@@ -275,9 +263,6 @@ export const Storage = (props: Props) => {
   return (
     <>
       {/* <TopNavigation currentPath={''} /> */}
-
-      
-
 
       {props.route.params?.headerType == 'common' ? (
         <CommonHeader title={'보관함'} />

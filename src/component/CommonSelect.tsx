@@ -128,10 +128,9 @@ export const CommonSelect: FC<Props> = (props) => {
 const styles = StyleSheet.create({
   selectImgContainer: {
     position: 'absolute',
-    height: '100%',
     justifyContent: 'center',
     right: 5,
-    bottom: 5,
+    bottom: 12,
   },
   selectContainer: {},
   labelContainer: {

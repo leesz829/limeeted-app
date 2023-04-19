@@ -8,7 +8,7 @@ import {
   LiveProfileImg,
   ScreenNavigationProp,
 } from '@types';
-import { styles } from 'assets/styles/Styles';
+import { styles, layoutStyle, commonStyle } from 'assets/styles/Styles';
 import axios from 'axios';
 import { CommonText } from 'component/CommonText';
 import { RadioCheckBox } from 'component/RadioCheckBox';
@@ -17,16 +17,18 @@ import TopNavigation from 'component/TopNavigation';
 import { ViualSlider } from 'component/ViualSlider';
 import * as React from 'react';
 import { useState } from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, View, Image } from 'react-native';
 import * as properties from 'utils/properties';
 import { LivePopup } from 'screens/commonpopup/LivePopup';
 import { LiveSearch } from 'screens/live/LiveSearch';
 import * as hooksMember from 'hooks/member';
 import { get_live_members, regist_profile_evaluation, get_common_code } from 'api/models';
 import { useMemberseq } from 'hooks/useMemberseq';
-import { findSourcePath } from 'utils/imageUtils';
+import { findSourcePath, IMAGE, GIF_IMG } from 'utils/imageUtils';
 import { usePopup } from 'Context';
 import { SUCCESS, NODATA } from 'constants/reusltcode';
+import { useDispatch } from 'react-redux';
+import { myProfile } from 'redux/reducers/authReducer';
 
 
 
@@ -38,6 +40,7 @@ export const Live = () => {
   const navigation = useNavigation<ScreenNavigationProp>();
   const member_seq = useMemberseq();
   const isFocus = useIsFocused();
+  const dispatch = useDispatch();
 
   const jwtToken = hooksMember.getJwtToken(); // 토큰
   const { show } = usePopup();  // 공통 팝업
@@ -105,6 +108,7 @@ export const Live = () => {
       if(success) {
         switch (data.result_code) {
           case SUCCESS:
+            dispatch(myProfile());
             setIsLoad(false);
             getLiveMatchTrgt();
             break;
@@ -187,7 +191,7 @@ export const Live = () => {
             show({
               content: '오류입니다. 관리자에게 문의해주세요.' ,
               confirmCallback: function() {
-                getLiveMatchTrgt();
+                
               }
             });
             break;
@@ -197,7 +201,7 @@ export const Live = () => {
         show({
           content: '오류입니다. 관리자에게 문의해주세요.' ,
           confirmCallback: function() {
-            getLiveMatchTrgt();
+            
           }
         });
       }
@@ -234,7 +238,7 @@ export const Live = () => {
           />
         </SpaceView>
 
-        <SpaceView viewStyle={styles.container} pt={48}>
+        <SpaceView viewStyle={[commonStyle.paddingHorizontal20, {backgroundColor: 'white', flex: 1,}]} pt={48}>
           <SpaceView mb={16}>
             <CommonText fontWeight={'700'} type={'h3'}>
               인상을 선택해주세요.
@@ -258,6 +262,45 @@ export const Live = () => {
       )}
     </>
   ) : (
-    <LiveSearch isEmpty={isEmpty} />
+    <>
+      <TopNavigation currentPath={'LIVE'} />
+      {isEmpty ? (
+        <View
+            style={[
+              layoutStyle.alignCenter,
+              layoutStyle.justifyCenter,
+              layoutStyle.flex1,
+              styles.whiteBack,
+            ]}
+          >
+            <SpaceView mb={20} viewStyle={layoutStyle.alignCenter}>
+              <Image source={IMAGE.logoMark} style={styles.iconSize48} />
+            </SpaceView>
+
+            <View style={layoutStyle.alignCenter}>
+              <CommonText type={'h4'} textStyle={[layoutStyle.textCenter, commonStyle.fontSize16, commonStyle.lineHeight23]}>
+                오늘 소개해드릴 LIVE가 마감되었어요.
+              </CommonText>
+            </View>
+          </View>
+        ) : (
+          <View
+            style={[
+              layoutStyle.alignCenter,
+              layoutStyle.justifyCenter,
+              layoutStyle.flex1,
+              styles.whiteBack,
+            ]}
+          >
+            <SpaceView mb={20} viewStyle={layoutStyle.alignCenter}>
+              <Image source={GIF_IMG.faceScan} style={styles.iconSize48} />
+            </SpaceView>
+
+            <View style={layoutStyle.alignCenter}>
+              <CommonText type={'h4'}>다음 회원을 찾고 있어요.</CommonText>
+            </View>
+          </View>
+        )}
+    </>
   );
 };
