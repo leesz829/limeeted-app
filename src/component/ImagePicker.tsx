@@ -9,6 +9,7 @@ import { ICON } from 'utils/imageUtils';
 import type { FC, useState, useEffect } from 'react';
 import { CommonText } from 'component/CommonText';
 import { ColorType } from '@types';
+import { usePopup } from 'Context';
 
 
 interface Action {
@@ -41,6 +42,8 @@ const options: Action = {
   },
 };
 export const ImagePicker: FC<Props> = (props) => {
+  const { show } = usePopup();  // 공통 팝업
+
   const [response, setResponse] = React.useState<any>(null);
   const onButtonPress = React.useCallback(() => {
     //launchImageLibrary(options, setResponse);
@@ -48,11 +51,22 @@ export const ImagePicker: FC<Props> = (props) => {
   }, []);
 
   React.useEffect(() => {
+    console.log('response :::::: ', response);
+
     if (null != response && !response.didCancel) {
-      props.callbackFn(
-        response?.assets[0].uri,
-        response?.assets[0].base64
-      );
+      if(response?.errorCode == "permission") {
+        show({
+          content: '프로필 사진 및 인증 자료 업로드를 위해\n사진첩에 접근 허용이 필요합니다.\n업로드 된 사진은 외부에 유출되지 않습니다.' ,
+          confirmCallback: function() {}
+        });
+      } else {
+        props.callbackFn(
+          response?.assets[0].uri,
+          response?.assets[0].base64
+        );
+      }
+
+      
     }
   }, [response]);
 
