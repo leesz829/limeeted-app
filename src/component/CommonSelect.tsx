@@ -1,5 +1,5 @@
 import RNPickerSelect from 'react-native-picker-select';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View, Dimensions } from 'react-native';
 import type { TextInputProps, StyleProp } from 'react-native';
 import * as React from 'react';
 import { FC } from 'react';
@@ -18,6 +18,8 @@ type Props = {
  * 공통 select
  *
  */
+
+const { width, height } = Dimensions.get('window');
 
 export const CommonSelect: FC<Props> = (props) => {
   const [response, setResponse] = React.useState<any>(null);
@@ -130,7 +132,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     justifyContent: 'center',
     right: 5,
-    bottom: 12,
+    bottom: 8,
   },
   selectContainer: {},
   labelContainer: {
@@ -161,17 +163,16 @@ const styles = StyleSheet.create({
 
 const pickerSelectStyles = StyleSheet.create({
   inputIOS: {
+    width: (width - 50),
     fontSize: 16,
-    lineHeight: 24,
     color: Color.black2222,
     fontFamily: 'AppleSDGothicNeoM00',
     padding: 0,
     marginTop: 8,
   },
   inputAndroid: {
-    width: 1000,
+    width: (width - 50),
     fontSize: 16,
-    lineHeight: 24,
     color: Color.black2222,
     fontFamily: 'AppleSDGothicNeoM00',
     padding: 0,
