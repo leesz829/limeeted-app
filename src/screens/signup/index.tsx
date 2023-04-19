@@ -166,6 +166,7 @@ export const Signup00 = (props: Props) => {
               onChangeText={(id) => setId(id)}
               maxLength={50}
               placeholderTextColor={'#c6ccd3'}
+              placeholder={'이메일 ID'}
               borderBottomType={'black'}
             />
           </SpaceView>
