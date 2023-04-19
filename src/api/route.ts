@@ -16,6 +16,7 @@ export const REGIST_MEMBER_SECOND_AUTH = '/join/insertMemberSecondAuth';
 export const SEARCH_EMAIL_ID = '/login/searchEmailId';
 export const SEARCH_PASSWORD = '/login/searchPassword';
 export const CREATE_TEMP_PASSWORD = '/login/createTempPassword';
+export const GET_SECOND_AUTH = '/join/getMemberSecondAuth';
 
 
 /**

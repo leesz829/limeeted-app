@@ -69,7 +69,12 @@ export default function ProductModal({ isVisible, type, closeModal, item, produc
   
 
   return (
-    <Modal isVisible={isVisible} style={modalStyleProduct.modal}>
+    <Modal isVisible={isVisible} 
+            style={modalStyleProduct.modal}
+            onRequestClose={() => {
+              closeModal();
+              console.log("modal appearance")
+            }}>
       <View style={modalStyleProduct.root}>
         <View style={modalStyleProduct.closeContainer}>
           <TouchableOpacity onPress={closeModal}>
@@ -95,7 +100,7 @@ export default function ProductModal({ isVisible, type, closeModal, item, produc
             </Text>
             <View style={modalStyleProduct.rowCenter}>
               <Text style={modalStyleProduct.price}>
-                {CommaFormat(item?.shop_buy_price != null ? item?.shop_buy_price : item?.buy_price) + '원'}
+                {CommaFormat(item?.shop_buy_price != null ? item?.shop_buy_price : item?.buy_price) + (item?.money_type_code == 'PASS' ? '패스' : '원')}
               </Text>
               {/*<Image source={ICON.crown} style={modalStyleProduct.crown} />*/}
             </View>  

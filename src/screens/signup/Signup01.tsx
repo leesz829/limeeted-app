@@ -19,7 +19,7 @@ import { SecondAuthPopup } from 'screens/commonpopup/SecondAuthPopup';
 import axios from 'axios';
 import * as properties from 'utils/properties';
 import { usePopup } from 'Context';
-import { get_profile_secondary_authentication, regist_second_auth } from 'api/models';
+import { get_profile_secondary_authentication, regist_second_auth, get_member_profile_authentication, get_second_auth } from 'api/models';
 import { SUCCESS } from 'constants/reusltcode';
 
 
@@ -44,20 +44,31 @@ export const Signup01 = (props: Props) => {
   const { width, height } = Dimensions.get('window');
 
   // ############################################################################# 프로필 2차 인증 데이터
-  const [secondData, setSecondData] = React.useState({
+  /* const [secondData, setSecondData] = React.useState({
     jobData: {common_code: 'JOB', code_name: '직업'},
     eduData: {common_code: 'EDU', code_name: '학업'},
     incomeData: {common_code: 'INCOME', code_name: '소득'},
     assetData: {common_code: 'ASSET',code_name: '자산'},
     snsData: {common_code: 'SNS', code_name: 'SNS'},
     vehicleData: {common_code: 'VEHICLE', code_name: '차량'},
-  });
+  }); */
 
   // 이미지 파일
   const [filePathData, setFilePathData] = React.useState({
     filePath01 : ''
     , filePath02 : ''
     , filePath03 : ''
+    , auth_status : ''
+  });
+
+  // ############################################################################# 프로필 2차 인증 데이터
+  const [secondData, setSecondData] = React.useState({
+    jobData: {},
+    eduData: {},
+    incomeData: {},
+    assetData: {},
+    snsData: {},
+    vehicleData: {},
   });
 
   // 직업 Pop
@@ -120,6 +131,7 @@ export const Signup01 = (props: Props) => {
       filePath01: ''
       , filePath02: ''
       , filePath03: ''
+      , auth_status: ''
     });
 
     const body = {
@@ -136,7 +148,13 @@ export const Signup01 = (props: Props) => {
             let filePath01 = '';
             let filePath02 = '';
             let filePath03 = '';
-            data.auth_detail_list.map(({img_file_path, order_seq} : {img_file_path: any; order_seq: any;}) => {
+            let auth_status_real = '';
+
+            data.auth_detail_list.map(({img_file_path, order_seq, auth_status} : {img_file_path: any; order_seq: any; auth_status: any;}) => {
+              if(auth_status !== '') {
+                auth_status_real = auth_status;
+              }
+              
               if(order_seq == 1) {
                 filePath01 = findSourcePath(img_file_path);
               } else if(order_seq == 2) {
@@ -150,6 +168,7 @@ export const Signup01 = (props: Props) => {
               filePath01: filePath01
               , filePath02: filePath02
               , filePath03: filePath03
+              , auth_status: auth_status_real
             });
 
             if(type === 'JOB') { job_modalizeRef.current?.open();
@@ -206,10 +225,10 @@ export const Signup01 = (props: Props) => {
 
       if (success) {
         if (data.result_code == '0000') {
-          //dispatch(setPartialPrincipal({mbr_ideal_type : data.mbr_second_auth_list}));
           show({
             content: '심사 요청 되었습니다.' ,
             confirmCallback: function() {
+              getMemberProfileSecondAuth();
               if(type == 'JOB') { job_onClose(); }
               else if(type == 'EDU') { edu_onClose(); }
               else if(type == 'INCOME') { income_onClose(); }
@@ -228,12 +247,70 @@ export const Signup01 = (props: Props) => {
     } finally {
       
     }
+  }
 
+  // ############################################################################# 프로필 2차 인증 정보 조회 함수
+  const getMemberProfileSecondAuth = async () => {
+    try {
+      const body = {
+        member_seq: props.route.params.memberSeq
+      };
+
+      const { success, data } = await get_second_auth(body);
+      console.log('data ::::: ' , body);
+      if(success) {
+        if(data.result_code == '0000') {
+          authDataSet(data.auth_list);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      
+    }
+  };
+
+  // ############################################################################# 인증 데이터 셋팅
+  const authDataSet = async (dataList: []) => {
+    let jobData = {};
+    let eduData = {};
+    let incomeData = {};
+    let assetData = {};
+    let snsData = {};
+    let vehicleData = {};
+
+    dataList.map(function(item, index) {
+      if(item.common_code === 'JOB') {
+        jobData = item;
+      } else if(item.common_code === 'EDU') {
+        eduData = item;
+      } else if(item.common_code === 'INCOME') {
+        incomeData = item;
+      } else if(item.common_code === 'ASSET') {
+        assetData = item;
+      } else if(item.common_code === 'SNS') {
+        snsData = item;
+      } else if(item.common_code === 'VEHICLE') {
+        vehicleData = item;
+      }
+    });
+
+    console.log('jobData ::::: ' , jobData);
+
+    setSecondData({
+      ...secondData
+      , jobData
+      , eduData
+      , incomeData
+      , assetData
+      , snsData
+      , vehicleData
+    })
   }
 
   // ############################################################################# 최초 실행
   React.useEffect(() => {
-    //getMemberProfileSecondAuth();
+    getMemberProfileSecondAuth();
   }, [isFocus]);
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -343,6 +420,7 @@ export const Signup01 = (props: Props) => {
           filePath01={filePathData.filePath01}
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
+          auth_status={filePathData.auth_status}
         />
       </Modalize>
 
@@ -364,6 +442,7 @@ export const Signup01 = (props: Props) => {
           filePath01={filePathData.filePath01}
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
+          auth_status={filePathData.auth_status}
         />
       </Modalize>
 
@@ -385,6 +464,7 @@ export const Signup01 = (props: Props) => {
           filePath01={filePathData.filePath01}
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
+          auth_status={filePathData.auth_status}
         />
       </Modalize>
 
@@ -406,6 +486,7 @@ export const Signup01 = (props: Props) => {
           filePath01={filePathData.filePath01}
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
+          auth_status={filePathData.auth_status}
         />
       </Modalize>
 
@@ -427,6 +508,7 @@ export const Signup01 = (props: Props) => {
           filePath01={filePathData.filePath01}
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
+          auth_status={filePathData.auth_status}
         />
       </Modalize>
 
@@ -448,6 +530,7 @@ export const Signup01 = (props: Props) => {
           filePath01={filePathData.filePath01}
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
+          auth_status={filePathData.auth_status}
         />
       </Modalize>
     </>
@@ -491,6 +574,28 @@ const AuthItemRender = (dataObj: any) => {
           <Image source={imgSrc} style={styles.iconSize60} />
         </SpaceView>
 
+        {typeof data.auth_status == 'undefined' || data.auth_status == 'REFUSE' ? (
+          <>
+            <View style={[layoutStyle.row, _styles.levelArea, {backgroundColor: '#697AE6'}]}>
+              <CommonText 
+                type={'h7'} 
+                fontWeight={'500'} 
+                color={ColorType.white}>미인증</CommonText>
+            </View>
+          </>
+        ) : null}
+
+        {data.auth_status == 'PROGRESS' ? (
+          <View style={[layoutStyle.row, _styles.statusArea2]}>
+            <CommonText
+              type={'h7'} 
+              fontWeight={'500'} 
+              color={ColorType.white}>
+                심사중
+            </CommonText>
+          </View>
+        ) : null}
+
         <SpaceView>
           <View style={[layoutStyle.row, layoutStyle.alignCenter]}>
             <CommonText type={'h4'} fontWeight={'700'}>{data.code_name}</CommonText>
@@ -515,16 +620,6 @@ const AuthItemRender = (dataObj: any) => {
 
 
 const _styles = StyleSheet.create({
-  levelArea: {
-    position: 'absolute',
-    top: 20,
-    right: 20
-  },
-  statusArea: {
-    position: 'absolute',
-    top: 50,
-    right: 20
-  },
   levelAreaLevelName: {
     fontSize: 14,
     marginRight: 8
@@ -532,4 +627,44 @@ const _styles = StyleSheet.create({
   levelAreaLevelValue: {
     fontSize: 20
   },
+
+  levelArea: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    borderWidth: 1,
+    borderColor: '#697AE6',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+  },
+  statusArea: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: '#697AE6',
+    borderWidth: 1,
+    borderColor: '#697AE6',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+  },
+  statusArea2: {
+    position: 'absolute',
+    bottom: 65,
+    right: 10,
+    backgroundColor: '#697AE6',
+    borderWidth: 1,
+    borderColor: '#697AE6',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+  },
 });
+
+
+
+
+
+{/* #######################################################################################################
+###########################################################################################################
+##################### Style 영역
+###########################################################################################################
+####################################################################################################### */}

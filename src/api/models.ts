@@ -65,6 +65,7 @@ import {
   EVENT_CASHBACK_RECEIVE,
   CHECK_REPORT,
   CHECK_REPORT_CONFIRM,
+  GET_SECOND_AUTH,
 } from './route';
 
 /* ========================================================================================================
@@ -152,6 +153,13 @@ export async function create_temp_password(body: {
   phone_number: string
 }) {
   return send(CREATE_TEMP_PASSWORD, 'POST', body, false, false);
+}
+
+// 2차 인증정보 조회
+export async function get_second_auth(body: {
+  member_seq: any;
+}) {
+  return send(GET_SECOND_AUTH, 'POST', body, true, false);
 }
 
 

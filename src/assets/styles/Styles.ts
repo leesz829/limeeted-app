@@ -146,8 +146,7 @@ export const styles = StyleSheet.create({
   },
   container: {
     paddingTop: 24,
-    paddingLeft: 0,
-    paddingRight: 16,
+    paddingHorizontal: 10,
     backgroundColor: 'white',
     flex: 1,
   },
