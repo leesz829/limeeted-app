@@ -18,14 +18,14 @@ YahooClient.interceptors.request.use(
     let params = 'no params and body';
     if (config?.data) params = JSON.stringify(config?.data);
     if (config?.params) params = JSON.stringify(config?.params);
-    console.log(`[ API REQUEST URL : ${config.url} ]\n${params}`);
+    //console.log(`[ API REQUEST URL : ${config.url} ]\n${params}`);
 
     // 요청 성공 직전 호출
     // axios 설정값을 넣음 (사용자 정의 설정도 추가 가능)
     return config;
   },
   function (error) {
-    console.error('API call failed: ', error?.response?.config?.url);
+    //console.error('API call failed: ', error?.response?.config?.url);
     // 요청 에러 직전 호출
     return Promise.reject(error);
   }
@@ -34,11 +34,11 @@ YahooClient.interceptors.request.use(
 // 응답 인티셉터 (응답 직전에 호출)
 YahooClient.interceptors.response.use(
   function (response) {
-    console.log(
+    /* console.log(
       `\n[ API RESPONSE URL : ${response.config.url} ]\n${JSON.stringify(
         response.data
       )}`
-    );
+    ); */
     // https stauts === 200 일 때 - axios 함수에서 .then()으로 연결됨
     return response;
   },

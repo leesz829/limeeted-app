@@ -78,14 +78,6 @@ export const Storage = (props: Props) => {
     matchSpecialCnt: 0,
   });
 
-  // 매칭 상세 이동하기 위한 저장 데이터
-  const [detailMatchData, setDetailMatchData] = React.useState<any>({
-    match_seq: '',
-    tgt_member_seq: '',
-    type: '',
-    profile_open_yn: '',
-  });
-
   React.useEffect(() => {
     getStorageData();
   }, [isFocusStorage]);
@@ -186,12 +178,6 @@ export const Storage = (props: Props) => {
     profile_open_yn: any
   ) => {
     if (profile_open_yn == 'N') {
-      setDetailMatchData({
-        match_seq: match_seq,
-        tgt_member_seq: tgt_member_seq,
-        type: type,
-        profile_open_yn: profile_open_yn,
-      });
 
       show({
         title: '프로필 열람',
@@ -200,7 +186,7 @@ export const Storage = (props: Props) => {
 
         },
         confirmCallback: function() {
-          goProfileOpen();
+          goProfileOpen(match_seq, tgt_member_seq, type);
         },
       });
 
@@ -214,18 +200,23 @@ export const Storage = (props: Props) => {
   };
 
   // 프로필 열람 이동
-  const goProfileOpen = async () => {
+  const goProfileOpen = async (match_seq:any, tgt_member_seq:any, type:any) => {
+    console.log('match_seq :::::: ' , match_seq);
+    console.log('tgt_member_seq :::::: ' , tgt_member_seq);
+    console.log('type :::::: ' , type);
+
+
     let req_profile_open_yn = '';
     let res_profile_open_yn = '';
 
-    if (detailMatchData.type == 'REQ') {
+    if (type == 'REQ') {
       req_profile_open_yn = 'Y';
-    } else if (detailMatchData.type == 'RES') {
+    } else if (type == 'RES') {
       res_profile_open_yn = 'Y';
     }
 
     const body = {
-      match_seq: detailMatchData.match_seq,
+      match_seq: match_seq,
       req_profile_open_yn: req_profile_open_yn,
       res_profile_open_yn: res_profile_open_yn,
     };
@@ -236,13 +227,12 @@ export const Storage = (props: Props) => {
         if (data.result_code == '0000') {
           dispatch(myProfile());
           navigation.navigate(STACK.COMMON, { screen: 'StorageProfile', params: {
-            matchSeq: detailMatchData.match_seq,
-            tgtMemberSeq: detailMatchData.tgt_member_seq,
-            type: detailMatchData.type,
+            matchSeq: match_seq,
+            tgtMemberSeq: tgt_member_seq,
+            type: type,
           } });
 
         } else if (data.result_code == '6010') {
-          setProfileOpenPopup(false);
           show({ content: '보유 패스가 부족합니다.' });
           return false;
         } else {
@@ -253,12 +243,9 @@ export const Storage = (props: Props) => {
     } catch (error) {
       console.log(error);
     } finally {
-      setProfileOpenPopup(false);
+
     }
   };
-
-  // ################### 팝업 관련 #####################
-  const [profileOpenPopup, setProfileOpenPopup] = useState(false); // 프로필 열람 팝업
 
   return (
     <>
@@ -855,47 +842,6 @@ export const Storage = (props: Props) => {
         </SpaceView>
       </ScrollView>
 
-      {/* ###############################################
-                        프로필 열람 팝업
-            ############################################### */}
-      <Modal visible={profileOpenPopup} transparent={true}>
-        <View style={modalStyle.modalBackground}>
-          <View style={modalStyle.modalStyle1}>
-            <SpaceView mb={16} viewStyle={layoutStyle.alignCenter}>
-              <CommonText fontWeight={'700'} type={'h4'}>
-                프로필 열람
-              </CommonText>
-            </SpaceView>
-
-            <SpaceView viewStyle={layoutStyle.alignCenter}>
-              <CommonText type={'h5'}>
-                패스를 소모하여 프로필을 열람하시겠습니까?
-              </CommonText>
-              <CommonText type={'h5'} color={ColorType.red}>
-                패스 x5
-              </CommonText>
-            </SpaceView>
-
-            <View style={modalStyle.modalBtnContainer}>
-              <TouchableOpacity
-                style={modalStyle.modalBtn}
-                onPress={() => setProfileOpenPopup(false)}
-              >
-                <CommonText fontWeight={'500'}>취소</CommonText>
-              </TouchableOpacity>
-              <View style={modalStyle.modalBtnline} />
-              <TouchableOpacity
-                style={modalStyle.modalBtn}
-                onPress={() => goProfileOpen()}
-              >
-                <CommonText fontWeight={'500'} color={ColorType.red}>
-                  확인
-                </CommonText>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
     </>
   );
 };

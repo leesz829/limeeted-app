@@ -135,6 +135,7 @@ export default function Matching(props: Props) {
           setData(data);
           setIsLoad(true);
         } else {
+          setIsLoad(false);
           setIsEmpty(true);
         }
       }
@@ -215,6 +216,7 @@ export default function Matching(props: Props) {
 
   // ############################################################ 사용자 신고하기 - 신고사유 체크 Callback 함수
   const reportCheckCallbackFn = (value: string) => {
+    console.log('value :::: ;' , value);
     setCheckReportType(value);
   };
 
@@ -233,7 +235,7 @@ export default function Matching(props: Props) {
     
     const body = {
       report_type_code: checkReportType,
-      report_member_seq: memberBase.member_seq
+      report_member_seq: data.match_member_info.member_seq,
     };
 
     console.log('insertReport ::: ' , insertReport);
@@ -588,10 +590,10 @@ export default function Matching(props: Props) {
             </SpaceView>
 
             <SpaceView>
-            <RadioCheckBox_3
-                items={data.report_code_list}
-                callBackFunction={reportCheckCallbackFn}
-            />
+              <RadioCheckBox_3
+                  items={data.report_code_list}
+                  callBackFunction={reportCheckCallbackFn}
+              />
             </SpaceView>
           </View>
         </Modalize>
@@ -605,7 +607,7 @@ export default function Matching(props: Props) {
               layoutStyle.alignCenter,
               layoutStyle.justifyCenter,
               layoutStyle.flex1,
-              {backgroundColor: 'white'},
+              {backgroundColor: 'white', paddingBottom: 90},
             ]}>
             <SpaceView mb={20} viewStyle={layoutStyle.alignCenter}>
               <Image source={IMAGE.logoMark} style={{width: 48, height: 48}} />
@@ -623,7 +625,7 @@ export default function Matching(props: Props) {
               layoutStyle.alignCenter,
               layoutStyle.justifyCenter,
               layoutStyle.flex1,
-              {backgroundColor: 'white'},
+              {backgroundColor: 'white', paddingBottom: 90},
             ]}>
             <SpaceView mb={20} viewStyle={layoutStyle.alignCenter}>
               {/* <Image source={GIF_IMG.faceScan} style={styles.iconSize48} /> */}

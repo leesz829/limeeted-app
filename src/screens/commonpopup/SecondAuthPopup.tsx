@@ -475,7 +475,7 @@ export const SecondAuthPopup = (props: Props) => {
                   <View style={_styles.rowStyle}>
                     <Text style={_styles.rowTextLeft}>1</Text>
                     <Text style={_styles.rowTextCenter}>3,000</Text>
-                    <Text style={_styles.rowTextRight}>6,500</Text>
+                    <Text style={_styles.rowTextRight}>4,000</Text>
                   </View>
                   <View style={_styles.rowStyle}>
                     <Text style={_styles.rowTextLeft}>2</Text>

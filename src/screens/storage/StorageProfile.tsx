@@ -39,15 +39,7 @@ import {
   useIsFocused,
 } from '@react-navigation/native';
 import * as hooksMember from 'hooks/member';
-import axios from 'axios';
-import * as properties from 'utils/properties';
-import { MainProfileSlider } from 'component/MainProfileSlider';
-import { MatchSearch } from 'screens/matching/MatchSearch';
 import { Modalize } from 'react-native-modalize';
-import { CommonCheckBox } from 'component/CommonCheckBox';
-import { ToolTip } from 'component/Tooltip';
-import { BarGrap } from 'component/BarGrap';
-import { setBase } from 'redux/reducers/mbrReducer';
 import { get_matched_member_info, resolve_match, report_matched_user, update_match_status } from 'api/models';
 import { usePopup } from 'Context';
 import { ROUTES, STACK } from 'constants/routes';
@@ -56,6 +48,8 @@ import ProfileAuth from 'component/ProfileAuth';
 import InterviewRender from 'component/InterviewRender';
 import { useDispatch } from 'react-redux';
 import { myProfile } from 'redux/reducers/authReducer';
+import { RadioCheckBox_3 } from 'component/RadioCheckBox_3';
+
 
 
 /* ################################################################################################################
@@ -106,7 +100,7 @@ export const StorageProfile = (props: Props) => {
   ]);
 
   // 선택된 신고하기 타입
-  const [checkReportType, setCheckReportType] = useState(['']);
+  const [checkReportType, setCheckReportType] = useState('');
 
   // 신고 Pop
   const report_modalizeRef = useRef<Modalize>(null);
@@ -131,6 +125,8 @@ export const StorageProfile = (props: Props) => {
     };
     try {
       const { success, data } = await get_matched_member_info(body);
+      console.log('ddddddddd :::::: ', data.report_code_list);
+
       if(success) {
         if (data.result_code == '0000') {
           setData(data);
@@ -178,43 +174,26 @@ export const StorageProfile = (props: Props) => {
   };
 
   // ############################################################ 사용자 신고하기 - 신고사유 체크 Callback 함수
-  const reportCheckCallbackFn = (reportType: string, check: boolean) => {
-    if (check) {
-      checkReportType.push(reportType);
-      setCheckReportType(
-        checkReportType.filter(
-          (e, index) => checkReportType.indexOf(e) === index && e
-        )
-      );
-    } else {
-      setCheckReportType(checkReportType.filter((e) => e != reportType && e));
-    }
+  const reportCheckCallbackFn = (value: string) => {
+    setCheckReportType(value);
   };
 
   // ############################################################ 사용자 신고하기 - 팝업 활성화
   const popupReport = () => {
-    if (!checkReportType.length) {
+    console.log('checkReportType ::::: ' , checkReportType);
+    if (!checkReportType) {
       show({ content: '신고항목을 선택해주세요.' });
-
       return false;
     } else {
-      show({ 
-        content: '신고하시겠습니까?' ,
-        cancelCallback: function() {
-          
-        },
-        confirmCallback: async function() {
-          insertReport();
-        }
-      });
+      insertReport();
     }
   };
 
   // ############################################################ 사용자 신고하기 등록
   const insertReport = async () => {
     const body = {
-      report_type_code_list: checkReportType.join(),
-      report_member_seq: tgtMemberSeq
+      report_type_code: checkReportType,
+      report_member_seq: data.match_member_info.member_seq
     };
     try {
       const { success, data } = await report_matched_user(body);
@@ -425,7 +404,7 @@ export const StorageProfile = (props: Props) => {
 
                 <SpaceView mb={16} viewStyle={{alignItems: 'center'}}>
                   <CommonText type={'h4'} fontWeight={'700'}>
-                    {data.match_member_info.nickname}과 매칭 성공!
+                    {data.match_member_info?.nickname}과 매칭 성공!
                   </CommonText>
                 </SpaceView>
 
@@ -596,15 +575,10 @@ export const StorageProfile = (props: Props) => {
             </SpaceView>
 
             <SpaceView mb={24}>
-              {data.report_code_list.length &&
-                data.report_code_list.map((i, index) => (
-                  <CommonCheckBox
-                    label={i.code_name}
-                    value={i.common_code}
-                    key={index + '_' + i.common_code}
-                    callBackFunction={reportCheckCallbackFn}
-                  />
-                ))}
+              <RadioCheckBox_3
+                  items={data.report_code_list}
+                  callBackFunction={reportCheckCallbackFn}
+              />
             </SpaceView>
           </View>
         </Modalize>

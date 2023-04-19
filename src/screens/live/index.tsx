@@ -138,6 +138,7 @@ export const Live = () => {
   const getLiveMatchTrgt = async () => {
     try {
       const { success, data } = await get_live_members();
+      console.log('data.result_code :::::: ' , data.result_code);
       if(success) {
         switch (data.result_code) {
           case SUCCESS:
@@ -185,7 +186,7 @@ export const Live = () => {
             break;
           case NODATA:
             setIsLoad(false);
-            setIsEmpty(false);
+            setIsEmpty(true);
             break;
           default:
             show({
@@ -266,41 +267,43 @@ export const Live = () => {
       <TopNavigation currentPath={'LIVE'} />
       {isEmpty ? (
         <View
-            style={[
-              layoutStyle.alignCenter,
-              layoutStyle.justifyCenter,
-              layoutStyle.flex1,
-              styles.whiteBack,
-            ]}
-          >
-            <SpaceView mb={20} viewStyle={layoutStyle.alignCenter}>
-              <Image source={IMAGE.logoMark} style={styles.iconSize48} />
-            </SpaceView>
+          style={[
+            layoutStyle.alignCenter,
+            layoutStyle.justifyCenter,
+            layoutStyle.flex1,
+            styles.whiteBack,
+            {paddingBottom : 90}
+          ]}
+        >
+          <SpaceView mb={20} viewStyle={layoutStyle.alignCenter}>
+            <Image source={IMAGE.logoMark} style={styles.iconSize48} />
+          </SpaceView>
 
-            <View style={layoutStyle.alignCenter}>
-              <CommonText type={'h4'} textStyle={[layoutStyle.textCenter, commonStyle.fontSize16, commonStyle.lineHeight23]}>
-                오늘 소개해드릴 LIVE가 마감되었어요.
-              </CommonText>
-            </View>
+          <View style={layoutStyle.alignCenter}>
+            <CommonText type={'h4'} textStyle={[layoutStyle.textCenter, commonStyle.fontSize16, commonStyle.lineHeight23]}>
+              오늘 소개해드릴 LIVE가 마감되었어요.
+            </CommonText>
           </View>
-        ) : (
-          <View
-            style={[
-              layoutStyle.alignCenter,
-              layoutStyle.justifyCenter,
-              layoutStyle.flex1,
-              styles.whiteBack,
-            ]}
-          >
-            <SpaceView mb={20} viewStyle={layoutStyle.alignCenter}>
-              <Image source={GIF_IMG.faceScan} style={styles.iconSize48} />
-            </SpaceView>
+        </View>
+      ) : (
+        <View
+          style={[
+            layoutStyle.alignCenter,
+            layoutStyle.justifyCenter,
+            layoutStyle.flex1,
+            styles.whiteBack,
+            {paddingBottom : 90}
+          ]}
+        >
+          <SpaceView mb={20} viewStyle={layoutStyle.alignCenter}>
+            <Image source={GIF_IMG.faceScan} style={styles.iconSize48} />
+          </SpaceView>
 
-            <View style={layoutStyle.alignCenter}>
-              <CommonText type={'h4'}>다음 회원을 찾고 있어요.</CommonText>
-            </View>
+          <View style={layoutStyle.alignCenter}>
+            <CommonText type={'h4'}>다음 회원을 찾고 있어요.</CommonText>
           </View>
-        )}
+        </View>
+      )}
     </>
   );
 };

@@ -738,7 +738,7 @@ export const Profile1 = (props: Props) => {
           {/* ####################################################################################
 					####################### 인터뷰 영역
 					#################################################################################### */}
-          <Interview title={memberBase.nickname + `님을\n알려주세요!`} 
+          <Interview title={memberBase?.nickname + `님을\n알려주세요!`} 
                       callbackAnswerFn={callbackInterviewAnswer}
                       callbackScrollBottomFn={callbackScrollBottom} />
         </View>
