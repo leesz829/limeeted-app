@@ -2,7 +2,7 @@ import { layoutStyle, styles } from 'assets/styles/Styles';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import React, { useEffect, useState, useRef } from 'react';
-import { Image, StyleSheet, TouchableOpacity, View, Text } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, View, Text, Platform } from 'react-native';
 import { ICON } from 'utils/imageUtils';
 //import AsyncStorage from '@react-native-community/async-storage';
 import { useNavigation } from '@react-navigation/native';
@@ -233,6 +233,7 @@ export default function Interview({
                 <Image source={ICON.pen} style={style.penImage} />
               </TouchableOpacity>
             )}
+
             <View style={style.questionRow}>
               <Text style={style.questionText}>Q.</Text>
               <Text style={style.questionBoldText}>
@@ -240,6 +241,7 @@ export default function Interview({
                 <Text style={style.questionBoldText}>{e?.code_name}</Text>
               </Text>
             </View>
+
             <View style={style.answerRow}>
               <Text style={style.answerText}>A.</Text>
               <TextInput
@@ -247,7 +249,7 @@ export default function Interview({
                 onChangeText={(text) =>
                   answerChangeHandler(e.member_interview_seq, text)
                 }
-                style={[style.answerNormalText]}
+                style={[style.answerNormalText, Platform.OS == 'ios' ? {marginTop: 2} : {marginTop: -9}]}
                 multiline={true}
                 placeholder={'대답을 등록해주세요!'}
                 placeholderTextColor={'#c6ccd3'}
@@ -255,6 +257,7 @@ export default function Interview({
                 maxLength={200}
               />
             </View>
+
           </View>
         ))}
 
@@ -391,19 +394,22 @@ const style = StyleSheet.create({
   },
   answerRow: {
     flexDirection: 'row',
-    width: '80%',
+    alignItems: `flex-start`,
+    justifyContent: 'flex-start',
+    width: '90%',
     marginTop: 10,
-    position: 'relative',
   },
   answerText: {
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 12,
     fontWeight: 'normal',
     fontStyle: 'normal',
-    lineHeight: 22,
     letterSpacing: 0,
     textAlign: 'left',
     color: '#7986ee',
+    marginTop: 0,
+    textAlignVertical: 'top',
+    alignContent: 'flex-start'
   },
   answerNormalText: {
     fontFamily: 'AppleSDGothicNeoB00',
@@ -413,9 +419,9 @@ const style = StyleSheet.create({
     letterSpacing: 0,
     textAlign: 'left',
     color: '#7986ee',
-    marginLeft: 10,
-    marginTop: -7,
+    marginLeft: 8,
     textAlignVertical: 'top',
+    alignContent: 'flex-start'
   },
   penPosition: {
     position: 'absolute',
