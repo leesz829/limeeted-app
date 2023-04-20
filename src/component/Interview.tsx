@@ -249,7 +249,7 @@ export default function Interview({
                 onChangeText={(text) =>
                   answerChangeHandler(e.member_interview_seq, text)
                 }
-                style={[style.answerNormalText, Platform.OS == 'ios' ? {marginTop: 2} : {marginTop: -9}]}
+                style={[style.answerNormalText, Platform.OS == 'ios' ? {marginTop: -5} : {marginTop: -9}]}
                 multiline={true}
                 placeholder={'대답을 등록해주세요!'}
                 placeholderTextColor={'#c6ccd3'}
