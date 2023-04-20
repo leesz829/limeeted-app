@@ -4,6 +4,7 @@ import * as React from 'react';
 import { FC } from 'react';
 import { Color } from 'assets/styles/Color';
 import { ICON } from 'utils/imageUtils';
+import { commonStyle } from 'assets/styles/Styles';
 
 type Props = {
   label?: string;
@@ -35,6 +36,7 @@ export const CommonInput: FC<Props> = (props: any) => {
       </View>
       <View style={style.inputContainer}>
         <TextInput
+          hitSlop={commonStyle.hipSlop30}
           autoCapitalize="none"
           style={style.inputStyle}
           placeholder={props.placeholder || ''}
@@ -99,6 +101,7 @@ const styles = (props: Props) => {
       lineHeight: 20,
       color: Color.balck4848,
       padding: 0,
+      paddingVertical: 5,
       margin: 0,
       fontFamily: 'AppleSDGothicNeoM00',
     },

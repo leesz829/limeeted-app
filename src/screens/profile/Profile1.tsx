@@ -56,7 +56,6 @@ export const Profile1 = (props: Props) => {
   const { show } = usePopup(); // 공통 팝업
   const isFocus = useIsFocused();
   const secondAuth = useSecondAth();
-  console.log(secondAuth);
   const myImages = useProfileImg();
   const dispatch = useDispatch();
   const navigation = useNavigation<ScreenNavigationProp>();
@@ -725,6 +724,7 @@ export const Profile1 = (props: Props) => {
               containerStyle={_styles.sliderContainerStyle}
               trackStyle={_styles.trackStyle}
               trackClickable={false}
+              disabled
             />
             <View style={_styles.gageContainer}>
               <Text style={_styles.gageText}>0</Text>

@@ -146,18 +146,24 @@ export const Profile2 = (props: Props) => {
         return;
       }
     } else {
-      if(target != null && origin.length > 9) {
-        show({content: '인터뷰는 최소 10개까지 등록 가능합니다.'});
+      if(target != null && origin.length > 5) {
+        show({content: '인터뷰는 최소 5개까지 등록 가능합니다.'});
         return;
       }
     }
 
     // ### 적용할 인터뷰 데이터 구성
+    let dummpyDataList = interview.slice();
     let applyInterviewList = [];
-    interview.map((item: any, index) => {
-      if(target != null && item.common_code === target.common_code) {
+
+    /* interview.map((item: any, index) => {
+      dummpyDataList.push(item);
+    }) */
+
+    dummpyDataList.map((item: any, index) => {
+      if(target != null && item.common_code == target.common_code) {
         item.use_yn = 'Y';
-      } else if(typeof tgtCode != 'undefined' && tgtCode === item.common_code) {
+      } else if(typeof tgtCode != 'undefined' && tgtCode == item.common_code) {
         item.use_yn = 'N';
       }
       item.order_seq = index+1;
@@ -249,8 +255,8 @@ export const Profile2 = (props: Props) => {
           flex: 1,
         }}>
 
-        <SpaceView viewStyle={layoutStyle.rowCenter} mb={32}>
-          <SpaceView viewStyle={styles.questionContainer} mr={16}>
+        <SpaceView viewStyle={layoutStyle.rowCenter}>
+          <SpaceView viewStyle={[styles.questionContainer, {paddingHorizontal: 40}]}>
             <CommonText 
               textStyle={layoutStyle.textCenter}
               type={'h4'} 
@@ -275,6 +281,15 @@ export const Profile2 = (props: Props) => {
           {/* <TouchableOpacity onPress={onPressResetTarget}>
             <Image source={ICON.refreshDark} style={styles.iconSize24} />
           </TouchableOpacity> */}
+        </SpaceView>
+
+        <SpaceView mb={40} viewStyle={[commonStyle.paddingHorizontal70, layoutStyle.alignCenter]}>
+          <CommonBtn 
+            value={'저장'} 
+            type={'black'}
+            width={180}
+            height={38}
+            onPress={saveAllInterview} />
         </SpaceView>
 
         <SpaceView viewStyle={styles.interviewContainer} mb={20}>
@@ -365,13 +380,6 @@ export const Profile2 = (props: Props) => {
               </ScaleDecorator>
             )}
           />
-        </SpaceView>
-
-        <SpaceView mb={10} viewStyle={commonStyle.paddingHorizontal15}>
-          <CommonBtn 
-            value={'저장'} 
-            type={'black'}
-            onPress={saveAllInterview} />
         </SpaceView>
       </View>
     </View>
@@ -499,7 +507,7 @@ const _style = StyleSheet.create({
   targetDupTxt: {
     textAlign: 'center',
     marginTop: 10,
-    borderWidth: 1,
+    borderWidth: 0,
     borderRadius: 30,
     borderColor: ColorType.black0000,
     fontSize: 11,

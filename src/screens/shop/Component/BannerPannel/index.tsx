@@ -10,6 +10,8 @@ import { ROUTES, STACK } from 'constants/routes';
 import { useUserInfo } from 'hooks/useUserInfo';
 import { CommaFormat } from 'utils/functions';
 import { get_cashback_pay_info } from 'api/models';
+import SpaceView from 'component/SpaceView';
+import { commonStyle } from 'assets/styles/Styles';
 
 export default function BannerPannel() {
   const me = useUserInfo();
@@ -78,20 +80,25 @@ function FemalePannel() {
             )}
 
             <View style={{ flexDirection: 'column' }}>
-              <TouchableOpacity style={female.myBox} onPress={onPressLimitInfo}>
-                <Text style={female.infoText}>나의 공주력</Text>
-                <Image
-                  style={{ width: 14, height: 14 }}
-                  source={ICON.currencyTooltip}
-                />
-              </TouchableOpacity>
 
-              <View style={{ marginTop: 10 }}>
-                <Text style={female.rate}>
-                  {CommaFormat(me?.mileage_point)}
-                </Text>
-                <Image style={female.crown} source={ICON.crown} />
-              </View>
+              <SpaceView viewStyle={female.myBox}>
+                <TouchableOpacity onPress={onPressLimitInfo}>
+                  <View style={female.myBox}>
+                    <Text style={female.infoText}>나의 공주력</Text>
+                    <Image
+                      style={{ width: 14, height: 14 }}
+                      source={ICON.currencyTooltip}
+                    />
+                  </View>
+                  <View style={{ marginTop: 10 }}>
+                    <Text style={female.rate}>
+                      {CommaFormat(me?.mileage_point)}
+                    </Text>
+                    <Image style={female.crown} source={ICON.crown} />
+                  </View>
+                </TouchableOpacity>
+              </SpaceView>
+
             </View>
           </View>
         </View>
@@ -155,25 +162,30 @@ function MalePannel() {
           <Text style={male.pointText}>
             리미티드 포인트 <Text>✌️</Text>
           </Text>
-          <Text style={male.infoText}>
-            즐거운 <Text style={male.cashbackText}>캐시백</Text> 생활 {CommaFormat(payInfo?.member_buy_price)} /
-            {CommaFormat(payInfo?.target_buy_price)}
-          </Text>
+
+          <TouchableOpacity onPress={onPressPointReward}>
+            <Text style={male.infoText}>
+              즐거운 <Text style={male.cashbackText}>캐시백</Text> 생활 {CommaFormat(payInfo?.member_buy_price)} /
+              {CommaFormat(payInfo?.target_buy_price)}
+            </Text>
+          </TouchableOpacity>
         </View>
-        <Slider
-          value={payInfo?.price_persent}
-          animateTransitions={true}
-          renderThumbComponent={() => null}
-          maximumTrackTintColor={ColorType.purple}
-          minimumTrackTintColor={ColorType.purple}
-          containerStyle={male.sliderContainer}
-          trackStyle={male.sliderTrack}
-          trackClickable={false}
-        />
-        <TouchableOpacity
-          onPress={onPressPointReward}
-          style={male.TooltipButton}
-        >
+
+        <TouchableOpacity onPress={onPressPointReward} hitSlop={commonStyle.hipSlop10}>
+          <Slider
+            value={payInfo?.price_persent}
+            animateTransitions={true}
+            renderThumbComponent={() => null}
+            maximumTrackTintColor={ColorType.purple}
+            minimumTrackTintColor={ColorType.purple}
+            containerStyle={male.sliderContainer}
+            trackStyle={male.sliderTrack}
+            trackClickable={false}
+            disabled
+          />
+        </TouchableOpacity>
+        
+        <TouchableOpacity onPress={onPressPointReward} style={male.TooltipButton} hitSlop={commonStyle.hipSlop10}>
           <Image source={ICON.currencyTooltip} style={male.imageTooltip} />
         </TouchableOpacity>
       </View>

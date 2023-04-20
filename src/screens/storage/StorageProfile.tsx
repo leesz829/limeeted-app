@@ -470,6 +470,7 @@ export const StorageProfile = (props: Props) => {
                 containerStyle={_styles.sliderContainerStyle}
                 trackStyle={_styles.sliderThumbStyle}
                 trackClickable={false}
+                disabled
               />
               <View style={_styles.gageContainer}>
                 <Text style={_styles.gageText}>0</Text>
@@ -508,6 +509,7 @@ export const StorageProfile = (props: Props) => {
                 containerStyle={_styles.socialSliderContainerStyle}
                 trackStyle={_styles.socialSliderThumbStyle}
                 trackClickable={false}
+                disabled
               />
               <View style={_styles.gageContainer}>
                 <Text style={_styles.gageText}>0</Text>

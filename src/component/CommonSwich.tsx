@@ -12,6 +12,8 @@ import { FC } from 'react';
 interface Props {
   callbackFn: (value: boolean) => void;
   isOn: boolean;
+  width?: number;
+  height?: number;
 }
 
 export const CommonSwich: FC<Props> = (props) => {
@@ -37,6 +39,10 @@ export const CommonSwich: FC<Props> = (props) => {
       offColor={Color.grayDDDD}
       size="small"
       onToggle={(isOn) => toggleActive(isOn)}
+      trackOffStyle={{
+        width: typeof props.width != 'undefined' ? props.width : 45,
+        height: typeof props.height != 'undefined' ? props.height : 20
+      }}
     />
   );
 };

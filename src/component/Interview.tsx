@@ -236,8 +236,8 @@ export default function Interview({
             <View style={style.questionRow}>
               <Text style={style.questionText}>Q.</Text>
               <Text style={style.questionBoldText}>
-                {indexToKr[index]}번째 질문 입니다.
-                <Text style={style.questionNormalText}> {e?.code_name}</Text>
+                {/* {indexToKr[index]}번째 질문 입니다. */}
+                <Text style={style.questionBoldText}>{e?.code_name}</Text>
               </Text>
             </View>
             <View style={style.answerRow}>
@@ -372,11 +372,12 @@ const style = StyleSheet.create({
     fontSize: 13,
     fontWeight: 'normal',
     fontStyle: 'normal',
-    lineHeight: 19,
+    lineHeight: 18,
     letterSpacing: 0,
     textAlign: 'left',
     color: '#272727',
     marginLeft: 10,
+    marginTop: 4,
   },
   questionNormalText: {
     fontFamily: 'AppleSDGothicNeoR00',

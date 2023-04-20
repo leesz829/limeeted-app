@@ -290,8 +290,10 @@ export const Login01 = () => {
               <SpaceView viewStyle={_styles.joinText}>
                 <CommonText type={"h5"}>계정이 없으신가요?</CommonText>
                 <View style={_styles.joinTextLine} />
-                <TouchableOpacity onPress={() => { navigation.navigate('Policy'); }}>
-                  <CommonText type={"h5"} color={Color.blue01} fontWeight={'700'}>회원가입</CommonText>
+                <TouchableOpacity onPress={() => { navigation.navigate('Policy'); }} hitSlop={commonStyle.hipSlop10}>
+                  <CommonText type={"h5"} 
+                              color={Color.blue01} 
+                              fontWeight={'700'}>회원가입</CommonText>
                 </TouchableOpacity>
               </SpaceView>
 
@@ -384,7 +386,7 @@ export const Login01 = () => {
 const _styles = StyleSheet.create({
   joinText: {
     width: '100%',
-    paddingVertical: 10,
+    paddingVertical: 15,
     flexDirection: 'row',
     justifyContent: 'center',
   },

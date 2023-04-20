@@ -930,13 +930,14 @@ function RatingCard({ title, desc, value, isPennding }) {
           <>
             <Slider
               value={value / 10}
-              animateTransitions={true}
+              animateTransitions={false}
               renderThumbComponent={() => null}
               maximumTrackTintColor={'#8854d2'}
               minimumTrackTintColor={'#8854d2'}
               containerStyle={ratingCard.sliderContainer}
               trackStyle={ratingCard.sliderTrack}
               trackClickable={false}
+              disabled
             />
             <View style={ratingCard.gageContainer}>
               <Text style={ratingCard.gageText}>0</Text>

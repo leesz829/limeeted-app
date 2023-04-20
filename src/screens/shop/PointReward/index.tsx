@@ -118,6 +118,7 @@ export default function PointReward(element) {
             containerStyle={male.sliderContainer}
             trackStyle={male.sliderTrack}
             trackClickable={false}
+            disabled
           />
         </View>
         

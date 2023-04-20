@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     justifyContent: 'center',
     right: 5,
-    bottom: 8,
+    bottom: 16,
   },
   selectContainer: {},
   labelContainer: {
@@ -167,14 +167,16 @@ const pickerSelectStyles = StyleSheet.create({
     fontSize: 16,
     color: Color.black2222,
     fontFamily: 'AppleSDGothicNeoM00',
-    padding: 0,
     marginTop: 8,
+    paddingVertical: 5,
+    paddingHorizontal: 0,
   },
   inputAndroid: {
     width: (width - 50),
     fontSize: 16,
     color: Color.black2222,
     fontFamily: 'AppleSDGothicNeoM00',
-    padding: 0,
+    paddingVertical: 5,
+    paddingHorizontal: 0,
   },
 });

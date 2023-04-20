@@ -60,6 +60,15 @@ export const commonStyle = StyleSheet.create({
   paddingHorizontal30: {paddingHorizontal : 30},
   paddingHorizontal35: {paddingHorizontal : 35},
   paddingHorizontal40: {paddingHorizontal : 40},
+  paddingHorizontal50: {paddingHorizontal : 50},
+  paddingHorizontal60: {paddingHorizontal : 60},
+  paddingHorizontal70: {paddingHorizontal : 70},
+  hipSlop5: {top: 5, bottom: 5, left: 5, right: 5},
+  hipSlop10: {top: 10, bottom: 10, left: 10, right: 10},
+  hipSlop15: {top: 15, bottom: 15, left: 15, right: 15},
+  hipSlop20: {top: 20, bottom: 20, left: 20, right: 20},
+  hipSlop25: {top: 25, bottom: 25, left: 25, right: 25},
+  hipSlop30: {top: 30, bottom: 30, left: 30, right: 30},
 });
 
 export const styles = StyleSheet.create({
@@ -437,7 +446,8 @@ export const styles = StyleSheet.create({
   },
   questionContainer: {
     backgroundColor: 'white',
-    paddingVertical: 16,
+    paddingTop: 16,
+    paddingBottom: 5,
     paddingHorizontal: 30,
   },
   questionItemTextContainer: {
@@ -554,7 +564,7 @@ export const modalStyle = StyleSheet.create({
   },
   modalContainer: {
     paddingTop: 30,
-    borderRadius: 40,
+    borderTopRadius: 40,
   },
   modalHeaderContainer: {
     //height: 56,
@@ -596,7 +606,7 @@ export const modalStyle = StyleSheet.create({
   modalBtn: {
     flex: 2,
     alignItems: 'center',
-    paddingVertical: 10,
+    paddingVertical: 15,
   },
   modalBtnline: {
     borderRightWidth: 1,

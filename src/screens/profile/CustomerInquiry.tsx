@@ -4,7 +4,7 @@ import { CommonInput } from 'component/CommonInput';
 import { CommonTextarea } from 'component/CommonTextarea';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
-import { ScrollView, View, Image, Modal, TouchableOpacity, Alert, Text, StyleSheet, Dimensions } from 'react-native';
+import { ScrollView, View, Image, Modal, TouchableOpacity, Alert, Text, StyleSheet, Dimensions, KeyboardAvoidingView } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import React, { memo, useEffect, useState } from 'react';
 import { CommonBtn } from 'component/CommonBtn';
@@ -105,53 +105,54 @@ export const CustomerInquiry = (props : Props) => {
 		<>
 			<CommonHeader title={'고객문의'} />
 			<ScrollView contentContainerStyle={[styles.scrollContainer]}>
-				<SpaceView>
-					<View style={layoutStyle.alignStart}>
-						<CommonText	type={'h4'}	textStyle={_styles.titleText}>궁금한점, 불편한점{'\n'}저희에게 문의주세요 :)</CommonText>
-					</View>
-				</SpaceView>
-				
-				<SpaceView>
-					<SpaceView>	
-						<CommonInput
-//							label={'제목'}
-							value={title}
-							onChangeText={(title) => setTitle(title)}
-							placeholder={'문의 제목'}
-							placeholderTextColor={'#c6ccd3'}
-							maxLength={30}
-						/>
-					</SpaceView>
-
-					<SpaceView mb={15}>
-						<CommonTextarea
-//							label={'내용'} 
-							value={contents}
-							onChangeText={(contents) => setContents(contents)}
-							placeholder={'문의 내용'}
-							placeholderTextColor={'#c6ccd3'}
-							maxLength={240}
-							exceedCharCountColor={'#990606'}
-						/>
-					</SpaceView>
-
-					<SpaceView mb={16}>
-          				<CommonBtn
-            				value={'저장'}
-            				type={'black'}
-            				onPress={() => {
-              					insertCustomerInquiry();
-            				}}
-          				/>
-        			</SpaceView>
-
-					<SpaceView mb={45}>
-						<View style={_styles.bottomArea}>
-							<CommonText type={'h3'} textStyle={_styles.bottomText}>등록해주신 문의내용은 관리자 확인 후 우편함으로 답변드립니다.</CommonText>
+				<KeyboardAvoidingView>
+					<SpaceView>
+						<View style={layoutStyle.alignStart}>
+							<CommonText	type={'h4'}	textStyle={_styles.titleText}>궁금한점, 불편한점{'\n'}저희에게 문의주세요 :)</CommonText>
 						</View>
 					</SpaceView>
-				</SpaceView>
+					
+					<SpaceView>
+						<SpaceView>	
+							<CommonInput
+	//							label={'제목'}
+								value={title}
+								onChangeText={(title) => setTitle(title)}
+								placeholder={'문의 제목'}
+								placeholderTextColor={'#c6ccd3'}
+								maxLength={30}
+							/>
+						</SpaceView>
 
+						<SpaceView mb={15}>
+							<CommonTextarea
+	//							label={'내용'} 
+								value={contents}
+								onChangeText={(contents) => setContents(contents)}
+								placeholder={'문의 내용'}
+								placeholderTextColor={'#c6ccd3'}
+								maxLength={240}
+								exceedCharCountColor={'#990606'}
+							/>
+						</SpaceView>
+
+						<SpaceView mb={16}>
+							<CommonBtn
+								value={'저장'}
+								type={'black'}
+								onPress={() => {
+									insertCustomerInquiry();
+								}}
+							/>
+						</SpaceView>
+
+						<SpaceView mb={45}>
+							<View style={_styles.bottomArea}>
+								<CommonText type={'h3'} textStyle={_styles.bottomText}>등록해주신 문의내용은 관리자 확인 후 우편함으로 답변드립니다.</CommonText>
+							</View>
+						</SpaceView>
+					</SpaceView>
+				</KeyboardAvoidingView>
 			</ScrollView>
 		</>
 	);

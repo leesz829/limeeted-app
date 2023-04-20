@@ -6,6 +6,7 @@ import {
   View,
   StyleSheet,
   Text,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import type { FC, useState, useEffect } from 'react';
@@ -266,59 +267,6 @@ export const Preference = (props: Props) => {
       
     }
 
-
-
-/* 
-    const result = await axios
-      .post(
-        properties.api_domain + '/member/saveMemberIdealType',
-        {
-          'api-key': 'U0FNR09CX1RPS0VOXzAx',
-          member_seq: memberSeq,
-          ideal_type_seq: idealTypeSeq,
-          want_local1: wantLocal1,
-          want_local2: wantLocal2,
-          want_age_min: wantAgeMin,
-          want_age_max: wantAgeMax,
-          want_business1: wantBusiness1,
-          want_business2: wantBusiness2,
-          want_business3: wantBusiness3,
-          want_job1: wantJob1,
-          want_job2: wantJob2,
-          want_job3: wantJob3,
-          want_person1: wantPerson1,
-          want_person2: wantPerson2,
-          want_person3: wantPerson3,
-        },
-        {
-          headers: {
-            'jwt-token': jwtToken,
-          },
-        }
-      )
-      .then(function (response) {
-        if (response.data.result_code != '0000') {
-          console.log(response.data.result_msg);
-          return false;
-        } else {
-          dispatch(
-            mbrReducer.setIdealType(
-              JSON.stringify(response.data.memberIdealType)
-            )
-          );
-
-          navigation.navigate('Main', {
-            screen: 'Roby',
-          });
-        }
-      })
-      .catch(function (error) {
-        console.log('error ::: ', error);
-      });
- */
-
-
-
   };
 
   // 셀렉트 박스 콜백 함수
@@ -379,76 +327,80 @@ export const Preference = (props: Props) => {
           { justifyContent: 'space-between' },
         ]}>
 
-        <View>  
-          <SpaceView mb={32}>
-            <SpaceView mb={15}>
-              <CommonText fontWeight={'700'} type={'h4'}>
-                나이
-              </CommonText>
+      
+        <View>
+          <KeyboardAvoidingView behavior={"padding"}>
+          
+            <SpaceView mb={32}>
+              <SpaceView mb={15}>
+                <CommonText fontWeight={'700'} type={'h4'}>
+                  나이
+                </CommonText>
+              </SpaceView>
+
+              <SpaceView viewStyle={styles.halfContainer}>
+                <View style={styles.halfItemLeft}>
+                  <CommonRoundInput
+                    label={'최소'}
+                    keyboardType="number-pad"
+                    value={wantAgeMin}
+                    onChangeText={(wantAgeMin) => setWantAgeMin(wantAgeMin)}
+                    maxLength={2}
+                    placeholder={''}
+                    placeholderTextColor={'#c6ccd3'}
+                  />
+                </View>
+
+                <View style={styles.halfItemRight}>
+                  <CommonRoundInput
+                    label={'최대'}
+                    keyboardType="number-pad"
+                    value={wantAgeMax}
+                    onChangeText={(wantAgeMax) => setWantAgeMax(wantAgeMax)}
+                    maxLength={2}
+                    placeholder={''}
+                    placeholderTextColor={'#c6ccd3'}
+                  />
+                </View>
+              </SpaceView>
+              
             </SpaceView>
 
-            <SpaceView viewStyle={styles.halfContainer}>
-              <View style={styles.halfItemLeft}>
-                <CommonRoundInput
-                  label={'최소'}
-                  keyboardType="number-pad"
-                  value={wantAgeMin}
-                  onChangeText={(wantAgeMin) => setWantAgeMin(wantAgeMin)}
-                  maxLength={2}
-                  placeholder={''}
-                  placeholderTextColor={'#c6ccd3'}
-                />
-              </View>
+            <SpaceView mb={32}>
+              <SpaceView mb={15}>
+                <CommonText fontWeight={'700'} type={'h4'}>
+                  거리
+                </CommonText>
+              </SpaceView>
 
-              <View style={styles.halfItemRight}>
-                <CommonRoundInput
-                  label={'최대'}
-                  keyboardType="number-pad"
-                  value={wantAgeMax}
-                  onChangeText={(wantAgeMax) => setWantAgeMax(wantAgeMax)}
-                  maxLength={2}
-                  placeholder={''}
-                  placeholderTextColor={'#c6ccd3'}
-                />
-              </View>
+              <SpaceView viewStyle={styles.halfContainer}>
+                <View style={styles.halfItemLeft}>
+                  <CommonRoundInput
+                    label={'Km'}
+                    keyboardType="number-pad"
+                    value={wantLocal1}
+                    onChangeText={(wantLocal1) => setWantLocal1(wantLocal1)}
+                    maxLength={2}
+                    placeholder={'최소'}
+                    placeholderTextColor={'#c6ccd3'}
+                  />
+                </View>
+
+                <View style={styles.halfItemRight}>
+                  <CommonRoundInput
+                    label={'Km'}
+                    keyboardType="number-pad"
+                    value={wantLocal2}
+                    onChangeText={(wantLocal2) => setWantLocal2(wantLocal2)}
+                    maxLength={2}
+                    placeholder={'최대'}
+                    placeholderTextColor={'#c6ccd3'}
+                  />
+                </View>
+              </SpaceView>
             </SpaceView>
-            
-          </SpaceView>
 
-          <SpaceView mb={32}>
-            <SpaceView mb={15}>
-              <CommonText fontWeight={'700'} type={'h4'}>
-                거리
-              </CommonText>
-            </SpaceView>
-
-            <SpaceView viewStyle={styles.halfContainer}>
-              <View style={styles.halfItemLeft}>
-                <CommonRoundInput
-                  label={'Km'}
-                  keyboardType="number-pad"
-                  value={wantLocal1}
-                  onChangeText={(wantLocal1) => setWantLocal1(wantLocal1)}
-                  maxLength={2}
-                  placeholder={'최소'}
-                  placeholderTextColor={'#c6ccd3'}
-                />
-              </View>
-
-              <View style={styles.halfItemRight}>
-                <CommonRoundInput
-                  label={'Km'}
-                  keyboardType="number-pad"
-                  value={wantLocal2}
-                  onChangeText={(wantLocal2) => setWantLocal2(wantLocal2)}
-                  maxLength={2}
-                  placeholder={'최대'}
-                  placeholderTextColor={'#c6ccd3'}
-                />
-              </View>
-            </SpaceView>
-          </SpaceView>
-
+          </KeyboardAvoidingView>
         </View>
 
         {/* <SpaceView mb={32}>

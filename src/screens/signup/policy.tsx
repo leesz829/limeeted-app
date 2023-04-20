@@ -123,10 +123,12 @@ export const Policy = (props: Props) => {
               <CommonText textStyle={_styles.agreeText}>
                 전체동의  
               </CommonText>
+
               <CommonSwich
                 callbackFn={(value: boolean) => { allAgreeBtn(value); }}
-                isOn={allAgree} />
-            </View>
+                isOn={allAgree}
+                height={25} />
+            </View> 
           </SpaceView>
 
           <SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
@@ -143,6 +145,7 @@ export const Policy = (props: Props) => {
                 offColor={Color.grayDDDD}
                 size="small"
                 onToggle={(isOn) => toggleActive('terms', isOn)}
+                trackOffStyle={{width: 45 ,height: 25}}
               />
             </View>
           </SpaceView>
@@ -161,6 +164,7 @@ export const Policy = (props: Props) => {
                 offColor={Color.grayDDDD}
                 size="small"
                 onToggle={(isOn) => toggleActive('privacy', isOn)}
+                trackOffStyle={{width: 45 ,height: 25}}
               />
             </View>
           </SpaceView>
@@ -180,6 +184,7 @@ export const Policy = (props: Props) => {
                 offColor={Color.grayDDDD}
                 size="small"
                 onToggle={(isOn) => toggleActive('location', isOn)}
+                trackOffStyle={{width: 45 ,height: 25}}
               />
 
               {/* <TouchableOpacity onPress={location_onOpen}>
@@ -202,6 +207,7 @@ export const Policy = (props: Props) => {
                 offColor={Color.grayDDDD}
                 size="small"
                 onToggle={(isOn) => toggleActive('marketing', isOn)}
+                trackOffStyle={{width: 45 ,height: 25}}
               />
 
              {/*  <CommonSwich
@@ -269,11 +275,12 @@ export const Policy = (props: Props) => {
         modalHeight={height - 150}
         FooterComponent={
           <>
-            <SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
-              <View style={[layoutStyle.rowBetween]}>
+            <SpaceView viewStyle={[styles.rowStyle]}>
+              <View style={[layoutStyle.flex1]}>
                 <CommonBtn
                   value={'취소'}
                   type={'gray'}
+                  borderRadius={1}
                   onPress={() => {
                     setTermsAgree(false);
                     terms_onClose();
@@ -281,10 +288,11 @@ export const Policy = (props: Props) => {
                   width={195}
                 />
               </View>
-              <View style={[layoutStyle.rowBetween]}>
+              <View style={[layoutStyle.flex1]}>
                 <CommonBtn
                   value={'동의 후 닫기'}
                   type={'primary'}
+                  borderRadius={1}
                   onPress={() => {
                     setTermsAgree(true);
                     terms_onClose();
@@ -301,8 +309,8 @@ export const Policy = (props: Props) => {
               <CommonText fontWeight={'700'} type={'h3'}>
                 (필수)이용약관
               </CommonText>
-              <TouchableOpacity onPress={terms_onClose}>
-                <Image source={ICON.xBtn} style={styles.iconSize24} />
+              <TouchableOpacity onPress={terms_onClose} hitSlop={commonStyle.hipSlop15}>
+                <Image source={ICON.xBtn2} style={styles.iconSize24} />
               </TouchableOpacity>
             </View>
           </>
@@ -329,11 +337,12 @@ export const Policy = (props: Props) => {
         modalHeight={height - 150}
         FooterComponent={
           <>
-            <SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
-              <View style={[layoutStyle.rowBetween]}>
+            <SpaceView viewStyle={[styles.rowStyle]}>
+              <View style={[layoutStyle.flex1]}>
                 <CommonBtn
                   value={'취소'}
                   type={'gray'}
+                  borderRadius={1}
                   onPress={() => {
                     setPrivacyAgree(false);
                     privacy_onClose();
@@ -341,10 +350,11 @@ export const Policy = (props: Props) => {
                   width={195}
                 />
               </View>
-              <View style={[layoutStyle.rowBetween]}>
+              <View style={[layoutStyle.flex1]}>
                 <CommonBtn
                   value={'동의 후 닫기'}
                   type={'primary'}
+                  borderRadius={1}
                   onPress={() => {
                     setPrivacyAgree(true);
                     privacy_onClose();
@@ -361,8 +371,8 @@ export const Policy = (props: Props) => {
               <CommonText fontWeight={'700'} type={'h3'}>
                 개인정보 취급방침
               </CommonText>
-              <TouchableOpacity onPress={privacy_onClose}>
-                <Image source={ICON.xBtn} style={styles.iconSize24} />
+              <TouchableOpacity onPress={privacy_onClose} hitSlop={commonStyle.hipSlop15}>
+                <Image source={ICON.xBtn2} style={styles.iconSize24} />
               </TouchableOpacity>
             </View>
           </>
@@ -393,11 +403,12 @@ export const Policy = (props: Props) => {
         modalHeight={height - 150}
         FooterComponent={
           <>
-            <SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
-              <View style={[layoutStyle.rowBetween]}>
+            <SpaceView viewStyle={[styles.rowStyle]}>
+              <View style={[layoutStyle.flex1]}>
                 <CommonBtn
                   value={'취소'}
                   type={'gray'}
+                  borderRadius={1}
                   onPress={() => {
                     setLocationAgree(false);
                     location_onClose();
@@ -405,10 +416,11 @@ export const Policy = (props: Props) => {
                   width={195}
                 />
               </View>
-              <View style={[layoutStyle.rowBetween]}>
+              <View style={[layoutStyle.flex1]}>
                 <CommonBtn
                   value={'동의 후 닫기'}
                   type={'primary'}
+                  borderRadius={1}
                   onPress={() => {
                     setLocationAgree(true);
                     location_onClose();
@@ -425,8 +437,8 @@ export const Policy = (props: Props) => {
               <CommonText fontWeight={'700'} type={'h3'}>
                 위치기반 서비스 이용약관
               </CommonText>
-              <TouchableOpacity onPress={location_onClose}>
-                <Image source={ICON.xBtn} style={styles.iconSize24} />
+              <TouchableOpacity onPress={location_onClose} hitSlop={commonStyle.hipSlop15}>
+                <Image source={ICON.xBtn2} style={styles.iconSize24} />
               </TouchableOpacity>
             </View>
           </>

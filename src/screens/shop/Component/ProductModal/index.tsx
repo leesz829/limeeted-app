@@ -1,5 +1,6 @@
-import { styles, modalStyle, layoutStyle } from 'assets/styles/Styles';
+import { styles, modalStyle, layoutStyle, commonStyle } from 'assets/styles/Styles';
 import { Color } from 'assets/styles/Color';
+import { ColorType } from '@types';
 import React, { memo, useEffect, useState } from 'react';
 import {
   Dimensions,
@@ -23,6 +24,7 @@ import {
 } from 'react-native-iap';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
+import { usePopup } from 'Context';
 
 
 interface Props {
@@ -34,7 +36,7 @@ interface Props {
 }
 
 export default function ProductModal({ isVisible, type, closeModal, item, productPurchase }: Props) {
-  console.log('item :::::: ', item);
+  const { show } = usePopup(); // 공통 팝업
 
   const { bottom } = useSafeAreaInsets();
 
@@ -64,6 +66,18 @@ export default function ProductModal({ isVisible, type, closeModal, item, produc
 
 
   const purchaseBtn = async () => {
+
+    /* show({
+      title: '상품 구매',
+      content: '상품을 구매하시겠습니까?' ,
+      canncelCallback: function() {
+
+      },
+      confirmCallback: function() {
+        productPurchase(item_code && item_code);
+      }
+    }); */
+
     setComfirmModalVisible(true);
   }
   
@@ -75,17 +89,20 @@ export default function ProductModal({ isVisible, type, closeModal, item, produc
               closeModal();
               console.log("modal appearance")
             }}>
+
       <View style={modalStyleProduct.root}>
         <View style={modalStyleProduct.closeContainer}>
-          <TouchableOpacity onPress={closeModal}>
+          <TouchableOpacity onPress={closeModal} hitSlop={commonStyle.hipSlop20}>
             <Image source={ICON.closeBlack} style={modalStyleProduct.close} />
           </TouchableOpacity>
         </View>
+
         <ViewPager
           data={images}
           style={modalStyleProduct.pagerView}
           renderItem={(data) => <Image source={data} style={modalStyleProduct.itemImages} />}
         />
+
         <View style={modalStyleProduct.infoContainer}>
           {brand_name != '' && brand_name != null ? (
             <Text style={modalStyleProduct.brandText}>{brand_name}</Text>
@@ -126,34 +143,40 @@ export default function ProductModal({ isVisible, type, closeModal, item, produc
             </View>
           </View>
         </View>
+
       </View>
 
       {/* ###################### 구매하기 Confirm 팝업 */}
       <Modal isVisible={comfirmModalVisible} transparent={true} style={modalStyleProduct.modal}>
 					<View style={modalStyle.modalBackground}>
 					<View style={modalStyle.modalStyle1}>
-						<SpaceView mb={16} viewStyle={layoutStyle.alignCenter}>
-							<CommonText fontWeight={'700'} type={'h4'}>
-              상품 구매
+
+						<SpaceView viewStyle={[layoutStyle.alignCenter, modalStyle.modalHeader]}>
+							<CommonText fontWeight={'700'} type={'h5'} color={'#676767'}>
+                상품 구매
 							</CommonText>
 						</SpaceView>
 
-						<SpaceView viewStyle={layoutStyle.alignCenter}>
-							<CommonText type={'h5'}>상품을 구매하시겠습니까?</CommonText>
+						<SpaceView viewStyle={[layoutStyle.alignCenter, modalStyle.modalBody]}>
+							<CommonText type={'h5'} textStyle={layoutStyle.textCenter} color={'#646464'}>
+                상품을 구매하시겠습니까?
+              </CommonText>
 						</SpaceView>
 
 						<View style={modalStyle.modalBtnContainer}>
 							<TouchableOpacity
-								style={modalStyle.modalBtn}
+								style={[modalStyle.modalBtn, {backgroundColor: Color.grayD6D3D3, borderBottomLeftRadius: 5}]}
 								onPress={() => setComfirmModalVisible(false)}>
-								<CommonText fontWeight={'500'}>취소</CommonText>
+								<CommonText type={'h5'} fontWeight={'500'} color={ColorType.white}>취소할래요!</CommonText>
 							</TouchableOpacity>
+
 							<View style={modalStyle.modalBtnline} />
+
 								<TouchableOpacity 
-									style={modalStyle.modalBtn}
+									style={[modalStyle.modalBtn, {backgroundColor: Color.blue02, borderBottomRightRadius: 5}]}
 									onPress={() => productPurchase(item_code && item_code)}>
-									<CommonText fontWeight={'500'}>
-										구매
+									<CommonText type={'h5'} fontWeight={'500'} color={ColorType.white}>
+										확인하기
 									</CommonText>
 								</TouchableOpacity>
 							</View>

@@ -2,7 +2,7 @@ import { styles, layoutStyle, modalStyle, commonStyle } from 'assets/styles/Styl
 import CommonHeader from 'component/CommonHeader';
 import { CommonInput } from 'component/CommonInput';
 import SpaceView from 'component/SpaceView';
-import { ScrollView, View, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native';
+import { ScrollView, View, StyleSheet, TouchableOpacity, Image, Dimensions, KeyboardAvoidingView } from 'react-native';
 import * as React from 'react';
 import { FC, useState, useEffect, useRef } from 'react';
 import { CommonSelect } from 'component/CommonSelect';
@@ -407,6 +407,7 @@ export const Introduce = (props: Props) => {
                 items={busiGrpCdList}
                 selectValue={business}
                 callbackFn={busiCdCallbackFn}
+                
               />
             </View>
 
@@ -544,7 +545,7 @@ export const Introduce = (props: Props) => {
 							<CommonText fontWeight={'700'} type={'h4'}>
 								관심사 등록
 							</CommonText>
-							<TouchableOpacity onPress={int_onClose}>
+							<TouchableOpacity onPress={int_onClose} hitSlop={commonStyle.hipSlop20}>
 								<Image source={ICON.xBtn2} style={styles.iconSize18} />
 							</TouchableOpacity>
 						</View>

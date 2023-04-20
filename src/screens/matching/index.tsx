@@ -437,6 +437,7 @@ export default function Matching(props: Props) {
                   containerStyle={styles.sliderContainerStyle}
                   trackStyle={styles.sliderThumbStyle}
                   trackClickable={false}
+                  disabled
                 />
                 <View style={styles.gageContainer}>
                   <Text style={styles.gageText}>0</Text>
@@ -475,6 +476,7 @@ export default function Matching(props: Props) {
                   containerStyle={styles.socialSliderContainerStyle}
                   trackStyle={styles.socialSliderThumbStyle}
                   trackClickable={false}
+                  disabled
                 />
                 <View style={styles.gageContainer}>
                   <Text style={styles.gageText}>0</Text>

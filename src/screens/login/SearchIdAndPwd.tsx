@@ -234,7 +234,7 @@ export const SearchIdAndPwd = (props : Props) => {
 						</SpaceView>
 					</View>
 
-					<SpaceView mb={50}>
+					<SpaceView mb={50} mt={50}>
 
 						<View>
 							<CommonInput
@@ -247,11 +247,14 @@ export const SearchIdAndPwd = (props : Props) => {
 								placeholderTextColor={'#c6ccd3'} />
 
 							<View style={[_styles.inputBtn]}>
-								<CommonBtn value={'찾기'} type={'primary'} height={35} width={70} fontSize={13}
+								<CommonBtn value={'찾기'} 
+											type={'primary'} 
+											height={40} 
+											width={80} 
+											fontSize={13}
+											borderRadius={10}
 											onPress={() => {
 												btnSelectEmailIdFromPhoneNumber();
-												//searchIdPopup();
-												//setSelectEmailIdPopup(true)
 											}} />
 							</View>
 						</View>
@@ -276,7 +279,12 @@ export const SearchIdAndPwd = (props : Props) => {
 								placeholderTextColor={'#c6ccd3'} />
 
 							<View style={[_styles.inputBtn]}>
-								<CommonBtn value={'전송'} type={'primary'} height={35} width={70} fontSize={13}
+								<CommonBtn value={'전송'} 
+											type={'primary'} 
+											height={40} 
+											width={80} 
+											fontSize={13}
+											borderRadius={10}
 											onPress={() => {
 												btnSelectPasswordFromEmailId();
 												//searchPwdPopup();
@@ -324,7 +332,7 @@ const _styles = StyleSheet.create({
 	inputBtn: {
 	  position: 'absolute',
 	  right: 0,
-	  top: 12,
+	  top: 15,
 	  height: '100%',
 	  justifyContent: 'center',
 	},
