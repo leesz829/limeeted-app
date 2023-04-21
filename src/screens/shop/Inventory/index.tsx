@@ -126,12 +126,14 @@ export default function Inventory() {
           <Text style={styles.infoText}>{item?.cate_desc}</Text>
           <View style={styles.buttonWrapper}>
             <TouchableOpacity
-              style={styles.button(item?.use_yn == 'N')}
-              disabled={item?.use_yn == 'Y'}
+              style={styles.button(item?.use_yn == 'N' && item?.be_in_use_yn == 'N')}
+              disabled={item?.use_yn == 'Y' || item?.be_in_use_yn == 'Y'}
               onPress={() => {useItem(item);}}
             >
-              <Text style={styles.buttonText(item?.use_yn == 'N')}>
-                {item?.use_yn == 'N' ? '사용/획득' : '사용중('+ item?.subscription_end_day +'일남음)'}
+              <Text style={styles.buttonText(item?.use_yn == 'N' && item?.be_in_use_yn == 'N')}>
+                {item?.use_yn == 'N' && item?.be_in_use_yn == 'N' && '사용/획득'}
+                {item?.use_yn == 'N' && item?.be_in_use_yn == 'Y' && '0일 후 열림'}
+                {item?.use_yn == 'Y' && '사용중('+ item?.subscription_end_day +'일남음)'}
               </Text>
             </TouchableOpacity>
           </View>

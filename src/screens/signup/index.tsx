@@ -161,7 +161,7 @@ export const Signup00 = (props: Props) => {
 
           <SpaceView mb={24}>
             <CommonInput
-              label="아이디"
+              label="이메일"
               value={id}
               onChangeText={(id) => setId(id)}
               maxLength={50}
@@ -191,6 +191,7 @@ export const Signup00 = (props: Props) => {
               isMasking={true}
               maxLength={20}
               placeholderTextColor={'#c6ccd3'}
+              placeholder={'영문 대소문자, 숫자, 특수기호 허용 8글자 이상'}
               borderBottomType={'black'}
             />
           </SpaceView>

@@ -213,9 +213,9 @@ export const Login01 = () => {
                 style={styles.logoMark}
               />
             </SpaceView>
-            {/* <SpaceView ml={10}>
-              <CommonText type={'h2'} fontWeight={'700'} lineHeight={30}>믿음가는 사람들의 인연</CommonText>
-            </SpaceView> */}
+            <SpaceView>
+              <CommonText type={'h4'} fontWeight={'700'} lineHeight={30}>특별한 사람들의 '리미티드' 에디션</CommonText>
+            </SpaceView>
           </View>
 
           {/* ############################################################### 텍스트 입력 */}

@@ -57,6 +57,8 @@ import { findSourcePath, ICON, IMAGE } from 'utils/imageUtils';
 import { Slider } from '@miblanchard/react-native-slider';
 import ProfileAuth from 'component/ProfileAuth';
 import InterviewRender from 'component/InterviewRender';
+import { formatNowDate} from 'utils/functions';
+
 
 
 const { width, height } = Dimensions.get('window');
@@ -90,8 +92,9 @@ export default function Matching(props: Props) {
     interest_list: [],
     report_code_list: [],
     safe_royal_pass: Number,
-    item_list: [],
+    use_item: {},
   });
+
 
   // 신고목록
   const [reportTypeList, setReportTypeList] = useState([
@@ -127,8 +130,7 @@ export default function Matching(props: Props) {
   const getDailyMatchInfo = async () => {
     try {
       const { success, data } = await get_daily_matched_info();
-      
-      console.log('get_daily_matched_info data :::: ', data);
+      console.log('get_daily_matched_info data :::: ', data.use_item.FREE_LIKE);
       
       if (success) {
         if (data.result_code == '0000') {
@@ -151,9 +153,24 @@ export default function Matching(props: Props) {
 	############################################# */
   const popupActive = (activeType: string) => {
     if (activeType == 'interest') {
+      let title = '관심 보내기';
+      let content = '패스를 소모하여 관심을 보내시겠습니까?\n패스 x15';
+
+      // 관심 자유이용권 사용시
+      if(typeof data.use_item != 'undefined' && typeof data.use_item.FREE_LIKE != 'undefined') {
+        let endDt = data?.use_item?.FREE_LIKE?.end_dt;
+        if(endDt > formatNowDate()) {
+          title = '관심 보내기';
+          content = '관심 보내기 자유이용권 사용중\n패스 소모없이 관심을 보냅니다.';
+        } else {
+          title = '부스팅 만료';
+          content = '관심 보내기 자유이용권(1일) 아이템의 구독기간이 만료된 상태입니다.\n패스 15개가 소모됩니다.';
+        }
+      }
+
       show({
-				title: '관심 보내기',
-				content: '패스를 소모하여 관심을 보내시겠습니까?\n패스 x15' ,
+				title: title,
+				content: content,
         cancelCallback: function() {
 
         },
@@ -188,7 +205,6 @@ export default function Matching(props: Props) {
 
   // ############################################################ 찐심/관심/거부 저장
   const insertMatchInfo = async (activeType: string) => {
-
     const body = {
       active_type: activeType,
       res_member_seq: data.match_member_info.member_seq,
@@ -237,8 +253,6 @@ export default function Matching(props: Props) {
       report_type_code: checkReportType,
       report_member_seq: data.match_member_info.member_seq,
     };
-
-    console.log('insertReport ::: ' , insertReport);
     
     try {
       const { success, data } = await report_matched_user(body);
@@ -366,11 +380,18 @@ export default function Matching(props: Props) {
                 <TouchableOpacity onPress={() => { popupActive('interest'); }} style={styles.freePassContainer}>
                   <Image source={ICON.heartCircle} style={styles.largeButton} />
 
-                  {data.item_list.length > 0 && (
+                  {/* ############ 부스터 아이템  */}
+                  {data?.use_item != null && data?.use_item?.FREE_LIKE && data?.use_item?.FREE_LIKE?.use_yn == 'Y' &&
                     <View style={styles.freePassBage}>
                       <Text style={styles.freePassText}>자유이용권 ON</Text>
                     </View>
-                  )}
+                  }
+
+                  {/* {data.item_list.length > 0 && (
+                    <View style={styles.freePassBage}>
+                      <Text style={styles.freePassText}>자유이용권 ON</Text>
+                    </View>
+                  )} */}
                 </TouchableOpacity>
 
                 {/* 마킹 버튼 */}

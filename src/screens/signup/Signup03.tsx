@@ -97,6 +97,7 @@ export const Signup03 = (props : Props) => {
 									memberSeq: props.route.params.memberSeq,
 									accessType: 'JOIN',
 									mstImgPath: props.route.params.mstImgPath,
+									gender: props.route.params.gender
 								}
 							}
 						]
@@ -185,14 +186,14 @@ export const Signup03 = (props : Props) => {
 
 	return (
 		<>
-			<CommonHeader title={'닉네임과 소개'} />
+			<CommonHeader title={'닉네임과 한줄소개'} />
 			<ScrollView contentContainerStyle={[
 							styles.scrollContainerAll,
 							{ justifyContent: 'space-between' },
 						]}>
 				<View style={commonStyle.paddingHorizontal20}>
 					<SpaceView mb={60}>
-						<CommonText>LIMEETED에서 사용할</CommonText>
+						<CommonText>리미티드에서 사용할</CommonText>
 						<CommonText fontWeight={'700'}>닉네임과 한줄소개를 입력해주세요.</CommonText>
 					</SpaceView>
 

@@ -60,6 +60,7 @@ export const SecondAuthPopup = (props: Props) => {
   let placeholderTxt = '';
   let etcTxt01 = '';
   let etcTxt02 = '';
+  let etcTxt02_02 = '';
   let etcTxt03 = '';
 
   const fileInfo = { uri: '', fileName: '', fileSize: 0, type: '', base64: '' };
@@ -94,13 +95,14 @@ export const SecondAuthPopup = (props: Props) => {
     title = '자산';
     etcTxt01 = '심사에 요구되는 증빙자료를 올려주세요.';
     etcTxt02 = '은행 직인이 찍힌 잔고 증명서 및 확인 가능한 부동산 관련 서류 또는 그 외에 확인 가능한 자산 입증 서류';
-    etcTxt03 = '아래 기준에 기초하여 인증 레벨이 부여됩니다.';
+    etcTxt03 = '현금 또는 부동산 자산 중 1가지를 선택하여 증빙 자료를 올려주세요. 단, 2가지 모두 충족하시는 경우 한 단계 높은 레벨이 부여됩니다.(최대 7레벨)';
   } else if (type == 'SNS') {
     title = 'SNS';
     itemNm = '인스타ID';
     placeholderTxt = '인스타그램 ID를 입력해주세요.';
     etcTxt01 = '심사에 요구되는 증빙자료를 올려주세요.';
-    etcTxt02 = '대중적 SNS인 인스타그램, 틱톡, 트위치 등에서 개인 메시지 수신이 가능한 계정이 노출된 스크린샷';
+    etcTxt02 = '대중적 SNS인 인스타그램, 페이스북, 틱톡 등에서 메시지 수신이 가능한 계정이 노출된 스크린샷';
+    etcTxt02_02 = '유투브, 트위치 등은 별도 문의 부탁드립니다.(limeeted@gmail.com 또는 가입 후 ‘고객문의’)';
     etcTxt03 = '가장 높은 팔로워 수를 보유한 SNS 매체를 기준으로 레벨이 부여됩니다.';
   } else if (type == 'VEHICLE') {
     title = '차량';
@@ -252,7 +254,7 @@ export const SecondAuthPopup = (props: Props) => {
         <CommonText fontWeight={'700'} type={'h3'}>
           {title}인증
         </CommonText>
-        <TouchableOpacity onPress={props.onCloseFn}>
+        <TouchableOpacity onPress={props.onCloseFn} hitSlop={commonStyle.hipSlop20}>
           <Image source={ICON.xBtn2} style={styles.iconSize18} />
         </TouchableOpacity>
       </View>
@@ -291,6 +293,20 @@ export const SecondAuthPopup = (props: Props) => {
                     lineHeight={17}
                     type={'h5'}
                     textStyle={{marginTop: 4}}>{etcTxt02}</CommonText>
+                </View>
+              </SpaceView>
+            ) : null}
+
+            {etcTxt02_02 != '' ? (
+              <SpaceView mt={12}>
+                <View style={styles.dotTextContainer}>
+                  <View style={styles.dot} />
+                  <CommonText 
+                    color={'#6E6E6E'} 
+                    fontWeight={'500'}
+                    lineHeight={17}
+                    type={'h5'}
+                    textStyle={{marginTop: 4}}>{etcTxt02_02}</CommonText>
                 </View>
               </SpaceView>
             ) : null}
@@ -375,7 +391,7 @@ export const SecondAuthPopup = (props: Props) => {
                   </View>
                   <View style={_styles.rowStyle}>
                     <Text style={_styles.rowTextHalfLeft}>전문직</Text>
-                    <Text style={_styles.rowTextHalfRight}>의사, 법조인, 약무, 동물치료, 세무, 무역, 부동산, 기술사</Text>
+                    <Text style={_styles.rowTextHalfRight}>의사, 법조인, 약무, 동물수의사, 회계, 세무, 무역, 부동산, 기술사</Text>
                   </View>
                   <SpaceView mb={12} mt={20}>
                     <View style={styles.dotTextContainer}>

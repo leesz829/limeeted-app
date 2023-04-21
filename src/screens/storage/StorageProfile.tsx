@@ -404,7 +404,7 @@ export const StorageProfile = (props: Props) => {
 
                 <SpaceView mb={16} viewStyle={{alignItems: 'center'}}>
                   <CommonText type={'h4'} fontWeight={'700'}>
-                    {data.match_member_info?.nickname}과 매칭 성공!
+                    {data.match_member_info?.nickname}님과 매칭 성공!
                   </CommonText>
                 </SpaceView>
 

@@ -419,6 +419,9 @@ export const Profile1 = (props: Props) => {
           if (order_seq == 5) {
             imgData.orgImgUrl05 = data;
           }
+          if (order_seq == 6) {
+            imgData.orgImgUrl06 = data;
+          }
         }
       );
 

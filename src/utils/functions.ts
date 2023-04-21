@@ -7,6 +7,17 @@ export const formatDate = (time: string) => {
   return `${year}.${month}.${day}`;
 };
 
+// 현재 날짜 format
+export const formatNowDate = () => {
+  const year = new Date().getFullYear();
+  const month = leftPad(new Date().getMonth() + 1, 2);
+  const day = new Date().getDate();
+  const hours = new Date().getHours() + 9;
+  const minutes = leftPad(new Date().getMinutes(), 2);
+  const seconds = leftPad(new Date().getSeconds(), 2);
+  return `${year}${month}${day}${hours}${minutes}${seconds}`;
+};
+
 // 숫자 콤마 format
 export function CommaFormat(value: number | string) {
   if (!value) return 0;
