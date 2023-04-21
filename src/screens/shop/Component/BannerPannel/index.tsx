@@ -316,7 +316,6 @@ const female = StyleSheet.create({
     // marginTop: 8,
     opacity: 0.83,
     // fontFamily: 'AppleSDGothicNeoM00',
-    fontFamily: 'AppleSDGothicNeoM00-Regular',
     fontSize: 10,
     fontWeight: 'normal',
     fontStyle: 'normal',

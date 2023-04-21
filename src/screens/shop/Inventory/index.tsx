@@ -142,8 +142,7 @@ export default function Inventory() {
             <TouchableOpacity
               style={styles.button(item?.use_yn == 'N' && item?.be_in_use_yn == 'N')}
               disabled={item?.use_yn == 'Y' || item?.be_in_use_yn == 'Y'}
-              onPress={() => {useItem(item);}}
-            >
+              onPress={() => {useItem(item);}} >
               <Text style={styles.buttonText(item?.use_yn == 'N' && item?.be_in_use_yn == 'N')}>
                 {item?.use_yn == 'N' && item?.be_in_use_yn == 'N' && '사용/획득'}
                 {item?.use_yn == 'N' && item?.be_in_use_yn == 'Y' && '0일 후 열림'}

@@ -302,7 +302,7 @@ function RenderItem({ item, openModal }) {
         />
         <View style={styles.textContainer}>
           <Text style={styles.BESTText}>BEST</Text>
-          <Text style={{ fontSize: 13, fontWeight: 'bold', color:'#363636', fontFamily: 'AppleSDGothicNeoM00-Regular' }}>
+          <Text style={{ fontSize: 13, fontWeight: 'bold', color:'#363636' }}>
             {item?.item_name}
           </Text>
           <View style={{ flexDirection: 'row' }}>
