@@ -34,8 +34,21 @@ export default function Inventory() {
   const { show } = usePopup();  // 공통 팝업
   const dispatch = useDispatch();
 
+
+  const fetchData = async () => {
+    const body = {
+      cate_group_code: tab.value
+    };
+    const { data, message } = await get_my_items(body);
+    console.log('data ::::::' , data);
+
+    if(data) {
+      setData(data?.inventory_list);
+    }
+  }
+
   useEffect(() => {
-    async function fetchData() {
+   /*  async function fetchData() {
       const body = {
         cate_group_code: tab.value
       };
@@ -45,7 +58,7 @@ export default function Inventory() {
       if(data) {
         setData(data?.inventory_list);
       }
-    }
+    } */
     fetchData();
   }, [tab]);
 
@@ -75,7 +88,8 @@ export default function Inventory() {
             switch (data.result_code) {
               case SUCCESS:
                 dispatch(myProfile());
-                navigation.navigate(STACK.TAB, { screen: 'Shop' });
+                //navigation.navigate(STACK.TAB, { screen: 'Shop' });
+                fetchData();
                 break;
               default:
                 show({
