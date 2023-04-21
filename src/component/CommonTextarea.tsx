@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   labelStyle: {
-    fontSize: 14,
+    fontSize: 14, 
     lineHeight: 20,
     fontFamily: 'AppleSDGothicNeoR00',
     color: Color.gray6666,
@@ -75,7 +75,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     textAlignVertical: 'top',
-    backgroundColor: "#ffffff",
+    backgroundColor: '#ffffff',
+    color: '#000000',
     borderColor: "#ebe9ef",
     borderStyle: "solid",
   },

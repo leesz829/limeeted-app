@@ -228,6 +228,7 @@ const male = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     fontFamily: 'AppleSDGothicNeoM00',
+    color:'#333333'
   },
   infoText: {
     marginTop: 8,

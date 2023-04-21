@@ -40,8 +40,9 @@ export default function ProfileAuth({ level, data, isButton }) {
         }
       </View>
       <SimpleGrid
-        style={{ marginTop: 10 }}
-        staticDimension={width}
+        style={{ marginTop: 10}}
+        // staticDimension={width}
+        staticDimension={width + 20}
         itemContainerStyle={{
           width: '32%',
         }}
@@ -82,7 +83,7 @@ const renderAuthInfo = ({ item }: { item: auth }) => (
     {item?.auth_status === 'ACCEPT' && (
       <Text style={styles.levelText}>
         LV.
-        <Text style={{ fontSize: 15 }}>{item.auth_level}</Text>
+        <Text style={{ fontSize: 15, color: '#000000' }}>{item.auth_level}</Text>
       </Text>
     )}
   </View>
@@ -132,7 +133,7 @@ const styles = StyleSheet.create({
     fontStyle: 'normal',
     // letterSpacing: 0,
     textAlign: 'left',
-    //color: 'white',
+    color: '#000000',
   },
 
   certificateItemContainerOn: {

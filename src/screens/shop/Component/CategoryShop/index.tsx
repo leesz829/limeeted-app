@@ -306,7 +306,7 @@ function RenderItem({ item, openModal }) {
         />
         <View style={styles.textContainer}>
           <Text style={styles.BESTText}>BEST</Text>
-          <Text style={{ fontSize: 13, fontWeight: 'bold' }}>
+          <Text style={{ fontSize: 13, fontWeight: 'bold', color:'#363636' }}>
             {item?.item_name}
           </Text>
           <View style={{ flexDirection: 'row' }}>
@@ -384,6 +384,7 @@ const styles = StyleSheet.create({
   BESTText: {
     fontSize: 16,
     fontWeight: 'bold',
+    color: '#363636'
   },
   discountRate: {
     fontSize: 16,
@@ -394,12 +395,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginLeft: 4,
+    color:'#363636'
   },
   originPrice: {
     fontSize: 10,
     fontWeight: 'bold',
     marginLeft: 4,
     textDecorationLine: 'line-through',
+    color:'#363636'
   },
   boxWrapper: {
     flexDirection: `row`,

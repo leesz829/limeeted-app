@@ -310,7 +310,7 @@ export const Profile = (props: Props) => {
             <CommonBtn
               value={'로그아웃'} 
               type={'black'} 
-              width={width - 190}
+              width={width/2}
               borderRadius={1}
               onPress={logout} />
           </View>
@@ -319,7 +319,7 @@ export const Profile = (props: Props) => {
             <CommonBtn 
               value={'저장'} 
               type={'primary'}
-              width={width - 200}
+              width={width/2}
               borderRadius={1}
               onPress={btnSave} />
           </View>

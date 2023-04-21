@@ -228,8 +228,6 @@ export const NiceAuth = (props: Props) => {
 						'document.getElementById("frm").submit()' +
 						'</script>';
 
-					console.log('webViewBody :::: ', webViewBody);
-
 					setNiceWebViewBody(webViewBody);
 
 					break;
