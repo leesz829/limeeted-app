@@ -17,6 +17,7 @@ import { usePopup } from 'Context';
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
 import { CommonInput } from './CommonInput';
 
+
 interface InterviewProps {
   title?: string;
   callbackAnswerFn?: Function;
@@ -183,101 +184,102 @@ export default function Interview({
   };
   return (
     <>
+
       <SpaceView>
-        <SpaceView viewStyle={[layoutStyle.rowBetween]} mb={16}>
-          <View>
-            <CommonText fontWeight={'700'} type={'h3'}>
-              {title || '인터뷰'}
-            </CommonText>
-          </View>
+          <SpaceView viewStyle={[layoutStyle.rowBetween]} mb={16}>
+            <View>
+              <CommonText fontWeight={'700'} type={'h3'}>
+                {title || '인터뷰'}
+              </CommonText>
+            </View>
 
-          <View style={[layoutStyle.rowBetween]}>
-            {interview?.length > 0 && (
+            <View style={[layoutStyle.rowBetween]}>
+              {interview?.length > 0 && (
+                <TouchableOpacity
+                  style={style.deleteButton}
+                  onPress={onPressToggleMode}
+                >
+                  <CommonText textStyle={style.deleteText}>
+                    {mode === Mode.view ? '삭제' : '종료'}
+                  </CommonText>
+                </TouchableOpacity>
+              )}
               <TouchableOpacity
-                style={style.deleteButton}
-                onPress={onPressToggleMode}
+                style={style.registerButton}
+                onPress={onPressRegist}
               >
-                <CommonText textStyle={style.deleteText}>
-                  {mode === Mode.view ? '삭제' : '종료'}
-                </CommonText>
+                <CommonText textStyle={style.registerText}>등록</CommonText>
               </TouchableOpacity>
-            )}
-            <TouchableOpacity
-              style={style.registerButton}
-              onPress={onPressRegist}
-            >
-              <CommonText textStyle={style.registerText}>등록</CommonText>
-            </TouchableOpacity>
-          </View>
-        </SpaceView>
+            </View>
+          </SpaceView>
 
-        {interview?.map((e, index) => (
-          <View style={[style.contentItemContainer, index % 2 !== 0 && style.itemActive]}>
-            {mode === 'delete' ? (
-              <TouchableOpacity
-                onPress={() => onSelectDeleteItem(e)}
-                style={[
-                  style.checkContainer,
-                  deleteList.includes(e) && style.active,
-                ]} >
-                <Image
-                  source={deleteList.includes(e) ? ICON.checkOn : ICON.checkOff}
-                  style={style.checkIconStyle}
+          {interview?.map((e, index) => (
+            <View style={[style.contentItemContainer, index % 2 !== 0 && style.itemActive]}>
+              {mode === 'delete' ? (
+                <TouchableOpacity
+                  onPress={() => onSelectDeleteItem(e)}
+                  style={[
+                    style.checkContainer,
+                    deleteList.includes(e) && style.active,
+                  ]} >
+                  <Image
+                    source={deleteList.includes(e) ? ICON.checkOn : ICON.checkOff}
+                    style={style.checkIconStyle}
+                  />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  onPress={() => onPressRegist(e.common_code)}
+                  style={style.penPosition}
+                >
+                  <Image source={ICON.pen} style={style.penImage} />
+                </TouchableOpacity>
+              )}
+
+              <View style={style.questionRow}>
+                <Text style={style.questionText}>Q.</Text>
+                <Text style={style.questionBoldText}>
+                  {/* {indexToKr[index]}번째 질문 입니다. */}
+                  <Text style={style.questionBoldText}>{e?.code_name}</Text>
+                </Text>
+              </View>
+
+              <View style={style.answerRow}>
+                <Text style={style.answerText}>A.</Text>
+                <TextInput
+                  defaultValue={e?.answer}
+                  onChangeText={(text) =>
+                    answerChangeHandler(e.member_interview_seq, text)
+                  }
+                  style={[style.answerNormalText, Platform.OS == 'ios' ? {marginTop: -5} : {marginTop: -9}]}
+                  multiline={true}
+                  placeholder={'대답을 등록해주세요!'}
+                  placeholderTextColor={'#c6ccd3'}
+                  numberOfLines={3}
+                  maxLength={200}
                 />
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                onPress={() => onPressRegist(e.common_code)}
-                style={style.penPosition}
-              >
-                <Image source={ICON.pen} style={style.penImage} />
-              </TouchableOpacity>
-            )}
+              </View>
 
-            <View style={style.questionRow}>
-              <Text style={style.questionText}>Q.</Text>
-              <Text style={style.questionBoldText}>
-                {/* {indexToKr[index]}번째 질문 입니다. */}
-                <Text style={style.questionBoldText}>{e?.code_name}</Text>
-              </Text>
             </View>
+          ))}
 
-            <View style={style.answerRow}>
-              <Text style={style.answerText}>A.</Text>
-              <TextInput
-                defaultValue={e?.answer}
-                onChangeText={(text) =>
-                  answerChangeHandler(e.member_interview_seq, text)
-                }
-                style={[style.answerNormalText, Platform.OS == 'ios' ? {marginTop: -5} : {marginTop: -9}]}
-                multiline={true}
-                placeholder={'대답을 등록해주세요!'}
-                placeholderTextColor={'#c6ccd3'}
-                numberOfLines={3}
-                maxLength={200}
-              />
+          {interview?.length === 0 && (
+            <View style={[style.contentItemContainer, { flexDirection: 'row' }]}>
+              <SpaceView mr={16}>
+                <Image source={ICON.manage} style={styles.iconSize40} />
+              </SpaceView>
+
+              <View style={styles.interviewLeftTextContainer}>
+                <CommonText type={'h5'}>질문을 등록해주세요</CommonText>
+              </View>
             </View>
+          )}
 
-          </View>
-        ))}
-
-        {interview?.length === 0 && (
-          <View style={[style.contentItemContainer, { flexDirection: 'row' }]}>
-            <SpaceView mr={16}>
-              <Image source={ICON.manage} style={styles.iconSize40} />
-            </SpaceView>
-
-            <View style={styles.interviewLeftTextContainer}>
-              <CommonText type={'h5'}>질문을 등록해주세요</CommonText>
-            </View>
-          </View>
-        )}
-
-        {mode === Mode.delete && (
-          <TouchableOpacity style={style.selectedDelete} onPress={submit}>
-            <Text style={style.selectedDeleteText}>선택 삭제</Text>
-          </TouchableOpacity>
-        )}
+          {mode === Mode.delete && (
+            <TouchableOpacity style={style.selectedDelete} onPress={submit}>
+              <Text style={style.selectedDeleteText}>선택 삭제</Text>
+            </TouchableOpacity>
+          )}
       </SpaceView>
     </>
   );
@@ -413,7 +415,7 @@ const style = StyleSheet.create({
   },
   answerNormalText: {
     fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: 'normal',
     fontStyle: 'normal',
     letterSpacing: 0,

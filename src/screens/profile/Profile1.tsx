@@ -33,6 +33,7 @@ import { useDispatch } from 'react-redux';
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
 import { STACK } from 'constants/routes';
 import { SUCCESS } from 'constants/reusltcode';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 
 const options = {
@@ -472,7 +473,9 @@ export const Profile1 = (props: Props) => {
           </TouchableOpacity>
         }
       />
-      <ScrollView ref={scrollViewRef} style={{ backgroundColor: 'white', flexGrow: 1 }}>
+
+      <KeyboardAwareScrollView behavior={"padding"} style={{flex:1}} extraScrollHeight={70}>
+        <ScrollView ref={scrollViewRef} style={{ backgroundColor: 'white', flexGrow: 1 }}>
 
         {/* ####################################################################################
 					####################### 프로필 이미지 영역
@@ -483,7 +486,7 @@ export const Profile1 = (props: Props) => {
           ))}
         </View> */}
 
-        <View style={_styles.wrapper}>
+        <View style={[_styles.wrapper]}>
           <View style={_styles.container}>
             {imgData.orgImgUrl01.url != '' &&
             imgData.orgImgUrl01.delYn == 'N' ? (
@@ -741,12 +744,18 @@ export const Profile1 = (props: Props) => {
           {/* ####################################################################################
 					####################### 인터뷰 영역
 					#################################################################################### */}
+
+
+  
+
+
           <Interview title={memberBase?.nickname + `님을\n알려주세요!`} 
                       callbackAnswerFn={callbackInterviewAnswer}
                       callbackScrollBottomFn={callbackScrollBottom} />
         </View>
         <View style={{ height: 10 }} />
       </ScrollView>
+      </KeyboardAwareScrollView>
 
       {/* ###############################################
 							사진 삭제 팝업

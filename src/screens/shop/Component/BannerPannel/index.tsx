@@ -47,7 +47,7 @@ function FemalePannel() {
             style={{ flexDirection: 'row', justifyContent: 'space-between' }}
           >
             <Text style={female.pointText}>
-              {me?.name} <Text>✨</Text>
+              {me?.nickname} <Text>✨</Text>
             </Text>
             {/* {route.name === ROUTES.Mileage_Shop && (
               <View style={{ flexDirection: 'row' }}>

@@ -231,7 +231,7 @@ export const Live = () => {
             isNew={liveMemberInfo.status == 'NEW' ? true : false}
             onlyImg={true}
             imgUrls={liveProfileImg}
-            profileName={liveMemberInfo.name}
+            profileName={liveMemberInfo.nickname}
             age={liveMemberInfo.age}
             status={liveMemberInfo.status}
             comment={liveMemberInfo.comment}
