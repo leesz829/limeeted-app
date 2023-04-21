@@ -84,9 +84,9 @@ function FemalePannel() {
               <SpaceView viewStyle={female.myBox}>
                 <TouchableOpacity onPress={onPressLimitInfo}>
                   <View style={female.myBox}>
-                    <Text style={female.infoText}>나의 공주력</Text>
+                    <Text style={female.infoText}>리밋 획득방법 안내</Text>
                     <Image
-                      style={{ width: 14, height: 14 }}
+                      style={{ width: 14, height: 12, bottom:3}}
                       source={ICON.currencyTooltip}
                     />
                   </View>
@@ -315,7 +315,8 @@ const female = StyleSheet.create({
   infoText: {
     // marginTop: 8,
     opacity: 0.83,
-    fontFamily: 'AppleSDGothicNeoM00',
+    // fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'AppleSDGothicNeoM00-Regular',
     fontSize: 10,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -377,7 +378,7 @@ const female = StyleSheet.create({
     width: 12.7,
     height: 8.43,
     position: 'absolute',
-    right: 0,
+    right: 3,
     top: 0,
   },
 });

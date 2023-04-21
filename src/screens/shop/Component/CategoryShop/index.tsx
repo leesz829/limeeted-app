@@ -179,7 +179,6 @@ export default function CategoryShop() {
 
   // ######################################################### 카테고리 선택 함수
   const onPressCategory = (value) => {
-    console.log('value ::::: ', value);
     setSelectedCategory(value);
   };
 
@@ -197,9 +196,6 @@ export default function CategoryShop() {
   // ######################################################### 인앱상품 구매하기 함수
   const productPurchase = async (item_code:string) => {
     //console.log('productId ::::::: ', targetItem.productId);
-    // 개발지점
-
-    console.log('여기까진 맞지? item_code ::: ' , item_code);
 
     try {
       const result = await requestPurchase({
@@ -306,7 +302,7 @@ function RenderItem({ item, openModal }) {
         />
         <View style={styles.textContainer}>
           <Text style={styles.BESTText}>BEST</Text>
-          <Text style={{ fontSize: 13, fontWeight: 'bold', color:'#363636' }}>
+          <Text style={{ fontSize: 13, fontWeight: 'bold', color:'#363636', fontFamily: 'AppleSDGothicNeoM00-Regular' }}>
             {item?.item_name}
           </Text>
           <View style={{ flexDirection: 'row' }}>
@@ -384,25 +380,29 @@ const styles = StyleSheet.create({
   BESTText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#363636'
+    color: '#363636',
+    fontFamily: 'AppleSDGothicNeoEB00-Regular'
   },
   discountRate: {
     fontSize: 16,
     fontWeight: 'bold',
     color: Color.primary,
+    fontFamily: 'AppleSDGothicNeoEB00-Regular'
   },
   price: {
     fontSize: 16,
     fontWeight: 'bold',
     marginLeft: 4,
-    color:'#363636'
+    color:'#363636',
+    fontFamily: 'AppleSDGothicNeoEB00-Regular'
   },
   originPrice: {
     fontSize: 10,
     fontWeight: 'bold',
     marginLeft: 4,
     textDecorationLine: 'line-through',
-    color:'#363636'
+    color:'#363636',
+    fontFamily: 'AppleSDGothicNeoM00-Regular'
   },
   boxWrapper: {
     flexDirection: `row`,
@@ -418,6 +418,7 @@ const styles = StyleSheet.create({
   boxText: {
     fontSize: 10,
     color: Color.purple,
+    fontFamily: 'AppleSDGothicNeoM00-Regular'
   },
 });
 
