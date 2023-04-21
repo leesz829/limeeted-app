@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Image, StyleSheet, Text, TextInput, View, KeyboardAvoidingView } from 'react-native';
 import type { TextInputProps, StyleProp } from 'react-native';
 import * as React from 'react';
 import { FC } from 'react';
@@ -29,26 +29,29 @@ export const CommonRoundInput: FC<Props> = (props: any) => {
       {/* <View style={styles.labelContainer}>
         <Text style={styles.labelStyle}>{props.label}</Text>
       </View> */}
-      <View style={styles.inputContainer}>
-        <TextInput
-          autoCapitalize="none"
-          style={styles.inputStyle}
-          placeholder={props.placeholder || ''}
-          placeholderTextColor={Color.black2222}
-          
-          {...props}
-          editable={props.disabled ? false : true}
-          secureTextEntry={props.isMasking ? true : false}
-          maxLength={props.maxLength ? props.maxLength : 1000} />
 
-        <Text style={styles.labelStyle2}>{props.label}</Text>
-      </View>
+      <KeyboardAvoidingView behavior={"padding"} style={{flex:1}}>
+        <View style={styles.inputContainer}>
+          <TextInput
+            autoCapitalize="none"
+            style={styles.inputStyle}
+            placeholder={props.placeholder || ''}
+            placeholderTextColor={Color.black2222}
+            
+            {...props}
+            editable={props.disabled ? false : true}
+            secureTextEntry={props.isMasking ? true : false}
+            maxLength={props.maxLength ? props.maxLength : 1000} />
 
-      {props.rightPen && (
-        <View style={styles.penContainer}>
-          <Image source={ICON.penGray} style={styles.iconSize} />
+          <Text style={styles.labelStyle2}>{props.label}</Text>
         </View>
-      )}
+      </KeyboardAvoidingView>
+
+        {props.rightPen && (
+          <View style={styles.penContainer}>
+            <Image source={ICON.penGray} style={styles.iconSize} />
+          </View>
+        )}
     </View>
   );
 };

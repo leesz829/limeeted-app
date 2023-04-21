@@ -329,9 +329,7 @@ export const Preference = (props: Props) => {
 
       
         <View>
-          <KeyboardAvoidingView behavior={"padding"}>
-          
-            <SpaceView mb={32}>
+          <SpaceView mb={32}>
               <SpaceView mb={15}>
                 <CommonText fontWeight={'700'} type={'h4'}>
                   나이
@@ -339,29 +337,29 @@ export const Preference = (props: Props) => {
               </SpaceView>
 
               <SpaceView viewStyle={styles.halfContainer}>
-                <View style={styles.halfItemLeft}>
-                  <CommonRoundInput
-                    label={'최소'}
-                    keyboardType="number-pad"
-                    value={wantAgeMin}
-                    onChangeText={(wantAgeMin) => setWantAgeMin(wantAgeMin)}
-                    maxLength={2}
-                    placeholder={''}
-                    placeholderTextColor={'#c6ccd3'}
-                  />
-                </View>
+                  <View style={styles.halfItemLeft}>
+                    <CommonRoundInput
+                      label={'최소'}
+                      keyboardType="number-pad"
+                      value={wantAgeMin}
+                      onChangeText={(wantAgeMin) => setWantAgeMin(wantAgeMin)}
+                      maxLength={2}
+                      placeholder={''}
+                      placeholderTextColor={'#c6ccd3'}
+                    />
+                  </View>
 
-                <View style={styles.halfItemRight}>
-                  <CommonRoundInput
-                    label={'최대'}
-                    keyboardType="number-pad"
-                    value={wantAgeMax}
-                    onChangeText={(wantAgeMax) => setWantAgeMax(wantAgeMax)}
-                    maxLength={2}
-                    placeholder={''}
-                    placeholderTextColor={'#c6ccd3'}
-                  />
-                </View>
+                  <View style={styles.halfItemRight}>
+                    <CommonRoundInput
+                      label={'최대'}
+                      keyboardType="number-pad"
+                      value={wantAgeMax}
+                      onChangeText={(wantAgeMax) => setWantAgeMax(wantAgeMax)}
+                      maxLength={2}
+                      placeholder={''}
+                      placeholderTextColor={'#c6ccd3'}
+                    />
+                  </View>
               </SpaceView>
               
             </SpaceView>
@@ -400,7 +398,6 @@ export const Preference = (props: Props) => {
               </SpaceView>
             </SpaceView>
 
-          </KeyboardAvoidingView>
         </View>
 
         {/* <SpaceView mb={32}>
