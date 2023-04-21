@@ -381,20 +381,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#363636',
-    fontFamily: 'AppleSDGothicNeoEB00-Regular'
   },
   discountRate: {
     fontSize: 16,
     fontWeight: 'bold',
     color: Color.primary,
-    fontFamily: 'AppleSDGothicNeoEB00-Regular'
   },
   price: {
     fontSize: 16,
     fontWeight: 'bold',
     marginLeft: 4,
     color:'#363636',
-    fontFamily: 'AppleSDGothicNeoEB00-Regular'
   },
   originPrice: {
     fontSize: 10,
@@ -402,7 +399,6 @@ const styles = StyleSheet.create({
     marginLeft: 4,
     textDecorationLine: 'line-through',
     color:'#363636',
-    fontFamily: 'AppleSDGothicNeoM00-Regular'
   },
   boxWrapper: {
     flexDirection: `row`,
@@ -418,7 +414,6 @@ const styles = StyleSheet.create({
   boxText: {
     fontSize: 10,
     color: Color.purple,
-    fontFamily: 'AppleSDGothicNeoM00-Regular'
   },
 });
 
