@@ -19,6 +19,8 @@ target 'limeeted' do
   # Override Firebase SDK Version
   $FirebaseSDKVersion = '10.7.0'
   pod 'GoogleSignIn'
+  pod 'RNFS', :path => '../node_modules/react-native-fs'
+
   target 'limeetedTests' do
     inherit! :complete
     # Pods for testing

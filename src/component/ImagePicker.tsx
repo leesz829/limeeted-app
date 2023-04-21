@@ -10,6 +10,8 @@ import type { FC, useState, useEffect } from 'react';
 import { CommonText } from 'component/CommonText';
 import { ColorType } from '@types';
 import { usePopup } from 'Context';
+import ImageResizer from 'react-native-image-resizer';
+import RNFS from 'react-native-fs';
 
 
 interface Action {
@@ -41,6 +43,10 @@ const options: Action = {
     includeExtra,
   },
 };
+
+
+
+
 export const ImagePicker: FC<Props> = (props) => {
   const { show } = usePopup();  // 공통 팝업
 
@@ -51,8 +57,6 @@ export const ImagePicker: FC<Props> = (props) => {
   }, []);
 
   React.useEffect(() => {
-    console.log('response :::::: ', response);
-
     if (null != response && !response.didCancel) {
       if(response?.errorCode == "permission") {
         show({
@@ -60,13 +64,32 @@ export const ImagePicker: FC<Props> = (props) => {
           confirmCallback: function() {}
         });
       } else {
-        props.callbackFn(
-          response?.assets[0].uri,
-          response?.assets[0].base64
-        );
-      }
 
-      
+        ImageResizer.createResizedImage(
+          response?.assets[0].uri,
+          450,
+          700,
+          'PNG',
+          100,
+          undefined,
+          undefined,
+        )
+        .then(res => {
+          RNFS.readFile( res.uri, 'base64')
+          .then(base64res => {
+            props.callbackFn(
+              res.uri,
+              base64res
+            );
+          });
+        })
+        .catch(err => {
+          props.callbackFn(
+            response?.assets[0].uri,
+            response?.assets[0].base64
+          );
+        });
+      }
     }
   }, [response]);
 
