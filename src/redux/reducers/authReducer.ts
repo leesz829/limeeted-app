@@ -15,7 +15,11 @@ export const myProfile = createAsyncThunk<PrincipalProps>(
       const { success, data } = await get_my_info();
 
       if (success) {
-        return data;
+        if(data.result_code == '0000') {
+          return data;
+        } else {
+          return undefined;
+        }        
       } else {
         return undefined;
       }
