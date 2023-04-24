@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">LImeetED</string>
+    <string name="app_name">리미티드</string>
     <string name="kakao_app_key">f33df8242ecffe96078d10be73b34567</string>
     <string name="RNCB_VENDOR_NAME">myket</string>
     <string name="RNCB_VENDOR_PUBLIC_KEY">YOUR_MYKET_PUBLIC_KEY</string>
