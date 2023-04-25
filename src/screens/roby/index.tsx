@@ -178,12 +178,13 @@ export const Roby = (props: Props) => {
           console.log(error);
           setFriendTypeFlag(true);
           setFriendMatchYn(false);
+          insertMemberPhoneBook("", "Y");
         });
       } else {
         setFriendTypeFlag(true);
         setFriendMatchYn(false);
-
         show({ title: '아는 사람 제외', content: '기기에서 연락처 접근이 거부된 상태입니다. \n기기의 앱 설정에서 연락처 접근 가능한 상태로 변경해주세요.'});
+        insertMemberPhoneBook("", "Y");
       }
     }
   };
