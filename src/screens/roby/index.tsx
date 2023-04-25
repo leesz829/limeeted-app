@@ -6,7 +6,7 @@ import {
 } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { BottomParamList, ColorType, ScreenNavigationProp } from '@types';
-import { request_reexamination, peek_member, get_board_list, update_setting } from 'api/models';
+import { request_reexamination, peek_member, get_board_list, update_setting, set_member_phone_book } from 'api/models';
 import { Color } from 'assets/styles/Color';
 import { layoutStyle, modalStyle, styles } from 'assets/styles/Styles';
 import axios from 'axios';
@@ -31,6 +31,8 @@ import {
   TouchableOpacity,
   View,
   Text,
+  Platform,
+  PermissionsAndroid,
 } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import { useDispatch } from 'react-redux';
@@ -42,7 +44,8 @@ import * as properties from 'utils/properties';
 import { usePopup } from 'Context';
 import LinearGradient from 'react-native-linear-gradient';
 import { Rating, AirbnbRating } from 'react-native-ratings';
-
+import Contacts from 'react-native-contacts';
+import { check, PERMISSIONS, RESULTS } from 'react-native-permissions';
 
 const { width, height } = Dimensions.get('window');
 
@@ -71,10 +74,13 @@ export const Roby = (props: Props) => {
 
   const [resLikeList, setResLikeList] = useState([]);
   const [matchTrgtList, setMatchTrgtList] = useState([]);
-  //테스트용 state (삭제요망)
   const [reassessment, setReassessment] = useState(false);
+  const [friendMatchYn, setFriendMatchYn] = useState(false);
+  const [friendTypeFlag, setFriendTypeFlag] = useState(false);
+  
   useEffect(() => {
     getPeekMemberInfo();
+    setFriendMatchYn(memberBase?.friend_match_yn == 'N' ? true : false)
   }, [isFocus]);
 
   // ###### 실시간성 회원 데이터 조회
@@ -106,28 +112,116 @@ export const Roby = (props: Props) => {
     }
   };
 
+  // ###### 아는 사람 소개
+  const insertMemberPhoneBook = async (phone_book_arr: string, friend_match_flag:string) => {
+
+    const body = {
+      phone_book_list: phone_book_arr,
+      friend_match_yn : friend_match_flag
+    };
+
+    try {
+      const { success, data } = await set_member_phone_book(body);
+    
+      if (success) {
+        if (data.result_code != '0000') {
+          show({
+            content: '오류입니다. 관리자에게 문의해주세요.',
+            confirmCallback: function () {},
+          });
+          return false;
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+    }
+  };
+
   // 회원 정보 수정
   const updateMemberInfo = async (type: string, value: string) => {
+    console.log('value ::: ' ,value);
+
     let body = {};
     /*
      * 01 : 내 프로필 공개
-     * 02 : 아는 사람 소개
+     * 02 : 아는 사람 제외
      */
+    // 01 : 내 프로필 공개
     if (type == '01') {
       body = {
         match_yn: value,
       };
-    } else {
-      body = {
-        friend_match_yn: value,
-      };
-    }
 
-    const { success, data } = await update_setting(body);
-    if (success) {
-      dispatch(myProfile());
+      const { success, data } = await update_setting(body);
+      if (success) {
+        dispatch(myProfile());
+      }
+
+    }
+    // 02 : 아는 사람 제외
+    else {
+      let tmp_phone_book_arr: string[] = [];
+
+      if (await grantedCheck()) {
+        Contacts.getAll().then(contacts => {
+          contacts.forEach(contact => {
+            if (contact.phoneNumbers && contact.phoneNumbers.length > 0) {
+              console.log(contact.phoneNumbers[0].number); // 첫 번째 전화번호 가져오기
+              tmp_phone_book_arr.push(contact.phoneNumbers[0].number);
+            }
+          });
+
+          insertMemberPhoneBook(tmp_phone_book_arr.toString(), value);
+        }).catch(error => {
+          // 연락처 가져오기 실패
+          console.log(error);
+          setFriendTypeFlag(true);
+          setFriendMatchYn(false);
+        });
+      } else {
+        setFriendTypeFlag(true);
+        setFriendMatchYn(false);
+
+        show({ title: '아는 사람 제외', content: '기기에서 연락처 접근이 거부된 상태입니다. \n기기의 앱 설정에서 연락처 접근 가능한 상태로 변경해주세요.'});
+      }
     }
   };
+
+  const grantedCheck = async () => {
+    let grantedFlag = false;
+
+    try {
+      // IOS 위치 정보 수집 권한 요청
+      if (Platform.OS === 'ios') {
+        await check(PERMISSIONS.IOS.CONTACTS).then((result) => {
+          if(result == RESULTS.GRANTED){
+            grantedFlag = true;
+          }else{
+            grantedFlag = false;
+          }
+        })
+      }
+      // AOS 위치 정보 수집 권한 요청
+      else if (Platform.OS === 'android') {
+        // Check if permission is granted
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_CONTACTS
+        );
+
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          grantedFlag = true;
+        }else{
+          grantedFlag = false;
+        }
+      }
+
+      return grantedFlag;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
+  }
 
   
 
@@ -518,21 +612,23 @@ export const Roby = (props: Props) => {
               />
             </TouchableOpacity>
 
-            {/* <TouchableOpacity
+            <TouchableOpacity
               style={_styles.manageProfile}>
               <ToolTip
-                title={'아는 사람 소개'}
+                title={'아는 사람 제외'}
                 desc={
-                  '아는 사람에게 내 프로필을 공개할지 설정할지 하는 기능입니다.'
+                  '아는 사람에게 내 프로필을 공개할지 설정할지 하는 기능입니다.' +
+                  '\n *기기에서 연락처 접근 권한을 \'허용\'해주셔야 적용됩니다.'
                 }
               />
               <CommonSwich
                 callbackFn={(value: boolean) => {
-                  updateMemberInfo('02', value ? 'Y' : 'N');
+                  updateMemberInfo('02', value ? 'N' : 'Y');
                 }}
-                isOn={memberBase?.friend_match_yn == 'Y' ? true : false}
+                isOn={friendMatchYn}
+                activeTypeFlag={friendTypeFlag}
               />
-            </TouchableOpacity> */}
+            </TouchableOpacity>
           </SpaceView>
 
           <SpaceView mb={40}>

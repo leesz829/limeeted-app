@@ -66,6 +66,7 @@ import {
   CHECK_REPORT,
   CHECK_REPORT_CONFIRM,
   GET_SECOND_AUTH,
+  INSERT_MEMBER_PHONE_BOOK
 } from './route';
 
 /* ========================================================================================================
@@ -605,4 +606,12 @@ export async function get_board_list() {
 // #### 나이스 인증 모듈을 실행한다.
 export async function nice_auth() {
   return send(NICE_AUTH, 'POST', undefined, false, false);
+}
+
+//회원의 실시간성 정보를 조회한다.
+export async function set_member_phone_book(body: {
+  phone_book_list: string;
+  friend_match_yn: string;
+}) {
+  return send(INSERT_MEMBER_PHONE_BOOK, 'POST', body, true, false);
 }

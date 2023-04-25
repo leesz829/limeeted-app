@@ -123,7 +123,7 @@ export default function ProductModal({ isVisible, type, closeModal, item, produc
             </View>  
           </View>
           <View style={modalStyleProduct.infoContents}>
-              <Text>{prod_content}</Text>
+              <Text style={modalStyleProduct.brandContentText}>{prod_content}</Text>
           </View>
           <View
             style={[
@@ -258,6 +258,9 @@ const modalStyleProduct = StyleSheet.create({
     letterSpacing: 0,
     textAlign: 'left',
     color: '#7986ee',
+  },
+  brandContentText: {
+    color: '#363636',
   },
   giftName: {
     fontFamily: 'AppleSDGothicNeoM00',

@@ -12,6 +12,7 @@ import { FC } from 'react';
 interface Props {
   callbackFn: (value: boolean) => void;
   isOn: boolean;
+  activeTypeFlag?: boolean;
   width?: number;
   height?: number;
 }
@@ -19,9 +20,12 @@ interface Props {
 export const CommonSwich: FC<Props> = (props) => {
   const [value, setValue] = React.useState(false);
   const [activeYn, setActiveYn] = React.useState('N');
+  const [activeFlag, setActiveFlag] = React.useState(false);
 
   React.useEffect(() => {
-    if (activeYn == 'N') {
+    setActiveFlag(props.activeTypeFlag?props.activeTypeFlag:false);
+
+    if (activeYn == 'N' || activeFlag) {
       setValue(props.isOn);
     }
   });

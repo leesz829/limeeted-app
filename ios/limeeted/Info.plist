@@ -140,5 +140,7 @@
 	<string>서비스 동작을 위해 위치 정보가 필요합니다</string>
 	<key>UIUserInterfaceStyle</key>
 	<string>Light</string>
+	<key>NSContactsUsageDescription</key>
+	<string>아는 사람 제외를 위해 연락처에 엑세스 합니다. 활용된 정보는 외부에 공개되지 않습니다.</string>
 </dict>
 </plist>

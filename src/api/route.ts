@@ -45,7 +45,7 @@ export const MEMBER_MSG_LIST = '/msg/selectMemberMessageList'
 export const INSERT_MEMBER_INQUIRY = '/customerInquiry/insertCustomerInquiry'
 export const CHECK_REPORT = '/member/selectCheckReport';
 export const CHECK_REPORT_CONFIRM = '/member/updateCheckReportConfirm';
-
+export const INSERT_MEMBER_PHONE_BOOK = '/member/insertMemberPhoneBook';
 
 /**
  * PROFILE
