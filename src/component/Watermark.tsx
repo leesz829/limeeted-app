@@ -16,19 +16,22 @@ export const Watermark: FC<Props> = (props) => {
   return (
     <>
       <Svg height="100%" width="100%" position="absolute">
+      {/*
       <Rect
         x="0"
         y="0"
         width="100%"
         height="100%"
-        fill="rgba(0,0,0,0.4)"
-      />  
+        fill="rgba(0,0,0,1)"
+      />
+      */}
+      
       <SvgText
         fill="#fff"
         fontSize="15"
         fontWeight="bold"
-        x="10%"
-        y="10%"
+        x="100"
+        y="100"
         opacity="0.1"
         textAnchor="middle"
         transform="rotate(315,100,100)"
@@ -37,8 +40,8 @@ export const Watermark: FC<Props> = (props) => {
         fill="#fff"
         fontSize="15"
         fontWeight="bold"
-        x="26%"
-        y="26%"
+        x="220"
+        y="220"
         opacity="0.1"
         textAnchor="middle"
         transform="rotate(315,100,100)"
@@ -47,8 +50,8 @@ export const Watermark: FC<Props> = (props) => {
         fill="#fff"
         fontSize="15"
         fontWeight="bold"
-        x="-10%"
-        y="26%"
+        x="0"
+        y="220"
         opacity="0.1"
         textAnchor="middle"
         transform="rotate(315,100,100)"
@@ -57,8 +60,8 @@ export const Watermark: FC<Props> = (props) => {
         fill="#fff"
         fontSize="15"
         fontWeight="bold"
-        x="8%"
-        y="43%"
+        x="120"
+        y="350"
         opacity="0.1"
         textAnchor="middle"
         transform="rotate(315,100,100)"
