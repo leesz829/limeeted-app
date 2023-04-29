@@ -114,6 +114,7 @@ export const ICON = {
 
 export const GIF_IMG = {
   faceScan: require('assets/img/gif/face-scan.gif'),
+  loading: require('assets/img/gif/loading.gif'),
 };
 
 export const IMAGE = {
