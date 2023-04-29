@@ -272,8 +272,24 @@ export const Roby = (props: Props) => {
     const { success, data } = await request_reexamination();
     if (success) {
       dispatch(myProfile());
+
+      show({
+        title: '알림',
+        content: '프로필 재심사가 시작되었습니다.',
+        confirmCallback: function () {
+          
+        },
+      });
     } else {
-      show({ content: data.result_msg });
+      //show({ content: data.result_msg });
+
+      show({
+        title: '알림',
+        content: '일시적인 오류가 발생했습니다.',
+        confirmCallback: function () {
+          
+        },
+      });
     }
   };
 

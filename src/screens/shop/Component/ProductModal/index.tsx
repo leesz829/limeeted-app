@@ -28,9 +28,11 @@ import {
 } from 'react-native-iap';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
+import { useNavigation } from '@react-navigation/native';
 import { usePopup } from 'Context';
 import { CommonLoading } from 'component/CommonLoading';
 import { purchase_product } from 'api/models';
+import { ROUTES, STACK } from 'constants/routes';
 
 
 interface Props {
@@ -42,6 +44,7 @@ interface Props {
 }
 
 export default function ProductModal({ isVisible, type, closeModal, item, productPurchase }: Props) {
+  const navigation = useNavigation();
   const { show } = usePopup(); // 공통 팝업
   const { bottom } = useSafeAreaInsets();
   const [isPayLoading, setIsPayLoading] = useState(false);
@@ -73,59 +76,15 @@ export default function ProductModal({ isVisible, type, closeModal, item, produc
   const purchaseBtn = async () => {
 
     if(!isPayLoading) {
-      setIsPayLoading(true);
+      //setIsPayLoading(true);
       
       try {
-        const result = await requestPurchase({
-          sku: item_code,
-          andDangerouslyFinishTransactionAutomaticallyIOS: false,
-        });
-  
-        console.log('result ::::: ', result);
-  
-        purchaseUpdatedListener((purchase: Purchase) => {
-          console.log('purchase ::::::: ', purchase);
-      
-          if (purchase) {
-            validateReceiptIos({
-              receiptBody: {
-                'receipt-data': purchase.transactionReceipt,
-                'password': '91cb6ffa05d741628d64316192f2cd5e',
-              },
-              isTest: true,
-            }).then(res => {
-              console.log('receipt result ::::::::: ', res);
-  
-              const dataParam = {
-                device_gubun: Platform.OS,
-                buy_price: buy_price,
-                item_name: prod_name,
-                item_code: item_code,
-                result_msg: '성공',
-                result_code: '0000',
-                acknowledged: 0,
-                package_name: res?.receipt?.bundle_id,
-                product_id: res?.receipt?.in_app[0].product_id,
-                purchase_state: 0,
-                purchase_time: '20230429000000',
-                purchase_token: '',
-                quantity: res?.receipt?.in_app[0].quantity,
-                transaction_id: res?.receipt?.in_app[0].transaction_id,
-              };
-  
-              purchaseResultSend(dataParam);
-            });
-          }
-      
-        });
-      
-        purchaseErrorListener((error: PurchaseError) => {
-          console.log('error ::::::: ', error);
-          Alert.alert('구매에 실패하였습니다.');
-          setIsPayLoading(false);
-          setComfirmModalVisible(false);
-          closeModal();
-        });
+
+        if(Platform.OS == 'android') {
+          purchaseAosProc();
+        } else if(Platform.OS == 'ios') {
+          purchaseIosProc();
+        }       
   
       } catch (err: any) {
         console.warn(err.code, err.message);
@@ -135,6 +94,101 @@ export default function ProductModal({ isVisible, type, closeModal, item, produc
     //setComfirmModalVisible(true);
   };
 
+  // ######################################################### AOS 결제 처리
+  const purchaseAosProc = async () => {
+
+    try {
+      const result = await requestPurchase({
+        skus: [item_code]
+      });
+
+      console.log('result :::::: ', result);
+
+      const receiptDataJson = JSON.parse(result[0].transactionReceipt);
+
+      const dataParam = {
+        device_gubun: Platform.OS,
+        buy_price: buy_price,
+        item_name: prod_name,
+        item_code: item_code,
+        result_msg: '성공',
+        result_code: '0000',
+        acknowledged: receiptDataJson.acknowledged,
+        package_name: receiptDataJson.packageName,
+        product_id: receiptDataJson.productId,
+        purchase_state: receiptDataJson.purchaseState,
+        purchase_time: receiptDataJson.purchaseTime,
+        purchase_token: receiptDataJson.purchaseToken,
+        quantity: receiptDataJson.quantity,
+        transaction_id: '',
+      };
+
+      purchaseResultSend(dataParam);
+
+    } catch (err: any) {
+      console.warn(err.code, err.message);
+    }
+  }
+
+  // ######################################################### IOS 결제 처리
+  const purchaseIosProc = async () => {
+
+    try {
+      const result = await requestPurchase({
+        sku: item_code,
+        andDangerouslyFinishTransactionAutomaticallyIOS: false,
+      });
+  
+      console.log('result ::::: ', result);
+  
+      purchaseUpdatedListener((purchase: Purchase) => {
+        console.log('purchase ::::::: ', purchase);
+    
+        if (purchase) {
+          validateReceiptIos({
+            receiptBody: {
+              'receipt-data': purchase.transactionReceipt,
+              'password': '91cb6ffa05d741628d64316192f2cd5e',
+            },
+            isTest: true,
+          }).then(res => {
+            console.log('receipt result ::::::::: ', res);
+  
+            const dataParam = {
+              device_gubun: Platform.OS,
+              buy_price: buy_price,
+              item_name: prod_name,
+              item_code: item_code,
+              result_msg: '성공',
+              result_code: '0000',
+              acknowledged: 0,
+              package_name: res?.receipt?.bundle_id,
+              product_id: res?.receipt?.in_app[0].product_id,
+              purchase_state: 0,
+              purchase_time: '20230429000000',
+              purchase_token: '',
+              quantity: res?.receipt?.in_app[0].quantity,
+              transaction_id: res?.receipt?.in_app[0].transaction_id,
+            };
+  
+            purchaseResultSend(dataParam);
+          });
+        }
+    
+      });
+    
+      purchaseErrorListener((error: PurchaseError) => {
+        console.log('error ::::::: ', error);
+        Alert.alert('구매에 실패하였습니다.');
+        setIsPayLoading(false);
+        setComfirmModalVisible(false);
+        closeModal();
+      });
+    } catch (err: any) {
+      console.warn(err.code, err.message);
+    }
+  }
+
   // ######################################################### 인앱상품 구매 결과 API 전송
   const purchaseResultSend = async (dataParam:any) => {
     const body = dataParam;
@@ -143,16 +197,17 @@ export default function ProductModal({ isVisible, type, closeModal, item, produc
     console.log('data :::: ', data);
     if (success) {
       if(data?.result_code == '0000') {
-        closeModal();
+        //Alert.alert('구매에 성공하였습니다.');
         setIsPayLoading(false);
         setComfirmModalVisible(false);
+        closeModal();
+        navigation.navigate(STACK.TAB, { screen: 'Shop' });
         /* show({
           content: '구매에 성공하였습니다.' ,
           confirmCallback: function() {
             closeModal();
           }
         }); */
-        Alert.alert('구매에 성공하였습니다.');
       } else {
         console.log('fail !!!!!!!!!!!!!!!!');
         closeModal();
