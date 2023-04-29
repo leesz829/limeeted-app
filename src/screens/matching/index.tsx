@@ -50,7 +50,7 @@ import {
 import { Modalize } from 'react-native-modalize';
 import { NotificationActionResponse } from 'react-native-notifications/lib/dist/interfaces/NotificationActionResponse';
 import { SimpleGrid } from 'react-native-super-grid';
-import { useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux'; 
 import { myProfile } from 'redux/reducers/authReducer';
 import { MatchSearch } from 'screens/matching/MatchSearch';
 import { findSourcePath, ICON, IMAGE } from 'utils/imageUtils';
@@ -58,6 +58,7 @@ import { Slider } from '@miblanchard/react-native-slider';
 import ProfileAuth from 'component/ProfileAuth';
 import InterviewRender from 'component/InterviewRender';
 import { formatNowDate} from 'utils/functions';
+import { Watermark } from 'component/Watermark';
 
 
 
@@ -662,28 +663,30 @@ export default function Matching(props: Props) {
       </>
     )
   );
-}
-/**
- * 이미지 렌더링
- */
-function RenderItem({ item }) {
-  const url = findSourcePath(item?.img_file_path);
-  return (
-    <>
-      {item.status == 'ACCEPT' && 
-        <View>
-          <Image
-            source={url}
-            style={{
-              width: width,
-              height: height * 0.7,
-              borderRadius: 20,
-            }}
-          />
-        </View>
-      }
-    </>
-  );
+
+  /**
+   * 이미지 렌더링
+   */
+  function RenderItem({ item }) {
+    const url = findSourcePath(item?.img_file_path);
+    return (
+      <>
+        {item.status == 'ACCEPT' &&
+          <View>
+            <Image
+              source={url}
+              style={{
+                width: width,
+                height: height * 0.7,
+                borderRadius: 20,
+              }}
+            />
+            <Watermark value={memberBase?.phone_number}/>
+          </View>
+        }
+      </>
+    );
+  }
 }
 
 /**

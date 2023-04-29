@@ -13,6 +13,8 @@ import {
 import { ICON } from 'utils/imageUtils';
 import { CommonText } from './CommonText';
 import SpaceView from './SpaceView';
+import { useUserInfo } from 'hooks/useUserInfo';
+import { Watermark } from 'component/Watermark';
 
 const { width } = Dimensions.get('window');
 interface Props {
@@ -46,11 +48,33 @@ export const ViualSlider: FC<Props> = (props: Props) => {
     props.callBackFunction && props.callBackFunction(activeType);
   };
 
+  // 본인 데이터
+  const memberBase = useUserInfo(); //hooksMember.getBase();
+
   const handleScroll = (event) => {
     let contentOffset = event.nativeEvent.contentOffset;
     let index = Math.floor(contentOffset.x / 300);
     setCurrentIndex(index);
   };
+
+  const RenderItem = (imgObj: any) => {
+    return (
+      <View>
+        {!imgObj.imgUrl.item.url ? (
+          <Image
+            source={{
+              uri: 'http://118.67.134.149:8080/uploads/profile/rn_image_picker_lib_temp_6813179b-95c7-416c-84da-51ab9ca0dbc1.jpg',
+            }}
+            style={styles.visualImage}
+          />
+        ) : (
+          <Image source={imgObj.imgUrl.item.url} style={styles.visualImage} />
+        )}
+        <Watermark value={memberBase?.phone_number}/>
+      </View>
+    );
+  };
+
   return (
     <SpaceView>
       <View style={styles.processContainer}>
@@ -167,28 +191,6 @@ export const ViualSlider: FC<Props> = (props: Props) => {
   );
 };
 
-const RenderItem = (imgObj: any) => {
-  return (
-    <View>
-      {!imgObj.imgUrl.item.url ? (
-        <Image
-          source={{
-            uri: 'http://118.67.134.149:8080/uploads/profile/rn_image_picker_lib_temp_6813179b-95c7-416c-84da-51ab9ca0dbc1.jpg',
-          }}
-          style={styles.visualImage}
-        />
-      ) : (
-        <Image source={imgObj.imgUrl.item.url} style={styles.visualImage} />
-      )}
-
-      {/* {
-				!imgObj.imgUrl.item.url ?
-				<Image source={{uri : 'http://118.67.134.149:8080/uploads/profile/rn_image_picker_lib_temp_6813179b-95c7-416c-84da-51ab9ca0dbc1.jpg'}} style={styles.visualImage} />
-				: <Image source={{uri : 'http://118.67.134.149:8080/uploads/tmp/rn_image_picker_lib_temp_27af3da1-87a1-4275-951f-3ff7ad09cec3.jpg'}} style={styles.visualImage} />
-			} */}
-    </View>
-  );
-};
 
 const styles = StyleSheet.create({
   useActionBox: {

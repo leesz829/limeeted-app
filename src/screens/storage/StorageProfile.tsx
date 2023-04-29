@@ -49,6 +49,8 @@ import InterviewRender from 'component/InterviewRender';
 import { useDispatch } from 'react-redux';
 import { myProfile } from 'redux/reducers/authReducer';
 import { RadioCheckBox_3 } from 'component/RadioCheckBox_3';
+import { useUserInfo } from 'hooks/useUserInfo';
+import { Watermark } from 'component/Watermark';
 
 
 
@@ -77,6 +79,9 @@ export const StorageProfile = (props: Props) => {
   const [isLoad, setIsLoad] = useState(
     props.route.params.matchSeq != null ? false : true
   );
+
+  // 본인 데이터
+  const memberBase = useUserInfo(); //hooksMember.getBase();
 
   // 매칭 번호
   const matchSeq = props.route.params.matchSeq;
@@ -117,6 +122,30 @@ export const StorageProfile = (props: Props) => {
     selectMatchMemberInfo();
   }, [isFocus]);
 
+  /**
+  * 이미지 렌더링
+  */
+  function RenderItem({ item }) {
+    const url = findSourcePath(item?.img_file_path);
+    return (
+      <>
+        {item.status == 'ACCEPT' &&
+          <View>
+            <Image
+              source={url}
+              style={{
+                width: width,
+                height: height * 0.7,
+                borderRadius: 20,
+              }}
+            />
+            <Watermark value={memberBase?.phone_number}/>
+          </View>
+        }
+      </>
+    );
+  }
+
   // ############################################################ 매칭 회원 정보 조회
   const selectMatchMemberInfo = async () => {
 
@@ -125,7 +154,6 @@ export const StorageProfile = (props: Props) => {
     };
     try {
       const { success, data } = await get_matched_member_info(body);
-      console.log('ddddddddd :::::: ', data.report_code_list);
 
       if(success) {
         if (data.result_code == '0000') {
@@ -589,28 +617,7 @@ export const StorageProfile = (props: Props) => {
   ) : null;
 };
 
-/**
- * 이미지 렌더링
- */
-function RenderItem({ item }) {
-  const url = findSourcePath(item?.img_file_path);
-  return (
-    <>
-      {item.status == 'ACCEPT' &&
-        <View>
-          <Image
-            source={url}
-            style={{
-              width: width,
-              height: height * 0.7,
-              borderRadius: 20,
-            }}
-          />
-        </View>
-      }
-    </>
-  );
-}
+
 
 
 
@@ -1045,24 +1052,6 @@ interface auth {
   member_seq: number;
   common_code: string;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 const styles_m = StyleSheet.create({
