@@ -141,6 +141,8 @@ export const Login01 = () => {
         case LOGIN_REFUSE:
           navigation.navigate(ROUTES.APPROVAL, {
             memberSeq: data.mbr_base.member_seq,
+            gender: data.mbr_base.gender,
+            mstImgPath: data.mbr_base.mstImgPath,
             accessType: 'REFUSE',
             refuseImgCnt: data.refuse_img_cnt,
             refuseAuthCnt: data.refuse_auth_cnt,
