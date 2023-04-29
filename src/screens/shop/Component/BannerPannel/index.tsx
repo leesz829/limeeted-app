@@ -3,7 +3,7 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ICON } from 'utils/imageUtils';
 
 import { Slider } from '@miblanchard/react-native-slider';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, useIsFocused } from '@react-navigation/native';
 import { ColorType, ScreenNavigationProp } from '@types';
 import { Color } from 'assets/styles/Color';
 import { ROUTES, STACK } from 'constants/routes';
@@ -117,6 +117,7 @@ const PAY_INFO = {
 
 function MalePannel() {
   const navigation = useNavigation<ScreenNavigationProp>();
+  const isFocus = useIsFocused();
   const [payInfo, setPayInfo] = useState(PAY_INFO);
   const onPressPointReward = () => {
     navigation.navigate(STACK.COMMON, { 
@@ -153,7 +154,7 @@ function MalePannel() {
       }
     };
     getCashBackPayInfo();
-  }, []);
+  }, [isFocus]);
 
   return (
     <View style={male.floatWrapper}>
