@@ -126,6 +126,7 @@ export default function Inventory() {
         <View style={{ marginLeft: 15, width: '65%' }}>
           <Text style={styles.title}>{item?.cate_name}</Text>
           <Text style={styles.infoText}>{item?.cate_desc}</Text>
+          {item?.item_qty > 0 && <Text style={styles.qtyText}>수량 : {item.item_qty}개</Text>}
           <View style={styles.buttonWrapper}>
             <TouchableOpacity
               style={styles.button(item?.use_yn == 'N' && item?.be_in_use_yn == 'N')}
@@ -228,6 +229,15 @@ const styles = StyleSheet.create({
     fontWeight: 'normal',
     textAlign: 'left',
     color: '#939393',
+    marginTop: 5,
+  },
+  qtyText: {
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 12,
+    fontWeight: 'normal',
+    textAlign: 'left',
+    color: '#363636',
+    marginTop: 5,
   },
   buttonWrapper: {
     width: '100%',

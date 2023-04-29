@@ -32,6 +32,7 @@ import { findSourcePath, ICON } from 'utils/imageUtils';
 import { usePopup } from 'Context';
 import { useNavigation } from '@react-navigation/native';
 import { ROUTES, STACK } from 'constants/routes';
+import { CommonLoading } from 'component/CommonLoading';
 
 
 
@@ -233,15 +234,12 @@ export default function CategoryShop() {
       console.log('item code ::::: ', item_code);
 
       try {
-        const result = await requestPurchase({
+        /* const result = await requestPurchase({
           sku: item_code,
           andDangerouslyFinishTransactionAutomaticallyIOS: false,
         });
 
         console.log('result ::::: ', result);
-
-        //closeModal();
-        //Alert.alert('구매에 성공하였습니다.');
 
         purchaseUpdatedListener((purchase: Purchase) => {
           console.log('purchase ::::::: ', purchase);
@@ -277,12 +275,12 @@ export default function CategoryShop() {
             });
           }
       
-        });
+        }); */
       
-        purchaseErrorListener((error: PurchaseError) => {
+        /* purchaseErrorListener((error: PurchaseError) => {
           console.log('error ::::::: ', error);
           closeModal();
-        });
+        }); */
 
         //const result = await requestPurchase('prod_pass_b001');
 
@@ -327,80 +325,48 @@ export default function CategoryShop() {
 
   };
 
-  // ######################################################### 인앱상품 구매 결과 API 전송
-  const purchaseResultSend = async (dataParam:any) => {
-    const body = dataParam;
-
-    const { success, data } = await purchase_product(body);
-    console.log('data :::: ', data);
-    if (success) {
-      if(data.result_code == '0000') {
-        closeModal();
-        setIsPayLoading(false);
-        show({
-          content: '구매에 성공하였습니다.' ,
-          confirmCallback: function() {
-            closeModal(); 
-            navigation.navigate(STACK.TAB, { screen: 'Shop' });
-          }
-        });
-      } else {
-        console.log('fail !!!!!!!!!!!!!!!!');
-        closeModal();
-        setIsPayLoading(false);
-        /* show({
-          title: '알림',
-          content: data.result_msg ,
-          confirmCallback: function() { closeModal(); }
-        }); */
-        Alert.alert('구매에 실패하였습니다.');
-      }
-    } else {
-      closeModal();
-      setIsPayLoading(false);
-      show({
-        content: '오류입니다. 관리자에게 문의해주세요.' ,
-        confirmCallback: function() { closeModal(); }
-      });
-    }
-  };
-
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.categoriesContainer}>
-        {categories?.map((item, index) => (
-          <TouchableOpacity
-            key={`category-${item.value}-${index}`}
-            activeOpacity={0.8}
-            style={styles.categoryBorder(item.value === selectedCategory.value)}
-            onPress={() => onPressCategory(item)}
-          >
-            <Text
-              style={styles.categoryText(item.value === selectedCategory.value)}
+    <>
+      
+
+      <ScrollView style={styles.container}>
+        {/* {isPayLoading && <CommonLoading />} */}
+
+        <View style={styles.categoriesContainer}>
+          {categories?.map((item, index) => (
+            <TouchableOpacity
+              key={`category-${item.value}-${index}`}
+              activeOpacity={0.8}
+              style={styles.categoryBorder(item.value === selectedCategory.value)}
+              onPress={() => onPressCategory(item)}
             >
-              {item?.label}
-            </Text>
-          </TouchableOpacity>
+              <Text
+                style={styles.categoryText(item.value === selectedCategory.value)}
+              >
+                {item?.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {productsPass?.map((item, index) => (
+          <RenderItem
+            key={`product-${item?.item_code}-${index}`}
+            item={item}
+            openModal={openModal}
+          />
         ))}
-      </View>
 
-      {productsPass?.map((item, index) => (
-        <RenderItem
-          key={`product-${item?.item_code}-${index}`}
-          item={item}
-          openModal={openModal}
+        {/* ##################### 상품 상세 팝업 */}
+        <ProductModal
+          isVisible={modalVisible}
+          type={'bm'}
+          item={targetItem}
+          closeModal={closeModal}
+          productPurchase={productPurchase}
         />
-      ))}
-
-      {/* ##################### 상품 상세 팝업 */}
-      <ProductModal
-        isVisible={modalVisible}
-        type={'bm'}
-        item={targetItem}
-        closeModal={closeModal}
-        productPurchase={productPurchase}
-      />
-    </ScrollView>
+      </ScrollView>
+    </>
   );
 }
 
