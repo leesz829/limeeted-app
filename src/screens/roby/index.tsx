@@ -45,7 +45,6 @@ import { usePopup } from 'Context';
 import LinearGradient from 'react-native-linear-gradient';
 import { Rating, AirbnbRating } from 'react-native-ratings';
 import Contacts from 'react-native-contacts';
-import { check, PERMISSIONS, RESULTS } from 'react-native-permissions';
 
 const { width, height } = Dimensions.get('window');
 
@@ -195,13 +194,7 @@ export const Roby = (props: Props) => {
     try {
       // IOS 위치 정보 수집 권한 요청
       if (Platform.OS === 'ios') {
-        await check(PERMISSIONS.IOS.CONTACTS).then((result) => {
-          if(result == RESULTS.GRANTED){
-            grantedFlag = true;
-          }else{
-            grantedFlag = false;
-          }
-        })
+        grantedFlag = true;
       }
       // AOS 위치 정보 수집 권한 요청
       else if (Platform.OS === 'android') {

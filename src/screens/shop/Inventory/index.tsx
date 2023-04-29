@@ -40,7 +40,6 @@ export default function Inventory() {
       cate_group_code: tab.value
     };
     const { data, message } = await get_my_items(body);
-    console.log('data ::::::' , data);
 
     if(data) {
       setData(data?.inventory_list);
@@ -75,7 +74,6 @@ export default function Inventory() {
         
       },
       confirmCallback: async function() {
-        console.log('item ::::: ', item);
 
         const body = {
           item_category_code: item.item_category_code,
@@ -105,7 +103,7 @@ export default function Inventory() {
             });
           }
         } catch (error) {
-          console.log(error);
+          console.warn(error);
         } finally {
           
         }
@@ -116,17 +114,7 @@ export default function Inventory() {
   const ListHeaderComponent = () => (
     <>
       <View style={styles.categoriesContainer}>
-        {categories?.map((item) => (
-          <TouchableOpacity
-            activeOpacity={0.8}
-            style={styles.categoryBorder(item.value === tab.value)}
-            onPress={() => onPressTab(item)}
-          >
-            <Text style={styles.categoryText(item.value === tab.value)}>
-              {item?.label}
-            </Text>
-          </TouchableOpacity>
-        ))}
+        
       </View>
       <View style={{ height: 30 }} />
     </>

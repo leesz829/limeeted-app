@@ -104,7 +104,7 @@ export const Profile1 = (props: Props) => {
     let data = { file_uri: uri, file_base64: base64, order_seq: 1 };
     imageDataApply(data);
   };
-
+    
   const fileCallBack2 = (uri: any, base64: string) => {
     let data = { file_uri: uri, file_base64: base64, order_seq: 2 };
     imageDataApply(data);
@@ -749,7 +749,7 @@ export const Profile1 = (props: Props) => {
   
 
 
-          <Interview title={memberBase?.nickname + `님을\n알려주세요!`} 
+          <Interview title={memberBase?.nickname + '님을\n알려주세요!'} 
                       callbackAnswerFn={callbackInterviewAnswer}
                       callbackScrollBottomFn={callbackScrollBottom} />
         </View>

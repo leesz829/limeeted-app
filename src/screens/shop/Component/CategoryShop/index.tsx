@@ -14,6 +14,8 @@ import {
   TouchableOpacity,
   View,
   Platform,
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
 import ProductModal from '../ProductModal';
 import { CommaFormat } from 'utils/functions';
@@ -22,6 +24,9 @@ import {
   getProducts,
   requestPurchase,
   getAvailablePurchases,
+  purchaseUpdatedListener,
+  purchaseErrorListener,
+  validateReceiptIos,
 } from 'react-native-iap';
 import { findSourcePath, ICON } from 'utils/imageUtils';
 import { usePopup } from 'Context';
@@ -54,6 +59,8 @@ export default function CategoryShop() {
   const [targetItem, setTargetItem] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
   const [items, setItems] = useState([]);
+
+  const [isPayLoading, setIsPayLoading] = useState(false);
 
   // ########################## 인앱 getProduct
    const passProduct = Platform.select({
@@ -130,9 +137,32 @@ export default function CategoryShop() {
     android: ['cash_100', 'cash_200'],
   });
 
+  /* const purchaseUpdateSubscription = purchaseUpdatedListener((purchase: Purchase) => {
+    console.log('purchase ::::::: ', purchase);
+
+    if (purchase) {
+      validateReceiptIos({
+        receiptBody: {
+          'receipt-data': purchase.transactionReceipt,
+          'password': '91cb6ffa05d741628d64316192f2cd5e',
+        },
+        isTest: true,
+      }).then(res => {
+        console.log('receipt result ::::::::: ', res);
+      });
+    }
+
+  });
+
+  const purchaseErrorSubscription = purchaseErrorListener((error: PurchaseError) => {
+    console.log('error ::::::: ', error);
+  }); */
+
+
   const [productsPass, setProductsPass] = useState<Products>([]); // 패스 상품
 
   useEffect(() => {
+    // 스토어 커넥션
     async function fetch() {
       const isConnected = await initConnection();
       if (isConnected) {
@@ -197,55 +227,143 @@ export default function CategoryShop() {
   const productPurchase = async (item_code:string) => {
     //console.log('productId ::::::: ', targetItem.productId);
 
-    try {
-      const result = await requestPurchase({
-        skus: [item_code],
-        andDangerouslyFinishTransactionAutomaticallyIOS: false,
-      });
+    if(!isPayLoading) {
+      setIsPayLoading(true);
 
-      const body = {
-        device_gubun: Platform.OS,
-        buy_price: targetItem?.shop_buy_price,
-        item_name: targetItem?.item_name,
-        item_code: targetItem?.item_code,
-        result_msg: '성공',
-        result_code: '0000',
-        receiptData: result[0].transactionReceipt
-      }
+      console.log('item code ::::: ', item_code);
 
-      const { success, data } = await purchase_product(body);
-      console.log('data :::: ', data);
-      if (success) {
-        if(data.result_code == '0000') {
-          show({
-            content: '구매에 성공하였습니다.' ,
-            confirmCallback: function() {
-              closeModal(); 
-              navigation.navigate(STACK.TAB, { screen: 'Shop' });
-            }
-          });
+      try {
+        const result = await requestPurchase({
+          sku: item_code,
+          andDangerouslyFinishTransactionAutomaticallyIOS: false,
+        });
+
+        console.log('result ::::: ', result);
+
+        //closeModal();
+        //Alert.alert('구매에 성공하였습니다.');
+
+        purchaseUpdatedListener((purchase: Purchase) => {
+          console.log('purchase ::::::: ', purchase);
+      
+          if (purchase) {
+            validateReceiptIos({
+              receiptBody: {
+                'receipt-data': purchase.transactionReceipt,
+                'password': '91cb6ffa05d741628d64316192f2cd5e',
+              },
+              isTest: true,
+            }).then(res => {
+              console.log('receipt result ::::::::: ', res);
+
+              const dataParam = {
+                device_gubun: Platform.OS,
+                buy_price: targetItem?.shop_buy_price,
+                item_name: targetItem?.item_name,
+                item_code: item_code,
+                result_msg: '성공',
+                result_code: '0000',
+                acknowledged: 0,
+                package_name: res?.receipt?.bundle_id,
+                product_id: res?.receipt?.in_app[0].product_id,
+                purchase_state: 0,
+                purchase_time: '',
+                purchase_token: '',
+                quantity: res?.receipt?.in_app[0].quantity,
+                transaction_id: res?.receipt?.in_app[0].transaction_id,
+              };
+
+              purchaseResultSend(dataParam);
+            });
+          }
+      
+        });
+      
+        purchaseErrorListener((error: PurchaseError) => {
+          console.log('error ::::::: ', error);
+          closeModal();
+        });
+
+        //const result = await requestPurchase('prod_pass_b001');
+
+        /* const body = {
+          device_gubun: Platform.OS,
+          buy_price: targetItem?.shop_buy_price,
+          item_name: targetItem?.item_name,
+          item_code: targetItem?.item_code,
+          result_msg: '성공',
+          result_code: '0000',
+          receiptData: result[0].transactionReceipt
+        }
+
+        const { success, data } = await purchase_product(body);
+        console.log('data :::: ', data);
+        if (success) {
+          if(data.result_code == '0000') {
+            show({
+              content: '구매에 성공하였습니다.' ,
+              confirmCallback: function() {
+                closeModal(); 
+                navigation.navigate(STACK.TAB, { screen: 'Shop' });
+              }
+            });
+          } else {
+            show({
+              content: data.result_msg ,
+              confirmCallback: function() { closeModal(); }
+            });
+          }
         } else {
           show({
-            content: data.result_msg ,
+            content: '오류입니다. 관리자에게 문의해주세요.' ,
             confirmCallback: function() { closeModal(); }
           });
-        }
-      } else {
-        show({
-          content: '오류입니다. 관리자에게 문의해주세요.' ,
-          confirmCallback: function() { closeModal(); }
-        });
-      }
+        } */
 
-    } catch (err: any) {
-      console.warn(err.code, err.message);
+      } catch (err: any) {
+        console.warn(err.code, err.message);
+      }
+    }
+
+  };
+
+  // ######################################################### 인앱상품 구매 결과 API 전송
+  const purchaseResultSend = async (dataParam:any) => {
+    const body = dataParam;
+
+    const { success, data } = await purchase_product(body);
+    console.log('data :::: ', data);
+    if (success) {
+      if(data.result_code == '0000') {
+        closeModal();
+        setIsPayLoading(false);
+        show({
+          content: '구매에 성공하였습니다.' ,
+          confirmCallback: function() {
+            closeModal(); 
+            navigation.navigate(STACK.TAB, { screen: 'Shop' });
+          }
+        });
+      } else {
+        console.log('fail !!!!!!!!!!!!!!!!');
+        closeModal();
+        setIsPayLoading(false);
+        /* show({
+          title: '알림',
+          content: data.result_msg ,
+          confirmCallback: function() { closeModal(); }
+        }); */
+        Alert.alert('구매에 실패하였습니다.');
+      }
+    } else {
+      closeModal();
+      setIsPayLoading(false);
       show({
-        title: '알림',
-        content: '구매에 실패하였습니다.' ,
-        confirmCallback: function() { }
+        content: '오류입니다. 관리자에게 문의해주세요.' ,
+        confirmCallback: function() { closeModal(); }
       });
     }
-  }
+  };
 
   return (
     <ScrollView style={styles.container}>

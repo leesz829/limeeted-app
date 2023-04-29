@@ -49,7 +49,7 @@
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
-      allowLocationSimulation = "YES">
+      allowLocationSimulation = "NO">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference
@@ -60,6 +60,16 @@
             ReferencedContainer = "container:limeeted.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "IS_INTERNAL_BUILD"
+            value = "1"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
+      <StoreKitConfigurationFileReference
+         identifier = "../Pods/limeeted.storekit">
+      </StoreKitConfigurationFileReference>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"

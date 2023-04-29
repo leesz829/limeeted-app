@@ -13,7 +13,7 @@ import {
   MEMBER_PROFILE_ATHENTICATION2,
   MEMBER_INTERVIEW,
   MEMBER_INTRODUCE,
-  PEEK_MEMBER,
+  PEEK_MEMBER,  
   PROFILE_IMAGE_GUIDE,
   PROFILE_ATHENTICATION2,
   PROFILE_REEXAMINATION,
@@ -442,7 +442,14 @@ export async function purchase_product(params: {
   item_code: string;
   result_msg: string;
   result_code: string;
-  receiptData: any;
+  acknowledged: string,
+  package_name: string,
+  product_id: string,
+  purchase_state: string,
+  purchase_time: string,
+  purchase_token: string,
+  quantity: string,
+  transaction_id: string,
 }) {
   const {
     device_gubun,
@@ -451,9 +458,16 @@ export async function purchase_product(params: {
     item_code,
     result_msg,
     result_code,
-    receiptData,
+    acknowledged,
+    package_name,
+    product_id,
+    purchase_state,
+    purchase_time,
+    purchase_token,
+    quantity,
+    transaction_id,
   } = params;
-  const receiptDataJson = JSON.parse(receiptData);
+  //const receiptDataJson = JSON.parse(receiptData);
 
   const body = {
     'api-key': 'U0FNR09CX1RPS0VOXzAx',
@@ -463,13 +477,14 @@ export async function purchase_product(params: {
     item_code: item_code,
     result_msg: result_msg,
     result_code: result_code,
-    acknowledged: receiptDataJson.acknowledged,
-    package_name: receiptDataJson.packageName,
-    product_id: receiptDataJson.productId,
-    purchase_state: receiptDataJson.purchaseState,
-    purchase_time: receiptDataJson.purchaseTime,
-    purchase_token: receiptDataJson.purchaseToken,
-    quantity: receiptDataJson.quantity,
+    acknowledged: acknowledged,
+    package_name: package_name,
+    product_id: product_id,
+    purchase_state: purchase_state,
+    purchase_time: purchase_time,
+    purchase_token: purchase_token,
+    quantity: quantity,
+    transaction_id: transaction_id,
   };
 
   return send(ORDER, 'POST', body, true, false);
