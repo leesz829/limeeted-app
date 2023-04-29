@@ -210,11 +210,16 @@ export const Profile1 = (props: Props) => {
     }
 
     let delArr = imgDelSeqStr;
-    if (delArr == '') {
+    if (!delArr) {
       delArr = isDelImgData.img_seq;
     } else {
-      delArr = ',' + isDelImgData.img_seq;
+      delArr += ',' + isDelImgData.img_seq;
     }
+
+    console.log('imgDelSeqStr ::: ', imgDelSeqStr);
+    console.log('isDelImgData ::: ', isDelImgData);
+    console.log('delArr ::: ', delArr);
+
     setImgDelSeqStr(delArr);
     imgDel_onClose();
   };  
@@ -301,13 +306,12 @@ export const Profile1 = (props: Props) => {
       return;
     }
 
-    console.log('applyInterviewList ::::: ', applyInterviewList);
-
     const body = {
       file_list: profileImageList
       , img_del_seq_str: imgDelSeqStr
       , interview_list: applyInterviewList
     };
+    
     try {
       const { success, data } = await update_profile(body);
       if(success) {
