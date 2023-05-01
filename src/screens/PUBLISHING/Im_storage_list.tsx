@@ -5,19 +5,16 @@ import {
   Dimensions,
   ImageBackground,
   ScrollView,
-  Switch,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 
 import Image from 'react-native-fast-image';
 import { ICON } from 'utils/imageUtils';
 
-import { StyleSheet } from 'react-native';
-import { RadioCheckBox } from 'component/RadioCheckBox';
-import ToggleSwitch from 'toggle-switch-react-native';
 import { Color } from 'assets/styles/Color';
+import { StyleSheet } from 'react-native';
+import ToggleSwitch from 'toggle-switch-react-native';
 
 const { width } = Dimensions.get('window');
 export const Im_storage_list = () => {
@@ -25,79 +22,15 @@ export const Im_storage_list = () => {
     <View style={styles.root}>
       <CommonHeader title="내가 받은 관심" right={<Wallet theme />} />
       <ScrollView>
-        <View
-          style={{
-            width: `100%`,
-            height: 50,
-            flexDirection: `row`,
-            alignItems: `center`,
-            justifyContent: 'space-between',
-            paddingHorizontal: 24,
-          }}
-        >
-          <View
-            style={{
-              width: 60,
-              flexDirection: `row`,
-              alignItems: `center`,
-              justifyContent: 'space-between',
-            }}
-          >
-            <View
-              style={{
-                width: 9,
-                height: 9,
-                backgroundColor: '#e2e2e2',
-                borderRadius: 5,
-              }}
-            />
-            <View
-              style={{
-                width: 9,
-                height: 9,
-                backgroundColor: '#697ae6',
-                borderRadius: 5,
-              }}
-            />
-            <View
-              style={{
-                width: 9,
-                height: 9,
-                backgroundColor: '#e2e2e2',
-                borderRadius: 5,
-              }}
-            />
-            <View
-              style={{
-                width: 9,
-                height: 9,
-                backgroundColor: '#e2e2e2',
-                borderRadius: 5,
-              }}
-            />
+        <View style={styles.topContainer}>
+          <View style={styles.dotContainer}>
+            <View style={styles.dot} />
+            <View style={[styles.dot, { backgroundColor: '#697ae6' }]} />
+            <View style={styles.dot} />
+            <View style={styles.dot} />
           </View>
-          <View
-            style={{
-              flexDirection: `row`,
-              alignItems: `center`,
-              justifyContent: `center`,
-            }}
-          >
-            <Text
-              style={{
-                fontFamily: 'AppleSDGothicNeoEB00',
-                fontSize: 14,
-                fontWeight: 'normal',
-                fontStyle: 'normal',
-                lineHeight: 26,
-                letterSpacing: 0,
-                textAlign: 'left',
-                color: '#333333',
-                marginRight: 8,
-              }}
-            >
-              찐심만 보기
-            </Text>
+          <View style={styles.row}>
+            <Text style={styles.showText}>찐심만 보기</Text>
             <ToggleSwitch
               isOn={true}
               onColor={Color.primary}
@@ -146,7 +79,38 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
-
+  topContainer: {
+    width: `100%`,
+    height: 50,
+    flexDirection: `row`,
+    alignItems: `center`,
+    justifyContent: 'space-between',
+    paddingHorizontal: 24,
+  },
+  dotContainer: {
+    width: 60,
+    flexDirection: `row`,
+    alignItems: `center`,
+    justifyContent: 'space-between',
+  },
+  dot: {
+    width: 9,
+    height: 9,
+    backgroundColor: '#e2e2e2',
+    borderRadius: 5,
+  },
+  row: { flexDirection: `row`, alignItems: `center`, justifyContent: `center` },
+  showText: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 14,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    lineHeight: 26,
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#333333',
+    marginRight: 8,
+  },
   imageWarpper: {
     flexDirection: `row`,
     alignItems: `center`,
