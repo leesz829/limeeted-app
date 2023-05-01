@@ -3,7 +3,12 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { useNavigation } from '@react-navigation/native';
 import { ColorType } from '@types';
 import { signin } from 'api/models';
-import { layoutStyle, modalStyle, styles, commonStyle } from 'assets/styles/Styles';
+import {
+  layoutStyle,
+  modalStyle,
+  styles,
+  commonStyle,
+} from 'assets/styles/Styles';
 import { CommonBtn } from 'component/CommonBtn';
 import { CommonInput } from 'component/CommonInput';
 import { CommonText } from 'component/CommonText';
@@ -14,7 +19,7 @@ import {
   LOGIN_EMPTY,
   LOGIN_WAIT,
   LOGIN_EXIT,
-  SANCTIONS
+  SANCTIONS,
 } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
 import storeKey, { JWT_TOKEN } from 'constants/storeKey';
@@ -29,7 +34,7 @@ import {
   View,
   Platform,
   PermissionsAndroid,
-  StyleSheet
+  StyleSheet,
 } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { setPrincipal } from 'redux/reducers/authReducer';
@@ -74,7 +79,7 @@ export const Login01 = () => {
     };
     const { success, data } = await signin(body);
     console.log('data ::::: ', data);
-    
+
     if (success) {
       switch (data.result_code) {
         case SUCCESS:
@@ -104,7 +109,7 @@ export const Login01 = () => {
               navigation.navigate(ROUTES.APPROVAL, {
                 memberSeq: data.mbr_base.member_seq,
                 gender: data.mbr_base.gender,
-                mstImgPath : data.mbr_base.mst_img_path,
+                mstImgPath: data.mbr_base.mst_img_path,
                 accessType: 'LOGIN',
               });
             } else {
@@ -158,7 +163,12 @@ export const Login01 = () => {
           break;
 
         case SANCTIONS:
-          show({ titem: '제재 알림', content: '<이용 약관>에 근거하여 회원 제재 상태로 전환되었습니다. \n' + data.sanctions.sanctions_msg});
+          show({
+            titem: '제재 알림',
+            content:
+              '<이용 약관>에 근거하여 회원 제재 상태로 전환되었습니다. \n' +
+              data.sanctions.sanctions_msg,
+          });
           break;
 
         default:
@@ -206,22 +216,26 @@ export const Login01 = () => {
     <>
       <ScrollView contentContainerStyle={[styles.scrollContainer]}>
         <View style={[styles.container, layoutStyle.justifyCenter]}>
-
           {/* ############################################################### 타이틀 */}
           <View style={[commonStyle.mb70, commonStyle.paddingHorizontal20]}>
             <SpaceView>
-              <Image
-                source={IMAGE.logoMarkRenew}
-                style={styles.logoMark}
-              />
+              <Image source={IMAGE.logoMarkRenew} style={styles.logoMark} />
             </SpaceView>
             <SpaceView>
-              <CommonText type={'h4'} fontWeight={'700'} lineHeight={30}>특별한 사람들의 '리미티드' 에디션</CommonText>
+              <CommonText type={'h4'} fontWeight={'700'} lineHeight={30}>
+                특별한 사람들의 '리미티드' 에디션
+              </CommonText>
             </SpaceView>
           </View>
 
           {/* ############################################################### 텍스트 입력 */}
-          <View style={[layoutStyle.alignCenter, commonStyle.paddingHorizontal20, commonStyle.mb15]}>
+          <View
+            style={[
+              layoutStyle.alignCenter,
+              commonStyle.paddingHorizontal20,
+              commonStyle.mb15,
+            ]}
+          >
             <SpaceView viewStyle={[commonStyle.width100]}>
               <CommonInput
                 label=""
@@ -275,7 +289,7 @@ export const Login01 = () => {
               <CommonBtn
                 value={'로그인'}
                 type={'g_blue'}
-						    isGradient={true}
+                isGradient={true}
                 onPress={() => {
                   if (id == '') {
                     return show({ content: '아이디를 입력해 주세요.' });
@@ -290,21 +304,29 @@ export const Login01 = () => {
               />
 
               <SpaceView viewStyle={_styles.joinText}>
-                <CommonText type={"h5"}>계정이 없으신가요?</CommonText>
+                <CommonText type={'h5'}>계정이 없으신가요?</CommonText>
                 <View style={_styles.joinTextLine} />
-                <TouchableOpacity onPress={() => { navigation.navigate('Policy'); }} hitSlop={commonStyle.hipSlop10}>
-                  <CommonText type={"h5"} 
-                              color={Color.blue01} 
-                              fontWeight={'700'}>회원가입</CommonText>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate('Policy');
+                  }}
+                  hitSlop={commonStyle.hipSlop10}
+                >
+                  <CommonText
+                    type={'h5'}
+                    color={Color.blue01}
+                    fontWeight={'700'}
+                  >
+                    회원가입
+                  </CommonText>
                 </TouchableOpacity>
               </SpaceView>
-
             </SpaceView>
             <SpaceView mb={5}>
               <CommonBtn
                 value={'아이디/비밀번호 찾기'}
                 type={'g_blue'}
-						    isGradient={true}
+                isGradient={true}
                 onPress={() => {
                   navigation.navigate('SearchIdAndPwd');
                 }}
@@ -383,8 +405,6 @@ export const Login01 = () => {
 //   }
 // };
 
-
-
 const _styles = StyleSheet.create({
   joinText: {
     width: '100%',
@@ -397,6 +417,6 @@ const _styles = StyleSheet.create({
     borderRightColor: '#656565',
     height: 15,
     marginHorizontal: 10,
-    marginTop: 5
-  }
+    marginTop: 5,
+  },
 });

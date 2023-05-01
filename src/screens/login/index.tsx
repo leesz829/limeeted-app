@@ -10,18 +10,18 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 import {
-	getProfile as getKakaoProfile,
-	login,
-	loginWithKakaoAccount,
-	logout,
-	unlink,
+  getProfile as getKakaoProfile,
+  login,
+  loginWithKakaoAccount,
+  logout,
+  unlink,
 } from '@react-native-seoul/kakao-login';
 import * as properties from 'utils/properties';
 export const Login = () => {
-	const navigation = useNavigation<ScreenNavigationProp>();
-	const [kakaoResult, setKakaoResult] = React.useState('');
+  const navigation = useNavigation<ScreenNavigationProp>();
+  const [kakaoResult, setKakaoResult] = React.useState('');
 
-/*
+  /*
 	const signInWithKakao = async () => {
 		axios
 			.post(properties.api_domain + '/join/getKakaoIdchk/', {
@@ -105,16 +105,20 @@ export const Login = () => {
 		/* navigation.navigate('Signup02', {
 			memberSeq : 38
 		}); 
-	};*/ 
-	
-	return (
-		<View style={[styles.container, layoutStyle.justifyCenter]}>
-			<View style={layoutStyle.alignCenter}>
-				<SpaceView>
-					<Image source={IMAGE.logoRenew} style={styles.logoRenew} resizeMode="contain" />
-				</SpaceView>
+	};*/
 
-				{/* <SpaceView>
+  return (
+    <View style={[styles.container, layoutStyle.justifyCenter]}>
+      <View style={layoutStyle.alignCenter}>
+        <SpaceView>
+          <Image
+            source={IMAGE.logoRenew}
+            style={styles.logoRenew}
+            resizeMode="contain"
+          />
+        </SpaceView>
+
+        {/* <SpaceView>
 					<Image source={IMAGE.heartIcon} style={styles.logoMark} resizeMode="contain" />
 				</SpaceView>
 				<SpaceView>
@@ -123,20 +127,67 @@ export const Login = () => {
 				<SpaceView mb={200}>
 					<CommonText textStyle={styles.logoText} lineHeight={30}>믿음가는 사람들의 인연</CommonText>
 				</SpaceView> */}
-			</View>
-			<SpaceView viewStyle={styles.bottomBtnContainer} mb={24}>
-				<SpaceView mb={10} viewStyle={{paddingHorizontal: '7%'}}>
-					<CommonBtn
-						value={'리미티드 계정으로 로그인'}
-						type={'g_blue'}
-						isGradient={true}
-						onPress={() => {
-							navigation.navigate('Login01');
-							//signInWithKakao();
-						}}
-					/>
-				</SpaceView>
-				{/* <CommonBtn value={'카카오로 시작하기'} 
+      </View>
+
+      <SpaceView viewStyle={styles.bottomBtnContainer} mb={24}>
+        {/* CSP 05. 02 퍼블 이식 후 삭제요망 */}
+        <SpaceView mb={10} viewStyle={{ paddingHorizontal: '7%' }}>
+          <CommonBtn
+            value={'Im_storage'}
+            type={'g_blue'}
+            isGradient={true}
+            onPress={() => {
+              navigation.navigate('Im_storage');
+              //signInWithKakao();
+            }}
+          />
+        </SpaceView>
+        <SpaceView mb={10} viewStyle={{ paddingHorizontal: '7%' }}>
+          <CommonBtn
+            value={'Im_storage_list'}
+            type={'g_blue'}
+            isGradient={true}
+            onPress={() => {
+              navigation.navigate('Im_storage_list');
+              //signInWithKakao();
+            }}
+          />
+        </SpaceView>
+        <SpaceView mb={10} viewStyle={{ paddingHorizontal: '7%' }}>
+          <CommonBtn
+            value={'Im_live'}
+            type={'g_blue'}
+            isGradient={true}
+            onPress={() => {
+              navigation.navigate('Im_live');
+              //signInWithKakao();
+            }}
+          />
+        </SpaceView>
+        <SpaceView mb={10} viewStyle={{ paddingHorizontal: '7%' }}>
+          <CommonBtn
+            value={'lm_superLike'}
+            type={'g_blue'}
+            isGradient={true}
+            onPress={() => {
+              navigation.navigate('lm_superLike');
+              //signInWithKakao();
+            }}
+          />
+        </SpaceView>
+        {/* CSP 05. 02 퍼블 이식 후 삭제요망 */}
+        <SpaceView mb={10} viewStyle={{ paddingHorizontal: '7%' }}>
+          <CommonBtn
+            value={'리미티드 계정으로 로그인'}
+            type={'g_blue'}
+            isGradient={true}
+            onPress={() => {
+              navigation.navigate('Login01');
+              //signInWithKakao();
+            }}
+          />
+        </SpaceView>
+        {/* <CommonBtn value={'카카오로 시작하기'} 
 							type={'kakao'} 
 							icon={ICON.kakao} 
 							iconSize={24} 
@@ -144,18 +195,17 @@ export const Login = () => {
 								signInWithKakao();
 							}}
 				/> */}
-				<SpaceView mb={16} viewStyle={{paddingHorizontal: '7%'}}>
-					<CommonBtn
-						value={'회원가입'}
-						type={'white'}
-						iconSize={24}
-						onPress={() => {
-							navigation.navigate('Policy');
-						}}
-					/>
-				</SpaceView>
-
-			</SpaceView>
-		</View>
-	);
+        <SpaceView mb={16} viewStyle={{ paddingHorizontal: '7%' }}>
+          <CommonBtn
+            value={'회원가입'}
+            type={'white'}
+            iconSize={24}
+            onPress={() => {
+              navigation.navigate('Policy');
+            }}
+          />
+        </SpaceView>
+      </SpaceView>
+    </View>
+  );
 };

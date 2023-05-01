@@ -26,8 +26,7 @@ const AuthStack = createStackNavigator();
 export default function AuthNavigation() {
   return (
     <AuthStack.Navigator
-      // initialRouteName={ROUTES.LOGIN}
-      initialRouteName={'lm_superLike'}
+      initialRouteName={ROUTES.LOGIN}
       screenOptions={{ headerShown: false }}
     >
       <AuthStack.Screen name={ROUTES.START_PAGE} component={StartPage} />
@@ -48,10 +47,12 @@ export default function AuthNavigation() {
       <AuthStack.Screen name={ROUTES.NICE_AUTH} component={NiceAuth} />
       <AuthStack.Screen name={ROUTES.SEARCH_IDPWD} component={SearchIdAndPwd} />
 
+      {/* CSP 05. 02 퍼블 이식 후 삭제요망 */}
       <AuthStack.Screen name={'Im_storage'} component={Im_storage} />
       <AuthStack.Screen name={'Im_storage_list'} component={Im_storage_list} />
       <AuthStack.Screen name={'Im_live'} component={Im_live} />
       <AuthStack.Screen name={'lm_superLike'} component={lm_superLike} />
+      {/* CSP 05. 02 퍼블 이식 후 삭제요망 */}
     </AuthStack.Navigator>
   );
 }
