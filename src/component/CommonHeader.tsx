@@ -8,7 +8,6 @@ import { Color } from 'assets/styles/Color';
 import { Wallet } from './TopNavigation';
 import { commonStyle } from 'assets/styles/Styles';
 
-
 export type NavigationHeaderProps = {
   title?: string;
   right?: React.ReactNode;
@@ -42,12 +41,20 @@ function CommonHeader({
 
   return (
     <View style={{ ...styles.headerContainer, ...containerStyle }}>
-      <TouchableOpacity onPress={goHome} style={styles.backContainer} hitSlop={commonStyle.hipSlop10}>
+      <TouchableOpacity
+        onPress={goHome}
+        style={styles.backContainer}
+        hitSlop={commonStyle.hipSlop10}
+      >
         <Image source={backIcon || ICON.back} style={styles.backImg} />
       </TouchableOpacity>
 
       {title && (
-        <TouchableOpacity style={{ flex: 1 }} onPress={goHome} hitSlop={commonStyle.hipSlop10}>
+        <TouchableOpacity
+          style={{ flex: 1 }}
+          onPress={goHome}
+          hitSlop={commonStyle.hipSlop10}
+        >
           <Text style={styles.titleStyle}>{title}</Text>
         </TouchableOpacity>
       )}

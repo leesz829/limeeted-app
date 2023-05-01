@@ -61,7 +61,7 @@ PODS:
     - GoogleUtilities/Logger (~> 7.8)
   - FirebaseCoreExtension (10.7.0):
     - FirebaseCore (~> 10.0)
-  - FirebaseCoreInternal (10.9.0):
+  - FirebaseCoreInternal (10.7.0):
     - "GoogleUtilities/NSData+zlib (~> 7.8)"
   - FirebaseCrashlytics (10.7.0):
     - FirebaseCore (~> 10.5)
@@ -71,7 +71,7 @@ PODS:
     - GoogleUtilities/Environment (~> 7.8)
     - nanopb (< 2.30910.0, >= 2.30908.0)
     - PromisesObjC (~> 2.1)
-  - FirebaseInstallations (10.9.0):
+  - FirebaseInstallations (10.7.0):
     - FirebaseCore (~> 10.0)
     - GoogleUtilities/Environment (~> 7.8)
     - GoogleUtilities/UserDefaults (~> 7.8)
@@ -85,7 +85,7 @@ PODS:
     - GoogleUtilities/Reachability (~> 7.8)
     - GoogleUtilities/UserDefaults (~> 7.8)
     - nanopb (< 2.30910.0, >= 2.30908.0)
-  - FirebaseSessions (10.9.0):
+  - FirebaseSessions (10.7.0):
     - FirebaseCore (~> 10.5)
     - FirebaseCoreExtension (~> 10.0)
     - FirebaseInstallations (~> 10.0)
@@ -783,11 +783,11 @@ SPEC CHECKSUMS:
   FirebaseAnalytics: f8133442ee6f8512e28ff19e62ce15398bfaeace
   FirebaseCore: e317665b9d744727a97e623edbbed009320afdd7
   FirebaseCoreExtension: f17247ba8c61e4d3c8d136b5e2de3cb4ac6a85b6
-  FirebaseCoreInternal: d2b4acb827908e72eca47a9fd896767c3053921e
+  FirebaseCoreInternal: 8845798510aae74703467480f71ac613788d0696
   FirebaseCrashlytics: 35fdd1a433b31e28adcf5c8933f4c526691a1e0b
-  FirebaseInstallations: c58489c9caacdbf27d1da60891a87318e20218e0
+  FirebaseInstallations: 59c0e4c7a816a0f76710d83f77e5369b3e45eb96
   FirebaseMessaging: ac9062bcc35ed56e15a0241d8fd317022499baf8
-  FirebaseSessions: 44a6782502eb279a214d4adca20891353278760c
+  FirebaseSessions: 34e5c084da010ef3802cbc062b822e513c9e6318
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 5337263514dd6f09803962437687240c5dc39aa4
   GoogleAppMeasurement: fe17c92a32207dd5cdd4e8d742767f2da74857f6
@@ -861,4 +861,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 13ff4dd2fbb5e89af9e8368cc1a77634b29db5f3
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.12.0

@@ -16,13 +16,18 @@ import { Approval } from 'screens/signup/Approval';
 import StartPage from 'screens/startpage';
 import { Title00 } from 'screens/title';
 import { ROUTES } from 'constants/routes';
+import { Im_storage } from 'screens/PUBLISHING/Im_storage';
+import { Im_storage_list } from 'screens/PUBLISHING/Im_storage_list';
+import { Im_live } from 'screens/PUBLISHING/Im_live';
+import { lm_superLike } from 'screens/PUBLISHING/lm_superLike';
 
 const AuthStack = createStackNavigator();
 
 export default function AuthNavigation() {
   return (
     <AuthStack.Navigator
-      initialRouteName={ROUTES.LOGIN}
+      // initialRouteName={ROUTES.LOGIN}
+      initialRouteName={'Im_storage'}
       screenOptions={{ headerShown: false }}
     >
       <AuthStack.Screen name={ROUTES.START_PAGE} component={StartPage} />
@@ -42,6 +47,11 @@ export default function AuthNavigation() {
       <AuthStack.Screen name={ROUTES.SIGNUP_POPUP2} component={SignupPopUp2} />
       <AuthStack.Screen name={ROUTES.NICE_AUTH} component={NiceAuth} />
       <AuthStack.Screen name={ROUTES.SEARCH_IDPWD} component={SearchIdAndPwd} />
+
+      <AuthStack.Screen name={'Im_storage'} component={Im_storage} />
+      <AuthStack.Screen name={'Im_storage_list'} component={Im_storage_list} />
+      <AuthStack.Screen name={'Im_live'} component={Im_live} />
+      <AuthStack.Screen name={'lm_superLike'} component={lm_superLike} />
     </AuthStack.Navigator>
   );
 }
