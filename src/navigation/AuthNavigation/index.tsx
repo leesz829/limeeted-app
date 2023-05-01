@@ -27,7 +27,7 @@ export default function AuthNavigation() {
   return (
     <AuthStack.Navigator
       // initialRouteName={ROUTES.LOGIN}
-      initialRouteName={'Im_storage'}
+      initialRouteName={'Im_storage_list'}
       screenOptions={{ headerShown: false }}
     >
       <AuthStack.Screen name={ROUTES.START_PAGE} component={StartPage} />
