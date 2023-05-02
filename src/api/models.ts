@@ -380,6 +380,13 @@ export async function get_daily_matched_info() {
   return send(DAILY_MATCHED_INFO, 'POST', undefined, true, false);
 }
 
+// 데일리 매칭 정보를 조회한다.
+export async function get_item_matched_info(body: {
+  match_member_seq: string;
+}) {
+  return send(DAILY_MATCHED_INFO, 'POST', body, true, false);
+}
+
 //찐심/관심/거부 매칭 정보를 신규 등록한다.
 export async function regist_match_status(body: {
   active_type: string;

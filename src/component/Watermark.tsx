@@ -32,7 +32,7 @@ export const Watermark: FC<Props> = (props) => {
         fontWeight="bold"
         x="100"
         y="100"
-        opacity="0.1"
+        opacity="0.15"
         textAnchor="middle"
         transform="rotate(315,100,100)"
       >{props?.value}</SvgText>
@@ -42,7 +42,7 @@ export const Watermark: FC<Props> = (props) => {
         fontWeight="bold"
         x="220"
         y="220"
-        opacity="0.1"
+        opacity="0.15"
         textAnchor="middle"
         transform="rotate(315,100,100)"
       >{props?.value}</SvgText>
@@ -52,7 +52,7 @@ export const Watermark: FC<Props> = (props) => {
         fontWeight="bold"
         x="0"
         y="220"
-        opacity="0.1"
+        opacity="0.15"
         textAnchor="middle"
         transform="rotate(315,100,100)"
       >{props?.value}</SvgText>
@@ -62,7 +62,7 @@ export const Watermark: FC<Props> = (props) => {
         fontWeight="bold"
         x="120"
         y="350"
-        opacity="0.1"
+        opacity="0.15"
         textAnchor="middle"
         transform="rotate(315,100,100)"
       >{props?.value}</SvgText>

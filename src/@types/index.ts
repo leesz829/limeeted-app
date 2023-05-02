@@ -97,6 +97,7 @@ export type StackParamList = {
     tgtMemberSeq: Number;
     type: string;
   };
+  ItemMatching: undefined;
 };
 
 export type BottomParamList = {

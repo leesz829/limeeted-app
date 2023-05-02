@@ -85,9 +85,23 @@ export default function Inventory() {
           if(success) {
             switch (data.result_code) {
               case SUCCESS:
-                dispatch(myProfile());
-                //navigation.navigate(STACK.TAB, { screen: 'Shop' });
+                if(body.cate_common_code == 'STANDARD'){
+                  // 조회된 매칭 노출 회원
+                  // "profile_member_seq_list"
+                  navigation.navigate(STACK.COMMON, {
+                      screen: 'ItemMatching'
+                      , params : {profile_member_seq_list: data.profile_member_seq_list.toString()}
+                    });
+                }
+                // dispatch(myProfile());
+                // navigation.navigate(STACK.TAB, { screen: 'Shop' });
                 fetchData();
+                break;
+              case '3001':
+                show({
+                  content: '소개해드릴 회원을 찾는 중이에요. 다음에 다시 사용해주세요.' ,
+                  confirmCallback: function() {}
+                });
                 break;
               default:
                 show({
