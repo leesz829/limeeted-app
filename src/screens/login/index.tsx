@@ -148,7 +148,7 @@ export const Login = () => {
             type={'g_blue'}
             isGradient={true}
             onPress={() => {
-              navigation.navigate('Im_storage_list');
+              navigation.navigate('Im_storage_list', { pageIndex: 1 });
               //signInWithKakao();
             }}
           />
