@@ -883,9 +883,10 @@ const _styles = StyleSheet.create({
     fontWeight: 'normal',
     fontStyle: 'normal',
     letterSpacing: 0,
-    textAlign: 'left',
+    textAlign: 'center',
     color: '#cccccc',
-    marginTop: 3,
+    marginTop: 10,
+    paddingHorizontal: 25,
   },
   levelBox: {
     width: 46,

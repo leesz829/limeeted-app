@@ -1,5 +1,5 @@
 import { ColorType, ScreenNavigationProp } from '@types';
-import { layoutStyle, styles } from 'assets/styles/Styles';
+import { commonStyle, layoutStyle, styles } from 'assets/styles/Styles';
 import { CommonBtn } from 'component/CommonBtn';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
@@ -124,8 +124,58 @@ export const Login = () => {
 					<CommonText textStyle={styles.logoText} lineHeight={30}>믿음가는 사람들의 인연</CommonText>
 				</SpaceView> */}
 			</View>
-			<SpaceView viewStyle={styles.bottomBtnContainer} mb={24}>
-				<SpaceView mb={10} viewStyle={{paddingHorizontal: '7%'}}>
+			<SpaceView viewStyle={[styles.bottomBtnContainer, commonStyle.paddingHorizontal15]} mb={24}>
+
+				{/* CSP 05. 02 퍼블 이식 후 삭제요망 */}
+				<SpaceView mb={10} viewStyle={{ paddingHorizontal: '7%' }}>
+					<CommonBtn
+						value={'Im_storage'}
+						type={'g_blue'}
+						isGradient={true}
+						onPress={() => {
+						navigation.navigate('Im_storage');
+						}}
+					/>
+				</SpaceView>
+				<SpaceView mb={10} viewStyle={{ paddingHorizontal: '7%' }}>
+					<CommonBtn
+						value={'Im_storage_list'}
+						type={'g_blue'}
+						isGradient={true}
+						onPress={() => {
+						navigation.navigate('Im_storage_list', { pageIndex: 1 });
+						}}
+					/>
+				</SpaceView>
+				<SpaceView mb={10} viewStyle={{ paddingHorizontal: '7%' }}>
+					<CommonBtn
+						value={'Im_live'}
+						type={'g_blue'}
+						isGradient={true}
+						onPress={() => {
+						navigation.navigate('Im_live');
+						}}
+					/>
+				</SpaceView>
+				<SpaceView mb={10} viewStyle={{ paddingHorizontal: '7%' }}>
+					<CommonBtn
+						value={'lm_superLike'}
+						type={'g_blue'}
+						isGradient={true}
+						onPress={() => {
+						navigation.navigate('lm_superLike');
+						}}
+					/>
+				</SpaceView>
+
+
+
+
+
+
+
+
+				<SpaceView mb={10}>
 					<CommonBtn
 						value={'리미티드 계정으로 로그인'}
 						type={'g_blue'}
@@ -144,7 +194,7 @@ export const Login = () => {
 								signInWithKakao();
 							}}
 				/> */}
-				<SpaceView mb={16} viewStyle={{paddingHorizontal: '7%'}}>
+				<SpaceView mb={16}>
 					<CommonBtn
 						value={'회원가입'}
 						type={'white'}

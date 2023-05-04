@@ -43,12 +43,12 @@ export const Signup02 = (props: Props) => {
 
   // 프로필 사진
   const [imgData, setImgData] = React.useState<any>({
-    orgImgUrl01: { memer_img_seq: '', url: '', delYn: '' },
-    orgImgUrl02: { memer_img_seq: '', url: '', delYn: '' },
-    orgImgUrl03: { memer_img_seq: '', url: '', delYn: '' },
-    orgImgUrl04: { memer_img_seq: '', url: '', delYn: '' },
-    orgImgUrl05: { memer_img_seq: '', url: '', delYn: '' },
-    orgImgUrl06: { memer_img_seq: '', url: '', delYn: '' },
+    orgImgUrl01: { memer_img_seq: '', url: '', delYn: '', status: '', },
+    orgImgUrl02: { memer_img_seq: '', url: '', delYn: '', status: '', },
+    orgImgUrl03: { memer_img_seq: '', url: '', delYn: '', status: '', },
+    orgImgUrl04: { memer_img_seq: '', url: '', delYn: '', status: '', },
+    orgImgUrl05: { memer_img_seq: '', url: '', delYn: '', status: '', },
+    orgImgUrl06: { memer_img_seq: '', url: '', delYn: '', status: '', },
   });
 
   // 프로필 이미지 삭제 시퀀스 문자열
@@ -187,12 +187,12 @@ export const Signup02 = (props: Props) => {
           case SUCCESS:
             if (null != data.imgList) {
               let imgData: any = {
-                orgImgUrl01: { memer_img_seq: '', url: '', delYn: '' },
-                orgImgUrl02: { memer_img_seq: '', url: '', delYn: '' },
-                orgImgUrl03: { memer_img_seq: '', url: '', delYn: '' },
-                orgImgUrl04: { memer_img_seq: '', url: '', delYn: '' },
-                orgImgUrl05: { memer_img_seq: '', url: '', delYn: '' },
-                orgImgUrl06: { memer_img_seq: '', url: '', delYn: '' },
+                orgImgUrl01: { memer_img_seq: '', url: '', delYn: '', status: '', },
+                orgImgUrl02: { memer_img_seq: '', url: '', delYn: '', status: '', },
+                orgImgUrl03: { memer_img_seq: '', url: '', delYn: '', status: '', },
+                orgImgUrl04: { memer_img_seq: '', url: '', delYn: '', status: '', },
+                orgImgUrl05: { memer_img_seq: '', url: '', delYn: '', status: '', },
+                orgImgUrl06: { memer_img_seq: '', url: '', delYn: '', status: '', },
               };
 
               data?.imgList?.map(
@@ -200,15 +200,18 @@ export const Signup02 = (props: Props) => {
                   member_img_seq,
                   img_file_path,
                   order_seq,
+                  status,
                 }: {
                   member_img_seq: any;
                   img_file_path: any;
                   order_seq: any;
+                  status: any;
                 }) => {
                   let data = {
                     member_img_seq: member_img_seq,
                     url: findSourcePath(img_file_path),
                     delYn: 'N',
+                    status: status,
                   };
                   if (order_seq == 1) {
                     imgData.orgImgUrl01 = data;
@@ -340,6 +343,15 @@ export const Signup02 = (props: Props) => {
                   key={imgData.orgImgUrl01.url}
                   source={imgData.orgImgUrl01.url}
                 />
+                {imgData.orgImgUrl01.url != '' && (imgData.orgImgUrl01.status == 'PROGRESS' || imgData.orgImgUrl01.status == 'REFUSE') && (
+                  <View style={styles.disabled}>
+                    {imgData.orgImgUrl01.status == 'PROGRESS' ? (
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
+                    ) : imgData.orgImgUrl01.status == 'REFUSE' && (
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.redF20456} textStyle={[styles.imageDimText]}>반려</CommonText>
+                    )}
+                  </View>
+                )}
               </TouchableOpacity>
             ) : (
               <ImagePicker
@@ -363,6 +375,15 @@ export const Signup02 = (props: Props) => {
                   key={imgData.orgImgUrl02.url}
                   source={imgData.orgImgUrl02.url}
                 />
+                {imgData.orgImgUrl02.url != '' && (imgData.orgImgUrl02.status == 'PROGRESS' || imgData.orgImgUrl02.status == 'REFUSE') && (
+                  <View style={styles.disabled}>
+                    {imgData.orgImgUrl02.status == 'PROGRESS' ? (
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
+                    ) : imgData.orgImgUrl02.status == 'REFUSE' && (
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.redF20456} textStyle={[styles.imageDimText]}>반려</CommonText>
+                    )}
+                  </View>
+                )}
               </TouchableOpacity>
             ) : (
               <ImagePicker
@@ -386,6 +407,15 @@ export const Signup02 = (props: Props) => {
                   key={imgData.orgImgUrl03.url}
                   source={imgData.orgImgUrl03.url}
                 />
+                {imgData.orgImgUrl03.url != '' && (imgData.orgImgUrl03.status == 'PROGRESS' || imgData.orgImgUrl03.status == 'REFUSE') && (
+                  <View style={styles.disabled}>
+                    {imgData.orgImgUrl03.status == 'PROGRESS' ? (
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
+                    ) : imgData.orgImgUrl03.status == 'REFUSE' && (
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.redF20456} textStyle={[styles.imageDimText]}>반려</CommonText>
+                    )}
+                  </View>
+                )}
               </TouchableOpacity>
             ) : (
               <ImagePicker
@@ -409,6 +439,15 @@ export const Signup02 = (props: Props) => {
                   key={imgData.orgImgUrl04.url}
                   source={imgData.orgImgUrl04.url}
                 />
+                {imgData.orgImgUrl04.url != '' && (imgData.orgImgUrl04.status == 'PROGRESS' || imgData.orgImgUrl04.status == 'REFUSE') && (
+                  <View style={styles.disabled}>
+                    {imgData.orgImgUrl04.status == 'PROGRESS' ? (
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
+                    ) : imgData.orgImgUrl04.status == 'REFUSE' && (
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.redF20456} textStyle={[styles.imageDimText]}>반려</CommonText>
+                    )}
+                  </View>
+                )}
               </TouchableOpacity>
             ) : (
               <ImagePicker
@@ -432,6 +471,15 @@ export const Signup02 = (props: Props) => {
                   key={imgData.orgImgUrl05.url}
                   source={imgData.orgImgUrl05.url}
                 />
+                {imgData.orgImgUrl05.url != '' && (imgData.orgImgUrl05.status == 'PROGRESS' || imgData.orgImgUrl05.status == 'REFUSE') && (
+                  <View style={styles.disabled}>
+                    {imgData.orgImgUrl05.status == 'PROGRESS' ? (
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
+                    ) : imgData.orgImgUrl05.status == 'REFUSE' && (
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.redF20456} textStyle={[styles.imageDimText]}>반려</CommonText>
+                    )}
+                  </View>
+                )}
               </TouchableOpacity>
             ) : (
               <ImagePicker
@@ -455,6 +503,15 @@ export const Signup02 = (props: Props) => {
                   key={imgData.orgImgUrl06.url}
                   source={imgData.orgImgUrl06.url}
                 />
+                {imgData.orgImgUrl06.url != '' && (imgData.orgImgUrl06.status == 'PROGRESS' || imgData.orgImgUrl06.status == 'REFUSE') && (
+                  <View style={styles.disabled}>
+                    {imgData.orgImgUrl06.status == 'PROGRESS' ? (
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
+                    ) : imgData.orgImgUrl06.status == 'REFUSE' && (
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.redF20456} textStyle={[styles.imageDimText]}>반려</CommonText>
+                    )}
+                  </View>
+                )}
               </TouchableOpacity>
             ) : (
               <ImagePicker
@@ -559,19 +616,20 @@ export const Signup02 = (props: Props) => {
             </>
           )}
         </View>
-
-        <SpaceView>
-          <CommonBtn
-            value={'다음 (3/4)'}
-            type={'primary'}
-            height={60}
-            borderRadius={1}
-            onPress={() => {
-              saveProfileImage();
-            }}
-          />
-        </SpaceView>
       </ScrollView>
+
+      <SpaceView>
+        <CommonBtn
+          value={'다음 (3/4)'}
+          type={'primary'}
+          height={60}
+          borderRadius={1}
+          onPress={() => {
+            saveProfileImage();
+          }}
+        />
+      </SpaceView>
+      
 
       {/* ###############################################
 			사진 삭제 팝업
@@ -715,5 +773,10 @@ const _styles = StyleSheet.create({
     height: (width - 60) / 3,
     margin: 0,
     borderRadius: 15,
+  },
+  imageDimText: {
+    textAlign: 'right',
+    marginTop: 10,
+    marginRight: 10,
   },
 });

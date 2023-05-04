@@ -110,6 +110,8 @@ export const ICON = {
   match_succ_icon: require('assets/icon/match_succ_icon.png'),
   passIconNew: require('assets/icon/pass_icon_new.png'),
   royalPassIconNew: require('assets/icon/loyalpass_icon_new.png'),
+  passCircle: require('assets/icon/passCircle.png'),
+  royalPassCircle: require('assets/icon/royalPassCircle.png'),
 };
 
 export const GIF_IMG = {

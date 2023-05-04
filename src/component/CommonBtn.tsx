@@ -26,6 +26,7 @@ type Props = {
   fontSize?: number;
   isGradient?: boolean;
   borderRadius?: number;
+  borderWidth?: number;
 } & StyleProp<TouchableOpacityProps>;
 /**
  * 공통 버튼
@@ -183,7 +184,7 @@ const styles = (props: Props) => {
       backgroundColor: backgroundColor,
       alignItems: 'center',
       justifyContent: 'center',
-      borderWidth: 1,
+      borderWidth: props.borderWidth ? props.borderWidth : 1,
       borderColor: borderColor,
       flexDirection: 'row',
     },
@@ -194,7 +195,7 @@ const styles = (props: Props) => {
       backgroundColor: backgroundColor,
       alignItems: 'center',
       justifyContent: 'center',
-      borderWidth: 1,
+      borderWidth: props.borderWidth ? props.borderWidth : 1,
       borderColor,
       flexDirection: 'row',
     },

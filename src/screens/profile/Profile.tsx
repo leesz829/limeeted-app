@@ -63,9 +63,18 @@ export const Profile = (props: Props) => {
   const btnSave = async () => {
     // 닉네임 변경 여부 체크
     if (memberBase.nickname == nickname) {
-      navigation.navigate(STACK.TAB, {
-        screen: 'Roby',
+      show({
+        title: '알림',
+        content: '동일한 닉네임 입니다.',
+        confirmCallback: function() {
+
+        },
       });
+
+      /* navigation.navigate(STACK.TAB, {
+        screen: 'Roby',
+      }); */
+
     } else {
       show({
         title: '닉네임 변경',
@@ -211,7 +220,7 @@ export const Profile = (props: Props) => {
 
           <SpaceView mb={40}>
 
-            <View style={{width: (width) / 1.4}}>
+            <View style={{width: (width) / 1.45}}>
               <CommonInput
                 label={'전화번호'}
                 placeholder=""
@@ -239,13 +248,28 @@ export const Profile = (props: Props) => {
           </SpaceView>
 
           <SpaceView mb={40}>
-            <CommonInput
-              label={'닉네임'}
-              placeholder=""
-              value={nickname}
-              onChangeText={(nickname) => setNickname(nickname)}
-              rightPen={true}
-            />
+
+            <View style={{width: (width) / 1.45}}>
+              <CommonInput
+                label={'닉네임'}
+                placeholder=""
+                value={nickname}
+                onChangeText={(nickname) => setNickname(nickname)}
+                rightPen={false}
+              />
+            </View>
+            <View style={[_styles.modfyHpBtn]}>
+              <CommonBtn 
+                value={'저장'} 
+                type={'blue'} 
+                height={40} 
+                width={70} 
+                fontSize={14}
+                borderRadius={5}
+                onPress={() => {
+                  btnSave();
+                }} />
+            </View>
           </SpaceView>
 
           <SpaceView mb={40}>
@@ -306,23 +330,24 @@ export const Profile = (props: Props) => {
         </SpaceView>
 
         <SpaceView viewStyle={layoutStyle.rowBetween}>
-          <View >
+          <View>
             <CommonBtn
               value={'로그아웃'} 
               type={'black'} 
-              width={width/2}
+              width={width}
+              borderWidth={0}
               borderRadius={1}
               onPress={logout} />
           </View>
 
-          <View >
+          {/* <View >
             <CommonBtn 
               value={'저장'} 
               type={'primary'}
               width={width/2}
               borderRadius={1}
               onPress={btnSave} />
-          </View>
+          </View> */}
         </SpaceView>
 
       </ScrollView>
@@ -334,7 +359,7 @@ const _styles = StyleSheet.create({
   modfyHpBtn: {
     position: 'absolute',
     right: 0,
-    top: 12,
+    top: 21,
     height: '100%',
     justifyContent: 'center',
   },

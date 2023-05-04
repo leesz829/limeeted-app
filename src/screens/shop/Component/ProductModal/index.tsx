@@ -40,10 +40,9 @@ interface Props {
   type: string; /* bm: bm상품, gifticon: 재고상품, boutique: 경매상품 */
   closeModal: () => void;
   item: any;
-  productPurchase: (item_code: string) => void;
 }
 
-export default function ProductModal({ isVisible, type, closeModal, item, productPurchase }: Props) {
+export default function ProductModal({ isVisible, type, closeModal, item }: Props) {
   const navigation = useNavigation();
   const { show } = usePopup(); // 공통 팝업
   const { bottom } = useSafeAreaInsets();

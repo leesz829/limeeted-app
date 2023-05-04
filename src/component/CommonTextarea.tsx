@@ -13,6 +13,11 @@ type Props = {
   maxLength?: number;
   exceedCharCountColor?: string;
   onChangeText: (text: string) => void;
+  height?: number;
+  borderRadius?: number;
+  fontSize?: number;
+  fontColor?: string;
+  lineCount?: number;
 } & StyleProp<TextInputProps>;
 
 /**
@@ -24,7 +29,7 @@ type Props = {
  *
  */
 export const CommonTextarea: FC<Props> = (props: any) => {
-  
+  const _style = _styles(props);  
   const [charCount, setCharCount] = React.useState(0);
 
   const handleChangeText = (text: string) => {
@@ -33,26 +38,65 @@ export const CommonTextarea: FC<Props> = (props: any) => {
 
   return (
     <View>
-      <View style={styles.labelContainer}>
-        <Text style={styles.labelStyle}>{props.label}</Text>
-      </View>
-      <View style={styles.inputContainer}>
+      {props.label != '' && props.label != null && (
+        <View style={_style.labelContainer}>
+          <Text style={_style.labelStyle}>{props.label}</Text>
+        </View>
+      )}
+      <View style={_style.inputContainer}>
         <TextInput
           multiline={true}
           autoCapitalize="none"
-          style={styles.inputStyle}
+          style={_style.inputStyle}
           placeholder={props.placeholder || ''}
           placeholderTextColor={Color.black2222}
           {...props}
           editable={props.disabled ? false : true}
           secureTextEntry={props.isMasking ? true : false}
           maxLength={props.maxLength ? props.maxLength : 1000}
+          numberOfLines={props.lineCount ? props.lineCount : 20}
         />
       </View>
     </View>
   );
 };
 
+
+const _styles = (props: Props) => {
+
+  return StyleSheet.create({
+    labelContainer: {
+      marginBottom: 15,
+    },
+    labelStyle: {
+      fontSize: 14, 
+      lineHeight: 20,
+      fontFamily: 'AppleSDGothicNeoR00',
+      color: Color.gray6666,
+    },
+    inputContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    inputStyle: {
+      width: '100%',
+      height: props.height != null ? props.height : 420,
+      maxHeight: props.height != null ? props.height : 420,
+      borderWidth: 1,
+      borderRadius: props.borderRadius != null ? props.borderRadius : 10,
+      padding: 10,
+      textAlignVertical: 'top',
+      backgroundColor: '#ffffff',
+      color: props.fontColor != null ? props.fontColor : '#000000',
+      borderColor: "#ebe9ef",
+      borderStyle: "solid",
+      fontSize: props.fontSize != null ? props.fontSize : 14,
+    },
+  })
+};
+
+/* 
 const styles = StyleSheet.create({
   labelContainer: {
     marginBottom: 15,
@@ -81,3 +125,4 @@ const styles = StyleSheet.create({
     borderStyle: "solid",
   },
 });
+ */

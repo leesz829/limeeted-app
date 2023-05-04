@@ -73,6 +73,9 @@ export default function Matching(props: Props) {
   const isFocus = useIsFocused();
   const dispatch = useDispatch();
 
+  // 이미지 인덱스
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+
   const scrollRef = useRef();
 
   const { show } = usePopup(); // 공통 팝업
@@ -96,7 +99,6 @@ export default function Matching(props: Props) {
     use_item: {},
   });
 
-
   // 신고목록
   const [reportTypeList, setReportTypeList] = useState([
     { text: '', value: '' },
@@ -115,6 +117,13 @@ export default function Matching(props: Props) {
   const report_onClose = () => {
     report_modalizeRef.current?.close();
     setCheckReportType('');
+  };
+
+  // 이미지 스크롤 처리
+  const handleScroll = (event) => {
+    let contentOffset = event.nativeEvent.contentOffset;
+    let index = Math.floor(contentOffset.x / (width-10));
+    setCurrentIndex(index);
   };
 
   // ################################################################ 초기 실행 함수
@@ -292,7 +301,6 @@ export default function Matching(props: Props) {
 
     try {
       const { success, data } = await report_check_user(body);
-      console.log('data ::::::: ' , data);
       if(success) {
         if(data.report_cnt < 10) return false;
         
@@ -330,9 +338,22 @@ export default function Matching(props: Props) {
           ####################### 상단 영역
           #################################################################################### */}
           <View>
+
+            {/* ###### 이미지 indicator */}
+            <View style={styles.pagingContainer}>
+              {data?.profile_img_list.map((item, index) => {
+                return item.status == 'ACCEPT' && (
+                  <View style={styles.dotContainerStyle} key={'dot' + index}>
+                    <View style={[styles.pagingDotStyle, index == currentIndex && styles.activeDot]} />
+                  </View>
+                )
+              })}
+            </View>
+
             <FlatList
               data={data?.profile_img_list}
               renderItem={RenderItem}
+              onScroll={handleScroll}
               horizontal
               pagingEnabled
             />
@@ -375,11 +396,11 @@ export default function Matching(props: Props) {
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => { popupActive('sincere'); }}>
-                  <Image source={ICON.ticketCircle} style={styles.largeButton} />
+                  <Image source={ICON.royalPassCircle} style={styles.largeButton} />
                 </TouchableOpacity >
 
                 <TouchableOpacity onPress={() => { popupActive('interest'); }} style={styles.freePassContainer}>
-                  <Image source={ICON.heartCircle} style={styles.largeButton} />
+                  <Image source={ICON.passCircle} style={styles.largeButton} />
 
                   {/* ############ 부스터 아이템  */}
                   {data?.use_item != null && data?.use_item?.FREE_LIKE && data?.use_item?.FREE_LIKE?.use_yn == 'Y' &&
@@ -425,9 +446,9 @@ export default function Matching(props: Props) {
             {data.interest_list.length > 0 && (
               <>
                 <Text style={styles.title}>{data.match_member_info.nickname}님의 관심사</Text>
-                <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 20 }}>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10, marginBottom: 10 }}>
                   {data.interest_list.map((item, index) => {
-                    const isOn = true;
+                    const isOn = item.dup_chk == 0 ? false : true;
                     return (
                       <View style={styles.interestItem(isOn)}>
                         <Text style={styles.interestText(isOn)}>{item.code_name}</Text>
@@ -880,7 +901,7 @@ const styles = StyleSheet.create({
   },
   padding: {
     paddingHorizontal: 20,
-    marginTop: width * 0.2,
+    marginTop: width * 0.15,
   },
   boostPannel: {
     width: '100%',
@@ -943,7 +964,7 @@ const styles = StyleSheet.create({
       borderRadius: 5,
       backgroundColor: isOn ? 'white' : '#f7f7f7',
       paddingHorizontal: 15,
-      paddingVertical: 9,
+      paddingVertical: 5,
       marginLeft: 3,
       marginTop: 3,
       borderColor: isOn ? '#7986ee' : '#f7f7f7',
@@ -1108,6 +1129,32 @@ const styles = StyleSheet.create({
     fontSize: 17,
     textAlign: 'left',
   },
+  pagingContainer: {
+    position: 'absolute',
+    zIndex: 10,
+    alignItems: 'center',
+    width,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    top: 18,
+  },
+  pagingDotStyle: {
+    width: 19,
+    height: 2,
+    backgroundColor: 'rgba(255,255,255,0.3)',
+    borderRadius: 4,
+  },
+  activeDot: {
+    backgroundColor: 'white',
+  },
+  pagingContainerStyle: {
+    paddingTop: 16,
+  },
+  dotContainerStyle: {
+    marginRight: 2,
+    marginLeft: 2,
+  },
+
 });
 
 const interest = [

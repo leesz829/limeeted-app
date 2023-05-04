@@ -29,7 +29,8 @@ import {
   View,
   Platform,
   PermissionsAndroid,
-  StyleSheet
+  StyleSheet,
+  Alert
 } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { setPrincipal } from 'redux/reducers/authReducer';
@@ -72,99 +73,114 @@ export const Login01 = () => {
       latitude: latitude,
       longitude: longitude,
     };
-    const { success, data } = await signin(body);
-    console.log('data ::::: ', data);
-    
-    if (success) {
-      switch (data.result_code) {
-        case SUCCESS:
-          await AsyncStorage.setItem(JWT_TOKEN, data.token_param.jwt_token);
-          await AsyncStorage.setItem(
-            storeKey.MEMBER_SEQ,
-            data.mbr_base.member_seq + ''
-          );
-          delete data.result_code;
-          dispatch(setPrincipal(data));
-          dispatch(mbrReducer.setJwtToken(data.token_param.jwt_token));
-          dispatch(mbrReducer.setMemberSeq(data.mbr_base.member_seq));
-          dispatch(mbrReducer.setBase(data.mbr_base));
-          dispatch(mbrReducer.setProfileImg(data.mbr_img_list));
-          dispatch(mbrReducer.setSecondAuth(data.mbr_second_auth_list));
-          dispatch(mbrReducer.setIdealType(data.mbr_ideal_type));
-          dispatch(mbrReducer.setInterview(data.mbr_interview_list));
-          dispatch(mbrReducer.setUserInfo(data));
-          break;
 
-        case LOGIN_WAIT:
-          let memberStatus = data.mbr_base.status;
-          let joinStatus = data.mbr_base.join_status;
+    try {
+      
+      const { success, data } = await signin(body);
+      console.log('data ::::: ', data);
+      console.log('data.token_param ::::: ', data.token_param);
+      
+      if (success) {
+        switch (data.result_code) {
+          case SUCCESS:
+            await AsyncStorage.setItem(JWT_TOKEN, data.token_param.jwt_token);
+            await AsyncStorage.setItem(
+              storeKey.MEMBER_SEQ,
+              data.mbr_base.member_seq + ''
+            );
+            delete data.result_code;
+            dispatch(setPrincipal(data));
+            dispatch(mbrReducer.setJwtToken(data.token_param.jwt_token));
+            dispatch(mbrReducer.setMemberSeq(data.mbr_base.member_seq));
+            dispatch(mbrReducer.setBase(data.mbr_base));
+            dispatch(mbrReducer.setProfileImg(data.mbr_img_list));
+            dispatch(mbrReducer.setSecondAuth(data.mbr_second_auth_list));
+            dispatch(mbrReducer.setIdealType(data.mbr_ideal_type));
+            dispatch(mbrReducer.setInterview(data.mbr_interview_list));
+            dispatch(mbrReducer.setUserInfo(data));
+            break;
 
-          if (memberStatus == 'PROCEED' || memberStatus == 'APPROVAL') {
-            if (memberStatus == 'APPROVAL') {
-              navigation.navigate(ROUTES.APPROVAL, {
-                memberSeq: data.mbr_base.member_seq,
-                gender: data.mbr_base.gender,
-                mstImgPath : data.mbr_base.mst_img_path,
-                accessType: 'LOGIN',
-              });
-            } else {
-              if (null != joinStatus) {
-                if (joinStatus == '01') {
-                  navigation.navigate(ROUTES.SIGNUP01, {
-                    memberSeq: data.mbr_base.member_seq,
-                    gender: data.mbr_base.gender,
-                  });
-                } else if (joinStatus == '02') {
-                  navigation.navigate(ROUTES.SIGNUP02, {
-                    memberSeq: data.mbr_base.member_seq,
-                    gender: data.mbr_base.gender,
-                  });
-                } else if (joinStatus == '03') {
-                  navigation.navigate(ROUTES.SIGNUP03, {
-                    memberSeq: data.mbr_base.member_seq,
-                    gender: data.mbr_base.gender,
-                    mstImgPath: data.mbr_base.mstImgPath,
-                  });
-                } else if (joinStatus == '04') {
-                  navigation.navigate(ROUTES.APPROVAL, {
-                    memberSeq: data.mbr_base.member_seq,
-                    gender: data.mbr_base.gender,
-                    mstImgPath: data.mbr_base.mstImgPath,
-                    accessType: 'LOGIN',
-                  });
+          case LOGIN_WAIT:
+            let memberStatus = data.mbr_base.status;
+            let joinStatus = data.mbr_base.join_status;
+
+            if (memberStatus == 'PROCEED' || memberStatus == 'APPROVAL') {
+              if (memberStatus == 'APPROVAL') {
+                navigation.navigate(ROUTES.APPROVAL, {
+                  memberSeq: data.mbr_base.member_seq,
+                  gender: data.mbr_base.gender,
+                  mstImgPath : data.mbr_base.mst_img_path,
+                  accessType: 'LOGIN',
+                });
+              } else {
+                if (null != joinStatus) {
+                  if (joinStatus == '01') {
+                    navigation.navigate(ROUTES.SIGNUP01, {
+                      memberSeq: data.mbr_base.member_seq,
+                      gender: data.mbr_base.gender,
+                    });
+                  } else if (joinStatus == '02') {
+                    navigation.navigate(ROUTES.SIGNUP02, {
+                      memberSeq: data.mbr_base.member_seq,
+                      gender: data.mbr_base.gender,
+                    });
+                  } else if (joinStatus == '03') {
+                    navigation.navigate(ROUTES.SIGNUP03, {
+                      memberSeq: data.mbr_base.member_seq,
+                      gender: data.mbr_base.gender,
+                      mstImgPath: data.mbr_base.mst_img_path,
+                    });
+                  } else if (joinStatus == '04') {
+                    navigation.navigate(ROUTES.APPROVAL, {
+                      memberSeq: data.mbr_base.member_seq,
+                      gender: data.mbr_base.gender,
+                      mstImgPath: data.mbr_base.mst_img_path,
+                      accessType: 'LOGIN',
+                    });
+                  }
                 }
               }
             }
-          }
-          break;
+            break;
 
-        case LOGIN_REFUSE:
-          navigation.navigate(ROUTES.APPROVAL, {
-            memberSeq: data.mbr_base.member_seq,
-            gender: data.mbr_base.gender,
-            mstImgPath: data.mbr_base.mstImgPath,
-            accessType: 'REFUSE',
-            refuseImgCnt: data.refuse_img_cnt,
-            refuseAuthCnt: data.refuse_auth_cnt,
-          });
-          break;
+          case LOGIN_REFUSE:
+            navigation.navigate(ROUTES.APPROVAL, {
+              memberSeq: data.mbr_base.member_seq,
+              gender: data.mbr_base.gender,
+              mstImgPath: data.mbr_base.mst_img_path,
+              accessType: 'REFUSE',
+              refuseImgCnt: data.refuse_img_cnt,
+              refuseAuthCnt: data.refuse_auth_cnt,
+            });
+            break;
 
-        case LOGIN_EMPTY:
-          show({ content: '일치하는 회원이 없습니다.' });
-          break;
+          case LOGIN_EMPTY:
+            show({ content: '일치하는 회원이 없습니다.' });
+            break;
 
-        case LOGIN_EXIT:
-          show({ content: '탈퇴 회원 입니다.' });
-          break;
+          case LOGIN_EXIT:
+            show({ content: '탈퇴 회원 입니다.' });
+            break;
 
-        case SANCTIONS:
-          show({ titem: '제재 알림', content: '<이용 약관>에 근거하여 회원 제재 상태로 전환되었습니다. \n' + data.sanctions.sanctions_msg});
-          break;
+          case SANCTIONS:
+            show({ titem: '제재 알림', content: '<이용 약관>에 근거하여 회원 제재 상태로 전환되었습니다. \n' + data?.sanctions?.sanctions_msg});
+            break;
 
-        default:
-          break;
+          default:
+            break;
+        }
       }
+
+    } catch (error) {
+      console.log(error);
+      show({ 
+        title: '알림',
+        content: '일치하는 회원이 없습니다.' 
+      });
+    } finally {
+      
     }
+
   };
 
   // 사용자 위치 확인
@@ -205,7 +221,7 @@ export const Login01 = () => {
   return (
     <>
       <ScrollView contentContainerStyle={[styles.scrollContainer]}>
-        <View style={[styles.container, layoutStyle.justifyCenter]}>
+        <View style={[_styles.container, layoutStyle.justifyCenter]}>
 
           {/* ############################################################### 타이틀 */}
           <View style={[commonStyle.mb70, commonStyle.paddingHorizontal20]}>
@@ -231,6 +247,7 @@ export const Login01 = () => {
                 placeholder={'이메일 주소'}
                 placeholderTextColor={'#c6ccd3'}
                 borderBottomType={'black'}
+                fontSize={15}
               />
             </SpaceView>
 
@@ -252,9 +269,10 @@ export const Login01 = () => {
                 onChangeText={(password) => setPassword(password)}
                 isMasking={true}
                 maxLength={20}
-                placeholder={'비밀번호'}
+                placeholder={'영문 대소문자, 숫자, 특수기호 허용 8글자 이상'}
                 placeholderTextColor={'#c6ccd3'}
                 borderBottomType={'black'}
+                fontSize={15}
               />
             </SpaceView>
           </View>
@@ -293,14 +311,13 @@ export const Login01 = () => {
                 <CommonText type={"h5"}>계정이 없으신가요?</CommonText>
                 <View style={_styles.joinTextLine} />
                 <TouchableOpacity onPress={() => { navigation.navigate('Policy'); }} hitSlop={commonStyle.hipSlop10}>
-                  <CommonText type={"h5"} 
-                              color={Color.blue01} 
-                              fontWeight={'700'}>회원가입</CommonText>
+                  <CommonText type={"h5"} color={Color.blue01} fontWeight={'700'}>회원가입</CommonText>
                 </TouchableOpacity>
               </SpaceView>
 
             </SpaceView>
-            <SpaceView mb={5}>
+
+            <SpaceView mb={8}>
               <CommonBtn
                 value={'아이디/비밀번호 찾기'}
                 type={'g_blue'}
@@ -310,6 +327,7 @@ export const Login01 = () => {
                 }}
               />
             </SpaceView>
+
             <SpaceView>
               <CommonBtn
                 value={'처음으로'}
@@ -386,6 +404,11 @@ export const Login01 = () => {
 
 
 const _styles = StyleSheet.create({
+  container: {
+    paddingTop: 24,
+    backgroundColor: 'white',
+    flex: 1,
+  },
   joinText: {
     width: '100%',
     paddingVertical: 15,

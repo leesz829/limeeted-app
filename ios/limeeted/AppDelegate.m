@@ -69,7 +69,7 @@ static void InitializeFlipper(UIApplication *application) {
           NSLog(@"Family name:  %@", name);
       }
   }
-    [RNSplashScreen show];
+  [RNSplashScreen show];
   return YES;
 }
 

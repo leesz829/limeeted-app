@@ -385,32 +385,33 @@ export const Signup01 = (props: Props) => {
             </View>
           </SpaceView>
         </SpaceView>
-
-        <SpaceView>
-          <CommonBtn
-            value={'다음 (2/4)'}
-            type={'primary'}
-            height={60}
-            borderRadius={1}
-            onPress={() => {
-
-              if(typeof secondData.jobData.member_seq == 'undefined' && typeof secondData.eduData.member_seq == 'undefined' && typeof secondData.incomeData.member_seq == 'undefined'
-                && typeof secondData.assetData.member_seq == 'undefined' && typeof secondData.snsData.member_seq == 'undefined' && typeof secondData.vehicleData.member_seq == 'undefined') {
-                show({
-                  title: '안내',
-                  content: '프로필 인증은 최소 1개 필수 등록해주셔야 합니다.' ,
-                  confirmCallback: function() {}
-                });
-              } else {
-                navigation.navigate('Signup02', {
-                  memberSeq: props.route.params.memberSeq,
-                  gender: props.route.params.gender,
-                });
-              }
-            }}
-          />
-        </SpaceView>
       </ScrollView>
+
+      <SpaceView>
+        <CommonBtn
+          value={'다음 (2/4)'}
+          type={'primary'}
+          height={60}
+          borderRadius={1}
+          onPress={() => {
+
+            if(typeof secondData.jobData.member_seq == 'undefined' && typeof secondData.eduData.member_seq == 'undefined' && typeof secondData.incomeData.member_seq == 'undefined'
+              && typeof secondData.assetData.member_seq == 'undefined' && typeof secondData.snsData.member_seq == 'undefined' && typeof secondData.vehicleData.member_seq == 'undefined') {
+              show({
+                title: '안내',
+                content: '프로필 인증은 최소 1개 필수 등록해주셔야 합니다.' ,
+                confirmCallback: function() {}
+              });
+            } else {
+              navigation.navigate('Signup02', {
+                memberSeq: props.route.params.memberSeq,
+                gender: props.route.params.gender,
+              });
+            }
+          }}
+        />
+      </SpaceView>
+      
 
       {/* ###############################################
 								직업 인증 팝업

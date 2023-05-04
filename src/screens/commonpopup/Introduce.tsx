@@ -8,6 +8,7 @@ import { FC, useState, useEffect, useRef } from 'react';
 import { CommonSelect } from 'component/CommonSelect';
 import { CommonBtn } from 'component/CommonBtn';
 import { CommonText } from 'component/CommonText';
+import { CommonTextarea } from 'component/CommonTextarea';
 import { StackNavigationProp } from '@react-navigation/stack';
 import {
   RouteProp,
@@ -353,14 +354,32 @@ export const Introduce = (props: Props) => {
       <ScrollView contentContainerStyle={styles.scrollContainerAll}>
         <View style={commonStyle.paddingHorizontal20}>
           <SpaceView mb={24}>
-            <CommonInput
+            <SpaceView mb={20}>
+              <CommonText textStyle={_styles.labelStyle2}>한줄 소개</CommonText>
+            </SpaceView>
+
+            <CommonTextarea
+								label={''} 
+								value={comment}
+								onChangeText={(comment) => setComment(comment)}
+								placeholder={'문의 내용'}
+								placeholderTextColor={'#c6ccd3'}
+								maxLength={80}
+                height={80}
+                borderRadius={5}
+                fontSize={13}
+                fontColor={'#333333'}
+                lineCount={3}
+							/>
+
+            {/* <CommonInput
               label={'한줄 소개'}
               value={comment}
               onChangeText={(comment) => setComment(comment)}
               placeholder={'내용을 입력해 주세요.'}
               placeholderTextColor={'#c6ccd3'}
               borderBottomType={'black'}
-            />
+            /> */}
           </SpaceView>
 
           <SpaceView mb={24}>

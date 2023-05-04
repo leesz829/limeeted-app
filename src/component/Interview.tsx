@@ -246,7 +246,7 @@ export default function Interview({
 
               <View style={style.answerRow}>
                 <Text style={style.answerText}>A.</Text>
-                <TextInput
+                {/* <TextInput
                   defaultValue={e?.answer}
                   onChangeText={(text) =>
                     answerChangeHandler(e.member_interview_seq, text)
@@ -257,7 +257,9 @@ export default function Interview({
                   placeholderTextColor={'#c6ccd3'}
                   numberOfLines={3}
                   maxLength={200}
-                />
+                /> */}
+
+                <Text style={[style.answerNormalText, Platform.OS == 'ios' ? {marginTop: -5} : {marginTop: 0}]}>{e?.answer}</Text>
               </View>
 
             </View>
@@ -421,7 +423,7 @@ const style = StyleSheet.create({
     letterSpacing: 0,
     textAlign: 'left',
     color: '#7986ee',
-    marginLeft: 8,
+    marginLeft: 10,
     textAlignVertical: 'top',
     alignContent: 'flex-start'
   },

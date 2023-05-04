@@ -15,6 +15,7 @@ type Props = {
   maxLength?: number;
   placeholderTextColor?: string;
   borderBottomType?: string;
+  fontSize?: number;
 } & StyleProp<TextInputProps>;
 
 /**
@@ -97,7 +98,8 @@ const styles = (props: Props) => {
       borderBottomColor: borderBottomColor,
     },
     inputStyle: {
-      fontSize: 16,
+      //fontSize: 16,
+      fontSize: props.fontSize != null ? props.fontSize : 16,
       lineHeight: 20,
       color: Color.balck4848,
       padding: 0,

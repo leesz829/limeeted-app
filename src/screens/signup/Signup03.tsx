@@ -248,18 +248,18 @@ export const Signup03 = (props : Props) => {
 						})}
 					</SpaceView>
 				</View>
-
-				<SpaceView>
-					<CommonBtn value={'다음 (4/4)'} 
-								type={'primary'}
-								height={60}
-								borderRadius={1}
-								onPress={() => {
-									saveInterest();
-								}} 
-					/>
-				</SpaceView>
 			</ScrollView>
+
+			<SpaceView>
+				<CommonBtn value={'다음 (4/4)'} 
+							type={'primary'}
+							height={60}
+							borderRadius={1}
+							onPress={() => {
+								saveInterest();
+							}} 
+				/>
+			</SpaceView>
 
 
 			{/* #############################################################################

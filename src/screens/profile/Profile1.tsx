@@ -99,6 +99,12 @@ export const Profile1 = (props: Props) => {
   const [isSns, setIsSns] = React.useState<any>(false);
   const [isVehicle, setIsVehicle] = React.useState<any>(false);
 
+  // 이미지 삭제 데이터 저장
+  const [isDelImgData, setIsDelImgData] = React.useState<any>({
+    img_seq: '',
+    order_seq: '',
+  });
+
   // ################################################################ 프로필 이미지 파일 콜백 함수
   const fileCallBack1 = (uri: any, base64: string) => {
     let data = { file_uri: uri, file_base64: base64, order_seq: 1 };
@@ -132,7 +138,10 @@ export const Profile1 = (props: Props) => {
 
   // ################################################################ 프로필 이미지 데이터 적용
   const imageDataApply = (data: any) => {
-    let dupChk = false;
+
+    insertProfileImage(data);
+
+    /* let dupChk = false;
     profileImageList.map(({ order_seq }: { order_seq: any }) => {
       if (order_seq == data.order_seq) {
         dupChk = true;
@@ -149,13 +158,8 @@ export const Profile1 = (props: Props) => {
             : item
         )
       );
-    }
+    } */
   };
-
-  const [isDelImgData, setIsDelImgData] = React.useState<any>({
-    img_seq: '',
-    order_seq: '',
-  });
 
   // ############################################################################# 사진 삭제 팝업
   const imgDel_modalizeRef = useRef<Modalize>(null);
@@ -220,8 +224,10 @@ export const Profile1 = (props: Props) => {
     console.log('isDelImgData ::: ', isDelImgData);
     console.log('delArr ::: ', delArr);
 
-    setImgDelSeqStr(delArr);
-    imgDel_onClose();
+    //setImgDelSeqStr(delArr);
+    //imgDel_onClose();
+
+    deleteProfileImage(isDelImgData.img_seq);
   };  
 
   // ############################################################  인터뷰 답변 작성 Callback 함수
@@ -325,6 +331,128 @@ export const Profile1 = (props: Props) => {
   
             show({
               content: '저장되었습니다.' ,
+              confirmCallback: function() {
+                navigation.navigate(STACK.TAB, {
+                  screen: 'Roby',
+                });
+              }
+            });
+            break;
+          default:
+            show({
+              content: '오류입니다. 관리자에게 문의해주세요.' ,
+              confirmCallback: function() {}
+            });
+            break;
+        }
+       
+      } else {
+        show({
+          content: '오류입니다. 관리자에게 문의해주세요.' ,
+          confirmCallback: function() {}
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      
+    }
+  };
+
+
+
+
+
+  // ############################################################  프로필 이미지 등록
+  const insertProfileImage = async (imageData:any) => {
+   
+    let imageList = [];
+    imageList.push(imageData);
+
+    const body = {
+      file_list: imageList
+      , img_del_seq_str: null
+      , interview_list: null
+    };
+    
+    try {
+      const { success, data } = await update_profile(body);
+      if(success) {
+        switch (data.result_code) {
+          case SUCCESS:
+            dispatch(setPartialPrincipal({
+              mbr_base : data.mbr_base
+              , mbr_img_list : data.mbr_img_list
+              , mbr_interview_list : data.mbr_interview_list
+            }));
+  
+            show({
+              content: '등록되었습니다.' ,
+              confirmCallback: function() {
+                navigation.navigate(STACK.TAB, {
+                  screen: 'Roby',
+                });
+              }
+            });
+            break;
+          default:
+            show({
+              content: '오류입니다. 관리자에게 문의해주세요.' ,
+              confirmCallback: function() {}
+            });
+            break;
+        }
+       
+      } else {
+        show({
+          content: '오류입니다. 관리자에게 문의해주세요.' ,
+          confirmCallback: function() {}
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      
+    }
+  };
+
+  
+  // ############################################################  프로필 이미지 삭제
+  const deleteProfileImage = async (imgSeq:string) => {
+    let tmpCnt = 0;
+    for (var key in imgData) {
+      if (imgData[key].delYn == 'N' && (imgData[key].url || imgData[key].uri)) {
+        tmpCnt++;
+      }
+    }
+    for(var key in profileImageList) {
+      tmpCnt++;
+    }
+
+    if (tmpCnt < 3) {
+      show({ content: '프로필 사진은 최소 3장 등록되어야 합니다.' });
+      return;
+    }
+
+    const body = {
+      file_list: null
+      , img_del_seq_str: imgSeq
+      , interview_list: null
+    };
+    
+    try {
+      const { success, data } = await update_profile(body);
+      if(success) {
+        switch (data.result_code) {
+          case SUCCESS:
+            dispatch(setPartialPrincipal({
+              mbr_base : data.mbr_base
+              , mbr_img_list : data.mbr_img_list
+              , mbr_interview_list : data.mbr_interview_list
+            }));
+  
+            show({
+              content: '삭제되었습니다.' ,
               confirmCallback: function() {
                 navigation.navigate(STACK.TAB, {
                   screen: 'Roby',
@@ -471,11 +599,11 @@ export const Profile1 = (props: Props) => {
     <>
       <CommonHeader
         title="프로필 관리"
-        right={
+        /* right={
           <TouchableOpacity onPress={() => { saveMemberProfile(); }}>
             <Text style={_styles.saveText}>저장</Text>
           </TouchableOpacity>
-        }
+        } */
       />
 
       <KeyboardAwareScrollView behavior={"padding"} style={{flex:1}} extraScrollHeight={70}>
@@ -508,9 +636,9 @@ export const Profile1 = (props: Props) => {
                 {imgData.orgImgUrl01.url != '' && (imgData.orgImgUrl01.status == 'PROGRESS' || imgData.orgImgUrl01.status == 'REFUSE') && (
                   <View style={styles.disabled}>
                     {imgData.orgImgUrl01.status == 'PROGRESS' ? (
-                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.gray8888} textStyle={[_styles.imageDimText]}>심사중</CommonText>
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
                     ) : imgData.orgImgUrl01.status == 'REFUSE' && (
-                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.redF20456} textStyle={[_styles.imageDimText]}>반려</CommonText>
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.redF20456} textStyle={[styles.imageDimText]}>반려</CommonText>
                     )}
                   </View>
                 )}
@@ -540,9 +668,9 @@ export const Profile1 = (props: Props) => {
                 {imgData.orgImgUrl02.url != '' && (imgData.orgImgUrl02.status == 'PROGRESS' || imgData.orgImgUrl02.status == 'REFUSE') && (
                   <View style={styles.disabled}>
                     {imgData.orgImgUrl02.status == 'PROGRESS' ? (
-                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.gray8888} textStyle={[_styles.imageDimText]}>심사중</CommonText>
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
                     ) : imgData.orgImgUrl02.status == 'REFUSE' && (
-                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.redF20456} textStyle={[_styles.imageDimText]}>반려</CommonText>
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.redF20456} textStyle={[styles.imageDimText]}>반려</CommonText>
                     )}
                   </View>
                 )}
@@ -572,9 +700,9 @@ export const Profile1 = (props: Props) => {
                 {imgData.orgImgUrl03.url != '' && (imgData.orgImgUrl03.status == 'PROGRESS' || imgData.orgImgUrl03.status == 'REFUSE') && (
                   <View style={styles.disabled}>
                     {imgData.orgImgUrl03.status == 'PROGRESS' ? (
-                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.gray8888} textStyle={[_styles.imageDimText]}>심사중</CommonText>
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
                     ) : imgData.orgImgUrl03.status == 'REFUSE' && (
-                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.redF20456} textStyle={[_styles.imageDimText]}>반려</CommonText>
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.redF20456} textStyle={[styles.imageDimText]}>반려</CommonText>
                     )}
                   </View>
                 )}
@@ -604,9 +732,9 @@ export const Profile1 = (props: Props) => {
                 {imgData.orgImgUrl04.url != '' && (imgData.orgImgUrl04.status == 'PROGRESS' || imgData.orgImgUrl04.status == 'REFUSE') && (
                   <View style={styles.disabled}>
                     {imgData.orgImgUrl04.status == 'PROGRESS' ? (
-                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.gray8888} textStyle={[_styles.imageDimText]}>심사중</CommonText>
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
                     ) : imgData.orgImgUrl04.status == 'REFUSE' && (
-                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.redF20456} textStyle={[_styles.imageDimText]}>반려</CommonText>
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.redF20456} textStyle={[styles.imageDimText]}>반려</CommonText>
                     )}
                   </View>
                 )}
@@ -636,9 +764,9 @@ export const Profile1 = (props: Props) => {
                 {imgData.orgImgUrl05.url != '' && (imgData.orgImgUrl05.status == 'PROGRESS' || imgData.orgImgUrl05.status == 'REFUSE') && (
                   <View style={styles.disabled}>
                     {imgData.orgImgUrl05.status == 'PROGRESS' ? (
-                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.gray8888} textStyle={[_styles.imageDimText]}>심사중</CommonText>
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
                     ) : imgData.orgImgUrl05.status == 'REFUSE' && (
-                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.redF20456} textStyle={[_styles.imageDimText]}>반려</CommonText>
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.redF20456} textStyle={[styles.imageDimText]}>반려</CommonText>
                     )}
                   </View>
                 )}
@@ -665,9 +793,13 @@ export const Profile1 = (props: Props) => {
                   key={imgData.orgImgUrl06.url}
                   source={imgData.orgImgUrl06.url}
                 />
-                {imgData.orgImgUrl06url != '' && imgData.orgImgUrl06.status == 'PROGRESS' && (
+                {imgData.orgImgUrl06.url != '' && (imgData.orgImgUrl06.status == 'PROGRESS' || imgData.orgImgUrl06.status == 'REFUSE') && (
                   <View style={styles.disabled}>
-                    <CommonText fontWeight={'700'} type={'h5'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mt10, commonStyle.mr10]}>심사중</CommonText>
+                    {imgData.orgImgUrl06.status == 'PROGRESS' ? (
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
+                    ) : imgData.orgImgUrl06.status == 'REFUSE' && (
+                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.redF20456} textStyle={[styles.imageDimText]}>반려</CommonText>
+                    )}
                   </View>
                 )}
               </TouchableOpacity>
@@ -748,11 +880,6 @@ export const Profile1 = (props: Props) => {
           {/* ####################################################################################
 					####################### 인터뷰 영역
 					#################################################################################### */}
-
-
-  
-
-
           <Interview title={memberBase?.nickname + '님을\n알려주세요!'} 
                       callbackAnswerFn={callbackInterviewAnswer}
                       callbackScrollBottomFn={callbackScrollBottom} />
@@ -779,9 +906,7 @@ export const Profile1 = (props: Props) => {
           </TouchableOpacity>
         </View>
 
-        <View
-          style={[modalStyle.modalBody, layoutStyle.flex1, layoutStyle.mb20]}
-        >
+        <View style={[modalStyle.modalBody, layoutStyle.flex1, layoutStyle.mb20]}>
           <View>
             <CommonBtn
               value={'사진 삭제'}
@@ -1050,7 +1175,7 @@ const _styles = StyleSheet.create({
   },
   imageDimText: {
     textAlign: 'right',
-    marginTop: 10,
+    marginTop: 7,
     marginRight: 10,
   },
 

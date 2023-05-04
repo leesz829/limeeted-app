@@ -75,6 +75,9 @@ export const StorageProfile = (props: Props) => {
 
   const memberSeq = hooksMember.getMemberSeq(); // 회원번호
 
+  // 이미지 인덱스
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+
   // 로딩 상태 체크
   const [isLoad, setIsLoad] = useState(
     props.route.params.matchSeq != null ? false : true
@@ -290,6 +293,13 @@ export const StorageProfile = (props: Props) => {
     }
   };
 
+  // 이미지 스크롤 처리
+  const handleScroll = (event) => {
+    let contentOffset = event.nativeEvent.contentOffset;
+    let index = Math.floor(contentOffset.x / (width-10));
+    setCurrentIndex(index);
+  };
+
 
   // ############################################################ 팝업 관련
   //const [hpOpenPopup, setHpOpenPopup] = useState(false); // 연락처 열기 팝업
@@ -309,9 +319,22 @@ export const StorageProfile = (props: Props) => {
           ####################### 상단 영역
           #################################################################################### */}
         <View>
+
+          {/* ###### 이미지 indicator */}
+          <View style={_styles.pagingContainer}>
+            {data?.profile_img_list.map((item, index) => {
+              return item.status == 'ACCEPT' && (
+                <View style={_styles.dotContainerStyle} key={'dot' + index}>
+                  <View style={[_styles.pagingDotStyle, index == currentIndex && _styles.activeDot]} />
+                </View>
+              )
+            })}
+          </View>
+
           <FlatList
             data={data?.profile_img_list}
             renderItem={RenderItem}
+            onScroll={handleScroll}
             horizontal
             pagingEnabled
           />
@@ -1004,7 +1027,31 @@ const _styles = StyleSheet.create({
     paddingVertical: 10,
     alignItems: 'center',
   },
-
+  pagingContainer: {
+    position: 'absolute',
+    zIndex: 10,
+    alignItems: 'center',
+    width,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    top: 18,
+  },
+  pagingDotStyle: {
+    width: 19,
+    height: 2,
+    backgroundColor: 'rgba(255,255,255,0.3)',
+    borderRadius: 4,
+  },
+  activeDot: {
+    backgroundColor: 'white',
+  },
+  pagingContainerStyle: {
+    paddingTop: 16,
+  },
+  dotContainerStyle: {
+    marginRight: 2,
+    marginLeft: 2,
+  },
 });
 
 const interest = [

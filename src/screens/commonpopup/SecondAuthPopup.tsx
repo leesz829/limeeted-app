@@ -465,7 +465,7 @@ export const SecondAuthPopup = (props: Props) => {
                   </View>
                   <View style={_styles.rowStyle}>
                     <Text style={_styles.rowTextHalfLeft}>특수</Text>
-                    <Text style={_styles.rowTextHalfRight}>의대, 법대</Text>
+                    <Text style={_styles.rowTextHalfRight}>의대, 법대, 예체능</Text>
                   </View>
                 </>
               )}
@@ -607,15 +607,15 @@ export const SecondAuthPopup = (props: Props) => {
                 <>
                   <View style={_styles.rowStyle}>
                     <Text style={_styles.rowTextHalfLeft}>고급</Text>
-                    <Text style={_styles.rowTextHalfRight}>출고가 기준 7,000만원 이상</Text>
+                    <Text style={_styles.rowTextHalfRight}>출고가 기준 4,000만원 이상</Text>
                   </View>
                   <View style={_styles.rowStyle}>
                     <Text style={_styles.rowTextHalfLeft}>최고급</Text>
-                    <Text style={_styles.rowTextHalfRight}>출고가 기준 10,000만원 이상</Text>
+                    <Text style={_styles.rowTextHalfRight}>출고가 기준 7,000만원 이상</Text>
                   </View>
                   <View style={_styles.rowStyle}>
                     <Text style={_styles.rowTextHalfLeft}>최고급+</Text>
-                    <Text style={_styles.rowTextHalfRight}>출고가 기준 20,000만원 이상</Text>
+                    <Text style={_styles.rowTextHalfRight}>출고가 기준 1억 이상</Text>
                   </View>
                   <View style={_styles.rowStyle}>
                     <Text style={_styles.rowTextHalfLeft}>슈퍼카</Text>
