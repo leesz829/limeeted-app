@@ -99,6 +99,8 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>This app requires access to the camera.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>아는 사람 제외를 위해 연락처에 엑세스 합니다. 활용된 정보는 외부에 공개되지 않습니다.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>사용자간의 거리정보를 제공하기 위해 위치정보에 액세스하는 권한이 필요합니다. 위치 정보는 앱에서만 사용되며 외부에서는 공유되지 않습니다.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
@@ -128,7 +130,7 @@
 		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
-	<string>SplashScreen</string>
+	<string>SplashScreen.storyboard</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
@@ -143,7 +145,5 @@
 	<string>Light</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>NSContactsUsageDescription</key>
-	<string>아는 사람 제외를 위해 연락처에 엑세스 합니다. 활용된 정보는 외부에 공개되지 않습니다.</string>
 </dict>
 </plist>
