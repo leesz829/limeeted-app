@@ -8,6 +8,7 @@ import {
   MEMBER_LOGOUT,
   DAILY_MATCHED_INFO,
   MATCHED_MEMBER_INFO,
+  MEMBER_APPLY_ITEM_INFO,
   ME,
   MEMBER_INTRODUCE_GUIDE,
   MEMBER_PROFILE_ATHENTICATION2,
@@ -433,6 +434,11 @@ export async function resolve_match(body: { match_seq: string }) {
 //매칭된 회원의 기본 정보를 조회한다.
 export async function get_matched_member_info(body: { match_seq: number }) {
   return send(MATCHED_MEMBER_INFO, 'POST', body, true, false);
+}
+
+//매칭된 회원의 기본 정보를 조회한다.
+export async function get_member_apply_item_info() {
+  return send(MEMBER_APPLY_ITEM_INFO, 'POST', undefined, true, false);
 }
 
 
