@@ -6,6 +6,7 @@ export const PopupContext = createContext({} as any);
 interface PopupContextProps {
   title: string | undefined;
   content: string | undefined;
+  subContent: string | undefined;
   confirmCallback: Function | undefined;
   cancelCallback: Function | undefined;
 }
@@ -15,6 +16,7 @@ export const PopupProvider = ({ children }: any) => {
   const [contents, setContents] = useState<PopupContextProps>({
     title: '',
     content: '',
+    subContent: '',
     confirmCallback: undefined,
     cancelCallback: undefined,
   });
@@ -28,6 +30,7 @@ export const PopupProvider = ({ children }: any) => {
     setContents({
       title: '',
       content: '',
+      subContent: '',
       confirmCallback: undefined,
       cancelCallback: undefined,
     });
@@ -41,6 +44,7 @@ export const PopupProvider = ({ children }: any) => {
         setPopupVIsible={setVisible}
         title={contents.title}
         text={contents.content}
+        subText={contents.subContent}
         isConfirm={
           typeof contents.confirmCallback != 'undefined' &&
           typeof contents.cancelCallback != 'undefined'
@@ -53,6 +57,8 @@ export const PopupProvider = ({ children }: any) => {
 };
 
 export const usePopup = () => {
+  console.log('contents.subContent ...... ');
+  
   const { show, hide } = useContext(PopupContext);
   return { show, hide };
 };

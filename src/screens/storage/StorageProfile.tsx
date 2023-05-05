@@ -40,7 +40,12 @@ import {
 } from '@react-navigation/native';
 import * as hooksMember from 'hooks/member';
 import { Modalize } from 'react-native-modalize';
-import { get_matched_member_info, resolve_match, report_matched_user, update_match_status } from 'api/models';
+import {
+    get_member_apply_item_info
+    , get_matched_member_info
+    , resolve_match
+    , report_matched_user
+    , update_match_status } from 'api/models';
 import { usePopup } from 'Context';
 import { ROUTES, STACK } from 'constants/routes';
 import { Slider } from '@miblanchard/react-native-slider';
@@ -118,12 +123,39 @@ export const StorageProfile = (props: Props) => {
   const report_onClose = () => {
     report_modalizeRef.current?.close();
   };
+  // 본인 보유 아이템 정보
+  const [freeContactYN, setFreeContactYN] = useState('N');
 
   // ################################################################ 초기 실행 함수
   // ##### 첫 렌더링
   useEffect(() => {
     selectMatchMemberInfo();
+    selectMemberApplyItemInfo();
   }, [isFocus]);
+
+  const selectMemberApplyItemInfo = async () => {
+
+    try {
+      const { success, data } = await get_member_apply_item_info();
+      console.log('data ::: ' , data.use_item.FREE_CONTACT);
+      
+      if(success) {
+        if (data.result_code == '0000') {
+          if(data.use_item.FREE_CONTACT){
+            console.log('FREE_CONTACT ::: ', data.use_item.FREE_CONTACT);
+            setFreeContactYN('Y');
+          }else{
+            setFreeContactYN('N')
+          }
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      
+    }
+  
+  }
 
   /**
   * 이미지 렌더링
@@ -253,10 +285,19 @@ export const StorageProfile = (props: Props) => {
   const hpOpenPopup = async () => {
 
     console.log('special_interest_yn :::: ', data.match_base.special_interest_yn);
+    
+    let tmpContent = '현재 보고 계신 프로필의 연락처를 확인하시겠어요?\n패스 x' + (data.match_base.special_interest_yn == 'Y' ? '40' : '100');
+    let subContent = '';
+
+    if('Y' == freeContactYN){
+      tmpContent = '현재 보고 계신 프로필의 연락처를 확인하시겠어요? \n';
+      subContent = '연락처 프리오퍼 사용중';
+    }
 
     show({ 
       title: '연락처 공개',
-      content: '현재 보고 계신 프로필의 연락처를 확인하시겠어요?\n패스 x' + (data.match_base.special_interest_yn == 'Y' ? '40' : '100'),
+      content: tmpContent,
+      subContent: subContent,
       cancelCallback: function() {
 
       },
