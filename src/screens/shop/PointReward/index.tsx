@@ -17,9 +17,14 @@ import { Slider } from '@miblanchard/react-native-slider';
 import { ColorType, ScreenNavigationProp } from '@types';
 import { CommaFormat } from 'utils/functions';
 import { SUCCESS } from 'constants/reusltcode';
+import { usePopup } from 'Context';
+import { CommonLoading } from 'component/CommonLoading';
 
 
 export default function PointReward(element) {
+
+  const { show } = usePopup(); // 공통 팝업
+  const [isLoading, setIsLoading] = useState(false);
 
   //const { prod_seq, modify_seq } = useRoute().params;
 
@@ -32,8 +37,8 @@ export default function PointReward(element) {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const onPressGetReward = async (event_tmplt_seq: string) => {
-    console.log('event_tmplt_seq :::: ' , event_tmplt_seq);
+  const onPressGetReward = async (event_tmplt_seq: string, item_name: string) => {
+    setIsLoading(true);
 
     const body = {
       event_tmplt_seq: event_tmplt_seq
@@ -43,7 +48,17 @@ export default function PointReward(element) {
       if(success) {
         switch (data.result_code) {
           case SUCCESS:
-            setIsModalOpen(true);
+            setIsLoading(false);
+
+            show({
+              title: '보상획득',
+              content: '리미티드 포인트 ' + item_name + '등급 보상을 획득하셨습니다.',
+              confirmCallback: function() {
+                getCashBackPayInfo();
+              }
+            });
+
+            //setIsModalOpen(true);
             //navigation.navigate(STACK.TAB, { screen: 'Shop' });
             break;
           default:
@@ -54,6 +69,7 @@ export default function PointReward(element) {
             break;
         }
       } else {
+        setIsLoading(false);
         /* show({
           content: '오류입니다. 관리자에게 문의해주세요.' ,
           confirmCallback: function() {}
@@ -61,8 +77,9 @@ export default function PointReward(element) {
       }
     } catch (error) {
       console.log(error);
+      setIsLoading(false);
     } finally {
-      
+      setIsLoading(false);
     }    
   };
 
@@ -72,158 +89,162 @@ export default function PointReward(element) {
   
   const [tmplList, setTmplList] = useState(TMPL_LIST);
 
+  const getCashBackPayInfo = async () => {
+    const { success, data } = await get_cashback_detail_info();
+    console.log('data.result :::: ', data);
+    if (success) {
+      setTmplList(data.result);
+    }
+  };
+
   useEffect(() => {
-    const getCashBackPayInfo = async () => {
-      const { success, data } = await get_cashback_detail_info();
-      console.log('data.result :::: ', data);
-      if (success) {
-        setTmplList(data.result);
-      }
-    };
-    
     getCashBackPayInfo();
   }, []);
 
   return (
-    <View style={styles.container}>
-      <CommonHeader title="리미티드 포인트 보상" right={<Wallet />} />
-      <ScrollView style={styles.scroll}>
-        <View style={styles.inner}>
-          <View style={styles.gradeContainer}>
-            <Text style={styles.gradeText}>{PAY_INFO?.tmplt_name}</Text>
-          </View>
-          <View style={styles.rankBox}>
-            <Text style={styles.rankText}>RANK</Text>
-          </View>
-          {/* <Text style={styles.accReward}>누적보상 50,000</Text> 
-          <Text style={styles.lmitPoint}>리미티드 포인트</Text>*/}
-        </View>
+    <>
+      {isLoading && <CommonLoading />}
 
-        <View>
+      <View style={styles.container}>
+        <CommonHeader title="리미티드 포인트 보상" right={<Wallet />} />
+        <ScrollView style={styles.scroll}>
+          <View style={styles.inner}>
+            <View style={styles.gradeContainer}>
+              <Text style={styles.gradeText}>{PAY_INFO?.tmplt_name}</Text>
+            </View>
+            <View style={styles.rankBox}>
+              <Text style={styles.rankText}>RANK</Text>
+            </View>
+            {/* <Text style={styles.accReward}>누적보상 50,000</Text> 
+            <Text style={styles.lmitPoint}>리미티드 포인트</Text>*/}
+          </View>
+
           <View>
-            {/* <Text style={male.pointText}>
-              리미티드 포인트 <Text>✌️</Text>
-            </Text> */}
-            <Text style={male.infoText}>
-              즐거운 <Text style={male.cashbackText}>캐시백</Text> 생활 {CommaFormat(PAY_INFO?.member_buy_price)} /
-              {CommaFormat(PAY_INFO?.target_buy_price)}
-            </Text>
+            <View>
+              {/* <Text style={male.pointText}>
+                리미티드 포인트 <Text>✌️</Text>
+              </Text> */}
+              <Text style={male.infoText}>
+                즐거운 <Text style={male.cashbackText}>캐시백</Text> 생활 {CommaFormat(PAY_INFO?.member_buy_price)} /
+                {CommaFormat(PAY_INFO?.target_buy_price)}
+              </Text>
+            </View>
+            <Slider
+              value={PAY_INFO?.price_persent}
+              animateTransitions={true}
+              renderThumbComponent={() => null}
+              maximumTrackTintColor={ColorType.purple}
+              minimumTrackTintColor={ColorType.purple}
+              containerStyle={male.sliderContainer}
+              trackStyle={male.sliderTrack}
+              trackClickable={false}
+              disabled
+            />
           </View>
-          <Slider
-            value={PAY_INFO?.price_persent}
-            animateTransitions={true}
-            renderThumbComponent={() => null}
-            maximumTrackTintColor={ColorType.purple}
-            minimumTrackTintColor={ColorType.purple}
-            containerStyle={male.sliderContainer}
-            trackStyle={male.sliderTrack}
-            trackClickable={false}
-            disabled
-          />
-        </View>
-        
-        {/* <View style={styles.buttonContainer}>
-          <Text style={styles.hintText}>LIMIT 해제완료</Text>
-          <TouchableOpacity activeOpacity={0.8} style={styles.buttonStyle}>
-            <Text style={styles.buttonText}>터치하고 보상받기</Text>
-          </TouchableOpacity>
-        </View> */}
+          
+          {/* <View style={styles.buttonContainer}>
+            <Text style={styles.hintText}>LIMIT 해제완료</Text>
+            <TouchableOpacity activeOpacity={0.8} style={styles.buttonStyle}>
+              <Text style={styles.buttonText}>터치하고 보상받기</Text>
+            </TouchableOpacity>
+          </View> */}
 
-        <View style={{ marginTop: 20 }}>
+          <View style={{ marginTop: 20 }}>
 
-          {tmplList?.map((item) => (
-            <View style={styles.itemContainer}>
-              <Text style={styles.gradeText2}>{item.tmplt_name}</Text>
-              <View style={styles.row}>
-                <Image source={ICON.currency} />
-                <Text style={styles.rowText}>{item.item_name}</Text>
-              </View>
-              {/* <View style={styles.row}>
-                <Image source={ICON.ticket} />
-                <Text style={styles.rowText}>{item.ticket}</Text>
-              </View> */}
-              {/* {item.isComplete ? (
-                <Text style={styles.completeText}>보상 완료!</Text>
-              ) : item.isNext ? (
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  style={styles.rewardButton}
-                  onPress={onPressGetReward}
-                >
-                  <Text style={styles.rewardButtonText}>보상받기</Text>
-                </TouchableOpacity>
-              ) : (
-                <Text style={styles.moreText}>포인트 모으기</Text>
-              )} */}
-                
-
-              {
-                item.receive_flag == 'Y' ? (
+            {tmplList?.map((item) => (
+              <View style={styles.itemContainer}>
+                <Text style={styles.gradeText2}>{item.tmplt_name}</Text>
+                <View style={styles.row}>
+                  <Image source={ICON.royalPassCircle} style={{width: 30, height: 30, marginTop: 6}} />
+                  <Text style={styles.rowText}>{item.item_name}</Text>
+                </View>
+                {/* <View style={styles.row}>
+                  <Image source={ICON.ticket} />
+                  <Text style={styles.rowText}>{item.ticket}</Text>
+                </View> */}
+                {/* {item.isComplete ? (
                   <Text style={styles.completeText}>보상 완료!</Text>
-                ) : item.target_buy_price > item.member_buy_price ? (
-                  <Text style={styles.moreText}>포인트 모으기</Text>
-                ) : (
+                ) : item.isNext ? (
                   <TouchableOpacity
                     activeOpacity={0.8}
                     style={styles.rewardButton}
-                    onPress={() => {onPressGetReward(item.event_tmplt_seq);}}
+                    onPress={onPressGetReward}
                   >
                     <Text style={styles.rewardButtonText}>보상받기</Text>
                   </TouchableOpacity>
-                )
-              }
-			  
-            </View>
-          ))}
+                ) : (
+                  <Text style={styles.moreText}>포인트 모으기</Text>
+                )} */}
+                  
 
-          {/* {dummy?.map((item) => (
-            <View style={styles.itemContainer}>
-              <Text style={styles.gradeText2}>{item.grade}</Text>
-              <View style={styles.row}>
-                <Image source={ICON.currency} />
-                <Text style={styles.rowText}>{item.reward}</Text>
+                {
+                  item.receive_flag == 'Y' ? (
+                    <Text style={styles.completeText}>보상 완료!</Text>
+                  ) : item.target_buy_price > item.member_buy_price ? (
+                    <Text style={styles.moreText}>포인트 모으기</Text>
+                  ) : (
+                    <TouchableOpacity
+                      activeOpacity={0.8}
+                      style={styles.rewardButton}
+                      onPress={() => {onPressGetReward(item.event_tmplt_seq, item.tmplt_name);}}
+                    >
+                      <Text style={styles.rewardButtonText}>보상받기</Text>
+                    </TouchableOpacity>
+                  )
+                }
+          
               </View>
-              <View style={styles.row}>
-                <Image source={ICON.ticket} />
-                <Text style={styles.rowText}>{item.ticket}</Text>
+            ))}
+
+            {/* {dummy?.map((item) => (
+              <View style={styles.itemContainer}>
+                <Text style={styles.gradeText2}>{item.grade}</Text>
+                <View style={styles.row}>
+                  <Image source={ICON.currency} />
+                  <Text style={styles.rowText}>{item.reward}</Text>
+                </View>
+                <View style={styles.row}>
+                  <Image source={ICON.ticket} />
+                  <Text style={styles.rowText}>{item.ticket}</Text>
+                </View>
+                {item.isComplete ? (
+                  <Text style={styles.completeText}>보상 완료!</Text>
+                ) : item.isNext ? (
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    style={styles.rewardButton}
+                    onPress={onPressGetReward}
+                  >
+                    <Text style={styles.rewardButtonText}>보상받기</Text>
+                  </TouchableOpacity>
+                ) : (
+                  <Text style={styles.moreText}>포인트 모으기</Text>
+                )}
               </View>
-              {item.isComplete ? (
-                <Text style={styles.completeText}>보상 완료!</Text>
-              ) : item.isNext ? (
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  style={styles.rewardButton}
-                  onPress={onPressGetReward}
-                >
-                  <Text style={styles.rewardButtonText}>보상받기</Text>
-                </TouchableOpacity>
-              ) : (
-                <Text style={styles.moreText}>포인트 모으기</Text>
-              )}
-            </View>
-          ))} */}
-        </View>
-      </ScrollView>
-      <Modal isVisible={isModalOpen} style={styles.modalStyle}>
-        <View style={styles.modalContainer}>
-          {/* 아이콘 나오면 넣어야함 */}
-          <Image style={styles.modalIcon} />
-          <Text style={styles.normalText}>
-            리미티드 <Text style={styles.boldText}>보상획득</Text>
-          </Text>
-          <Text style={styles.infoText}>
-            리미티드 포인트 A등급 보상을 획득하셨습니다.
-          </Text>
-          <TouchableOpacity style={styles.confirmButton} onPress={closeModal}>
-            <Text style={{ color: Color.gray6666 }}>확인</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
-            {/* close 검정버튼 나오면 교체 */}
-            <Image source={ICON.close} style={styles.closeImage} />
-          </TouchableOpacity>
-        </View>
-      </Modal>
-    </View>
+            ))} */}
+          </View>
+        </ScrollView>
+        <Modal isVisible={isModalOpen} style={styles.modalStyle}>
+          <View style={styles.modalContainer}>
+            {/* 아이콘 나오면 넣어야함 */}
+            <Image style={styles.modalIcon} />
+            <Text style={styles.normalText}>
+              리미티드 <Text style={styles.boldText}>보상획득</Text>
+            </Text>
+            <Text style={styles.infoText}>
+              리미티드 포인트 A등급 보상을 획득하셨습니다.
+            </Text>
+            <TouchableOpacity style={styles.confirmButton} onPress={closeModal}>
+              <Text style={{ color: Color.gray6666 }}>확인</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+              {/* close 검정버튼 나오면 교체 */}
+              <Image source={ICON.close} style={styles.closeImage} />
+            </TouchableOpacity>
+          </View>
+        </Modal>
+      </View>
+    </>
   );
 }
 
@@ -333,6 +354,7 @@ const styles = StyleSheet.create({
   gradeText2: {
     fontSize: 14,
     color: Color.gray8888,
+    fontWeight: 'bold',
   },
   row: {
     flexDirection: `row`,

@@ -3,7 +3,7 @@ import CommonHeader from 'component/CommonHeader';
 import { CommonInput } from 'component/CommonInput';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
-import { ScrollView, View, Modal, TouchableOpacity, Alert, StyleSheet, Dimensions } from 'react-native';
+import { ScrollView, View, Modal, TouchableOpacity, Alert, StyleSheet, Dimensions, Text } from 'react-native';
 import * as React from 'react';
 import { CommonBtn } from 'component/CommonBtn';
 import { StackParamList, ScreenNavigationProp, ColorType } from '@types';
@@ -13,12 +13,8 @@ import {
   useNavigation,
   CommonActions,
 } from '@react-navigation/native';
-import axios from 'axios';
-import * as properties from 'utils/properties';
-import AsyncStorage from '@react-native-community/async-storage';
 import * as hooksMember from 'hooks/member';
 import { useDispatch } from 'react-redux';
-import * as mbrReducer from 'redux/reducers/mbrReducer';
 import { ROUTES, STACK } from 'constants/routes';
 import { clearPrincipal } from 'redux/reducers/authReducer';
 import { useUserInfo } from 'hooks/useUserInfo';
@@ -58,8 +54,80 @@ export const Profile = (props: Props) => {
   const [phoneNumber, setPhoneNumber] = React.useState<any>(
     memberBase?.phone_number
   );
+  const [recommender, setRecommender] = React.useState<any>(memberBase?.recommender);
 
-  // 저장 버튼
+  // 닉네임 저장 버튼
+  const btnSaveNickName = async () => {
+
+    // 닉네임 변경 여부 체크
+    if (memberBase?.nickname == nickname) {
+      show({
+        title: '알림',
+        content: '동일한 닉네임 입니다.',
+        confirmCallback: function() {
+
+        },
+      });
+
+    } else {
+      show({
+        title: '닉네임 변경',
+        content: '닉네임을 변경하시겠습니까?\n패스 x25',
+        cancelCallback: function() {
+  
+        },
+        confirmCallback: function() {
+          let dataJson = {
+            nickname: nickname,
+            comment: '',
+            match_yn: '',
+            use_pass_yn: 'Y',
+            friend_mathch_yn: '',
+            recommender: '',
+          };
+
+          saveMemberBase(dataJson);
+        },
+      });
+    }
+  };
+
+  // 추천인 저장 버튼
+  const btnSaveRecommender = async () => {
+
+    if (memberBase?.recommender == recommender) {
+      show({
+        title: '알림',
+        content: '동일한 추천인 입니다.',
+      });
+    } else if(typeof recommender == 'undefined' || recommender == '') {
+      show({
+        title: '알림',
+        content: '추천인을 입력해주세요.',
+      });
+    } else {
+      show({
+        title: '알림',
+        content: '추천인을 등록하시겠습니까?',
+        cancelCallback: function() {
+  
+        },
+        confirmCallback: function() {
+          let dataJson = {
+            nickname: '',
+            comment: '',
+            match_yn: '',
+            use_pass_yn: 'N',
+            friend_mathch_yn: '',
+            recommender: recommender,
+          };
+    
+          saveMemberBase(dataJson);
+        },
+      });
+    }
+  }
+
   const btnSave = async () => {
     // 닉네임 변경 여부 체크
     if (memberBase.nickname == nickname) {
@@ -142,11 +210,8 @@ export const Profile = (props: Props) => {
 	}
 
   // ###################################################################### 내 계정 정보 저장
-  const saveMemberBase = async () => {
-    const body = {
-      nickname: nickname,
-      use_pass_yn: 'Y',
-    };
+  const saveMemberBase = async (dataJson:any) => {
+    const body = dataJson;
     try {
       const { success, data } = await update_setting(body);
 
@@ -301,6 +366,35 @@ export const Profile = (props: Props) => {
             </View>
           </SpaceView>
 
+          <SpaceView>
+            <View style={{width: (width) / 1.45}}>
+              <CommonInput
+                label={'추천인'}
+                placeholder="추천인의 닉네임을 입력해주세요."
+                placeholderTextColor={'#c6ccd3'}
+                value={recommender}
+                onChangeText={(recommender) => setRecommender(recommender)}
+                rightPen={false}
+              />
+            </View>
+            <View style={[_styles.modfyHpBtn]}>
+              <CommonBtn 
+                value={'저장'} 
+                type={'gray3'} 
+                height={40} 
+                width={70} 
+                fontSize={14}
+                borderRadius={5}
+                onPress={() => {
+                  btnSaveRecommender();
+                }} />
+            </View>
+          </SpaceView>
+
+          <SpaceView mt={7} mb={40}>
+            <Text style={_styles.recomDesc}>TIP.혜택 내용은 "최근소식"의 이벤트 안내를 확인해주세요.</Text>
+          </SpaceView>
+
           {/* <SpaceView mb={24}>
 					<CommonInput 
 						label={'회사명'} 
@@ -363,5 +457,14 @@ const _styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
   },
+  recomDesc: {
+    fontSize: 13,
+    fontFamily: 'AppleSDGothicNeoM00',
+    backgroundColor: '#F6F7FE',
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    color: '#909090',
+    borderRadius: 15,
+  }
 
 });

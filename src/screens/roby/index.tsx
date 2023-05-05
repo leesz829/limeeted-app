@@ -21,6 +21,7 @@ import * as hooksMember from 'hooks/member';
 import { useLikeList } from 'hooks/useLikeList';
 import { useMatches } from 'hooks/useMatches';
 import { useUserInfo } from 'hooks/useUserInfo';
+import { useProfileImg } from 'hooks/useProfileImg';
 import React, { useRef, useState, useEffect } from 'react';
 import {
   Dimensions,
@@ -68,6 +69,7 @@ export const Roby = (props: Props) => {
 
   // 회원 기본 정보
   const memberBase = useUserInfo(); //hooksMember.getBase();
+  const mbrProfileImgList = useProfileImg();
   const likes = useLikeList();
   const matches = useMatches();
 
@@ -145,12 +147,16 @@ export const Roby = (props: Props) => {
     /*
      * 01 : 내 프로필 공개
      * 02 : 아는 사람 제외
+     * 03 : 푸시 알림 받기
      */
-    // 01 : 내 프로필 공개
-    if (type == '01') {
-      body = {
-        match_yn: value,
-      };
+
+    // 01 : 내 프로필 공개, 03 : 푸시 알림 받기
+    if (type == '01' || type == '03') {
+      if(type == '01') {
+        body = { match_yn: value, };
+      } else if(type == '03') {
+        body = { push_alarm_yn: value, };
+      }
 
       const { success, data } = await update_setting(body);
       if (success) {
@@ -413,7 +419,7 @@ export const Roby = (props: Props) => {
                 <View style={_styles.profileImageWrap}>
                   <Image
                     source={{
-                      uri: properties.img_domain + memberBase?.mst_img_path,
+                      uri: properties.img_domain + mbrProfileImgList[0].img_file_path,
                     }}
                     style={styles.profileImg}
                   />
@@ -676,6 +682,17 @@ export const Roby = (props: Props) => {
               <View style={_styles.row}>
                 <Image source={ICON.arrow_right} style={styles.iconSize} />
               </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={_styles.manageProfile}>
+              <Text style={_styles.profileText}>푸시 알림 받기</Text>
+              <CommonSwich
+                callbackFn={(value: boolean) => {
+                  updateMemberInfo('03', value ? 'Y' : 'N');
+                }}
+                isOn={memberBase?.push_alarm_yn == 'Y' ? true : false}
+              />
             </TouchableOpacity>
 
             <TouchableOpacity

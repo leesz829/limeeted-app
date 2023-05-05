@@ -263,7 +263,7 @@ export const styles = StyleSheet.create({
   tempBoxBase: {
     width: (width - 160) / 2,
     height: (width - 160) / 2,
-    borderRadius: 16,
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -346,18 +346,10 @@ export const styles = StyleSheet.create({
     justifyContent: 'flex-end', */
   },
   disabled: {
-    /* position: 'absolute',
-    left: 0,
-    top: 0,
-    height: '100%',
-    width: '100%',
-    backgroundColor: 'rgba(0,0,0,0.7)',
-    borderRadius: 11, */
-
     position: 'absolute',
-    width: (width - 60) / 3,
-    height: (width - 57) / 3,
-    borderRadius: 11,
+    width: (width - 43) / 3,
+    height: (width - 43) / 3,
+    borderRadius: 20,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     flexDirection: 'column',
     alignItems: 'center',

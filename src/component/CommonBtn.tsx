@@ -13,7 +13,7 @@ import SpaceView from './SpaceView';
 import LinearGradient from 'react-native-linear-gradient';
 
 
-type BtnType = 'gray' | 'gray2' | 'primary' | 'kakao' | 'purple' | 'white' | 'blue' | 'blue2' | 'g_blue' | 'black' | 'blackW' | 'red';
+type BtnType = 'gray' | 'gray2' | 'gray3' | 'primary' | 'kakao' | 'purple' | 'white' | 'blue' | 'blue2' | 'g_blue' | 'black' | 'blackW' | 'red';
 type Props = {
   onPress?: () => void;
   value: string;
@@ -125,6 +125,11 @@ const styles = (props: Props) => {
       backgroundColor = Color.white;
       textColor = '#C7C7C7';
       borderColor = '#C7C7C7';
+      break;
+    case 'gray3':
+      backgroundColor = '#D6D3D3';
+      textColor = Color.white;
+      borderColor = '#D6D3D3';
       break;
     case 'primary':
       backgroundColor = Color.primary;

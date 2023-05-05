@@ -433,8 +433,8 @@ const style = StyleSheet.create({
     right: 6,
   },
   penImage: {
-    width: 24,
-    height: 24,
+    width: 20,
+    height: 20,
     resizeMode: 'contain',
   },
   selectedDelete: {

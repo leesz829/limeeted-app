@@ -66,12 +66,6 @@ export const Board0 = (props: Props) => {
 									toggleAccordion(board_seq);
 								}}
 								activeOpacity={0.3} >
-								{/* 
-								<View style={styles.labelContainer}>
-									<CommonText type={'h4'} color={ColorType.black3333} fontWeight={'200'}>
-									{props.label}
-									</CommonText>
-								</View> */}
 								
 								<View style={[_styles.titleContainer, activeIndex === board_seq && _styles.active]}>
 									<CommonText fontWeight={'500'} type={'h5'}>{title}</CommonText>

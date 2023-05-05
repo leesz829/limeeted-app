@@ -46,8 +46,8 @@ const TopNavigation: FC<Props> = (props) => {
       <View style={styles.tabContainer}>
         <NaviButtons navName={props.currentPath} theme={props.theme} />
         {/* ######################################################################
-			##### 팝업 영역
-			###################################################################### */}
+			  ##### 팝업 영역
+			  ###################################################################### */}
         <Wallet theme={props.theme} />
       </View>
     </LinearGradient>
@@ -114,22 +114,25 @@ export function Wallet({ theme }) {
           }}>
 
           <View style={[styles.itemContainer, { marginRight: 8 }]}>
-            <Image style={styles.itemStyle} source={ICON.passIconNew} resizeMode={'contain'} />
+            <Image style={styles.itemStyle} source={ICON.passCircle} resizeMode={'contain'} />
             <Text
               style={[
                 styles.statusText,
-                { color: theme ? '#fff' : '#7a7dbb', lineHeight: 13 },
+                { color: theme ? '#625AD1' : '#625AD1', lineHeight: 13 },
               ]}>
 
               {memberBase?.pass_has_amt}
             </Text>
+            {/* <View style={styles.passTooltipArea}>
+              <Text>범용적으로 사용되는 기본 재화.{'\n'}관심을 보내거나 확인하는데 사용되요.</Text>
+            </View> */}
           </View>
           <View style={styles.itemContainer}>
-            <Image style={styles.itemStyle2} source={ICON.royalPassIconNew} resizeMode={'contain'}  />
+            <Image style={styles.itemStyle} source={ICON.royalPassCircle} resizeMode={'contain'}  />
             <Text
               style={[
                 styles.statusText,
-                { color: theme ? '#fff' : '#da88ad', lineHeight: 13 },
+                { color: theme ? '#625AD1' : '#625AD1', lineHeight: 13 },
               ]}>
 
               {memberBase?.royal_pass_has_amt}
@@ -176,23 +179,24 @@ const styles = StyleSheet.create({
   },
   itemStyle: {
     width: 25,
-    height: 20,
-    marginRight: 1,
+    height: 25,
+    marginRight: 0,
   },
   itemStyle2: {
-    width: 33,
-    height: 20,
+    width: 25,
+    height: 25,
     marginRight: 1,
   },
   itemContainer: {
-    flexDirection: `column`,
-    alignItems: `flex-end`,
+    flexDirection: `row`,
+    alignItems: `center`,
     justifyContent: `center`,
   },
   statusText: {
-    fontSize: 13,
+    fontSize: 12,
     color: 'rgb(84, 84 , 86)',
     fontWeight: 'bold',
+    fontFamily: 'AppleSDGothicNeoEB00',
   },
   limitedIcon: {
     width: 100,
@@ -203,5 +207,11 @@ const styles = StyleSheet.create({
     width: 39,
     height: 29,
     resizeMode: 'contain',
+  },
+  passTooltipArea: {
+    display: 'none',
+    position: 'absolute',
+    bottom: -40,
+    left: 0,
   },
 });

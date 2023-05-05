@@ -370,7 +370,7 @@ export const Introduce = (props: Props) => {
                 fontSize={13}
                 fontColor={'#333333'}
                 lineCount={3}
-							/>
+						/>
 
             {/* <CommonInput
               label={'한줄 소개'}

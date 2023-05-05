@@ -128,6 +128,10 @@ const RenderItem = ({ item, type }) => {
   const imagePath = findSourcePath(item?.file_path + item?.file_name);
 
   const onPressItem = (item) => {
+
+    // 임시 비활성화 처리
+    return;
+
     if (type === 'gifticon') {
       setTargetItem(item);
       setModalVisible(true);
@@ -214,7 +218,8 @@ const RenderItem = ({ item, type }) => {
             </View>
             {type === 'gifticon' ? (
               <View style={styles.textContainer}>
-                <Text style={styles.hintText}>100개 남음</Text>
+                {/* <Text style={styles.hintText}>100개 남음</Text> */}
+                <Text style={styles.hintText}>6/2 열림</Text>
                 <Text style={styles.price}></Text>
               </View>
             ) : (
@@ -349,8 +354,8 @@ const categories = [
     label: '기프티콘',
     value: 'gifticon',
   },
-  {
+  /* {
     label: '부띠끄',
     value: 'boutique',
-  },
+  }, */
 ];

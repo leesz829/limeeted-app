@@ -14,6 +14,7 @@ type Props = {
   exceedCharCountColor?: string;
   onChangeText: (text: string) => void;
   height?: number;
+  borderWidth?: number;
   borderRadius?: number;
   fontSize?: number;
   fontColor?: string;
@@ -83,7 +84,7 @@ const _styles = (props: Props) => {
       width: '100%',
       height: props.height != null ? props.height : 420,
       maxHeight: props.height != null ? props.height : 420,
-      borderWidth: 1,
+      borderWidth: props.borderWidth != null ? props.borderWidth : 1,
       borderRadius: props.borderRadius != null ? props.borderRadius : 10,
       padding: 10,
       textAlignVertical: 'top',

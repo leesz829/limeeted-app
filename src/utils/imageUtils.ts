@@ -75,6 +75,8 @@ export const ICON = {
   pencil: require('assets/icon/icon-pencil.png'),
   whiteCrown: require('assets/icon/white_crown.png'),
   checkICon: require('assets/icon/checkIcon.png'),
+  checkICon02: require('assets/icon/checkIcon02.png'),
+  checkICon03: require('assets/icon/checkIcon03.png'),
   marker: require('assets/icon/marker.png'),
   closeCircle: require('assets/icon/closeCircle.png'),
   ticketCircle: require('assets/icon/ticketCircle.png'),

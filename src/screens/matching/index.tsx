@@ -31,7 +31,6 @@ import { ToolTip } from 'component/Tooltip';
 import TopNavigation from 'component/TopNavigation';
 import { ViualSlider } from 'component/ViualSlider';
 import { usePopup } from 'Context';
-import * as hooksMember from 'hooks/member';
 import { useUserInfo } from 'hooks/useUserInfo';
 import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';

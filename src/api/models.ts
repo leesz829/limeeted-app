@@ -180,6 +180,7 @@ export async function update_setting(body: {
   match_yn: string;
   use_pass_yn: string;
   friend_mathch_yn: string;
+  recommender: string;
 }) {
   return send(UPDATE_SETTING, 'POST', body, true, false);
 }

@@ -34,6 +34,7 @@ import { setPartialPrincipal } from 'redux/reducers/authReducer';
 import { STACK } from 'constants/routes';
 import { SUCCESS } from 'constants/reusltcode';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { CommonLoading } from 'component/CommonLoading';
 
 
 const options = {
@@ -61,6 +62,7 @@ export const Profile1 = (props: Props) => {
   const dispatch = useDispatch();
   const navigation = useNavigation<ScreenNavigationProp>();
   const scrollViewRef = useRef();
+  const [isLoading, setIsLoading] = useState(false);
 
 
   const [images, setImages] = useState([]);
@@ -359,10 +361,6 @@ export const Profile1 = (props: Props) => {
     }
   };
 
-
-
-
-
   // ############################################################  프로필 이미지 등록
   const insertProfileImage = async (imageData:any) => {
    
@@ -415,7 +413,6 @@ export const Profile1 = (props: Props) => {
       
     }
   };
-
   
   // ############################################################  프로필 이미지 삭제
   const deleteProfileImage = async (imgSeq:string) => {
@@ -439,6 +436,8 @@ export const Profile1 = (props: Props) => {
       , img_del_seq_str: imgSeq
       , interview_list: null
     };
+
+    setIsLoading(true);
     
     try {
       const { success, data } = await update_profile(body);
@@ -474,8 +473,11 @@ export const Profile1 = (props: Props) => {
           confirmCallback: function() {}
         });
       }
+
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
+      setIsLoading(false);
     } finally {
       
     }
@@ -597,6 +599,8 @@ export const Profile1 = (props: Props) => {
 
   return (
     <>
+      {isLoading && <CommonLoading />}
+
       <CommonHeader
         title="프로필 관리"
         /* right={
@@ -634,7 +638,7 @@ export const Profile1 = (props: Props) => {
                   source={imgData.orgImgUrl01.url}
                 />
                 {imgData.orgImgUrl01.url != '' && (imgData.orgImgUrl01.status == 'PROGRESS' || imgData.orgImgUrl01.status == 'REFUSE') && (
-                  <View style={styles.disabled}>
+                  <View style={_styles.disabled}>
                     {imgData.orgImgUrl01.status == 'PROGRESS' ? (
                       <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
                     ) : imgData.orgImgUrl01.status == 'REFUSE' && (
@@ -666,7 +670,7 @@ export const Profile1 = (props: Props) => {
                   source={imgData.orgImgUrl02.url}
                 />
                 {imgData.orgImgUrl02.url != '' && (imgData.orgImgUrl02.status == 'PROGRESS' || imgData.orgImgUrl02.status == 'REFUSE') && (
-                  <View style={styles.disabled}>
+                  <View style={_styles.disabled}>
                     {imgData.orgImgUrl02.status == 'PROGRESS' ? (
                       <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
                     ) : imgData.orgImgUrl02.status == 'REFUSE' && (
@@ -698,7 +702,7 @@ export const Profile1 = (props: Props) => {
                   source={imgData.orgImgUrl03.url}
                 />
                 {imgData.orgImgUrl03.url != '' && (imgData.orgImgUrl03.status == 'PROGRESS' || imgData.orgImgUrl03.status == 'REFUSE') && (
-                  <View style={styles.disabled}>
+                  <View style={_styles.disabled}>
                     {imgData.orgImgUrl03.status == 'PROGRESS' ? (
                       <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
                     ) : imgData.orgImgUrl03.status == 'REFUSE' && (
@@ -730,7 +734,7 @@ export const Profile1 = (props: Props) => {
                   source={imgData.orgImgUrl04.url}
                 />
                 {imgData.orgImgUrl04.url != '' && (imgData.orgImgUrl04.status == 'PROGRESS' || imgData.orgImgUrl04.status == 'REFUSE') && (
-                  <View style={styles.disabled}>
+                  <View style={_styles.disabled}>
                     {imgData.orgImgUrl04.status == 'PROGRESS' ? (
                       <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
                     ) : imgData.orgImgUrl04.status == 'REFUSE' && (
@@ -762,7 +766,7 @@ export const Profile1 = (props: Props) => {
                   source={imgData.orgImgUrl05.url}
                 />
                 {imgData.orgImgUrl05.url != '' && (imgData.orgImgUrl05.status == 'PROGRESS' || imgData.orgImgUrl05.status == 'REFUSE') && (
-                  <View style={styles.disabled}>
+                  <View style={_styles.disabled}>
                     {imgData.orgImgUrl05.status == 'PROGRESS' ? (
                       <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
                     ) : imgData.orgImgUrl05.status == 'REFUSE' && (
@@ -794,7 +798,7 @@ export const Profile1 = (props: Props) => {
                   source={imgData.orgImgUrl06.url}
                 />
                 {imgData.orgImgUrl06.url != '' && (imgData.orgImgUrl06.status == 'PROGRESS' || imgData.orgImgUrl06.status == 'REFUSE') && (
-                  <View style={styles.disabled}>
+                  <View style={_styles.disabled}>
                     {imgData.orgImgUrl06.status == 'PROGRESS' ? (
                       <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
                     ) : imgData.orgImgUrl06.status == 'REFUSE' && (
@@ -821,7 +825,7 @@ export const Profile1 = (props: Props) => {
           </View>
         </View>
 
-        <View style={{ flexDirection: 'column', paddingHorizontal: 20 }}>
+        <View style={{ flexDirection: 'column', paddingHorizontal: 20, marginTop: 20 }}>
 
           {/* ####################################################################################
 					####################### 프로필 인증 영역
@@ -857,8 +861,9 @@ export const Profile1 = (props: Props) => {
 
           <View style={_styles.myImpressionContainer}>
             <Text style={_styles.title}>내 평점은?</Text>
+            <Text style={_styles.sliderText}>프로필 평점 {memberBase?.profile_score}</Text>
             <Slider
-              value={7.5 / 10}
+              value={memberBase?.profile_score / 10}
               animateTransitions={true}
               renderThumbComponent={() => null}
               maximumTrackTintColor={'#e3e3e3'}
@@ -1026,10 +1031,11 @@ const _styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   container: {
-    width: (width - 60) / 3,
-    height: (width - 60) / 3,
+    width: (width - 46) / 3,
+    height: (width - 46) / 3,
     backgroundColor: 'rgba(155, 165, 242, 0.12)',
-    margin: 5,
+    marginHorizontal: 4,
+    marginVertical: 5,
     borderRadius: 20,
     flexDirection: `row`,
     alignItems: `center`,
@@ -1039,7 +1045,18 @@ const _styles = StyleSheet.create({
     width: (width - 60) / 3,
     height: (width - 60) / 3,
     margin: 0,
-    borderRadius: 10,
+    borderRadius: 20,
+  },
+  disabled: {
+    position: 'absolute',
+    width: (width - 60) / 3,
+    height: (width - 57) / 3,
+    borderRadius: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    overflow: 'hidden',
   },
   profileContainer: {
     backgroundColor: Color.grayF8F8,
@@ -1061,7 +1078,6 @@ const _styles = StyleSheet.create({
   },
   impressionContainer: {
     width: '100%',
-
     opacity: 0.78,
     borderRadius: 10,
     backgroundColor: 'rgba(255, 255, 255, 0)',
@@ -1143,13 +1159,13 @@ const _styles = StyleSheet.create({
   },
   myImpressionContainer: {
     width: '100%',
-    marginTop: 0,
+    marginTop: 10,
     marginBottom: 0,
   },
   sliderContainerStyle: {
     width: '100%',
     height: 27,
-    marginTop: 10,
+    marginTop: 7,
     borderRadius: 13,
   },
   trackStyle: {
@@ -1178,6 +1194,17 @@ const _styles = StyleSheet.create({
     marginTop: 7,
     marginRight: 10,
   },
+  sliderText: {
+    fontFamily: 'AppleSDGothicNeoR00',
+    fontSize: 10,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    lineHeight: 13,
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#b7b7b7',
+    marginTop: 20,
+  },
 
 });
 
@@ -1201,7 +1228,7 @@ const profileImage = StyleSheet.create({
     width: (width - 80) / 3,
     height: (width - 80) / 3,
     margin: 10,
-    borderRadius: 10,
+    borderRadius: 20,
   },
   dim: {
     position: 'absolute',

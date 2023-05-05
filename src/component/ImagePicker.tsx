@@ -112,8 +112,7 @@ export const ImagePicker: FC<Props> = (props) => {
             ))}
 
             <View style={styles.disabled}>
-              {/* <CommonText fontWeight={'700'} type={'h5'} color={ColorType.gray8888} textStyle={[layoutStyle.textRight, commonStyle.mt10, commonStyle.mr10]}>심사중</CommonText> */}
-              <CommonText fontWeight={'700'} type={'h5'} color={ColorType.gray8888} textStyle={{textAlign: 'right', marginTop: 10, marginRight: 10}}>심사중</CommonText>
+              <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
             </View>
           </>
         ) : props.uriParam != null && props.uriParam != '' ? (
@@ -128,7 +127,7 @@ export const ImagePicker: FC<Props> = (props) => {
 
             {props.isAuth && 
               <View style={styles.disabled}>
-                <CommonText fontWeight={'700'} type={'h5'} color={ColorType.gray8888} textStyle={{textAlign: 'right', marginTop: 10, marginRight: 10}}>심사중</CommonText>
+                <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
               </View>
             }
           </>

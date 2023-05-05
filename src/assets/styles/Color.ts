@@ -16,6 +16,7 @@ export const Color = {
   grayEBE: '#EBE9EF',
   grayD6D3D3: '#D6D3D3',
   grayC3C3C3: '#C3C3C3',
+  grayECECEC: '#ECECEC',
   paleBlue: '#eff3fe',
   red: '#ff0000',
   red2: '#FE0456',

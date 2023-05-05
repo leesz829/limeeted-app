@@ -344,7 +344,7 @@ export const Signup02 = (props: Props) => {
                   source={imgData.orgImgUrl01.url}
                 />
                 {imgData.orgImgUrl01.url != '' && (imgData.orgImgUrl01.status == 'PROGRESS' || imgData.orgImgUrl01.status == 'REFUSE') && (
-                  <View style={styles.disabled}>
+                  <View style={_styles.disabled}>
                     {imgData.orgImgUrl01.status == 'PROGRESS' ? (
                       <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
                     ) : imgData.orgImgUrl01.status == 'REFUSE' && (
@@ -376,7 +376,7 @@ export const Signup02 = (props: Props) => {
                   source={imgData.orgImgUrl02.url}
                 />
                 {imgData.orgImgUrl02.url != '' && (imgData.orgImgUrl02.status == 'PROGRESS' || imgData.orgImgUrl02.status == 'REFUSE') && (
-                  <View style={styles.disabled}>
+                  <View style={_styles.disabled}>
                     {imgData.orgImgUrl02.status == 'PROGRESS' ? (
                       <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
                     ) : imgData.orgImgUrl02.status == 'REFUSE' && (
@@ -408,7 +408,7 @@ export const Signup02 = (props: Props) => {
                   source={imgData.orgImgUrl03.url}
                 />
                 {imgData.orgImgUrl03.url != '' && (imgData.orgImgUrl03.status == 'PROGRESS' || imgData.orgImgUrl03.status == 'REFUSE') && (
-                  <View style={styles.disabled}>
+                  <View style={_styles.disabled}>
                     {imgData.orgImgUrl03.status == 'PROGRESS' ? (
                       <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
                     ) : imgData.orgImgUrl03.status == 'REFUSE' && (
@@ -440,7 +440,7 @@ export const Signup02 = (props: Props) => {
                   source={imgData.orgImgUrl04.url}
                 />
                 {imgData.orgImgUrl04.url != '' && (imgData.orgImgUrl04.status == 'PROGRESS' || imgData.orgImgUrl04.status == 'REFUSE') && (
-                  <View style={styles.disabled}>
+                  <View style={_styles.disabled}>
                     {imgData.orgImgUrl04.status == 'PROGRESS' ? (
                       <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
                     ) : imgData.orgImgUrl04.status == 'REFUSE' && (
@@ -472,7 +472,7 @@ export const Signup02 = (props: Props) => {
                   source={imgData.orgImgUrl05.url}
                 />
                 {imgData.orgImgUrl05.url != '' && (imgData.orgImgUrl05.status == 'PROGRESS' || imgData.orgImgUrl05.status == 'REFUSE') && (
-                  <View style={styles.disabled}>
+                  <View style={_styles.disabled}>
                     {imgData.orgImgUrl05.status == 'PROGRESS' ? (
                       <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
                     ) : imgData.orgImgUrl05.status == 'REFUSE' && (
@@ -504,7 +504,7 @@ export const Signup02 = (props: Props) => {
                   source={imgData.orgImgUrl06.url}
                 />
                 {imgData.orgImgUrl06.url != '' && (imgData.orgImgUrl06.status == 'PROGRESS' || imgData.orgImgUrl06.status == 'REFUSE') && (
-                  <View style={styles.disabled}>
+                  <View style={_styles.disabled}>
                     {imgData.orgImgUrl06.status == 'PROGRESS' ? (
                       <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
                     ) : imgData.orgImgUrl06.status == 'REFUSE' && (
@@ -701,14 +701,25 @@ const _styles = StyleSheet.create({
     width: (width - 60) / 3,
     height: (width - 60) / 3,
     margin: 0,
-    borderRadius: 10,
+    borderRadius: 20,
+  },
+  disabled: {
+    position: 'absolute',
+    width: (width - 60) / 3,
+    height: (width - 57) / 3,
+    borderRadius: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    overflow: 'hidden',
   },
   dim: {
     position: 'absolute',
     width: (width - 80) / 3,
     height: (width - 80) / 3,
     margin: 10,
-    borderRadius: 10,
+    borderRadius: 20,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     flexDirection: 'column',
     alignItems: 'center',
