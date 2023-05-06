@@ -95,15 +95,15 @@ export const Profile = (props: Props) => {
   // 추천인 저장 버튼
   const btnSaveRecommender = async () => {
 
-    if (memberBase?.recommender == recommender) {
-      show({
-        title: '알림',
-        content: '동일한 추천인 입니다.',
-      });
-    } else if(typeof recommender == 'undefined' || recommender == '') {
+    if(!recommender) {
       show({
         title: '알림',
         content: '추천인을 입력해주세요.',
+      });
+    } else if (memberBase?.nickname == recommender) {
+      show({
+        title: '알림',
+        content: '다른 회원의 닉네임만 추천할 수 있습니다.',
       });
     } else {
       show({
@@ -127,36 +127,6 @@ export const Profile = (props: Props) => {
       });
     }
   }
-
-  const btnSave = async () => {
-    // 닉네임 변경 여부 체크
-    if (memberBase.nickname == nickname) {
-      show({
-        title: '알림',
-        content: '동일한 닉네임 입니다.',
-        confirmCallback: function() {
-
-        },
-      });
-
-      /* navigation.navigate(STACK.TAB, {
-        screen: 'Roby',
-      }); */
-
-    } else {
-      show({
-        title: '닉네임 변경',
-        content: '닉네임을 변경하시겠습니까?\n패스 x25',
-        cancelCallback: function() {
-  
-        },
-        confirmCallback: function() {
-          saveMemberBase();
-        },
-      });
-    }
-  };
-
 
   // ###################################################################### 탈퇴 처리
   const exitProc = async () => {
@@ -216,15 +186,20 @@ export const Profile = (props: Props) => {
       const { success, data } = await update_setting(body);
 
       if (success) {
-        if (data.result_code == '0000') {
+        if (data.result_code == '0000' || data.result_code == '0055') {
+          let content = data.result_code == '0055'?'입력하신 추천인이 등록되었습니다.':'저장되었습니다.';
+          
           dispatch(myProfile());
-          show({ content: '저장되었습니다.' });
+          show({ content: content });
 
           navigation.navigate(STACK.TAB, {
             screen: 'Roby',
           });
         } else if (data.result_code == '6010') {
           show({ content: '보유 패스가 부족합니다.' });
+          return false;
+        } else if (data.result_code == '8005') {
+          show({ content: '존재하지 않는 닉네임입니다.' });
           return false;
         } else {
           show({ content: '오류입니다. 관리자에게 문의해주세요.' });
@@ -332,7 +307,7 @@ export const Profile = (props: Props) => {
                 fontSize={14}
                 borderRadius={5}
                 onPress={() => {
-                  btnSave();
+                  btnSaveNickName();
                 }} />
             </View>
           </SpaceView>
@@ -375,20 +350,34 @@ export const Profile = (props: Props) => {
                 value={recommender}
                 onChangeText={(recommender) => setRecommender(recommender)}
                 rightPen={false}
+                disabled={memberBase.recommender?true:false}
               />
             </View>
-            <View style={[_styles.modfyHpBtn]}>
-              <CommonBtn 
-                value={'저장'} 
-                type={'gray3'} 
-                height={40} 
-                width={70} 
-                fontSize={14}
-                borderRadius={5}
-                onPress={() => {
-                  btnSaveRecommender();
-                }} />
-            </View>
+            {
+              memberBase.recommender ?
+              <View style={[_styles.modfyHpBtn]}>
+                <CommonBtn 
+                  value={'저장'} 
+                  type={'gray3'} 
+                  height={40} 
+                  width={70} 
+                  fontSize={14}
+                  borderRadius={5}
+                  onPress={() => {}} />
+              </View>
+            : <View style={[_styles.modfyHpBtn]}>
+                <CommonBtn 
+                  value={'저장'} 
+                  type={'blue'} 
+                  height={40} 
+                  width={70} 
+                  fontSize={14}
+                  borderRadius={5}
+                  onPress={() => {
+                    btnSaveRecommender();
+                  }} />
+              </View>
+            }
           </SpaceView>
 
           <SpaceView mt={7} mb={40}>
