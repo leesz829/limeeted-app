@@ -57,8 +57,6 @@ export const PopupProvider = ({ children }: any) => {
 };
 
 export const usePopup = () => {
-  console.log('contents.subContent ...... ');
-  
   const { show, hide } = useContext(PopupContext);
   return { show, hide };
 };
