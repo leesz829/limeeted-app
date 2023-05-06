@@ -97,7 +97,7 @@ export default function Inventory() {
                       , params : {profile_member_seq_list: data.profile_member_seq_list.toString()}
                     });
                 }
-                // dispatch(myProfile());
+                dispatch(myProfile());
                 // navigation.navigate(STACK.TAB, { screen: 'Shop' });
                 fetchData();
                 break;
@@ -123,7 +123,7 @@ export default function Inventory() {
         } catch (error) {
           console.warn(error);
         } finally {
-          
+          setIsLoading(false);
         }
       }
     });
@@ -151,7 +151,7 @@ export default function Inventory() {
     <View style={styles.renderItem}>
       <View style={{ flexDirection: 'row' }}>
         <View style={styles.thumb}>
-          <Image source={findSourcePath(item?.file_path + item?.file_name)} />
+          <Image source={findSourcePath(item?.file_path + item?.file_name)} style={{width: '100%', height: '100%'}} resizeMode='cover' />
           {item?.item_qty > 0 && <Text style={styles.qtyText}>{item.item_qty}개 보유</Text>}
         </View>
 

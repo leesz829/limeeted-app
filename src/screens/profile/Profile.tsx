@@ -350,11 +350,11 @@ export const Profile = (props: Props) => {
                 value={recommender}
                 onChangeText={(recommender) => setRecommender(recommender)}
                 rightPen={false}
-                disabled={memberBase.recommender?true:false}
+                disabled={memberBase?.recommender?true:false}
               />
             </View>
             {
-              memberBase.recommender ?
+              memberBase?.recommender ?
               <View style={[_styles.modfyHpBtn]}>
                 <CommonBtn 
                   value={'저장'} 

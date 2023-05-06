@@ -67,21 +67,23 @@ function FemalePannel() {
             )} */}
           </View>
           <View style={female.row}>
-            {route.name !== ROUTES.Mileage_Shop && (
-              <View>
-                {/* <Text style={female.infoText}>{me?.nickname}님의 공주력</Text> */}
-                <Text style={female.infoText}>리밋샵에 구경 오세요 :)</Text>
-                <TouchableOpacity
-                  style={female.lmtShopButton}
-                  onPress={onPressLimitShop}>
+            
+            <View>
+              {route.name !== ROUTES.Mileage_Shop && (
+                <>
+                  {/* <Text style={female.infoText}>{me?.nickname}님의 공주력</Text> */}
+                  <Text style={female.infoText}>리밋샵에 구경 오세요 :)</Text>
+                  <TouchableOpacity
+                    style={female.lmtShopButton}
+                    onPress={onPressLimitShop}>
 
-                  <Text style={female.lmtButtonText2}>리밋샵 미리보기</Text>
-                </TouchableOpacity>
-              </View>
-            )}
-
+                    <Text style={female.lmtButtonText2}>리밋샵 미리보기</Text>
+                  </TouchableOpacity>
+                </>
+              )}
+            </View>
+            
             <View style={{ flexDirection: 'column' }}>
-
               <SpaceView viewStyle={female.myBox}>
                 <TouchableOpacity onPress={onPressLimitInfo}>
                   <View style={female.myBox}>

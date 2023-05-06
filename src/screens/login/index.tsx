@@ -110,8 +110,13 @@ export const Login = () => {
 	return (
 		<View style={[styles.container, layoutStyle.justifyCenter]}>
 			<View style={layoutStyle.alignCenter}>
-				<SpaceView>
+				{/* <SpaceView>
 					<Image source={IMAGE.logoRenew} style={styles.logoRenew} resizeMode="contain" />
+				</SpaceView> */}
+
+				<SpaceView viewStyle={{alignItems:'center', justifyContent:'center'}}>
+					<Image source={IMAGE.logoMark} style={[styles.iconSize65, {marginBottom: -105}]} resizeMode="contain" />
+					<Image source={IMAGE.logoRenewText} style={{width:200, marginBottom: 150 }} resizeMode="contain" />
 				</SpaceView>
 
 				{/* <SpaceView>
@@ -124,10 +129,10 @@ export const Login = () => {
 					<CommonText textStyle={styles.logoText} lineHeight={30}>믿음가는 사람들의 인연</CommonText>
 				</SpaceView> */}
 			</View>
-			<SpaceView viewStyle={[styles.bottomBtnContainer, commonStyle.paddingHorizontal15]} mb={24}>
+			<SpaceView viewStyle={[styles.bottomBtnContainer, commonStyle.paddingHorizontal25]} mb={24}>
 
 				{/* CSP 05. 02 퍼블 이식 후 삭제요망 */}
-				<SpaceView mb={10} viewStyle={{ paddingHorizontal: '7%' }}>
+				{/* <SpaceView mb={10} viewStyle={{ paddingHorizontal: '7%' }}>
 					<CommonBtn
 						value={'Im_storage'}
 						type={'g_blue'}
@@ -166,7 +171,7 @@ export const Login = () => {
 						navigation.navigate('lm_superLike');
 						}}
 					/>
-				</SpaceView>
+				</SpaceView> */}
 
 
 
@@ -180,6 +185,7 @@ export const Login = () => {
 						value={'리미티드 계정으로 로그인'}
 						type={'g_blue'}
 						isGradient={true}
+						fontSize={13}
 						onPress={() => {
 							navigation.navigate('Login01');
 							//signInWithKakao();
@@ -199,6 +205,7 @@ export const Login = () => {
 						value={'회원가입'}
 						type={'white'}
 						iconSize={24}
+						fontSize={13}
 						onPress={() => {
 							navigation.navigate('Policy');
 						}}

@@ -64,14 +64,17 @@ export default function MileageShop() {
   return (
     <>
       <CommonHeader title="마일리지샵" />
+
       <View style={styles.root}>
+        <ListHeaderComponent onPressTab={onPressTab} tab={tab} />
+
         <SectionGrid
           itemDimension={(Dimensions.get('window').width -75) / 3}
           sections={data}
           fixed={true}
-          ListHeaderComponent={
-            <ListHeaderComponent onPressTab={onPressTab} tab={tab} />
-          }
+          /* ListHeaderComponent={
+            
+          } */
           stickySectionHeadersEnabled={false}
           renderSectionHeader={renderSectionHeader}
           renderItem={(props) => {
@@ -129,7 +132,7 @@ const RenderItem = ({ item, type }) => {
 
   const onPressItem = (item) => {
 
-    // 임시 비활성화 처리
+    // ==================== 임시 비활성화 처리
     return;
 
     if (type === 'gifticon') {
@@ -210,8 +213,9 @@ const RenderItem = ({ item, type }) => {
           <View style={{ paddingHorizontal: 3 }}>
             <Text style={styles.brandName}>{item?.brand_name}</Text>
             <Text style={styles.productName}>{item?.prod_name}</Text>
-            <View style={[styles.textContainer, { marginTop: 5 }]}>
-              <Text style={styles.price}>{CommaFormat(item?.now_buy_price)}</Text>
+            <View style={[styles.textContainer, { marginTop: 5, justifyContent: 'flex-start' }]}>
+              <Text style={styles.price}>{CommaFormat(item?.buy_price)}</Text>
+              <Image source={ICON.crown} style={styles.crown} />
               {type !== 'gifticon' && (
                 <Text style={styles.hintText}>즉시 구매가</Text>
               )}
@@ -264,7 +268,7 @@ const renderSectionHeader = (props) => {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: 'white', paddingHorizontal: 0 },
   categoriesContainer: {
-    marginTop: 27,
+    marginTop: 160,
     marginBottom: 10,
     flexDirection: `row`,
     alignItems: `center`,
@@ -304,15 +308,17 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: 'normal',
     fontStyle: 'normal',
+    fontFamily: 'AppleSDGothicNeoM00',
     letterSpacing: 0,
     textAlign: 'left',
     color: '#7986ee',
     marginTop: 5,
   },
   productName: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: 'normal',
     fontStyle: 'normal',
+    fontFamily: 'AppleSDGothicNeoM00',
     letterSpacing: 0,
     textAlign: 'left',
     color: '#363636',
@@ -346,6 +352,12 @@ const styles = StyleSheet.create({
     right: 5,
     color: Color.gray8888,
     fontSize: 9,
+  },
+  crown: {
+    width: 12.7,
+    height: 8.43,
+    marginTop: 5,
+    marginLeft: 2,
   },
 });
 

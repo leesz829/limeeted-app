@@ -310,7 +310,7 @@ export const Live = () => {
                 <View
                   style={[
                     _styles.indicator,
-                    { backgroundColor: index === page ? 'white' : '#000000' },
+                    { backgroundColor: index === page ? 'white' : 'rgba(255,255,255,0.3)' },
                   ]}
                 />
               ))}
@@ -441,7 +441,7 @@ export const Live = () => {
               source={{uri: url}}
               style={{
                 width: width,
-                height: height * 0.55,
+                height: height * 0.7,
               }}
             />
             <Watermark value={memberBase?.phone_number}/>

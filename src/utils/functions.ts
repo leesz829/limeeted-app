@@ -128,6 +128,16 @@ export const timeDiff = (time) => {
   }
 };
 
+// 데이터 빈값 체크
+export function isEmptyData(data: any) {
+  let isChk = true;
+  if(typeof data == 'undefined') { isChk = false; }
+  if(data == null) { isChk = false; }
+  if(data == '') { isChk = false; }
+  return isChk;
+}
+
+
 export default {
   formatDate,
   removeDuplicate,
@@ -136,4 +146,5 @@ export default {
   rightPad,
   validateEmailChk,
   getRemainTime,
+  isEmptyData,
 };

@@ -201,6 +201,18 @@ export const styles = StyleSheet.create({
     width: 60,
     height: 45,
   },
+  iconSize65: {
+    width: 65,
+    height: 65,
+  },
+  iconSize70: {
+    width: 70,
+    height: 70,
+  },
+  iconSize80: {
+    width: 80,
+    height: 80,
+  },
   arrowIcon: {
     width: 20,
     height: 36,

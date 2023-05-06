@@ -50,11 +50,12 @@ export const BasePopup = (props: Props) => {
               <CommonText type={'h6'} textStyle={layoutStyle.textCenter} color={'#646464'}>
                 {typeof props.text != 'undefined' && props.text != '' ? props.text : ''}
               </CommonText>
-                
-              <CommonText type={'h6'} textStyle={layoutStyle.textCenter} color={'#9c89e5'} fontWeight={'700'}>
-                {typeof props.subText != 'undefined' && props.subText != '' ? props.subText : ''}
-              </CommonText>
-              
+
+              {typeof props.subText != 'undefined' && props.subText != '' &&
+                <CommonText type={'h6'} textStyle={layoutStyle.textCenter} color={'#9c89e5'} fontWeight={'700'}>
+                  {props.subText}
+                </CommonText>
+              }              
               
               {/* <CommonText type={'h5'} color={ColorType.red}>패스 x5</CommonText> */}
             </SpaceView>

@@ -66,7 +66,7 @@ export const CommonBtn: FC<Props> = (props) => {
       {props.isGradient ? (
           <TouchableOpacity onPress={props.onPress}>
             <LinearGradient colors={['#89b0fa', '#aaa1f7']} style={[style.btnStyle_gradient]}>
-              <Text style={{color: '#fff'}}>{props.value}</Text>
+              <Text style={{color: '#fff', fontSize: props.fontSize ? props.fontSize : 16}}>{props.value}</Text>
             </LinearGradient>
           </TouchableOpacity>
       ) : (

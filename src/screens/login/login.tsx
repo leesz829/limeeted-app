@@ -225,11 +225,8 @@ export const Login01 = () => {
 
           {/* ############################################################### 타이틀 */}
           <View style={[commonStyle.mb70, commonStyle.paddingHorizontal20]}>
-            <SpaceView>
-              <Image
-                source={IMAGE.logoMarkRenew}
-                style={styles.logoMark}
-              />
+            <SpaceView mb={5}>
+              <Image source={IMAGE.logoRenewText} style={{width: 185, height: 33, marginLeft: 2}} />
             </SpaceView>
             <SpaceView>
               <CommonText type={'h4'} fontWeight={'700'} lineHeight={30}>특별한 사람들의 '리미티드' 에디션</CommonText>
@@ -247,7 +244,7 @@ export const Login01 = () => {
                 placeholder={'이메일 주소'}
                 placeholderTextColor={'#c6ccd3'}
                 borderBottomType={'black'}
-                fontSize={15}
+                fontSize={14}
               />
             </SpaceView>
 
@@ -272,7 +269,7 @@ export const Login01 = () => {
                 placeholder={'영문 대소문자, 숫자, 특수기호 허용 8글자 이상'}
                 placeholderTextColor={'#c6ccd3'}
                 borderBottomType={'black'}
-                fontSize={15}
+                fontSize={14}
               />
             </SpaceView>
           </View>
@@ -294,6 +291,7 @@ export const Login01 = () => {
                 value={'로그인'}
                 type={'g_blue'}
 						    isGradient={true}
+                fontSize={13}
                 onPress={() => {
                   if (id == '') {
                     return show({ content: '아이디를 입력해 주세요.' });
@@ -322,6 +320,7 @@ export const Login01 = () => {
                 value={'아이디/비밀번호 찾기'}
                 type={'g_blue'}
 						    isGradient={true}
+                fontSize={13}
                 onPress={() => {
                   navigation.navigate('SearchIdAndPwd');
                 }}
@@ -333,6 +332,7 @@ export const Login01 = () => {
                 value={'처음으로'}
                 type={'white'}
                 iconSize={24}
+                fontSize={13}
                 onPress={() => {
                   navigation.navigate('Login');
                 }}

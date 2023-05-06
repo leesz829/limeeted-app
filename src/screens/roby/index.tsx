@@ -346,11 +346,12 @@ export const Roby = (props: Props) => {
   const onPressCustomerInquiry = () => {
     navigation.navigate(STACK.COMMON, { screen: 'CustomerInquiry' });
   };
-  const onPressStorage = () => {
+  const onPressStorage = async (index:any) => {
     navigation.navigate(STACK.COMMON, {
       screen: 'Storage',
       params: {
         headerType: 'common',
+        pageIndex: index,
       },
     });
   };
@@ -543,7 +544,7 @@ export const Roby = (props: Props) => {
 
             <TouchableOpacity
               style={_styles.manageProfile}
-              onPress={onPressStorage}
+              onPress={() => onPressStorage(0)}
             >
               <Text style={_styles.profileText}>새 관심</Text>
               <View style={_styles.row}>
@@ -570,7 +571,7 @@ export const Roby = (props: Props) => {
 
             <TouchableOpacity
               style={_styles.manageProfile}
-              onPress={onPressStorage}
+              onPress={() => onPressStorage(2)}
             >
               <Text style={_styles.profileText}>새 매칭</Text>
               <View style={_styles.row}>

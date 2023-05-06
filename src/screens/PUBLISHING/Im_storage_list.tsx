@@ -6,6 +6,7 @@ import {
   ImageBackground,
   ScrollView,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 
@@ -44,13 +45,18 @@ export const Im_storage_list = (props: Props) => {
   const ref = useRef();
   const [currentIndex, setCurrentIndex] = useState(pageIndex);
 
+  const onPressDot = (index) => {
+    ref?.current?.snapToItem(index);
+  };
+
   return (
     <View style={styles.root}>
       <CommonHeader title={tabs[currentIndex].title} right={<Wallet theme />} />
       <View style={styles.topContainer}>
         <View style={styles.dotContainer}>
           {tabs.map((_, index) => (
-            <View
+            <TouchableOpacity
+              onPress={() => onPressDot(index)}
               style={[
                 styles.dot,
                 {

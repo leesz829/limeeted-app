@@ -860,8 +860,10 @@ export const Profile1 = (props: Props) => {
           )}
 
           <View style={_styles.myImpressionContainer}>
-            <Text style={_styles.title}>내 평점은?</Text>
-            <Text style={_styles.sliderText}>프로필 평점 {memberBase?.profile_score}</Text>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10}}>
+              <Text style={_styles.title}>내 평점은?</Text>
+              <Text style={_styles.sliderText}>프로필 평점 {memberBase?.profile_score}</Text>
+            </View>
             <Slider
               value={memberBase?.profile_score / 10}
               animateTransitions={true}
@@ -1196,14 +1198,14 @@ const _styles = StyleSheet.create({
   },
   sliderText: {
     fontFamily: 'AppleSDGothicNeoR00',
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: 'normal',
     fontStyle: 'normal',
     lineHeight: 13,
     letterSpacing: 0,
     textAlign: 'left',
-    color: '#b7b7b7',
-    marginTop: 20,
+    color: '#777777',
+    marginTop: 40,
   },
 
 });

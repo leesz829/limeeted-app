@@ -183,7 +183,6 @@ export const StorageProfile = (props: Props) => {
 
   // ############################################################ 매칭 회원 정보 조회
   const selectMatchMemberInfo = async () => {
-
     const body = {
       match_seq: matchSeq
     };
@@ -193,13 +192,12 @@ export const StorageProfile = (props: Props) => {
       if(success) {
         if (data.result_code == '0000') {
           setData(data);
-          setIsLoad(true);
         }
       }
     } catch (error) {
       console.log(error);
     } finally {
-      
+      setIsLoad(true);
     }
   };
 

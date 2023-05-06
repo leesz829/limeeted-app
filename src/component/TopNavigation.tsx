@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import { ScreenNavigationProp } from '@types';
+import { ColorType, ScreenNavigationProp } from '@types';
 import { Color } from 'assets/styles/Color';
 import { ROUTES, STACK } from 'constants/routes';
 import { usePopup } from 'Context';
@@ -105,6 +105,15 @@ function NaviButtons({ navName, theme }: { navName: string; theme?: string }) {
 export function Wallet({ theme }) {
   const memberBase = useUserInfo(); // 회원 기본정보
 
+  const [isPassToolTip, setIsPassToolTip] = useState<boolean>(false);
+  const [isRoyalPassToolTip, setIsRoyalPassToolTip] = useState<boolean>(false);
+
+  const tooltipClick = async (type:any) => {
+    if(type == 'pass') {
+      //setIsPassToolTip(isPassToolTip ? false : true);
+    }
+  };
+
   return (
     <>
       {typeof memberBase != 'undefined' && (
@@ -114,29 +123,50 @@ export function Wallet({ theme }) {
           }}>
 
           <View style={[styles.itemContainer, { marginRight: 8 }]}>
-            <Image style={styles.itemStyle} source={ICON.passCircle} resizeMode={'contain'} />
-            <Text
-              style={[
-                styles.statusText,
-                { color: theme ? '#625AD1' : '#625AD1', lineHeight: 13 },
-              ]}>
+            <TouchableOpacity 
+              style={[styles.itemContainer]} 
+              onPress={() => {
+                tooltipClick('pass');
+              }}>
 
-              {memberBase?.pass_has_amt}
-            </Text>
-            {/* <View style={styles.passTooltipArea}>
-              <Text>범용적으로 사용되는 기본 재화.{'\n'}관심을 보내거나 확인하는데 사용되요.</Text>
-            </View> */}
+              <Image style={styles.itemStyle} source={ICON.passCircle} resizeMode={'contain'} />
+              <Text
+                style={[
+                  styles.statusText,
+                  { color: theme ? '#625AD1' : '#625AD1', lineHeight: 13 },
+                ]}>
+
+                {memberBase?.pass_has_amt}
+              </Text>
+            </TouchableOpacity>
+
+            {isPassToolTip && 
+              <View style={[styles.tooltipArea('pass'), ]}>
+                <Text style={styles.tooltipAreaText}>범용적으로 사용되는 기본 재화.{'\n'}관심을 보내거나 확인하는데 사용되요.</Text>
+              </View>
+            }
           </View>
-          <View style={styles.itemContainer}>
-            <Image style={styles.itemStyle} source={ICON.royalPassCircle} resizeMode={'contain'}  />
-            <Text
-              style={[
-                styles.statusText,
-                { color: theme ? '#625AD1' : '#625AD1', lineHeight: 13 },
-              ]}>
 
-              {memberBase?.royal_pass_has_amt}
-            </Text>
+          <View style={styles.itemContainer}>
+
+            <TouchableOpacity 
+              style={[styles.itemContainer]} 
+              onPress={() => {
+                tooltipClick('pass');
+              }}>
+
+              <Image style={styles.itemStyle} source={ICON.royalPassCircle} resizeMode={'contain'}  />
+              <Text
+                style={[
+                  styles.statusText,
+                  { color: theme ? '#625AD1' : '#625AD1', lineHeight: 13 },
+                ]}>
+
+                {memberBase?.royal_pass_has_amt}
+              </Text>
+
+            </TouchableOpacity>
+
           </View>
         </View>
       )}
@@ -208,10 +238,23 @@ const styles = StyleSheet.create({
     height: 29,
     resizeMode: 'contain',
   },
-  passTooltipArea: {
-    display: 'none',
-    position: 'absolute',
-    bottom: -40,
-    left: 0,
+
+
+  tooltipArea: (type) => {
+    return {
+      position: 'absolute',
+      bottom: -35,
+      left: type == 'pass' ? -40 : 0,
+      zIndex: 9999,
+      backgroundColor: '#151515',
+      borderRadius: 7,
+    };
+  },
+  tooltipAreaText: {
+    fontSize: 10,
+    fontFamily: 'AppleSDGothicNeoM00',
+    color: ColorType.white,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
   },
 });

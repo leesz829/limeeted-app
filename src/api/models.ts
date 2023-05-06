@@ -393,6 +393,7 @@ export async function get_item_matched_info(body: {
 export async function regist_match_status(body: {
   active_type: string;
   res_member_seq: number;
+  special_level: number;
 }) {
   return send(REGIST_MATCHING_INFO, 'POST', body, true, false);
 }
