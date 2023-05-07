@@ -40,7 +40,7 @@ function CommonHeader({
   }, [navigation]);
 
   return (
-    <View style={{ ...styles.headerContainer, ...containerStyle }}>
+    <View style={{ ...styles.headerContainer, ...containerStyle, zIndex: 1 }}>
       <TouchableOpacity
         onPress={goHome}
         style={styles.backContainer}

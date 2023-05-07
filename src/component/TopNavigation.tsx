@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { ColorType, ScreenNavigationProp } from '@types';
 import { Color } from 'assets/styles/Color';
 import { ROUTES, STACK } from 'constants/routes';
@@ -39,6 +39,7 @@ const TopNavigation: FC<Props> = (props) => {
       colors={['#89b0fa', '#aaa1f7']}
       style={{
         width: '100%',
+        zIndex: 1,
       }}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
@@ -52,7 +53,7 @@ const TopNavigation: FC<Props> = (props) => {
       </View>
     </LinearGradient>
   ) : (
-    <View style={[styles.tabContainer, { backgroundColor: 'white' }]}>
+    <View style={[styles.tabContainer, { backgroundColor: 'white', zIndex: 1 }]}>
       <NaviButtons navName={props.currentPath} theme={props.theme} />
       {/* ######################################################################
 			##### 팝업 영역
@@ -103,6 +104,7 @@ function NaviButtons({ navName, theme }: { navName: string; theme?: string }) {
   );
 }
 export function Wallet({ theme }) {
+  const isFocus = useIsFocused();
   const memberBase = useUserInfo(); // 회원 기본정보
 
   const [isPassToolTip, setIsPassToolTip] = useState<boolean>(false);
@@ -110,9 +112,25 @@ export function Wallet({ theme }) {
 
   const tooltipClick = async (type:any) => {
     if(type == 'pass') {
-      //setIsPassToolTip(isPassToolTip ? false : true);
+      setIsPassToolTip(isPassToolTip ? false : true);
+
+      if(!isPassToolTip) {
+        setIsRoyalPassToolTip(false);
+      };
+      
+    } else if(type == 'royal') {
+      setIsRoyalPassToolTip(isRoyalPassToolTip ? false : true);
+
+      if(!isRoyalPassToolTip) {
+        setIsPassToolTip(false);
+      };
     }
   };
+
+  React.useEffect(() => {
+    setIsPassToolTip(false);
+    setIsRoyalPassToolTip(false);
+  }, [isFocus])
 
   return (
     <>
@@ -152,7 +170,7 @@ export function Wallet({ theme }) {
             <TouchableOpacity 
               style={[styles.itemContainer]} 
               onPress={() => {
-                tooltipClick('pass');
+                tooltipClick('royal');
               }}>
 
               <Image style={styles.itemStyle} source={ICON.royalPassCircle} resizeMode={'contain'}  />
@@ -164,8 +182,13 @@ export function Wallet({ theme }) {
 
                 {memberBase?.royal_pass_has_amt}
               </Text>
-
             </TouchableOpacity>
+
+            {isRoyalPassToolTip && 
+              <View style={[styles.tooltipArea('royal'), ]}>
+                <Text style={styles.tooltipAreaText}>리미티드의 특수 재화.{'\n'}찐심을 보내는데 사용되요.</Text>
+              </View>
+            }
 
           </View>
         </View>
@@ -244,7 +267,7 @@ const styles = StyleSheet.create({
     return {
       position: 'absolute',
       bottom: -35,
-      left: type == 'pass' ? -40 : 0,
+      left: type == 'pass' ? -40 : -60,
       zIndex: 9999,
       backgroundColor: '#151515',
       borderRadius: 7,

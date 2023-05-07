@@ -407,8 +407,7 @@ export const Roby = (props: Props) => {
             borderTopColor: '#00FFFF'
           }}
           start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-        ></LinearGradient>
+          end={{ x: 1, y: 1 }}></LinearGradient>
 
         <SpaceView pl={16} pr={16}>
           <SpaceView
@@ -495,7 +494,7 @@ export const Roby = (props: Props) => {
               {memberBase?.reex_yn == 'Y' ? (
                 <RatingCard
                   title={'프로필 심사중'}
-                  desc={'내 프로필을 ' + memberBase?.profile_eval_cnt + '명의 회원님이\n평가를 남겨주셨어요.'}
+                  desc={'내 프로필에 ' + memberBase?.profile_eval_cnt + '명의 회원님이\n평가를 남겨 주셨어요.'}
                   value={memberBase?.profile_score}
                   isPennding={true}
                 />
@@ -525,9 +524,9 @@ export const Roby = (props: Props) => {
           </View>
 
           {memberBase?.reex_yn == 'Y' ? (
-            <TouchableOpacity style={[_styles.pennding, layoutStyle.mb20]}>
+            <View style={[_styles.pennding, layoutStyle.mb20]}>
               <Text style={_styles.submitText}>내 프로필을 심사중이에요!</Text>
-            </TouchableOpacity>
+            </View>
           ) : (
             <TouchableOpacity
             onPress={() => profileReexPopupOpen()}
