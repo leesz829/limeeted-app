@@ -1,6 +1,6 @@
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useIsFocused } from '@react-navigation/native';
 import React, { useEffect } from 'react';
-import { LogBox, SafeAreaView, StatusBar, StyleSheet } from 'react-native';
+import { LogBox, SafeAreaView, StatusBar, StyleSheet, Alert, Linking, Platform, Modal, View, Text } from 'react-native';
 import { Notifications } from 'react-native-notifications';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -20,6 +20,11 @@ import getFCMToken from 'utils/FCM/getFCMToken';
 import { PopupProvider } from 'Context/index';
 import SplashScreen from 'react-native-splash-screen';
 import { Color } from 'assets/styles/Color';
+import VersionCheck from 'react-native-version-check';
+import { get_app_version } from 'api/models';
+import RNExitApp from 'react-native-exit-app';
+
+
 
 enableScreens();
 LogBox.ignoreAllLogs();
@@ -97,7 +102,9 @@ const App = () => {
 
 function PreFetcher(props) {
   const dispatch = useDispatch();
+
   useEffect(() => {
+    //appVersionCheck();
     authCheck();
     // AsyncStorage.clear();
   }, []);

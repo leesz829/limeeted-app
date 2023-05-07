@@ -116,6 +116,7 @@ export const ICON = {
   royalPassIconNew: require('assets/icon/loyalpass_icon_new.png'),
   passCircle: require('assets/icon/passCircle.png'),
   royalPassCircle: require('assets/icon/royalPassCircle.png'),
+  inventoryIcon: require('assets/icon/inventory_icon.png'),
 };
 
 export const GIF_IMG = {

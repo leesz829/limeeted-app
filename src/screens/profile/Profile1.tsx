@@ -2,7 +2,7 @@ import { Slider } from '@miblanchard/react-native-slider';
 import { RouteProp, useIsFocused, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { StackParamList, ScreenNavigationProp, ColorType } from '@types';
-import { get_member_face_rank, update_profile } from 'api/models';
+import { get_member_profile_info, get_member_face_rank, update_profile } from 'api/models';
 import { Color } from 'assets/styles/Color';
 import { CommonBtn } from 'component/CommonBtn';
 import CommonHeader from 'component/CommonHeader';
@@ -68,7 +68,6 @@ export const Profile1 = (props: Props) => {
   const [images, setImages] = useState([]);
 
   const memberBase = useUserInfo();           // 회원 기본정보
-  const mbrProfileImgList = useProfileImg();  // 회원 프로필 사진 정보
   const mbrSecondAuthList = useSecondAth();   // 회원 2차 인증 정보
 
   // 프로필 사진
@@ -178,6 +177,25 @@ export const Profile1 = (props: Props) => {
 
   // ############################################################################# 사진 삭제
   const imgDelProc = () => {
+
+    let tmpCnt = 0;
+    for (var key in imgData) {
+      if (imgData[key].delYn == 'N' && (imgData[key].url || imgData[key].uri)) {
+        tmpCnt++;
+      }
+    }
+
+    /* for(var key in profileImageList) {
+      tmpCnt++;
+    } */
+
+    console.log('tmpCnt ::::: ' ,tmpCnt);
+
+    if (tmpCnt <= 3) {
+      show({ content: '프로필 사진은 최소 3장 등록되어야 합니다.' });
+      return;
+    }
+
     if (isDelImgData.order_seq == '1') {
       setImgData({
         ...imgData,
@@ -221,13 +239,6 @@ export const Profile1 = (props: Props) => {
     } else {
       delArr += ',' + isDelImgData.img_seq;
     }
-
-    console.log('imgDelSeqStr ::: ', imgDelSeqStr);
-    console.log('isDelImgData ::: ', isDelImgData);
-    console.log('delArr ::: ', delArr);
-
-    //setImgDelSeqStr(delArr);
-    //imgDel_onClose();
 
     deleteProfileImage(isDelImgData.img_seq);
   };  
@@ -297,69 +308,27 @@ export const Profile1 = (props: Props) => {
     setImages(temp);
   };
 
-  // ############################################################  프로필 관리 저장
-  const saveMemberProfile = async () => {
-    let tmpCnt = 0;
-    for (var key in imgData) {
-      if (imgData[key].delYn == 'N' && (imgData[key].url || imgData[key].uri)) {
-        tmpCnt++;
-      }
-    }
-    for(var key in profileImageList) {
-      tmpCnt++;
-    }
+  // ############################################################  프로필 데이터 조회
+  const getMemberProfileData = async () => {
+    setIsLoading(true);
 
-    if (tmpCnt < 3) {
-      show({ content: '프로필 사진은 최소 3장 등록해주세요.' });
-      return;
-    }
-
-    const body = {
-      file_list: profileImageList
-      , img_del_seq_str: imgDelSeqStr
-      , interview_list: applyInterviewList
-    };
-    
     try {
-      const { success, data } = await update_profile(body);
-      if(success) {
-        switch (data.result_code) {
-          case SUCCESS:
-            dispatch(setPartialPrincipal({
-              mbr_base : data.mbr_base
-              , mbr_img_list : data.mbr_img_list
-              , mbr_interview_list : data.mbr_interview_list
-            }));
-  
-            show({
-              content: '저장되었습니다.' ,
-              confirmCallback: function() {
-                navigation.navigate(STACK.TAB, {
-                  screen: 'Roby',
-                });
-              }
-            });
-            break;
-          default:
-            show({
-              content: '오류입니다. 관리자에게 문의해주세요.' ,
-              confirmCallback: function() {}
-            });
-            break;
-        }
-       
+      const { success, data } = await get_member_profile_info();
+      if (success) {
+        setProfileFaceRankList(data.mbr_face_rank_list);
+        profileDataSet(data.mbr_img_list);
       } else {
         show({
-          content: '오류입니다. 관리자에게 문의해주세요.' ,
-          confirmCallback: function() {}
+          content: '오류입니다. 관리자에게 문의해주세요.',
+          confirmCallback: function () {},
         });
       }
     } catch (error) {
       console.log(error);
     } finally {
-      
+      setIsLoading(false);
     }
-  };
+  }
 
   // ############################################################  프로필 이미지 등록
   const insertProfileImage = async (imageData:any) => {
@@ -372,6 +341,8 @@ export const Profile1 = (props: Props) => {
       , img_del_seq_str: null
       , interview_list: null
     };
+
+    setIsLoading(true);
     
     try {
       const { success, data } = await update_profile(body);
@@ -387,9 +358,7 @@ export const Profile1 = (props: Props) => {
             show({
               content: '등록되었습니다.' ,
               confirmCallback: function() {
-                navigation.navigate(STACK.TAB, {
-                  screen: 'Roby',
-                });
+                profileDataSet(data.mbr_img_list);
               }
             });
             break;
@@ -410,26 +379,12 @@ export const Profile1 = (props: Props) => {
     } catch (error) {
       console.log(error);
     } finally {
-      
+      setIsLoading(false);
     }
   };
   
   // ############################################################  프로필 이미지 삭제
   const deleteProfileImage = async (imgSeq:string) => {
-    let tmpCnt = 0;
-    for (var key in imgData) {
-      if (imgData[key].delYn == 'N' && (imgData[key].url || imgData[key].uri)) {
-        tmpCnt++;
-      }
-    }
-    for(var key in profileImageList) {
-      tmpCnt++;
-    }
-
-    if (tmpCnt < 3) {
-      show({ content: '프로필 사진은 최소 3장 등록되어야 합니다.' });
-      return;
-    }
 
     const body = {
       file_list: null
@@ -453,9 +408,8 @@ export const Profile1 = (props: Props) => {
             show({
               content: '삭제되었습니다.' ,
               confirmCallback: function() {
-                navigation.navigate(STACK.TAB, {
-                  screen: 'Roby',
-                });
+                imgDel_onClose();
+                profileDataSet(data.mbr_img_list);
               }
             });
             break;
@@ -473,39 +427,18 @@ export const Profile1 = (props: Props) => {
           confirmCallback: function() {}
         });
       }
-
-      setIsLoading(false);
     } catch (error) {
       console.log(error);
-      setIsLoading(false);
     } finally {
-      
+      setIsLoading(false);
     }
   };
 
-  // ################################################################ 초기 실행 함수
-  useEffect(() => {
-    //init();
-  }, [myImages]);
-
-  const init = () => {
-    getMemberFaceRank();
-    let result = [];
-    let freeCount = 6;
-    freeCount = freeCount - myImages.length;
-
-    for (let i = 0; i < freeCount; i++) {
-      result.push({});
-    }
-    setImages(myImages.concat(result));
-  };
-
-  // ############################################################################# 최초 실행
-  React.useEffect(() => {
-    getMemberFaceRank();
-    setProfileImageList([]);
+  // ################################################################ 프로필 이미지 구성
+  const profileDataSet = async (imgList:any) => {
     
-    if (mbrProfileImgList != null) {
+    // ##### 프로필 이미지 구성
+    if (imgList != null && imgList.length > 0) {
       let imgData: any = {
         orgImgUrl01: { memer_img_seq: '', url: '', delYn: '' },
         orgImgUrl02: { memer_img_seq: '', url: '', delYn: '' },
@@ -521,7 +454,7 @@ export const Profile1 = (props: Props) => {
         imgFile06: { uri: '', name: '', type: '' },
       };
 
-      mbrProfileImgList.map(
+      imgList.map(
         ({
           member_img_seq,
           img_file_path,
@@ -563,6 +496,7 @@ export const Profile1 = (props: Props) => {
       setImgData({ ...imgData, imgData });
     }
 
+    // ##### 2차 인증 구성
     if (mbrSecondAuthList != null) {
       mbrSecondAuthList.map(
         ({
@@ -593,8 +527,30 @@ export const Profile1 = (props: Props) => {
         }
       );
     }
-  }, [isFocus]);
+  };
 
+  // ################################################################ 초기 실행 함수
+  /* useEffect(() => {
+    //init();
+  }, [myImages]);
+
+  const init = () => {
+    getMemberFaceRank();
+    let result = [];
+    let freeCount = 6;
+    freeCount = freeCount - myImages.length;
+
+    for (let i = 0; i < freeCount; i++) {
+      result.push({});
+    }
+    setImages(myImages.concat(result));
+  }; */
+
+  // ############################################################################# 최초 실행
+  React.useEffect(() => {
+    //getMemberFaceRank();
+    getMemberProfileData();
+  }, [isFocus]);
 
 
   return (
@@ -862,7 +818,7 @@ export const Profile1 = (props: Props) => {
           <View style={_styles.myImpressionContainer}>
             <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10}}>
               <Text style={_styles.title}>내 평점은?</Text>
-              <Text style={_styles.sliderText}>프로필 평점 {memberBase?.profile_score}</Text>
+              <Text style={_styles.sliderText}>{memberBase?.profile_score}</Text>
             </View>
             <Slider
               value={memberBase?.profile_score / 10}
@@ -1197,15 +1153,14 @@ const _styles = StyleSheet.create({
     marginRight: 10,
   },
   sliderText: {
-    fontFamily: 'AppleSDGothicNeoR00',
-    fontSize: 12,
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 19,
     fontWeight: 'normal',
     fontStyle: 'normal',
-    lineHeight: 13,
     letterSpacing: 0,
     textAlign: 'left',
-    color: '#777777',
-    marginTop: 40,
+    color: '#333333',
+    marginTop: 32,
   },
 
 });

@@ -17,6 +17,8 @@ import com.facebook.react.bridge.JSIModulePackage; // <- add
 import com.microsoft.codepush.react.CodePush;
 import com.swmansion.reanimated.ReanimatedJSIModulePackage; // <- add
 import com.wix.reactnativenotifications.RNNotificationsPackage;
+import io.xogus.reactnative.versioncheck.RNVersionCheckPackage;  // <--- HERE
+
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
@@ -32,6 +34,9 @@ public class MainApplication extends Application implements ReactApplication {
       // Packages that cannot be autolinked yet can be added manually here, for
       // example:
       // packages.add(new MyReactNativePackage());
+
+      new RNVersionCheckPackage();
+      
       return packages;
     }
 

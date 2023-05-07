@@ -111,7 +111,7 @@ export function Wallet({ theme }) {
   const [isRoyalPassToolTip, setIsRoyalPassToolTip] = useState<boolean>(false);
 
   const tooltipClick = async (type:any) => {
-    if(type == 'pass') {
+    /* if(type == 'pass') {
       setIsPassToolTip(isPassToolTip ? false : true);
 
       if(!isPassToolTip) {
@@ -124,12 +124,12 @@ export function Wallet({ theme }) {
       if(!isRoyalPassToolTip) {
         setIsPassToolTip(false);
       };
-    }
+    } */
   };
 
   React.useEffect(() => {
-    setIsPassToolTip(false);
-    setIsRoyalPassToolTip(false);
+    //setIsPassToolTip(false);
+    //setIsRoyalPassToolTip(false);
   }, [isFocus])
 
   return (

@@ -94,11 +94,11 @@ export const Shop = () => {
           <FlatList
             data={banner}
             horizontal
-            style={styles.bannerWrapper}
+            style={_styles.bannerWrapper}
             pagingEnabled
             renderItem={({ item, index }) => {
               const urlPath =  findSourcePath(item?.s_file_path + item?.s_file_name);
-              return <Image style={styles.topBanner} source={urlPath} />;
+              return <Image style={_styles.topBanner} source={urlPath} />;
             }}
           />
 
@@ -107,16 +107,32 @@ export const Shop = () => {
           </View>
         </View>
 
+        {/* ############################################### 인벤토리 영역 */}
+        <TouchableOpacity onPress={onPressInventory}>
+          <View style={_styles.inventoryArea}>
+            <View>
+              <Image source={ICON.inventoryIcon} style={_styles.inventoryIcon} />
+            </View>
+            <View style={_styles.inventoryText}>
+              <Text style={_styles.inventoryTextTit}>인벤토리</Text>
+              <Text style={_styles.inventoryTextSubTit}>구매한 상품 또는 보상은 인벤토리에 저장되요.</Text>
+            </View>
+            <View>
+              <Image source={ICON.arrow_right} style={_styles.arrowIcon} />
+            </View>
+          </View>
+        </TouchableOpacity>
+
         {/* ############################################### 카테고리별 */}
         <CategoryShop loadingFunc={loadingFunc} />
       </ScrollView>
 
-      <TouchableOpacity
+      {/* <TouchableOpacity
         onPress={onPressInventory}
-        style={styles.floatingButtonWrapper}>
+        style={_styles.floatingButtonWrapper}>
 
-        <Image source={ICON.floatingButton} style={styles.floatingButton} />
-      </TouchableOpacity>
+        <Image source={ICON.floatingButton} style={_styles.floatingButton} />
+      </TouchableOpacity> */}
     </>
   );
 };
@@ -144,11 +160,11 @@ function ListHeaderComponent() {
       <FlatList
         data={banner}
         horizontal
-        style={styles.bannerWrapper}
+        style={_styles.bannerWrapper}
         pagingEnabled
         renderItem={({ item, index }) => {
           const urlPath =  findSourcePath(item?.s_file_path + item?.s_file_name);
-          return <Image style={styles.topBanner} source={urlPath} />;
+          return <Image style={_styles.topBanner} source={urlPath} />;
         }}
       />
 
@@ -178,9 +194,9 @@ function ListFooterComponent() {
 ############### Style 영역
 ################################################################################################################ */}
 
-const styles = StyleSheet.create({
+const _styles = StyleSheet.create({
   bannerWrapper: {
-    backgroundColor: Color.primary,
+    backgroundColor: Color.white,
     width: `100%`,
     height: 250,
   },
@@ -272,4 +288,42 @@ const styles = StyleSheet.create({
     // bottom: 10,
     // right: 10,
   },
+  inventoryArea: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#DAD7DE',
+    borderRadius: 10,
+    marginHorizontal: 15,
+    marginTop: 30,
+    paddingLeft: 2,
+    paddingRight: 20,
+  },
+  inventoryIcon: {
+    width: 65,
+    height: 65,
+    marginTop: 0,
+  },
+  arrowIcon: {
+    width: 10,
+    height: 19,
+  },
+  inventoryText : {
+    marginRight: 40,
+    justifyContent: 'center',
+    marginTop: -5,
+  },
+  inventoryTextTit : {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 15,
+    color: '#646467',
+  },
+  inventoryTextSubTit : {
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 12,
+    color: '#939393',
+    letterSpacing: 0,
+  },
+
 });

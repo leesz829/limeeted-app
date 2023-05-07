@@ -40,6 +40,7 @@ import {
   MEMBER_AUTH_DETAIL,
   BOARD_LIST,
   GET_MEMBER_FACE_RANK,
+  GET_MEMBER_PROFILE_INFO,
   NICE_AUTH,
   UPDATE_PHONE_NUMBER,
   UPDATE_PASSWORD,
@@ -67,7 +68,8 @@ import {
   CHECK_REPORT,
   CHECK_REPORT_CONFIRM,
   GET_SECOND_AUTH,
-  INSERT_MEMBER_PHONE_BOOK
+  INSERT_MEMBER_PHONE_BOOK,
+  GET_APP_VERSION,
 } from './route';
 
 /* ========================================================================================================
@@ -373,6 +375,11 @@ export async function get_member_face_rank() {
   return send(GET_MEMBER_FACE_RANK, 'POST', undefined, true, false);
 }
 
+// 회원 프로필 정보를 조회한다.
+export async function get_member_profile_info() {
+  return send(GET_MEMBER_PROFILE_INFO, 'POST', undefined, true, false);
+}
+
 
 /* ========================================================================================================
 ==================================================== MATCH
@@ -644,4 +651,11 @@ export async function set_member_phone_book(body: {
   friend_match_yn: string;
 }) {
   return send(INSERT_MEMBER_PHONE_BOOK, 'POST', body, true, false);
+}
+
+// 앱 버전 정보를 조회한다.
+export async function get_app_version(body: {
+  device_type: string;
+}) {
+  return send(GET_APP_VERSION, 'POST', body, false, false);
 }
