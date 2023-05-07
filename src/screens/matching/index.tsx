@@ -58,6 +58,7 @@ import ProfileAuth from 'component/ProfileAuth';
 import InterviewRender from 'component/InterviewRender';
 import { formatNowDate} from 'utils/functions';
 import { Watermark } from 'component/Watermark';
+import SincerePopup from 'screens/commonpopup/sincerePopup';
 
 
 
@@ -125,6 +126,22 @@ export default function Matching(props: Props) {
     setCurrentIndex(index);
   };
 
+  // ################################################################ 찐심 모달 관련
+
+  // 찐심 보내기 모달 visible
+  const [sincereModalVisible, setSincereModalVisible] = useState(false);
+
+  // 찐심 닫기 함수
+  const sincereCloseModal = () => {
+    setSincereModalVisible(false);
+  };
+
+  // 찐심 보내기 함수
+  const sincereSend = (level:number) => {
+    insertMatchInfo('sincere', level);
+    setSincereModalVisible(false);
+  }
+
   // ################################################################ 초기 실행 함수
   useEffect(() => {
     checkUserReport();
@@ -184,11 +201,13 @@ export default function Matching(props: Props) {
 
         },
 				confirmCallback: function() {
-          insertMatchInfo(activeType);
+          insertMatchInfo(activeType, 0);
 				}
 			});
     } else if (activeType == 'sincere') {
-      show({
+      setSincereModalVisible(true);
+
+      /* show({
 				title: '찐심 보내기',
 				content: '로얄패스를 소모하여 찐심을 보내시겠습니까?\n로얄패스 x2' ,
         cancelCallback: function() {
@@ -197,7 +216,7 @@ export default function Matching(props: Props) {
 				confirmCallback: function() {
           insertMatchInfo(activeType);
 				}
-			});
+			}); */
     } else if (activeType == 'pass') {
       show({
 				title: '매칭 취소',
@@ -206,18 +225,20 @@ export default function Matching(props: Props) {
 
         },
 				confirmCallback: function() {
-          insertMatchInfo(activeType);
+          insertMatchInfo(activeType, 0);
 				}
 			});
     }
   };
 
   // ############################################################ 찐심/관심/거부 저장
-  const insertMatchInfo = async (activeType: string) => {
+  const insertMatchInfo = async (activeType: string, special_level: number) => {
     const body = {
       active_type: activeType,
       res_member_seq: data.match_member_info.member_seq,
+      special_level: special_level,
     };
+
     try {
       const { success, data } = await regist_match_status(body);
 
@@ -330,8 +351,9 @@ export default function Matching(props: Props) {
   return (
     data.profile_img_list.length > 0 && isLoad ? (
       <>
+        <TopNavigation currentPath={'LIMEETED'} />
+
         <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
-          <TopNavigation currentPath={'LIMEETED'} />
 
           {/* ####################################################################################
           ####################### 상단 영역
@@ -594,9 +616,9 @@ export default function Matching(props: Props) {
           <View style={{ height: 50 }} />
         </ScrollView>
 
-        {/* ###############################################
+        {/* ##################################################################################
                     사용자 신고하기 팝업
-        ############################################### */}
+        ################################################################################## */}
         <Modalize
           ref={report_modalizeRef}
           adjustToContentHeight={false}
@@ -641,6 +663,16 @@ export default function Matching(props: Props) {
             </SpaceView>
           </View>
         </Modalize>
+
+        {/* ##################################################################################
+                    찐심 보내기 팝업
+        ################################################################################## */}
+        <SincerePopup
+          isVisible={sincereModalVisible}
+          closeModal={sincereCloseModal}
+          confirmFunc={sincereSend}
+        />
+
       </>
     ) : (
       <>
@@ -1156,48 +1188,4 @@ const styles = StyleSheet.create({
 
 });
 
-const interest = [
-  {
-    code_name: '공연보기',
-    common_code: 'CONC_06_00',
-  },
-  {
-    interest_seq: 454,
-    code_name: '해외축구',
-    common_code: 'CONC_06_00',
-  },
-  {
-    interest_seq: 454,
-    code_name: '집에서 영화보기',
-    common_code: 'CONC_06_00',
-  },
-  {
-    interest_seq: 454,
-    code_name: '캠핑',
-    common_code: 'CONC_06_00',
-  },
-  {
-    interest_seq: 454,
-    code_name: '동네산책',
-    common_code: 'CONC_06_00',
-  },
 
-  {
-    interest_seq: 454,
-    code_name: '반려견과 함께',
-    common_code: 'CONC_06_00',
-  },
-  {
-    interest_seq: 454,
-    code_name: '인스타그램',
-    common_code: 'CONC_06_00',
-  },
-];
-interface auth {
-  member_auth_seq: number;
-  auth_level: number;
-  auth_status: string;
-  code_name: string;
-  member_seq: number;
-  common_code: string;
-}

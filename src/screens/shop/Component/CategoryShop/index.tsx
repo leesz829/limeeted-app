@@ -277,8 +277,6 @@ function RenderItem({ item, openModal }) {
   const imagePath = findSourcePath(item?.file_path + item?.file_name);
   //const imagePath = findSourcePath(item?.full_file_url);
 
-  console.log('imagePath ::::: ' , imagePath);
-
   return (
     <TouchableOpacity style={styles.itemContainer} onPress={onPressItem}>
       <View style={{ flexDirection: 'row' }}>

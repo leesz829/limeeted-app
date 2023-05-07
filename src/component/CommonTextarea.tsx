@@ -82,7 +82,7 @@ const _styles = (props: Props) => {
     },
     inputStyle: {
       width: '100%',
-      height: props.height != null ? props.height : 420,
+      height: props.height != null ? props.height : 170,
       maxHeight: props.height != null ? props.height : 420,
       borderWidth: props.borderWidth != null ? props.borderWidth : 1,
       borderRadius: props.borderRadius != null ? props.borderRadius : 10,

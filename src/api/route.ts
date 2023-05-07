@@ -54,6 +54,7 @@ export const MEMBER_APPLY_ITEM_INFO = '/item/selectMemberApplyItemList';
 export const REGIST_PROFILE_EVALUATION = '/profile/insertProfileAssessment';
 export const PROFILE_REEXAMINATION = '/profile/profileReexProc';
 export const GET_MEMBER_FACE_RANK = '/profile/getMemberFaceRankList';
+export const GET_MEMBER_PROFILE_INFO = '/profile/getMemberProfileData';
 
 /**
  * MATCHING
@@ -112,3 +113,4 @@ export const EVENT_CASHBACK_RECEIVE = '/event/receiveItem';
 export const COMMON_CODE = '/common/selectGroupCodeList';
 export const BOARD_LIST = '/board/selectBoardList';
 export const NICE_AUTH = '/nice/authToken';
+export const GET_APP_VERSION = '/login/getAppVersion';

@@ -188,13 +188,12 @@ export const Profile = (props: Props) => {
       if (success) {
         if (data.result_code == '0000' || data.result_code == '0055') {
           let content = data.result_code == '0055'?'입력하신 추천인이 등록되었습니다.':'저장되었습니다.';
-          
           dispatch(myProfile());
           show({ content: content });
 
-          navigation.navigate(STACK.TAB, {
+          /* navigation.navigate(STACK.TAB, {
             screen: 'Roby',
-          });
+          }); */
         } else if (data.result_code == '6010') {
           show({ content: '보유 패스가 부족합니다.' });
           return false;

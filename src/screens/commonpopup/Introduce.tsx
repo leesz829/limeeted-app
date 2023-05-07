@@ -364,7 +364,7 @@ export const Introduce = (props: Props) => {
 								onChangeText={(comment) => setComment(comment)}
 								placeholder={'문의 내용'}
 								placeholderTextColor={'#c6ccd3'}
-								maxLength={80}
+								maxLength={50}
                 height={80}
                 borderRadius={5}
                 fontSize={13}
@@ -521,18 +521,19 @@ export const Introduce = (props: Props) => {
           </SpaceView>
         </View>
 
-        <SpaceView>
-          <CommonBtn
-            value={'저장'}
-            type={'primary'}
-            height={60}
-            borderRadius={1}
-            onPress={() => {
-              saveMemberAddInfo();
-            }}
-          />
-        </SpaceView>        
       </ScrollView>
+
+      <SpaceView>
+        <CommonBtn
+          value={'저장'}
+          type={'primary'}
+          height={60}
+          borderRadius={1}
+          onPress={() => {
+            saveMemberAddInfo();
+          }}
+        />
+      </SpaceView>
 
 
 

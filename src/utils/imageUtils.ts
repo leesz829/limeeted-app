@@ -23,6 +23,8 @@ export const ICON = {
   snsNew: require('assets/icon/icon-sns-new.png'),
   vehicleNew: require('assets/icon/icon-vehicle-new.png'),
   arrRight: require('assets/icon/icon-arr-right.png'),
+  arrRight02: require('assets/icon/icon-arr-right02.png'),
+  arrLeft02: require('assets/icon/icon-arr-left02.png'),
   arrBottom: require('assets/icon/icon-arrow-bottom.png'),
   xBtn: require('assets/icon/icon-x.png'),
   xBtn2: require('assets/icon/icon-x2.png'),
@@ -114,6 +116,7 @@ export const ICON = {
   royalPassIconNew: require('assets/icon/loyalpass_icon_new.png'),
   passCircle: require('assets/icon/passCircle.png'),
   royalPassCircle: require('assets/icon/royalPassCircle.png'),
+  inventoryIcon: require('assets/icon/inventory_icon.png'),
 };
 
 export const GIF_IMG = {
@@ -133,6 +136,7 @@ export const IMAGE = {
   heartIcon: require('assets/img/heart_icon.png'),
   logoRenew: require('assets/img/logo_renew.png'),
   logoMarkRenew: require('assets/img/logo_mark_renew.png'),
+  logoRenewText: require('assets/img/logo_renew_text.png'),
   signImg: require('assets/img/sign_img.png'),
   robyFemaleImg: require('assets/img/roby_female_img.png'),
   robyMaleImg: require('assets/img/roby_male_img.png'),

@@ -1,4 +1,4 @@
-import { layoutStyle, styles } from 'assets/styles/Styles';
+import { layoutStyle, styles, commonStyle } from 'assets/styles/Styles';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import React, { useEffect, useState, useRef } from 'react';
@@ -64,6 +64,21 @@ export default function Interview({
 
   // ###################################### 인터뷰 등록 페이지 이동 함수
   function onPressRegist(code) {
+    let applyUseInterViewCnt = 0;
+    interview.map((item:any) => {
+      if(item.use_yn == 'Y') {
+        applyUseInterViewCnt++;
+      }
+    });
+
+    if(applyUseInterViewCnt >= 5) {
+      show({
+        title: '알림',
+        content: '인터뷰는 최소 5개까지 등록 가능합니다.'
+      });
+      return;
+    }
+
     setMode(Mode.view);
     navigation.navigate(STACK.COMMON, {
       screen: 'Profile2',
@@ -99,45 +114,48 @@ export default function Interview({
   }
 
   // 저장버튼
-  async function submit() {
-    if (deleteList.length > 0) {
+  async function submit(item: any) {
+    let applyInterviewList = [];
 
-      //deleteList?.filter((item: any) => (item.use_yn = 'N'));
-      let applyInterviewList = [];
-      const copiedDeleteList = deleteList.slice();
-      deleteList.map((item: any, index) => {
-        item.use_yn = 'N';
-
-        let map = {
-          code_name: item.code_name
-          ,common_code: item.common_code
-           ,disp_yn: item.disp_yn
-           , member_interview_seq: item.member_interview_seq
-           , order_seq: item.order_seq
-           , use_yn: 'N'
-        }
-
-        console.log('map ::::: ' , map);
-        applyInterviewList.push(map);
-      });
-
-      show({
-        content: '선택한 인터뷰 아이템을 삭제하시겠습니까?',
-        cancelCallback: function () {},
-        confirmCallback: function () {
-          
-          saveAPI(applyInterviewList);
-        },
-      });
-    } else {
-      show({ content: '삭제할 인터뷰를 선택해 주세요.' });
+    let map = {
+      code_name: item.code_name
+      , common_code: item.common_code
+      , disp_yn: item.disp_yn
+      , member_interview_seq: item.member_interview_seq
+      , order_seq: item.order_seq
+      , use_yn: 'N'
     }
+
+    applyInterviewList.push(map);
+
+    /* const copiedDeleteList = deleteList.slice();
+    deleteList.map((item: any, index) => {
+      item.use_yn = 'N';
+
+      let map = {
+        code_name: item.code_name
+        ,common_code: item.common_code
+          ,disp_yn: item.disp_yn
+          , member_interview_seq: item.member_interview_seq
+          , order_seq: item.order_seq
+          , use_yn: 'N'
+      }
+
+      console.log('map ::::: ' , map);
+      applyInterviewList.push(map);
+    }); */
+
+    show({
+      content: '선택한 인터뷰 아이템을 삭제하시겠습니까?',
+      cancelCallback: function () {},
+      confirmCallback: function () {
+        saveAPI(applyInterviewList);
+      },
+    });
   }
 
   // ############################################# 인터뷰 정보 저장 API 호출
   const saveAPI = async (applyInterviewList:any) => {
-
-    console.log('applyInterviewList :::::::::: ', applyInterviewList);
 
     const body = {
       interview_list: applyInterviewList,
@@ -216,8 +234,9 @@ export default function Interview({
           {interview?.map((e, index) => (
             <View style={[style.contentItemContainer, index % 2 !== 0 && style.itemActive]}>
               {mode === 'delete' ? (
-                <TouchableOpacity
-                  onPress={() => onSelectDeleteItem(e)}
+                <TouchableOpacity hitSlop={commonStyle.hipSlop20}
+                  /* onPress={() => onSelectDeleteItem(e)} */
+                  onPress={() => submit(e)} 
                   style={[
                     style.checkContainer,
                     deleteList.includes(e) && style.active,
@@ -228,7 +247,7 @@ export default function Interview({
                   />
                 </TouchableOpacity>
               ) : (
-                <TouchableOpacity
+                <TouchableOpacity hitSlop={commonStyle.hipSlop20}
                   onPress={() => onPressRegist(e.common_code)}
                   style={style.penPosition}
                 >
@@ -277,11 +296,11 @@ export default function Interview({
             </View>
           )}
 
-          {mode === Mode.delete && (
+          {/* {mode === Mode.delete && (
             <TouchableOpacity style={style.selectedDelete} onPress={submit}>
               <Text style={style.selectedDeleteText}>선택 삭제</Text>
             </TouchableOpacity>
-          )}
+          )} */}
       </SpaceView>
     </>
   );
