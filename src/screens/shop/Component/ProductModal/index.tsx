@@ -199,14 +199,12 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
         setComfirmModalVisible(false);
         closeModal();
         navigation.navigate(STACK.TAB, { screen: 'Shop' });
-        Alert.alert('구매에 성공하였습니다.');
-        /* show({
+        show({
           content: '구매에 성공하였습니다.' ,
           confirmCallback: function() {
-            setIsPayLoading(false);
             closeModal();
-          },
-        }); */
+          }
+        });
       } else {
         console.log('fail !!!!!!!!!!!!!!!!');
         closeModal();
