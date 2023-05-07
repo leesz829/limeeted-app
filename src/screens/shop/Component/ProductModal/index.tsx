@@ -75,7 +75,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
   const purchaseBtn = async () => {
 
     if(!isPayLoading) {
-      //setIsPayLoading(true);
+      setIsPayLoading(true);
       
       try {
 
@@ -89,8 +89,6 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
         console.warn(err.code, err.message);
       }
     }
-
-    //setComfirmModalVisible(true);
   };
 
   // ######################################################### AOS 결제 처리
@@ -201,12 +199,12 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
         setComfirmModalVisible(false);
         closeModal();
         navigation.navigate(STACK.TAB, { screen: 'Shop' });
-        /* show({
+        show({
           content: '구매에 성공하였습니다.' ,
           confirmCallback: function() {
             closeModal();
           }
-        }); */
+        });
       } else {
         console.log('fail !!!!!!!!!!!!!!!!');
         closeModal();

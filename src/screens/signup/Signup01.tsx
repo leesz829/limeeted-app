@@ -345,6 +345,13 @@ export const Signup01 = (props: Props) => {
           <CommonText type={'h3'} fontWeight={'200'}>
             아래 버튼을 선택 후{'\n'}인증 뱃지를 등록 할 수 있습니다.
           </CommonText>
+
+          {props.route.params.gender == 'W' &&
+            <CommonText textStyle={_styles.femaleInfoText}>
+              여성 회원은 인증 뱃지 등록을 하지 않아도 가입 심사 기간 동안{'\n'}
+              프로필 평점 7.0 이상이 되면 가입 승인 처리됩니다.
+            </CommonText>
+          }
         </SpaceView>
 
         {/* <SpaceView mb={24}>
@@ -667,6 +674,13 @@ const _styles = StyleSheet.create({
     borderColor: '#697AE6',
     borderRadius: 5,
     paddingHorizontal: 10,
+  },
+  femaleInfoText: {
+    color: '#9A9A9A',
+    fontSize: 13,
+    fontFamily: 'AppleSDGothicNeoM00',
+    lineHeight: 16,
+    marginTop: 5,
   },
 });
 

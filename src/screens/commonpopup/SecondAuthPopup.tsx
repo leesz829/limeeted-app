@@ -586,11 +586,11 @@ export const SecondAuthPopup = (props: Props) => {
                 <>
                   <View style={_styles.rowStyle}>
                     <Text style={_styles.rowTextHalfLeft}>팔로워</Text>
-                    <Text style={_styles.rowTextHalfRight}>1,000명</Text>
+                    <Text style={_styles.rowTextHalfRight}>1,000명 이상</Text>
                   </View>
                   <View style={_styles.rowStyle}>
                     <Text style={_styles.rowTextHalfLeft}>인플루언서</Text>
-                    <Text style={_styles.rowTextHalfRight}>1만명</Text>
+                    <Text style={_styles.rowTextHalfRight}>1만명 이상</Text>
                   </View>
                   <View style={_styles.rowStyle}>
                     <Text style={_styles.rowTextHalfLeft}>셀럽</Text>

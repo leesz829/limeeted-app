@@ -1,4 +1,4 @@
-import { layoutStyle, styles } from 'assets/styles/Styles';
+import { layoutStyle, styles, commonStyle } from 'assets/styles/Styles';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import React, { useEffect, useState, useRef } from 'react';
@@ -234,7 +234,7 @@ export default function Interview({
           {interview?.map((e, index) => (
             <View style={[style.contentItemContainer, index % 2 !== 0 && style.itemActive]}>
               {mode === 'delete' ? (
-                <TouchableOpacity
+                <TouchableOpacity hitSlop={commonStyle.hipSlop20}
                   /* onPress={() => onSelectDeleteItem(e)} */
                   onPress={() => submit(e)} 
                   style={[
@@ -247,7 +247,7 @@ export default function Interview({
                   />
                 </TouchableOpacity>
               ) : (
-                <TouchableOpacity
+                <TouchableOpacity hitSlop={commonStyle.hipSlop20}
                   onPress={() => onPressRegist(e.common_code)}
                   style={style.penPosition}
                 >
