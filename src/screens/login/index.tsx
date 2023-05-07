@@ -32,6 +32,7 @@ export const Login = () => {
 
 		// 구글 플레이 스토어 링크
 		const GOOGLE_PLAY_STORE_LINK = 'market://details?id=com.appsquad.limeeted';
+		const APPLE_PLAY_STORE_LINK = 'https://apps.apple.com/app/limeeted/6447423352';
 
 		const body = {
 			device_type: Platform.OS == 'android' ? 'AOS' : 'IOS',
@@ -51,15 +52,20 @@ export const Login = () => {
 				title: '앱 버전 알림',
 				content: '새로운 앱버전이 있습니다.\n업데이트 해주세요.',
 				confirmCallback: function() {
-					Linking.openURL(GOOGLE_PLAY_STORE_LINK);
+					if(Platform.OS == 'android') {
+						Linking.openURL(GOOGLE_PLAY_STORE_LINK);
+					} else {
+						Linking.openURL(APPLE_PLAY_STORE_LINK);
+					}
+					
 					RNExitApp.exitApp();
-				}
+				},
 			});
 		}
 	}
 
 	useEffect(() => {
-		appVersionCheck();
+		//appVersionCheck();
 	}, [isFocus]);
 
 /*

@@ -182,6 +182,10 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
         closeModal();
       });
     } catch (err: any) {
+      Alert.alert('구매에 실패하였습니다.');
+      setIsPayLoading(false);
+      setComfirmModalVisible(false);
+      closeModal();
       console.warn(err.code, err.message);
     }
   }
@@ -199,12 +203,13 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
         setComfirmModalVisible(false);
         closeModal();
         navigation.navigate(STACK.TAB, { screen: 'Shop' });
-        show({
+        Alert.alert('구매에 성공하였습니다.');
+        /* show({
           content: '구매에 성공하였습니다.' ,
           confirmCallback: function() {
             closeModal();
           }
-        });
+        }); */
       } else {
         console.log('fail !!!!!!!!!!!!!!!!');
         closeModal();
