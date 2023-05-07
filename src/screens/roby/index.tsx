@@ -1047,6 +1047,8 @@ function RedDot() {
 }
 
 function RatingCard({ title, desc, value, preScore, isPennding }) {
+
+  console.log('presc ::::: ' , preScore);
   return (
     <View style={ratingCard.cardStyle}>
       <Text style={ratingCard.cardTitle}>{title}</Text>
@@ -1199,5 +1201,8 @@ const ratingCard = StyleSheet.create({
     paddingHorizontal: 5,
     paddingVertical: 3,
     borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#FE0456',
+    overflow: 'hidden',
   },
 });
