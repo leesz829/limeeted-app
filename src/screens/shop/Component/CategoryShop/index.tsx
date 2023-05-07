@@ -76,7 +76,6 @@ export default function CategoryShop({ loadingFunc }) {
       , 'prod_pass_a005'
       , 'prod_subs_b002'
       , 'prod_pass_a006'
-      , 'prod_subs_b003'
       , 'prod_pass_b001'
       , 'prod_pass_b002'
       , 'prod_pass_b003'
@@ -94,6 +93,9 @@ export default function CategoryShop({ loadingFunc }) {
       , 'prod_subs_e001'
       , 'prod_subs_e002'
       , 'prod_subs_e003'
+      , 'prod_subs_b003'
+      , 'prod_subs_b004'
+      , 'prod_subs_b005'
     ],
     android: [
       'prod_pass_a001'
@@ -108,7 +110,6 @@ export default function CategoryShop({ loadingFunc }) {
       , 'prod_pass_a005'
       , 'prod_subs_b002'
       , 'prod_pass_a006'
-      , 'prod_subs_b003'
       , 'prod_pass_b001'
       , 'prod_pass_b002'
       , 'prod_pass_b003'
@@ -126,6 +127,9 @@ export default function CategoryShop({ loadingFunc }) {
       , 'prod_subs_e001'
       , 'prod_subs_e002'
       , 'prod_subs_e003'
+      , 'prod_subs_b003'
+      , 'prod_subs_b004'
+      , 'prod_subs_b005'
     ],
   });
   
