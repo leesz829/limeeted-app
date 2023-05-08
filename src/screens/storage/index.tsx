@@ -226,7 +226,6 @@ export const Storage = (props: Props) => {
     };
     try {
       const { success, data } = await update_match(body);
-      console.log('data ::::: ' , data);
       if(success) {
         if (data.result_code == '0000') {
           dispatch(myProfile());
@@ -289,6 +288,14 @@ export const Storage = (props: Props) => {
     ref?.current?.snapToItem(index);
   };
 
+
+  // 이미지 스크롤 처리
+  const handleScroll = (event) => {
+    let contentOffset = event.nativeEvent.contentOffset;
+    let index = Math.floor(contentOffset.x / (width-10));
+    setCurrentIndex(index);
+  };
+
   return (
     <>
       {isLoading && <CommonLoading />}
@@ -326,7 +333,7 @@ export const Storage = (props: Props) => {
           </View>
         </View>
 
-        <SpaceView mt={7} mb={8} viewStyle={commonStyle.paddingHorizontal25}>
+        <SpaceView mt={7} viewStyle={commonStyle.paddingHorizontal25}>
           <View style={_styles.row}>
             <Text style={_styles.showText}>찐심만 보기</Text>
             <ToggleSwitch
@@ -346,6 +353,7 @@ export const Storage = (props: Props) => {
           onSnapToItem={setCurrentIndex}
           sliderWidth={width}
           itemWidth={width}
+          pagingEnabled
           renderItem={({item, index}) => {
             return (
               <>
@@ -373,8 +381,6 @@ export const Storage = (props: Props) => {
   );
 
   function RenderItem({ item, index, type }) {
-    console.log('item ::::: ' , item);
-
     let tgt_member_seq = '';
     let profile_open_yn = 'N';
 
