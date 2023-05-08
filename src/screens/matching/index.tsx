@@ -145,11 +145,9 @@ export default function Matching(props: Props) {
   // ################################################################ 초기 실행 함수
   useEffect(() => {
     checkUserReport();
-    if(!isLoad) {
-      setIsEmpty(false);
-      // 데일리 매칭 정보 조회
-      getDailyMatchInfo();
-    }
+    setIsEmpty(false);
+    // 데일리 매칭 정보 조회
+    getDailyMatchInfo();
   }, [isFocus]);
 
   // ############################################################ 데일리 매칭 정보 조회
@@ -157,7 +155,6 @@ export default function Matching(props: Props) {
     try {
       const { success, data } = await get_daily_matched_info();
       //console.log('get_daily_matched_info data :::: ', data.use_item.FREE_LIKE);
-      console.log('data :::: ' , data);
       
       if (success) {
         if (data.result_code == '0000') {
@@ -167,6 +164,7 @@ export default function Matching(props: Props) {
             setIsLoad(false);
             setIsEmpty(true);
           } else {
+            setCurrentIndex(0);
             setIsLoad(true);
           }
         } else {

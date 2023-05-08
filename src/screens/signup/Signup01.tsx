@@ -402,7 +402,7 @@ export const Signup01 = (props: Props) => {
           borderRadius={1}
           onPress={() => {
 
-            if(typeof secondData.jobData.member_seq == 'undefined' && typeof secondData.eduData.member_seq == 'undefined' && typeof secondData.incomeData.member_seq == 'undefined'
+            if(props.route.params.gender == 'M' && typeof secondData.jobData.member_seq == 'undefined' && typeof secondData.eduData.member_seq == 'undefined' && typeof secondData.incomeData.member_seq == 'undefined'
               && typeof secondData.assetData.member_seq == 'undefined' && typeof secondData.snsData.member_seq == 'undefined' && typeof secondData.vehicleData.member_seq == 'undefined') {
               show({
                 title: '안내',
