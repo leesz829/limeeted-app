@@ -156,12 +156,19 @@ export default function Matching(props: Props) {
   const getDailyMatchInfo = async () => {
     try {
       const { success, data } = await get_daily_matched_info();
-      console.log('get_daily_matched_info data :::: ', data.use_item.FREE_LIKE);
+      //console.log('get_daily_matched_info data :::: ', data.use_item.FREE_LIKE);
+      console.log('data :::: ' , data);
       
       if (success) {
         if (data.result_code == '0000') {
           setData(data);
-          setIsLoad(true);
+
+          if(data?.match_member_info == null) {
+            setIsLoad(false);
+            setIsEmpty(true);
+          } else {
+            setIsLoad(true);
+          }
         } else {
           setIsLoad(false);
           setIsEmpty(true);
@@ -416,10 +423,6 @@ export default function Matching(props: Props) {
                   <Image source={ICON.closeCircle} style={styles.smallButton} />
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => { popupActive('sincere'); }}>
-                  <Image source={ICON.royalPassCircle} style={styles.largeButton} />
-                </TouchableOpacity >
-
                 <TouchableOpacity onPress={() => { popupActive('interest'); }} style={styles.freePassContainer}>
                   <Image source={ICON.passCircle} style={styles.largeButton} />
 
@@ -436,6 +439,10 @@ export default function Matching(props: Props) {
                     </View>
                   )} */}
                 </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => { popupActive('sincere'); }}>
+                  <Image source={ICON.royalPassCircle} style={styles.largeButton} />
+                </TouchableOpacity >
 
                 {/* 마킹 버튼 */}
                 {/* <TouchableOpacity>
