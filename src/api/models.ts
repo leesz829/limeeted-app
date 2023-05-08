@@ -107,7 +107,8 @@ export async function regist_member_base_info(body: {
   sns_type?: string;
   sns_token?: string;
 }) {
-  return send(REGIST_BASE_INFO, 'POST', body, false, false);
+  const push_token = await AsyncStorage.getItem(FCM_TOKEN);
+  return send(REGIST_BASE_INFO, 'POST', { ...body, push_token }, false, false);
 }
 
 //회원의 프로필 사진을 신규 등록한다.
