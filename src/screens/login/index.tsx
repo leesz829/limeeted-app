@@ -44,7 +44,7 @@ export const Login = () => {
 		console.log('getCurrentVersion  ::::::: ', VersionCheck.getCurrentVersion());
 		console.log('getCurrentBuildNumber  ::::::: ', VersionCheck.getCurrentBuildNumber());
 
-		if(data?.version_code == VersionCheck.getCurrentBuildNumber()) {
+		if(data?.version_code >= VersionCheck.getCurrentBuildNumber()) {
 			
 		} else {
 
@@ -65,7 +65,7 @@ export const Login = () => {
 	}
 
 	useEffect(() => {
-		//appVersionCheck();
+		appVersionCheck();
 	}, [isFocus]);
 
 /*
