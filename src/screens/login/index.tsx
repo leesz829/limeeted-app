@@ -44,11 +44,11 @@ export const Login = () => {
 		console.log('getCurrentVersion  ::::::: ', VersionCheck.getCurrentVersion());
 		console.log('getCurrentBuildNumber  ::::::: ', VersionCheck.getCurrentBuildNumber());
 
-		if(data?.version_code >= VersionCheck.getCurrentBuildNumber()) {
-			
-		} else {
-
-			show({ 
+		if(
+			(Platform.OS == 'android' && data?.version_code > VersionCheck.getCurrentBuildNumber()) || 
+			(Platform.OS == 'ios' && data?.version_name > VersionCheck.getCurrentVersion())
+		) {
+			show({
 				title: '앱 버전 알림',
 				content: '새로운 앱버전이 있습니다.\n업데이트 해주세요.',
 				confirmCallback: function() {
