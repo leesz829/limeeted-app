@@ -44,9 +44,12 @@ export const Login = () => {
 		console.log('getCurrentVersion  ::::::: ', VersionCheck.getCurrentVersion());
 		console.log('getCurrentBuildNumber  ::::::: ', VersionCheck.getCurrentBuildNumber());
 
+		const versionName = data?.version_name.toString().replace(/\./g, '').padStart(5, "0");
+		const currentVersion = VersionCheck.getCurrentVersion().toString().replace(/\./g, '').padStart(5, "0");
+		
 		if(
 			(Platform.OS == 'android' && data?.version_code > VersionCheck.getCurrentBuildNumber()) || 
-			(Platform.OS == 'ios' && data?.version_name > VersionCheck.getCurrentVersion())
+			(Platform.OS == 'ios' && versionName > currentVersion)
 		) {
 			show({
 				title: '앱 버전 알림',

@@ -27,6 +27,7 @@ import {
   purchaseErrorListener,
   finishTransaction,
   endConnection,
+  clearProductsIOS,
 } from 'react-native-iap';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
@@ -132,19 +133,18 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
 
   // ######################################################### IOS 결제 처리
   const purchaseIosProc = async () => {
-    try {
-      const result = await requestPurchase({
-        sku: item_code,
-        andDangerouslyFinishTransactionAutomaticallyIOS: false,
-      });
-  
-      console.log('result ::::: ', result);
+    const result = await requestPurchase({
+      sku: item_code,
+      andDangerouslyFinishTransactionAutomaticallyIOS: false,
+    });
 
-      let purchaseUpdateSubscription = purchaseUpdatedListener(async(purchase: Purchase) => {
+    console.log('result ::::: ', result);
+
+    let purchaseUpdateSubscription = purchaseUpdatedListener(async(purchase: Purchase) => {
+      try {
         console.log('purchase ::::::: ', purchase);
-    
+  
         if (purchase) {
-
           validateReceiptIos({
             receiptBody: {
               'receipt-data': purchase.transactionReceipt,
@@ -174,25 +174,30 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
   
             purchaseResultSend(dataParam);
           });
-        }
-      });
-    
-      let purchaseErrorSubscription = purchaseErrorListener((error: PurchaseError) => {
-        purchaseErrorSubscription.remove();
-        console.log('error ::::::: ', error);
+        };
+        
+      } catch (error) {
+        purchaseUpdateSubscription.remove();
         Alert.alert('구매에 실패하였습니다.');
         setIsPayLoading(false);
         setComfirmModalVisible(false);
-        closeModal();
-      });
-
-    } catch (err: any) {
+        closeModal();        
+      } finally {
+        await finishTransaction({
+          purchase: purchase,
+          isConsumable: true,
+        }).then();
+      }
+    });
+  
+    let purchaseErrorSubscription = purchaseErrorListener((error: PurchaseError) => {
+      purchaseErrorSubscription.remove();
       Alert.alert('구매에 실패하였습니다.');
       setIsPayLoading(false);
       setComfirmModalVisible(false);
       closeModal();
-      console.warn(err.code, err.message);
-    }
+    });
+
   };
 
   // ######################################################### 인앱상품 구매 결과 API 전송

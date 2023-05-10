@@ -22,6 +22,8 @@ import {
   purchaseUpdatedListener,
   purchaseErrorListener,
   validateReceiptIos,
+  clearProductsIOS,
+  flushFailedPurchasesCachedAsPendingAndroid,
 } from 'react-native-iap';
 import { findSourcePath, ICON } from 'utils/imageUtils';
 import { usePopup } from 'Context';
@@ -166,7 +168,7 @@ export default function CategoryShop({ loadingFunc }) {
 
   useEffect(() => {
     // 스토어 커넥션
-    async function fetch() {
+    async function fetch() {  
       const isConnected = await initConnection();
       if (isConnected) {
         await getProducts({ skus:passProduct });
