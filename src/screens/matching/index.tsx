@@ -145,23 +145,28 @@ export default function Matching(props: Props) {
   // ################################################################ 초기 실행 함수
   useEffect(() => {
     checkUserReport();
-    if(!isLoad) {
-      setIsEmpty(false);
-      // 데일리 매칭 정보 조회
-      getDailyMatchInfo();
-    }
+    setIsEmpty(false);
+    // 데일리 매칭 정보 조회
+    getDailyMatchInfo();
   }, [isFocus]);
 
   // ############################################################ 데일리 매칭 정보 조회
   const getDailyMatchInfo = async () => {
     try {
       const { success, data } = await get_daily_matched_info();
-      console.log('get_daily_matched_info data :::: ', data.use_item.FREE_LIKE);
+      //console.log('get_daily_matched_info data :::: ', data.use_item.FREE_LIKE);
       
       if (success) {
         if (data.result_code == '0000') {
           setData(data);
-          setIsLoad(true);
+
+          if(data?.match_member_info == null) {
+            setIsLoad(false);
+            setIsEmpty(true);
+          } else {
+            setCurrentIndex(0);
+            setIsLoad(true);
+          }
         } else {
           setIsLoad(false);
           setIsEmpty(true);
@@ -416,10 +421,6 @@ export default function Matching(props: Props) {
                   <Image source={ICON.closeCircle} style={styles.smallButton} />
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => { popupActive('sincere'); }}>
-                  <Image source={ICON.royalPassCircle} style={styles.largeButton} />
-                </TouchableOpacity >
-
                 <TouchableOpacity onPress={() => { popupActive('interest'); }} style={styles.freePassContainer}>
                   <Image source={ICON.passCircle} style={styles.largeButton} />
 
@@ -436,6 +437,10 @@ export default function Matching(props: Props) {
                     </View>
                   )} */}
                 </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => { popupActive('sincere'); }}>
+                  <Image source={ICON.royalPassCircle} style={styles.largeButton} />
+                </TouchableOpacity >
 
                 {/* 마킹 버튼 */}
                 {/* <TouchableOpacity>

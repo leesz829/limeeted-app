@@ -123,6 +123,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
       purchaseResultSend(dataParam);
 
     } catch (err: any) {
+      setIsPayLoading(false);
       console.warn(err.code, err.message);
     }
   }
@@ -147,7 +148,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
               'receipt-data': purchase.transactionReceipt,
               'password': '91cb6ffa05d741628d64316192f2cd5e',
             },
-            isTest: true,
+            isTest: false,
           }).then(res => {
             console.log('receipt result ::::::::: ', res);
   

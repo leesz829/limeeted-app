@@ -290,7 +290,6 @@ const _styles = StyleSheet.create({
   },
   inventoryArea: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#DAD7DE',
@@ -310,7 +309,7 @@ const _styles = StyleSheet.create({
     height: 19,
   },
   inventoryText : {
-    marginRight: 40,
+    marginRight: 30,
     justifyContent: 'center',
     marginTop: -5,
   },

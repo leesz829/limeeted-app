@@ -11,7 +11,7 @@ export const formatDate = (time: string) => {
 export const formatNowDate = () => {
   const year = new Date().getFullYear();
   const month = leftPad(new Date().getMonth() + 1, 2);
-  const day = new Date().getDate();
+  const day = leftPad(new Date().getDate(), 2);
   const hours = new Date().getHours() + 9;
   const minutes = leftPad(new Date().getMinutes(), 2);
   const seconds = leftPad(new Date().getSeconds(), 2);
