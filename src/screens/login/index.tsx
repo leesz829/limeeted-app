@@ -1,13 +1,11 @@
+import React, { useRef, useState, useEffect } from 'react';
 import { ColorType, ScreenNavigationProp } from '@types';
-import { layoutStyle, styles } from 'assets/styles/Styles';
+import { commonStyle, layoutStyle, styles } from 'assets/styles/Styles';
 import { CommonBtn } from 'component/CommonBtn';
-import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
-import * as React from 'react';
-import { View, Image, Alert } from 'react-native';
+import { View, Image, Alert, Linking, Platform  } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
-import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-community/async-storage';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
 import {
   getProfile as getKakaoProfile,
@@ -16,12 +14,64 @@ import {
   logout,
   unlink,
 } from '@react-native-seoul/kakao-login';
-import * as properties from 'utils/properties';
+import VersionCheck from 'react-native-version-check';
+import { usePopup } from 'Context';
+import RNExitApp from 'react-native-exit-app';
+import { get_app_version } from 'api/models';
+
+
 export const Login = () => {
   const navigation = useNavigation<ScreenNavigationProp>();
   const [kakaoResult, setKakaoResult] = React.useState('');
 
-  /*
+	const isFocus = useIsFocused();
+	const { show } = usePopup(); // 공통 팝업
+
+	/* 앱버전 체크 */
+	async function appVersionCheck() {
+
+		// 구글 플레이 스토어 링크
+		const GOOGLE_PLAY_STORE_LINK = 'market://details?id=com.appsquad.limeeted';
+		const APPLE_PLAY_STORE_LINK = 'https://apps.apple.com/app/limeeted/6447423352';
+
+		const body = {
+			device_type: Platform.OS == 'android' ? 'AOS' : 'IOS',
+		};
+		const { success, data } = await get_app_version(body);
+		console.log('data :::::::: ', data);
+
+		console.log('getPackageName  ::::::: ', VersionCheck.getPackageName());
+		console.log('getCurrentVersion  ::::::: ', VersionCheck.getCurrentVersion());
+		console.log('getCurrentBuildNumber  ::::::: ', VersionCheck.getCurrentBuildNumber());
+
+		const versionName = data?.version_name.toString().replace(/\./g, '').padStart(5, "0");
+		const currentVersion = VersionCheck.getCurrentVersion().toString().replace(/\./g, '').padStart(5, "0");
+		
+		if(
+			(Platform.OS == 'android' && data?.version_code > VersionCheck.getCurrentBuildNumber()) || 
+			(Platform.OS == 'ios' && versionName > currentVersion)
+		) {
+			show({
+				title: '앱 버전 알림',
+				content: '새로운 앱버전이 있습니다.\n업데이트 해주세요.',
+				confirmCallback: function() {
+					if(Platform.OS == 'android') {
+						Linking.openURL(GOOGLE_PLAY_STORE_LINK);
+					} else {
+						Linking.openURL(APPLE_PLAY_STORE_LINK);
+					}
+					
+					RNExitApp.exitApp();
+				},
+			});
+		}
+	}
+
+	useEffect(() => {
+		appVersionCheck();
+	}, [isFocus]);
+
+/*
 	const signInWithKakao = async () => {
 		axios
 			.post(properties.api_domain + '/join/getKakaoIdchk/', {
@@ -105,7 +155,19 @@ export const Login = () => {
 		/* navigation.navigate('Signup02', {
 			memberSeq : 38
 		}); 
-	};*/
+	};*/ 
+	
+	return (
+		<View style={[styles.container, layoutStyle.justifyCenter]}>
+			<View style={layoutStyle.alignCenter}>
+				{/* <SpaceView>
+					<Image source={IMAGE.logoRenew} style={styles.logoRenew} resizeMode="contain" />
+				</SpaceView> */}
+
+				<SpaceView viewStyle={{alignItems:'center', justifyContent:'center'}}>
+					<Image source={IMAGE.logoMark} style={[styles.iconSize65, {marginBottom: -105}]} resizeMode="contain" />
+					<Image source={IMAGE.logoRenewText} style={{width:200, marginBottom: 150 }} resizeMode="contain" />
+				</SpaceView>
 
   return (
     <View style={[styles.container, layoutStyle.justifyCenter]}>
@@ -127,67 +189,21 @@ export const Login = () => {
 				<SpaceView mb={200}>
 					<CommonText textStyle={styles.logoText} lineHeight={30}>믿음가는 사람들의 인연</CommonText>
 				</SpaceView> */}
-      </View>
-
-      <SpaceView viewStyle={styles.bottomBtnContainer} mb={24}>
-        {/* CSP 05. 02 퍼블 이식 후 삭제요망 */}
-        <SpaceView mb={10} viewStyle={{ paddingHorizontal: '7%' }}>
-          <CommonBtn
-            value={'Im_storage'}
-            type={'g_blue'}
-            isGradient={true}
-            onPress={() => {
-              navigation.navigate('Im_storage');
-              //signInWithKakao();
-            }}
-          />
-        </SpaceView>
-        <SpaceView mb={10} viewStyle={{ paddingHorizontal: '7%' }}>
-          <CommonBtn
-            value={'Im_storage_list'}
-            type={'g_blue'}
-            isGradient={true}
-            onPress={() => {
-              navigation.navigate('Im_storage_list', { pageIndex: 1 });
-              //signInWithKakao();
-            }}
-          />
-        </SpaceView>
-        <SpaceView mb={10} viewStyle={{ paddingHorizontal: '7%' }}>
-          <CommonBtn
-            value={'Im_live'}
-            type={'g_blue'}
-            isGradient={true}
-            onPress={() => {
-              navigation.navigate('Im_live');
-              //signInWithKakao();
-            }}
-          />
-        </SpaceView>
-        <SpaceView mb={10} viewStyle={{ paddingHorizontal: '7%' }}>
-          <CommonBtn
-            value={'lm_superLike'}
-            type={'g_blue'}
-            isGradient={true}
-            onPress={() => {
-              navigation.navigate('lm_superLike');
-              //signInWithKakao();
-            }}
-          />
-        </SpaceView>
-        {/* CSP 05. 02 퍼블 이식 후 삭제요망 */}
-        <SpaceView mb={10} viewStyle={{ paddingHorizontal: '7%' }}>
-          <CommonBtn
-            value={'리미티드 계정으로 로그인'}
-            type={'g_blue'}
-            isGradient={true}
-            onPress={() => {
-              navigation.navigate('Login01');
-              //signInWithKakao();
-            }}
-          />
-        </SpaceView>
-        {/* <CommonBtn value={'카카오로 시작하기'} 
+			</View>
+			<SpaceView viewStyle={[styles.bottomBtnContainer, commonStyle.paddingHorizontal25]} mb={24}>
+				<SpaceView mb={10}>
+					<CommonBtn
+						value={'리미티드 계정으로 로그인'}
+						type={'g_blue'}
+						isGradient={true}
+						fontSize={13}
+						onPress={() => {
+							navigation.navigate('Login01');
+							//signInWithKakao();
+						}}
+					/>
+				</SpaceView>
+				{/* <CommonBtn value={'카카오로 시작하기'} 
 							type={'kakao'} 
 							icon={ICON.kakao} 
 							iconSize={24} 
@@ -195,17 +211,19 @@ export const Login = () => {
 								signInWithKakao();
 							}}
 				/> */}
-        <SpaceView mb={16} viewStyle={{ paddingHorizontal: '7%' }}>
-          <CommonBtn
-            value={'회원가입'}
-            type={'white'}
-            iconSize={24}
-            onPress={() => {
-              navigation.navigate('Policy');
-            }}
-          />
-        </SpaceView>
-      </SpaceView>
-    </View>
-  );
+				<SpaceView mb={16}>
+					<CommonBtn
+						value={'회원가입'}
+						type={'white'}
+						iconSize={24}
+						fontSize={13}
+						onPress={() => {
+							navigation.navigate('Policy');
+						}}
+					/>
+				</SpaceView>
+
+			</SpaceView>
+		</View>
+	);
 };

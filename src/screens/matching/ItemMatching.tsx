@@ -5,41 +5,36 @@ import {
 } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import {
-  BottomParamList,
+  StackParamList,
   ColorType,
-  CommonCode,
-  MemberBaseData,
-  ProfileImg,
   ScreenNavigationProp,
 } from '@types';
 import {
-  get_daily_matched_info,
+  get_item_matched_info,
   regist_match_status,
   report_matched_user,
   report_check_user,
   report_check_user_confirm,
 } from 'api/models';
-import { Color } from 'assets/styles/Color';
+import { ROUTES, STACK } from 'constants/routes';
 
-import { BarGrap } from 'component/BarGrap';
+import CommonHeader from 'component/CommonHeader';
 import { CommonBtn } from 'component/CommonBtn';
-import { CommonCheckBox } from 'component/CommonCheckBox';
 import { RadioCheckBox_3 } from 'component/RadioCheckBox_3';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
-import { ToolTip } from 'component/Tooltip';
 import TopNavigation from 'component/TopNavigation';
-import { ViualSlider } from 'component/ViualSlider';
 import { usePopup } from 'Context';
 import { useUserInfo } from 'hooks/useUserInfo';
 import * as React from 'react';
+
 import { useEffect, useRef, useState } from 'react';
 import { modalStyle, layoutStyle, commonStyle } from 'assets/styles/Styles';
 import {
   Dimensions,
   FlatList,
   Image,
-  Modal,
+  
   ScrollView,
   StyleSheet,
   TouchableOpacity,
@@ -47,42 +42,34 @@ import {
   Text,
 } from 'react-native';
 import { Modalize } from 'react-native-modalize';
-import { NotificationActionResponse } from 'react-native-notifications/lib/dist/interfaces/NotificationActionResponse';
-import { SimpleGrid } from 'react-native-super-grid';
 import { useDispatch } from 'react-redux'; 
 import { myProfile } from 'redux/reducers/authReducer';
-import { MatchSearch } from 'screens/matching/MatchSearch';
 import { findSourcePath, ICON, IMAGE } from 'utils/imageUtils';
 import { Slider } from '@miblanchard/react-native-slider';
 import ProfileAuth from 'component/ProfileAuth';
 import InterviewRender from 'component/InterviewRender';
 import { formatNowDate} from 'utils/functions';
 import { Watermark } from 'component/Watermark';
-import SincerePopup from 'screens/commonpopup/sincerePopup';
-
 
 
 const { width, height } = Dimensions.get('window');
 interface Props {
-  navigation: StackNavigationProp<BottomParamList, 'Roby'>;
-  route: RouteProp<BottomParamList, 'Roby'>;
+  navigation: StackNavigationProp<StackParamList, 'ItemMatching'>;
+  route: RouteProp<StackParamList, 'ItemMatching'>;
 }
 
-export default function Matching(props: Props) {
+export default function ItemMatching(props: Props) {
   const navigation = useNavigation<ScreenNavigationProp>();
   const isFocus = useIsFocused();
   const dispatch = useDispatch();
-
-  // 이미지 인덱스
-  const [currentIndex, setCurrentIndex] = React.useState(0);
-
   const scrollRef = useRef();
-
   const { show } = usePopup(); // 공통 팝업
 
   // 로딩 상태 체크
   const [isLoad, setIsLoad] = useState(false);
   const [isEmpty, setIsEmpty] = useState(false);
+
+  const [isCardIndex, setIsCardIndex] = useState(0);
 
   // 본인 데이터
   const memberBase = useUserInfo(); //hooksMember.getBase();
@@ -119,54 +106,37 @@ export default function Matching(props: Props) {
     setCheckReportType('');
   };
 
-  // 이미지 스크롤 처리
-  const handleScroll = (event) => {
-    let contentOffset = event.nativeEvent.contentOffset;
-    let index = Math.floor(contentOffset.x / (width-10));
-    setCurrentIndex(index);
-  };
-
-  // ################################################################ 찐심 모달 관련
-
-  // 찐심 보내기 모달 visible
-  const [sincereModalVisible, setSincereModalVisible] = useState(false);
-
-  // 찐심 닫기 함수
-  const sincereCloseModal = () => {
-    setSincereModalVisible(false);
-  };
-
-  // 찐심 보내기 함수
-  const sincereSend = (level:number) => {
-    insertMatchInfo('sincere', level);
-    setSincereModalVisible(false);
-  }
-
   // ################################################################ 초기 실행 함수
   useEffect(() => {
+    
     checkUserReport();
     setIsEmpty(false);
     // 데일리 매칭 정보 조회
-    getDailyMatchInfo();
+    getItemMatchedInfo();
   }, [isFocus]);
 
   // ############################################################ 데일리 매칭 정보 조회
-  const getDailyMatchInfo = async () => {
+  const getItemMatchedInfo = async () => {
     try {
-      const { success, data } = await get_daily_matched_info();
-      //console.log('get_daily_matched_info data :::: ', data.use_item.FREE_LIKE);
+
+    
+      console.log(props.route.params.profile_member_seq_list.split(',').length , '::::::::::::::',  isCardIndex);
+      if(props.route.params.profile_member_seq_list.split(',').length <= isCardIndex){
+        navigation.navigate(STACK.COMMON, { screen: ROUTES.SHOP_INVENTORY });
+      }
+
+      const body = {
+        match_member_seq: props.route.params.profile_member_seq_list.split(',')[isCardIndex].toString()
+      }
+
+      console.log('match_member_list 2 :::: ' , body);
+      const { success, data } = await get_item_matched_info(body);
+      setIsCardIndex(isCardIndex + 1);
       
       if (success) {
         if (data.result_code == '0000') {
           setData(data);
-
-          if(data?.match_member_info == null) {
-            setIsLoad(false);
-            setIsEmpty(true);
-          } else {
-            setCurrentIndex(0);
-            setIsLoad(true);
-          }
+          setIsLoad(true);
         } else {
           setIsLoad(false);
           setIsEmpty(true);
@@ -206,13 +176,11 @@ export default function Matching(props: Props) {
 
         },
 				confirmCallback: function() {
-          insertMatchInfo(activeType, 0);
+          insertMatchInfo(activeType);
 				}
 			});
     } else if (activeType == 'sincere') {
-      setSincereModalVisible(true);
-
-      /* show({
+      show({
 				title: '찐심 보내기',
 				content: '로얄패스를 소모하여 찐심을 보내시겠습니까?\n로얄패스 x2' ,
         cancelCallback: function() {
@@ -221,7 +189,7 @@ export default function Matching(props: Props) {
 				confirmCallback: function() {
           insertMatchInfo(activeType);
 				}
-			}); */
+			});
     } else if (activeType == 'pass') {
       show({
 				title: '매칭 취소',
@@ -230,27 +198,25 @@ export default function Matching(props: Props) {
 
         },
 				confirmCallback: function() {
-          insertMatchInfo(activeType, 0);
+          insertMatchInfo(activeType);
 				}
 			});
     }
   };
 
   // ############################################################ 찐심/관심/거부 저장
-  const insertMatchInfo = async (activeType: string, special_level: number) => {
+  const insertMatchInfo = async (activeType: string) => {
     const body = {
       active_type: activeType,
       res_member_seq: data.match_member_info.member_seq,
-      special_level: special_level,
     };
-
     try {
       const { success, data } = await regist_match_status(body);
 
       if(success) {
         if(data.result_code == '0000') {
           dispatch(myProfile());
-          getDailyMatchInfo();
+          getItemMatchedInfo();
           setIsLoad(false);
         } else if (data.result_code == '6010') {
           show({ content: '보유 패스가 부족합니다.' });
@@ -301,7 +267,7 @@ export default function Matching(props: Props) {
         show({ content: '신고 처리 되었습니다.' });
 
         setCheckReportType('');
-        getDailyMatchInfo();
+        getItemMatchedInfo();
         setIsLoad(false);
 
         // 스크롤 최상단 이동
@@ -326,6 +292,7 @@ export default function Matching(props: Props) {
 
     try {
       const { success, data } = await report_check_user(body);
+      console.log('data ::::::: ' , data);
       if(success) {
         if(data.report_cnt < 10) return false;
         
@@ -356,30 +323,16 @@ export default function Matching(props: Props) {
   return (
     data.profile_img_list.length > 0 && isLoad ? (
       <>
-        <TopNavigation currentPath={'LIMEETED'} />
-
         <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
+          <CommonHeader title={'프로필 카드 ( ' + (isCardIndex) + ' / ' + props.route.params.profile_member_seq_list.split(',').length +' )'} />
 
           {/* ####################################################################################
           ####################### 상단 영역
           #################################################################################### */}
           <View>
-
-            {/* ###### 이미지 indicator */}
-            <View style={styles.pagingContainer}>
-              {data?.profile_img_list.map((item, index) => {
-                return item.status == 'ACCEPT' && (
-                  <View style={styles.dotContainerStyle} key={'dot' + index}>
-                    <View style={[styles.pagingDotStyle, index == currentIndex && styles.activeDot]} />
-                  </View>
-                )
-              })}
-            </View>
-
             <FlatList
               data={data?.profile_img_list}
               renderItem={RenderItem}
-              onScroll={handleScroll}
               horizontal
               pagingEnabled
             />
@@ -421,8 +374,12 @@ export default function Matching(props: Props) {
                   <Image source={ICON.closeCircle} style={styles.smallButton} />
                 </TouchableOpacity>
 
+                <TouchableOpacity onPress={() => { popupActive('sincere'); }}>
+                  <Image source={ICON.ticketCircle} style={styles.largeButton} />
+                </TouchableOpacity >
+
                 <TouchableOpacity onPress={() => { popupActive('interest'); }} style={styles.freePassContainer}>
-                  <Image source={ICON.passCircle} style={styles.largeButton} />
+                  <Image source={ICON.heartCircle} style={styles.largeButton} />
 
                   {/* ############ 부스터 아이템  */}
                   {data?.use_item != null && data?.use_item?.FREE_LIKE && data?.use_item?.FREE_LIKE?.use_yn == 'Y' &&
@@ -437,10 +394,6 @@ export default function Matching(props: Props) {
                     </View>
                   )} */}
                 </TouchableOpacity>
-
-                <TouchableOpacity onPress={() => { popupActive('sincere'); }}>
-                  <Image source={ICON.royalPassCircle} style={styles.largeButton} />
-                </TouchableOpacity >
 
                 {/* 마킹 버튼 */}
                 {/* <TouchableOpacity>
@@ -472,9 +425,9 @@ export default function Matching(props: Props) {
             {data.interest_list.length > 0 && (
               <>
                 <Text style={styles.title}>{data.match_member_info.nickname}님의 관심사</Text>
-                <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10, marginBottom: 10 }}>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 20 }}>
                   {data.interest_list.map((item, index) => {
-                    const isOn = item.dup_chk == 0 ? false : true;
+                    const isOn = true;
                     return (
                       <View style={styles.interestItem(isOn)}>
                         <Text style={styles.interestText(isOn)}>{item.code_name}</Text>
@@ -621,9 +574,9 @@ export default function Matching(props: Props) {
           <View style={{ height: 50 }} />
         </ScrollView>
 
-        {/* ##################################################################################
+        {/* ###############################################
                     사용자 신고하기 팝업
-        ################################################################################## */}
+        ############################################### */}
         <Modalize
           ref={report_modalizeRef}
           adjustToContentHeight={false}
@@ -668,16 +621,6 @@ export default function Matching(props: Props) {
             </SpaceView>
           </View>
         </Modalize>
-
-        {/* ##################################################################################
-                    찐심 보내기 팝업
-        ################################################################################## */}
-        <SincerePopup
-          isVisible={sincereModalVisible}
-          closeModal={sincereCloseModal}
-          confirmFunc={sincereSend}
-        />
-
       </>
     ) : (
       <>
@@ -937,7 +880,7 @@ const styles = StyleSheet.create({
   },
   padding: {
     paddingHorizontal: 20,
-    marginTop: width * 0.15,
+    marginTop: width * 0.2,
   },
   boostPannel: {
     width: '100%',
@@ -1000,7 +943,7 @@ const styles = StyleSheet.create({
       borderRadius: 5,
       backgroundColor: isOn ? 'white' : '#f7f7f7',
       paddingHorizontal: 15,
-      paddingVertical: 5,
+      paddingVertical: 9,
       marginLeft: 3,
       marginTop: 3,
       borderColor: isOn ? '#7986ee' : '#f7f7f7',
@@ -1165,32 +1108,50 @@ const styles = StyleSheet.create({
     fontSize: 17,
     textAlign: 'left',
   },
-  pagingContainer: {
-    position: 'absolute',
-    zIndex: 10,
-    alignItems: 'center',
-    width,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    top: 18,
-  },
-  pagingDotStyle: {
-    width: 19,
-    height: 2,
-    backgroundColor: 'rgba(255,255,255,0.3)',
-    borderRadius: 4,
-  },
-  activeDot: {
-    backgroundColor: 'white',
-  },
-  pagingContainerStyle: {
-    paddingTop: 16,
-  },
-  dotContainerStyle: {
-    marginRight: 2,
-    marginLeft: 2,
-  },
-
 });
 
+const interest = [
+  {
+    code_name: '공연보기',
+    common_code: 'CONC_06_00',
+  },
+  {
+    interest_seq: 454,
+    code_name: '해외축구',
+    common_code: 'CONC_06_00',
+  },
+  {
+    interest_seq: 454,
+    code_name: '집에서 영화보기',
+    common_code: 'CONC_06_00',
+  },
+  {
+    interest_seq: 454,
+    code_name: '캠핑',
+    common_code: 'CONC_06_00',
+  },
+  {
+    interest_seq: 454,
+    code_name: '동네산책',
+    common_code: 'CONC_06_00',
+  },
 
+  {
+    interest_seq: 454,
+    code_name: '반려견과 함께',
+    common_code: 'CONC_06_00',
+  },
+  {
+    interest_seq: 454,
+    code_name: '인스타그램',
+    common_code: 'CONC_06_00',
+  },
+];
+interface auth {
+  member_auth_seq: number;
+  auth_level: number;
+  auth_status: string;
+  code_name: string;
+  member_seq: number;
+  common_code: string;
+}

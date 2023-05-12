@@ -21,6 +21,7 @@ import * as hooksMember from 'hooks/member';
 import { useLikeList } from 'hooks/useLikeList';
 import { useMatches } from 'hooks/useMatches';
 import { useUserInfo } from 'hooks/useUserInfo';
+import { useProfileImg } from 'hooks/useProfileImg';
 import React, { useRef, useState, useEffect } from 'react';
 import {
   Dimensions,
@@ -45,6 +46,9 @@ import { usePopup } from 'Context';
 import LinearGradient from 'react-native-linear-gradient';
 import { Rating, AirbnbRating } from 'react-native-ratings';
 import Contacts from 'react-native-contacts';
+import { setPartialPrincipal } from 'redux/reducers/authReducer';
+
+
 
 const { width, height } = Dimensions.get('window');
 
@@ -68,6 +72,7 @@ export const Roby = (props: Props) => {
 
   // 회원 기본 정보
   const memberBase = useUserInfo(); //hooksMember.getBase();
+  const mbrProfileImgList = useProfileImg();
   const likes = useLikeList();
   const matches = useMatches();
 
@@ -92,9 +97,9 @@ export const Roby = (props: Props) => {
       const { success, data } = await peek_member(body);
       if (success) {
         if (data.result_code == '0000') {
-          /* dispatch(setPartialPrincipal({
+          dispatch(setPartialPrincipal({
             mbr_base : data.mbr_base
-          })); */
+          }));
           setResLikeList(data.res_like_list);
           setMatchTrgtList(data.match_trgt_list);
         } else {
@@ -145,12 +150,16 @@ export const Roby = (props: Props) => {
     /*
      * 01 : 내 프로필 공개
      * 02 : 아는 사람 제외
+     * 03 : 푸시 알림 받기
      */
-    // 01 : 내 프로필 공개
-    if (type == '01') {
-      body = {
-        match_yn: value,
-      };
+
+    // 01 : 내 프로필 공개, 03 : 푸시 알림 받기
+    if (type == '01' || type == '03') {
+      if(type == '01') {
+        body = { match_yn: value, };
+      } else if(type == '03') {
+        body = { push_alarm_yn: value, };
+      }
 
       const { success, data } = await update_setting(body);
       if (success) {
@@ -340,11 +349,12 @@ export const Roby = (props: Props) => {
   const onPressCustomerInquiry = () => {
     navigation.navigate(STACK.COMMON, { screen: 'CustomerInquiry' });
   };
-  const onPressStorage = () => {
+  const onPressStorage = async (index:any) => {
     navigation.navigate(STACK.COMMON, {
       screen: 'Storage',
       params: {
         headerType: 'common',
+        pageIndex: index,
       },
     });
   };
@@ -400,8 +410,7 @@ export const Roby = (props: Props) => {
             borderTopColor: '#00FFFF'
           }}
           start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-        ></LinearGradient>
+          end={{ x: 1, y: 1 }}></LinearGradient>
 
         <SpaceView pl={16} pr={16}>
           <SpaceView
@@ -413,7 +422,7 @@ export const Roby = (props: Props) => {
                 <View style={_styles.profileImageWrap}>
                   <Image
                     source={{
-                      uri: properties.img_domain + memberBase?.mst_img_path,
+                      uri: properties.img_domain + mbrProfileImgList[0].img_file_path,
                     }}
                     style={styles.profileImg}
                   />
@@ -488,8 +497,9 @@ export const Roby = (props: Props) => {
               {memberBase?.reex_yn == 'Y' ? (
                 <RatingCard
                   title={'프로필 심사중'}
-                  desc={'내 프로필을 ' + memberBase?.profile_eval_cnt + '명의 회원님이\n평가를 남겨주셨어요.'}
+                  desc={'내 프로필에 ' + memberBase?.profile_eval_cnt + '명의 회원님이\n평가를 남겨 주셨어요.'}
                   value={memberBase?.profile_score}
+                  preScore={memberBase?.prev_profile_score}
                   isPennding={true}
                 />
               ) : (
@@ -518,9 +528,9 @@ export const Roby = (props: Props) => {
           </View>
 
           {memberBase?.reex_yn == 'Y' ? (
-            <TouchableOpacity style={[_styles.pennding, layoutStyle.mb20]}>
+            <View style={[_styles.pennding, layoutStyle.mb20]}>
               <Text style={_styles.submitText}>내 프로필을 심사중이에요!</Text>
-            </TouchableOpacity>
+            </View>
           ) : (
             <TouchableOpacity
             onPress={() => profileReexPopupOpen()}
@@ -537,7 +547,7 @@ export const Roby = (props: Props) => {
 
             <TouchableOpacity
               style={_styles.manageProfile}
-              onPress={onPressStorage}
+              onPress={() => onPressStorage(0)}
             >
               <Text style={_styles.profileText}>새 관심</Text>
               <View style={_styles.row}>
@@ -564,7 +574,7 @@ export const Roby = (props: Props) => {
 
             <TouchableOpacity
               style={_styles.manageProfile}
-              onPress={onPressStorage}
+              onPress={() => onPressStorage(2)}
             >
               <Text style={_styles.profileText}>새 매칭</Text>
               <View style={_styles.row}>
@@ -676,6 +686,17 @@ export const Roby = (props: Props) => {
               <View style={_styles.row}>
                 <Image source={ICON.arrow_right} style={styles.iconSize} />
               </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={_styles.manageProfile}>
+              <Text style={_styles.profileText}>푸시 알림 받기</Text>
+              <CommonSwich
+                callbackFn={(value: boolean) => {
+                  updateMemberInfo('03', value ? 'Y' : 'N');
+                }}
+                isOn={memberBase?.push_alarm_yn == 'Y' ? true : false}
+              />
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -883,9 +904,10 @@ const _styles = StyleSheet.create({
     fontWeight: 'normal',
     fontStyle: 'normal',
     letterSpacing: 0,
-    textAlign: 'left',
+    textAlign: 'center',
     color: '#cccccc',
-    marginTop: 3,
+    marginTop: 10,
+    paddingHorizontal: 25,
   },
   levelBox: {
     width: 46,
@@ -1024,11 +1046,16 @@ function RedDot() {
   );
 }
 
-function RatingCard({ title, desc, value, isPennding }) {
+function RatingCard({ title, desc, value, preScore, isPennding }) {
   return (
     <View style={ratingCard.cardStyle}>
       <Text style={ratingCard.cardTitle}>{title}</Text>
+
       <View style={ratingCard.middleBox}>
+        {typeof preScore != 'undefined' && preScore != null && preScore != 0.0 &&
+          <View style={ratingCard.preScoreArea}><Text style={ratingCard.preScoreText}>지난 평점 {preScore}</Text></View>
+        }
+
         <Text style={isPennding ? ratingCard.pendingText : ratingCard.ratingText}>
           {value}
         </Text>
@@ -1158,5 +1185,22 @@ const ratingCard = StyleSheet.create({
     width: '100%',
     marginTop: 0,
     marginBottom: 0,
+  },
+  preScoreArea: {
+    position: 'absolute',
+    top: 3,
+    left: 0,
+  },
+  preScoreText: {
+    backgroundColor: '#FE0456',
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 10,
+    color: ColorType.white,
+    paddingHorizontal: 5,
+    paddingVertical: 3,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#FE0456',
+    overflow: 'hidden',
   },
 });

@@ -1,5 +1,5 @@
-import { useNavigation } from '@react-navigation/native';
-import { ScreenNavigationProp } from '@types';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
+import { ColorType, ScreenNavigationProp } from '@types';
 import { Color } from 'assets/styles/Color';
 import { ROUTES, STACK } from 'constants/routes';
 import { usePopup } from 'Context';
@@ -39,6 +39,7 @@ const TopNavigation: FC<Props> = (props) => {
       colors={['#89b0fa', '#aaa1f7']}
       style={{
         width: '100%',
+        zIndex: 1,
       }}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
@@ -46,13 +47,13 @@ const TopNavigation: FC<Props> = (props) => {
       <View style={styles.tabContainer}>
         <NaviButtons navName={props.currentPath} theme={props.theme} />
         {/* ######################################################################
-			##### 팝업 영역
-			###################################################################### */}
+			  ##### 팝업 영역
+			  ###################################################################### */}
         <Wallet theme={props.theme} />
       </View>
     </LinearGradient>
   ) : (
-    <View style={[styles.tabContainer, { backgroundColor: 'white' }]}>
+    <View style={[styles.tabContainer, { backgroundColor: 'white', zIndex: 1 }]}>
       <NaviButtons navName={props.currentPath} theme={props.theme} />
       {/* ######################################################################
 			##### 팝업 영역
@@ -103,7 +104,33 @@ function NaviButtons({ navName, theme }: { navName: string; theme?: string }) {
   );
 }
 export function Wallet({ theme }) {
+  const isFocus = useIsFocused();
   const memberBase = useUserInfo(); // 회원 기본정보
+
+  const [isPassToolTip, setIsPassToolTip] = useState<boolean>(false);
+  const [isRoyalPassToolTip, setIsRoyalPassToolTip] = useState<boolean>(false);
+
+  const tooltipClick = async (type:any) => {
+    /* if(type == 'pass') {
+      setIsPassToolTip(isPassToolTip ? false : true);
+
+      if(!isPassToolTip) {
+        setIsRoyalPassToolTip(false);
+      };
+      
+    } else if(type == 'royal') {
+      setIsRoyalPassToolTip(isRoyalPassToolTip ? false : true);
+
+      if(!isRoyalPassToolTip) {
+        setIsPassToolTip(false);
+      };
+    } */
+  };
+
+  React.useEffect(() => {
+    //setIsPassToolTip(false);
+    //setIsRoyalPassToolTip(false);
+  }, [isFocus])
 
   return (
     <>
@@ -114,26 +141,55 @@ export function Wallet({ theme }) {
           }}>
 
           <View style={[styles.itemContainer, { marginRight: 8 }]}>
-            <Image style={styles.itemStyle} source={ICON.passIconNew} resizeMode={'contain'} />
-            <Text
-              style={[
-                styles.statusText,
-                { color: theme ? '#fff' : '#7a7dbb', lineHeight: 13 },
-              ]}>
+            <TouchableOpacity 
+              style={[styles.itemContainer]} 
+              onPress={() => {
+                tooltipClick('pass');
+              }}>
 
-              {memberBase?.pass_has_amt}
-            </Text>
+              <Image style={styles.itemStyle} source={ICON.passCircle} resizeMode={'contain'} />
+              <Text
+                style={[
+                  styles.statusText,
+                  { color: theme ? '#625AD1' : '#625AD1', lineHeight: 13 },
+                ]}>
+
+                {memberBase?.pass_has_amt}
+              </Text>
+            </TouchableOpacity>
+
+            {isPassToolTip && 
+              <View style={[styles.tooltipArea('pass'), ]}>
+                <Text style={styles.tooltipAreaText}>범용적으로 사용되는 기본 재화.{'\n'}관심을 보내거나 확인하는데 사용되요.</Text>
+              </View>
+            }
           </View>
-          <View style={styles.itemContainer}>
-            <Image style={styles.itemStyle2} source={ICON.royalPassIconNew} resizeMode={'contain'}  />
-            <Text
-              style={[
-                styles.statusText,
-                { color: theme ? '#fff' : '#da88ad', lineHeight: 13 },
-              ]}>
 
-              {memberBase?.royal_pass_has_amt}
-            </Text>
+          <View style={styles.itemContainer}>
+
+            <TouchableOpacity 
+              style={[styles.itemContainer]} 
+              onPress={() => {
+                tooltipClick('royal');
+              }}>
+
+              <Image style={styles.itemStyle} source={ICON.royalPassCircle} resizeMode={'contain'}  />
+              <Text
+                style={[
+                  styles.statusText,
+                  { color: theme ? '#625AD1' : '#625AD1', lineHeight: 13 },
+                ]}>
+
+                {memberBase?.royal_pass_has_amt}
+              </Text>
+            </TouchableOpacity>
+
+            {isRoyalPassToolTip && 
+              <View style={[styles.tooltipArea('royal'), ]}>
+                <Text style={styles.tooltipAreaText}>리미티드의 특수 재화.{'\n'}찐심을 보내는데 사용되요.</Text>
+              </View>
+            }
+
           </View>
         </View>
       )}
@@ -176,23 +232,24 @@ const styles = StyleSheet.create({
   },
   itemStyle: {
     width: 25,
-    height: 20,
-    marginRight: 1,
+    height: 25,
+    marginRight: 0,
   },
   itemStyle2: {
-    width: 33,
-    height: 20,
+    width: 25,
+    height: 25,
     marginRight: 1,
   },
   itemContainer: {
-    flexDirection: `column`,
-    alignItems: `flex-end`,
+    flexDirection: `row`,
+    alignItems: `center`,
     justifyContent: `center`,
   },
   statusText: {
-    fontSize: 13,
+    fontSize: 12,
     color: 'rgb(84, 84 , 86)',
     fontWeight: 'bold',
+    fontFamily: 'AppleSDGothicNeoEB00',
   },
   limitedIcon: {
     width: 100,
@@ -203,5 +260,24 @@ const styles = StyleSheet.create({
     width: 39,
     height: 29,
     resizeMode: 'contain',
+  },
+
+
+  tooltipArea: (type) => {
+    return {
+      position: 'absolute',
+      bottom: -35,
+      left: type == 'pass' ? -40 : -60,
+      zIndex: 9999,
+      backgroundColor: '#151515',
+      borderRadius: 7,
+    };
+  },
+  tooltipAreaText: {
+    fontSize: 10,
+    fontFamily: 'AppleSDGothicNeoM00',
+    color: ColorType.white,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
   },
 });

@@ -17,8 +17,7 @@ import TopNavigation from 'component/TopNavigation';
 import { ViualSlider } from 'component/ViualSlider';
 import * as React from 'react';
 import { useState } from 'react';
-import { ScrollView, View, Image } from 'react-native';
-import * as properties from 'utils/properties';
+import { ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity } from 'react-native';
 import { LivePopup } from 'screens/commonpopup/LivePopup';
 import { LiveSearch } from 'screens/live/LiveSearch';
 import * as hooksMember from 'hooks/member';
@@ -29,6 +28,10 @@ import { usePopup } from 'Context';
 import { SUCCESS, NODATA } from 'constants/reusltcode';
 import { useDispatch } from 'react-redux';
 import { myProfile } from 'redux/reducers/authReducer';
+import Image from 'react-native-fast-image';
+import { ICON } from 'utils/imageUtils';
+import { Watermark } from 'component/Watermark';
+import { useUserInfo } from 'hooks/useUserInfo';
 
 
 
@@ -36,11 +39,30 @@ import { myProfile } from 'redux/reducers/authReducer';
 ###### LIVE
 ################################################################################################################ */
 
+const { width, height } = Dimensions.get('window');
+
 export const Live = () => {
   const navigation = useNavigation<ScreenNavigationProp>();
   const member_seq = useMemberseq();
   const isFocus = useIsFocused();
   const dispatch = useDispatch();
+
+  // 본인 데이터
+  const memberBase = useUserInfo();
+
+  const [page, setPage] = useState(0);
+  const data = ['', '', '', ''];
+
+  const onChangePage = (e) => {
+    const { contentOffset } = e.nativeEvent;
+    const viewSize = e.nativeEvent.layoutMeasurement;
+    const pageNum = Math.floor(contentOffset.x / viewSize.width);
+    setPage(pageNum);
+  };
+
+  // 이미지 인덱스
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+
 
   const jwtToken = hooksMember.getJwtToken(); // 토큰
   const { show } = usePopup();  // 공통 팝업
@@ -214,6 +236,13 @@ export const Live = () => {
 
   };
 
+  // 이미지 스크롤 처리
+  const handleScroll = (event) => {
+    let contentOffset = event.nativeEvent.contentOffset;
+    let index = Math.floor(contentOffset.x / (width-10));
+    setCurrentIndex(index);
+  };
+
   // 첫 렌더링 때 fetchNews() 한 번 실행
   React.useEffect(() => {
     if (!isLoad) {
@@ -224,9 +253,10 @@ export const Live = () => {
 
   return liveProfileImg.length > 0 && isLoad ? (
     <>
-      <TopNavigation currentPath={'LIVE'} />
-      <ScrollView>
+      
+      {/* <ScrollView>
         <SpaceView>
+
           <ViualSlider
             isNew={liveMemberInfo.status == 'NEW' ? true : false}
             onlyImg={true}
@@ -253,7 +283,98 @@ export const Live = () => {
             />
           )}
         </SpaceView>
-      </ScrollView>
+      </ScrollView> */}
+
+      {/* <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
+        <TopNavigation currentPath={'LIVE'} />
+        <View>
+          <FlatList
+              data={liveProfileImg}
+              renderItem={RenderItem}
+              onScroll={handleScroll}
+              horizontal
+              pagingEnabled
+            />
+        </View>
+      </ScrollView> */}
+
+      <TopNavigation currentPath={'LIVE'} />
+
+
+      <View style={_styles.root}>
+        <ScrollView style={_styles.root}>
+
+          <View>
+            <View style={_styles.indocatorContainer}>
+              {liveProfileImg.map((e, index) => (
+                <View
+                  style={[
+                    _styles.indicator,
+                    { backgroundColor: index === page ? 'white' : 'rgba(255,255,255,0.3)' },
+                  ]}
+                />
+              ))}
+
+              <View style={_styles.badgeIcon}>
+                <Text style={_styles.authBadgeText}>심사중</Text>
+              </View>
+            </View>
+
+            <FlatList
+              data={liveProfileImg}
+              renderItem={RenderItem}
+              horizontal={true}
+              alwaysBounceVertical={false}
+              pagingEnabled
+              showsHorizontalScrollIndicator={false}
+              keyExtractor={(item, index) => index.toString()}
+              onScroll={onChangePage}
+            />
+
+            <View style={_styles.absoluteView}>
+              <View style={_styles.badgeContainer}>
+                {/* {data.second_auth_list.length > 0 && 
+                  <View style={styles.authBadge}>
+                    <Text style={styles.whiteText}>인증 완료</Text>
+                  </View>
+                } */}
+              </View>
+
+              <View style={_styles.nameContainer}>
+                <Text style={_styles.nameText}>{liveMemberInfo.nickname}, {liveMemberInfo.age}</Text>
+              </View>
+
+              <View style={_styles.distanceContainer}>
+                {distance != null &&
+                  <View style={_styles.distanceContainer}>
+                    <Image source={ICON.marker} style={_styles.markerIcon} />
+                    <Text style={_styles.regionText}>{distance}Km</Text>
+                  </View>
+                }
+              </View>
+            </View>
+          </View>
+
+          <View style={_styles.infoContainer}>
+            <Text style={_styles.infoTitle}>인상을 선택해주세요.</Text>
+            <View style={_styles.tagContainer}>
+              {[
+                faceTypeList.map((e) => {
+                  if(e.value != '') {
+                    return (
+                      <TouchableOpacity onPress={() => { callBackFunction(true, e.value, ''); }}>
+                        <View style={_styles.tagBox}>
+                          <Text style={_styles.tagText}>{e.label}</Text>
+                        </View>
+                      </TouchableOpacity>
+                    )
+                  }
+                }),
+              ]}
+            </View>
+          </View>
+        </ScrollView>
+      </View>
 
       {clickEventFlag && (
         <LivePopup
@@ -306,4 +427,242 @@ export const Live = () => {
       )}
     </>
   );
+
+  
+  /**
+     * 이미지 렌더링
+     */
+  function RenderItem({ item }) {
+    const url = item?.url?.uri;
+    return (
+      <>
+        <View>
+            <Image
+              source={{uri: url}}
+              style={{
+                width: width,
+                height: height * 0.7,
+              }}
+            />
+            <Watermark value={memberBase?.phone_number}/>
+          </View>
+      </>
+    );
+  }
 };
+
+
+
+
+const _styles = StyleSheet.create({
+  root: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  indocatorContainer: {
+    width: '100%',
+    flexDirection: `row`,
+    alignItems: `center`,
+    justifyContent: `center`,
+    position: 'absolute',
+    zIndex: 10,
+    top: 20,
+  },
+  indicator: {
+    width: 18,
+    height: 2,
+    marginHorizontal: 2,
+  },
+  badgeIcon: {
+    width: 38,
+    height: 38,
+    backgroundColor: 'rgba(255, 255, 255, 0.54)',
+    position: 'absolute',
+    top: -6,
+    right: 8,
+    borderRadius: 19,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  image: {
+    width: width,
+    height: width,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  imageBottonContainer: {
+    flexDirection: 'column',
+    position: 'absolute',
+    bottom: 50,
+    left: 20,
+  },
+  authContainer: {
+    width: 48,
+    borderRadius: 5,
+    backgroundColor: '#7986ee',
+    paddingVertical: 3,
+    flexDirection: `row`,
+    alignItems: `center`,
+    justifyContent: `center`,
+  },
+  authText: {
+    opacity: 0.83,
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 10,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#ffffff',
+  },
+  row: {
+    flexDirection: `row`,
+    alignItems: `center`,
+    justifyContent: `center`,
+  },
+  nickname: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 25,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    color: '#ffffff',
+  },
+  authIcon: {
+    width: 15,
+    height: 15,
+    marginLeft: 3,
+  },
+  locationContainer: {
+    marginTop: 7,
+    flexDirection: `row`,
+    alignItems: `center`,
+  },
+  markerIcon: {
+    width: 13,
+    height: 17.3,
+  },
+  locationText: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 16,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    lineHeight: 22,
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#ffffff',
+    marginLeft: 6,
+  },
+  infoContainer: {
+    paddingHorizontal: 10,
+    marginTop: 30,
+    marginBottom: 30,
+  },
+  infoTitle: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 19,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    lineHeight: 26,
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#333333',
+    marginLeft: 7,
+  },
+  tagContainer: {
+    flexWrap: 'wrap',
+    flexDirection: `row`,
+    alignItems: `center`,
+    justifyContent: 'flex-start',
+    marginTop: 20,
+  },
+  tagBox: {
+    borderRadius: 5,
+    backgroundColor: '#ffffff',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderColor: '#b7b7b9',
+    marginLeft: 7,
+    marginTop: 7,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+  },
+  tagText: {
+    fontFamily: 'AppleSDGothicNeoR00',
+    fontSize: 16,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    lineHeight: 22,
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#b1b1b1',
+  },
+  absoluteView: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: width * 0.15,
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    paddingHorizontal: '8%',
+    zIndex: 1,
+  },
+  badgeContainer: {
+    flexDirection: `row`,
+    alignItems: `center`,
+    // justifyContent: `center`,
+  },
+  distanceContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 5,
+  },
+  regionText: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 16,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    lineHeight: 22,
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#ffffff',
+    marginLeft: 4,
+  },
+  nameContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  nameText: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 25,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    lineHeight: 26,
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#ffffff',
+    marginTop: 10,
+  },
+  checkIcon: {
+    width: 15,
+    height: 15,
+    marginLeft: 4,
+  },
+  authBadge: {
+    width: 48,
+    height: 21,
+    borderRadius: 5,
+    backgroundColor: '#7986ee',
+    flexDirection: `row`,
+    alignItems: `center`,
+    justifyContent: `center`,
+  },
+  authBadgeText: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 10,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#7986EE',
+  },
+
+});

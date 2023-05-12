@@ -67,20 +67,23 @@ function FemalePannel() {
             )} */}
           </View>
           <View style={female.row}>
-            {route.name !== ROUTES.Mileage_Shop && (
-              <View>
-                {/* <Text style={female.infoText}>{me?.nickname}님의 공주력</Text> */}
-                {/* <TouchableOpacity
-                  style={female.lmtShopButton}
-                  onPress={onPressLimitShop}
-                >
-                  <Text style={female.lmtButtonText2}>리밋샵 미리보기</Text>
-                </TouchableOpacity> */}
-              </View>
-            )}
+            
+            <View>
+              {route.name !== ROUTES.Mileage_Shop && (
+                <>
+                  {/* <Text style={female.infoText}>{me?.nickname}님의 공주력</Text> */}
+                  <Text style={female.infoText}>리밋샵에 구경 오세요 :)</Text>
+                  <TouchableOpacity
+                    style={female.lmtShopButton}
+                    onPress={onPressLimitShop}>
 
+                    <Text style={female.lmtButtonText2}>리밋샵 미리보기</Text>
+                  </TouchableOpacity>
+                </>
+              )}
+            </View>
+            
             <View style={{ flexDirection: 'column' }}>
-
               <SpaceView viewStyle={female.myBox}>
                 <TouchableOpacity onPress={onPressLimitInfo}>
                   <View style={female.myBox}>
@@ -149,7 +152,7 @@ function MalePannel() {
           member_buy_price: mbrPrice
           , target_buy_price: trgtPrice
           , price_persent: percent
-          , tmplt_name: lettmpltName
+          , tmplt_name: lettmpltName.replace(/(\s*)/g, "")
         });
       }
     };
@@ -189,6 +192,11 @@ function MalePannel() {
         <TouchableOpacity onPress={onPressPointReward} style={male.TooltipButton} hitSlop={commonStyle.hipSlop10}>
           <Image source={ICON.currencyTooltip} style={male.imageTooltip} />
         </TouchableOpacity>
+
+        <View style={male.gradeArea}>
+          <Text style={male.gradeText}><Text style={male.gradeEtc}>RANK</Text>{payInfo?.tmplt_name}</Text>
+        </View>
+
       </View>
     </View>
   );
@@ -267,6 +275,26 @@ const male = StyleSheet.create({
     height: 20,
     resizeMode: 'contain',
   },
+  gradeArea: {
+    position: 'absolute',
+    bottom: 18,
+    right: 25,
+  },
+  gradeEtc: {
+    fontSize: 9,
+    fontFamily: 'AppleSDGothicNeoB00',
+    opacity: 0.13,
+    color: '#000',
+  },
+  gradeText: {
+    fontSize: 72,
+    fontFamily: 'AppleSDGothicNeoEB00',
+    color: '#8657D4',
+    fontWeight: 'bold',
+    opacity: 0.13,
+    textAlign: 'right',
+    letterSpacing: 0,
+  },
 });
 
 const female = StyleSheet.create({
@@ -305,7 +333,6 @@ const female = StyleSheet.create({
     width: 25,
     height: 25,
     borderRadius: 13,
-
     marginRight: 8,
   },
   mileageOrderButton: {
@@ -316,7 +343,7 @@ const female = StyleSheet.create({
   infoText: {
     // marginTop: 8,
     opacity: 0.83,
-    // fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 10,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -337,7 +364,7 @@ const female = StyleSheet.create({
     borderColor: '#7986ee',
     alignItems: `center`,
     justifyContent: `center`,
-    marginTop: 10,
+    marginTop: 5,
     paddingVertical: 3,
   },
   lmtButtonText: {
@@ -351,14 +378,14 @@ const female = StyleSheet.create({
   },
   lmtButtonText2: {
     fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: 'normal',
     fontStyle: 'normal',
     letterSpacing: 0,
     textAlign: 'left',
     color: '#7986ee',
-    paddingHorizontal: 10,
-    paddingVertical: 3
+    paddingHorizontal: 8,
+    paddingVertical: 2
   },
   myBox: {
     flexDirection: `row`,

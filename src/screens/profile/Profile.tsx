@@ -3,7 +3,7 @@ import CommonHeader from 'component/CommonHeader';
 import { CommonInput } from 'component/CommonInput';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
-import { ScrollView, View, Modal, TouchableOpacity, Alert, StyleSheet, Dimensions } from 'react-native';
+import { ScrollView, View, Modal, TouchableOpacity, Alert, StyleSheet, Dimensions, Text } from 'react-native';
 import * as React from 'react';
 import { CommonBtn } from 'component/CommonBtn';
 import { StackParamList, ScreenNavigationProp, ColorType } from '@types';
@@ -13,12 +13,8 @@ import {
   useNavigation,
   CommonActions,
 } from '@react-navigation/native';
-import axios from 'axios';
-import * as properties from 'utils/properties';
-import AsyncStorage from '@react-native-community/async-storage';
 import * as hooksMember from 'hooks/member';
 import { useDispatch } from 'react-redux';
-import * as mbrReducer from 'redux/reducers/mbrReducer';
 import { ROUTES, STACK } from 'constants/routes';
 import { clearPrincipal } from 'redux/reducers/authReducer';
 import { useUserInfo } from 'hooks/useUserInfo';
@@ -58,14 +54,21 @@ export const Profile = (props: Props) => {
   const [phoneNumber, setPhoneNumber] = React.useState<any>(
     memberBase?.phone_number
   );
+  const [recommender, setRecommender] = React.useState<any>(memberBase?.recommender);
 
-  // 저장 버튼
-  const btnSave = async () => {
+  // 닉네임 저장 버튼
+  const btnSaveNickName = async () => {
+
     // 닉네임 변경 여부 체크
-    if (memberBase.nickname == nickname) {
-      navigation.navigate(STACK.TAB, {
-        screen: 'Roby',
+    if (memberBase?.nickname == nickname) {
+      show({
+        title: '알림',
+        content: '동일한 닉네임 입니다.',
+        confirmCallback: function() {
+
+        },
       });
+
     } else {
       show({
         title: '닉네임 변경',
@@ -74,12 +77,56 @@ export const Profile = (props: Props) => {
   
         },
         confirmCallback: function() {
-          saveMemberBase();
+          let dataJson = {
+            nickname: nickname,
+            comment: '',
+            match_yn: '',
+            use_pass_yn: 'Y',
+            friend_mathch_yn: '',
+            recommender: '',
+          };
+
+          saveMemberBase(dataJson);
         },
       });
     }
   };
 
+  // 추천인 저장 버튼
+  const btnSaveRecommender = async () => {
+
+    if(!recommender) {
+      show({
+        title: '알림',
+        content: '추천인을 입력해주세요.',
+      });
+    } else if (memberBase?.nickname == recommender) {
+      show({
+        title: '알림',
+        content: '다른 회원의 닉네임만 추천할 수 있습니다.',
+      });
+    } else {
+      show({
+        title: '알림',
+        content: '추천인을 등록하시겠습니까?',
+        cancelCallback: function() {
+  
+        },
+        confirmCallback: function() {
+          let dataJson = {
+            nickname: '',
+            comment: '',
+            match_yn: '',
+            use_pass_yn: 'N',
+            friend_mathch_yn: '',
+            recommender: recommender,
+          };
+    
+          saveMemberBase(dataJson);
+        },
+      });
+    }
+  }
 
   // ###################################################################### 탈퇴 처리
   const exitProc = async () => {
@@ -133,24 +180,25 @@ export const Profile = (props: Props) => {
 	}
 
   // ###################################################################### 내 계정 정보 저장
-  const saveMemberBase = async () => {
-    const body = {
-      nickname: nickname,
-      use_pass_yn: 'Y',
-    };
+  const saveMemberBase = async (dataJson:any) => {
+    const body = dataJson;
     try {
       const { success, data } = await update_setting(body);
 
       if (success) {
-        if (data.result_code == '0000') {
+        if (data.result_code == '0000' || data.result_code == '0055') {
+          let content = data.result_code == '0055'?'입력하신 추천인이 등록되었습니다.':'저장되었습니다.';
           dispatch(myProfile());
-          show({ content: '저장되었습니다.' });
+          show({ content: content });
 
-          navigation.navigate(STACK.TAB, {
+          /* navigation.navigate(STACK.TAB, {
             screen: 'Roby',
-          });
+          }); */
         } else if (data.result_code == '6010') {
           show({ content: '보유 패스가 부족합니다.' });
+          return false;
+        } else if (data.result_code == '8005') {
+          show({ content: '존재하지 않는 닉네임입니다.' });
           return false;
         } else {
           show({ content: '오류입니다. 관리자에게 문의해주세요.' });
@@ -211,7 +259,7 @@ export const Profile = (props: Props) => {
 
           <SpaceView mb={40}>
 
-            <View style={{width: (width) / 1.4}}>
+            <View style={{width: (width) / 1.45}}>
               <CommonInput
                 label={'전화번호'}
                 placeholder=""
@@ -239,13 +287,28 @@ export const Profile = (props: Props) => {
           </SpaceView>
 
           <SpaceView mb={40}>
-            <CommonInput
-              label={'닉네임'}
-              placeholder=""
-              value={nickname}
-              onChangeText={(nickname) => setNickname(nickname)}
-              rightPen={true}
-            />
+
+            <View style={{width: (width) / 1.45}}>
+              <CommonInput
+                label={'닉네임'}
+                placeholder=""
+                value={nickname}
+                onChangeText={(nickname) => setNickname(nickname)}
+                rightPen={false}
+              />
+            </View>
+            <View style={[_styles.modfyHpBtn]}>
+              <CommonBtn 
+                value={'저장'} 
+                type={'blue'} 
+                height={40} 
+                width={70} 
+                fontSize={14}
+                borderRadius={5}
+                onPress={() => {
+                  btnSaveNickName();
+                }} />
+            </View>
           </SpaceView>
 
           <SpaceView mb={40}>
@@ -277,6 +340,49 @@ export const Profile = (props: Props) => {
             </View>
           </SpaceView>
 
+          <SpaceView>
+            <View style={{width: (width) / 1.45}}>
+              <CommonInput
+                label={'추천인'}
+                placeholder="추천인의 닉네임을 입력해주세요."
+                placeholderTextColor={'#c6ccd3'}
+                value={recommender}
+                onChangeText={(recommender) => setRecommender(recommender)}
+                rightPen={false}
+                disabled={memberBase?.recommender?true:false}
+              />
+            </View>
+            {
+              memberBase?.recommender ?
+              <View style={[_styles.modfyHpBtn]}>
+                <CommonBtn 
+                  value={'저장'} 
+                  type={'gray3'} 
+                  height={40} 
+                  width={70} 
+                  fontSize={14}
+                  borderRadius={5}
+                  onPress={() => {}} />
+              </View>
+            : <View style={[_styles.modfyHpBtn]}>
+                <CommonBtn 
+                  value={'저장'} 
+                  type={'blue'} 
+                  height={40} 
+                  width={70} 
+                  fontSize={14}
+                  borderRadius={5}
+                  onPress={() => {
+                    btnSaveRecommender();
+                  }} />
+              </View>
+            }
+          </SpaceView>
+
+          <SpaceView mt={7} mb={40}>
+            <Text style={_styles.recomDesc}>TIP.혜택 내용은 "최근소식"의 이벤트 안내를 확인해주세요.</Text>
+          </SpaceView>
+
           {/* <SpaceView mb={24}>
 					<CommonInput 
 						label={'회사명'} 
@@ -306,23 +412,24 @@ export const Profile = (props: Props) => {
         </SpaceView>
 
         <SpaceView viewStyle={layoutStyle.rowBetween}>
-          <View >
+          <View>
             <CommonBtn
               value={'로그아웃'} 
               type={'black'} 
-              width={width/2}
+              width={width}
+              borderWidth={0}
               borderRadius={1}
               onPress={logout} />
           </View>
 
-          <View >
+          {/* <View >
             <CommonBtn 
               value={'저장'} 
               type={'primary'}
               width={width/2}
               borderRadius={1}
               onPress={btnSave} />
-          </View>
+          </View> */}
         </SpaceView>
 
       </ScrollView>
@@ -334,9 +441,18 @@ const _styles = StyleSheet.create({
   modfyHpBtn: {
     position: 'absolute',
     right: 0,
-    top: 12,
+    top: 21,
     height: '100%',
     justifyContent: 'center',
   },
+  recomDesc: {
+    fontSize: 13,
+    fontFamily: 'AppleSDGothicNeoM00',
+    backgroundColor: '#F6F7FE',
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    color: '#909090',
+    borderRadius: 15,
+  }
 
 });

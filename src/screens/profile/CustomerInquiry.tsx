@@ -124,7 +124,7 @@ export const CustomerInquiry = (props : Props) => {
 							/>
 						</SpaceView>
 
-						<SpaceView mb={15}>
+						<SpaceView mb={15} mt={15}>
 							<CommonTextarea
 	//							label={'내용'} 
 								value={contents}

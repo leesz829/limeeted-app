@@ -8,6 +8,7 @@ import {
   MEMBER_LOGOUT,
   DAILY_MATCHED_INFO,
   MATCHED_MEMBER_INFO,
+  MEMBER_APPLY_ITEM_INFO,
   ME,
   MEMBER_INTRODUCE_GUIDE,
   MEMBER_PROFILE_ATHENTICATION2,
@@ -39,6 +40,7 @@ import {
   MEMBER_AUTH_DETAIL,
   BOARD_LIST,
   GET_MEMBER_FACE_RANK,
+  GET_MEMBER_PROFILE_INFO,
   NICE_AUTH,
   UPDATE_PHONE_NUMBER,
   UPDATE_PASSWORD,
@@ -66,7 +68,8 @@ import {
   CHECK_REPORT,
   CHECK_REPORT_CONFIRM,
   GET_SECOND_AUTH,
-  INSERT_MEMBER_PHONE_BOOK
+  INSERT_MEMBER_PHONE_BOOK,
+  GET_APP_VERSION,
 } from './route';
 
 /* ========================================================================================================
@@ -104,7 +107,8 @@ export async function regist_member_base_info(body: {
   sns_type?: string;
   sns_token?: string;
 }) {
-  return send(REGIST_BASE_INFO, 'POST', body, false, false);
+  const push_token = await AsyncStorage.getItem(FCM_TOKEN);
+  return send(REGIST_BASE_INFO, 'POST', { ...body, push_token }, false, false);
 }
 
 //회원의 프로필 사진을 신규 등록한다.
@@ -179,6 +183,7 @@ export async function update_setting(body: {
   match_yn: string;
   use_pass_yn: string;
   friend_mathch_yn: string;
+  recommender: string;
 }) {
   return send(UPDATE_SETTING, 'POST', body, true, false);
 }
@@ -371,6 +376,11 @@ export async function get_member_face_rank() {
   return send(GET_MEMBER_FACE_RANK, 'POST', undefined, true, false);
 }
 
+// 회원 프로필 정보를 조회한다.
+export async function get_member_profile_info() {
+  return send(GET_MEMBER_PROFILE_INFO, 'POST', undefined, true, false);
+}
+
 
 /* ========================================================================================================
 ==================================================== MATCH
@@ -380,10 +390,18 @@ export async function get_daily_matched_info() {
   return send(DAILY_MATCHED_INFO, 'POST', undefined, true, false);
 }
 
+// 데일리 매칭 정보를 조회한다.
+export async function get_item_matched_info(body: {
+  match_member_seq: string;
+}) {
+  return send(DAILY_MATCHED_INFO, 'POST', body, true, false);
+}
+
 //찐심/관심/거부 매칭 정보를 신규 등록한다.
 export async function regist_match_status(body: {
   active_type: string;
   res_member_seq: number;
+  special_level: number;
 }) {
   return send(REGIST_MATCHING_INFO, 'POST', body, true, false);
 }
@@ -426,6 +444,11 @@ export async function resolve_match(body: { match_seq: string }) {
 //매칭된 회원의 기본 정보를 조회한다.
 export async function get_matched_member_info(body: { match_seq: number }) {
   return send(MATCHED_MEMBER_INFO, 'POST', body, true, false);
+}
+
+//매칭된 회원의 기본 정보를 조회한다.
+export async function get_member_apply_item_info() {
+  return send(MEMBER_APPLY_ITEM_INFO, 'POST', undefined, true, false);
 }
 
 
@@ -629,4 +652,11 @@ export async function set_member_phone_book(body: {
   friend_match_yn: string;
 }) {
   return send(INSERT_MEMBER_PHONE_BOOK, 'POST', body, true, false);
+}
+
+// 앱 버전 정보를 조회한다.
+export async function get_app_version(body: {
+  device_type: string;
+}) {
+  return send(GET_APP_VERSION, 'POST', body, false, false);
 }

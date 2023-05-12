@@ -25,4 +25,5 @@ export const ROUTES = {
   Auction_Detail: 'AuctionDetail',
   Mileage_Order: 'MileageOrder',
   Gifticon_Detail: 'GifticonDetail',
+  ItemMatching: 'ItemMatching',
 };

@@ -345,6 +345,13 @@ export const Signup01 = (props: Props) => {
           <CommonText type={'h3'} fontWeight={'200'}>
             아래 버튼을 선택 후{'\n'}인증 뱃지를 등록 할 수 있습니다.
           </CommonText>
+
+          {props.route.params.gender == 'W' &&
+            <CommonText textStyle={_styles.femaleInfoText}>
+              여성 회원은 인증 뱃지 등록을 하지 않아도 가입 심사 기간 동안{'\n'}
+              프로필 평점 7.0 이상이 되면 가입 승인 처리됩니다.
+            </CommonText>
+          }
         </SpaceView>
 
         {/* <SpaceView mb={24}>
@@ -385,32 +392,33 @@ export const Signup01 = (props: Props) => {
             </View>
           </SpaceView>
         </SpaceView>
-
-        <SpaceView>
-          <CommonBtn
-            value={'다음 (2/4)'}
-            type={'primary'}
-            height={60}
-            borderRadius={1}
-            onPress={() => {
-
-              if(typeof secondData.jobData.member_seq == 'undefined' && typeof secondData.eduData.member_seq == 'undefined' && typeof secondData.incomeData.member_seq == 'undefined'
-                && typeof secondData.assetData.member_seq == 'undefined' && typeof secondData.snsData.member_seq == 'undefined' && typeof secondData.vehicleData.member_seq == 'undefined') {
-                show({
-                  title: '안내',
-                  content: '프로필 인증은 최소 1개 필수 등록해주셔야 합니다.' ,
-                  confirmCallback: function() {}
-                });
-              } else {
-                navigation.navigate('Signup02', {
-                  memberSeq: props.route.params.memberSeq,
-                  gender: props.route.params.gender,
-                });
-              }
-            }}
-          />
-        </SpaceView>
       </ScrollView>
+
+      <SpaceView>
+        <CommonBtn
+          value={'다음 (2/4)'}
+          type={'primary'}
+          height={60}
+          borderRadius={1}
+          onPress={() => {
+
+            if(props.route.params.gender == 'M' && typeof secondData.jobData.member_seq == 'undefined' && typeof secondData.eduData.member_seq == 'undefined' && typeof secondData.incomeData.member_seq == 'undefined'
+              && typeof secondData.assetData.member_seq == 'undefined' && typeof secondData.snsData.member_seq == 'undefined' && typeof secondData.vehicleData.member_seq == 'undefined') {
+              show({
+                title: '안내',
+                content: '프로필 인증은 최소 1개 필수 등록해주셔야 합니다.' ,
+                confirmCallback: function() {}
+              });
+            } else {
+              navigation.navigate('Signup02', {
+                memberSeq: props.route.params.memberSeq,
+                gender: props.route.params.gender,
+              });
+            }
+          }}
+        />
+      </SpaceView>
+      
 
       {/* ###############################################
 								직업 인증 팝업
@@ -666,6 +674,13 @@ const _styles = StyleSheet.create({
     borderColor: '#697AE6',
     borderRadius: 5,
     paddingHorizontal: 10,
+  },
+  femaleInfoText: {
+    color: '#9A9A9A',
+    fontSize: 13,
+    fontFamily: 'AppleSDGothicNeoM00',
+    lineHeight: 16,
+    marginTop: 5,
   },
 });
 

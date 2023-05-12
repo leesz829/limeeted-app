@@ -21,12 +21,14 @@ import { myProfile } from 'redux/reducers/authReducer';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { ROUTES, STACK } from 'constants/routes';
 import { findSourcePath } from 'utils/imageUtils';
+import { CommonLoading } from 'component/CommonLoading';
 
 
 
 const dummy = ['', '', '', ''];
 export default function Inventory() {
   const navigation = useNavigation<ScreenNavigationProp>();
+  const [isLoading, setIsLoading] = useState(true);
 
   const [tab, setTab] = useState(categories[0]);
   const [data, setData] = useState(dummy);
@@ -43,6 +45,7 @@ export default function Inventory() {
 
     if(data) {
       setData(data?.inventory_list);
+      setIsLoading(false);
     }
   }
 
@@ -74,6 +77,7 @@ export default function Inventory() {
         
       },
       confirmCallback: async function() {
+        setIsLoading(true);
 
         const body = {
           item_category_code: item.item_category_code,
@@ -85,9 +89,23 @@ export default function Inventory() {
           if(success) {
             switch (data.result_code) {
               case SUCCESS:
+                if(body.cate_common_code == 'STANDARD'){
+                  // 조회된 매칭 노출 회원
+                  // "profile_member_seq_list"
+                  navigation.navigate(STACK.COMMON, {
+                      screen: 'ItemMatching'
+                      , params : {profile_member_seq_list: data.profile_member_seq_list.toString()}
+                    });
+                }
                 dispatch(myProfile());
-                //navigation.navigate(STACK.TAB, { screen: 'Shop' });
+                // navigation.navigate(STACK.TAB, { screen: 'Shop' });
                 fetchData();
+                break;
+              case '3001':
+                show({
+                  content: '소개해드릴 회원을 찾는 중이에요. 다음에 다시 사용해주세요.' ,
+                  confirmCallback: function() {}
+                });
                 break;
               default:
                 show({
@@ -105,7 +123,7 @@ export default function Inventory() {
         } catch (error) {
           console.warn(error);
         } finally {
-          
+          setIsLoading(false);
         }
       }
     });
@@ -114,7 +132,17 @@ export default function Inventory() {
   const ListHeaderComponent = () => (
     <>
       <View style={styles.categoriesContainer}>
-        
+        {categories?.map((item) => (
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={styles.categoryBorder(item.value === tab.value)}
+            onPress={() => onPressTab(item)}
+          >
+            <Text style={styles.categoryText(item.value === tab.value)}>
+              {item?.label}
+            </Text>
+          </TouchableOpacity>
+        ))}
       </View>
       <View style={{ height: 30 }} />
     </>
@@ -122,18 +150,21 @@ export default function Inventory() {
   const renderItem = ({ item, index }) => (
     <View style={styles.renderItem}>
       <View style={{ flexDirection: 'row' }}>
-        <Image source={findSourcePath(item.file_path + item.file_name)} style={styles.thumb} />
+        <View style={styles.thumb}>
+          <Image source={findSourcePath(item?.file_path + item?.file_name)} style={{width: '100%', height: '100%'}} resizeMode='cover' />
+          {item?.item_qty > 0 && <Text style={styles.qtyText}>{item.item_qty}개 보유</Text>}
+        </View>
+
         <View style={{ marginLeft: 15, width: '65%' }}>
           <Text style={styles.title}>{item?.cate_name}</Text>
           <Text style={styles.infoText}>{item?.cate_desc}</Text>
-          {item?.item_qty > 0 && <Text style={styles.qtyText}>수량 : {item.item_qty}개</Text>}
           <View style={styles.buttonWrapper}>
             <TouchableOpacity
               style={styles.button(item?.use_yn == 'N' && item?.be_in_use_yn == 'N')}
               disabled={item?.use_yn == 'Y' || item?.be_in_use_yn == 'Y'}
               onPress={() => {useItem(item);}} >
               <Text style={styles.buttonText(item?.use_yn == 'N' && item?.be_in_use_yn == 'N')}>
-                {item?.use_yn == 'N' && item?.be_in_use_yn == 'N' && '사용/획득'}
+                {item?.use_yn == 'N' && item?.be_in_use_yn == 'N' && '사용 / 획득'}
                 {item?.use_yn == 'N' && item?.be_in_use_yn == 'Y' && '0일 후 열림'}
                 {item?.use_yn == 'Y' && '사용중('+ item?.subscription_end_day +'일남음)'}
               </Text>
@@ -151,6 +182,8 @@ export default function Inventory() {
   );
   return (
     <>
+      {isLoading && <CommonLoading />}
+
       <CommonHeader title="인벤토리" />
       <FlatList
         style={styles.root}
@@ -189,15 +222,18 @@ const styles = StyleSheet.create({
       paddingVertical: 9,
       paddingHorizontal: 15,
       borderWidth: 1,
-      borderColor: isSelected ? Color.primary : Color.grayAAAA,
+      borderColor: isSelected ? Color.blue01 : Color.grayECECEC,
       borderRadius: 9,
-      marginLeft: 8,
+      backgroundColor: isSelected ? '#f8f5ff' : Color.white,
+      marginLeft: 5,
+      marginRight: 5,
     };
   },
   categoryText: (isSelected: boolean) => {
     return {
       fontSize: 14,
-      color: isSelected ? Color.primary : Color.grayAAAA,
+      fontFamily: 'AppleSDGothicNeoEB00',
+      color: isSelected ? Color.blue01 : Color.grayAAAA,
     };
   },
   renderItem: {
@@ -232,16 +268,19 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   qtyText: {
-    fontFamily: 'AppleSDGothicNeoM00',
+    position: 'absolute',
+    bottom: 4,
+    right: 4,
+    fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 12,
     fontWeight: 'normal',
     textAlign: 'left',
-    color: '#363636',
+    color: '#fff',
     marginTop: 5,
   },
   buttonWrapper: {
     width: '100%',
-    marginTop: 12,
+    marginTop: 7,
     alignItems: 'flex-end',
   },
   button: (used) => {
@@ -260,6 +299,7 @@ const styles = StyleSheet.create({
       fontSize: 11,
       fontWeight: 'normal',
       fontStyle: 'normal',
+      fontFamily: 'AppleSDGothicNeoB00',
       letterSpacing: 0,
       textAlign: 'left',
       color: used ? '#ffffff' : '#b5b5b5',
@@ -279,5 +319,9 @@ const categories = [
   {
     label: '부스팅',
     value: 'SUBSCRIPTION',
+  },
+  {
+    label: '뽑기권',
+    value: 'PROFILE_DRAWING',
   },
 ];

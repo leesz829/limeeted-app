@@ -19,6 +19,8 @@ interface Props {
 
 export const Approval = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
+
+  console.log('mstImgPath :::::::: ' , props.route.params.mstImgPath);
   
   const memberSeq = props.route.params.memberSeq;         // 회원 번호
   const gender = props.route.params.gender;               // 회원 성별
@@ -30,7 +32,7 @@ export const Approval = (props: Props) => {
   // 반려 사유 데이터
   const getRefuseData = function() {
     let code = 'IMAGE';
-    let text = '프로필 사진';
+    let text = '';
     if(accessType === 'REFUSE') {
       if(refuseImgCnt > 0 && refuseAuthCnt > 0) {
         code = 'ALL';
@@ -75,7 +77,7 @@ export const Approval = (props: Props) => {
                 </CommonText>
               </View>
               <View style={commonStyle.mb15}>
-                <CommonText textStyle={layoutStyle.textCenter} type={'h5'}>
+                <CommonText textStyle={layoutStyle.textCenter} type={'h5'} color={'#6E6E6E'}>
                   정성스레 작성해주신 프로필에 심사기준에{'\n'}
                   맞지 않는 사항이 있어 프로필 수정을 요청드려요.{'\n'}
                   반려사유를 확인하여 프로필을 수정해주세요.

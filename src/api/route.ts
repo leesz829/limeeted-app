@@ -46,6 +46,7 @@ export const INSERT_MEMBER_INQUIRY = '/customerInquiry/insertCustomerInquiry'
 export const CHECK_REPORT = '/member/selectCheckReport';
 export const CHECK_REPORT_CONFIRM = '/member/updateCheckReportConfirm';
 export const INSERT_MEMBER_PHONE_BOOK = '/member/insertMemberPhoneBook';
+export const MEMBER_APPLY_ITEM_INFO = '/item/selectMemberApplyItemList';
 
 /**
  * PROFILE
@@ -53,6 +54,7 @@ export const INSERT_MEMBER_PHONE_BOOK = '/member/insertMemberPhoneBook';
 export const REGIST_PROFILE_EVALUATION = '/profile/insertProfileAssessment';
 export const PROFILE_REEXAMINATION = '/profile/profileReexProc';
 export const GET_MEMBER_FACE_RANK = '/profile/getMemberFaceRankList';
+export const GET_MEMBER_PROFILE_INFO = '/profile/getMemberProfileData';
 
 /**
  * MATCHING
@@ -111,3 +113,4 @@ export const EVENT_CASHBACK_RECEIVE = '/event/receiveItem';
 export const COMMON_CODE = '/common/selectGroupCodeList';
 export const BOARD_LIST = '/board/selectBoardList';
 export const NICE_AUTH = '/nice/authToken';
+export const GET_APP_VERSION = '/login/getAppVersion';

@@ -4,6 +4,7 @@ import { CommonSwich } from 'component/CommonSwich';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import TopNavigation from 'component/TopNavigation';
+import { Wallet } from 'component/TopNavigation';
 import * as React from 'react';
 import {
   Image,
@@ -11,10 +12,14 @@ import {
   View,
   TouchableOpacity,
   Modal,
+  StyleSheet,
+  Dimensions,
+  Text,
+  ImageBackground,
 } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import LinearGradient from 'react-native-linear-gradient';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import axios from 'axios';
 import { StackNavigationProp } from '@react-navigation/stack';
 import {
@@ -23,16 +28,19 @@ import {
   useIsFocused,
   CommonActions,
 } from '@react-navigation/native';
-import * as properties from 'utils/properties';
 import * as dataUtils from 'utils/data';
 import { useDispatch } from 'react-redux';
-import * as mbrReducer from 'redux/reducers/mbrReducer';
 import { get_member_storage, update_match } from 'api/models';
 import { useMemberseq } from 'hooks/useMemberseq';
 import { usePopup } from 'Context';
 import { STACK } from 'constants/routes';
 import CommonHeader from 'component/CommonHeader';
 import { myProfile } from 'redux/reducers/authReducer';
+import Carousel from 'react-native-snap-carousel';
+import ToggleSwitch from 'toggle-switch-react-native';
+import { Color } from 'assets/styles/Color';
+import { isEmptyData } from 'utils/functions';
+import { CommonLoading } from 'component/CommonLoading';
 
 
 
@@ -45,10 +53,13 @@ interface Props {
   route: RouteProp<BottomParamList, 'Storage'>;
 }
 
+const { width, height } = Dimensions.get('window');
+
 export const Storage = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
   const isFocusStorage = useIsFocused();
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
 
   const { show } = usePopup();  // 공통 팝업
 
@@ -58,10 +69,7 @@ export const Storage = (props: Props) => {
   const [btnStatus1, setBtnStatus1] = useState(true);
   const [btnStatus2, setBtnStatus2] = useState(true);
 
-  const [isResSpecialVisible, setIsResSpecialVisible] = React.useState(false);
-  const [isReqSpecialVisible, setIsReqSpecialVisible] = React.useState(false);
-  const [isMatchSpecialVisible, setIsMatchSpecialVisible] =
-    React.useState(false);
+  const [isSpecialVisible, setIsSpecialVisible] = React.useState(false);
 
   /* ################################################
    ######## Storage Data 구성
@@ -69,7 +77,7 @@ export const Storage = (props: Props) => {
    ######## - reqLikeList : 내가 받은 관심 목록
    ######## - matchTrgtList : 내가 받은 관심 목록
    #################################################*/
-  const [data, setData] = React.useState<any>({
+  const [dataStorage, setDataStorage] = React.useState<any>({
     resLikeList: [],
     reqLikeList: [],
     matchTrgtList: [],
@@ -82,19 +90,9 @@ export const Storage = (props: Props) => {
     getStorageData();
   }, [isFocusStorage]);
 
-  // 찐심 설정
-  const specialInterestFn = async (type: string, value: string) => {
-    if (type == 'RES') {
-      setIsResSpecialVisible(value == 'Y' ? true : false);
-    } else if (type == 'REQ') {
-      setIsReqSpecialVisible(value == 'Y' ? true : false);
-    } else if (type == 'MATCH') {
-      setIsMatchSpecialVisible(value == 'Y' ? true : false);
-    }
-  };
-
-  // 보관함 정보 조회
+  // ################################################################################# 보관함 정보 조회
   const getStorageData = async () => {
+    setIsLoading(true);
 
     try {
       const { success, data } = await get_member_storage();
@@ -151,8 +149,8 @@ export const Storage = (props: Props) => {
               ),
             ];
 
-          setData({
-            ...data,
+          setDataStorage({
+            ...dataStorage,
             resLikeList: resLikeListData,
             reqLikeList: reqLikeListData,
             matchTrgtList: matchTrgtListData,
@@ -166,17 +164,28 @@ export const Storage = (props: Props) => {
     } catch (error) {
       console.log(error);
     } finally {
-      
+      setIsLoading(false);
     }
   };
 
-  // 프로필 열람 팝업 활성화
+  // ################################################################################# 프로필 열람 팝업 활성화
   const popupProfileOpen = async (
     match_seq: any,
     tgt_member_seq: any,
     type: any,
-    profile_open_yn: any
+    profile_open_yn: any,
+    member_status: any,
   ) => {
+
+    if(member_status != 'ACTIVE') {
+      show({
+        title: '프로필 열람 실패',
+        content: '최근에 휴면 또는 탈퇴를 하신 회원입니다.',
+      });
+
+      return;
+    } 
+    
     if (profile_open_yn == 'N') {
 
       show({
@@ -199,13 +208,8 @@ export const Storage = (props: Props) => {
     }
   };
 
-  // 프로필 열람 이동
+  // ################################################################################# 프로필 열람 이동
   const goProfileOpen = async (match_seq:any, tgt_member_seq:any, type:any) => {
-    console.log('match_seq :::::: ' , match_seq);
-    console.log('tgt_member_seq :::::: ' , tgt_member_seq);
-    console.log('type :::::: ' , type);
-
-
     let req_profile_open_yn = '';
     let res_profile_open_yn = '';
 
@@ -222,7 +226,6 @@ export const Storage = (props: Props) => {
     };
     try {
       const { success, data } = await update_match(body);
-      console.log('data ::::: ' , data);
       if(success) {
         if (data.result_code == '0000') {
           dispatch(myProfile());
@@ -247,601 +250,376 @@ export const Storage = (props: Props) => {
     }
   };
 
+
+
+
+  // #######################################################################################################
+  const { route } = props;
+  const params = route.params;
+  const pageIndex = params?.pageIndex || 0;
+  const ref = useRef();
+  const [currentIndex, setCurrentIndex] = useState(pageIndex);
+
+  const tabs = [
+    /* {
+      title: '찜 목록',
+    }, */
+    {
+      type: 'REQ',
+      title: '받은 관심',
+      color: '#FF7E8C',
+      data: dataStorage.resLikeList
+    },
+    {
+      type: 'RES',
+      title: '보낸 관심',
+      color: '#697AE6',
+      data: dataStorage.reqLikeList
+    },
+    {
+      type: 'MATCH',
+      title: '성공 매칭',
+      color: '#8669E6',
+      data: dataStorage.matchTrgtList
+    },
+  ];
+
+  const onPressDot = (index) => {
+    ref?.current?.snapToItem(index);
+  };
+
+
+  // 이미지 스크롤 처리
+  const handleScroll = (event) => {
+    let contentOffset = event.nativeEvent.contentOffset;
+    let index = Math.floor(contentOffset.x / (width-10));
+    setCurrentIndex(index);
+  };
+
   return (
     <>
-      {/* <TopNavigation currentPath={''} /> */}
+      {isLoading && <CommonLoading />}
 
-      {props.route.params?.headerType == 'common' ? (
-        <CommonHeader title={'보관함'} />
-      ) : (
-        <TopNavigation currentPath={''} />
-      )}
+      <View style={_styles.root}>
 
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {/* ################################################################
-            ######################   내가 받은 관심 목록 영역 ######################
-            ################################################################ */}
-        <SpaceView mb={32}>
-          <SpaceView mb={16}>
-            <CommonText fontWeight={'700'} type={'h3'}>
-              내가 받은 관심
-            </CommonText>
-          </SpaceView>
+        {/* <CommonHeader title={tabs[currentIndex].title} right={<Wallet theme />} /> */}
 
-          <SpaceView mb={16} viewStyle={styles.rowStyle}>
-            <CommonText fontWeight={'500'}>찐심만 보기</CommonText>
-            <CommonSwich
-              callbackFn={(value: boolean) => {
-                specialInterestFn('RES', value ? 'Y' : 'N');
-              }}
-              isOn={false}
-            />
-          </SpaceView>
+        {props.route.params?.headerType == 'common' ? (
+          <CommonHeader title={'보관함'} />
+        ) : (
+          <TopNavigation currentPath={''} />
+        )}
 
-          <View>
-            {data.resLikeList.length > 0 &&
-            (!isResSpecialVisible ||
-              (isResSpecialVisible && data.resSpecialCnt > 0)) ? (
-              <>
-                {data.resLikeList.map((item: any, index: any) => (
-                  <SpaceView
-                    key={index}
-                    mb={16}
-                    viewStyle={styles.halfContainer}
-                  >
-                    {item.map(
-                      ({
-                        match_seq,
-                        req_member_seq,
-                        img_path,
-                        dday,
-                        special_interest_yn,
-                        req_profile_open_yn,
-                      }: {
-                        match_seq: any;
-                        req_member_seq: any;
-                        img_path: any;
-                        dday: any;
-                        special_interest_yn: any;
-                        req_profile_open_yn: any;
-                      }) =>
-                        !isResSpecialVisible ||
-                        (isResSpecialVisible && special_interest_yn == 'Y') ? (
-                          <TouchableOpacity
-                            onPress={() => {
-                              popupProfileOpen(
-                                match_seq,
-                                req_member_seq,
-                                'REQ',
-                                req_profile_open_yn
-                              );
-                            }}
-                          >
-                            <View key={match_seq} style={styles.halfItemLeft}>
-                              <View style={styles.favoriteBox}>
-                                {/* 관심/찐심 구분 아이콘 */}
-                                <View style={styles.posTopRight}>
-                                  {special_interest_yn != '' &&
-                                  special_interest_yn == 'Y' ? (
-                                    <Image
-                                      source={ICON.royalpass}
-                                      style={styles.iconSize32}
-                                    />
-                                  ) : (
-                                    <Image
-                                      source={ICON.like}
-                                      style={styles.iconSize32}
-                                    />
-                                  )}
-                                </View>
+        <View style={_styles.topContainer}>
+          <View style={_styles.dotContainer}>
+            {tabs.map((item, index) => (
+              <TouchableOpacity 
+                onPress={() => {
+                  onPressDot(index);
+                }}>
 
-                                {/* 썸네일 이미지 */}
-                                <Image
-                                  source={{
-                                    uri: img_path !== '' ? img_path : undefined,
-                                  }}
-                                  style={styles.favoriteImg}
-                                />
-                 
-                                {req_profile_open_yn == 'N'?(
-                                    <View style={styles.darkDisabled}>
-                                      <CommonText
-                                        fontWeight={'700'}
-                                        type={'h5'}
-                                        color={ColorType.gray8888}
-                                        textStyle={[layoutStyle.textRight, commonStyle.mt70, commonStyle.mr30]}>
-                                      터치하고 프로필 열기
-                                      </CommonText>
-                                    </View>
-                                  ) : null
-                                }
-
-                                {/* 썸네일 이미지 그라데이션 효과 */}
-                                <LinearGradient
-                                  colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.4)']}
-                                  style={styles.dim}
-                                  start={{ x: 0, y: 0 }}
-                                  end={{ x: 1, y: 1 }}
-                                />
-
-                                {/* 보관 기간 표시 */}
-                                <View style={styles.posBottomLeft}>
-                                  <CommonText
-                                    fontWeight={'700'}
-                                    color={ColorType.white}
-                                  >
-                                    D-{dday}
-                                  </CommonText>
-                                </View>
-                              </View>
-                            </View>
-                          </TouchableOpacity>
-                        ) : (
-                          <></>
-                        )
-                    )}
-                  </SpaceView>
-                ))}
-              </>
-            ) : (
-              <>
-                <View>
-                  <CommonText>내가 받은 관심이 없습니다.</CommonText>
+                <View
+                  style={[
+                    //_styles.dot,
+                    _styles.tabItem,
+                    {
+                      backgroundColor: index === currentIndex ? item.color : '#ececec',
+                    },
+                  ]}>
+                  <Text style={_styles.tabItemText}>{item.title} | {item.data.length}</Text>
                 </View>
-              </>
-            )}
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
 
-            {/* <View style={styles.halfItemLeft}>
-                     <View style={styles.favoriteBox}>
-                        <View style={styles.posTopRight}>
-                           <Image source={ICON.like} style={styles.iconSize32} />
-                        </View>
-                        <Image source={IMAGE.main} style={styles.favoriteImg} />
-                        <LinearGradient
-                           colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.4)']}
-                           style={styles.dim}
-                           start={{ x: 0, y: 0 }}
-                           end={{ x: 1, y: 1 }}
-                        />
-                        <View style={styles.posBottomLeft}>
-                           <CommonText fontWeight={'700'} color={ColorType.white}>
-                              D-1
-                           </CommonText>
-
-                        </View>
-                     </View>
-                  </View>
-                  <View style={styles.halfItemLeft}>
-                     <View style={styles.favoriteBox}>
-                        <View style={styles.posTopRight}>
-                           <Image source={ICON.like} style={styles.iconSize32} />
-                        </View>
-                        <Image source={IMAGE.main} style={styles.favoriteImg} />
-                        <LinearGradient
-                           colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.4)']}
-                           style={styles.dim}
-                           start={{ x: 0, y: 0 }}
-                           end={{ x: 1, y: 1 }}
-                        />
-                        <View style={styles.posBottomLeft}>
-                           <CommonText fontWeight={'700'} color={ColorType.white}>
-                              D-1
-                           </CommonText>
-
-                        </View>
-                     </View>
-                  </View> */}
-
-            {!btnStatus && (
-              <>
-                <SpaceView mb={16} viewStyle={styles.halfContainer}>
-                  <View style={styles.halfItemLeft}>
-                    <View style={styles.favoriteBox}>
-                      <View style={styles.posTopRight}>
-                        <Image source={ICON.like} style={styles.iconSize32} />
-                      </View>
-                      <Image source={IMAGE.main} style={styles.favoriteImg} />
-                      <LinearGradient
-                        colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.4)']}
-                        style={styles.dim}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 1 }}
-                      />
-                      <View style={styles.posBottomLeft}>
-                        <CommonText fontWeight={'700'} color={ColorType.white}>
-                          D-1
-                        </CommonText>
-                      </View>
-                    </View>
-                  </View>
-                  <View style={styles.halfItemRight}>
-                    <View style={styles.favoriteBox}>
-                      <View style={styles.posTopRight}>
-                        <Image source={ICON.like} style={styles.iconSize32} />
-                      </View>
-                      <Image source={IMAGE.main} style={styles.favoriteImg} />
-                      <LinearGradient
-                        colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.4)']}
-                        style={styles.dim}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 1 }}
-                      />
-                      <View style={styles.posBottomLeft}>
-                        <CommonText fontWeight={'700'} color={ColorType.white}>
-                          D-2
-                        </CommonText>
-                      </View>
-                    </View>
-                  </View>
-                </SpaceView>
-                <SpaceView mb={16} viewStyle={styles.halfContainer}>
-                  <View style={styles.halfItemLeft}>
-                    <View style={styles.favoriteBox}>
-                      <View style={styles.posTopRight}>
-                        <Image
-                          source={ICON.royalpass}
-                          style={styles.iconSize32}
-                        />
-                      </View>
-                      <Image source={IMAGE.main} style={styles.favoriteImg} />
-                      <LinearGradient
-                        colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.4)']}
-                        style={styles.dim}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 1 }}
-                      />
-                      <View style={styles.posBottomLeft}>
-                        <CommonText fontWeight={'700'} color={ColorType.white}>
-                          D-3
-                        </CommonText>
-                      </View>
-                    </View>
-                  </View>
-                  <View style={styles.halfItemRight}>
-                    <View style={styles.favoriteBox}>
-                      <View style={styles.posTopRight}>
-                        <Image
-                          source={ICON.royalpass}
-                          style={styles.iconSize32}
-                        />
-                      </View>
-                      <Image source={IMAGE.main} style={styles.favoriteImg} />
-                      <LinearGradient
-                        colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.4)']}
-                        style={styles.dim}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 1 }}
-                      />
-                      <View style={styles.posBottomLeft}>
-                        <CommonText fontWeight={'700'} color={ColorType.white}>
-                          D-4
-                        </CommonText>
-                      </View>
-                    </View>
-                  </View>
-                </SpaceView>
-              </>
-            )}
-
-            {/* <TouchableOpacity style={styles.openCloseBtn} onPress={() => setBtnStatus(!btnStatus)}>
-                     <SpaceView mr={4}>
-                        <CommonText>{btnStatus ? '더보기' : '접기'}</CommonText>
-                     </SpaceView>
-                     <Image
-                        source={ICON.arrRight}
-                        style={[styles.iconSize, btnStatus ? styles.rotate90 : styles.rotateN90]}
-                     />
-                  </TouchableOpacity>
-                  <SpaceView /> */}
+        <SpaceView mt={7} viewStyle={commonStyle.paddingHorizontal25}>
+          <View style={_styles.row}>
+            <Text style={_styles.showText}>찐심만 보기</Text>
+            <ToggleSwitch
+              isOn={isSpecialVisible}
+              onColor={Color.primary}
+              offColor={Color.grayDDDD}
+              size="small"
+              onToggle={(isOn) => setIsSpecialVisible(isOn) }
+            />
           </View>
         </SpaceView>
 
-        {/* ################################################################
-            ######################   내가 보낸 관심 목록 영역 ######################
-            ################################################################ */}
-        <SpaceView mb={32}>
-          <SpaceView mb={16}>
-            <CommonText fontWeight={'700'} type={'h3'}>
-              내가 보낸 관심
-            </CommonText>
-          </SpaceView>
-
-          <SpaceView mb={16} viewStyle={styles.rowStyle}>
-            <CommonText fontWeight={'500'}>찐심만 보기</CommonText>
-            <CommonSwich
-              callbackFn={(value: boolean) => {
-                specialInterestFn('REQ', value ? 'Y' : 'N');
-              }}
-              isOn={false}
-            />
-          </SpaceView>
-
-          <View>
-            {data.reqLikeList.length > 0 &&
-            (!isReqSpecialVisible ||
-              (isReqSpecialVisible && data.reqSpecialCnt > 0)) ? (
+        <Carousel
+          ref={ref}
+          data={tabs}
+          firstItem={pageIndex}
+          onSnapToItem={setCurrentIndex}
+          sliderWidth={width}
+          itemWidth={width}
+          pagingEnabled
+          renderItem={({item, index}) => {
+            return (
               <>
-                {data.reqLikeList.map((item: any, index: any) => (
-                  <SpaceView
-                    key={index}
-                    mb={16}
-                    viewStyle={styles.halfContainer}
-                  >
-                    {item.map(
-                      ({
-                        match_seq,
-                        res_member_seq,
-                        img_path,
-                        dday,
-                        special_interest_yn,
-                        res_profile_open_yn,
-                      }: {
-                        match_seq: any;
-                        res_member_seq: any;
-                        img_path: any;
-                        dday: any;
-                        special_interest_yn: any;
-                        res_profile_open_yn: any;
-                      }) =>
-                        !isReqSpecialVisible ||
-                        (isReqSpecialVisible && special_interest_yn == 'Y') ? (
-                          <TouchableOpacity
-                            onPress={() => {
-                              popupProfileOpen(
-                                match_seq,
-                                res_member_seq,
-                                'RES',
-                                'Y'
-                              );
-                            }}
-                          >
-                            <View key={match_seq} style={styles.halfItemLeft}>
-                              <View style={styles.favoriteBox}>
-                                {/* 관심/찐심 구분 아이콘 */}
-                                <View style={styles.posTopRight}>
-                                  {special_interest_yn != '' &&
-                                  special_interest_yn == 'Y' ? (
-                                    <Image
-                                      source={ICON.royalpass}
-                                      style={styles.iconSize32}
-                                    />
-                                  ) : (
-                                    <Image
-                                      source={ICON.like}
-                                      style={styles.iconSize32}
-                                    />
-                                  )}
-                                </View>
-
-                                {/* 썸네일 이미지 */}
-                                <Image
-                                  source={{
-                                    uri: img_path !== '' ? img_path : undefined,
-                                  }}
-                                  style={styles.favoriteImg}
-                                />
-
-                                {/* 썸네일 이미지 그라데이션 효과 */}
-                                <LinearGradient
-                                  colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.4)']}
-                                  style={styles.dim}
-                                  start={{ x: 0, y: 0 }}
-                                  end={{ x: 1, y: 1 }}
-                                />
-
-                                {/* 보관 기간 표시 */}
-                                <View style={styles.posBottomLeft}>
-                                  <CommonText
-                                    fontWeight={'700'}
-                                    color={ColorType.white}
-                                  >
-                                    D-{dday}
-                                  </CommonText>
-                                </View>
-                              </View>
-                            </View>
-                          </TouchableOpacity>
-                        ) : (
-                          <></>
-                        )
-                    )}
+                {item.data.length == 0 ? (
+                  <SpaceView viewStyle={_styles.noData}>
+                    <Text style={_styles.noDataText}>{item.title}이 없습니다.</Text>
                   </SpaceView>
-                ))}
-              </>
-            ) : (
-              <>
-                <View>
-                  <CommonText>내가 보낸 관심이 없습니다.</CommonText>
-                </View>
-              </>
-            )}
-
-            {!btnStatus1 && (
-              <SpaceView mb={16} viewStyle={styles.halfContainer}>
-                <View style={styles.halfItemLeft}>
-                  <View style={styles.favoriteBox}>
-                    <View style={styles.posTopRight}>
-                      <Image source={ICON.like} style={styles.iconSize32} />
+                ) : (
+                  <ScrollView>
+                    <View style={_styles.imageWarpper}>
+                      {item.data.map((i, n) => (
+                        <RenderItem item={i} index={n} type={item.type} />
+                      ))}
                     </View>
-                    <Image source={IMAGE.main} style={styles.favoriteImg} />
-                    <LinearGradient
-                      colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.4)']}
-                      style={styles.dim}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 1 }}
-                    />
-                    <View style={styles.posBottomLeft}>
-                      <CommonText fontWeight={'700'} color={ColorType.white}>
-                        D-1
-                      </CommonText>
-                    </View>
-                  </View>
-                </View>
-                <View style={styles.halfItemRight}>
-                  <View style={styles.favoriteBox}>
-                    <View style={styles.posTopRight}>
-                      <Image source={ICON.like} style={styles.iconSize32} />
-                    </View>
-                    <Image source={IMAGE.main} style={styles.favoriteImg} />
-                    <LinearGradient
-                      colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.4)']}
-                      style={styles.dim}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 1 }}
-                    />
-                    <View style={styles.posBottomLeft}>
-                      <CommonText fontWeight={'700'} color={ColorType.white}>
-                        D-2
-                      </CommonText>
-                    </View>
-                  </View>
-                </View>
-              </SpaceView>
-            )}
 
-            {/* <TouchableOpacity style={styles.openCloseBtn} onPress={() => setBtnStatus1(!btnStatus1)}>
-                  <SpaceView mr={4}>
-                     <CommonText>{btnStatus1 ? '더보기' : '접기'}</CommonText>
-                  </SpaceView>
-                  <Image
-                     source={ICON.arrRight}
-                     style={[styles.iconSize, btnStatus1 ? styles.rotate90 : styles.rotateN90]}
-                  />
-                  </TouchableOpacity>
-                  <SpaceView /> */}
-          </View>
-        </SpaceView>
-
-        {/* ################################################################
-            ######################   성공 매칭 목록 영역 ######################
-            ################################################################ */}
-        <SpaceView mb={40}>
-          <SpaceView mb={16}>
-            <CommonText fontWeight={'700'} type={'h3'}>
-              성공 매칭
-            </CommonText>
-          </SpaceView>
-
-          <SpaceView mb={16} viewStyle={styles.rowStyle}>
-            <CommonText fontWeight={'500'}>찐심만 보기</CommonText>
-            <CommonSwich
-              callbackFn={(value: boolean) => {
-                specialInterestFn('MATCH', value ? 'Y' : 'N');
-              }}
-              isOn={false}
-            />
-          </SpaceView>
-
-          <View>
-            {data.matchTrgtList.length > 0 &&
-            (!isMatchSpecialVisible ||
-              (isMatchSpecialVisible && data.matchSpecialCnt > 0)) ? (
-              <>
-                {data.matchTrgtList.map((item: any, index: any) => (
-                  <SpaceView
-                    key={index}
-                    mb={16}
-                    viewStyle={styles.halfContainer}
-                  >
-                    {item.map(
-                      ({
-                        match_seq,
-                        req_member_seq,
-                        res_member_seq,
-                        img_path,
-                        dday,
-                        special_interest_yn,
-                      }: {
-                        match_seq: any;
-                        req_member_seq: any;
-                        res_member_seq: any;
-                        img_path: any;
-                        dday: any;
-                        special_interest_yn: any;
-                      }) =>
-                        !isMatchSpecialVisible ||
-                        (isMatchSpecialVisible &&
-                          special_interest_yn == 'Y') ? (
-                          <TouchableOpacity
-                            onPress={() => {
-                              if (req_member_seq != memberSeq) {
-                                popupProfileOpen(
-                                  match_seq,
-                                  req_member_seq,
-                                  'MATCH',
-                                  'Y'
-                                );
-                              } else {
-                                popupProfileOpen(
-                                  match_seq,
-                                  res_member_seq,
-                                  'MATCH',
-                                  'Y'
-                                );
-                              }
-                            }}
-                          >
-                            <View key={match_seq} style={styles.halfItemLeft}>
-                              <View style={styles.favoriteBox}>
-                                {/* 관심/찐심 구분 아이콘 */}
-                                <View style={styles.posTopRight}>
-                                  {special_interest_yn != '' &&
-                                  special_interest_yn == 'Y' ? (
-                                    <Image
-                                      source={ICON.royalpass}
-                                      style={styles.iconSize32}
-                                    />
-                                  ) : (
-                                    <Image
-                                      source={ICON.like}
-                                      style={styles.iconSize32}
-                                    />
-                                  )}
-                                </View>
-
-                                {/* 썸네일 이미지 */}
-                                <Image
-                                  source={{
-                                    uri: img_path !== '' ? img_path : undefined,
-                                  }}
-                                  style={styles.favoriteImg}
-                                />
-
-                                {/* 썸네일 이미지 그라데이션 효과 */}
-                                <LinearGradient
-                                  colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.4)']}
-                                  style={styles.dim}
-                                  start={{ x: 0, y: 0 }}
-                                  end={{ x: 1, y: 1 }}
-                                />
-
-                                {/* 보관 기간 표시 */}
-                                {/* <View style={styles.posBottomLeft}>
-                                          <CommonText fontWeight={'700'} color={ColorType.white}>
-                                             D-{dday}
-                                          </CommonText>
-                                       </View> */}
-                              </View>
-                            </View>
-                          </TouchableOpacity>
-                        ) : (
-                          <></>
-                        )
-                    )}
-                  </SpaceView>
-                ))}
+                    <View style={{ height: 50 }} />
+                  </ScrollView>
+                )}
               </>
-            ) : (
-              <>
-                <View>
-                  <CommonText>성공 매칭이 없습니다.</CommonText>
-                </View>
-              </>
-            )}
-          </View>
-        </SpaceView>
-      </ScrollView>
-
+            )
+          }}          
+        />
+      </View>
     </>
   );
+
+  function RenderItem({ item, index, type }) {
+    let tgt_member_seq = '';
+    let profile_open_yn = 'N';
+
+    if(type == 'REQ') {
+      tgt_member_seq = item.req_member_seq;
+      profile_open_yn = item.req_profile_open_yn;
+    } else if(type == 'RES') {
+      tgt_member_seq = item.res_member_seq;
+      profile_open_yn = 'Y';
+    } else if(type == 'MATCH') {
+      if (item.req_member_seq != memberSeq) {
+        tgt_member_seq = item.req_member_seq;
+      } else {
+        tgt_member_seq = item.res_member_seq;
+      }
+      profile_open_yn = 'Y';
+    };
+
+    return (
+      <>
+        {((isSpecialVisible && item.special_interest_yn == 'Y') || (!isSpecialVisible)) && 
+
+          <TouchableOpacity
+            onPress={() => {
+              popupProfileOpen(
+                item.match_seq,
+                tgt_member_seq,
+                type,
+                profile_open_yn,
+                item.member_status
+              );
+            }}>
+
+            <ImageBackground source={item.img_path} style={_styles.renderItemContainer}>
+              <View style={_styles.renderItemTopContainer}>
+                <Image
+                  style={_styles.renderItemTopIcon}
+                  source={item.special_interest_yn == 'N' ? ICON.passCircle : ICON.royalPassCircle} />
+                <Text style={[_styles.renderItemTopText, (type == 'REQ' && profile_open_yn == 'N' && {color: '#787878'})]}>
+                  {item.dday > 0 ? item.dday + '일 남음' : '오늘까지'}
+                </Text>
+              </View>
+              <View style={_styles.renderItemBottomContainer}>
+                <Text style={_styles.renderItemBottomTextName}>{item.nickname}, {item.age}</Text>
+        
+                {isEmptyData(item.job_name) && isEmptyData(item.height) && 
+                  <Text style={_styles.renderItemBottomTextSpec}>
+                    {item.job_name} {isEmptyData(item.height) && item.height + 'cm'}
+                  </Text>
+                }
+              </View>
+
+              {type == 'REQ' && profile_open_yn == 'N' && (
+                <>
+                  <View style={_styles.reqRenderThumb}></View>
+                  <View style={_styles.reqRenderItem}>
+                    <Image source={IMAGE.logoMark} style={{width: 70, height: 70, marginTop: 20, opacity: 0.6}} resizeMode="contain" />
+                    <Text style={_styles.reqRenderItemText}>터치하고 열어보기</Text>
+                  </View>
+                </>
+              )}
+            </ImageBackground>
+
+          </TouchableOpacity>
+        }
+      </>
+    );
+  }
 };
+
+
+
+{/* ######################################################################################################
+################################################ Style 영역 ##############################################
+###################################################################################################### */}
+
+const _styles = StyleSheet.create({
+  root: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  topContainer: {
+    width: `100%`,
+    height: 50,
+    flexDirection: `row`,
+    alignItems: `center`,
+    justifyContent: 'space-between',
+    paddingHorizontal: 24,
+  },
+  dotContainer: {
+    //width: 60,
+    flexDirection: `row`,
+    alignItems: `center`,
+    justifyContent: 'space-between',
+  },
+  dot: {
+    width: 9,
+    height: 9,
+    backgroundColor: '#e2e2e2',
+    borderRadius: 5,
+  },
+  row: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    justifyContent: 'flex-end'
+  },
+  showText: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 14,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    lineHeight: 26,
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#333333',
+    marginRight: 8,
+  },
+  imageWarpper: {
+    flexDirection: `row`,
+    alignItems: `center`,
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    paddingHorizontal: 21,
+  },
+
+  renderItemContainer: {
+    width: (width - 54) / 2,
+    height: (width - 54) / 2,
+    marginTop: 12,
+    borderRadius: 15,
+    backgroundColor: '#000000',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderColor: '#ebe9ef',
+    overflow: 'hidden',
+  },
+  renderItemTopContainer: {
+    position: 'absolute',
+    flexDirection: `row`,
+    alignItems: `center`,
+    justifyContent: `center`,
+    left: 5,
+    top: 3,
+    zIndex: 1,
+  },
+  renderItemTopIcon: {
+    width: 25,
+    height: 25,
+    marginRight: 1,
+    marginTop: 5,
+    borderRadius: 10,
+  },
+  renderItemTopText: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 14,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#ffffff',
+    marginLeft: 0,
+  },
+  renderItemBottomContainer: {
+    position: 'absolute',
+    flexDirection: 'column',
+    justifyContent: `center`,
+    left: 10,
+    bottom: 10,
+  },
+  renderItemBottomTextName: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 14,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#ffffff',
+    marginTop: 2,
+  },
+  renderItemBottomTextSpec: {
+    opacity: 0.86,
+    fontFamily: 'AppleSDGothicNeoR00',
+    fontSize: 10,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#ffffff',
+  },
+  tabItem: {
+    flexDirection: `row`,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 20,
+    marginRight: 5,
+    backgroundColor: '#ECECEC',
+  },
+  tabItemText: {
+    flexDirection: `row`,
+    fontSize: 14,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    fontFamily: 'AppleSDGothicNeoEB00',
+    color: ColorType.white,
+    letterSpacing: 0,
+    textAlign: 'left',
+  },
+  noData: {
+    paddingHorizontal: 20,
+    height: height - 300,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noDataText: {
+    fontSize: 16,
+    fontFamily: 'AppleSDGothicNeoB00',
+    color: '#646467',
+  },
+  reqRenderThumb: {
+    width: '100%', 
+    height: '100%', 
+    backgroundColor: '#fff', 
+    opacity: 0.9,
+  },
+  reqRenderItem: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%', 
+    height: '100%',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 1,
+  },
+  reqRenderItemText: {
+    color: '#787878',
+    fontSize: 14,
+    fontFamily: 'AppleSDGothicNeoB00',
+    marginTop: 10,
+  },
+});

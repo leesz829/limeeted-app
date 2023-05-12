@@ -166,7 +166,7 @@ export const Signup00 = (props: Props) => {
               onChangeText={(id) => setId(id)}
               maxLength={50}
               placeholderTextColor={'#c6ccd3'}
-              placeholder={'이메일 ID'}
+              placeholder={'이메일 주소'}
               borderBottomType={'black'}
             />
           </SpaceView>
@@ -268,19 +268,19 @@ export const Signup00 = (props: Props) => {
             />
           </SpaceView>
         </SpaceView>
-        
-        <SpaceView>
-          <CommonBtn
-            value={'다음 (1/4)'}
-            type={'primary'}
-            height={60}
-            borderRadius={1}
-            onPress={() => {
-              register();
-            }}
-          />
-        </SpaceView>
       </ScrollView>
+
+      <SpaceView>
+        <CommonBtn
+          value={'다음 (1/4)'}
+          type={'primary'}
+          height={60}
+          borderRadius={1}
+          onPress={() => {
+            register();
+          }}
+        />
+      </SpaceView>
     </>
   );
 };

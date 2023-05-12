@@ -102,7 +102,7 @@ export const SecondAuthPopup = (props: Props) => {
     placeholderTxt = '인스타그램 ID를 입력해주세요.';
     etcTxt01 = '심사에 요구되는 증빙자료를 올려주세요.';
     etcTxt02 = '대중적 SNS인 인스타그램, 페이스북, 틱톡 등에서 메시지 수신이 가능한 계정이 노출된 스크린샷';
-    etcTxt02_02 = '유투브, 트위치 등은 별도 문의 부탁드립니다.(limeeted@gmail.com 또는 가입 후 ‘고객문의’)';
+    etcTxt02_02 = '유튜브, 트위치 등은 별도 문의 부탁드립니다.(cs@limeeted.com 또는 가입 후 ‘고객문의’)';
     etcTxt03 = '가장 높은 팔로워 수를 보유한 SNS 매체를 기준으로 레벨이 부여됩니다.';
   } else if (type == 'VEHICLE') {
     title = '차량';
@@ -465,7 +465,7 @@ export const SecondAuthPopup = (props: Props) => {
                   </View>
                   <View style={_styles.rowStyle}>
                     <Text style={_styles.rowTextHalfLeft}>특수</Text>
-                    <Text style={_styles.rowTextHalfRight}>의대, 법대</Text>
+                    <Text style={_styles.rowTextHalfRight}>의대, 법대, 예체능</Text>
                   </View>
                 </>
               )}
@@ -586,11 +586,11 @@ export const SecondAuthPopup = (props: Props) => {
                 <>
                   <View style={_styles.rowStyle}>
                     <Text style={_styles.rowTextHalfLeft}>팔로워</Text>
-                    <Text style={_styles.rowTextHalfRight}>1,000명</Text>
+                    <Text style={_styles.rowTextHalfRight}>1,000명 이상</Text>
                   </View>
                   <View style={_styles.rowStyle}>
                     <Text style={_styles.rowTextHalfLeft}>인플루언서</Text>
-                    <Text style={_styles.rowTextHalfRight}>1만명</Text>
+                    <Text style={_styles.rowTextHalfRight}>1만명 이상</Text>
                   </View>
                   <View style={_styles.rowStyle}>
                     <Text style={_styles.rowTextHalfLeft}>셀럽</Text>
@@ -607,15 +607,15 @@ export const SecondAuthPopup = (props: Props) => {
                 <>
                   <View style={_styles.rowStyle}>
                     <Text style={_styles.rowTextHalfLeft}>고급</Text>
-                    <Text style={_styles.rowTextHalfRight}>출고가 기준 7,000만원 이상</Text>
+                    <Text style={_styles.rowTextHalfRight}>출고가 기준 4,000만원 이상</Text>
                   </View>
                   <View style={_styles.rowStyle}>
                     <Text style={_styles.rowTextHalfLeft}>최고급</Text>
-                    <Text style={_styles.rowTextHalfRight}>출고가 기준 10,000만원 이상</Text>
+                    <Text style={_styles.rowTextHalfRight}>출고가 기준 7,000만원 이상</Text>
                   </View>
                   <View style={_styles.rowStyle}>
                     <Text style={_styles.rowTextHalfLeft}>최고급+</Text>
-                    <Text style={_styles.rowTextHalfRight}>출고가 기준 20,000만원 이상</Text>
+                    <Text style={_styles.rowTextHalfRight}>출고가 기준 1억 이상</Text>
                   </View>
                   <View style={_styles.rowStyle}>
                     <Text style={_styles.rowTextHalfLeft}>슈퍼카</Text>

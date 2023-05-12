@@ -13,7 +13,7 @@ import SpaceView from './SpaceView';
 import LinearGradient from 'react-native-linear-gradient';
 
 
-type BtnType = 'gray' | 'gray2' | 'primary' | 'kakao' | 'purple' | 'white' | 'blue' | 'blue2' | 'g_blue' | 'black' | 'blackW' | 'red';
+type BtnType = 'gray' | 'gray2' | 'gray3' | 'primary' | 'kakao' | 'purple' | 'white' | 'blue' | 'blue2' | 'g_blue' | 'black' | 'blackW' | 'red';
 type Props = {
   onPress?: () => void;
   value: string;
@@ -26,6 +26,7 @@ type Props = {
   fontSize?: number;
   isGradient?: boolean;
   borderRadius?: number;
+  borderWidth?: number;
 } & StyleProp<TouchableOpacityProps>;
 /**
  * 공통 버튼
@@ -65,7 +66,7 @@ export const CommonBtn: FC<Props> = (props) => {
       {props.isGradient ? (
           <TouchableOpacity onPress={props.onPress}>
             <LinearGradient colors={['#89b0fa', '#aaa1f7']} style={[style.btnStyle_gradient]}>
-              <Text style={{color: '#fff'}}>{props.value}</Text>
+              <Text style={{color: '#fff', fontSize: props.fontSize ? props.fontSize : 16}}>{props.value}</Text>
             </LinearGradient>
           </TouchableOpacity>
       ) : (
@@ -125,6 +126,11 @@ const styles = (props: Props) => {
       textColor = '#C7C7C7';
       borderColor = '#C7C7C7';
       break;
+    case 'gray3':
+      backgroundColor = '#D6D3D3';
+      textColor = Color.white;
+      borderColor = '#D6D3D3';
+      break;
     case 'primary':
       backgroundColor = Color.primary;
       textColor = 'white';
@@ -183,7 +189,7 @@ const styles = (props: Props) => {
       backgroundColor: backgroundColor,
       alignItems: 'center',
       justifyContent: 'center',
-      borderWidth: 1,
+      borderWidth: props.borderWidth ? props.borderWidth : 1,
       borderColor: borderColor,
       flexDirection: 'row',
     },
@@ -194,7 +200,7 @@ const styles = (props: Props) => {
       backgroundColor: backgroundColor,
       alignItems: 'center',
       justifyContent: 'center',
-      borderWidth: 1,
+      borderWidth: props.borderWidth ? props.borderWidth : 1,
       borderColor,
       flexDirection: 'row',
     },

@@ -201,6 +201,18 @@ export const styles = StyleSheet.create({
     width: 60,
     height: 45,
   },
+  iconSize65: {
+    width: 65,
+    height: 65,
+  },
+  iconSize70: {
+    width: 70,
+    height: 70,
+  },
+  iconSize80: {
+    width: 80,
+    height: 80,
+  },
   arrowIcon: {
     width: 20,
     height: 36,
@@ -263,7 +275,7 @@ export const styles = StyleSheet.create({
   tempBoxBase: {
     width: (width - 160) / 2,
     height: (width - 160) / 2,
-    borderRadius: 16,
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -347,22 +359,20 @@ export const styles = StyleSheet.create({
   },
   disabled: {
     position: 'absolute',
-    left: 0,
-    top: 0,
-    height: '100%',
-    width: '100%',
-    backgroundColor: 'rgba(0,0,0,0.7)',
-    borderRadius: 16,
-
-    /* position: 'absolute',
-    width: (width - 80) / 3,
-    height: (width - 50) / 3,
-    margin: 10,
-    borderRadius: 10,
+    width: (width - 43) / 3,
+    height: (width - 43) / 3,
+    borderRadius: 20,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'flex-end', */
+    justifyContent: 'flex-end',
+    overflow: 'hidden',
+  },
+  imageDimText: {
+    width: '100%',
+    backgroundColor: '#000',
+    textAlign: 'center',
+    paddingVertical: 1,
   },
   interviewContainer: {
     paddingVertical: 20,

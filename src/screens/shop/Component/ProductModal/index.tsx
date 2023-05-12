@@ -25,6 +25,9 @@ import {
   validateReceiptIos,
   purchaseUpdatedListener,
   purchaseErrorListener,
+  finishTransaction,
+  endConnection,
+  clearProductsIOS,
 } from 'react-native-iap';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
@@ -40,10 +43,9 @@ interface Props {
   type: string; /* bm: bm상품, gifticon: 재고상품, boutique: 경매상품 */
   closeModal: () => void;
   item: any;
-  productPurchase: (item_code: string) => void;
 }
 
-export default function ProductModal({ isVisible, type, closeModal, item, productPurchase }: Props) {
+export default function ProductModal({ isVisible, type, closeModal, item }: Props) {
   const navigation = useNavigation();
   const { show } = usePopup(); // 공통 팝업
   const { bottom } = useSafeAreaInsets();
@@ -76,7 +78,7 @@ export default function ProductModal({ isVisible, type, closeModal, item, produc
   const purchaseBtn = async () => {
 
     if(!isPayLoading) {
-      //setIsPayLoading(true);
+      setIsPayLoading(true);
       
       try {
 
@@ -90,8 +92,6 @@ export default function ProductModal({ isVisible, type, closeModal, item, produc
         console.warn(err.code, err.message);
       }
     }
-
-    //setComfirmModalVisible(true);
   };
 
   // ######################################################### AOS 결제 처리
@@ -126,33 +126,34 @@ export default function ProductModal({ isVisible, type, closeModal, item, produc
       purchaseResultSend(dataParam);
 
     } catch (err: any) {
+      setIsPayLoading(false);
       console.warn(err.code, err.message);
     }
   }
 
   // ######################################################### IOS 결제 처리
   const purchaseIosProc = async () => {
+    const result = await requestPurchase({
+      sku: item_code,
+      andDangerouslyFinishTransactionAutomaticallyIOS: false,
+    });
 
-    try {
-      const result = await requestPurchase({
-        sku: item_code,
-        andDangerouslyFinishTransactionAutomaticallyIOS: false,
-      });
-  
-      console.log('result ::::: ', result);
-  
-      purchaseUpdatedListener((purchase: Purchase) => {
+    console.log('result ::::: ', result);
+
+    let purchaseUpdateSubscription = purchaseUpdatedListener(async(purchase: Purchase) => {
+      try {
         console.log('purchase ::::::: ', purchase);
-    
+  
         if (purchase) {
           validateReceiptIos({
             receiptBody: {
               'receipt-data': purchase.transactionReceipt,
               'password': '91cb6ffa05d741628d64316192f2cd5e',
             },
-            isTest: true,
+            isTest: false,
           }).then(res => {
             console.log('receipt result ::::::::: ', res);
+            purchaseUpdateSubscription.remove();
   
             const dataParam = {
               device_gubun: Platform.OS,
@@ -173,21 +174,31 @@ export default function ProductModal({ isVisible, type, closeModal, item, produc
   
             purchaseResultSend(dataParam);
           });
-        }
-    
-      });
-    
-      purchaseErrorListener((error: PurchaseError) => {
-        console.log('error ::::::: ', error);
+        };
+        
+      } catch (error) {
+        purchaseUpdateSubscription.remove();
         Alert.alert('구매에 실패하였습니다.');
         setIsPayLoading(false);
         setComfirmModalVisible(false);
-        closeModal();
-      });
-    } catch (err: any) {
-      console.warn(err.code, err.message);
-    }
-  }
+        closeModal();        
+      } finally {
+        await finishTransaction({
+          purchase: purchase,
+          isConsumable: true,
+        }).then();
+      }
+    });
+  
+    let purchaseErrorSubscription = purchaseErrorListener((error: PurchaseError) => {
+      purchaseErrorSubscription.remove();
+      Alert.alert('구매에 실패하였습니다.');
+      setIsPayLoading(false);
+      setComfirmModalVisible(false);
+      closeModal();
+    });
+
+  };
 
   // ######################################################### 인앱상품 구매 결과 API 전송
   const purchaseResultSend = async (dataParam:any) => {
@@ -202,6 +213,7 @@ export default function ProductModal({ isVisible, type, closeModal, item, produc
         setComfirmModalVisible(false);
         closeModal();
         navigation.navigate(STACK.TAB, { screen: 'Shop' });
+        Alert.alert('구매에 성공하였습니다.');
         /* show({
           content: '구매에 성공하였습니다.' ,
           confirmCallback: function() {
@@ -513,3 +525,4 @@ const modalStyleProduct = StyleSheet.create({
   }
 
 });
+

@@ -7,6 +7,7 @@ import { CommonBtn } from 'component/CommonBtn';
 import CommonHeader from 'component/CommonHeader';
 import { CommonSwich } from 'component/CommonSwich';
 import { CommonText } from 'component/CommonText';
+import { CommonTextarea } from 'component/CommonTextarea';
 import SpaceView from 'component/SpaceView';
 import React, { useMemo, useState, useEffect } from 'react';
 import { StackParamList } from '@types';
@@ -139,36 +140,52 @@ export const Profile2 = (props: Props) => {
 
   // ############################################# 인터뷰 전체 저장
   const saveAllInterview = async () => {
+    let applyUseInterViewCnt = 0;
+    let isModfy = false;
 
-    if(typeof tgtCode != 'undefined') {
-      if(tgtCode == target.common_code) {
-        show({content: '변경할 인터뷰를 선택해 주세요.'});
-        return;
+    if(typeof target?.common_code == 'undefined') {
+      show({
+        title: '알림',
+        content: '저장할 인터뷰를 선택해 주세요.'
+      });
+      return;
+    }
+
+    interview.map((item:any) => {
+      if(item.use_yn == 'Y') {
+        applyUseInterViewCnt++;
+
+        if(target?.common_code == item.common_code) {
+          isModfy = true;
+        }
       }
-    } else {
-      if(target != null && origin.length > 5) {
-        show({content: '인터뷰는 최소 5개까지 등록 가능합니다.'});
-        return;
-      }
+    });
+
+    if(!isModfy) {
+      applyUseInterViewCnt++;
+    }
+
+    if(applyUseInterViewCnt > 5) {
+      show({
+        title: '알림',
+        content: '인터뷰는 최소 5개까지 등록 가능합니다.'
+      });
+      return;
     }
 
     // ### 적용할 인터뷰 데이터 구성
     let dummpyDataList = interview.slice();
     let applyInterviewList = [];
 
-    /* interview.map((item: any, index) => {
-      dummpyDataList.push(item);
-    }) */
-
     dummpyDataList.map((item: any, index) => {
-      if(target != null && item.common_code == target.common_code) {
+      if(target != null && item.common_code == target?.common_code) {
         item.use_yn = 'Y';
-      } else if(typeof tgtCode != 'undefined' && tgtCode == item.common_code) {
-        item.use_yn = 'N';
+        item.answer = target?.answer;
       }
+
       item.order_seq = index+1;
       applyInterviewList.push(item);
-    })
+    });
 
     saveAPI(applyInterviewList, function() {
       navigation.navigate(STACK.COMMON, { screen: 'Profile1' });
@@ -250,45 +267,61 @@ export const Profile2 = (props: Props) => {
       <CommonHeader title={'인터뷰'} />
       <View
         style={{
-          paddingTop: 24,
           backgroundColor: 'white',
           flex: 1,
         }}>
 
         <SpaceView viewStyle={layoutStyle.rowCenter}>
           <SpaceView viewStyle={[styles.questionContainer, {paddingHorizontal: 40}]}>
-            <CommonText 
-              textStyle={layoutStyle.textCenter}
-              type={'h4'} 
-              fontWeight={'700'}
-              color={target?.use_yn == 'Y' ? Color.grayC3C3C3 : Color.black2222}>
+            <View>
+              <CommonText 
+                textStyle={layoutStyle.textCenter}
+                type={'h4'} 
+                fontWeight={'700'}
+                color={target?.use_yn == 'Y' ? Color.grayC3C3C3 : Color.black2222}>
 
-              {target !== null && Object.keys(target).length > 0
-                ? target?.code_name
-                : `질문을 선택해주세요!`}
-            </CommonText>
-            
-            {target?.use_yn == 'Y' ? (
-              <CommonText textStyle={_style.targetDupTxt} fontWeight={'200'}>
-                  이미 등록된 질문이에요!
+                {target !== null && Object.keys(target).length > 0
+                  ? target?.code_name
+                  : `질문을 선택해주세요!`}
               </CommonText>
-            ) : (
-              <CommonText textStyle={_style.targetBaseTxt} fontWeight={'200'}>
-                  선택 질문 저장 후 답변 등록화면이 나타나요.
-              </CommonText>
-            )}
+            </View>
+
+            <View style={_style.answerArea}>
+              <TextInput
+                defaultValue={target?.answer}
+                onChangeText={(text) => setTarget({...target, answer: text})}
+                style={[_style.answerInput]}
+                multiline={true}
+                placeholder={'"여기를 터치하고 답변을 입력해주세요."'}
+                placeholderTextColor={'#c6ccd3'}
+                numberOfLines={5}
+                maxLength={120}
+                editable={target?.common_code != null ? true : false}
+              />
+
+              {/* {target?.use_yn == 'Y' ? (
+                <CommonText textStyle={_style.targetDupTxt} fontWeight={'200'}>
+                    이미 등록된 질문이에요!
+                </CommonText>
+              ) : (
+                <CommonText textStyle={_style.targetBaseTxt} fontWeight={'200'}>
+                    선택 질문 저장 후 답변 등록화면이 나타나요.
+                </CommonText>
+              )} */}
+            </View>
           </SpaceView>
           {/* <TouchableOpacity onPress={onPressResetTarget}>
             <Image source={ICON.refreshDark} style={styles.iconSize24} />
           </TouchableOpacity> */}
         </SpaceView>
 
-        <SpaceView mb={40} viewStyle={[commonStyle.paddingHorizontal70, layoutStyle.alignCenter]}>
+        <SpaceView mb={20} viewStyle={[commonStyle.paddingHorizontal70, layoutStyle.alignCenter]}>
           <CommonBtn 
             value={'저장'} 
             type={'black'}
-            width={180}
-            height={38}
+            width={width - 120}
+            height={35}
+            fontSize={13}
             onPress={saveAllInterview} />
         </SpaceView>
 
@@ -343,11 +376,17 @@ export const Profile2 = (props: Props) => {
               <ScaleDecorator activeScale={0.95}>
                 <SpaceView viewStyle={[layoutStyle.rowBetween, !isActive ? _style.itemArea: _style.itemAreaActive]} mb={5}>
 
+                  {target?.common_code == item?.common_code ? (
+                    <Image source={ICON.checkICon02} style={_style.selectedTarget} />
+                  ) : item?.use_yn === 'Y' && (
+                    <Image source={ICON.checkICon03} style={_style.selectedTarget} />
+                  )}
+
                   <TouchableOpacity onPress={() => onPressTarget(item)}>
                     <View style={_style.questionRow}>
-                      <Text style={[_style.questionText, item?.use_yn === 'Y' && _style.questionActive]}>Q.</Text>
+                      <Text style={[_style.questionText]}>Q.</Text>
                       <Text style={_style.questionBoldText}>
-                      <Text style={[_style.questionNormalText, item?.use_yn === 'Y' && _style.questionActive]}>{item?.code_name}</Text>
+                      <Text style={[_style.questionNormalText]}>{item?.code_name}</Text>
                       </Text>
                     </View>
 
@@ -513,5 +552,25 @@ const _style = StyleSheet.create({
     fontSize: 11,
     marginHorizontal: 70,
     textAlignVertical: 'center',
-  }
+  },
+  answerArea: {
+    //marginTop: 20,
+    marginVertical: 15,
+    height: 100,
+    justifyContent: 'center',
+    alignContent: 'center',
+  },
+  answerInput: {
+    textAlign: 'center',
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 16,
+    color: '#7986EE',
+  },
+  selectedTarget: {
+    width: 15,
+    height: 15,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+  },
 });
