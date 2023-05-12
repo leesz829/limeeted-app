@@ -67,8 +67,8 @@ export const ImagePicker: FC<Props> = (props) => {
 
         ImageResizer.createResizedImage(
           response?.assets[0].uri,
-          450,
-          700,
+          800,
+          1200,
           'PNG',
           100,
           undefined,

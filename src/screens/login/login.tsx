@@ -14,7 +14,8 @@ import {
   LOGIN_EMPTY,
   LOGIN_WAIT,
   LOGIN_EXIT,
-  SANCTIONS
+  SANCTIONS,
+  PASSWORD_ERROR
 } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
 import storeKey, { JWT_TOKEN } from 'constants/storeKey';
@@ -154,6 +155,10 @@ export const Login01 = () => {
             });
             break;
 
+          case PASSWORD_ERROR:
+            show({ content: '비밀번호를 정확히 입력해주세요.' });
+            break;
+            
           case LOGIN_EMPTY:
             show({ content: '일치하는 회원이 없습니다.' });
             break;
