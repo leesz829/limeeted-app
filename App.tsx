@@ -1,6 +1,6 @@
-import { NavigationContainer, useIsFocused } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import React, { useEffect } from 'react';
-import { LogBox, SafeAreaView, StatusBar, StyleSheet, Alert, Linking, Platform, Modal, View, Text } from 'react-native';
+import { LogBox, SafeAreaView, StatusBar, StyleSheet } from 'react-native';
 import { Notifications } from 'react-native-notifications';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -13,18 +13,13 @@ import AsyncStorage from '@react-native-community/async-storage';
 import messaging from '@react-native-firebase/messaging';
 import { JWT_TOKEN } from 'constants/storeKey';
 
+import { PopupProvider } from 'Context/index';
+import { Color } from 'assets/styles/Color';
 import codePush from 'react-native-code-push';
 import { withIAPContext } from 'react-native-iap';
+import SplashScreen from 'react-native-splash-screen';
 import { myProfile } from 'redux/reducers/authReducer';
 import getFCMToken from 'utils/FCM/getFCMToken';
-import { PopupProvider } from 'Context/index';
-import SplashScreen from 'react-native-splash-screen';
-import { Color } from 'assets/styles/Color';
-import VersionCheck from 'react-native-version-check';
-import { get_app_version } from 'api/models';
-import RNExitApp from 'react-native-exit-app';
-
-
 
 enableScreens();
 LogBox.ignoreAllLogs();
@@ -124,8 +119,7 @@ function PreFetcher(props) {
 
   return props.children;
 }
-//export default codePush(codePushOptions)(withIAPContext(App));
-export default withIAPContext(App)
+export default codePush(codePushOptions)(withIAPContext(App));
 
 const style = StyleSheet.create({
   container: {

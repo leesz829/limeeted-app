@@ -3,7 +3,7 @@ import { ColorType, ScreenNavigationProp } from '@types';
 import { commonStyle, layoutStyle, styles } from 'assets/styles/Styles';
 import { CommonBtn } from 'component/CommonBtn';
 import SpaceView from 'component/SpaceView';
-import { View, Image, Alert, Linking, Platform  } from 'react-native';
+import { View, Image, Alert, Linking, Platform } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
@@ -19,59 +19,71 @@ import { usePopup } from 'Context';
 import RNExitApp from 'react-native-exit-app';
 import { get_app_version } from 'api/models';
 
-
 export const Login = () => {
   const navigation = useNavigation<ScreenNavigationProp>();
   const [kakaoResult, setKakaoResult] = React.useState('');
 
-	const isFocus = useIsFocused();
-	const { show } = usePopup(); // 공통 팝업
+  const isFocus = useIsFocused();
+  const { show } = usePopup(); // 공통 팝업
 
-	/* 앱버전 체크 */
-	async function appVersionCheck() {
+  /* 앱버전 체크 */
+  async function appVersionCheck() {
+    // 구글 플레이 스토어 링크
+    const GOOGLE_PLAY_STORE_LINK = 'market://details?id=com.appsquad.limeeted';
+    const APPLE_PLAY_STORE_LINK =
+      'https://apps.apple.com/app/limeeted/6447423352';
 
-		// 구글 플레이 스토어 링크
-		const GOOGLE_PLAY_STORE_LINK = 'market://details?id=com.appsquad.limeeted';
-		const APPLE_PLAY_STORE_LINK = 'https://apps.apple.com/app/limeeted/6447423352';
+    const body = {
+      device_type: Platform.OS == 'android' ? 'AOS' : 'IOS',
+    };
+    const { success, data } = await get_app_version(body);
+    console.log('data :::::::: ', data);
 
-		const body = {
-			device_type: Platform.OS == 'android' ? 'AOS' : 'IOS',
-		};
-		const { success, data } = await get_app_version(body);
-		console.log('data :::::::: ', data);
+    console.log('getPackageName  ::::::: ', VersionCheck.getPackageName());
+    console.log(
+      'getCurrentVersion  ::::::: ',
+      VersionCheck.getCurrentVersion()
+    );
+    console.log(
+      'getCurrentBuildNumber  ::::::: ',
+      VersionCheck.getCurrentBuildNumber()
+    );
 
-		console.log('getPackageName  ::::::: ', VersionCheck.getPackageName());
-		console.log('getCurrentVersion  ::::::: ', VersionCheck.getCurrentVersion());
-		console.log('getCurrentBuildNumber  ::::::: ', VersionCheck.getCurrentBuildNumber());
+    const versionName = data?.version_name
+      .toString()
+      .replace(/\./g, '')
+      .padStart(5, '0');
+    const currentVersion = VersionCheck.getCurrentVersion()
+      .toString()
+      .replace(/\./g, '')
+      .padStart(5, '0');
 
-		const versionName = data?.version_name.toString().replace(/\./g, '').padStart(5, "0");
-		const currentVersion = VersionCheck.getCurrentVersion().toString().replace(/\./g, '').padStart(5, "0");
-		
-		if(
-			(Platform.OS == 'android' && data?.version_code > VersionCheck.getCurrentBuildNumber()) || 
-			(Platform.OS == 'ios' && versionName > currentVersion)
-		) {
-			show({
-				title: '앱 버전 알림',
-				content: '새로운 앱버전이 있습니다.\n업데이트 해주세요.',
-				confirmCallback: function() {
-					if(Platform.OS == 'android') {
-						Linking.openURL(GOOGLE_PLAY_STORE_LINK);
-					} else {
-						Linking.openURL(APPLE_PLAY_STORE_LINK);
-					}
-					
-					RNExitApp.exitApp();
-				},
-			});
-		}
-	}
+    if (
+      (Platform.OS == 'android' &&
+        data?.version_code > VersionCheck.getCurrentBuildNumber()) ||
+      (Platform.OS == 'ios' && versionName > currentVersion)
+    ) {
+      show({
+        title: '앱 버전 알림',
+        content: '새로운 앱버전이 있습니다.\n업데이트 해주세요.',
+        confirmCallback: function () {
+          if (Platform.OS == 'android') {
+            Linking.openURL(GOOGLE_PLAY_STORE_LINK);
+          } else {
+            Linking.openURL(APPLE_PLAY_STORE_LINK);
+          }
 
-	useEffect(() => {
-		appVersionCheck();
-	}, [isFocus]);
+          RNExitApp.exitApp();
+        },
+      });
+    }
+  }
 
-/*
+  useEffect(() => {
+    appVersionCheck();
+  }, [isFocus]);
+
+  /*
 	const signInWithKakao = async () => {
 		axios
 			.post(properties.api_domain + '/join/getKakaoIdchk/', {
@@ -155,19 +167,7 @@ export const Login = () => {
 		/* navigation.navigate('Signup02', {
 			memberSeq : 38
 		}); 
-	};*/ 
-	
-	return (
-		<View style={[styles.container, layoutStyle.justifyCenter]}>
-			<View style={layoutStyle.alignCenter}>
-				{/* <SpaceView>
-					<Image source={IMAGE.logoRenew} style={styles.logoRenew} resizeMode="contain" />
-				</SpaceView> */}
-
-				<SpaceView viewStyle={{alignItems:'center', justifyContent:'center'}}>
-					<Image source={IMAGE.logoMark} style={[styles.iconSize65, {marginBottom: -105}]} resizeMode="contain" />
-					<Image source={IMAGE.logoRenewText} style={{width:200, marginBottom: 150 }} resizeMode="contain" />
-				</SpaceView>
+	};*/
 
   return (
     <View style={[styles.container, layoutStyle.justifyCenter]}>
@@ -189,21 +189,24 @@ export const Login = () => {
 				<SpaceView mb={200}>
 					<CommonText textStyle={styles.logoText} lineHeight={30}>믿음가는 사람들의 인연</CommonText>
 				</SpaceView> */}
-			</View>
-			<SpaceView viewStyle={[styles.bottomBtnContainer, commonStyle.paddingHorizontal25]} mb={24}>
-				<SpaceView mb={10}>
-					<CommonBtn
-						value={'리미티드 계정으로 로그인'}
-						type={'g_blue'}
-						isGradient={true}
-						fontSize={13}
-						onPress={() => {
-							navigation.navigate('Login01');
-							//signInWithKakao();
-						}}
-					/>
-				</SpaceView>
-				{/* <CommonBtn value={'카카오로 시작하기'} 
+      </View>
+      <SpaceView
+        viewStyle={[styles.bottomBtnContainer, commonStyle.paddingHorizontal25]}
+        mb={24}
+      >
+        <SpaceView mb={10}>
+          <CommonBtn
+            value={'리미티드 계정으로 로그인'}
+            type={'g_blue'}
+            isGradient={true}
+            fontSize={13}
+            onPress={() => {
+              navigation.navigate('Login01');
+              //signInWithKakao();
+            }}
+          />
+        </SpaceView>
+        {/* <CommonBtn value={'카카오로 시작하기'} 
 							type={'kakao'} 
 							icon={ICON.kakao} 
 							iconSize={24} 
@@ -211,19 +214,18 @@ export const Login = () => {
 								signInWithKakao();
 							}}
 				/> */}
-				<SpaceView mb={16}>
-					<CommonBtn
-						value={'회원가입'}
-						type={'white'}
-						iconSize={24}
-						fontSize={13}
-						onPress={() => {
-							navigation.navigate('Policy');
-						}}
-					/>
-				</SpaceView>
-
-			</SpaceView>
-		</View>
-	);
+        <SpaceView mb={16}>
+          <CommonBtn
+            value={'회원가입'}
+            type={'white'}
+            iconSize={24}
+            fontSize={13}
+            onPress={() => {
+              navigation.navigate('Policy');
+            }}
+          />
+        </SpaceView>
+      </SpaceView>
+    </View>
+  );
 };
