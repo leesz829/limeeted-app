@@ -1047,7 +1047,6 @@ function RedDot() {
 }
 
 function RatingCard({ title, desc, value, preScore, isPennding }) {
-  console.log('value :::::: ' , value);
 
   return (
     <View style={ratingCard.cardStyle}>
