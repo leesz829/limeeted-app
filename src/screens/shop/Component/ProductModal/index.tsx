@@ -28,6 +28,7 @@ import {
   finishTransaction,
   endConnection,
   clearProductsIOS,
+  flushFailedPurchasesCachedAsPendingAndroid,
 } from 'react-native-iap';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
@@ -36,6 +37,7 @@ import { usePopup } from 'Context';
 import { CommonLoading } from 'component/CommonLoading';
 import { purchase_product } from 'api/models';
 import { ROUTES, STACK } from 'constants/routes';
+import InAppBilling from 'react-native-billing';
 
 
 interface Props {
@@ -125,9 +127,17 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
 
       purchaseResultSend(dataParam);
 
+      await finishTransaction({
+        purchase: result[0]
+        , isConsumable: true
+        , developerPayloadAndroid: undefined
+      });
+
     } catch (err: any) {
       setIsPayLoading(false);
       console.warn(err.code, err.message);
+    } finally {
+      console.log('finally!!!!!');
     }
   }
 
@@ -213,7 +223,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
         setComfirmModalVisible(false);
         closeModal();
         navigation.navigate(STACK.TAB, { screen: 'Shop' });
-        Alert.alert('구매에 성공하였습니다.');
+        Alert.alert('알림', '구매에 성공하였습니다.', [{ text: '확인' }]);
         /* show({
           content: '구매에 성공하였습니다.' ,
           confirmCallback: function() {

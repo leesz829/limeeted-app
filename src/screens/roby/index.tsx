@@ -1047,6 +1047,8 @@ function RedDot() {
 }
 
 function RatingCard({ title, desc, value, preScore, isPennding }) {
+  console.log('value :::::: ' , value);
+
   return (
     <View style={ratingCard.cardStyle}>
       <Text style={ratingCard.cardTitle}>{title}</Text>
@@ -1081,7 +1083,7 @@ function RatingCard({ title, desc, value, preScore, isPennding }) {
         ) : (
           <Rating
             readonly
-            imageSize={22.7}
+            imageSize={20.7}
             style={{ marginTop: 10 }}
             ratingCount={5}
             jumpValue={0}

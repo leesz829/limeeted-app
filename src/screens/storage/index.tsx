@@ -176,7 +176,7 @@ export const Storage = (props: Props) => {
     profile_open_yn: any,
     member_status: any,
   ) => {
-
+    
     if(member_status != 'ACTIVE') {
       show({
         title: '프로필 열람 실패',
@@ -184,7 +184,7 @@ export const Storage = (props: Props) => {
       });
 
       return;
-    } 
+    }
     
     if (profile_open_yn == 'N') {
 

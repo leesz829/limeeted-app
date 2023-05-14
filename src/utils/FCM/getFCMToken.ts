@@ -5,7 +5,7 @@ import {Platform} from 'react-native';
 
 export default async function getFCMToken() {
 
-  const firebaseConfig = {
+  /* const firebaseConfig = {
     apiKey: "AIzaSyAZUNI6SD-BBPp_3ep7LRSxUzlgjicSByA",
     authDomain: "limeeted-ea344.firebaseapp.com",
     databaseURL: "https://limeeted-ea344.firebaseio.com",
@@ -19,7 +19,7 @@ export default async function getFCMToken() {
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
     }
-  }
+  } */
   
   const storedFcmToken = await AsyncStorage.getItem('fcmToken');
   await messaging().registerDeviceForRemoteMessages();

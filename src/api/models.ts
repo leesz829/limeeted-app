@@ -106,6 +106,7 @@ export async function regist_member_base_info(body: {
   birthday: string;
   sns_type?: string;
   sns_token?: string;
+  device_gubun?: string;
 }) {
   const push_token = await AsyncStorage.getItem(FCM_TOKEN);
   return send(REGIST_BASE_INFO, 'POST', { ...body, push_token }, false, false);

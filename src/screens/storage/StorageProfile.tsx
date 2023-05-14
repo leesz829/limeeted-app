@@ -78,8 +78,6 @@ export const StorageProfile = (props: Props) => {
   const { show } = usePopup();  // 공통 팝업
   const dispatch = useDispatch();
 
-  const memberSeq = hooksMember.getMemberSeq(); // 회원번호
-
   // 이미지 인덱스
   const [currentIndex, setCurrentIndex] = React.useState(0);
 
@@ -89,7 +87,7 @@ export const StorageProfile = (props: Props) => {
   );
 
   // 본인 데이터
-  const memberBase = useUserInfo(); //hooksMember.getBase();
+  const memberBase = useUserInfo();
 
   // 매칭 번호
   const matchSeq = props.route.params.matchSeq;
@@ -203,7 +201,6 @@ export const StorageProfile = (props: Props) => {
 
   // ############################################################ 매칭 상태 변경(수락, 거절)
   const updateMatchStatus = async (status: any) => {
-
     show({ 
       content: status == 'ACCEPT' ? '매칭을 수락하시나요?' : '다음 기회로 미룰까요?' ,
       cancelCallback: function() {
@@ -316,7 +313,16 @@ export const StorageProfile = (props: Props) => {
       if(success) {
         if (data.result_code == '0000') {
           dispatch(myProfile());
-          selectMatchMemberInfo();
+        } else if(data.result_code == '5000') {
+          show({
+            title: '연락처 열람 알림',
+            content: '이미 열람된 연락처 입니다.\n보관함 이동 후 다시 조회 해주세요.',
+            confirmCallback: function () {
+              navigation.navigate(STACK.TAB, {
+                screen: 'Storage',
+              });
+            },
+          });
         } else {
           show({
             title: '재화 부족',
@@ -328,7 +334,7 @@ export const StorageProfile = (props: Props) => {
     } catch (error) {
       console.log(error);
     } finally {
-      
+      selectMatchMemberInfo();
     }
   };
 
@@ -498,8 +504,8 @@ export const StorageProfile = (props: Props) => {
                   </CommonText>
                 </SpaceView>
 
-                {data.match_base.res_member_seq == memberSeq && data.match_base.res_phone_open_yn == 'Y' ||
-                data.match_base.req_member_seq == memberSeq && data.match_base.req_phone_open_yn == 'Y' ? (
+                {(data.match_base.res_member_seq == memberBase.member_seq && data.match_base.res_phone_open_yn == 'Y') ||
+                (data.match_base.req_member_seq == memberBase.member_seq && data.match_base.req_phone_open_yn == 'Y') ? (
                   <>
                     <SpaceView viewStyle={{marginBottom: 15}}>
                       <CommonText

@@ -218,7 +218,7 @@ export const Signup03 = (props : Props) => {
 
 					<SpaceView mb={15}>
 						<SpaceView mb={1}>
-							<CommonText type={'h4'} fontWeight={'200'}>관심사 표현하기</CommonText>
+							<CommonText type={'h4'} fontWeight={'200'}>관심사 표현하기(최대 20개)</CommonText>
 						</SpaceView>
 						<CommonText color={'#B1B1B1'} type={'h5'}>
 							같은 관심사를 가진 이성을 소개할 수 있도록 도와드릴게요!
@@ -275,7 +275,7 @@ export const Signup03 = (props : Props) => {
 				FooterComponent={
 					<>
 						<SpaceView>
-							<CommonBtn value={'저장'} 
+							<CommonBtn value={'저장(' + checkIntList.length + '/20)'} 
 										type={'primary'}
 										height={60}
 										borderRadius={1}
@@ -320,10 +320,16 @@ export const Signup03 = (props : Props) => {
 										<SpaceView key={i.common_code} mr={5}>
 											<TouchableOpacity style={[styles.interestBox, i.common_code === tmpCommonCode && styles.boxActive]}
 																onPress={() => {
-																	if(i.common_code === tmpCommonCode){
-																		setCheckIntList(checkIntList.filter(value => value.common_code != tmpCommonCode))
+																	console.log('checkIntList.length :::: ' , checkIntList.length);
+
+																	if(checkIntList.length > 19 && i.common_code !== tmpCommonCode) {
+
 																	} else {
-																		setCheckIntList(intValue => [...intValue, i])
+																		if(i.common_code === tmpCommonCode){
+																			setCheckIntList(checkIntList.filter(value => value.common_code != tmpCommonCode))
+																		} else {
+																			setCheckIntList(intValue => [...intValue, i])
+																		}
 																	}
 																}}>
 												<CommonText

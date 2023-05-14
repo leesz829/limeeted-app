@@ -10,7 +10,7 @@ import { CommonInput } from 'component/CommonInput';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
-import { Image, ScrollView, StyleSheet, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, View, Platform } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import * as properties from 'utils/properties';
 import { usePopup } from 'Context';
@@ -111,7 +111,9 @@ export const Signup00 = (props: Props) => {
       birthday: birthday,
       snsType: snsType,
       snsToken: snsToken,
+      device_gubun: Platform.OS,
     };
+
     try {
       const { success, data } = await regist_member_base_info(body);
       console.log('data ::: ' , data);

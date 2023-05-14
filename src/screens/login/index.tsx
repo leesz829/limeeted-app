@@ -38,32 +38,35 @@ export const Login = () => {
 			device_type: Platform.OS == 'android' ? 'AOS' : 'IOS',
 		};
 		const { success, data } = await get_app_version(body);
-		console.log('data :::::::: ', data);
 
-		console.log('getPackageName  ::::::: ', VersionCheck.getPackageName());
-		console.log('getCurrentVersion  ::::::: ', VersionCheck.getCurrentVersion());
-		console.log('getCurrentBuildNumber  ::::::: ', VersionCheck.getCurrentBuildNumber());
+		if(success) {
+			console.log('data :::::::: ', data);
 
-		const versionName = data?.version_name.toString().replace(/\./g, '').padStart(5, "0");
-		const currentVersion = VersionCheck.getCurrentVersion().toString().replace(/\./g, '').padStart(5, "0");
-		
-		if(
-			(Platform.OS == 'android' && data?.version_code > VersionCheck.getCurrentBuildNumber()) || 
-			(Platform.OS == 'ios' && versionName > currentVersion)
-		) {
-			show({
-				title: '앱 버전 알림',
-				content: '새로운 앱버전이 있습니다.\n업데이트 해주세요.',
-				confirmCallback: function() {
-					if(Platform.OS == 'android') {
-						Linking.openURL(GOOGLE_PLAY_STORE_LINK);
-					} else {
-						Linking.openURL(APPLE_PLAY_STORE_LINK);
-					}
-					
-					RNExitApp.exitApp();
-				},
-			});
+			console.log('getPackageName  ::::::: ', VersionCheck.getPackageName());
+			console.log('getCurrentVersion  ::::::: ', VersionCheck.getCurrentVersion());
+			console.log('getCurrentBuildNumber  ::::::: ', VersionCheck.getCurrentBuildNumber());
+
+			const versionName = data?.version_name.toString().replace(/\./g, '').padStart(5, "0");
+			const currentVersion = VersionCheck.getCurrentVersion().toString().replace(/\./g, '').padStart(5, "0");
+			
+			if(
+				(Platform.OS == 'android' && data?.version_code > VersionCheck.getCurrentBuildNumber()) || 
+				(Platform.OS == 'ios' && versionName > currentVersion)
+			) {
+				show({
+					title: '앱 버전 알림',
+					content: '새로운 앱버전이 있습니다.\n업데이트 해주세요.',
+					confirmCallback: function() {
+						if(Platform.OS == 'android') {
+							Linking.openURL(GOOGLE_PLAY_STORE_LINK);
+						} else {
+							Linking.openURL(APPLE_PLAY_STORE_LINK);
+						}
+						
+						RNExitApp.exitApp();
+					},
+				});
+			}
 		}
 	}
 

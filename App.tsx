@@ -1,6 +1,6 @@
 import { NavigationContainer, useIsFocused } from '@react-navigation/native';
 import React, { useEffect } from 'react';
-import { LogBox, SafeAreaView, StatusBar, StyleSheet, Alert, Linking, Platform, Modal, View, Text } from 'react-native';
+import { LogBox, SafeAreaView, StatusBar, StyleSheet, Alert, Linking, Platform, Modal, View, Text, PermissionsAndroid } from 'react-native';
 import { Notifications } from 'react-native-notifications';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -115,7 +115,9 @@ function PreFetcher(props) {
     if (token) {
       prefetch();
     } else {
-      SplashScreen.hide();
+      setTimeout(() => {
+        SplashScreen.hide();
+      }, 2000);
     }
   }
   async function prefetch() {

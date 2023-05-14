@@ -2,7 +2,7 @@ import { styles, layoutStyle, modalStyle, commonStyle } from 'assets/styles/Styl
 import CommonHeader from 'component/CommonHeader';
 import { CommonInput } from 'component/CommonInput';
 import SpaceView from 'component/SpaceView';
-import { ScrollView, View, StyleSheet, TouchableOpacity, Image, Dimensions, KeyboardAvoidingView } from 'react-native';
+import { ScrollView, View, StyleSheet, TouchableOpacity, Image, Dimensions, KeyboardAvoidingView, Platform } from 'react-native';
 import * as React from 'react';
 import { FC, useState, useEffect, useRef } from 'react';
 import { CommonSelect } from 'component/CommonSelect';
@@ -551,7 +551,7 @@ export const Introduce = (props: Props) => {
 				FooterComponent={
 					<>
 						<SpaceView>
-							<CommonBtn value={'저장'} 
+							<CommonBtn value={'저장(' + checkIntList.length + '/20)'} 
 										type={'primary'}
                     height={60}
 										borderRadius={1}
@@ -563,7 +563,7 @@ export const Introduce = (props: Props) => {
 					<>
 						<View style={modalStyle.modalHeaderContainer}>
 							<CommonText fontWeight={'700'} type={'h4'}>
-								관심사 등록
+								관심사 등록(최대 20개)
 							</CommonText>
 							<TouchableOpacity onPress={int_onClose} hitSlop={commonStyle.hipSlop20}>
 								<Image source={ICON.xBtn2} style={styles.iconSize18} />
@@ -596,11 +596,21 @@ export const Introduce = (props: Props) => {
 										<SpaceView key={i.common_code} mr={5}>
 											<TouchableOpacity style={[styles.interestBox, i.common_code === tmpCommonCode && styles.boxActive]}
 																onPress={() => {
-																	if(i.common_code === tmpCommonCode){
-																		setCheckIntList(checkIntList.filter(value => value.common_code != tmpCommonCode))
-																	} else {
-																		setCheckIntList(intValue => [...intValue, i])
-																	}
+                                  if(checkIntList.length > 19 && i.common_code !== tmpCommonCode) {
+                                    /* if(Platform.OS == 'android') {
+                                      show({
+                                        title: '알림',
+                                        content: '' ,
+                                        confirmCallback: function() {}
+                                      });
+                                    } */
+                                  } else {
+                                    if(i.common_code === tmpCommonCode){
+                                      setCheckIntList(checkIntList.filter(value => value.common_code != tmpCommonCode))
+                                    } else {
+                                      setCheckIntList(intValue => [...intValue, i])
+                                    }
+                                  }
 																}}>
 												<CommonText
 													fontWeight={'500'}

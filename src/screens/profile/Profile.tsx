@@ -43,8 +43,7 @@ export const Profile = (props: Props) => {
   const { show } = usePopup(); // 공통 팝업
 
   const memberBase = useUserInfo(); // 회원 기본정보
-  
-  const jwtToken = hooksMember.getJwtToken(); // 토큰 추출
+
 
   const [emailId, setEmailId] = React.useState<any>(memberBase?.email_id);
   const [nickname, setNickname] = React.useState<any>(memberBase?.nickname);
