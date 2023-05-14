@@ -104,7 +104,7 @@ export const CustomerInquiry = (props : Props) => {
 	return (
 		<>
 			<CommonHeader title={'고객문의'} />
-			<ScrollView contentContainerStyle={[styles.scrollContainer]}>
+			<ScrollView style={[styles.scrollContainer]}>
 				<KeyboardAvoidingView>
 					<SpaceView>
 						<View style={layoutStyle.alignStart}>
