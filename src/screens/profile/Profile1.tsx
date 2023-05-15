@@ -35,6 +35,7 @@ import { STACK } from 'constants/routes';
 import { SUCCESS } from 'constants/reusltcode';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { CommonLoading } from 'component/CommonLoading';
+import SpaceView from 'component/SpaceView';
 
 
 const options = {
@@ -161,6 +162,11 @@ export const Profile1 = (props: Props) => {
       );
     } */
   };
+
+  // ############################################################################# 사진 보기
+  const goImgDetail = () => {
+
+  }
 
   // ############################################################################# 사진 삭제 팝업
   const imgDel_modalizeRef = useRef<Modalize>(null);
@@ -858,8 +864,8 @@ export const Profile1 = (props: Props) => {
         ref={imgDel_modalizeRef}
         adjustToContentHeight={true}
         handleStyle={modalStyle.modalHandleStyle}
-        modalStyle={modalStyle.modalContainer}
-      >
+        modalStyle={modalStyle.modalContainer} >
+
         <View style={modalStyle.modalHeaderContainer}>
           <CommonText fontWeight={'700'} type={'h3'}>
             프로필 사진 삭제
@@ -870,18 +876,30 @@ export const Profile1 = (props: Props) => {
         </View>
 
         <View style={[modalStyle.modalBody, layoutStyle.flex1, layoutStyle.mb20]}>
-          <View>
+          {/* <SpaceView mb={10}>
+            <CommonBtn
+              value={'사진 보기'}
+              type={'primary'}
+              borderRadius={12}
+              onPress={goImgDetail}
+            />
+          </SpaceView> */}
+          <SpaceView mb={10}>
             <CommonBtn
               value={'사진 삭제'}
               type={'primary'}
+              borderRadius={12}
               onPress={imgDelProc}
             />
+          </SpaceView>
+          <SpaceView>
             <CommonBtn
-              value={'취소'}
-              type={'primary'}
-              onPress={imgDel_onClose}
-            />
-          </View>
+                value={'취소'}
+                type={'primary2'}
+                borderRadius={12}
+                onPress={imgDel_onClose}
+              />
+          </SpaceView>          
         </View>
       </Modalize>
 

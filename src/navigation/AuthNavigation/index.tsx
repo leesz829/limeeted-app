@@ -22,7 +22,7 @@ const AuthStack = createStackNavigator();
 export default function AuthNavigation() {
   return (
     <AuthStack.Navigator
-      initialRouteName={ROUTES.LOGIN}
+      initialRouteName={ROUTES.LOGIN01}
       screenOptions={{ headerShown: false }}
     >
       <AuthStack.Screen name={ROUTES.START_PAGE} component={StartPage} />

@@ -1,13 +1,13 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import messaging from '@react-native-firebase/messaging';
 import firebase from '@react-native-firebase/app';
-import {Platform} from 'react-native';
+import {Platform, Alert} from 'react-native';
 
 export default async function getFCMToken() {
 
   /* const firebaseConfig = {
     apiKey: "AIzaSyAZUNI6SD-BBPp_3ep7LRSxUzlgjicSByA",
-    authDomain: "limeeted-ea344.firebaseapp.com",
+    //authDomain: "limeeted-ea344.firebaseapp.com",
     databaseURL: "https://limeeted-ea344.firebaseio.com",
     projectId: "limeeted-ea344",
     storageBucket: "limeeted-ea344.appspot.com",
@@ -15,20 +15,27 @@ export default async function getFCMToken() {
     appId: "1:535563482959:android:d21b373a4e414cdf07b73a",
   };
 
-  if (Platform.OS === 'android') {
+  firebase.initializeApp(firebaseConfig); */
+
+  /* if (Platform.OS === 'android') {
     if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
+      
     }
-  } */
-  
+  }*/
+
   const storedFcmToken = await AsyncStorage.getItem('fcmToken');
+  let fCMToken = storedFcmToken;
+
   await messaging().registerDeviceForRemoteMessages();
-  const FCMToken = storedFcmToken || (await messaging().getToken());
-  // console.log('FCMToken : ', FCMToken);
+
+  fCMToken = storedFcmToken || (await messaging().getToken());
+
+  //Alert.alert('fcmToken', fCMToken);
+  //console.log('FCMToken : ', FCMToken);
   // const token = await AsyncStorage.getItem('jwt')
 
-  if (FCMToken) {
-    AsyncStorage.setItem('FCM_TOKEN', FCMToken);
+  if (fCMToken) {
+    AsyncStorage.setItem('FCM_TOKEN', fCMToken);
     // console.log('Firebase Token:', FCMToken);
 
     //   const config = {
@@ -53,6 +60,13 @@ export default async function getFCMToken() {
     //     })
     // } else {
     //   console.log('Failed', 'No token received')
+  } else {
+    messaging().onTokenRefresh((token) => {
+      AsyncStorage.setItem('FCM_TOKEN', token);
+      fCMToken = token;
+    });
   }
-  return FCMToken;
+    
+
+  return fCMToken;
 }

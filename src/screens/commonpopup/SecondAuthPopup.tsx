@@ -77,7 +77,7 @@ export const SecondAuthPopup = (props: Props) => {
     itemNm = '직업';
     placeholderTxt = '직업을 입력해주세요. (예 : 삼성전자 마케팅)';
     etcTxt01 = '심사에 요구되는 증빙자료를 올려주세요.';
-    etcTxt02 = '재직증명서, 공무원증, 사업자등록증, 재무재표, 부가가치세표준증명원, 기타 입증자료';
+    etcTxt02 = '재직증명서, 사원증, 명함, 공무원증(급수포함), 사업자등록증, 재무제표, 기타 입증자료';
     etcTxt03 = '아래 기준에 기초하여 인증 레벨이 부여됩니다.';
   } else if (type == 'EDU') {
     title = '학업';
@@ -85,11 +85,11 @@ export const SecondAuthPopup = (props: Props) => {
     placeholderTxt = '출신 교육기관을 입력해주세요. (예 : 서울대 컴퓨터 공학과)';
     etcTxt01 = '심사에 요구되는 증빙자료를 올려주세요.';
     etcTxt02 = '졸업 증명서, 재학 증명서, 학위 증명서';
-    etcTxt03 = 'THE에서 최근에 발표한 세계대학 순위에 기초하여 학력 레벨이 부여됩니다.'
+    etcTxt03 = 'THE(세계 대학 순위)에서 최근에 발표한 세계대학 순위에 기초하여 학력 레벨이 부여됩니다.';
   } else if (type == 'INCOME') {
     title = '소득';
     etcTxt01 = '심사에 요구되는 증빙자료를 올려주세요.';
-    etcTxt02 = '소득금액증명원, 근로소득원천징수증, 부가가치세증명원, 기타소득입증자료, 근로계약서';
+    etcTxt02 = 'ex) 소득금액증명원, 근로소득원천징수증, 부가가치세증명원, 기타 소득입증자료, 근로계약서 등';
     etcTxt03 = '근로소득자  : 원천징수영수증 또는 법인 직인이 날인된 연봉계약서';
   } else if (type == 'ASSET') {
     title = '자산';
@@ -249,6 +249,8 @@ export const SecondAuthPopup = (props: Props) => {
 
   return (
     <>
+      
+
 
       {/* ######################### header */}
       <View style={[modalStyle.modalHeaderContainer]}>
@@ -506,7 +508,7 @@ export const SecondAuthPopup = (props: Props) => {
                         fontWeight={'500'}
                         lineHeight={17}
                         type={'h5'}
-                        textStyle={{marginTop: 4}}>개인사업자 : 소득금액증명원</CommonText>
+                        textStyle={{marginTop: 4}}>법인 및 개인사업자 : 소득금액증명원, 부가가치세증명원</CommonText>
                     </View>
                   </SpaceView>
 

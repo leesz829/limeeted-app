@@ -33,6 +33,7 @@ import AuctionDetail from 'screens/shop/AuctionDetail';
 import MileageOrder from 'screens/shop/MileageOrder';
 import GifticonDetail from 'screens/shop/GifticonDetail';
 import ItemMatching from 'screens/matching/ItemMatching';
+import { PreviewProfileImage } from 'screens/commonpopup/previewProfileImage';
 
 const CommonStack = createStackNavigator<StackParamList>();
 
@@ -69,6 +70,7 @@ const CommonNavigation = () => {
       <CommonStack.Screen name="MileageOrder" component={MileageOrder} />
       <CommonStack.Screen name="GifticonDetail" component={GifticonDetail} />
       <CommonStack.Screen name="ItemMatching" component={ItemMatching} />
+      <CommonStack.Screen name="PreviewProfileImage" component={PreviewProfileImage} />
     </CommonStack.Navigator>
   );
 };

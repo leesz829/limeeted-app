@@ -23,6 +23,8 @@ import storeKey from 'constants/storeKey';
 import { STACK } from 'constants/routes';
 import { verticalStackLayout } from 'react-native-reanimated-carousel/lib/typescript/layouts/stack';
 import { SUCCESS } from 'constants/reusltcode';
+import { CommonLoading } from 'component/CommonLoading';
+
 
 const { width, height } = Dimensions.get('window');
 
@@ -36,7 +38,7 @@ export const SecondAuth = () => {
   const navigation = useNavigation<ScreenNavigationProp>();
   const dispatch = useDispatch();
   const isFocus = useIsFocused();
-  
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const { show } = usePopup();  // 공통 팝업
 
@@ -253,6 +255,7 @@ export const SecondAuth = () => {
 
   // ############################################################################# 2차인증 저장 함수
   const saveSecondAuth = async(type: string, file_list: any) => {
+    setIsLoading(true);
 
     let imgCnt = 0;
 
@@ -295,7 +298,7 @@ export const SecondAuth = () => {
     } catch (error) {
       console.log(error);
     } finally {
-      
+      setIsLoading(false);
     }
   }
 
@@ -361,6 +364,8 @@ export const SecondAuth = () => {
 
   return (
     <>
+      {isLoading && <CommonLoading />}
+
       <CommonHeader title={'프로필 2차 인증'} />
       <ScrollView contentContainerStyle={[styles.scrollContainer]}>
         {/* <SpaceView mb={24}>

@@ -21,6 +21,7 @@ import * as properties from 'utils/properties';
 import { usePopup } from 'Context';
 import { get_profile_secondary_authentication, regist_second_auth, get_member_profile_authentication, get_second_auth } from 'api/models';
 import { SUCCESS } from 'constants/reusltcode';
+import { CommonLoading } from 'component/CommonLoading';
 
 
 /* ################################################################################################################
@@ -42,6 +43,7 @@ export const Signup01 = (props: Props) => {
   const isFocus = useIsFocused();
   const { show } = usePopup();  // 공통 팝업
   const { width, height } = Dimensions.get('window');
+  const [isLoading, setIsLoading] = React.useState(false);
 
   // ############################################################################# 프로필 2차 인증 데이터
   /* const [secondData, setSecondData] = React.useState({
@@ -203,6 +205,8 @@ export const Signup01 = (props: Props) => {
 
   // ############################################################################# 2차인증 저장 함수
   const saveSecondAuth = async(type: string, file_list: any) => {
+    setIsLoading(true);
+
     let imgCnt = 0;
 
     for(let key in file_list){
@@ -245,7 +249,7 @@ export const Signup01 = (props: Props) => {
     } catch (error) {
       console.log(error);
     } finally {
-      
+      setIsLoading(false);
     }
   }
 
@@ -336,6 +340,8 @@ export const Signup01 = (props: Props) => {
 
   return (
     <>
+      {isLoading && <CommonLoading />}
+
       <CommonHeader title={'프로필 2차 인증'} />
       <ScrollView contentContainerStyle={[styles.scrollContainerAll]}>
         <SpaceView mb={35} viewStyle={[commonStyle.paddingHorizontal20]}>

@@ -529,8 +529,11 @@ export const Signup02 = (props: Props) => {
               어떤 사진을 올려야 할까요?
             </CommonText>
           </SpaceView>
-          <CommonText textStyle={_styles.textDesc} color={'#989898'} type={'h5'}>
-            • 얼굴이 선명히 나오는 사진은 최소 1장 필수에요.{'\n'}     멋진 무드 속에 담긴 모습이 좋아요.
+          <CommonText textStyle={_styles.textDesc} color={'#989898'} type={'h6'}>
+            • 프로필 사진은 최소 3장 이상 올려야 합니다.{'\n'}
+            • 얼굴이 선명히 나오는 사진은 최소 1장 필수 입니다.{'\n'}
+            • 멋진 무드 속에 담긴 모습을 올려보세요!{'\n'}
+            • 전신이 나오는 사진은 본인을 어필하는데 도움이 됩니다.
           </CommonText>
         </SpaceView>
 

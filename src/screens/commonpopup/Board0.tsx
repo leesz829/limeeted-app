@@ -51,35 +51,38 @@ export const Board0 = (props: Props) => {
 						board_type_name,
 						title,
 						content,
+						reg_dt,
 					}: {
 						board_seq: any;
 						board_type_name: string;
 						title: string;
 						content: string;
+						reg_dt: string;
 					}) => (
 						
 						<View key={board_seq} style={{marginBottom: 10}}>
 							<View style={_styles.rowContainer}>
 								<TouchableOpacity
-								style={_styles.inner}
-								onPress={() => { 
-									toggleAccordion(board_seq);
-								}}
-								activeOpacity={0.3} >
-								
-								<View style={[_styles.titleContainer, activeIndex === board_seq && _styles.active]}>
-									<CommonText fontWeight={'500'} type={'h5'}>{title}</CommonText>
-								</View>          
-								</TouchableOpacity>
+									style={_styles.inner}
+									onPress={() => { 
+										toggleAccordion(board_seq);
+									}}
+									activeOpacity={0.3} >
+									
+									<View style={[_styles.titleContainer, activeIndex === board_seq && _styles.active]}>
+										<CommonText textStyle={_styles.titleText} fontWeight={'500'} type={'h5'}>{title}</CommonText>
+									</View>
 
-								<View style={[_styles.iconContainer, activeIndex === board_seq && _styles.activeIcon]}>
-								<Image source={ICON.arrBottom} style={_styles.iconStyle} />
-								</View>
+									<View style={[_styles.iconContainer, activeIndex === board_seq && _styles.activeIcon]}>
+										<Image source={ICON.arrBottom} style={_styles.iconStyle} />
+									</View>
+								</TouchableOpacity>
 							</View>
 
 							{activeIndex === board_seq && (
 								<View style={_styles.descContainer}>
-								<CommonText textStyle={_styles.descText} type={'h5'}>{content}</CommonText>
+									<CommonText textStyle={_styles.descText} type={'h5'}>{content}</CommonText>
+									<CommonText textStyle={_styles.dateText} type={'h5'}>{reg_dt}</CommonText>
 								</View>
 							)}
 						</View>
@@ -94,57 +97,62 @@ export const Board0 = (props: Props) => {
 
 const _styles = StyleSheet.create({
 	iconContainer: {
-	  top: 20,
-	  right: 40,
-	  transform: [{ rotate: '360deg' }],
+	  	position: 'absolute',
+		top: '45%',
+	  	right: 20,
+	  	transform: [{ rotate: '360deg' }],
 	},
 	activeIcon: {
-	  top: -20,
-	  transform: [{ rotate: '180deg' }],
+	  	transform: [{ rotate: '180deg' }],
 	},
 	inner: {
-	  width: '100%',
+	  	width: '100%',
 	},
 	labelContainer: {
-	  marginBottom: 12,
+	  	marginBottom: 12,
 	},
 	rowContainer: {
-	  flexDirection: 'row',
-	  justifyContent: 'space-between',
-	  
-	  // alignItems: 'center',
-	  // height: 84,
+	 	flexDirection: 'row',
+	  	justifyContent: 'space-between',
 	},
 	iconStyle: {
-	  width: 18,
-	  height: 10,
+	  	width: 18,
+	  	height: 10,
 	},
 	titleContainer: {
-	  borderWidth: 1,
-	  borderColor: Color.grayEBE,
-	  borderRadius: 15,
-	  paddingHorizontal: 15,
-	  paddingVertical: 15,
+	  	borderWidth: 1,
+	  	borderColor: Color.grayEBE,
+	  	borderRadius: 15,
+	  	paddingHorizontal: 15,
+	  	paddingVertical: 15,
+	},
+	titleText: {
+		paddingRight: 35,
 	},
 	active: {
-	  borderBottomWidth: 0,
-	  borderBottomLeftRadius: 0,
-	  borderBottomRightRadius: 0,
+	  	borderBottomWidth: 0,
+	  	borderBottomLeftRadius: 0,
+	  	borderBottomRightRadius: 0,
 	},
 	descContainer: {
-	  //padding: 16,
-	  paddingHorizontal: 10,
-	  paddingBottom: 20,
-	  borderWidth: 1,
-	  borderTopWidth: 0,
-	  borderColor: Color.grayEBE,
-	  borderBottomLeftRadius: 15,
-	  borderBottomRightRadius: 15,
+		//padding: 16,
+		paddingHorizontal: 10,
+		paddingBottom: 20,
+		borderWidth: 1,
+		borderTopWidth: 0,
+		borderColor: Color.grayEBE,
+		borderBottomLeftRadius: 15,
+		borderBottomRightRadius: 15,
 	},
 	descText: {
-	  backgroundColor: Color.grayF8F8,
-	  paddingHorizontal: 15,
-	  paddingVertical: 20,
+		backgroundColor: Color.grayF8F8,
+		paddingHorizontal: 15,
+		paddingVertical: 20,
+	},
+	dateText: {
+		textAlign: 'right',
+		paddingHorizontal: 15,
+		marginTop: 5,
 	}
   });
   

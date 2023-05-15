@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { ColorType } from '@types';
-import { signin } from 'api/models';
+import { signin, get_app_version } from 'api/models';
 import { layoutStyle, modalStyle, styles, commonStyle } from 'assets/styles/Styles';
 import { CommonBtn } from 'component/CommonBtn';
 import { CommonInput } from 'component/CommonInput';
@@ -31,7 +31,8 @@ import {
   Platform,
   PermissionsAndroid,
   StyleSheet,
-  Alert
+  Alert,
+  Linking,
 } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { setPrincipal } from 'redux/reducers/authReducer';
@@ -40,6 +41,10 @@ import { ICON, IMAGE } from 'utils/imageUtils';
 import { Modalize } from 'react-native-modalize';
 import { Color } from 'assets/styles/Color';
 import Geolocation from 'react-native-geolocation-service';
+import RNExitApp from 'react-native-exit-app';
+import VersionCheck from 'react-native-version-check';
+
+
 
 GoogleSignin.configure({
   webClientId:
@@ -61,12 +66,14 @@ export const Login01 = () => {
   const [password, setPassword] = React.useState('');
   const me = useUserInfo();
   const { width, height } = Dimensions.get('window');
+  const isFocus = useIsFocused();
 
   const [latitude, setLatitude] = React.useState(); // 위도
   const [longitude, setLongitude] = React.useState(); // 경도
 
   const [granted, setGranted] = React.useState('');
 
+  // ########################################################################## 로그인 실행
   const loginProc = async () => {
     const body = {
       email_id: id,
@@ -188,7 +195,7 @@ export const Login01 = () => {
 
   };
 
-  // 사용자 위치 확인
+  // ########################################################################## 사용자 위치 확인
   async function requestPermissions() {
     try {
       // IOS 위치 정보 수집 권한 요청
@@ -207,7 +214,53 @@ export const Login01 = () => {
     }
   }
 
+  // ########################################################################## 앱버전 체크
+	async function appVersionCheck() {
+
+		// 구글 플레이 스토어 링크
+		const GOOGLE_PLAY_STORE_LINK = 'market://details?id=com.appsquad.limeeted';
+		const APPLE_PLAY_STORE_LINK = 'https://apps.apple.com/app/limeeted/6447423352';
+
+		const body = {
+			device_type: Platform.OS == 'android' ? 'AOS' : 'IOS',
+		};
+		const { success, data } = await get_app_version(body);
+
+		if(success) {
+			console.log('data :::::::: ', data);
+
+			console.log('getPackageName  ::::::: ', VersionCheck.getPackageName());
+			console.log('getCurrentVersion  ::::::: ', VersionCheck.getCurrentVersion());
+			console.log('getCurrentBuildNumber  ::::::: ', VersionCheck.getCurrentBuildNumber());
+
+			const versionName = data?.version_name.toString().replace(/\./g, '').padStart(5, "0");
+			const currentVersion = VersionCheck.getCurrentVersion().toString().replace(/\./g, '').padStart(5, "0");
+			
+			if(
+				(Platform.OS == 'android' && data?.version_code > VersionCheck.getCurrentBuildNumber()) || 
+				(Platform.OS == 'ios' && versionName > currentVersion)
+			) {
+				show({
+					title: '앱 버전 알림',
+					content: '새로운 앱버전이 있습니다.\n업데이트 해주세요.',
+					confirmCallback: function() {
+						if(Platform.OS == 'android') {
+							Linking.openURL(GOOGLE_PLAY_STORE_LINK);
+						} else {
+							Linking.openURL(APPLE_PLAY_STORE_LINK);
+						}
+						
+						RNExitApp.exitApp();
+					},
+				});
+			}
+		}
+	}
+
+  // ########################################################################## 초기 실행
   useEffect(() => {
+    appVersionCheck();
+
     requestPermissions().then((result) => {
       Geolocation.getCurrentPosition(
         (position) => {
@@ -221,7 +274,7 @@ export const Login01 = () => {
         { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
       );
     });
-  }, []);
+  }, [isFocus]);
 
   return (
     <>
@@ -292,23 +345,37 @@ export const Login01 = () => {
 							</SpaceView>
 						) : null} */}
             <SpaceView mb={5}>
-              <CommonBtn
-                value={'로그인'}
-                type={'g_blue'}
-						    isGradient={true}
-                fontSize={13}
-                onPress={() => {
-                  if (id == '') {
-                    return show({ content: '아이디를 입력해 주세요.' });
-                  }
-                  if (password == '') {
-                    return show({ content: '비밀번호를 입력해 주세요.' });
-                  }
+              <SpaceView>
+                <CommonBtn
+                  value={'리미티드 계정으로 로그인'}
+                  type={'g_blue'}
+                  isGradient={true}
+                  fontSize={13}
+                  onPress={() => {
+                    if (id == '') {
+                      return show({ content: '아이디를 입력해 주세요.' });
+                    }
+                    if (password == '') {
+                      return show({ content: '비밀번호를 입력해 주세요.' });
+                    }
 
-                  loginProc();
-                  //dispatch(loginReduce(id, password));
-                }}
-              />
+                    loginProc();
+                    //dispatch(loginReduce(id, password));
+                  }}
+                />
+              </SpaceView>
+
+              <SpaceView mt={15} mb={8}>
+                <CommonBtn
+                  value={'아이디/비밀번호 찾기'}
+                  type={'g_blue'}
+                  isGradient={true}
+                  fontSize={13}
+                  onPress={() => {
+                    navigation.navigate('SearchIdAndPwd');
+                  }}
+                />
+              </SpaceView>
 
               <SpaceView viewStyle={_styles.joinText}>
                 <CommonText type={"h5"}>계정이 없으신가요?</CommonText>
@@ -320,19 +387,7 @@ export const Login01 = () => {
 
             </SpaceView>
 
-            <SpaceView mb={8}>
-              <CommonBtn
-                value={'아이디/비밀번호 찾기'}
-                type={'g_blue'}
-						    isGradient={true}
-                fontSize={13}
-                onPress={() => {
-                  navigation.navigate('SearchIdAndPwd');
-                }}
-              />
-            </SpaceView>
-
-            <SpaceView>
+            {/* <SpaceView>
               <CommonBtn
                 value={'처음으로'}
                 type={'white'}
@@ -342,7 +397,7 @@ export const Login01 = () => {
                   navigation.navigate('Login');
                 }}
               />
-            </SpaceView>
+            </SpaceView> */}
           </SpaceView>
         </View>
       </ScrollView>

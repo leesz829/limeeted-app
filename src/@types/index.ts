@@ -98,6 +98,7 @@ export type StackParamList = {
     type: string;
   };
   ItemMatching: undefined;
+  PreviewProfileImage: undefined;
 };
 
 export type BottomParamList = {
