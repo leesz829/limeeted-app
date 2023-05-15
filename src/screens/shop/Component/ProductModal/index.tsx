@@ -139,70 +139,71 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
     } finally {
       console.log('finally!!!!!');
     }
-  }
+  };
 
   // ######################################################### IOS 결제 처리
   const purchaseIosProc = async () => {
-    const result = await requestPurchase({
-      sku: item_code,
-      andDangerouslyFinishTransactionAutomaticallyIOS: false,
-    });
-
-    console.log('result ::::: ', result);
-
-    let purchaseUpdateSubscription = purchaseUpdatedListener(async(purchase: Purchase) => {
-      try {
-        console.log('purchase ::::::: ', purchase);
+    try {
+      const result = await requestPurchase({
+        sku: item_code,
+        andDangerouslyFinishTransactionAutomaticallyIOS: false,
+      });
   
-        if (purchase) {
-          validateReceiptIos({
-            receiptBody: {
-              'receipt-data': purchase.transactionReceipt,
-              'password': '91cb6ffa05d741628d64316192f2cd5e',
-            },
-            isTest: false,
-          }).then(res => {
-            console.log('receipt result ::::::::: ', res);
-            purchaseUpdateSubscription.remove();
-  
-            const dataParam = {
-              device_gubun: Platform.OS,
-              buy_price: buy_price,
-              item_name: prod_name,
-              item_code: item_code,
-              result_msg: '성공',
-              result_code: '0000',
-              acknowledged: 0,
-              package_name: res?.receipt?.bundle_id,
-              product_id: res?.receipt?.in_app[0].product_id,
-              purchase_state: 0,
-              purchase_time: '20230429000000',
-              purchase_token: '',
-              quantity: res?.receipt?.in_app[0].quantity,
-              transaction_id: res?.receipt?.in_app[0].transaction_id,
-            };
-  
-            purchaseResultSend(dataParam);
-          });
-        };
-        
-      } catch (error) {
-        purchaseUpdateSubscription.remove();
-        Alert.alert('구매에 실패하였습니다.');
-        setIsPayLoading(false);
-        setComfirmModalVisible(false);
-        closeModal();        
-      } finally {
-        await finishTransaction({
-          purchase: purchase,
-          isConsumable: true,
-        }).then();
-      }
-    });
+      let purchaseUpdateSubscription = purchaseUpdatedListener(async(purchase: Purchase) => {
+        try {
+    
+          if (purchase) {
+            validateReceiptIos({
+              receiptBody: {
+                'receipt-data': purchase.transactionReceipt,
+                'password': '91cb6ffa05d741628d64316192f2cd5e',
+              },
+              isTest: false,
+            }).then(res => {
+              purchaseUpdateSubscription.remove();
+    
+              const dataParam = {
+                device_gubun: Platform.OS,
+                buy_price: buy_price,
+                item_name: prod_name,
+                item_code: item_code,
+                result_msg: '성공',
+                result_code: '0000',
+                acknowledged: 0,
+                package_name: res?.receipt?.bundle_id,
+                product_id: res?.receipt?.in_app[0].product_id,
+                purchase_state: 0,
+                purchase_time: '20230429000000',
+                purchase_token: '',
+                quantity: res?.receipt?.in_app[0].quantity,
+                transaction_id: res?.receipt?.in_app[0].transaction_id,
+              };
+    
+              purchaseResultSend(dataParam);
+            });
+          };
+          
+        } catch (error) {
+          purchaseUpdateSubscription.remove();
+          Alert.alert('알림', '구매에 실패하였습니다.');
+          setIsPayLoading(false);
+          setComfirmModalVisible(false);
+          closeModal();
+        } finally {
+          await finishTransaction({
+            purchase: purchase,
+            isConsumable: true,
+          }).then();
+        }
+      });
+      
+    } catch (error) {
+      setIsPayLoading(false);
+    }
   
     let purchaseErrorSubscription = purchaseErrorListener((error: PurchaseError) => {
       purchaseErrorSubscription.remove();
-      Alert.alert('구매에 실패하였습니다.');
+      Alert.alert('알림', '구매에 실패하였습니다.');
       setIsPayLoading(false);
       setComfirmModalVisible(false);
       closeModal();
