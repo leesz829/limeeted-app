@@ -121,7 +121,7 @@ export function Wallet({ theme }) {
             <Tooltip
               actionType='press'
               withPointer={false}
-              backgroundColor="white"
+              backgroundColor=""
               containerStyle={[_styles.tooltipDescContainer]}
               popover={
                 <View style={[_styles.tooltipArea('pass'), ]}>
@@ -147,7 +147,7 @@ export function Wallet({ theme }) {
             <Tooltip
                 actionType='press'
                 withPointer={false}
-                backgroundColor="white"
+                backgroundColor=""
                 containerStyle={[_styles.tooltipDescContainer]}
                 popover={
                   <View style={[_styles.tooltipArea('royal'), ]}>

@@ -38,7 +38,7 @@ export const Board0 = (props: Props) => {
 	return (
 		<>
 			<CommonHeader title={'최근 소식'} />
-			<ScrollView contentContainerStyle={styles.scrollContainer}>
+			<ScrollView style={styles.scrollContainer}>
 				<SpaceView mb={45}>
 					<View style={layoutStyle.alignStart}>
 						<CommonText	type={'h2'} fontWeight={'200'}>리미티드의 소식을{'\n'}전해드립니다 :)</CommonText>

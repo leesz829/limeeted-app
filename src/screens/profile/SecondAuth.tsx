@@ -367,7 +367,7 @@ export const SecondAuth = () => {
       {isLoading && <CommonLoading />}
 
       <CommonHeader title={'프로필 2차 인증'} />
-      <ScrollView contentContainerStyle={[styles.scrollContainer]}>
+      <ScrollView style={[styles.scrollContainer]}>
         {/* <SpaceView mb={24}>
           <CommonText>
             아래 버튼 선택 후 인증 뱃지를 등록할 수 있습니다.{'\n'}

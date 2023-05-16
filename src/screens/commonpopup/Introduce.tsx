@@ -351,7 +351,7 @@ export const Introduce = (props: Props) => {
   return (
     <>
       <CommonHeader title={'내 소개하기'} />
-      <ScrollView contentContainerStyle={styles.scrollContainerAll}>
+      <ScrollView style={styles.scrollContainerAll}>
         <View style={commonStyle.paddingHorizontal20}>
           <SpaceView mb={24}>
             <SpaceView mb={20}>

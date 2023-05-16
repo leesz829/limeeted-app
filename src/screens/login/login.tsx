@@ -219,7 +219,7 @@ export const Login01 = () => {
 
 		// 구글 플레이 스토어 링크
 		const GOOGLE_PLAY_STORE_LINK = 'market://details?id=com.appsquad.limeeted';
-		const APPLE_PLAY_STORE_LINK = 'https://apps.apple.com/app/limeeted/6447423352';
+		const APPLE_PLAY_STORE_LINK = 'https://apps.apple.com/app/6447423352';
 
 		const body = {
 			device_type: Platform.OS == 'android' ? 'AOS' : 'IOS',

@@ -572,7 +572,7 @@ export const Profile1 = (props: Props) => {
         } */
       />
 
-      <KeyboardAwareScrollView behavior={"padding"} style={{flex:1}} extraScrollHeight={70}>
+      <KeyboardAwareScrollView behavior={"padding"} style={{flex:1, backgroundColor: 'white'}} extraScrollHeight={70}>
         <ScrollView ref={scrollViewRef} style={{ backgroundColor: 'white', flexGrow: 1 }}>
 
         {/* ####################################################################################

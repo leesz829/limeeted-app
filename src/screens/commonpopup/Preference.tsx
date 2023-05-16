@@ -323,11 +323,7 @@ export const Preference = (props: Props) => {
   return (
     <>
       <CommonHeader title={'내 선호 이성'} />
-      <ScrollView 
-        contentContainerStyle={[
-          styles.scrollContainer,
-          
-        ]}>
+      <ScrollView style={[ styles.scrollContainer ]}>
 
         <KeyboardAvoidingView behavior={"padding"} style={{flex:1}}>
 
