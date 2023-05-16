@@ -82,7 +82,7 @@ export default function LimitInfo() {
           <Text style={listHeader.limitText}>LIMIT</Text>
         </View>
         <Text style={listHeader.mainInfo}>
-          5월, 리밋샵 오픈!{'\n'}리밋 획득방법 안내
+          6월, 리밋샵 오픈!{'\n'}리밋 획득방법 안내
         </Text>
         <Text style={listHeader.subInfo}>
           리미티드의 여성 회원은 특별하니까.{'\n'}지켜주고 싶은 마음이 담긴 선물 준비중!

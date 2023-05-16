@@ -66,11 +66,11 @@ export const ImagePicker: FC<Props> = (props) => {
       } else {
 
         if(props.isAuth){
-          props.callbackFn(
+          /* props.callbackFn(
             response?.assets[0].uri,
             response?.assets[0].base64
           );
-          return;
+          return; */
         }
 
         ImageResizer.createResizedImage(
@@ -97,6 +97,7 @@ export const ImagePicker: FC<Props> = (props) => {
             response?.assets[0].base64
           );
         });
+
       }
     }
   }, [response]);
