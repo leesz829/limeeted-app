@@ -95,7 +95,6 @@ export const SecondAuthPopup = (props: Props) => {
     title = '자산';
     etcTxt01 = '심사에 요구되는 증빙자료를 올려주세요.';
     etcTxt02 = '은행 직인이 찍힌 잔고 증명서 및 확인 가능한 부동산 관련 서류 또는 그 외에 확인 가능한 자산 입증 서류';
-    etcTxt02_02 = '유튜브, 트위치 등은 별도 문의 부탁드립니다.(cs@limeeted.com 또는 가입 후 ‘고객문의’)';
     etcTxt03 = '현금 또는 부동산 자산 중 1가지를 선택하여 증빙 자료를 올려주세요. 단, 2가지 모두 충족하시는 경우 한 단계 높은 레벨이 부여됩니다.(최대 7레벨)';
   } else if (type == 'SNS') {
     title = 'SNS';
