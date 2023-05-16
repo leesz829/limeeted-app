@@ -23,16 +23,12 @@ export default async function getFCMToken() {
     }
   }*/
 
-  const storedFcmToken = await AsyncStorage.getItem('fcmToken');
+  const storedFcmToken = await AsyncStorage.getItem('FCM_TOKEN');
   let fCMToken = storedFcmToken;
 
   await messaging().registerDeviceForRemoteMessages();
 
   fCMToken = storedFcmToken || (await messaging().getToken());
-
-  //Alert.alert('fcmToken', fCMToken);
-  //console.log('FCMToken : ', FCMToken);
-  // const token = await AsyncStorage.getItem('jwt')
 
   if (fCMToken) {
     AsyncStorage.setItem('FCM_TOKEN', fCMToken);

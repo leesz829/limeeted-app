@@ -152,6 +152,10 @@ export default function Matching(props: Props) {
 
   // ############################################################ 데일리 매칭 정보 조회
   const getDailyMatchInfo = async () => {
+
+    // 기존 데이터 존재 여부
+    let ordMemberSeq = data?.match_member_info?.member_seq;
+
     try {
       const { success, data } = await get_daily_matched_info();
       //console.log('get_daily_matched_info data :::: ', data.use_item.FREE_LIKE);
@@ -164,7 +168,9 @@ export default function Matching(props: Props) {
             setIsLoad(false);
             setIsEmpty(true);
           } else {
-            setCurrentIndex(0);
+            if(ordMemberSeq !== data?.match_member_info?.member_seq) {
+              setCurrentIndex(0);
+            }
             setIsLoad(true);
           }
         } else {
@@ -178,10 +184,10 @@ export default function Matching(props: Props) {
     }
   };
 
-  /* #############################################
+  /* #######################################################################
 	##### 거부/찐심/관심 팝업 함수
 	##### - activeType : pass(거부), sincere(찐심), interest(관심)
-	############################################# */
+	####################################################################### */
   const popupActive = (activeType: string) => {
     if (activeType == 'interest') {
       let title = '관심 보내기';

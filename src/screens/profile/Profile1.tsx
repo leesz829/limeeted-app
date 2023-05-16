@@ -398,6 +398,7 @@ export const Profile1 = (props: Props) => {
       , interview_list: null
     };
 
+    imgDel_onClose();
     setIsLoading(true);
     
     try {
@@ -414,7 +415,6 @@ export const Profile1 = (props: Props) => {
             show({
               content: '삭제되었습니다.' ,
               confirmCallback: function() {
-                imgDel_onClose();
                 profileDataSet(data.mbr_img_list);
               }
             });

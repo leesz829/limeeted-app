@@ -174,7 +174,8 @@ export async function get_second_auth(body: {
 ======================================================================================================== */
 //회원의 정보를 조회한다.
 export async function get_my_info() {
-  return send(ME, 'POST', undefined, true, false);
+  const push_token = await AsyncStorage.getItem(FCM_TOKEN);
+  return send(ME, 'POST', { push_token }, true, false);
 }
 
 //회원의 기본 정보를 저장한다.

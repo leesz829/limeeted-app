@@ -12,6 +12,8 @@ import { BasePopup } from 'screens/commonpopup/BasePopup';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
+import Tooltip from 'rn-tooltip';
+
 interface Props {
   currentPath: string;
   theme?: string;
@@ -44,7 +46,7 @@ const TopNavigation: FC<Props> = (props) => {
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
     >
-      <View style={styles.tabContainer}>
+      <View style={_styles.tabContainer}>
         <NaviButtons navName={props.currentPath} theme={props.theme} />
         {/* ######################################################################
 			  ##### 팝업 영역
@@ -53,7 +55,7 @@ const TopNavigation: FC<Props> = (props) => {
       </View>
     </LinearGradient>
   ) : (
-    <View style={[styles.tabContainer, { backgroundColor: 'white', zIndex: 1 }]}>
+    <View style={[_styles.tabContainer, { backgroundColor: 'white', zIndex: 1 }]}>
       <NaviButtons navName={props.currentPath} theme={props.theme} />
       {/* ######################################################################
 			##### 팝업 영역
@@ -90,15 +92,15 @@ function NaviButtons({ navName, theme }: { navName: string; theme?: string }) {
 
   return (
     <View style={{ flexDirection: 'row' }}>
-      <TouchableOpacity style={[styles.tab]} onPress={onPressLimeeted}>
+      <TouchableOpacity style={[_styles.tab]} onPress={onPressLimeeted}>
         <Image
-          style={styles.limitedIcon}
+          style={_styles.limitedIcon}
           source={limitedIcon}
           resizeMode="contain"
         />
       </TouchableOpacity>
-      <TouchableOpacity style={[styles.tab]} onPress={onPressLive}>
-        <Image style={styles.liveIcon} source={liveIcon} resizeMode="contain" />
+      <TouchableOpacity style={[_styles.tab]} onPress={onPressLive}>
+        <Image style={_styles.liveIcon} source={liveIcon} resizeMode="contain" />
       </TouchableOpacity>
     </View>
   );
@@ -107,89 +109,64 @@ export function Wallet({ theme }) {
   const isFocus = useIsFocused();
   const memberBase = useUserInfo(); // 회원 기본정보
 
-  const [isPassToolTip, setIsPassToolTip] = useState<boolean>(false);
-  const [isRoyalPassToolTip, setIsRoyalPassToolTip] = useState<boolean>(false);
-
-  const tooltipClick = async (type:any) => {
-    /* if(type == 'pass') {
-      setIsPassToolTip(isPassToolTip ? false : true);
-
-      if(!isPassToolTip) {
-        setIsRoyalPassToolTip(false);
-      };
-      
-    } else if(type == 'royal') {
-      setIsRoyalPassToolTip(isRoyalPassToolTip ? false : true);
-
-      if(!isRoyalPassToolTip) {
-        setIsPassToolTip(false);
-      };
-    } */
-  };
-
-  React.useEffect(() => {
-    //setIsPassToolTip(false);
-    //setIsRoyalPassToolTip(false);
-  }, [isFocus])
-
   return (
     <>
       {typeof memberBase != 'undefined' && (
         <View
           style={{
             flexDirection: 'row',
-          }}>
+          }} >
 
-          <View style={[styles.itemContainer, { marginRight: 8 }]}>
-            <TouchableOpacity 
-              style={[styles.itemContainer]} 
-              onPress={() => {
-                tooltipClick('pass');
-              }}>
+          <View style={[_styles.itemContainer, { marginRight: 8 }]}>
+            <Tooltip
+              actionType='press'
+              withPointer={false}
+              backgroundColor="white"
+              containerStyle={[_styles.tooltipDescContainer]}
+              popover={
+                <View style={[_styles.tooltipArea('pass'), ]}>
+                  <Text style={_styles.tooltipAreaText}>범용적으로 사용되는 기본 재화.{'\n'}관심을 보내거나 확인하는데 사용되요.</Text>
+                </View>
+              }>
 
-              <Image style={styles.itemStyle} source={ICON.passCircle} resizeMode={'contain'} />
-              <Text
-                style={[
-                  styles.statusText,
-                  { color: theme ? '#625AD1' : '#625AD1', lineHeight: 13 },
-                ]}>
+                <View style={_styles.itemContainer}>
+                  <Image style={_styles.itemStyle} source={ICON.passCircle} resizeMode={'contain'} />
+                  <Text
+                    style={[
+                      _styles.statusText,
+                      { color: theme ? '#625AD1' : '#625AD1', lineHeight: 13 },
+                    ]}>
 
-                {memberBase?.pass_has_amt}
-              </Text>
-            </TouchableOpacity>
-
-            {isPassToolTip && 
-              <View style={[styles.tooltipArea('pass'), ]}>
-                <Text style={styles.tooltipAreaText}>범용적으로 사용되는 기본 재화.{'\n'}관심을 보내거나 확인하는데 사용되요.</Text>
-              </View>
-            }
+                    {memberBase?.pass_has_amt}
+                  </Text>
+                </View>
+            </Tooltip>
           </View>
 
-          <View style={styles.itemContainer}>
+          <View style={_styles.itemContainer}>
+            <Tooltip
+                actionType='press'
+                withPointer={false}
+                backgroundColor="white"
+                containerStyle={[_styles.tooltipDescContainer]}
+                popover={
+                  <View style={[_styles.tooltipArea('royal'), ]}>
+                    <Text style={_styles.tooltipAreaText}>리미티드의 특수 재화.{'\n'}찐심을 보내는데 사용되요.</Text>
+                  </View>
+                }>
 
-            <TouchableOpacity 
-              style={[styles.itemContainer]} 
-              onPress={() => {
-                tooltipClick('royal');
-              }}>
+                <View style={_styles.itemContainer}>
+                  <Image style={_styles.itemStyle} source={ICON.royalPassCircle} resizeMode={'contain'}  />
+                  <Text
+                    style={[
+                      _styles.statusText,
+                      { color: theme ? '#625AD1' : '#625AD1', lineHeight: 13 },
+                    ]}>
 
-              <Image style={styles.itemStyle} source={ICON.royalPassCircle} resizeMode={'contain'}  />
-              <Text
-                style={[
-                  styles.statusText,
-                  { color: theme ? '#625AD1' : '#625AD1', lineHeight: 13 },
-                ]}>
-
-                {memberBase?.royal_pass_has_amt}
-              </Text>
-            </TouchableOpacity>
-
-            {isRoyalPassToolTip && 
-              <View style={[styles.tooltipArea('royal'), ]}>
-                <Text style={styles.tooltipAreaText}>리미티드의 특수 재화.{'\n'}찐심을 보내는데 사용되요.</Text>
-              </View>
-            }
-
+                    {memberBase?.royal_pass_has_amt}
+                  </Text>
+                </View>
+            </Tooltip>
           </View>
         </View>
       )}
@@ -198,7 +175,7 @@ export function Wallet({ theme }) {
 }
 export default TopNavigation;
 
-const styles = StyleSheet.create({
+const _styles = StyleSheet.create({
   logo1: { width: 105, height: 29 },
   tabContainer: {
     flexDirection: 'row',
@@ -261,14 +238,13 @@ const styles = StyleSheet.create({
     height: 29,
     resizeMode: 'contain',
   },
-
-
   tooltipArea: (type) => {
     return {
+      width: type == 'pass' ? 170 : 125,
       position: 'absolute',
-      bottom: -35,
-      left: type == 'pass' ? -40 : -60,
-      zIndex: 9999,
+      bottom: 0,
+      left: type == 'pass' ? 20 : 50,
+      zIndex: 9998,
       backgroundColor: '#151515',
       borderRadius: 7,
     };
@@ -278,6 +254,9 @@ const styles = StyleSheet.create({
     fontFamily: 'AppleSDGothicNeoM00',
     color: ColorType.white,
     paddingHorizontal: 8,
-    paddingVertical: 3,
+    paddingVertical: 5,
+  },
+  tooltipDescContainer: {
+    
   },
 });
