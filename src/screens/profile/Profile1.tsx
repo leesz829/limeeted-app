@@ -105,6 +105,7 @@ export const Profile1 = (props: Props) => {
   const [isDelImgData, setIsDelImgData] = React.useState<any>({
     img_seq: '',
     order_seq: '',
+    status: '',
   });
 
   // ################################################################ 프로필 이미지 파일 콜백 함수
@@ -170,10 +171,11 @@ export const Profile1 = (props: Props) => {
 
   // ############################################################################# 사진 삭제 팝업
   const imgDel_modalizeRef = useRef<Modalize>(null);
-  const imgDel_onOpen = (img_seq: any, order_seq: any) => {
+  const imgDel_onOpen = (imgData: any, order_seq: any) => {
     setIsDelImgData({
-      img_seq: img_seq,
+      img_seq: imgData.member_img_seq,
       order_seq: order_seq,
+      status: imgData.status,
     });
     imgDel_modalizeRef.current?.open();
   };
@@ -186,19 +188,23 @@ export const Profile1 = (props: Props) => {
 
     let tmpCnt = 0;
     for (var key in imgData) {
-      if (imgData[key].delYn == 'N' && (imgData[key].url || imgData[key].uri)) {
-        tmpCnt++;
+      console.log('imgData[key] ::::: ' , imgData[key]);
+
+      if(isDelImgData.status != 'ACCEPT') {
+        if (imgData[key].delYn == 'N' && (imgData[key].url || imgData[key].uri)) {
+          tmpCnt++;
+        }
+      } else {
+        if (imgData[key].delYn == 'N' && imgData[key].status == 'ACCEPT' && (imgData[key].url || imgData[key].uri)) {
+          tmpCnt++;
+        }
       }
     }
-
-    /* for(var key in profileImageList) {
-      tmpCnt++;
-    } */
 
     console.log('tmpCnt ::::: ' ,tmpCnt);
 
     if (tmpCnt <= 3) {
-      show({ content: '프로필 사진은 최소 3장 등록되어야 합니다.' });
+      show({ content: '승인된 프로필 사진은 최소 3장 등록되어야 합니다.' });
       return;
     }
 
@@ -247,7 +253,58 @@ export const Profile1 = (props: Props) => {
     }
 
     deleteProfileImage(isDelImgData.img_seq);
-  };  
+  };
+
+  // ############################################################  프로필 이미지 삭제
+  const deleteProfileImage = async (imgSeq:string) => {
+
+    const body = {
+      file_list: null
+      , img_del_seq_str: imgSeq
+      , interview_list: null
+    };
+
+    imgDel_onClose();
+    setIsLoading(true);
+    
+    try {
+      const { success, data } = await update_profile(body);
+      if(success) {
+        switch (data.result_code) {
+          case SUCCESS:
+            dispatch(setPartialPrincipal({
+              mbr_base : data.mbr_base
+              , mbr_img_list : data.mbr_img_list
+              , mbr_interview_list : data.mbr_interview_list
+            }));
+  
+            show({
+              content: '삭제되었습니다.' ,
+              confirmCallback: function() {
+                profileDataSet(data.mbr_img_list);
+              }
+            });
+            break;
+          default:
+            show({
+              content: '오류입니다. 관리자에게 문의해주세요.' ,
+              confirmCallback: function() {}
+            });
+            break;
+        }
+       
+      } else {
+        show({
+          content: '오류입니다. 관리자에게 문의해주세요.' ,
+          confirmCallback: function() {}
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // ############################################################  인터뷰 답변 작성 Callback 함수
   const callbackInterviewAnswer = async (seq: any, answer: any) => {
@@ -363,57 +420,6 @@ export const Profile1 = (props: Props) => {
   
             show({
               content: '등록되었습니다.' ,
-              confirmCallback: function() {
-                profileDataSet(data.mbr_img_list);
-              }
-            });
-            break;
-          default:
-            show({
-              content: '오류입니다. 관리자에게 문의해주세요.' ,
-              confirmCallback: function() {}
-            });
-            break;
-        }
-       
-      } else {
-        show({
-          content: '오류입니다. 관리자에게 문의해주세요.' ,
-          confirmCallback: function() {}
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  
-  // ############################################################  프로필 이미지 삭제
-  const deleteProfileImage = async (imgSeq:string) => {
-
-    const body = {
-      file_list: null
-      , img_del_seq_str: imgSeq
-      , interview_list: null
-    };
-
-    imgDel_onClose();
-    setIsLoading(true);
-    
-    try {
-      const { success, data } = await update_profile(body);
-      if(success) {
-        switch (data.result_code) {
-          case SUCCESS:
-            dispatch(setPartialPrincipal({
-              mbr_base : data.mbr_base
-              , mbr_img_list : data.mbr_img_list
-              , mbr_interview_list : data.mbr_interview_list
-            }));
-  
-            show({
-              content: '삭제되었습니다.' ,
               confirmCallback: function() {
                 profileDataSet(data.mbr_img_list);
               }
@@ -590,7 +596,7 @@ export const Profile1 = (props: Props) => {
             imgData.orgImgUrl01.delYn == 'N' ? (
               <TouchableOpacity
                 onPress={() => {
-                  imgDel_onOpen(imgData.orgImgUrl01.member_img_seq, 1);
+                  imgDel_onOpen(imgData.orgImgUrl01, 1);
                 }}>
                 <Image
                   resizeMode="cover"
@@ -622,7 +628,7 @@ export const Profile1 = (props: Props) => {
             imgData.orgImgUrl02.delYn == 'N' ? (
               <TouchableOpacity
                 onPress={() => {
-                  imgDel_onOpen(imgData.orgImgUrl02.member_img_seq, 2);
+                  imgDel_onOpen(imgData.orgImgUrl02, 2);
                 }}>
                 <Image
                   resizeMode="cover"
@@ -654,7 +660,7 @@ export const Profile1 = (props: Props) => {
             imgData.orgImgUrl03.delYn == 'N' ? (
               <TouchableOpacity
                 onPress={() => {
-                  imgDel_onOpen(imgData.orgImgUrl03.member_img_seq, 3);
+                  imgDel_onOpen(imgData.orgImgUrl03, 3);
                 }}>
                 <Image
                   resizeMode="cover"
@@ -686,7 +692,7 @@ export const Profile1 = (props: Props) => {
             imgData.orgImgUrl04.delYn == 'N' ? (
               <TouchableOpacity
                 onPress={() => {
-                  imgDel_onOpen(imgData.orgImgUrl04.member_img_seq, 4);
+                  imgDel_onOpen(imgData.orgImgUrl04, 4);
                 }}>
                 <Image
                   resizeMode="cover"
@@ -718,7 +724,7 @@ export const Profile1 = (props: Props) => {
             imgData.orgImgUrl05.delYn == 'N' ? (
               <TouchableOpacity
                 onPress={() => {
-                  imgDel_onOpen(imgData.orgImgUrl05.member_img_seq, 5);
+                  imgDel_onOpen(imgData.orgImgUrl05, 5);
                 }}>
                 <Image
                   resizeMode="cover"
@@ -750,7 +756,7 @@ export const Profile1 = (props: Props) => {
             imgData.orgImgUrl06.delYn == 'N' ? (
               <TouchableOpacity
                 onPress={() => {
-                  imgDel_onOpen(imgData.orgImgUrl06.member_img_seq, 6);
+                  imgDel_onOpen(imgData.orgImgUrl06, 6);
                 }}>
                 <Image
                   resizeMode="cover"
