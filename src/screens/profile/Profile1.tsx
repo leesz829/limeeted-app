@@ -1,5 +1,5 @@
 import { Slider } from '@miblanchard/react-native-slider';
-import { RouteProp, useIsFocused, useNavigation } from '@react-navigation/native';
+import { RouteProp, useIsFocused, useNavigation, useFocusEffect } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { StackParamList, ScreenNavigationProp, ColorType } from '@types';
 import { get_member_profile_info, get_member_face_rank, update_profile } from 'api/models';
@@ -36,6 +36,7 @@ import { SUCCESS } from 'constants/reusltcode';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { CommonLoading } from 'component/CommonLoading';
 import SpaceView from 'component/SpaceView';
+import LinearGradient from 'react-native-linear-gradient';
 
 
 const options = {
@@ -106,6 +107,7 @@ export const Profile1 = (props: Props) => {
     img_seq: '',
     order_seq: '',
     status: '',
+    return_reason: '',
   });
 
   // ################################################################ 프로필 이미지 파일 콜백 함수
@@ -166,8 +168,13 @@ export const Profile1 = (props: Props) => {
 
   // ############################################################################# 사진 보기
   const goImgDetail = () => {
-
-  }
+    navigation.navigate(STACK.COMMON, {
+      screen: 'ImagePreview',
+      params: {
+        imgList: myImages
+      }
+    });
+  };
 
   // ############################################################################# 사진 삭제 팝업
   const imgDel_modalizeRef = useRef<Modalize>(null);
@@ -176,6 +183,7 @@ export const Profile1 = (props: Props) => {
       img_seq: imgData.member_img_seq,
       order_seq: order_seq,
       status: imgData.status,
+      return_reason: imgData.return_reason,
     });
     imgDel_modalizeRef.current?.open();
   };
@@ -472,17 +480,20 @@ export const Profile1 = (props: Props) => {
           img_file_path,
           order_seq,
           status,
+          return_reason,
         }: {
           member_img_seq: any;
           img_file_path: any;
           order_seq: any;
           status: any;
+          return_reason: any;
         }) => {
           let data = {
             member_img_seq: member_img_seq,
             url: findSourcePath(img_file_path),
             delYn: 'N',
             status: status,
+            return_reason: return_reason,
           };
           if (order_seq == 1) {
             imgData.orgImgUrl01 = data;
@@ -559,10 +570,15 @@ export const Profile1 = (props: Props) => {
   }; */
 
   // ############################################################################# 최초 실행
-  React.useEffect(() => {
-    //getMemberFaceRank();
-    getMemberProfileData();
-  }, [isFocus]);
+  useFocusEffect(
+    React.useCallback(() => {
+      getMemberProfileData();
+
+      return () => {
+        imgDel_onClose();
+      };
+    }, [isFocus]),
+  );
 
 
   return (
@@ -810,15 +826,15 @@ export const Profile1 = (props: Props) => {
               <View style={_styles.impressionContainer}>
 
                 {profileFaceRankList.map((item : any, index) => (
-                  <View style={_styles.itemRow}>
+                  <View style={_styles.itemRow(index === profileFaceRankList.length - 1 ? true : false)}>
                     <View style={_styles.subRow}>
                       {/* <Image source={ICON.fashion} style={_styles.icon} /> */}
-                      <Text style={{backgroundColor: '#4472C4', color: Color.white, paddingHorizontal: 5, fontSize: 12, borderRadius: 8, paddingVertical: 3}}>
+                      <Text style={_styles.rankText(index)}>
                         {index+1}위
                       </Text>
                       <Text style={_styles.contentsText}>{item.face_code_name}</Text>
                     </View>
-                    <View style={_styles.fashionPercent}>
+                    <View style={_styles.fashionPercent(index)}>
                       <Text style={_styles.percentText}>{item.percent}%</Text>
                     </View>
                   </View>
@@ -828,21 +844,28 @@ export const Profile1 = (props: Props) => {
           )}
 
           <View style={_styles.myImpressionContainer}>
-            <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10}}>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 25}}>
               <Text style={_styles.title}>내 평점은?</Text>
-              <Text style={_styles.sliderText}>{memberBase?.profile_score}</Text>
             </View>
-            <Slider
-              value={memberBase?.profile_score / 10}
-              animateTransitions={true}
-              renderThumbComponent={() => null}
-              maximumTrackTintColor={'#e3e3e3'}
-              minimumTrackTintColor={'#8854d2'}
-              containerStyle={_styles.sliderContainerStyle}
-              trackStyle={_styles.trackStyle}
-              trackClickable={false}
-              disabled
-            />
+
+            <View style={_styles.profileScoreContainer}>
+              <View style={[_styles.scoreContainer, { left: memberBase?.profile_score == 0 ? 0 : memberBase?.profile_score * 10 - 5 + '%' }]}>
+                <Text style={_styles.scoreText}>{memberBase?.profile_score}</Text>
+                <View style={_styles.triangle}></View>
+              </View>
+              <Slider
+                value={memberBase?.profile_score / 10}
+                animateTransitions={true}
+                renderThumbComponent={() => null}
+                maximumTrackTintColor={'#e3e3e3'}
+                minimumTrackTintColor={'#8854d2'}
+                containerStyle={_styles.sliderContainerStyle}
+                trackStyle={_styles.trackStyle}
+                trackClickable={false}
+                disabled
+              />
+            </View>
+            
             <View style={_styles.gageContainer}>
               <Text style={_styles.gageText}>0</Text>
               <Text style={_styles.gageText}>5</Text>
@@ -870,11 +893,11 @@ export const Profile1 = (props: Props) => {
         ref={imgDel_modalizeRef}
         adjustToContentHeight={true}
         handleStyle={modalStyle.modalHandleStyle}
-        modalStyle={modalStyle.modalContainer} >
+        modalStyle={[modalStyle.modalContainer]} >
 
         <View style={modalStyle.modalHeaderContainer}>
           <CommonText fontWeight={'700'} type={'h3'}>
-            프로필 사진 삭제
+            프로필 사진 관리
           </CommonText>
           <TouchableOpacity onPress={imgDel_onClose}>
             <Image source={ICON.xBtn2} style={styles.iconSize20} />
@@ -882,14 +905,35 @@ export const Profile1 = (props: Props) => {
         </View>
 
         <View style={[modalStyle.modalBody, layoutStyle.flex1, layoutStyle.mb20]}>
-          {/* <SpaceView mb={10}>
+          {isDelImgData.status == 'REFUSE' && isDelImgData.return_reason != null && 
+            <SpaceView mb={15}>
+              <SpaceView mb={16} viewStyle={layoutStyle.row}>
+                <Image source={ICON.confirmation} style={[styles.iconSize20, {marginTop: 3}]} />
+                <CommonText 
+                  color={ColorType.blue697A}
+                  fontWeight={'700'}
+                  textStyle={{marginLeft: 5, textAlignVertical: 'center'}}>반려 사유 안내</CommonText>
+              </SpaceView>
+
+              <SpaceView mb={12} viewStyle={_styles.refuseArea}>
+                <CommonText
+                  color={'848484'} 
+                  fontWeight={'500'}
+                  lineHeight={17}
+                  type={'h6'}
+                  textStyle={{marginTop: 4}}>{isDelImgData.return_reason}</CommonText>
+              </SpaceView>
+            </SpaceView>
+          }
+
+          <SpaceView mb={10}>
             <CommonBtn
               value={'사진 보기'}
               type={'primary'}
               borderRadius={12}
               onPress={goImgDetail}
             />
-          </SpaceView> */}
+          </SpaceView>
           <SpaceView mb={10}>
             <CommonBtn
               value={'사진 삭제'}
@@ -912,6 +956,10 @@ export const Profile1 = (props: Props) => {
     </>
   );
 };
+
+
+
+
 
 
 
@@ -1074,12 +1122,17 @@ const _styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-around',
   },
-  itemRow: {
-    width: '100%',
-    paddingVertical: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+  itemRow: (isLast: boolean) => {
+    return {
+      width: '100%',
+      paddingVertical: 10,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      borderBottomWidth: isLast ? 0 : 1,
+      borderColor: '#D8D8D8',
+      borderStyle: 'dotted',
+    };
   },
   subRow: {
     flexDirection: `row`,
@@ -1102,14 +1155,16 @@ const _styles = StyleSheet.create({
     textAlign: 'left',
     color: '#333333',
   },
-  fashionPercent: {
-    height: 27,
-    borderRadius: 13.5,
-    backgroundColor: '#7986ee',
-    paddingHorizontal: 10,
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: `center`,
+  fashionPercent: (idx: number) => {
+    return {
+      width: 45,
+      height: 27,
+      borderRadius: 13.5,
+      backgroundColor: idx == 0 ? '#FE0456' : '#7986ee',
+      flexDirection: `row`,
+      alignItems: `center`,
+      justifyContent: `center`,
+    };
   },
   fontPercent: {
     height: 27,
@@ -1137,7 +1192,19 @@ const _styles = StyleSheet.create({
     lineHeight: 18,
     letterSpacing: 0,
     textAlign: 'left',
-    color: '#ffffff',
+    color: '#fff',
+  },
+  rankText: (idx: number) => {
+    return {
+      backgroundColor: idx == 0 ? '#FE0456' : '#4472C4',
+      color: Color.white,
+      fontFamily: 'AppleSDGothicNeoEB00',
+      width: 27,
+      textAlign: 'center',
+      fontSize: 12,
+      borderRadius: 8,
+      paddingVertical: 3,
+    };
   },
   myImpressionContainer: {
     width: '100%',
@@ -1185,6 +1252,49 @@ const _styles = StyleSheet.create({
     textAlign: 'left',
     color: '#333333',
     marginTop: 32,
+  },
+  profileScoreContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  scoreContainer: {
+    position: 'absolute',
+    transform: [{ translateY: -25 }], // 수직 중앙 정렬을 위한 translateY
+    alignItems: 'center',
+  },
+  scoreText: {
+    backgroundColor: '#151515',
+    color: ColorType.white,
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 10,
+    fontWeight: 'bold',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 5,
+    borderWidthBottom: 1,
+    borderBottomColor: '#151515',
+  },
+  triangle: {
+    marginTop: -1,
+    width: 0,
+    height: 0,
+    backgroundColor: 'transparent',
+    borderStyle: 'solid',
+    borderLeftWidth: 5,
+    borderRightWidth: 5,
+    borderBottomWidth: 5,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderBottomColor: '#151515',
+    transform: [{ rotate: '180deg' }],
+  },
+  refuseArea: {
+    backgroundColor: '#F4F4F4',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 8,
+    minHeight: 100,
   },
 
 });

@@ -28,6 +28,7 @@ interface Props {
   ) => void;
   uriParam?: string;
   plusBtnType?: string;
+  auth_status?: string;
 }
 
 const includeExtra = true;
@@ -43,8 +44,6 @@ const options: Action = {
     includeExtra,
   },
 };
-
-
 
 
 export const ImagePicker: FC<Props> = (props) => {
@@ -136,7 +135,11 @@ export const ImagePicker: FC<Props> = (props) => {
 
             {props.isAuth && 
               <View style={styles.disabled}>
-                <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
+                {props.auth_status == 'PROGRESS' ? (
+                  <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
+                ) : props.auth_status == 'REFUSE' && (
+                  <CommonText fontWeight={'700'} type={'h5'} color={ColorType.redF20456} textStyle={[styles.imageDimText]}>반려</CommonText>
+                )}
               </View>
             }
           </>

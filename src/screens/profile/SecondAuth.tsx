@@ -60,7 +60,8 @@ export const SecondAuth = () => {
     filePath01 : '',
     filePath02 : '',
     filePath03 : '',
-    auth_status: ''
+    auth_status: '',
+    return_reason: '',
   });
 
   // 직업 Pop
@@ -183,6 +184,7 @@ export const SecondAuth = () => {
       filePath02: '',
       filePath03: '',
       auth_status: '',
+      return_reason: '',
     });
 
     const body = {
@@ -197,12 +199,13 @@ export const SecondAuth = () => {
             let filePath01 = '';
             let filePath02 = '';
             let filePath03 = '';
-            let auth_status_real = '';
+            let auth_status_val = '';
+            let return_reason_val = '';
 
-            data.auth_detail_list.map(({img_file_path, order_seq, auth_status} : {img_file_path: any; order_seq: any; auth_status: any}) => {
+            data.auth_detail_list.map(({img_file_path, order_seq, auth_status, return_reason} : {img_file_path: any; order_seq: any; auth_status: any, return_reason: any}) => {
               
               if(auth_status !== '') {
-                auth_status_real = auth_status;
+                auth_status_val = auth_status;
               }
 
               if(order_seq == 1) {
@@ -212,15 +215,18 @@ export const SecondAuth = () => {
               } else if(order_seq == 3) {
                 filePath03 = findSourcePath(img_file_path);
               }
-            });
 
-            console.log('filePath01 ::::::::: ' , filePath01);
+              if(return_reason !== '') {
+                return_reason_val = return_reason;
+              }
+            });
 
             setFilePathData({
               filePath01: filePath01
               , filePath02: filePath02
               , filePath03: filePath03
-              , auth_status: auth_status_real
+              , auth_status: auth_status_val
+              , return_reason: return_reason_val
             });
 
             if(type === 'JOB') { job_modalizeRef.current?.open();
@@ -446,6 +452,7 @@ export const SecondAuth = () => {
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
           auth_status={filePathData.auth_status}
+          return_reason={filePathData.return_reason}
         />
       </Modalize>
 
@@ -466,6 +473,7 @@ export const SecondAuth = () => {
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
           auth_status={filePathData.auth_status}
+          return_reason={filePathData.return_reason}
         />
       </Modalize>
 
@@ -487,6 +495,7 @@ export const SecondAuth = () => {
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
           auth_status={filePathData.auth_status}
+          return_reason={filePathData.return_reason}
         />
       </Modalize>
 
@@ -507,6 +516,7 @@ export const SecondAuth = () => {
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
           auth_status={filePathData.auth_status}
+          return_reason={filePathData.return_reason}
         />
       </Modalize>
 
@@ -527,6 +537,7 @@ export const SecondAuth = () => {
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
           auth_status={filePathData.auth_status}
+          return_reason={filePathData.return_reason}
         />
       </Modalize>
 
@@ -547,6 +558,7 @@ export const SecondAuth = () => {
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
           auth_status={filePathData.auth_status}
+          return_reason={filePathData.return_reason}
         />
       </Modalize>
     </>
@@ -590,17 +602,24 @@ const AuthItemRender = (dataObj:any) => {
           <Image source={imgSrc} style={styles.iconSize60} />
         </SpaceView>
 
-        {typeof data.auth_status == 'undefined' || data.auth_status == 'REFUSE' ? (
+        {typeof data.auth_status == 'undefined' ? (
           <>
-            <View style={[layoutStyle.row, _styles.levelArea, {backgroundColor: '#697AE6'}]}>
+            <View style={[layoutStyle.row, _styles.levelArea(data.auth_status), {backgroundColor: '#697AE6'}]}>
               <CommonText 
                 type={'h7'} 
                 fontWeight={'500'} 
                 color={ColorType.white}>미인증</CommonText>
             </View>
           </>
+        ) : data.auth_status == 'REFUSE'  ? (
+          <View style={[layoutStyle.row, _styles.levelArea(data.auth_status), {backgroundColor: ColorType.redF20456}]}>
+              <CommonText 
+                type={'h7'} 
+                fontWeight={'500'} 
+                color={ColorType.white}>반려</CommonText>
+            </View>
         ) : data.auth_level !== '' && typeof data.auth_level !== 'undefined' && (
-          <View style={[layoutStyle.row, _styles.levelArea]}>
+          <View style={[layoutStyle.row, _styles.levelArea(data.auth_status)]}>
             <CommonText 
               type={'h7'} 
               fontWeight={'700'} 
@@ -647,14 +666,16 @@ const AuthItemRender = (dataObj:any) => {
 ####################################################################################################### */}
 
 const _styles = StyleSheet.create({
-  levelArea: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    borderWidth: 1,
-    borderColor: '#697AE6',
-    borderRadius: 5,
-    paddingHorizontal: 10,
+  levelArea: (status: string) => {
+    return {
+      position: 'absolute',
+      top: 10,
+      right: 10,
+      borderWidth: status === 'REFUSE' ? 0 : 1,
+      borderColor: '#697AE6',
+      borderRadius: 5,
+      paddingHorizontal: 10,
+    };
   },
   statusArea: {
     position: 'absolute',

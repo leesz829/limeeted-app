@@ -21,6 +21,7 @@ export const send = (
     try {
       const endPoint = api_domain + url;
       const token = await AsyncStorage.getItem(storeKey.JWT_TOKEN);
+      const push_token = await AsyncStorage.getItem(storeKey.FCM_TOKEN);
       // const member_seq = await AsyncStorage.getItem(storeKey.MEMBER_SEQ);
       let config: AxiosRequestConfig = {
         url: endPoint,
@@ -51,6 +52,7 @@ export const send = (
           ...config,
           headers: {
             'jwt-token': token,
+            //'push-token': push_token ? push_token : '',
             'Content-Type': contentType,
           },
         };

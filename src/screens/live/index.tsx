@@ -238,7 +238,7 @@ export const Live = () => {
         setIsEmpty(false);
       };
     }, []),
-  )
+  );
 
   return isLoad ? (
     <>

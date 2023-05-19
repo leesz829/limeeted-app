@@ -254,14 +254,17 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
     }
   };
 
+  const toggleModal = () => {
+    closeModal();
+  };
+
   return (
     <>
       <Modal isVisible={isVisible} 
               style={modalStyleProduct.modal}
-              onRequestClose={() => {
-                closeModal();
-                console.log("modal appearance")
-              }}>
+              onSwipeComplete={toggleModal}
+              swipeDirection="down" // 아래 방향으로 스와이프
+              onRequestClose={() => { closeModal(); }}>
 
         <View style={modalStyleProduct.root}>
           <View style={modalStyleProduct.closeContainer}>

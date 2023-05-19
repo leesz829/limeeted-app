@@ -40,10 +40,11 @@ interface Props {
       type: string,
       list: any
   ) => void;
-  filePath01: string
-  filePath02: string
-  filePath03: string
-  auth_status: string
+  filePath01?: string
+  filePath02?: string
+  filePath03?: string
+  auth_status?: string
+  return_reason?: string
 }
 
 export const SecondAuthPopup = (props: Props) => {
@@ -248,8 +249,6 @@ export const SecondAuthPopup = (props: Props) => {
 
   return (
     <>
-      
-
 
       {/* ######################### header */}
       <View style={[modalStyle.modalHeaderContainer]}>
@@ -325,7 +324,8 @@ export const SecondAuthPopup = (props: Props) => {
                   isAuth={true}
                   plusBtnType={'02'}
                   callbackFn={fileCallBackFn01}
-                  uriParam={props.auth_status == 'PROGRESS' && props.filePath01}
+                  uriParam={(props.auth_status == 'PROGRESS') && props.filePath01}
+                  auth_status={props.auth_status}
                 />
               </View>
               <View style={[commonStyle.mr10, commonStyle.ml10]}>
@@ -333,7 +333,8 @@ export const SecondAuthPopup = (props: Props) => {
                   isAuth={true}
                   plusBtnType={'02'}
                   callbackFn={fileCallBackFn02}
-                  uriParam={props.auth_status == 'PROGRESS' && props.filePath02}
+                  uriParam={(props.auth_status == 'PROGRESS') && props.filePath02}
+                  auth_status={props.auth_status}
                 />
               </View>
               <View>
@@ -341,11 +342,34 @@ export const SecondAuthPopup = (props: Props) => {
                   isAuth={true}
                   plusBtnType={'02'}
                   callbackFn={fileCallBackFn03}
-                  uriParam={props.auth_status == 'PROGRESS' && props.filePath03}
+                  uriParam={(props.auth_status == 'PROGRESS') && props.filePath03}
+                  auth_status={props.auth_status}
                 />
               </View>
             </View>
           </SpaceView>
+
+          {/* ####################################################### 반려 사유 안내 영역 */}
+          {props.auth_status == 'REFUSE' && props.return_reason != '' && typeof props.return_reason != 'undefined' &&
+            <SpaceView mb={24}>
+              <SpaceView mb={16} viewStyle={layoutStyle.row}>
+                <Image source={ICON.confirmation} style={[styles.iconSize20, {marginTop: 3}]} />
+                <CommonText 
+                  color={ColorType.blue697A}
+                  fontWeight={'700'}
+                  textStyle={{marginLeft: 5, textAlignVertical: 'center'}}>반려 사유 안내</CommonText>
+              </SpaceView>
+
+              <SpaceView mb={12} viewStyle={_styles.refuseArea}>
+                <CommonText
+                  color={'#848484'} 
+                  fontWeight={'500'}
+                  lineHeight={17}
+                  type={'h6'}
+                  textStyle={{marginTop: 4}}>{props.return_reason}</CommonText>
+              </SpaceView>
+            </SpaceView>
+          }
 
           <SpaceView mb={24}>
             <SpaceView mb={16} viewStyle={layoutStyle.row}>
@@ -655,7 +679,6 @@ export const SecondAuthPopup = (props: Props) => {
                 </>
               )}
 
-
             </SpaceView>
           </SpaceView>
         </SpaceView>
@@ -761,4 +784,12 @@ const _styles = StyleSheet.create({
     width: '60%',
     paddingVertical: 5,
   },
+  refuseArea: {
+    backgroundColor: '#F4F4F4',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 8,
+    minHeight: 100,
+  },
+
 })

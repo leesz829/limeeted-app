@@ -111,14 +111,18 @@ export const Signup02 = (props: Props) => {
   const [isDelImgData, setIsDelImgData] = React.useState<any>({
     img_seq: '',
     order_seq: '',
+    status: '',
+    return_reason: '',
   });
 
   // ############################################################################# 사진 삭제 팝업
   const imgDel_modalizeRef = useRef<Modalize>(null);
-  const imgDel_onOpen = (img_seq: any, order_seq: any) => {
+  const imgDel_onOpen = (imgData: any, order_seq: any) => {
     setIsDelImgData({
-      img_seq: img_seq,
+      img_seq: imgData.member_img_seq,
       order_seq: order_seq,
+      status: imgData.status,
+      return_reason: imgData.return_reason,
     });
     imgDel_modalizeRef.current?.open();
   };
@@ -187,12 +191,12 @@ export const Signup02 = (props: Props) => {
           case SUCCESS:
             if (null != data.imgList) {
               let imgData: any = {
-                orgImgUrl01: { memer_img_seq: '', url: '', delYn: '', status: '', },
-                orgImgUrl02: { memer_img_seq: '', url: '', delYn: '', status: '', },
-                orgImgUrl03: { memer_img_seq: '', url: '', delYn: '', status: '', },
-                orgImgUrl04: { memer_img_seq: '', url: '', delYn: '', status: '', },
-                orgImgUrl05: { memer_img_seq: '', url: '', delYn: '', status: '', },
-                orgImgUrl06: { memer_img_seq: '', url: '', delYn: '', status: '', },
+                orgImgUrl01: { memer_img_seq: '', url: '', delYn: '', status: '', return_reason: '', },
+                orgImgUrl02: { memer_img_seq: '', url: '', delYn: '', status: '', return_reason: '', },
+                orgImgUrl03: { memer_img_seq: '', url: '', delYn: '', status: '', return_reason: '', },
+                orgImgUrl04: { memer_img_seq: '', url: '', delYn: '', status: '', return_reason: '', },
+                orgImgUrl05: { memer_img_seq: '', url: '', delYn: '', status: '', return_reason: '', },
+                orgImgUrl06: { memer_img_seq: '', url: '', delYn: '', status: '', return_reason: '', },
               };
 
               data?.imgList?.map(
@@ -201,17 +205,20 @@ export const Signup02 = (props: Props) => {
                   img_file_path,
                   order_seq,
                   status,
+                  return_reason,
                 }: {
                   member_img_seq: any;
                   img_file_path: any;
                   order_seq: any;
                   status: any;
+                  return_reason: any;
                 }) => {
                   let data = {
                     member_img_seq: member_img_seq,
                     url: findSourcePath(img_file_path),
                     delYn: 'N',
                     status: status,
+                    return_reason: return_reason,
                   };
                   if (order_seq == 1) {
                     imgData.orgImgUrl01 = data;
@@ -334,7 +341,7 @@ export const Signup02 = (props: Props) => {
             imgData.orgImgUrl01.delYn == 'N' ? (
               <TouchableOpacity
                 onPress={() => {
-                  imgDel_onOpen(imgData.orgImgUrl01.member_img_seq, 1);
+                  imgDel_onOpen(imgData.orgImgUrl01, 1);
                 }}>
                 <Image
                   resizeMode="cover"
@@ -366,7 +373,7 @@ export const Signup02 = (props: Props) => {
             imgData.orgImgUrl02.delYn == 'N' ? (
               <TouchableOpacity
                 onPress={() => {
-                  imgDel_onOpen(imgData.orgImgUrl02.member_img_seq, 2);
+                  imgDel_onOpen(imgData.orgImgUrl02, 2);
                 }}>
                 <Image
                   resizeMode="cover"
@@ -398,7 +405,7 @@ export const Signup02 = (props: Props) => {
             imgData.orgImgUrl03.delYn == 'N' ? (
               <TouchableOpacity
                 onPress={() => {
-                  imgDel_onOpen(imgData.orgImgUrl03.member_img_seq, 3);
+                  imgDel_onOpen(imgData.orgImgUrl03, 3);
                 }}>
                 <Image
                   resizeMode="cover"
@@ -430,7 +437,7 @@ export const Signup02 = (props: Props) => {
             imgData.orgImgUrl04.delYn == 'N' ? (
               <TouchableOpacity
                 onPress={() => {
-                  imgDel_onOpen(imgData.orgImgUrl04.member_img_seq, 4);
+                  imgDel_onOpen(imgData.orgImgUrl04, 4);
                 }}>
                 <Image
                   resizeMode="cover"
@@ -462,7 +469,7 @@ export const Signup02 = (props: Props) => {
             imgData.orgImgUrl05.delYn == 'N' ? (
               <TouchableOpacity
                 onPress={() => {
-                  imgDel_onOpen(imgData.orgImgUrl05.member_img_seq, 5);
+                  imgDel_onOpen(imgData.orgImgUrl05, 5);
                 }}>
                 <Image
                   resizeMode="cover"
@@ -494,7 +501,7 @@ export const Signup02 = (props: Props) => {
             imgData.orgImgUrl06.delYn == 'N' ? (
               <TouchableOpacity
                 onPress={() => {
-                  imgDel_onOpen(imgData.orgImgUrl06.member_img_seq, 6);
+                  imgDel_onOpen(imgData.orgImgUrl06, 6);
                 }}>
                 <Image
                   resizeMode="cover"
@@ -645,28 +652,50 @@ export const Signup02 = (props: Props) => {
       >
         <View style={modalStyle.modalHeaderContainer}>
           <CommonText fontWeight={'700'} type={'h3'}>
-            프로필 사진 삭제
+            프로필 사진 관리
           </CommonText>
           <TouchableOpacity onPress={imgDel_onClose}>
             <Image source={ICON.xBtn} style={styles.iconSize24} />
           </TouchableOpacity>
         </View>
 
-        <View
-          style={[modalStyle.modalBody, layoutStyle.flex1, layoutStyle.mb20]}
-        >
-          <View>
+        <View style={[modalStyle.modalBody, layoutStyle.flex1, layoutStyle.mb20]}>
+          {isDelImgData.status == 'REFUSE' && isDelImgData.return_reason != null && 
+            <SpaceView mb={15}>
+              <SpaceView mb={16} viewStyle={layoutStyle.row}>
+                <Image source={ICON.confirmation} style={[styles.iconSize20, {marginTop: 3}]} />
+                <CommonText 
+                  color={ColorType.blue697A}
+                  fontWeight={'700'}
+                  textStyle={{marginLeft: 5, textAlignVertical: 'center'}}>반려 사유 안내</CommonText>
+              </SpaceView>
+
+              <SpaceView mb={12} viewStyle={_styles.refuseArea}>
+                <CommonText
+                  color={'848484'} 
+                  fontWeight={'500'}
+                  lineHeight={17}
+                  type={'h6'}
+                  textStyle={{marginTop: 4}}>{isDelImgData.return_reason}</CommonText>
+              </SpaceView>
+            </SpaceView>
+          }
+
+          <SpaceView mb={10}>
             <CommonBtn
               value={'사진 삭제'}
               type={'primary'}
               onPress={imgDelProc}
             />
+          </SpaceView>
+
+          <SpaceView>
             <CommonBtn
               value={'취소'}
-              type={'primary'}
+              type={'primary2'}
               onPress={imgDel_onClose}
             />
-          </View>
+          </SpaceView>          
         </View>
       </Modalize>
     </>
@@ -675,6 +704,11 @@ export const Signup02 = (props: Props) => {
 
 
 
+{/* #######################################################################################################
+###########################################################################################################
+##################### Style 영역
+###########################################################################################################
+####################################################################################################### */}
 
 const _styles = StyleSheet.create({
   titArea: {
@@ -793,4 +827,12 @@ const _styles = StyleSheet.create({
     marginTop: 10,
     marginRight: 10,
   },
+  refuseArea: {
+    backgroundColor: '#F4F4F4',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 8,
+    minHeight: 100,
+  },
+
 });

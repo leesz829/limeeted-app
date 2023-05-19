@@ -1048,36 +1048,44 @@ function RedDot() {
 
 function RatingCard({ title, desc, value, preScore, isPennding }) {
 
+  //value = 0.0; //
+
   return (
     <View style={ratingCard.cardStyle}>
       <Text style={ratingCard.cardTitle}>{title}</Text>
 
       <View style={ratingCard.middleBox}>
-        {typeof preScore != 'undefined' && preScore != null && preScore != 0.0 &&
+        {/* {typeof preScore != 'undefined' && preScore != null && preScore != 0.0 &&
           <View style={ratingCard.preScoreArea}><Text style={ratingCard.preScoreText}>지난 평점 {preScore}</Text></View>
-        }
+        } */}
 
-        <Text style={isPennding ? ratingCard.pendingText : ratingCard.ratingText}>
-          {value}
-        </Text>
+        <SpaceView mb={15}>
+          <Text style={isPennding ? ratingCard.pendingText : ratingCard.ratingText}>
+            {isPennding ? preScore : value}
+          </Text>
+        </SpaceView>
         {isPennding ? (
           <>
-            <Slider
-              value={value / 10}
-              animateTransitions={false}
-              renderThumbComponent={() => null}
-              maximumTrackTintColor={'#8854d2'}
-              minimumTrackTintColor={'#8854d2'}
-              containerStyle={ratingCard.sliderContainer}
-              trackStyle={ratingCard.sliderTrack}
-              trackClickable={false}
-              disabled
-            />
-            <View style={ratingCard.gageContainer}>
-              <Text style={ratingCard.gageText}>0</Text>
-              <Text style={ratingCard.gageText}>5</Text>
-              <Text style={ratingCard.gageText}>10</Text>
-            </View>
+              <View style={[ratingCard.scoreContainer, { left: value == 0 ? -10 : value * 10 - 15 + '%' }]}>
+                <Text style={ratingCard.scoreText}>{value}</Text>
+                <View style={ratingCard.triangle}></View>
+              </View>
+              <Slider
+                value={value / 10}
+                animateTransitions={false}
+                renderThumbComponent={() => null}
+                maximumTrackTintColor={'#8854d2'}
+                minimumTrackTintColor={'#8854d2'}
+                containerStyle={ratingCard.sliderContainer}
+                trackStyle={ratingCard.sliderTrack}
+                trackClickable={false}
+                disabled
+              />
+              <View style={ratingCard.gageContainer}>
+                <Text style={ratingCard.gageText}>0</Text>
+                <Text style={ratingCard.gageText}>5</Text>
+                <Text style={ratingCard.gageText}>10</Text>
+              </View>
           </>
         ) : (
           <Rating
@@ -1204,4 +1212,40 @@ const ratingCard = StyleSheet.create({
     borderColor: '#FE0456',
     overflow: 'hidden',
   },
+  profileScoreContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  scoreContainer: {
+    position: 'absolute',
+    transform: [{ translateY: 15 }], // 수직 중앙 정렬을 위한 translateY
+    alignItems: 'center',
+  },
+  scoreText: {
+    backgroundColor: '#151515',
+    color: ColorType.white,
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 10,
+    fontWeight: 'bold',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+    borderWidthBottom: 1,
+    borderBottomColor: '#151515',
+  },
+  triangle: {
+    marginTop: -2,
+    width: 0,
+    height: 0,
+    backgroundColor: 'transparent',
+    borderStyle: 'solid',
+    borderLeftWidth: 5,
+    borderRightWidth: 5,
+    borderBottomWidth: 5,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderBottomColor: '#151515',
+    transform: [{ rotate: '180deg' }],
+  }
 });

@@ -3,7 +3,7 @@ import { CommonBtn } from 'component/CommonBtn';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
-import { View, Image } from 'react-native';
+import { View, Image, StyleSheet } from 'react-native';
 import { IMAGE, PROFILE_IMAGE, ICON } from 'utils/imageUtils';
 import { RouteProp, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -72,22 +72,23 @@ export const Approval = (props: Props) => {
           {accessType == 'REFUSE' ? (
             <>
               <View style={commonStyle.mb15}>
-                <CommonText textStyle={layoutStyle.textCenter} type={'h3'} fontWeight={'500'}>
-                  가입 승인 부적격 안내
-                </CommonText>
+                <CommonText textStyle={layoutStyle.textCenter} type={'h3'} fontWeight={'700'}>심사 결과</CommonText>
+                <SpaceView mt={5}>
+                  <CommonText textStyle={layoutStyle.textCenter} type={'h3'} fontWeight={'700'} color={ColorType.primary}>반려</CommonText>
+                </SpaceView>
               </View>
               <View style={commonStyle.mb15}>
-                <CommonText textStyle={layoutStyle.textCenter} type={'h5'} color={'#6E6E6E'}>
-                  정성스레 작성해주신 프로필에 심사기준에{'\n'}
-                  맞지 않는 사항이 있어 프로필 수정을 요청드려요.{'\n'}
-                  반려사유를 확인하여 프로필을 수정해주세요.
+                <CommonText textStyle={_styles.refuseText} type={'h5'} color={'#6E6E6E'}>
+                  심사 진행 결과 아쉽게도 반려되었음을 안내드립니다.{'\n'}
+                  아래 '프로필 수정하기'를 메뉴에 반려 사유 확인 및{'\n'}
+                  재심사 요청을 해주시면 재심사가 진행됩니다.
                 </CommonText>
               </View>
-              <View>
+              {/* <View>
                 <CommonText textStyle={layoutStyle.textCenter} type={'h5'}>
                   반려사유 : {getRefuseData().text}
                 </CommonText>
-              </View>
+              </View> */}
             </>
           ) : (
             <>
@@ -137,3 +138,18 @@ export const Approval = (props: Props) => {
     </View>
   );
 };
+
+
+{/* #######################################################################################################
+###########################################################################################################
+##################### Style 영역
+###########################################################################################################
+####################################################################################################### */}
+
+const _styles = StyleSheet.create({
+  refuseText: {
+    textAlign: 'center',
+    fontFamily: 'AppleSDGothicNeoM00',
+    lineHeight: 20,
+  }
+});

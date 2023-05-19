@@ -7,6 +7,7 @@ import { ICON } from 'utils/imageUtils';
 import { CommonBtn } from './CommonBtn';
 import { CommonText } from 'component/CommonText';
 import SpaceView from './SpaceView';
+import { STACK } from 'constants/routes';
 
 
 const { width } = Dimensions.get('window');
@@ -27,7 +28,11 @@ export default function ProfileAuth({ level, data, isButton }) {
         {typeof isButton != 'undefined' && isButton && 
           <SpaceView viewStyle={{flexDirection: `row`, alignItems: `center`, justifyContent: `center`,}}>
             <TouchableOpacity 
-              onPress={() => { navigation.navigate('SecondAuth'); }} 
+              onPress={() => { 
+                navigation.navigate(STACK.COMMON, {
+                  screen: 'SecondAuth',
+                });
+              }} 
               style={{marginTop: 1, borderWidth:1, borderColor: '#C7C7C7', borderRadius: 7, paddingHorizontal: 5}}>
               <CommonText 
                 type={'h6'} 

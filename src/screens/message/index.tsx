@@ -13,6 +13,9 @@ import TopNavigation from 'component/TopNavigation';
 import { CommonText } from 'component/CommonText';
 import { ICON } from 'utils/imageUtils';
 import { Color } from 'assets/styles/Color';
+import SpaceView from 'component/SpaceView';
+import { CommonBtn } from 'component/CommonBtn';
+import { STACK } from 'constants/routes';
 
 
 /* ################################################################################################################
@@ -21,12 +24,16 @@ import { Color } from 'assets/styles/Color';
 ###################################################################################################################
 ################################################################################################################ */
 
+const { width, height } = Dimensions.get('window');
+
 interface Props {
 	navigation: StackNavigationProp<BottomParamList, 'Message'>;
 	route: RouteProp<BottomParamList, 'Message'>;
 }
 
 export const Message = (props: Props) => {
+	const navigation = useNavigation<ScreenNavigationProp>();
+
 	const [messageList, setMessageList] = React.useState<any>([]);
 	const [activeIndex, setActiveIndex] = React.useState(-1);
 
@@ -68,6 +75,25 @@ export const Message = (props: Props) => {
 		}
 	};
 
+	// ############################################# 바로가기 이동 함수
+	const goLink = async (type:any) => {
+		if(type == 'MSG_TP_02' || type == 'MSG_TP_03' || type == 'MSG_TP_10' || type == 'MSG_TP_14') {
+			navigation.navigate(STACK.TAB, { screen: 'Roby' });
+		} else if(type == 'MSG_TP_04' || type == 'MSG_TP_05') {
+			navigation.navigate(STACK.COMMON, { screen: 'SecondAuth' });
+		} else if(type == 'MSG_TP_06' || type == 'MSG_TP_07') {
+			navigation.navigate(STACK.COMMON, { screen: 'Profile1' });
+		} else if(type == 'MSG_TP_08' || type == 'MSG_TP_09') {
+			navigation.navigate(STACK.COMMON, {
+				screen: 'Storage',
+				params: {
+				  headerType: 'common',
+				  pageIndex: 0,
+				},
+			});
+		}
+	};
+
 
 	// ############################################################################# 최초 실행
 	React.useEffect(() => {
@@ -86,6 +112,7 @@ export const Message = (props: Props) => {
 						contents,
 						template_type,
 						reg_dt,
+						msg_type,
 					}: {
 						msg_send_seq: any;
 						msg_type_name: string;
@@ -93,6 +120,7 @@ export const Message = (props: Props) => {
 						contents: string;
 						template_type: string;
 						reg_dt: string;
+						msg_type: string;
 					}) => (
 
 						<View key={msg_send_seq} style={{marginBottom: 10}}>
@@ -116,10 +144,33 @@ export const Message = (props: Props) => {
 
 							{activeIndex === msg_send_seq && (
 								<View style={_styles.descContainer}>
-									<CommonText textStyle={_styles.descText} type={'h5'}>{contents}</CommonText>
+									<View style={_styles.descText}>
+										<CommonText type={'h5'}>{contents}</CommonText>
 
-									{template_type === 'AUTO_SEND' && 
-										<CommonText textStyle={_styles.dateText} type={'h5'}>{reg_dt}</CommonText>
+										{template_type === 'AUTO_SEND' && 
+											<View style={_styles.dateArea}>
+												<CommonText textStyle={_styles.dateText} type={'h5'}>{reg_dt}</CommonText>
+											</View>
+										}
+									</View>
+
+									{(
+										msg_type == 'MSG_TP_02' || msg_type == 'MSG_TP_03' || msg_type == 'MSG_TP_04' || msg_type == 'MSG_TP_05' 
+										|| msg_type == 'MSG_TP_06' || msg_type == 'MSG_TP_07' || msg_type == 'MSG_TP_08' || msg_type == 'MSG_TP_09'
+										|| msg_type == 'MSG_TP_10' || msg_type == 'MSG_TP_14'
+									) &&
+										<SpaceView mt={10}>
+											<CommonBtn 
+												value={'바로가기'} 
+												type={'gray2'}
+												width={'100%'}
+												height={35}
+												fontSize={13}
+												borderRadius={5}
+												onPress={() => {
+													goLink(msg_type);
+												}} />
+										</SpaceView>
 									}
 								</View>
 							)}
@@ -187,9 +238,10 @@ const _styles = StyleSheet.create({
 		paddingHorizontal: 15,
 		paddingVertical: 20,
 	},
+	dateArea: {
+		marginTop: 20,
+	},
 	dateText: {
 		textAlign: 'right',
-		paddingHorizontal: 15,
-		marginTop: 5,
-	}
+	},
   });

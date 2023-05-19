@@ -98,7 +98,9 @@ export type StackParamList = {
     type: string;
   };
   ItemMatching: undefined;
-  PreviewProfileImage: undefined;
+  ImagePreview: {
+    imgList: []
+  };
 };
 
 export type BottomParamList = {

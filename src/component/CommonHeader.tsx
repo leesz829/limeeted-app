@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useCallback } from 'react';
 import { Image, View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { StackScreenProp } from '@types';
-import { ICON } from 'utils/imageUtils';
+import { ICON, IMAGE } from 'utils/imageUtils';
 import { Color } from 'assets/styles/Color';
 import { Wallet } from './TopNavigation';
 import { commonStyle } from 'assets/styles/Styles';
@@ -14,6 +14,7 @@ export type NavigationHeaderProps = {
   containerStyle?: any;
   backIcon?: any;
   walletTextStyle?: any;
+  isLogoType?: any;
 };
 
 /**
@@ -26,6 +27,7 @@ function CommonHeader({
   containerStyle,
   backIcon,
   walletTextStyle,
+  isLogoType,
 }: NavigationHeaderProps) {
   const navigation = useNavigation<StackScreenProp>();
   const goHome = useCallback(() => {
@@ -40,26 +42,38 @@ function CommonHeader({
   }, [navigation]);
 
   return (
-    <View style={{ ...styles.headerContainer, ...containerStyle, zIndex: 1 }}>
-      <TouchableOpacity
-        onPress={goHome}
-        style={styles.backContainer}
-        hitSlop={commonStyle.hipSlop10}
-      >
-        <Image source={backIcon || ICON.back} style={styles.backImg} />
-      </TouchableOpacity>
+    <>
+      {isLogoType ? (
+        <>
+          <View style={{ ...styles.headerLogoContainer}}>
+            <Image source={IMAGE.logoBanner} resizeMode={'cover'} style={{width: '100%', height: 43}} />
+          </View>
+        </>
+      ) : (
+        <>
+          <View style={{ ...styles.headerContainer, ...containerStyle, zIndex: 1 }}>
+            <TouchableOpacity
+              onPress={goHome}
+              style={styles.backContainer}
+              hitSlop={commonStyle.hipSlop10}
+            >
+              <Image source={backIcon || ICON.back} style={styles.backImg} />
+            </TouchableOpacity>
 
-      {title && (
-        <TouchableOpacity
-          style={{ flex: 1 }}
-          onPress={goHome}
-          hitSlop={commonStyle.hipSlop10}
-        >
-          <Text style={styles.titleStyle}>{title}</Text>
-        </TouchableOpacity>
+            {title && (
+              <TouchableOpacity
+                style={{ flex: 1 }}
+                onPress={goHome}
+                hitSlop={commonStyle.hipSlop10}
+              >
+                <Text style={styles.titleStyle}>{title}</Text>
+              </TouchableOpacity>
+            )}
+            <View>{right || <Wallet textStyle={walletTextStyle} />}</View>
+          </View>
+        </>
       )}
-      <View>{right || <Wallet textStyle={walletTextStyle} />}</View>
-    </View>
+    </>
   );
 }
 
@@ -80,6 +94,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  headerLogoContainer: {
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   backImg: {
     width: 16,
