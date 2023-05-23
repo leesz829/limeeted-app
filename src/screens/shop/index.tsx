@@ -23,7 +23,7 @@ import {
   getAvailablePurchases,
 } from 'react-native-iap';
 import { get_banner_list, purchase_product } from 'api/models';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation, useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 import * as properties from 'utils/properties';
 import * as hooksMember from 'hooks/member';
@@ -77,6 +77,15 @@ export const Shop = () => {
     };
     getBanner();
   }, []);
+
+  /* useFocusEffect(
+    React.useCallback(() => {
+      
+      return async() => {
+        
+      };
+    }, []),
+  ); */
 
   return (
     <>

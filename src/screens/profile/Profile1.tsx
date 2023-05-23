@@ -623,6 +623,7 @@ export const Profile1 = (props: Props) => {
                 />
                 {imgData.orgImgUrl01.url != '' && (imgData.orgImgUrl01.status == 'PROGRESS' || imgData.orgImgUrl01.status == 'REFUSE') && (
                   <View style={_styles.disabled}>
+                    {/* <View style={_styles.disableArea}></View> */}
                     {imgData.orgImgUrl01.status == 'PROGRESS' ? (
                       <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
                     ) : imgData.orgImgUrl01.status == 'REFUSE' && (
@@ -1082,11 +1083,14 @@ const _styles = StyleSheet.create({
     width: (width - 60) / 3,
     height: (width - 57) / 3,
     borderRadius: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'flex-end',
     overflow: 'hidden',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  disableArea: {
+    opacity: 0.7,
   },
   profileContainer: {
     backgroundColor: Color.grayF8F8,

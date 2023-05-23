@@ -3,7 +3,7 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ICON } from 'utils/imageUtils';
 
 import { Slider } from '@miblanchard/react-native-slider';
-import { useNavigation, useRoute, useIsFocused } from '@react-navigation/native';
+import { useNavigation, useRoute, useIsFocused, useFocusEffect } from '@react-navigation/native';
 import { ColorType, ScreenNavigationProp } from '@types';
 import { Color } from 'assets/styles/Color';
 import { ROUTES, STACK } from 'constants/routes';

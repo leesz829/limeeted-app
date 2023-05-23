@@ -1,7 +1,8 @@
-import { View, Image, StyleSheet } from 'react-native';
+import { View, Image, StyleSheet, Text } from 'react-native';
 import { findSourcePath, ICON } from 'utils/imageUtils';
 import * as React from 'react';
 import { useProfileImg } from 'hooks/useProfileImg';
+import { useUserInfo } from 'hooks/useUserInfo';
 
 const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
   switch (name) {
@@ -31,11 +32,19 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
       }
     }
     case 'Message': {
-      if (isFocused) {
-        return <Image style={_style.iconSize} source={ICON.mailboxOn} />;
-      } else {
-        return <Image style={_style.iconSize} source={ICON.mailbox} />;
-      }
+      const memberBase = useUserInfo();
+
+      return (
+        <>
+          {
+            isFocused ? <Image style={_style.iconSize} source={ICON.mailboxOn} /> : 
+            <Image style={_style.iconSize} source={ICON.mailbox} />
+          }
+          {memberBase?.msg_cnt != null && typeof memberBase?.msg_cnt != 'undefined' && memberBase?.msg_cnt > 0 &&
+            <View style={_style.iconArea}><Text style={_style.newText}>{memberBase?.msg_cnt}</Text></View>
+          }
+        </>
+      );
     }
     case 'Storage': {
       if (isFocused) {
@@ -67,4 +76,18 @@ const _style = StyleSheet.create({
       overflow: 'hidden',
     };
   },
+  iconArea: {
+    position: 'absolute',
+    top: -7,
+    right: 23,
+  },
+  newText: {
+    backgroundColor: '#FF7E8C',
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 11,
+    color: '#fff',
+    borderRadius: 20,
+    paddingHorizontal: 9,
+    paddingVertical: 1,
+  }
 });

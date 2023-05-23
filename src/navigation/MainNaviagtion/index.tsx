@@ -11,7 +11,6 @@ const MainStack = createStackNavigator();
 
 const MainStackNavigation = () => {
   const isLogin = useIsLogedin();
-  console.log('isLogin : ', isLogin);
   return (
     <MainStack.Navigator
       // initialRouteName={isLogin ? STACK.TAB : STACK.AUTH}

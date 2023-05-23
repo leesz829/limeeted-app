@@ -142,7 +142,7 @@ export const IMAGE = {
   robyMaleImg: require('assets/img/roby_male_img.png'),
   royalpassImg: require('assets/img/royalpass_img.png'),
   passImg: require('assets/img/pass_img.png'),
-  logoBanner: require('assets/img/logo_banner.png'),
+  logoBanner: require('assets/img/logo_banner.jpg'),
 };
 
 export const START_IMAGE = {

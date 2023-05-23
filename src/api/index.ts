@@ -43,7 +43,7 @@ export const send = (
           data: body,
         };
       }
-      console.log('token', token, 'isAuth : ', isAuth);
+      
       // 토큰이 있는경우
       if (isAuth && token) {
         // YahooClient.defaults.headers.common['Authorization'] = '';

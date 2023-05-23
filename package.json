@@ -16,7 +16,11 @@
     "codepushKey": "appcenter codepush deployment list --app limeeted/LImeetED-ios -k && appcenter codepush deployment list --app limeeted/LImeetED-android -k",
     "depoloyStatus": "appcenter codepush deployment list -a limeeted/LImeetED-android && appcenter codepush deployment list -a limeeted/LImeetED-ios",
     "depoloyStage": "appcenter codepush release-react -a limeeted/LImeetED-ios -d Staging && appcenter codepush release-react -a limeeted/LImeetED-android -d Staging",
-    "depoloyProd": "appcenter codepush release-react -a limeeted/LImeetED-ios -d Production && appcenter codepush release-react -a limeeted/LImeetED-android -d Production"
+    "depoloyProd": "appcenter codepush release-react -a limeeted/LImeetED-ios -d Production && appcenter codepush release-react -a limeeted/LImeetED-android -d Production",
+    "depoloyStageAOS": "appcenter codepush release-react -a limeeted/LImeetED-android -d Staging",
+    "depoloyStageIOS": "appcenter codepush release-react -a limeeted/LImeetED-ios -d Staging",
+    "depoloyProdAOS": "appcenter codepush release-react -a limeeted/LImeetED-android -d Production",
+    "depoloyProdIOS": "appcenter codepush release-react -a limeeted/LImeetED-ios -d Production"
   },
   "dependencies": {
     "@invertase/react-native-apple-authentication": "2.2.2",

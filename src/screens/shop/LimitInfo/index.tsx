@@ -15,11 +15,11 @@ import { ICON } from 'utils/imageUtils';
 const DATA = [
   {
     condition: 'LIVE 투표 횟수',
-    amount: '작음',
+    amount: '적음',
   },
   {
-    condition: ' 관심 보내기',
-    amount: '조금 작음',
+    condition: '관심 보내기',
+    amount: '조금 적음',
   },
   {
     condition: '받은 관심 수락',

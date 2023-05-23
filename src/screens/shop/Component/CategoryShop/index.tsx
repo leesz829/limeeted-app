@@ -13,7 +13,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import ProductModal from '../ProductModal';
-import { CommaFormat } from 'utils/functions';
+import { CommaFormat, formatNowDate } from 'utils/functions';
 import {
   initConnection,
   getProducts,
@@ -27,9 +27,11 @@ import {
 } from 'react-native-iap';
 import { findSourcePath, ICON } from 'utils/imageUtils';
 import { usePopup } from 'Context';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { ROUTES, STACK } from 'constants/routes';
 import { CommonLoading } from 'component/CommonLoading';
+import AsyncStorage from '@react-native-community/async-storage';
+import { ColorType } from '@types';
 
 
 interface Props {
@@ -177,50 +179,41 @@ export default function CategoryShop({ loadingFunc }) {
     fetch();
   }, []);
 
-  // ########################################################### 카테고리 상품 조회 useEffect
-  useEffect(() => {
-    loadingFunc(true);
-    async function fetch() {
-      const body = { item_type_code: selectedCategory.value };
-      const { success, data } = await get_bm_product(body);
-      if (success) {
-        let _products = data?.item_list;
-        /* data?.item_list.map((item: any) => {
-          console.log('item ::::: ', item);
-
-          let product = {};
-          product.name = item.item_name;
-          product.description = item.item_contents;
-          //product.productId = item.item_code;
-          product.productId = 'cash_100';
-          product.productType = 'inapp';
-          product.title = item.item_name;
-
-          let details = {};
-          details.formattedPrice = CommaFormat(item?.shop_buy_price);
-          details.priceAmountMicros = item?.shop_buy_price || '00000';
-          details.priceCurrencyCode = 'KRW';
-
-          product.oneTimePurchaseOfferDetails = details;
-
-          _products.push(product);
-        });     */
-
-        setProductsPass(_products);
-        //console.log(JSON.stringify(data));
-        //setItems(data?.item_list);
-
-        loadingFunc(false);
-      } else {
-        loadingFunc(false);
-      }
-    }
-    fetch();
-  }, [selectedCategory]);
+  // ########################################################### 카테고리 상품 페이지 로드 실행 함수
+  useFocusEffect(
+    React.useCallback(() => {
+      async function fetch() {
+        onPressCategory(categories[0]);
+        await AsyncStorage.setItem('SHOP_CONNECT_DT', formatNowDate());
+      };
+      fetch();
+      return async() => {
+      };
+    }, []),
+  );
 
   // ######################################################### 카테고리 선택 함수
-  const onPressCategory = (value) => {
-    setSelectedCategory(value);
+  const onPressCategory = async(category:any) => {
+    setSelectedCategory(category);
+    loadingFunc(true);
+
+    const body = { item_type_code: category.value };
+    const { success, data } = await get_bm_product(body);
+    if (success) {
+      let _products = data?.item_list;
+
+      const connectDate = await AsyncStorage.getItem('SHOP_CONNECT_DT');
+
+      _products.map((item: any) => {
+        item.connect_date = connectDate;
+      });
+
+      setProductsPass(_products);
+
+      loadingFunc(false);
+    } else {
+      loadingFunc(false);
+    }    
   };
 
   // ######################################################### 상품상세 팝업 활성화 함수
@@ -236,20 +229,17 @@ export default function CategoryShop({ loadingFunc }) {
 
   return (
     <>
-      <ScrollView style={styles.container}>
-        {/* {isPayLoading && <CommonLoading />} */}
-
-        <View style={styles.categoriesContainer}>
+      <ScrollView style={_styles.container}>
+        <View style={_styles.categoriesContainer}>
           {categories?.map((item, index) => (
             <TouchableOpacity
               key={`category-${item.value}-${index}`}
               activeOpacity={0.8}
-              style={styles.categoryBorder(item.value === selectedCategory.value)}
-              onPress={() => onPressCategory(item)}
-            >
+              style={_styles.categoryBorder(item.value === selectedCategory.value)}
+              onPress={() => onPressCategory(item)}>
+
               <Text
-                style={styles.categoryText(item.value === selectedCategory.value)}
-              >
+                style={_styles.categoryText(item.value === selectedCategory.value)}>
                 {item?.label}
               </Text>
             </TouchableOpacity>
@@ -278,38 +268,45 @@ export default function CategoryShop({ loadingFunc }) {
 
 // ######################################################### 상품 RenderItem
 function RenderItem({ item, openModal }) {
-  const onPressItem = () => openModal(item);
+  const isNew = (item.connect_date == null || item.connect_date < item.reg_dt) ? true : false;
 
+  const onPressItem = () => openModal(item);
   const imagePath = findSourcePath(item?.file_path + item?.file_name);
-  //const imagePath = findSourcePath(item?.full_file_url);
 
   return (
-    <TouchableOpacity style={styles.itemContainer} onPress={onPressItem}>
+    <TouchableOpacity style={_styles.itemContainer} onPress={onPressItem}>
       <View style={{ flexDirection: 'row' }}>
-        <Image
-          source={ imagePath }
-          style={styles.tumbs}
-        />
-        <View style={styles.textContainer}>
-          <Text style={styles.BESTText}>BEST</Text>
+        <View>
+          <Image
+            source={ imagePath }
+            style={_styles.tumbs}
+          />
+          {isNew &&
+            <View style={_styles.iconArea}>
+              <Text style={_styles.newText}>NEW</Text>
+            </View>
+          }
+        </View>
+        <View style={_styles.textContainer}>
+          <Text style={_styles.BESTText}>BEST</Text>
           <Text style={{ fontSize: 13, fontWeight: 'bold', color:'#363636' }}>
             {item?.item_name}
           </Text>
           <View style={{ flexDirection: 'row' }}>
-            <Text style={styles.discountRate}>
+            <Text style={_styles.discountRate}>
               {item?.discount_rate && item.discount_rate != 0 ? item.discount_rate + '%':''}
             </Text>
-            <Text style={styles.price}>
+            <Text style={_styles.price}>
               {CommaFormat(item?.shop_buy_price) + (item.money_type_code == 'PASS' ? '패스' : '원')}
             </Text>
-            <Text style={styles.originPrice}>
+            <Text style={_styles.originPrice}>
               {item?.discount_rate && item.discount_rate != 0 ? CommaFormat(item?.original_price) + (item.money_type_code == 'PASS' ? '패스' : '원') : ''}
             </Text>
           </View>
-          <View style={styles.boxWrapper}>
+          <View style={_styles.boxWrapper}>
             {
-              (item?.discount_rate && item.discount_rate != 0 ? true : false) && <View style={styles.box}>
-                <Text style={styles.boxText}>특가할인</Text>
+              (item?.discount_rate && item.discount_rate != 0 ? true : false) && <View style={_styles.box}>
+                <Text style={_styles.boxText}>특가할인</Text>
               </View>
             }
           </View>
@@ -324,7 +321,7 @@ function RenderItem({ item, openModal }) {
 ############### Style 영역
 ################################################################################################################ */}
 
-const styles = StyleSheet.create({
+const _styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
     paddingHorizontal: 16,
@@ -405,6 +402,20 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: Color.purple,
   },
+  iconArea: {
+    position: 'absolute',
+    top: 4,
+    left: 5,
+  },
+  newText: {
+    backgroundColor: '#FF7E8C',
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 11,
+    color: ColorType.white,
+    borderRadius: 20,
+    paddingHorizontal: 5,
+    paddingVertical: 3,
+  }
 });
 
 const categories = [

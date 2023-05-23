@@ -15,7 +15,8 @@ import {
   LOGIN_WAIT,
   LOGIN_EXIT,
   SANCTIONS,
-  PASSWORD_ERROR
+  PASSWORD_ERROR,
+  LOGIN_BLOCK,
 } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
 import storeKey, { JWT_TOKEN } from 'constants/storeKey';
@@ -178,6 +179,10 @@ export const Login01 = () => {
             show({ titem: '제재 알림', content: '<이용 약관>에 근거하여 회원 제재 상태로 전환되었습니다. \n' + data?.sanctions?.sanctions_msg});
             break;
 
+          case LOGIN_BLOCK:
+            show({ titem: '제재 알림', content: '<이용 약관>에 근거하여 회원 영구 제재 상태로 전환되었습니다.' });
+            break;
+
           default:
             break;
         }
@@ -228,8 +233,6 @@ export const Login01 = () => {
 
 		if(success) {
 			console.log('data :::::::: ', data);
-
-			console.log('getPackageName  ::::::: ', VersionCheck.getPackageName());
 			console.log('getCurrentVersion  ::::::: ', VersionCheck.getCurrentVersion());
 			console.log('getCurrentBuildNumber  ::::::: ', VersionCheck.getCurrentBuildNumber());
 

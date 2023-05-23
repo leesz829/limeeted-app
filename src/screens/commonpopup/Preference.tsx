@@ -377,7 +377,7 @@ export const Preference = (props: Props) => {
                       keyboardType="number-pad"
                       value={wantLocal1}
                       onChangeText={(wantLocal1) => setWantLocal1(wantLocal1)}
-                      maxLength={2}
+                      maxLength={3}
                       placeholder={'최소'}
                       placeholderTextColor={'#c6ccd3'}
                     />
@@ -389,7 +389,7 @@ export const Preference = (props: Props) => {
                       keyboardType="number-pad"
                       value={wantLocal2}
                       onChangeText={(wantLocal2) => setWantLocal2(wantLocal2)}
-                      maxLength={2}
+                      maxLength={3}
                       placeholder={'최대'}
                       placeholderTextColor={'#c6ccd3'}
                     />
