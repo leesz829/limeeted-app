@@ -68,7 +68,7 @@
          </EnvironmentVariable>
       </EnvironmentVariables>
       <StoreKitConfigurationFileReference
-         identifier = "../Pods/limeeted.storekit">
+         identifier = "../&#x1105;&#x1175;&#x1106;&#x1175;&#x1110;&#x1175;&#x1103;&#x1173; (LImeetED).storekit">
       </StoreKitConfigurationFileReference>
    </LaunchAction>
    <ProfileAction

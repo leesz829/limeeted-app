@@ -412,9 +412,10 @@ const _styles = StyleSheet.create({
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 11,
     color: ColorType.white,
-    borderRadius: 20,
-    paddingHorizontal: 5,
-    paddingVertical: 3,
+    borderRadius: 8,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    overflow: 'hidden',
   }
 });
 
