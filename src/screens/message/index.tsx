@@ -16,6 +16,8 @@ import { Color } from 'assets/styles/Color';
 import SpaceView from 'component/SpaceView';
 import { CommonBtn } from 'component/CommonBtn';
 import { STACK } from 'constants/routes';
+import { useDispatch } from 'react-redux';
+import { myProfile } from 'redux/reducers/authReducer';
 
 
 /* ################################################################################################################
@@ -33,6 +35,7 @@ interface Props {
 
 export const Message = (props: Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
+	const dispatch = useDispatch();
 
 	const [messageList, setMessageList] = React.useState<any>([]);
 	const [activeIndex, setActiveIndex] = React.useState(-1);
@@ -53,6 +56,7 @@ export const Message = (props: Props) => {
 			switch (data.result_code) {
 			  case SUCCESS:
 				setMessageList(data.message_list);
+				dispatch(myProfile());
 				break;
 			  default:
 				show({

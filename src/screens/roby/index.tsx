@@ -422,7 +422,7 @@ export const Roby = (props: Props) => {
                 <View style={_styles.profileImageWrap}>
                   <Image
                     source={{
-                      uri: properties.img_domain + mbrProfileImgList[0].img_file_path,
+                      uri: properties.img_domain + mbrProfileImgList[0]?.img_file_path,
                     }}
                     style={styles.profileImg}
                   />
