@@ -1,6 +1,6 @@
 import { NavigationContainer, useIsFocused } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { LogBox, SafeAreaView, StatusBar, StyleSheet, Alert, Linking, Platform, Modal, View, Text, PermissionsAndroid } from 'react-native';
+import { LogBox, SafeAreaView, StatusBar, StyleSheet, Alert, Linking, Platform, Modal, View, Text, PermissionsAndroid, Image, Dimensions } from 'react-native';
 import { Notifications } from 'react-native-notifications';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -25,6 +25,7 @@ import { get_app_version } from 'api/models';
 import RNExitApp from 'react-native-exit-app';
 
 import { BasePopup } from 'screens/commonpopup/BasePopup';
+import { GIF_IMG } from 'utils/imageUtils';
 
 enableScreens();
 LogBox.ignoreAllLogs();
@@ -61,8 +62,13 @@ const appVersionCheck = async () => {
 
 // ####################################### 코드푸시 업데이트 체크 함수
 const codepushVersionCheck = async () => {
-  const update = await codePush.checkForUpdate();
-  return update;
+  try {
+    const update = await codePush.checkForUpdate();
+    return update;
+  } catch (error) {
+    console.log('error :::: ' , error);
+    return null; 
+  }  
 };
 
 const codePushOptions = {
@@ -115,7 +121,7 @@ const App = () => {
       <Provider store={store}>
         <SafeAreaProvider>
           <SafeAreaView />
-          <SafeAreaView style={style.container}>
+          <SafeAreaView style={_style.container}>
             <PopupProvider>
               <StatusBar
                 animated={true}
@@ -140,6 +146,7 @@ function PreFetcher(props) {
 
   const [updateStatusCode, setUpdateStatusCode] = useState('');
   const [popupVisible, setPopupVisible] = useState(true);
+  const [updatePercent, setUpdatePercent] = useState(0);
 
   // 스토어 업데이트
   const storeUpdate = async () => {
@@ -159,25 +166,39 @@ function PreFetcher(props) {
   // 코드푸시 업데이트
   const codepushUpdate = async (needUpdate:any) => {
     try {
+      setUpdateStatusCode('CODEPUSH');
+
       const newPackage = await needUpdate.download(({totalBytes, receivedBytes}) => {
           if (totalBytes === 0) {
               return;
           }
           const newPercent = parseInt(receivedBytes/totalBytes * 100);
           console.log('newPercent :::::: ' , newPercent);
-          //setPercent( newPercent);
+          setUpdatePercent(newPercent);
       });
       if (!newPackage) {
           return;
       };
-      newPackage.install().then(() => {
-          authCheck();
-          setUpdateStatusCode('NONE');
+      /* newPackage.install().then(() => {
+          //authCheck();
+          //setUpdateStatusCode('NONE');
           //codePush.restartApp();
+      }); */
+      newPackage.install(codePush.InstallMode.IMMEDIATE).then(() => {
+        console.log('test!!!!!!!!!!!!!');
+        // 업데이트 설치 완료 후 로직
+        codePush.notifyAppReady();
+        //codePush.restartApp();
+
+        setTimeout(() => {
+          authCheck();
+        }, 300);
       });
     } catch (error) {
       console.log('error :::::: ' ,error);
-    };
+    } finally {
+      
+    }
   };
 
   useEffect(() => {
@@ -188,7 +209,6 @@ function PreFetcher(props) {
           if(update) {
               codepushUpdate(update);
           } else {
-            setUpdateStatusCode('NONE');
             authCheck();
           }
         });
@@ -203,35 +223,63 @@ function PreFetcher(props) {
     if (token) {
       prefetch();
     } else {
-      /* setTimeout(() => {
-        SplashScreen.hide();
-      }, 1300); */
       SplashScreen.hide();
+      setUpdateStatusCode('NONE');
     }
   };
 
   async function prefetch() {
     dispatch(myProfile());
+    setUpdateStatusCode('NONE');
   };
 
   return (
     <>
       {updateStatusCode == 'NONE' && props.children}
-      {(updateStatusCode == 'STORE' || updateStatusCode == 'CODEPUSH') &&
-        <BasePopup
-          popupVisible={popupVisible}
-          setPopupVIsible={setPopupVisible}
-          title={'알림'}
-          text={'필수 업데이트 사항이 있습니다.\n업데이트를 진행해 주세요.'}
-          subText={''}
-          isConfirm={false}
-          confirmCallbackFunc={
-            updateStatusCode == 'STORE' ? storeUpdate : codepushUpdate
-          }
-          cancelCallbackFunc={null}
-          cancelConfirmText={'확인'}
-        /> 
+      {updateStatusCode == 'STORE' &&
+        <>
+          <BasePopup
+            popupVisible={popupVisible}
+            setPopupVIsible={setPopupVisible}
+            title={'알림'}
+            text={'필수 업데이트 사항이 있어요.\n스토어에서 업데이트를 진행해 주세요.'}
+            subText={''}
+            isConfirm={false}
+            confirmCallbackFunc={storeUpdate}
+            cancelCallbackFunc={null}
+            cancelConfirmText={'확인'}
+          /> 
+        </>
       }
+      {updateStatusCode == 'CODEPUSH' && (
+        <>
+          <BasePopup
+            popupVisible={popupVisible}
+            setPopupVIsible={setPopupVisible}
+            title={'알림'}
+            text={'업데이트가 진행 중이에요.\n잠시 기다려 주세요.'}
+            subText={updatePercent + '%'}
+            isConfirm={false}
+            confirmCallbackFunc={storeUpdate}
+            cancelCallbackFunc={null}
+            cancelConfirmText={'확인'}
+          /> 
+        </>
+      )}
+
+      {/* <Modal>
+        <View style={_style.loadingArea}>
+          <Text>dasdsada</Text>
+          <Image source={GIF_IMG.soon} style={_style.loadingIcon} />
+        </View>
+
+      </Modal> */}
+      {/* <View style={_style.loadingArea}>
+        <Text>dasdsada</Text>
+        <Image source={GIF_IMG.soon} style={_style.loadingIcon} />
+      </View>
+
+      <Text>dasdsada</Text> */}
     </>
   )
 }
@@ -239,9 +287,26 @@ function PreFetcher(props) {
 //export default withIAPContext(App)
 export default codePush(codePushOptions)(withIAPContext(App));
 
-const style = StyleSheet.create({
+
+
+const { width, height } = Dimensions.get('window');
+
+const _style = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Color.tabColor,
   },
+  loadingArea: {
+    width: width,
+    height: height,
+    position: 'relative',
+    zIndex: 9999,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loadingIcon: {
+    width: 100,
+    height: 100,
+  },
+
 });
