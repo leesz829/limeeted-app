@@ -47,7 +47,7 @@ export default function Inventory() {
     const { data, message } = await get_my_items(body);
 
     if(data) {
-      const connectDate = await AsyncStorage.getItem('INVENTORY_CONNECT_DT');
+      const connectDate = await AsyncStorage.getItem('INVENTORY_CONNECT_DT') || '20230524000000';
       data?.inventory_list.map((item: any) => {
         item.connect_date = connectDate;
       });
@@ -55,13 +55,14 @@ export default function Inventory() {
       setData(data?.inventory_list);
       setIsLoading(false);
     }
+
+    await AsyncStorage.setItem('INVENTORY_CONNECT_DT', formatNowDate());
   }
 
   useFocusEffect(
     React.useCallback(() => {
       async function fetch() {
         onPressTab(categories[0]);
-        await AsyncStorage.setItem('INVENTORY_CONNECT_DT', formatNowDate());
       };
       fetch();
       return async() => {
@@ -157,7 +158,7 @@ export default function Inventory() {
   };
 
   function renderItem({ item, index }) {
-    const isNew = (item.connect_date == null || item.connect_date < item.reg_dt) ? true : false;
+    const isNew = (typeof item.connect_date == 'undefined' || item.connect_date == null || item.connect_date < item.reg_dt) ? true : false;
 
     return (
       <View style={_styles.renderItem}>

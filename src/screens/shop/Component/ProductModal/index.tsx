@@ -43,7 +43,7 @@ import InAppBilling from 'react-native-billing';
 interface Props {
   isVisible: boolean;
   type: string; /* bm: bm상품, gifticon: 재고상품, boutique: 경매상품 */
-  closeModal: () => void;
+  closeModal: (isPayConfirm:boolean) => void;
   item: any;
 }
 
@@ -188,7 +188,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
           Alert.alert('알림', '구매에 실패하였습니다.');
           setIsPayLoading(false);
           setComfirmModalVisible(false);
-          closeModal();
+          closeModal(false);
         } finally {
           await finishTransaction({
             purchase: purchase,
@@ -206,7 +206,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
       Alert.alert('알림', '구매에 실패하였습니다.');
       setIsPayLoading(false);
       setComfirmModalVisible(false);
-      closeModal();
+      closeModal(false);
     });
 
   };
@@ -222,7 +222,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
         //Alert.alert('구매에 성공하였습니다.');
         setIsPayLoading(false);
         setComfirmModalVisible(false);
-        closeModal();
+        closeModal(true);
         navigation.navigate(STACK.TAB, { screen: 'Shop' });
         Alert.alert('알림', '구매에 성공하였습니다.', [{ text: '확인' }]);
         /* show({
@@ -233,7 +233,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
         }); */
       } else {
         console.log('fail !!!!!!!!!!!!!!!!');
-        closeModal();
+        closeModal(false);
         setIsPayLoading(false);
         setComfirmModalVisible(false);
         /* show({
@@ -244,18 +244,18 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
         Alert.alert('구매에 실패하였습니다.');
       }
     } else {
-      closeModal();
+      closeModal(false);
       setIsPayLoading(false);
       setComfirmModalVisible(false);
       show({
         content: '오류입니다. 관리자에게 문의해주세요.' ,
-        confirmCallback: function() { closeModal(); }
+        confirmCallback: function() { closeModal(false); }
       });
     }
   };
 
   const toggleModal = () => {
-    closeModal();
+    closeModal(false);
   };
 
   return (
@@ -264,11 +264,11 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
               style={modalStyleProduct.modal}
               onSwipeComplete={toggleModal}
               swipeDirection="down" // 아래 방향으로 스와이프
-              onRequestClose={() => { closeModal(); }}>
+              onRequestClose={() => { closeModal(false); }}>
 
         <View style={modalStyleProduct.root}>
           <View style={modalStyleProduct.closeContainer}>
-            <TouchableOpacity onPress={closeModal} hitSlop={commonStyle.hipSlop20}>
+            <TouchableOpacity onPress={toggleModal} hitSlop={commonStyle.hipSlop20}>
               <Image source={ICON.closeBlack} style={modalStyleProduct.close} />
             </TouchableOpacity>
           </View>

@@ -36,6 +36,7 @@ import { ColorType } from '@types';
 
 interface Props {
   loadingFunc: (isStatus: boolean) => void;
+  itemUpdateFunc: (isStatus: boolean) => void;
 }
 
 /* interface Products {
@@ -54,7 +55,7 @@ interface Product {
   productId: string;
 } */
 
-export default function CategoryShop({ loadingFunc }) {
+export default function CategoryShop({ loadingFunc, itemUpdateFunc }) {
   const navigation = useNavigation();
   const { show } = usePopup();  // 공통 팝업
 
@@ -223,8 +224,12 @@ export default function CategoryShop({ loadingFunc }) {
   };
 
   // ######################################################### 상품상세 팝업 닫기 함수
-  const closeModal = () => {
+  const closeModal = (isPayConfirm: boolean) => {
     setModalVisible(false);
+
+    if(isPayConfirm && typeof itemUpdateFunc != 'undefined') {
+      itemUpdateFunc(isPayConfirm);
+    }
   };
 
   return (

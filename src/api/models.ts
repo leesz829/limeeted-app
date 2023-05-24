@@ -604,7 +604,10 @@ export async function get_bm_product(body: { item_type_code: string }) {
 ======================================================================================================== */
 
 //배너 목록 조회
-export async function get_banner_list(body: { banner_type: string }) {
+export async function get_banner_list(body: { 
+  banner_type: string;
+  connect_dt: string;
+}) {
   return send(BANNER_LIST, 'POST', body, true, false);
 }
 

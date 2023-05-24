@@ -34,6 +34,8 @@ import CategoryShop from './Component/CategoryShop';
 import { ROUTES, STACK } from 'constants/routes';
 import BannerPannel from './Component/BannerPannel';
 import { CommonLoading } from 'component/CommonLoading';
+import AsyncStorage from '@react-native-community/async-storage';
+
 
 
 interface Products {
@@ -58,6 +60,8 @@ export const Shop = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [banner, setBanner] = useState([]);
 
+  const [newItemCnt, setNewItemCnt] = useState(0);
+
   // 인벤토리 이동 함수
   const onPressInventory = () => {
     navigation.navigate(STACK.COMMON, { screen: ROUTES.SHOP_INVENTORY });
@@ -68,24 +72,35 @@ export const Shop = () => {
     setIsLoading(isStatus);
   };
 
-  useEffect(() => {
+  /* useEffect(() => {
     const getBanner = async () => {
-      const { success, data } = await get_banner_list({ banner_type: 'PROD' });
+      const invenConnectDate = await AsyncStorage.getItem('INVENTORY_CONNECT_DT');
+      const { success, data } = await get_banner_list({ banner_type: 'PROD', connect_dt: invenConnectDate });
       if (success) {
         setBanner(data?.banner_list);
       }
     };
     getBanner();
-  }, []);
+  }, []); */
 
-  /* useFocusEffect(
+  const getBanner = async () => {
+    const invenConnectDate = await AsyncStorage.getItem('INVENTORY_CONNECT_DT') || '20230524000000';
+    const { success, data } = await get_banner_list({ banner_type: 'PROD', connect_dt: invenConnectDate });
+    if (success) {
+      setBanner(data?.banner_list);
+      setNewItemCnt(data?.new_item_cnt);
+    }
+  };
+
+  useFocusEffect(
     React.useCallback(() => {
+      getBanner();
       
       return async() => {
         
       };
     }, []),
-  ); */
+  );
 
   return (
     <>
@@ -117,7 +132,7 @@ export const Shop = () => {
         </View>
 
         {/* ############################################### 인벤토리 영역 */}
-        <TouchableOpacity onPress={onPressInventory}>
+        {/* <TouchableOpacity onPress={onPressInventory}>
           <View style={_styles.inventoryArea}>
             <View>
               <Image source={ICON.inventoryIcon} style={_styles.inventoryIcon} />
@@ -130,18 +145,23 @@ export const Shop = () => {
               <Image source={ICON.arrow_right} style={_styles.arrowIcon} />
             </View>
           </View>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         {/* ############################################### 카테고리별 */}
-        <CategoryShop loadingFunc={loadingFunc} />
+        <CategoryShop loadingFunc={loadingFunc} itemUpdateFunc={getBanner} />
       </ScrollView>
 
-      {/* <TouchableOpacity
+      <TouchableOpacity
         onPress={onPressInventory}
         style={_styles.floatingButtonWrapper}>
 
-        <Image source={ICON.floatingButton} style={_styles.floatingButton} />
-      </TouchableOpacity> */}
+        <Image source={ICON.inventoryIcon} style={_styles.floatingButton} />
+        {newItemCnt > 0 &&
+          <View style={_styles.iconArea}>
+            <Text style={_styles.newText}>NEW</Text>
+          </View>
+        }
+      </TouchableOpacity>
     </>
   );
 };
@@ -280,22 +300,15 @@ const _styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   floatingButtonWrapper: {
-    backgroundColor: Color.purple,
-    width: 50,
-    height: 50,
     borderRadius: 25,
     position: 'absolute',
-    bottom: 10,
-    right: 10,
+    bottom: 0,
+    right: 15,
   },
   floatingButton: {
-    backgroundColor: Color.purple,
-    width: 50,
-    height: 50,
+    width: 64,
+    height: 64,
     borderRadius: 25,
-    // position: 'absolute',
-    // bottom: 10,
-    // right: 10,
   },
   inventoryArea: {
     flexDirection: 'row',
@@ -333,5 +346,20 @@ const _styles = StyleSheet.create({
     color: '#939393',
     letterSpacing: 0,
   },
+  iconArea: {
+    position: 'absolute',
+    top: 4,
+    right: -5,
+  },
+  newText: {
+    backgroundColor: '#FF7E8C',
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 10,
+    color: ColorType.white,
+    borderRadius: 8,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    overflow: 'hidden',
+  }
 
 });

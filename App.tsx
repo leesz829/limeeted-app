@@ -196,6 +196,7 @@ function PreFetcher(props) {
       });
     } catch (error) {
       console.log('error :::::: ' ,error);
+      authCheck();
     } finally {
       
     }
