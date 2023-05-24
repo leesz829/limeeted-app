@@ -8,6 +8,7 @@ import SpaceView from 'component/SpaceView';
 import { useProfileImg } from 'hooks/useProfileImg';
 import { findSourcePath, ICON, IMAGE } from 'utils/imageUtils';
 import { CommonBtn } from 'component/CommonBtn';
+import Carousel from 'react-native-snap-carousel';
 
 
 /* ################################################################################################################
@@ -26,16 +27,22 @@ export const ImagePreview = (props: Props) => {
 	const navigation = useNavigation<StackScreenProp>();
 	const myImages = useProfileImg();
 
+	const ref = React.useRef();
+
 	const [imgList, setImgList] = React.useState<any>(props.route.params.imgList);
 	console.log('imgList ::::::: ' , imgList);
 
+	console.log('orderSeq ::::::: ' , props.route.params.orderSeq);
+
 	// 이미지 인덱스
-	const [currentIndex, setCurrentIndex] = React.useState(0);
+	const [currentIndex, setCurrentIndex] = React.useState(props.route.params.orderSeq-1);
 
 	// 이미지 스크롤 처리
 	const handleScroll = (event) => {
+		console.log('event :::: ' ,event);
 		let contentOffset = event.nativeEvent.contentOffset;
 		let index = Math.floor(contentOffset.x / (width-10));
+		console.log('index ::::: ' , index);
 		setCurrentIndex(index);
 	};
 
@@ -52,15 +59,26 @@ export const ImagePreview = (props: Props) => {
 									<View style={[_styles.pagingDotStyle, index == currentIndex && _styles.activeDot]} />
 								</View>
 							)
-						})}						
+						})}
 					</View>
 
-					<FlatList
+					{/* <FlatList
 						data={imgList}
 						renderItem={RenderItem}
 						onScroll={handleScroll}
 						horizontal
 						pagingEnabled
+					/> */}
+
+					<Carousel
+						ref={ref}
+						data={imgList}
+						firstItem={currentIndex}
+						onSnapToItem={setCurrentIndex}
+						sliderWidth={width}
+						itemWidth={width}
+						pagingEnabled
+						renderItem={RenderItem}
 					/>
 				</View>
 			</ScrollView>

@@ -75,7 +75,7 @@ export function phoneApplyhyphen(str: string) {
 // 이메일 벨리데이션 체크
 export function validateEmailChk(email: string) {
   const regex =
-    /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
+    /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z_])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
   return regex.test(email);
 }
 

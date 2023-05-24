@@ -635,7 +635,7 @@ export default function Matching(props: Props) {
           adjustToContentHeight={false}
           handleStyle={modalStyle.modalHandleStyle}
           modalStyle={[modalStyle.modalContainer, {borderRadius: 0, borderTopLeftRadius: 50, borderTopRightRadius: 50}]}
-          modalHeight={height - 270}
+          modalHeight={500}
           FooterComponent={
             <>
               <SpaceView>

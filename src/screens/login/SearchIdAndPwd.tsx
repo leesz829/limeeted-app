@@ -226,16 +226,15 @@ export const SearchIdAndPwd = (props : Props) => {
 
 				<View>
 					<View style={layoutStyle.alignCenter}>
-						<SpaceView>
-							<Image source={IMAGE.logoMark} style={styles.logoMark} resizeMode="contain" />
+						<SpaceView mb={5}>
+							<Image source={IMAGE.logoMark} style={[styles.logoMark, {width: 35, height: 35}]} />
 						</SpaceView>
 						<SpaceView mb={15}>
-							<Image source={IMAGE.logoText} style={styles.logo} resizeMode="contain" />
+							<Image source={IMAGE.logoText} style={[styles.logo, {width: 190, height: 34}]} />
 						</SpaceView>
 					</View>
 
 					<SpaceView mb={50} mt={50}>
-
 						<View>
 							<CommonInput
 								label={'아이디 찾기'}
@@ -264,7 +263,6 @@ export const SearchIdAndPwd = (props : Props) => {
 								<Text style={{color: searchIdResult.textColor, marginTop: 10}}>{searchIdResult.message}</Text>
 							) : null}
 						</View>
-						
 					</SpaceView>
 					
 

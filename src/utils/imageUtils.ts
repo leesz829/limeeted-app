@@ -117,6 +117,14 @@ export const ICON = {
   passCircle: require('assets/icon/passCircle.png'),
   royalPassCircle: require('assets/icon/royalPassCircle.png'),
   inventoryIcon: require('assets/icon/inventory_icon.png'),
+  refuseJobIcon: require('assets/icon/refuse_job_icon.png'),
+  refuseAssetIcon: require('assets/icon/refuse_asset_icon.png'),
+  refuseEduIcon: require('assets/icon/refuse_edu_icon.png'),
+  refuseSnsIcon: require('assets/icon/refuse_sns_icon.png'),
+  refuseVehicleIcon: require('assets/icon/refuse_vehicle_icon.png'),
+  refuseIncomeIcon: require('assets/icon/refuse_income_icon.png'),
+  refuseMaleIcon: require('assets/icon/refuse_male_icon.png'),
+  refuseFemaleIcon: require('assets/icon/refuse_female_icon.png'),
 };
 
 export const GIF_IMG = {

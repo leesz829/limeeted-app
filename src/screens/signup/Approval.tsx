@@ -3,9 +3,9 @@ import { CommonBtn } from 'component/CommonBtn';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
-import { View, Image, StyleSheet } from 'react-native';
+import { View, Image, StyleSheet, ScrollView } from 'react-native';
 import { IMAGE, PROFILE_IMAGE, ICON } from 'utils/imageUtils';
-import { RouteProp, useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
 import { findSourcePath } from 'utils/imageUtils';
@@ -28,6 +28,8 @@ export const Approval = (props: Props) => {
   const refuseImgCnt = props.route.params.refuseImgCnt;   // 반려 이미지 갯수
   const refuseAuthCnt = props.route.params.refuseAuthCnt; // 반려 인증 갯수
   const mstImgPath = props.route.params.mstImgPath; // 대표이미지
+
+  const authList = props.route.params.authList;
 
   // 반려 사유 데이터
   const getRefuseData = function() {
@@ -67,9 +69,22 @@ export const Approval = (props: Props) => {
           </View>
         </SpaceView>
 
-        <SpaceView mb={150}>
+        <SpaceView mb={accessType == 'REFUSE' ? 10 : 150}>
+          <View style={commonStyle.mb15}>
+            <CommonText textStyle={layoutStyle.textCenter} type={'h3'} fontWeight={'700'} color={'#697AE6'}>
+              가입 심사가 진행중
+            </CommonText>
+            <CommonText textStyle={layoutStyle.textCenter} type={'h3'} fontWeight={'700'} color={'#000000'}>
+              심사 기간은 1 ~ 3일 이며,
+            </CommonText>
+          </View>
+          <View style={commonStyle.mb15}>
+            <CommonText textStyle={layoutStyle.textCenter} type={'h5'} color={'#818181'} fontWeight={'500'}>
+              결과는 PUSH 메세지로 전송됩니다.
+            </CommonText>
+          </View>
 
-          {accessType == 'REFUSE' ? (
+          {/* {accessType == 'REFUSE' ? (
             <>
               <View style={commonStyle.mb15}>
                 <CommonText textStyle={layoutStyle.textCenter} type={'h3'} fontWeight={'700'}>심사 결과</CommonText>
@@ -84,11 +99,11 @@ export const Approval = (props: Props) => {
                   재심사 요청을 해주시면 재심사가 진행됩니다.
                 </CommonText>
               </View>
-              {/* <View>
+              <View>
                 <CommonText textStyle={layoutStyle.textCenter} type={'h5'}>
                   반려사유 : {getRefuseData().text}
                 </CommonText>
-              </View> */}
+              </View>
             </>
           ) : (
             <>
@@ -106,9 +121,52 @@ export const Approval = (props: Props) => {
                 </CommonText>
               </View>
             </>
-          )}
+          )} */}
         </SpaceView>
       </View>
+
+      {accessType == 'REFUSE' && (
+        <>
+          <SpaceView mb={30}>
+            <View horizontal style={_styles.refuseTextArea}>
+              <CommonText textStyle={_styles.refuseText01}>심사 반려 안내</CommonText>
+              <CommonText textStyle={_styles.refuseText02}>
+                가입 기준에 맞지 않거나 증빙 자료가 불충분한 대상이 있어요.{'\n'}
+                "프로필 수정하기"를 이용해 재심사 신청을 해주세요.
+              </CommonText>
+
+              <ScrollView horizontal style={_styles.refuseIconArea}>
+                {refuseImgCnt > 0 &&
+                  <>
+                    <View style={_styles.refuseIconItem}>
+                      <Image source={gender == 'F' ? ICON.refuseFemaleIcon : ICON.refuseMaleIcon} style={_styles.refuseIcon} />
+                      <CommonText textStyle={_styles.refuseIconText}>사진</CommonText>
+                    </View>
+                  </>
+                }
+
+                {authList.map((item:any, index) => {
+                  if(item.auth_status == 'REFUSE') {
+                    return (
+                      <View style={_styles.refuseIconItem}>
+                        {item.common_code == 'JOB' && <Image source={ICON.refuseJobIcon} style={_styles.refuseIcon} />}
+                        {item.common_code == 'EDU' && <Image source={ICON.refuseEduIcon} style={_styles.refuseIcon} />}
+                        {item.common_code == 'INCOME' && <Image source={ICON.refuseIncomeIcon} style={_styles.refuseIcon} />}
+                        {item.common_code == 'ASSET' && <Image source={ICON.refuseAssetIcon} style={_styles.refuseIcon} />}
+                        {item.common_code == 'SNS' && <Image source={ICON.refuseSnsIcon} style={_styles.refuseIcon} />}
+                        {item.common_code == 'VEHICLE' && <Image source={ICON.refuseVehicleIcon} style={_styles.refuseIcon} />}
+                        <CommonText textStyle={_styles.refuseIconText}>{item.code_name}</CommonText>
+                      </View>
+                    )
+                  }
+                })}
+              </ScrollView>
+            </View>          
+          </SpaceView>
+        </>
+      )}
+      
+
       <SpaceView viewStyle={styles.bottomBtnContainer} mb={20}>
         <CommonBtn
           value={'프로필 수정하기'}
@@ -151,5 +209,48 @@ const _styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'AppleSDGothicNeoM00',
     lineHeight: 20,
-  }
+  },
+  refuseTextArea: {
+    backgroundColor: '#F6F7FE',
+    marginHorizontal: 10,
+    borderRadius: 15,
+    overflow: 'hidden',
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    paddingBottom: 15,
+  },
+  refuseText01: {
+    color: '#262626',
+    fontSize: 14,
+    fontFamily: 'AppleSDGothicNeoEB00',
+  },
+  refuseText02: {
+    color: '#8E8E8E',
+    fontSize: 13,
+    fontFamily: 'AppleSDGothicNeoM00',
+    lineHeight: 18,
+  },
+  refuseIconArea: {
+    flexDirection: 'row',
+    marginTop: 15,
+    overflow: 'scroll',
+  },
+  refuseIconItem: {
+    marginRight: 18,
+  },
+  refuseIcon: {
+    width: 41,
+    height: 42,
+    marginBottom: 5,
+  },
+  refuseIconText: {
+    backgroundColor: '#697AE6',
+    color: '#fff',
+    fontSize: 11,
+    fontFamily: 'AppleSDGothicNeoM00',
+    textAlign: 'center',
+    overflow: 'hidden',
+    borderRadius: 10,
+    lineHeight: 20,
+  },
 });

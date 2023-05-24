@@ -99,7 +99,8 @@ export type StackParamList = {
   };
   ItemMatching: undefined;
   ImagePreview: {
-    imgList: []
+    imgList: [];
+    orderSeq: Number;
   };
 };
 

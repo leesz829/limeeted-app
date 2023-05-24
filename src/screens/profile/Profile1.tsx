@@ -171,7 +171,8 @@ export const Profile1 = (props: Props) => {
     navigation.navigate(STACK.COMMON, {
       screen: 'ImagePreview',
       params: {
-        imgList: myImages
+        imgList: myImages,
+        orderSeq: isDelImgData.order_seq,
       }
     });
   };

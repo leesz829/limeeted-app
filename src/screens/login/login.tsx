@@ -160,6 +160,7 @@ export const Login01 = () => {
               accessType: 'REFUSE',
               refuseImgCnt: data.refuse_img_cnt,
               refuseAuthCnt: data.refuse_auth_cnt,
+              authList: data.mbr_second_auth_list,
             });
             break;
 
@@ -262,7 +263,7 @@ export const Login01 = () => {
 
   // ########################################################################## 초기 실행
   useEffect(() => {
-    appVersionCheck();
+    //appVersionCheck();
 
     requestPermissions().then((result) => {
       Geolocation.getCurrentPosition(

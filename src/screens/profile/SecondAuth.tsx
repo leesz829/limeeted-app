@@ -273,7 +273,8 @@ export const SecondAuth = () => {
 
     if((file_list.length + imgCnt) < 1){
       show({ content: '인증 심사를 위한 증빙 자료 이미지를 올려주세요.' });
-       return false;
+      setIsLoading(false);
+      return false;
     }
 
     const body = {
@@ -303,6 +304,7 @@ export const SecondAuth = () => {
       }
     } catch (error) {
       console.log(error);
+      setIsLoading(false);
     } finally {
       setIsLoading(false);
     }
