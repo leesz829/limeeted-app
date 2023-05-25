@@ -64,7 +64,9 @@ export const Signup03 = (props : Props) => {
 
 	// ############################################################ 소개 정보 저장
 	const saveInterest = async() => {
-		if(nickname == '' || typeof nickname == 'undefined') {
+		let special_pattern = /[^a-zA-Z0-9ㄱ-힣]/g;
+
+		if(nickname == '' || typeof nickname == 'undefined' || nickname == null || !nickname.trim()) {
 			show({ content: '닉네임을 입력해 주세요.' });
 			return;
 		}
@@ -74,6 +76,11 @@ export const Signup03 = (props : Props) => {
 		}
 		if(checkIntList.length < 1){
 			show({ content: '관심사를 입력해 주세요.' });
+			return;
+		}
+
+		if(nickname.length > 12 || special_pattern.test(nickname) == true) {
+			show({ content: '한글, 영문, 숫자 12글자까지 입력할 수 있어요.' });
 			return;
 		}
 
@@ -208,7 +215,7 @@ export const Signup03 = (props : Props) => {
 
 					<SpaceView mb={24}>
 						<CommonInput label="닉네임" 
-										placeholder={'닉네임을 입력해 주세요.'}
+										placeholder={'한글, 영문, 숫자 12글자까지 입력할 수 있어요.'}
 										placeholderTextColor={'#c6ccd3'}
 										value={nickname}
 										maxLength={30}
