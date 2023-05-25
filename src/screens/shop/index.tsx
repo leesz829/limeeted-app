@@ -35,6 +35,8 @@ import { ROUTES, STACK } from 'constants/routes';
 import BannerPannel from './Component/BannerPannel';
 import { CommonLoading } from 'component/CommonLoading';
 import AsyncStorage from '@react-native-community/async-storage';
+import { useDispatch } from 'react-redux';
+import { myProfile } from 'redux/reducers/authReducer';
 
 
 
@@ -57,6 +59,8 @@ interface Product {
 
 export const Shop = () => {
   const navigation = useNavigation<ScreenNavigationProp>();
+  const dispatch = useDispatch();
+
   const [isLoading, setIsLoading] = useState(false);
   const [banner, setBanner] = useState([]);
 
@@ -90,6 +94,7 @@ export const Shop = () => {
       setBanner(data?.banner_list);
       setNewItemCnt(data?.new_item_cnt);
     }
+    dispatch(myProfile());
   };
 
   useFocusEffect(

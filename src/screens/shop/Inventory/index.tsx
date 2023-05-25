@@ -57,7 +57,6 @@ export default function Inventory() {
     }
 
     await AsyncStorage.setItem('INVENTORY_CONNECT_DT', formatNowDate());
-    dispatch(myProfile());
   }
 
   useFocusEffect(
