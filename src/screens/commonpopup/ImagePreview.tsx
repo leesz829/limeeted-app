@@ -95,7 +95,7 @@ export const ImagePreview = (props: Props) => {
 						: navigation.dispatch(
 							CommonActions.reset({
 								index: 1,
-								routes: [{ name: 'Login' }],
+								routes: [{ name: 'Login01' }],
 							})
 						);
 					}}

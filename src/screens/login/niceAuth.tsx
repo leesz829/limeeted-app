@@ -58,7 +58,7 @@ export const NiceAuth = (props: Props) => {
 						CommonActions.reset({
 							index: 1,
 							routes: [
-								{ name: 'Login' }
+								{ name: 'Login01' }
 							],
 						})
 					);
@@ -73,7 +73,7 @@ export const NiceAuth = (props: Props) => {
 						CommonActions.reset({
 							index: 1,
 							routes: [
-								{ name: 'Login' }
+								{ name: 'Login01' }
 								, {
 									name: 'Signup00'
 									, params: {

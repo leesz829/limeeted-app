@@ -18,6 +18,7 @@ import { usePopup } from 'Context';
 import { regist_introduce, get_member_introduce_guide } from 'api/models';
 import { SUCCESS } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
+import { CommonLoading } from 'component/CommonLoading';
 
 
 
@@ -40,6 +41,7 @@ export const Signup03 = (props : Props) => {
 
 	const { show } = usePopup();  // 공통 팝업
 	const isFocus = useIsFocused();
+	const [isLoading, setIsLoading] = React.useState(false);
 
 	const [nickname, setNickname] = React.useState('');
 	const [comment, setComment] = React.useState('');
@@ -82,6 +84,8 @@ export const Signup03 = (props : Props) => {
 			interest_list : checkIntList
 		};
 
+		setIsLoading(true);
+
 		try {
 			const { success, data } = await regist_introduce(body);
 			if(success) {
@@ -123,9 +127,8 @@ export const Signup03 = (props : Props) => {
 		} catch (error) {
 			console.log(error);
 		} finally {
-			
+			setIsLoading(false);
 		}
-
 	}
 
 	// ############################################################ 회원 소개 정보 조회
@@ -190,6 +193,8 @@ export const Signup03 = (props : Props) => {
 
 	return (
 		<>
+			{isLoading && <CommonLoading />}
+
 			<CommonHeader title={'닉네임과 한줄소개'} />
 			<ScrollView contentContainerStyle={[
 							styles.scrollContainerAll,

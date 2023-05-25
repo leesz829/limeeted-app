@@ -36,7 +36,7 @@ import BannerPannel from './Component/BannerPannel';
 import { CommonLoading } from 'component/CommonLoading';
 import AsyncStorage from '@react-native-community/async-storage';
 import { useDispatch } from 'react-redux';
-import { myProfile } from 'redux/reducers/authReducer';
+import { setPartialPrincipal } from 'redux/reducers/authReducer';
 
 
 
@@ -88,13 +88,16 @@ export const Shop = () => {
   }, []); */
 
   const getBanner = async () => {
-    const invenConnectDate = await AsyncStorage.getItem('INVENTORY_CONNECT_DT') || '20230524000000';
-    const { success, data } = await get_banner_list({ banner_type: 'PROD', connect_dt: invenConnectDate });
+    //const invenConnectDate = await AsyncStorage.getItem('INVENTORY_CONNECT_DT') || '20230524000000';
+    const { success, data } = await get_banner_list({ banner_type: 'PROD' });
     if (success) {
       setBanner(data?.banner_list);
-      setNewItemCnt(data?.new_item_cnt);
+      setNewItemCnt(data?.mbr_base?.new_item_cnt);
+
+      dispatch(setPartialPrincipal({
+        mbr_base : data?.mbr_base
+      }));
     }
-    dispatch(myProfile());
   };
 
   useFocusEffect(

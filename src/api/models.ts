@@ -70,6 +70,7 @@ import {
   GET_SECOND_AUTH,
   INSERT_MEMBER_PHONE_BOOK,
   GET_APP_VERSION,
+  DELETE_MEMBER_PROFILE_IMAGE,
 } from './route';
 
 /* ========================================================================================================
@@ -167,6 +168,14 @@ export async function get_second_auth(body: {
   member_seq: any;
 }) {
   return send(GET_SECOND_AUTH, 'POST', body, true, false);
+}
+
+//회원의 프로필 사진을 삭제한다.
+export async function delete_profile_image(body: {
+  member_seq: number;
+  img_del_seq_str: string;
+}) {
+  return send(DELETE_MEMBER_PROFILE_IMAGE, 'POST', body, false, false);
 }
 
 
@@ -609,9 +618,9 @@ export async function get_bm_product(body: { item_type_code: string }) {
 //배너 목록 조회
 export async function get_banner_list(body: { 
   banner_type: string;
-  connect_dt: string;
 }) {
-  return send(BANNER_LIST, 'POST', body, true, false);
+  const inventory_connect_dt = await AsyncStorage.getItem('INVENTORY_CONNECT_DT');
+  return send(BANNER_LIST, 'POST', { ...body, inventory_connect_dt}, true, false);
 }
 
 /* ========================================================================================================

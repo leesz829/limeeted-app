@@ -36,7 +36,7 @@ function CommonHeader({
       : navigation.dispatch(
           CommonActions.reset({
             index: 1,
-            routes: [{ name: 'Login' }],
+            routes: [{ name: 'Login01' }],
           })
         );
   }, [navigation]);

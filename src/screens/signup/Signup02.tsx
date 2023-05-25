@@ -16,9 +16,11 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { ICON, PROFILE_IMAGE, findSourcePath } from 'utils/imageUtils';
 import { Modalize } from 'react-native-modalize';
 import { usePopup } from 'Context';
-import { get_profile_imgage_guide, regist_profile_image } from 'api/models';
+import { get_profile_imgage_guide, regist_profile_image, delete_profile_image } from 'api/models';
 import { SUCCESS } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
+import { CommonLoading } from 'component/CommonLoading';
+
 
 /* ################################################################################################################
 ###################################################################################################################
@@ -38,6 +40,7 @@ export const Signup02 = (props: Props) => {
 
   const isFocus = useIsFocused();
   const { show } = usePopup(); // 공통 팝업
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const [profileImageList, setProfileImageList] = React.useState([]); // 프로필 이미지 목록
 
@@ -132,6 +135,19 @@ export const Signup02 = (props: Props) => {
 
   // ############################################################################# 사진 삭제
   const imgDelProc = () => {
+
+    let tmpCnt = 0;
+    for (var key in imgData) {
+      if (imgData[key].delYn == 'N' && (imgData[key].url || imgData[key].uri)) {
+        tmpCnt++;
+      }
+    }
+
+    if (tmpCnt <= 3) {
+      show({ content: '프로필 사진은 최소 3장 등록되어야 합니다.' });
+      return;
+    }
+
     if (isDelImgData.order_seq == '1') {
       setImgData({
         ...imgData,
@@ -175,9 +191,55 @@ export const Signup02 = (props: Props) => {
     } else {
       delArr = ',' + isDelImgData.img_seq;
     }
-    setImgDelSeqStr(delArr);
-    imgDel_onClose();
+
+    deleteProfileImage(isDelImgData.img_seq);
   };
+
+  // ############################################################  프로필 이미지 삭제
+  const deleteProfileImage = async (imgSeq:string) => {
+
+    const body = {
+      member_seq: props.route.params.memberSeq,
+      img_del_seq_str: imgSeq
+    };
+
+    imgDel_onClose();
+    setIsLoading(true);
+    
+    try {
+      const { success, data } = await delete_profile_image(body);
+      if(success) {
+        switch (data.result_code) {
+          case SUCCESS:
+            show({
+              content: '삭제되었습니다.' ,
+              confirmCallback: function() {
+                getProfileImage();
+              }
+            });
+            break;
+          default:
+            show({
+              content: '오류입니다. 관리자에게 문의해주세요.' ,
+              confirmCallback: function() {}
+            });
+            break;
+        }
+       
+      } else {
+        show({
+          content: '오류입니다. 관리자에게 문의해주세요.' ,
+          confirmCallback: function() {}
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+
 
   // ############################################################################# 프로필 이미지 정보 조회
   const getProfileImage = async () => {
@@ -266,6 +328,7 @@ export const Signup02 = (props: Props) => {
 
   // ############################################################################# 프로필 이미지 저장
   const saveProfileImage = async () => {
+
     let tmpCnt = 0;
     for (var key in imgData) {
       if (imgData[key].delYn == 'N' && (imgData[key].url || imgData[key].uri)) {
@@ -280,6 +343,8 @@ export const Signup02 = (props: Props) => {
       show({ content: '프로필 사진은 최소 3장 등록해주세요.' });
       return;
     }
+
+    setIsLoading(true);
 
     const body = {
       member_seq: props.route.params.memberSeq,
@@ -314,6 +379,7 @@ export const Signup02 = (props: Props) => {
     } catch (error) {
       console.log(error);
     } finally {
+      setIsLoading(false);
     }
   };
 
@@ -326,6 +392,8 @@ export const Signup02 = (props: Props) => {
 
   return (
     <>
+      {isLoading && <CommonLoading />}
+
       <CommonHeader title={'프로필 만들기'} />
       <ScrollView contentContainerStyle={[styles.scrollContainerAll]}>
         <SpaceView mb={10} viewStyle={[commonStyle.paddingHorizontal20, layoutStyle.row]}>
