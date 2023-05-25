@@ -307,12 +307,12 @@ const _styles = StyleSheet.create({
   floatingButtonWrapper: {
     borderRadius: 25,
     position: 'absolute',
-    bottom: 0,
+    bottom: 13,
     right: 15,
   },
   floatingButton: {
-    width: 64,
-    height: 64,
+    width: 72,
+    height: 72,
     borderRadius: 25,
   },
   inventoryArea: {
