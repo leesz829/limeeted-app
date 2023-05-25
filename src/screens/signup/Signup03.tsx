@@ -81,6 +81,7 @@ export const Signup03 = (props : Props) => {
 			comment: comment,
 			interest_list : checkIntList
 		};
+
 		try {
 			const { success, data } = await regist_introduce(body);
 			if(success) {
@@ -89,7 +90,7 @@ export const Signup03 = (props : Props) => {
 					navigation.reset({
 						routes: [
 							{
-								name : ROUTES.LOGIN
+								name : ROUTES.LOGIN01
 							}
 							, {
 								name: ROUTES.APPROVAL
@@ -97,7 +98,10 @@ export const Signup03 = (props : Props) => {
 									memberSeq: props.route.params.memberSeq,
 									accessType: 'JOIN',
 									mstImgPath: props.route.params.mstImgPath,
-									gender: props.route.params.gender
+									gender: props.route.params.gender,
+									refuseImgCnt: data.refuse_img_cnt,
+									refuseAuthCnt: data.refuse_auth_cnt,
+									authList: data.mbr_second_auth_list,
 								}
 							}
 						]
@@ -202,7 +206,7 @@ export const Signup03 = (props : Props) => {
 										placeholder={'닉네임을 입력해 주세요.'}
 										placeholderTextColor={'#c6ccd3'}
 										value={nickname}
-										maxLength={10}
+										maxLength={30}
 										onChangeText={nickname => setNickname(nickname)}  />
 					</SpaceView>
 
@@ -211,7 +215,7 @@ export const Signup03 = (props : Props) => {
 										placeholder={'한줄 소개를 입력해 주세요.'}
 										placeholderTextColor={'#c6ccd3'}
 										value={comment}
-										maxLength={20}
+										maxLength={50}
 										onChangeText={comment => setComment(comment)}
 										/>
 					</SpaceView>

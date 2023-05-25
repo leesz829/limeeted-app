@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { RouteProp, useIsFocused, useNavigation } from '@react-navigation/native';
+import { RouteProp, useIsFocused, useNavigation, useFocusEffect } from '@react-navigation/native';
 import { StackParamList, ScreenNavigationProp } from '@types';
 import { Dimensions, Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { SimpleGrid } from 'react-native-super-grid';
@@ -62,6 +62,7 @@ export default function ProfileAuth({ level, data, isButton }) {
 }
 
 const renderAuthInfo = ({ item }: { item: auth }) => (
+
   <View
     style={
       item?.auth_status === 'ACCEPT'

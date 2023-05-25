@@ -66,7 +66,6 @@ export const Profile1 = (props: Props) => {
   const scrollViewRef = useRef();
   const [isLoading, setIsLoading] = useState(false);
 
-
   const [images, setImages] = useState([]);
 
   const memberBase = useUserInfo();           // 회원 기본정보
@@ -389,6 +388,12 @@ export const Profile1 = (props: Props) => {
       if (success) {
         setProfileFaceRankList(data.mbr_face_rank_list);
         profileDataSet(data.mbr_img_list);
+
+        dispatch(setPartialPrincipal({
+          mbr_base : data.mbr_base
+          , mbr_img_list : data.mbr_img_list
+          , mbr_second_auth_list : data.mbr_second_auth_list
+        }));
       } else {
         show({
           content: '오류입니다. 관리자에게 문의해주세요.',

@@ -294,6 +294,7 @@ export const Profile = (props: Props) => {
                 value={nickname}
                 onChangeText={(nickname) => setNickname(nickname)}
                 rightPen={false}
+                maxLength={30}
               />
             </View>
             <View style={[_styles.modfyHpBtn]}>

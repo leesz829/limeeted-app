@@ -345,7 +345,8 @@ export const Live = () => {
 
           <View style={layoutStyle.alignCenter}>
             <CommonText type={'h4'} textStyle={[layoutStyle.textCenter, commonStyle.fontSize16, commonStyle.lineHeight23]}>
-              오늘 소개해드릴 LIVE가 마감되었어요.
+              오늘 소개해드린 LIVE가 마감 되었어요.{'\n'}
+              새로운 LIVE 소개는 매일 자정에 공개 됩니다.
             </CommonText>
           </View>
         </View>

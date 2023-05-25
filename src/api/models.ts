@@ -78,7 +78,8 @@ import {
 //로그인 체크 및 회원정보를 제공한다.
 export async function signin(body: { email_id: string; password: string }) {
   const push_token = await AsyncStorage.getItem(FCM_TOKEN);
-  return send(LOGIN, 'POST', { ...body, push_token }, true, false);
+  const inventory_connect_dt = await AsyncStorage.getItem('INVENTORY_CONNECT_DT');
+  return send(LOGIN, 'POST', { ...body, push_token, inventory_connect_dt }, true, false);
 }
 //회원가입시 프로필 2차 인증에 대한 정보를 제공한다.
 export async function get_profile_secondary_authentication(body: {
@@ -175,7 +176,8 @@ export async function get_second_auth(body: {
 //회원의 정보를 조회한다.
 export async function get_my_info() {
   const push_token = await AsyncStorage.getItem(FCM_TOKEN);
-  return send(ME, 'POST', { push_token }, true, false);
+  const inventory_connect_dt = await AsyncStorage.getItem('INVENTORY_CONNECT_DT');
+  return send(ME, 'POST', { push_token, inventory_connect_dt }, true, false);
 }
 
 //회원의 기본 정보를 저장한다.
@@ -259,7 +261,8 @@ export async function peek_member(body: {
   img_acct_cnt: number;
   auth_acct_cnt: number;
 }) {
-  return send(PEEK_MEMBER, 'POST', body, true, false);
+  const inventory_connect_dt = await AsyncStorage.getItem('INVENTORY_CONNECT_DT');
+  return send(PEEK_MEMBER, 'POST', { ...body, inventory_connect_dt }, true, false);
 }
 
 //회원의 프로필 2차 인증 정보 및 인증의 부가 정보를 조회한다.

@@ -19,8 +19,6 @@ interface Props {
 
 export const Approval = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
-
-  console.log('mstImgPath :::::::: ' , props.route.params.mstImgPath);
   
   const memberSeq = props.route.params.memberSeq;         // 회원 번호
   const gender = props.route.params.gender;               // 회원 성별
@@ -69,10 +67,10 @@ export const Approval = (props: Props) => {
           </View>
         </SpaceView>
 
-        <SpaceView mb={accessType == 'REFUSE' ? 10 : 150}>
+        <SpaceView mb={refuseImgCnt > 0 || refuseAuthCnt > 0 ? 30 : 150}>
           <View style={commonStyle.mb15}>
             <CommonText textStyle={layoutStyle.textCenter} type={'h3'} fontWeight={'700'} color={'#697AE6'}>
-              가입 심사가 진행중
+              가입 심사 진행중
             </CommonText>
             <CommonText textStyle={layoutStyle.textCenter} type={'h3'} fontWeight={'700'} color={'#000000'}>
               심사 기간은 1 ~ 3일 이며,
@@ -125,7 +123,7 @@ export const Approval = (props: Props) => {
         </SpaceView>
       </View>
 
-      {accessType == 'REFUSE' && (
+      {(refuseImgCnt > 0 || (refuseAuthCnt > 0)) && (
         <>
           <SpaceView mb={30}>
             <View horizontal style={_styles.refuseTextArea}>
@@ -139,7 +137,7 @@ export const Approval = (props: Props) => {
                 {refuseImgCnt > 0 &&
                   <>
                     <View style={_styles.refuseIconItem}>
-                      <Image source={gender == 'F' ? ICON.refuseFemaleIcon : ICON.refuseMaleIcon} style={_styles.refuseIcon} />
+                      <Image source={gender == 'W' ? ICON.refuseFemaleIcon : ICON.refuseMaleIcon} style={_styles.refuseIcon} />
                       <CommonText textStyle={_styles.refuseIconText}>사진</CommonText>
                     </View>
                   </>

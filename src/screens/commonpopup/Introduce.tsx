@@ -362,7 +362,7 @@ export const Introduce = (props: Props) => {
 								label={''} 
 								value={comment}
 								onChangeText={(comment) => setComment(comment)}
-								placeholder={'문의 내용'}
+								placeholder={'한줄 소개를 입력 하세요.'}
 								placeholderTextColor={'#c6ccd3'}
 								maxLength={50}
                 height={80}

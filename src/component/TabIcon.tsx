@@ -5,6 +5,8 @@ import { useProfileImg } from 'hooks/useProfileImg';
 import { useUserInfo } from 'hooks/useUserInfo';
 
 const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
+  const memberBase = useUserInfo();
+
   switch (name) {
     case 'Roby': {
       const mbrProfileImgList = useProfileImg();
@@ -24,34 +26,36 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
         }
       }
     }
-    case 'Cashshop': {
-      if (isFocused) {
-        return <Image style={_style.iconSize} source={ICON.cashshopOn} />;
-      } else {
-        return <Image style={_style.iconSize} source={ICON.cashshop} />;
-      }
-    }
-    case 'Message': {
-      const memberBase = useUserInfo();
-
-      return (
-        <>
-          {
-            isFocused ? <Image style={_style.iconSize} source={ICON.mailboxOn} /> : 
-            <Image style={_style.iconSize} source={ICON.mailbox} />
-          }
-          {memberBase?.msg_cnt != null && typeof memberBase?.msg_cnt != 'undefined' && memberBase?.msg_cnt > 0 &&
-            <View style={_style.iconArea}><Text style={_style.newText}>{memberBase?.msg_cnt}</Text></View>
-          }
-        </>
-      );
-    }
     case 'Storage': {
       if (isFocused) {
         return <Image style={_style.iconSize} source={ICON.storageOn} />;
       } else {
         return <Image style={_style.iconSize} source={ICON.storage} />;
       }
+    }
+    case 'Message': {
+      return (
+        <>
+          {isFocused ? <Image style={_style.iconSize} source={ICON.mailboxOn} /> : 
+            <Image style={_style.iconSize} source={ICON.mailbox} />
+          }
+          {memberBase?.msg_cnt != null && typeof memberBase?.msg_cnt != 'undefined' && memberBase?.msg_cnt > 0 &&
+            <View style={_style.iconArea}><Text style={_style.countText}>{memberBase?.msg_cnt}</Text></View>
+          }
+        </>
+      );
+    }
+    case 'Cashshop': {
+      return (
+        <>
+          {isFocused ? <Image style={_style.iconSize} source={ICON.cashshopOn} /> :
+            <Image style={_style.iconSize} source={ICON.cashshop} />
+          }
+          {memberBase?.new_item_cnt != null && typeof memberBase?.new_item_cnt != 'undefined' && memberBase?.new_item_cnt > 0 &&
+            <View style={_style.shopIconArea}><Text style={_style.newText}>NEW</Text></View>
+          }
+        </>
+      )
     }
     default:
       return <Image style={_style.iconSize} source={ICON.roby} />;
@@ -79,16 +83,32 @@ const _style = StyleSheet.create({
   iconArea: {
     position: 'absolute',
     top: -7,
-    right: 23,
+    right: 25,
+  },
+  countText: {
+    backgroundColor: '#FF7E8C',
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 10,
+    color: '#fff',
+    borderRadius: 9,
+    width: 28,
+    textAlign: 'center',
+    paddingVertical: 1,
+    overflow: 'hidden',
+  },
+  shopIconArea: {
+    position: 'absolute',
+    top: -7,
+    right: 16,
   },
   newText: {
     backgroundColor: '#FF7E8C',
     fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 11,
+    fontSize: 10,
     color: '#fff',
     borderRadius: 9,
-    paddingHorizontal: 12,
+    paddingHorizontal: 6,
     paddingVertical: 1,
     overflow: 'hidden',
-  },
+  }
 });

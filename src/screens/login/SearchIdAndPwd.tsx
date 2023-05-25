@@ -226,11 +226,11 @@ export const SearchIdAndPwd = (props : Props) => {
 
 				<View>
 					<View style={layoutStyle.alignCenter}>
-						<SpaceView mb={5}>
+						{/* <SpaceView mb={5}>
 							<Image source={IMAGE.logoMark} style={[styles.logoMark, {width: 35, height: 35}]} />
-						</SpaceView>
+						</SpaceView> */}
 						<SpaceView mb={15}>
-							<Image source={IMAGE.logoText} style={[styles.logo, {width: 190, height: 34}]} />
+							<Image source={IMAGE.logoRenew} style={[styles.logo, {width: 151, height: 105}]} />
 						</SpaceView>
 					</View>
 

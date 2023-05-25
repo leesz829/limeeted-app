@@ -57,6 +57,7 @@ export default function Inventory() {
     }
 
     await AsyncStorage.setItem('INVENTORY_CONNECT_DT', formatNowDate());
+    dispatch(myProfile());
   }
 
   useFocusEffect(
@@ -106,7 +107,7 @@ export default function Inventory() {
                 }
                 dispatch(myProfile());
                 // navigation.navigate(STACK.TAB, { screen: 'Shop' });
-                fetchData();
+                fetchData(tab);
                 break;
               case '3001':
                 show({

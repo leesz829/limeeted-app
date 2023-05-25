@@ -186,9 +186,12 @@ export const ChangePassword = (props : Props) => {
 			<CommonHeader title={'비밀번호 변경'} />
 			<ScrollView contentContainerStyle={[styles.scrollContainer]}>
 				<View style={layoutStyle.alignCenter}>
-					<SpaceView mt={30}>
-						<Image source={IMAGE.logoMarkRenew} style={styles.logoMark} />
+					<SpaceView mt={15}>
+						<Image source={IMAGE.logoRenew} style={[styles.logo, {width: 151, height: 105}]} />
 					</SpaceView>
+					{/* <SpaceView mt={30}>
+						<Image source={IMAGE.logoMarkRenew} style={styles.logoMark} />
+					</SpaceView> */}
 					{/* <SpaceView mb={15}>
 						<Image source={IMAGE.logoText} style={styles.logo} resizeMode="contain" />
 					</SpaceView> */}
