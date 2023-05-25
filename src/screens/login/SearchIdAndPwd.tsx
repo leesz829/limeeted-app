@@ -222,7 +222,7 @@ export const SearchIdAndPwd = (props : Props) => {
 	return (
 		<>
 			<CommonHeader title={'아이디/비밀번호 찾기'} />
-			<ScrollView contentContainerStyle={[styles.scrollContainer, { justifyContent: 'space-between' }]}>
+			<ScrollView contentContainerStyle={[styles.scrollContainer]} style={{backgroundColor: '#fff', }}>
 
 				<View>
 					<View style={layoutStyle.alignCenter}>
