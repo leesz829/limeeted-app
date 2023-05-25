@@ -1,4 +1,6 @@
+import { Platform } from 'react-native';
 import dayjs from 'dayjs';
+
 // 날짜 format
 export const formatDate = (time: string) => {
   const year = new Date(time).getFullYear();
@@ -12,7 +14,7 @@ export const formatNowDate = () => {
   const year = new Date().getFullYear();
   const month = leftPad(new Date().getMonth() + 1, 2);
   const day = leftPad(new Date().getDate(), 2);
-  const hours = new Date().getHours() + 9;
+  const hours = Platform.OS = 'ios' ? new Date().getHours() : new Date().getHours() + 9;
   const minutes = leftPad(new Date().getMinutes(), 2);
   const seconds = leftPad(new Date().getSeconds(), 2);
   return `${year}${month}${day}${hours}${minutes}${seconds}`;

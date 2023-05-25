@@ -241,12 +241,8 @@ export const Profile = (props: Props) => {
   return (
     <>
       <CommonHeader title={'내 계정 정보'} />
-      <ScrollView
-        contentContainerStyle={[
-          styles.scrollContainerAll,
-          { justifyContent: 'space-between' },
-        ]}
-      >
+      <ScrollView contentContainerStyle={[ styles.scrollContainerAll ]} style={{backgroundColor: '#fff'}}>
+
         <View style={commonStyle.paddingHorizontal20}>
           <SpaceView mb={40}>
             <CommonInput

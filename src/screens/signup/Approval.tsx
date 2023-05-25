@@ -48,124 +48,131 @@ export const Approval = (props: Props) => {
     return {code : code, text: text};
   }
 
-  return (
+  return (    
     <View style={[styles.container, layoutStyle.justifyCenter]}>
-      <View style={layoutStyle.alignCenter}>
-        <SpaceView mb={40} viewStyle={{position: 'relative'}}>
-          <Image
-            source={findSourcePath(mstImgPath)}
-            style={styles.tmpImg} />
-          <View style={{position: 'absolute', top: 35, left: -30}}>
+
+      <ScrollView style={[styles.scrollContainerAll, {marginBottom: 80}]}>
+        <View style={layoutStyle.alignCenter}>
+          <SpaceView mb={40} viewStyle={{position: 'relative'}}>
             <Image
-              source={ICON.heartPurple}
-              style={[styles.iconSize60]} />
-          </View>
-          <View style={{position: 'absolute', bottom: 35, right: -30}}>
-            <Image
-              source={ICON.heartPurple}
-              style={[styles.iconSize60]} />
-          </View>
-        </SpaceView>
-
-        <SpaceView mb={refuseImgCnt > 0 || refuseAuthCnt > 0 ? 30 : 150}>
-          <View style={commonStyle.mb15}>
-            <CommonText textStyle={layoutStyle.textCenter} type={'h3'} fontWeight={'700'} color={'#697AE6'}>
-              가입 심사 진행중
-            </CommonText>
-            <CommonText textStyle={layoutStyle.textCenter} type={'h3'} fontWeight={'700'} color={'#000000'}>
-              심사 기간은 1 ~ 3일 이며,
-            </CommonText>
-          </View>
-          <View style={commonStyle.mb15}>
-            <CommonText textStyle={layoutStyle.textCenter} type={'h5'} color={'#818181'} fontWeight={'500'}>
-              결과는 PUSH 메세지로 전송됩니다.
-            </CommonText>
-          </View>
-
-          {/* {accessType == 'REFUSE' ? (
-            <>
-              <View style={commonStyle.mb15}>
-                <CommonText textStyle={layoutStyle.textCenter} type={'h3'} fontWeight={'700'}>심사 결과</CommonText>
-                <SpaceView mt={5}>
-                  <CommonText textStyle={layoutStyle.textCenter} type={'h3'} fontWeight={'700'} color={ColorType.primary}>반려</CommonText>
-                </SpaceView>
-              </View>
-              <View style={commonStyle.mb15}>
-                <CommonText textStyle={_styles.refuseText} type={'h5'} color={'#6E6E6E'}>
-                  심사 진행 결과 아쉽게도 반려되었음을 안내드립니다.{'\n'}
-                  아래 '프로필 수정하기'를 메뉴에 반려 사유 확인 및{'\n'}
-                  재심사 요청을 해주시면 재심사가 진행됩니다.
-                </CommonText>
-              </View>
-              <View>
-                <CommonText textStyle={layoutStyle.textCenter} type={'h5'}>
-                  반려사유 : {getRefuseData().text}
-                </CommonText>
-              </View>
-            </>
-          ) : (
-            <>
-              <View style={commonStyle.mb15}>
-                <CommonText textStyle={layoutStyle.textCenter} type={'h3'} fontWeight={'700'} color={'#697AE6'}>
-                  가입 심사가 진행중
-                </CommonText>
-                <CommonText textStyle={layoutStyle.textCenter} type={'h3'} fontWeight={'700'} color={'#000000'}>
-                  심사 기간은 1 ~ 3일 이며,
-                </CommonText>
-              </View>
-              <View style={commonStyle.mb15}>
-                <CommonText textStyle={layoutStyle.textCenter} type={'h5'} color={'#818181'} fontWeight={'500'}>
-                  결과는 PUSH 메세지로 전송됩니다.
-                </CommonText>
-              </View>
-            </>
-          )} */}
-        </SpaceView>
-      </View>
-
-      {(refuseImgCnt > 0 || (refuseAuthCnt > 0)) && (
-        <>
-          <SpaceView mb={30}>
-            <View horizontal style={_styles.refuseTextArea}>
-              <CommonText textStyle={_styles.refuseText01}>심사 반려 안내</CommonText>
-              <CommonText textStyle={_styles.refuseText02}>
-                가입 기준에 맞지 않거나 증빙 자료가 불충분한 대상이 있어요.{'\n'}
-                "프로필 수정하기"를 이용해 재심사 신청을 해주세요.
-              </CommonText>
-
-              <ScrollView horizontal style={_styles.refuseIconArea}>
-                {refuseImgCnt > 0 &&
-                  <>
-                    <View style={_styles.refuseIconItem}>
-                      <Image source={gender == 'W' ? ICON.refuseFemaleIcon : ICON.refuseMaleIcon} style={_styles.refuseIcon} />
-                      <CommonText textStyle={_styles.refuseIconText}>사진</CommonText>
-                    </View>
-                  </>
-                }
-
-                {authList.map((item:any, index) => {
-                  if(item.auth_status == 'REFUSE') {
-                    return (
-                      <View style={_styles.refuseIconItem}>
-                        {item.common_code == 'JOB' && <Image source={ICON.refuseJobIcon} style={_styles.refuseIcon} />}
-                        {item.common_code == 'EDU' && <Image source={ICON.refuseEduIcon} style={_styles.refuseIcon} />}
-                        {item.common_code == 'INCOME' && <Image source={ICON.refuseIncomeIcon} style={_styles.refuseIcon} />}
-                        {item.common_code == 'ASSET' && <Image source={ICON.refuseAssetIcon} style={_styles.refuseIcon} />}
-                        {item.common_code == 'SNS' && <Image source={ICON.refuseSnsIcon} style={_styles.refuseIcon} />}
-                        {item.common_code == 'VEHICLE' && <Image source={ICON.refuseVehicleIcon} style={_styles.refuseIcon} />}
-                        <CommonText textStyle={_styles.refuseIconText}>{item.code_name}</CommonText>
-                      </View>
-                    )
-                  }
-                })}
-              </ScrollView>
-            </View>          
+              source={findSourcePath(mstImgPath)}
+              style={styles.tmpImg} />
+            <View style={{position: 'absolute', top: 35, left: -30}}>
+              <Image
+                source={ICON.heartPurple}
+                style={[styles.iconSize60]} />
+            </View>
+            <View style={{position: 'absolute', bottom: 35, right: -30}}>
+              <Image
+                source={ICON.heartPurple}
+                style={[styles.iconSize60]} />
+            </View>
           </SpaceView>
-        </>
-      )}
+
+          <SpaceView mb={refuseImgCnt > 0 || refuseAuthCnt > 0 ? 30 : 150}>
+            <View style={commonStyle.mb15}>
+              <CommonText textStyle={layoutStyle.textCenter} type={'h3'} fontWeight={'700'} color={'#697AE6'}>
+                가입 심사 진행중
+              </CommonText>
+              <CommonText textStyle={layoutStyle.textCenter} type={'h3'} fontWeight={'700'} color={'#000000'}>
+                심사 기간은 1 ~ 3일 이며,
+              </CommonText>
+            </View>
+            <View style={commonStyle.mb15}>
+              <CommonText textStyle={layoutStyle.textCenter} type={'h5'} color={'#818181'} fontWeight={'500'}>
+                결과는 PUSH 메세지로 전송됩니다.
+              </CommonText>
+            </View>
+
+            {/* {accessType == 'REFUSE' ? (
+              <>
+                <View style={commonStyle.mb15}>
+                  <CommonText textStyle={layoutStyle.textCenter} type={'h3'} fontWeight={'700'}>심사 결과</CommonText>
+                  <SpaceView mt={5}>
+                    <CommonText textStyle={layoutStyle.textCenter} type={'h3'} fontWeight={'700'} color={ColorType.primary}>반려</CommonText>
+                  </SpaceView>
+                </View>
+                <View style={commonStyle.mb15}>
+                  <CommonText textStyle={_styles.refuseText} type={'h5'} color={'#6E6E6E'}>
+                    심사 진행 결과 아쉽게도 반려되었음을 안내드립니다.{'\n'}
+                    아래 '프로필 수정하기'를 메뉴에 반려 사유 확인 및{'\n'}
+                    재심사 요청을 해주시면 재심사가 진행됩니다.
+                  </CommonText>
+                </View>
+                <View>
+                  <CommonText textStyle={layoutStyle.textCenter} type={'h5'}>
+                    반려사유 : {getRefuseData().text}
+                  </CommonText>
+                </View>
+              </>
+            ) : (
+              <>
+                <View style={commonStyle.mb15}>
+                  <CommonText textStyle={layoutStyle.textCenter} type={'h3'} fontWeight={'700'} color={'#697AE6'}>
+                    가입 심사가 진행중
+                  </CommonText>
+                  <CommonText textStyle={layoutStyle.textCenter} type={'h3'} fontWeight={'700'} color={'#000000'}>
+                    심사 기간은 1 ~ 3일 이며,
+                  </CommonText>
+                </View>
+                <View style={commonStyle.mb15}>
+                  <CommonText textStyle={layoutStyle.textCenter} type={'h5'} color={'#818181'} fontWeight={'500'}>
+                    결과는 PUSH 메세지로 전송됩니다.
+                  </CommonText>
+                </View>
+              </>
+            )} */}
+          </SpaceView>
+        </View>
+
+        {(refuseImgCnt > 0 || (refuseAuthCnt > 0)) && (
+          <>
+            <SpaceView mb={30}>
+              <View horizontal style={_styles.refuseTextArea}>
+                <CommonText textStyle={_styles.refuseText01}>심사 반려 안내</CommonText>
+                <CommonText textStyle={_styles.refuseText02}>
+                  가입 기준에 맞지 않거나 증빙 자료가 불충분한 대상이 있어요.{'\n'}
+                  "프로필 수정하기"를 이용해 재심사 신청을 해주세요.
+                </CommonText>
+
+                <ScrollView horizontal style={_styles.refuseIconArea}>
+                  {refuseImgCnt > 0 &&
+                    <>
+                      <View style={_styles.refuseIconItem}>
+                        <Image source={gender == 'W' ? ICON.refuseFemaleIcon : ICON.refuseMaleIcon} style={_styles.refuseIcon} />
+                        <CommonText textStyle={_styles.refuseIconText}>사진</CommonText>
+                      </View>
+                    </>
+                  }
+
+                  {authList.map((item:any, index) => {
+                    if(item.auth_status == 'REFUSE') {
+                      return (
+                        <View style={_styles.refuseIconItem}>
+                          {item.common_code == 'JOB' && <Image source={ICON.refuseJobIcon} style={_styles.refuseIcon} />}
+                          {item.common_code == 'EDU' && <Image source={ICON.refuseEduIcon} style={_styles.refuseIcon} />}
+                          {item.common_code == 'INCOME' && <Image source={ICON.refuseIncomeIcon} style={_styles.refuseIcon} />}
+                          {item.common_code == 'ASSET' && <Image source={ICON.refuseAssetIcon} style={_styles.refuseIcon} />}
+                          {item.common_code == 'SNS' && <Image source={ICON.refuseSnsIcon} style={_styles.refuseIcon} />}
+                          {item.common_code == 'VEHICLE' && <Image source={ICON.refuseVehicleIcon} style={_styles.refuseIcon} />}
+                          <CommonText textStyle={_styles.refuseIconText}>{item.code_name}</CommonText>
+                        </View>
+                      )
+                    }
+                  })}
+                </ScrollView>
+              </View>          
+            </SpaceView>
+          </>
+        )}
+
+
+      </ScrollView>
+
+      
       
 
-      <SpaceView viewStyle={styles.bottomBtnContainer} mb={20}>
+      <SpaceView viewStyle={styles.bottomBtnContainer} mb={5}>
         <CommonBtn
           value={'프로필 수정하기'}
           type={'blue2'}

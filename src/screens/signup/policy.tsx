@@ -101,7 +101,7 @@ export const Policy = (props: Props) => {
   return (
     <>
       <CommonHeader title={'서비스 정책'} />
-      <ScrollView contentContainerStyle={[styles.scrollContainerAll]}>
+      <ScrollView contentContainerStyle={[styles.scrollContainerAll]} style={{backgroundColor: '#fff'}}>
         <SpaceView mb={20} viewStyle={{paddingHorizontal:16}}>
           <CommonText textStyle={_styles.title}>
             아래 서비스 정책에 동의해주세요.
