@@ -87,7 +87,7 @@ export const Shop = () => {
     getBanner();
   }, []); */
 
-  const getBanner = async () => {
+  const getBanner = async () => { 
     //const invenConnectDate = await AsyncStorage.getItem('INVENTORY_CONNECT_DT') || '20230524000000';
     const { success, data } = await get_banner_list({ banner_type: 'PROD' });
     if (success) {

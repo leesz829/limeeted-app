@@ -214,7 +214,7 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc }) {
       loadingFunc(false);
     } else {
       loadingFunc(false);
-    }    
+    }
   };
 
   // ######################################################### 상품상세 팝업 활성화 함수
