@@ -282,7 +282,7 @@ export const Login01 = () => {
 
   return (
     <>
-      <ScrollView style={[styles.scrollContainer]}>
+      <ScrollView contentContainerStyle={[styles.scrollContainer]}>
         <View style={[_styles.container, layoutStyle.justifyCenter]}>
 
           {/* ############################################################### 타이틀 */}

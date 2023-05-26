@@ -434,7 +434,7 @@ const categories = [
     value: 'SUBSCRIPTION',
   },
   {
-    label: '패키지',
+    label: '패키지상품',
     value: 'PACKAGE',
   },
 ];
