@@ -47,7 +47,7 @@ export default function Inventory() {
     const { data, message } = await get_my_items(body);
 
     if(data) {
-      const connectDate = await AsyncStorage.getItem('INVENTORY_CONNECT_DT') || '20230524000000';
+      const connectDate = await AsyncStorage.getItem('INVENTORY_CONNECT_DT') || '20230526000000';
       data?.inventory_list.map((item: any) => {
         item.connect_date = connectDate;
       });

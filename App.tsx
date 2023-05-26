@@ -261,7 +261,7 @@ function PreFetcher(props) {
             text={'업데이트가 진행 중이에요.\n잠시 기다려 주세요.'}
             subText={updatePercent + '%'}
             isConfirm={false}
-            confirmCallbackFunc={storeUpdate}
+            confirmCallbackFunc={null}
             cancelCallbackFunc={null}
             cancelConfirmText={'확인'}
           /> 
