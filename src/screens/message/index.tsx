@@ -107,7 +107,7 @@ export const Message = (props: Props) => {
 	return (
 		<>
 			<TopNavigation currentPath={''} />
-			<ScrollView style={styles.scrollContainer}>
+			<ScrollView contentContainerStyle={styles.scrollContainer} style={{backgroundColor: '#fff'}}>
 				{messageList.map(
 					({
 						msg_send_seq,
