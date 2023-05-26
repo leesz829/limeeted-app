@@ -28,8 +28,12 @@ interface Props {
 
 export const BasePopup = (props: Props) => {
   const onPressConfirm = () => {
-    props.confirmCallbackFunc && props.confirmCallbackFunc();
-    props.setPopupVIsible(false);
+    if(props.confirmCallbackFunc == null && typeof props.confirmCallbackFunc != 'undefined') {
+      
+    } else {
+      props.confirmCallbackFunc && props.confirmCallbackFunc();
+      props.setPopupVIsible(false);
+    }
   };
   const onPressCancel = () => {
     props.cancelCallbackFunc && props.cancelCallbackFunc();

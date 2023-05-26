@@ -218,7 +218,7 @@ export const Signup03 = (props : Props) => {
 										placeholder={'한글, 영문, 숫자 12글자까지 입력할 수 있어요.'}
 										placeholderTextColor={'#c6ccd3'}
 										value={nickname}
-										maxLength={30}
+										maxLength={20}
 										onChangeText={nickname => setNickname(nickname)}  />
 					</SpaceView>
 

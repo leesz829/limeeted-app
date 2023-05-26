@@ -57,6 +57,17 @@ export const Profile = (props: Props) => {
 
   // 닉네임 저장 버튼
   const btnSaveNickName = async () => {
+    let special_pattern = /[^a-zA-Z0-9ㄱ-힣]/g;
+
+    if(nickname == '' || typeof nickname == 'undefined' || nickname == null || !nickname.trim()) {
+			show({ content: '닉네임을 입력해 주세요.' });
+			return;
+		}
+
+    if(nickname.length > 12 || special_pattern.test(nickname) == true) {
+			show({ content: '한글, 영문, 숫자 12글자까지 입력할 수 있어요.' });
+			return;
+		}
 
     // 닉네임 변경 여부 체크
     if (memberBase?.nickname == nickname) {
@@ -290,7 +301,7 @@ export const Profile = (props: Props) => {
                 value={nickname}
                 onChangeText={(nickname) => setNickname(nickname)}
                 rightPen={false}
-                maxLength={30}
+                maxLength={20}
               />
             </View>
             <View style={[_styles.modfyHpBtn]}>
