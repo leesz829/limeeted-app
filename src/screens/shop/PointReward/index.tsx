@@ -19,21 +19,35 @@ import { CommaFormat } from 'utils/functions';
 import { SUCCESS } from 'constants/reusltcode';
 import { usePopup } from 'Context';
 import { CommonLoading } from 'component/CommonLoading';
+import { layoutStyle } from 'assets/styles/Styles';
+import LinearGradient from 'react-native-linear-gradient';
 
 
 export default function PointReward(element) {
 
+  const PAY_INFO = {
+    member_buy_price: 0
+    , target_buy_price: 0
+    , price_persent: 0
+    , tmplt_name: ''
+    , tmplt_level: 1
+  };
+
   const { show } = usePopup(); // 공통 팝업
   const [isLoading, setIsLoading] = useState(false);
 
+  const [payInfo, setPayInfo] = useState(PAY_INFO);
+  const [tmplList, setTmplList] = useState(TMPL_LIST);
+
   //const { prod_seq, modify_seq } = useRoute().params;
 
-  const PAY_INFO = {
+  /* const PAY_INFO = {
     member_buy_price: element.route.params.member_buy_price
     , target_buy_price: element.route.params.target_buy_price
     , price_persent: element.route.params.price_persent
     , tmplt_name: element.route.params.tmplt_name
-  };
+    , tmplt_level: element.route.params.tmplt_level
+  }; */
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -86,14 +100,32 @@ export default function PointReward(element) {
   const closeModal = () => {
     setIsModalOpen(false);
   };
-  
-  const [tmplList, setTmplList] = useState(TMPL_LIST);
 
   const getCashBackPayInfo = async () => {
     const { success, data } = await get_cashback_detail_info();
     console.log('data.result :::: ', data);
     if (success) {
-      setTmplList(data.result);
+
+      let lettmpltName = data?.pay_info.tmplt_name;
+      let mbrPrice = data?.pay_info.member_buy_price;
+      let trgtPrice = data?.pay_info.target_buy_price;
+      let level = data?.pay_info.tmplt_level;
+
+      let percent = (mbrPrice*100) / trgtPrice;
+      if(percent > 0) {
+        percent = percent / 100; 
+      }
+
+      setPayInfo({
+        member_buy_price: mbrPrice
+        , target_buy_price: trgtPrice
+        , price_persent: percent
+        , tmplt_name: lettmpltName.replace(/(\s*)/g, "")
+        , tmplt_level: level
+      });
+
+      //setPayInfo(data.pay_info)
+      setTmplList(data.tmpl_list);
     }
   };
 
@@ -105,41 +137,60 @@ export default function PointReward(element) {
     <>
       {isLoading && <CommonLoading />}
 
-      <View style={styles.container}>
+      <View style={_styles.container}>
         <CommonHeader title="리미티드 포인트 보상" right={<Wallet />} />
-        <ScrollView style={styles.scroll}>
-          <View style={styles.inner}>
-            <View style={styles.gradeContainer}>
-              <Text style={styles.gradeText}>{PAY_INFO?.tmplt_name}</Text>
+
+        <ScrollView style={_styles.scroll}>
+          
+          <View style={_styles.inner}>
+            <View style={_styles.innerArea01}>
+              <Text style={_styles.innerText01}>상품을 구입하면{'\n'}리미티드 포인트가 충전돼요.</Text>
+              <Text style={_styles.innerText02}>충전 등급이 올라가면 캐시백 보상이 지급됩니다.</Text>
             </View>
-            <View style={styles.rankBox}>
-              <Text style={styles.rankText}>RANK</Text>
+
+            <View>
+              <View style={_styles.gradeContainer}>
+                <Text style={_styles.gradeText}>{payInfo?.tmplt_name}</Text>
+              </View>
+              <View style={_styles.rankBox}>
+                <Text style={_styles.rankText}>RANK</Text>
+              </View>
             </View>
             {/* <Text style={styles.accReward}>누적보상 50,000</Text> 
             <Text style={styles.lmitPoint}>리미티드 포인트</Text>*/}
           </View>
 
-          <View>
+          <View style={{marginTop: 10}}>
+            <View>
+              <LinearGradient
+                colors={['#7986EE', '#8854D2']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={_styles.gradient(payInfo?.price_persent)}>
+              </LinearGradient>
+
+              <Slider
+                  //value={PAY_INFO?.price_persent}
+                  animateTransitions={true}
+                  renderThumbComponent={() => null}
+                  //maximumTrackTintColor={ColorType.purple}
+                  maximumTrackTintColor={'transparent'}
+                  minimumTrackTintColor={'transparent'}
+                  containerStyle={male.sliderContainer}
+                  trackStyle={male.sliderTrack}
+                  trackClickable={false}
+                  disabled
+                />
+            </View>
             <View>
               {/* <Text style={male.pointText}>
                 리미티드 포인트 <Text>✌️</Text>
               </Text> */}
               <Text style={male.infoText}>
-                즐거운 <Text style={male.cashbackText}>캐시백</Text> 생활 {CommaFormat(PAY_INFO?.member_buy_price)} /
-                {CommaFormat(PAY_INFO?.target_buy_price)}
+                캐시백 보상까지 {CommaFormat(payInfo?.member_buy_price)} /
+                {CommaFormat(payInfo?.target_buy_price)}
               </Text>
             </View>
-            <Slider
-              value={PAY_INFO?.price_persent}
-              animateTransitions={true}
-              renderThumbComponent={() => null}
-              maximumTrackTintColor={ColorType.purple}
-              minimumTrackTintColor={ColorType.purple}
-              containerStyle={male.sliderContainer}
-              trackStyle={male.sliderTrack}
-              trackClickable={false}
-              disabled
-            />
           </View>
           
           {/* <View style={styles.buttonContainer}>
@@ -152,11 +203,13 @@ export default function PointReward(element) {
           <View style={{ marginTop: 20 }}>
 
             {tmplList?.map((item) => (
-              <View style={styles.itemContainer}>
-                <Text style={styles.gradeText2}>{item.tmplt_name}</Text>
-                <View style={styles.row}>
+              <View style={_styles.itemContainer}>
+                <View style={{width: '10%'}}>
+                  <Text style={_styles.gradeText2}>{item.tmplt_name}</Text>
+                </View>
+                <View style={[_styles.row, {width: '65%'}]}>
                   <Image source={ICON.royalPassCircle} style={{width: 30, height: 30, marginTop: 6}} />
-                  <Text style={styles.rowText}>{item.item_name}</Text>
+                  <Text style={_styles.rowText}>{item.item_name}</Text>
                 </View>
                 {/* <View style={styles.row}>
                   <Image source={ICON.ticket} />
@@ -176,23 +229,31 @@ export default function PointReward(element) {
                   <Text style={styles.moreText}>포인트 모으기</Text>
                 )} */}
                   
-
-                {
-                  item.receive_flag == 'Y' ? (
-                    <Text style={styles.completeText}>보상 완료!</Text>
-                  ) : item.target_buy_price > item.member_buy_price ? (
-                    <Text style={styles.moreText}>포인트 모으기</Text>
-                  ) : (
-                    <TouchableOpacity
-                      activeOpacity={0.8}
-                      style={styles.rewardButton}
-                      onPress={() => {onPressGetReward(item.event_tmplt_seq, item.tmplt_name);}}
-                    >
-                      <Text style={styles.rewardButtonText}>보상받기</Text>
-                    </TouchableOpacity>
-                  )
-                }
-          
+                <View style={{width: '30%', justifyContent: 'center', alignItems: 'center'}}>
+                  {
+                    item.receive_flag == 'Y' ? (
+                      <Text style={_styles.completeText}>보상완료!</Text>
+                    ) : item.target_buy_price > item.member_buy_price ? (
+                      <Text style={_styles.moreText}>진행중</Text>
+                    ) : (
+                      <>
+                        {payInfo?.tmplt_level < item.tmplt_level ? (
+                          <TouchableOpacity activeOpacity={0.8} style={[_styles.rewardButton, {backgroundColor: Color.gray8888}]}>
+                            <Text style={_styles.rewardButtonText}>보상받기!</Text>
+                          </TouchableOpacity>
+                        ) : (
+                          <TouchableOpacity
+                            activeOpacity={0.8}
+                            style={_styles.rewardButton}
+                            onPress={() => {onPressGetReward(item.event_tmplt_seq, item.tmplt_name);}}>
+                            
+                            <Text style={_styles.rewardButtonText}>보상받기!</Text>
+                          </TouchableOpacity>
+                        )}
+                      </>
+                    )
+                  }
+                </View>
               </View>
             ))}
 
@@ -224,22 +285,23 @@ export default function PointReward(element) {
             ))} */}
           </View>
         </ScrollView>
-        <Modal isVisible={isModalOpen} style={styles.modalStyle}>
-          <View style={styles.modalContainer}>
+
+        <Modal isVisible={isModalOpen} style={_styles.modalStyle}>
+          <View style={_styles.modalContainer}>
             {/* 아이콘 나오면 넣어야함 */}
-            <Image style={styles.modalIcon} />
-            <Text style={styles.normalText}>
-              리미티드 <Text style={styles.boldText}>보상획득</Text>
+            <Image style={_styles.modalIcon} />
+            <Text style={_styles.normalText}>
+              리미티드 <Text style={_styles.boldText}>보상획득</Text>
             </Text>
-            <Text style={styles.infoText}>
+            <Text style={_styles.infoText}>
               리미티드 포인트 A등급 보상을 획득하셨습니다.
             </Text>
-            <TouchableOpacity style={styles.confirmButton} onPress={closeModal}>
+            <TouchableOpacity style={_styles.confirmButton} onPress={closeModal}>
               <Text style={{ color: Color.gray6666 }}>확인</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+            <TouchableOpacity style={_styles.closeButton} onPress={closeModal}>
               {/* close 검정버튼 나오면 교체 */}
-              <Image source={ICON.close} style={styles.closeImage} />
+              <Image source={ICON.close} style={_styles.closeImage} />
             </TouchableOpacity>
           </View>
         </Modal>
@@ -268,7 +330,7 @@ const TMPL_LIST = [
 ############### Style 영역
 ################################################################################################################ */}
 
-const styles = StyleSheet.create({
+const _styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
@@ -280,9 +342,24 @@ const styles = StyleSheet.create({
   },
   inner: {
     flex: 1,
-    flexDirection: 'column',
+    flexDirection: 'row',
     alignItems: `center`,
-    justifyContent: `center`,
+    justifyContent: `space-between`,
+  },
+  innerArea01: {
+    //marginTop: 65,
+  },
+  innerText01: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 22,
+    color: '#333333',
+    lineHeight: 27,
+    marginBottom: 5,
+  },
+  innerText02: {
+    fontFamily: 'AppleSDGothicNeoSB00',
+    fontSize: 14,
+    color: '#9D9D9D',
   },
   gradeContainer: {
     flexDirection: `row`,
@@ -290,20 +367,23 @@ const styles = StyleSheet.create({
     justifyContent: `center`,
   },
   gradeText: {
-    fontSize: 72,
-    color: Color.purple,
+    fontSize: 100,
+    //color: Color.purple,
+    color: '#8657D4',
     fontWeight: 'bold',
   },
   rankBox: {
-    borderRadius: 10,
+    borderRadius: 15,
     borderColor: Color.grayDDDD,
     borderWidth: 1,
     paddingVertical: 3,
-    paddingHorizontal: 8,
+    paddingHorizontal: 14,
+    marginTop: -13,
   },
   rankText: {
-    fontSize: 10,
+    fontSize: 12,
     color: Color.grayAAAA,
+    textAlign: 'center',
   },
   accReward: {
     color: Color.gray8888,
@@ -347,7 +427,7 @@ const styles = StyleSheet.create({
     borderTopColor: Color.grayDDDD,
     flexDirection: `row`,
     alignItems: `center`,
-    justifyContent: `space-between`,
+    justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 20,
   },
@@ -357,14 +437,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   row: {
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: `center`,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   rowText: {
-    marginLeft: 4,
+    marginLeft: 2,
     fontSize: 14,
-    color: Color.gray8888,
+    color: '#383838',
   },
   completeText: {
     fontSize: 14,
@@ -372,14 +452,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   rewardButton: {
-    borderRadius: 10,
-    padding: 10,
-    backgroundColor: Color.purple,
+    borderRadius: 20,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    backgroundColor: '#8854D2',
   },
   rewardButtonText: {
     color: 'white',
-    fontWeight: 'bold',
-    fontSize: 12,
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 15,
   },
   moreText: {
     fontSize: 14,
@@ -442,6 +523,34 @@ const styles = StyleSheet.create({
     height: 24,
     resizeMode: 'contain',
   },
+  rewardDescArea: {
+    flexDirection: 'row'
+  },
+
+  /* gradient: {
+    position: 'absolute',
+    width: '70%',
+    height: 20,
+    zIndex: 1,
+    borderRadius: 20,
+  }, */
+
+  gradient: (value:any) => {
+    console.log('value :::::: ' , value);
+    let percent = 0;
+
+    if(value != null && typeof value != 'undefined') {
+      percent = value * 100;
+    };
+
+    return {
+      position: 'absolute',
+      width: percent + '%',
+      height: 20,
+      zIndex: 1,
+      borderRadius: 20,
+    };
+  },
 });
 
 const male = StyleSheet.create({
@@ -474,10 +583,11 @@ const male = StyleSheet.create({
   },
   infoText: {
     marginTop: 15,
-    fontSize: 13,
+    fontSize: 10,
     fontWeight: 'bold',
     fontFamily: 'AppleSDGothicNeoM00',
     color: Color.grayAAAA,
+    textAlign: 'right',
   },
   cashbackText: {
     marginTop: 14,
@@ -489,14 +599,16 @@ const male = StyleSheet.create({
   sliderContainer: {
     width: '100%',
     marginTop: 8,
-    height: 14,
+    height: 4,
     borderRadius: 13,
-    backgroundColor: ColorType.primary,
+    backgroundColor: '#E1E4FB',    
   },
   sliderTrack: {
-    height: 14,
+    height: 23,
     borderRadius: 13,
-    backgroundColor: ColorType.grayDDDD,
+    //backgroundColor: ColorType.grayDDDD,
+    backgroundColor: 'transparent',
+    position: 'absolute',
   },
   TooltipButton: {
     position: 'absolute',

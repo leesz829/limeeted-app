@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import { BasePopup } from 'screens/commonpopup/BasePopup';
+import { GuidePopup } from 'screens/commonpopup/GuidePopup';
 
 export const PopupContext = createContext({} as any);
 
@@ -9,6 +10,10 @@ interface PopupContextProps {
   subContent: string | undefined;
   confirmCallback: Function | undefined;
   cancelCallback: Function | undefined;
+  type: string | undefined;
+  guideType: string | undefined;
+  guideSlideYn: string | undefined;
+  guideNexBtnExpoYn: string | undefined;
 }
 
 export const PopupProvider = ({ children }: any) => {
@@ -19,6 +24,10 @@ export const PopupProvider = ({ children }: any) => {
     subContent: '',
     confirmCallback: undefined,
     cancelCallback: undefined,
+    type: '',
+    guideType: '',
+    guideSlideYn: '',
+    guideNexBtnExpoYn: '',
   });
 
   function show(content: PopupContextProps) {
@@ -33,25 +42,41 @@ export const PopupProvider = ({ children }: any) => {
       subContent: '',
       confirmCallback: undefined,
       cancelCallback: undefined,
+      type: '',
+      guideType: '',
+      guideSlideYn: '',
+      guideNexBtnExpoYn: '',
     });
   }
 
   return (
     <PopupContext.Provider value={{ show, hide }}>
       {children}
-      <BasePopup
-        popupVisible={visible}
-        setPopupVIsible={setVisible}
-        title={contents.title}
-        text={contents.content}
-        subText={contents.subContent}
-        isConfirm={
-          typeof contents.confirmCallback != 'undefined' &&
-          typeof contents.cancelCallback != 'undefined'
-        }
-        confirmCallbackFunc={contents.confirmCallback}
-        cancelCallbackFunc={contents.cancelCallback}
-      />
+
+      {contents.type == 'GUIDE' ? (
+        <GuidePopup
+          popupVisible={visible}
+          setPopupVIsible={setVisible}
+          confirmCallbackFunc={contents.confirmCallback}
+          guideType={contents.guideType}
+          guideSlideYn={contents.guideSlideYn}
+          guideNexBtnExpoYn={contents.guideNexBtnExpoYn}
+        />
+      ) : (
+        <BasePopup
+          popupVisible={visible}
+          setPopupVIsible={setVisible}
+          title={contents.title}
+          text={contents.content}
+          subText={contents.subContent}
+          isConfirm={
+            typeof contents.confirmCallback != 'undefined' &&
+            typeof contents.cancelCallback != 'undefined'
+          }
+          confirmCallbackFunc={contents.confirmCallback}
+          cancelCallbackFunc={contents.cancelCallback}
+        />
+      )}
     </PopupContext.Provider>
   );
 };

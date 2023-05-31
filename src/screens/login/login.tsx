@@ -86,8 +86,6 @@ export const Login01 = () => {
     try {
       
       const { success, data } = await signin(body);
-      console.log('data ::::: ', data);
-      console.log('data.token_param ::::: ', data.token_param);
       
       if (success) {
         switch (data.result_code) {

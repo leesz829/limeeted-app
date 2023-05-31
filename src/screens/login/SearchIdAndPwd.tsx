@@ -160,7 +160,6 @@ export const SearchIdAndPwd = (props : Props) => {
 		};
 		try {
 		  const { success, data } = await search_password(body);
-		  console.log('data ::::: ' , data);
 		  if(success) {
 			switch (data.result_code) {
 			  case SUCCESS:

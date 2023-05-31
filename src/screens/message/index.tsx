@@ -51,7 +51,6 @@ export const Message = (props: Props) => {
 	const getMessageList = async () => {
 		try {
 		  const { success, data } = await get_member_message_list();
-		  console.log('data ::::: ', data);
 		  if(success) {
 			switch (data.result_code) {
 			  case SUCCESS:

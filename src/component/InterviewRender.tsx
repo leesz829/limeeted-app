@@ -24,7 +24,6 @@ const indexToKr = [
   '열네',
 ];
 export default function InterviewRender({ title, data }) {
-  console.log('data ::::: ' , data);
   
   return (
     <>

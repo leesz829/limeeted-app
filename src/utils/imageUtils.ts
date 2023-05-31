@@ -125,6 +125,7 @@ export const ICON = {
   refuseIncomeIcon: require('assets/icon/refuse_income_icon.png'),
   refuseMaleIcon: require('assets/icon/refuse_male_icon.png'),
   refuseFemaleIcon: require('assets/icon/refuse_female_icon.png'),
+  question: require('assets/icon/icon-question.png'),
 };
 
 export const GIF_IMG = {
@@ -199,6 +200,35 @@ export const PROFILE_IMAGE = {
   profileM1: require('assets/img/tmp/robby_tmp.jpg'),
   womanSample1: require('assets/img/tmp/womanSample1.jpg'),
 };
+
+export const GUIDE_IMAGE = {
+  daily01Thumnail: require('assets/img/guide/daily_01_thumnail.png'),
+  daily01Content: require('assets/img/guide/daily_01_content.png'),
+  daily02Content: require('assets/img/guide/daily_02_content.png'),
+  daily03Content: require('assets/img/guide/daily_03_content.png'),
+  live01Thumnail: require('assets/img/guide/live_01_thumnail.png'),
+  live02Thumnail: require('assets/img/guide/live_02_thumnail.png'),
+  live03Thumnail: require('assets/img/guide/live_03_thumnail.png'),
+  robyThumnail: require('assets/img/guide/roby_thumnail.png'),
+  roby01Content: require('assets/img/guide/roby_01_content.png'),
+  roby02Content: require('assets/img/guide/roby_02_content.png'),
+  roby03Content: require('assets/img/guide/roby_03_content.png'),
+  profile01Img: require('assets/img/guide/profile_01_img.png'),
+  profile02Img: require('assets/img/guide/profile_02_img.png'),
+  profile03Img: require('assets/img/guide/profile_03_img.png'),
+  shop01ContentBasic: require('assets/img/guide/shop_01_content_basic.png'),
+  shop01ContentBoosting: require('assets/img/guide/shop_01_content_boosting.png'),
+  shop01ContentPackage: require('assets/img/guide/shop_01_content_package.png'),
+  shop02Content: require('assets/img/guide/shop_02_content.png'),
+  shop03Content: require('assets/img/guide/shop_03_content.png'),
+  robyProfile01Content: require('assets/img/guide/roby_profile_01_content.png'),
+  robyProfile02Content: require('assets/img/guide/roby_profile_02_content.png'),
+  robyGrade01Content: require('assets/img/guide/roby_grade_01_content.png'),
+  robyGrade02Content: require('assets/img/guide/roby_grade_02_content.png'),
+  robyGrade03Content: require('assets/img/guide/roby_grade_03_content.png'),
+};
+
+
 
 export function findSourcePath(img_file_path: any) {
   if (img_file_path) {

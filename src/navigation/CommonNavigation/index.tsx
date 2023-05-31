@@ -15,6 +15,7 @@ import { Preference } from 'screens/commonpopup/Preference';
 import { Profile } from 'screens/profile/Profile';
 import { Profile1 } from 'screens/profile/Profile1';
 import { Profile2 } from 'screens/profile/Profile2';
+import { TutorialSetting } from 'screens/profile/TutorialSetting';
 import { CustomerInquiry } from 'screens/profile/CustomerInquiry';
 import { ChangePassword } from 'screens/profile/ChangePassword';
 import { SecondAuth } from 'screens/profile/SecondAuth';
@@ -53,6 +54,7 @@ const CommonNavigation = () => {
       <CommonStack.Screen name="Profile" component={Profile} />
       <CommonStack.Screen name="Profile1" component={Profile1} />
       <CommonStack.Screen name="Profile2" component={Profile2} />
+      <CommonStack.Screen name="TutorialSetting" component={TutorialSetting} />
       <CommonStack.Screen name="ChangePassword" component={ChangePassword} />
       <CommonStack.Screen name="CustomerInquiry" component={CustomerInquiry} />
       <CommonStack.Screen name="SecondAuth" component={SecondAuth} />

@@ -169,6 +169,10 @@ export const styles = StyleSheet.create({
     height: 15.3,
     resizeMode: 'contain',
   },
+  iconSize16: {
+    width: 16,
+    height: 16,
+  },
   iconSize18: {
     width: 18,
     height: 18,
@@ -601,6 +605,13 @@ export const modalStyle = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 0,
   },
+  modalStyle2: {
+    width: width - 62,
+    backgroundColor: 'white',
+    borderRadius: 15,
+    paddingHorizontal: 0,
+    overflow: 'hidden',
+  },
   modalHeader: {
     paddingVertical: 10,
     borderBottomWidth: 1,
@@ -628,4 +639,20 @@ export const modalStyle = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: Color.grayF8F8,
   },
+
+  guideModalBtnContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginHorizontal: 15,
+  },
+  guideModalBtn: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    backgroundColor: Color.blue02,
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+
 });

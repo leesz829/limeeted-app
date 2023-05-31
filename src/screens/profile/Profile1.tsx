@@ -2,7 +2,7 @@ import { Slider } from '@miblanchard/react-native-slider';
 import { RouteProp, useIsFocused, useNavigation, useFocusEffect } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { StackParamList, ScreenNavigationProp, ColorType } from '@types';
-import { get_member_profile_info, get_member_face_rank, update_profile } from 'api/models';
+import { get_member_profile_info, get_member_face_rank, update_profile, update_additional } from 'api/models';
 import { Color } from 'assets/styles/Color';
 import { CommonBtn } from 'component/CommonBtn';
 import CommonHeader from 'component/CommonHeader';
@@ -575,7 +575,22 @@ export const Profile1 = (props: Props) => {
     setImages(myImages.concat(result));
   }; */
 
-  // ############################################################################# 최초 실행
+  // ############################################################################# 회원 튜토리얼 노출 정보 저장
+  const saveMemberTutorialInfo = async () => {
+    const body = {
+      tutorial_profile_yn: 'N'
+    };
+    const { success, data } = await update_additional(body);
+    if(success) {
+      if(null != data.mbr_base && typeof data.mbr_base != 'undefined') {
+        dispatch(setPartialPrincipal({
+          mbr_base : data.mbr_base
+        }));
+      }
+    }
+  };
+
+  // ############################################################################# 초기 실행 실행
   useFocusEffect(
     React.useCallback(() => {
       getMemberProfileData();
@@ -583,8 +598,30 @@ export const Profile1 = (props: Props) => {
       return () => {
         imgDel_onClose();
       };
-    }, [isFocus]),
+    }, []),
   );
+
+  useEffect(() => {
+    if(isFocus) {
+
+      // 튜토리얼 팝업 노출
+      if(memberBase?.tutorial_profile_yn == 'Y') {
+        show({
+          type: 'GUIDE',
+          guideType: 'PROFILE',
+          guideSlideYn: 'Y',
+          guideNexBtnExpoYn: 'Y',
+          confirmCallback: function(isNextChk) {
+            if(isNextChk) {
+              saveMemberTutorialInfo();
+            }
+          }
+        });
+      };
+    };
+  }, [isFocus]);
+
+
 
 
   return (

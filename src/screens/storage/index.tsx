@@ -86,17 +86,12 @@ export const Storage = (props: Props) => {
     matchSpecialCnt: 0,
   });
 
-  React.useEffect(() => {
-    getStorageData();
-  }, [isFocusStorage]);
-
   // ################################################################################# 보관함 정보 조회
   const getStorageData = async () => {
     setIsLoading(true);
 
     try {
       const { success, data } = await get_member_storage();
-
       if(success) {
         if (data.result_code != '0000') {
           console.log(data.result_msg);
@@ -250,7 +245,12 @@ export const Storage = (props: Props) => {
     }
   };
 
-
+  // ######################################################################################## 초기 실행 함수
+  React.useEffect(() => {
+    if(isFocusStorage) {
+      getStorageData();
+    }
+  }, [isFocusStorage]);
 
 
   // #######################################################################################################

@@ -127,8 +127,10 @@ export const StorageProfile = (props: Props) => {
   // ################################################################ 초기 실행 함수
   // ##### 첫 렌더링
   useEffect(() => {
-    selectMatchMemberInfo();
-    selectMemberApplyItemInfo();
+    if(isFocus) {
+      selectMatchMemberInfo();
+      selectMemberApplyItemInfo();
+    }
   }, [isFocus]);
 
   const selectMemberApplyItemInfo = async () => {

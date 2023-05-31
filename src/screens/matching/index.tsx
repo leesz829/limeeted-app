@@ -2,6 +2,7 @@ import {
   RouteProp,
   useIsFocused,
   useNavigation,
+  useFocusEffect,
 } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import {
@@ -18,9 +19,9 @@ import {
   report_matched_user,
   report_check_user,
   report_check_user_confirm,
+  update_additional,
 } from 'api/models';
 import { Color } from 'assets/styles/Color';
-
 import { BarGrap } from 'component/BarGrap';
 import { CommonBtn } from 'component/CommonBtn';
 import { CommonCheckBox } from 'component/CommonCheckBox';
@@ -52,14 +53,15 @@ import { SimpleGrid } from 'react-native-super-grid';
 import { useDispatch } from 'react-redux'; 
 import { myProfile } from 'redux/reducers/authReducer';
 import { MatchSearch } from 'screens/matching/MatchSearch';
-import { findSourcePath, ICON, IMAGE } from 'utils/imageUtils';
+import { findSourcePath, ICON, IMAGE, GUIDE_IMAGE } from 'utils/imageUtils';
 import { Slider } from '@miblanchard/react-native-slider';
 import ProfileAuth from 'component/ProfileAuth';
 import InterviewRender from 'component/InterviewRender';
 import { formatNowDate} from 'utils/functions';
 import { Watermark } from 'component/Watermark';
 import SincerePopup from 'screens/commonpopup/sincerePopup';
-
+import Carousel from 'react-native-snap-carousel';
+import { setPartialPrincipal } from 'redux/reducers/authReducer';
 
 
 const { width, height } = Dimensions.get('window');
@@ -141,14 +143,6 @@ export default function Matching(props: Props) {
     insertMatchInfo('sincere', level);
     setSincereModalVisible(false);
   }
-
-  // ################################################################ 초기 실행 함수
-  useEffect(() => {
-    checkUserReport();
-    setIsEmpty(false);
-    // 데일리 매칭 정보 조회
-    getDailyMatchInfo();
-  }, [isFocus]);
 
   // ############################################################ 데일리 매칭 정보 조회
   const getDailyMatchInfo = async () => {
@@ -356,12 +350,108 @@ export default function Matching(props: Props) {
       report_member_seq: data.match_member_info.member_seq
     };
     report_check_user_confirm(body);
+  };
+
+  // 회원 튜토리얼 노출 정보 저장
+  const saveMemberTutorialInfo = async () => {
+    const body = {
+      tutorial_daily_yn: 'N'
+    };
+    const { success, data } = await update_additional(body);
+    if(success) {
+      if(null != data.mbr_base && typeof data.mbr_base != 'undefined') {
+        dispatch(setPartialPrincipal({
+          mbr_base : data.mbr_base
+        }));
+      }
+    }
   }
+
+  // ################################################################ 초기 실행 함수
+  useEffect(() => {
+    if(isFocus) {
+      checkUserReport();
+      setIsEmpty(false);
+
+      // 데일리 매칭 정보 조회
+      getDailyMatchInfo();
+
+      // 튜토리얼 팝업 노출
+      if(memberBase?.tutorial_daily_yn == 'Y') {
+        show({
+          type: 'GUIDE',
+          guideType: 'DAILY',
+          guideSlideYn: 'Y',
+          guideNexBtnExpoYn: 'Y',
+          confirmCallback: function(isNextChk) {
+            if(isNextChk) {
+              saveMemberTutorialInfo();
+            }
+          }
+        });
+      };
+    };
+  }, [isFocus]);
 
 
   return (
     data.profile_img_list.length > 0 && isLoad ? (
       <>
+        {/* <Modal visible={true} transparent={true}>
+          <View style={modalStyle.modalBackground}>
+            <View style={modalStyle.modalStyle2}>
+
+            <Carousel
+              ref={ref}
+              data={tabs}
+              firstItem={pageIndex}
+              onSnapToItem={setCurrentIndex}
+              sliderWidth={width}
+              itemWidth={width}
+              pagingEnabled
+              renderItem={({item, index}) => {
+                return (
+                  <>
+                    {item.data.length == 0 ? (
+                      <SpaceView viewStyle={_styles.noData}>
+                        <Text style={_styles.noDataText}>{item.title}이 없습니다.</Text>
+                      </SpaceView>
+                    ) : (
+                      <ScrollView>
+                        <View style={_styles.imageWarpper}>
+                          {item.data.map((i, n) => (
+                            <RenderItem item={i} index={n} type={item.type} />
+                          ))}
+                        </View>
+
+                        <View style={{ height: 50 }} />
+                      </ScrollView>
+                    )}
+                  </>
+                )
+              }}          
+            />
+
+              <SpaceView viewStyle={[layoutStyle.alignCenter, {backgroundColor: '#B8D1D1', paddingTop: 25}]}>
+                <Image source={GUIDE_IMAGE.daily01Thumnail} style={{width: 280, height: 398}} resizeMode={'cover'} />
+              </SpaceView>
+
+              <SpaceView viewStyle={layoutStyle.alignStart}>
+                <Image source={GUIDE_IMAGE.daily01Content} style={{width: 280, height: 143}} resizeMode={'cover'} />
+              </SpaceView>
+
+              <SpaceView mt={30} mb={10} viewStyle={modalStyle.guideModalBtnContainer}>
+                <TouchableOpacity style={[modalStyle.guideModalBtn]} onPress={null}>
+                  <CommonText type={'h4'} fontWeight={'200'} color={Color.white}>확인</CommonText>
+                </TouchableOpacity>
+              </SpaceView>
+            </View>
+          </View>
+        </Modal> */}
+
+
+
+
         <TopNavigation currentPath={'LIMEETED'} />
 
         <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>

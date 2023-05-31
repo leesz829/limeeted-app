@@ -212,6 +212,13 @@ export async function update_additional(body: {
   religion: string;
   drinking: string;
   smoking: string;
+  tutorial_daily_yn: string;
+	tutorial_live_yn: string;
+	tutorial_roby_yn: string;
+	tutorial_profile_yn: string;
+	tutorial_shop_yn: string;
+	tutorial_subscription_item_yn: string;
+	tutorial_package_item_yn: string;
 }) {
   return send(UPDATE_ADDITIONAL, 'POST', body, true, false);
 }

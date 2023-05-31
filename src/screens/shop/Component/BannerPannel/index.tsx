@@ -116,6 +116,7 @@ const PAY_INFO = {
   , target_buy_price: 10
   , price_persent: 0
   , tmplt_name: ''
+  , tmplt_level: 1
 };
 
 function MalePannel() {
@@ -130,7 +131,8 @@ function MalePannel() {
           , target_buy_price: payInfo.target_buy_price 
           , price_persent: payInfo.price_persent 
           , tmplt_name: payInfo.tmplt_name
-      } 
+          , tmplt_level: payInfo.tmplt_level
+      }
     });
   };
 
@@ -142,6 +144,7 @@ function MalePannel() {
         let lettmpltName = data?.result.tmplt_name;
         let mbrPrice = data?.result.member_buy_price;
         let trgtPrice = data?.result.target_buy_price;
+        let level = data?.result.tmplt_level;
 
         let percent = (mbrPrice*100) / trgtPrice;
         if(percent > 0) {
@@ -153,6 +156,7 @@ function MalePannel() {
           , target_buy_price: trgtPrice
           , price_persent: percent
           , tmplt_name: lettmpltName.replace(/(\s*)/g, "")
+          , tmplt_level: level
         });
       }
     };

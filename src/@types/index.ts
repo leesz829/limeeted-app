@@ -102,6 +102,7 @@ export type StackParamList = {
     imgList: [];
     orderSeq: Number;
   };
+  TutorialSetting: undefined;
 };
 
 export type BottomParamList = {

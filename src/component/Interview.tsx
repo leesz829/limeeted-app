@@ -163,7 +163,6 @@ export default function Interview({
 
     try {
       const { success, data } = await update_interview(body);
-      console.log('data ::::: ' , data);
       if (success) {
         if (data.result_code == '0000') {
           dispatch(

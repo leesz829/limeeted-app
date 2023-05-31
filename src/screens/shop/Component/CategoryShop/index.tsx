@@ -1,4 +1,4 @@
-import { get_bm_product, purchase_product } from 'api/models';
+import { get_bm_product, purchase_product, update_additional } from 'api/models';
 import { Color } from 'assets/styles/Color';
 import React, { memo, useEffect, useState } from 'react';
 import {
@@ -32,6 +32,9 @@ import { ROUTES, STACK } from 'constants/routes';
 import { CommonLoading } from 'component/CommonLoading';
 import AsyncStorage from '@react-native-community/async-storage';
 import { ColorType } from '@types';
+import { setPartialPrincipal } from 'redux/reducers/authReducer';
+import { useDispatch } from 'react-redux';
+import { useUserInfo } from 'hooks/useUserInfo';
 
 
 interface Props {
@@ -58,6 +61,7 @@ interface Product {
 export default function CategoryShop({ loadingFunc, itemUpdateFunc }) {
   const navigation = useNavigation();
   const { show } = usePopup();  // 공통 팝업
+  const dispatch = useDispatch();
 
   const [modalVisible, setModalVisible] = useState(false);
   const [targetItem, setTargetItem] = useState(null);
@@ -65,6 +69,9 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc }) {
   const [items, setItems] = useState([]);
 
   const [isPayLoading, setIsPayLoading] = useState(false);
+
+  // 회원 기본 데이터
+  const memberBase = useUserInfo();
 
   // ########################## 인앱 getProduct
    const passProduct = Platform.select({
@@ -169,6 +176,7 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc }) {
 
   const [productsPass, setProductsPass] = useState<Products>([]); // 패스 상품
 
+  // ################################################################ 초기 실행 함수
   useEffect(() => {
     // 스토어 커넥션
     async function fetch() {  
@@ -221,6 +229,9 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc }) {
   const openModal = (item) => {
     setTargetItem(item);
     setModalVisible(true);
+
+
+    //loadingFunc(true);
   };
 
   // ######################################################### 상품상세 팝업 닫기 함수
@@ -231,6 +242,47 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc }) {
       itemUpdateFunc(isPayConfirm);
     }
   };
+
+  // ############################################################################# 회원 튜토리얼 노출 정보 저장
+  const saveMemberTutorialInfo = async (value:string) => {
+    let body = {};
+
+    if(value == 'SUBSCRIPTION') {
+      body = { tutorial_subscription_item_yn: 'N' };
+    } else if(value == 'PACKAGE') {
+      body = { tutorial_package_item_yn: 'N' };
+    }
+
+    const { success, data } = await update_additional(body);
+    if(success) {
+      if(null != data.mbr_base && typeof data.mbr_base != 'undefined') {
+        dispatch(setPartialPrincipal({
+          mbr_base : data.mbr_base
+        }));
+      }
+    }
+  };
+
+  useEffect(() => {
+    if(selectedCategory?.value == 'SUBSCRIPTION' || selectedCategory?.value == 'PACKAGE') {
+
+      // 튜토리얼 팝업 노출
+      if((selectedCategory?.value == 'SUBSCRIPTION' && memberBase?.tutorial_subscription_item_yn == 'Y') ||
+      (selectedCategory?.value == 'PACKAGE' && memberBase?.tutorial_package_item_yn == 'Y')) {
+        show({
+          type: 'GUIDE',
+          guideType: selectedCategory?.value == 'SUBSCRIPTION' ? 'SHOP_SUBSCRIPTION' : 'SHOP_PACKAGE',
+          guideSlideYn: 'N',
+          guideNexBtnExpoYn: 'Y',
+          confirmCallback: function(isNextChk) {
+            if(isNextChk) {
+              saveMemberTutorialInfo(selectedCategory?.value);
+            }
+          }
+        });
+      };
+    }
+  }, [selectedCategory]);
 
   return (
     <>

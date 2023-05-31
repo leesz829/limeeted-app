@@ -21,7 +21,7 @@ import { ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpac
 import { LivePopup } from 'screens/commonpopup/LivePopup';
 import { LiveSearch } from 'screens/live/LiveSearch';
 import * as hooksMember from 'hooks/member';
-import { get_live_members, regist_profile_evaluation, get_common_code } from 'api/models';
+import { get_live_members, regist_profile_evaluation, get_common_code, update_additional } from 'api/models';
 import { useMemberseq } from 'hooks/useMemberseq';
 import { findSourcePath, IMAGE, GIF_IMG } from 'utils/imageUtils';
 import { usePopup } from 'Context';
@@ -32,6 +32,7 @@ import Image from 'react-native-fast-image';
 import { ICON } from 'utils/imageUtils';
 import { Watermark } from 'component/Watermark';
 import { useUserInfo } from 'hooks/useUserInfo';
+import { setPartialPrincipal } from 'redux/reducers/authReducer';
 
 
 
@@ -82,7 +83,7 @@ export const Live = () => {
   // 선택한 인상 점수
   let clickFaceScore = '';
 
-  // 팝업 화면 콜백 함수
+  // ####################################################################################### 팝업 화면 콜백 함수
   const callBackFunction = (flag: boolean, faceType: string, score: string) => {
     setClickEventFlag(flag);
 
@@ -103,7 +104,7 @@ export const Live = () => {
     }
   };
 
-  // ######################################################### 프로필 평가 등록
+  // ####################################################################################### 프로필 평가 등록
   const insertProfileAssessment = async () => {
     const body = {
       profile_score: clickFaceScore,
@@ -142,7 +143,7 @@ export const Live = () => {
 
   };
 
-  // ######################################################### LIVE 평가 회원 조회
+  // ####################################################################################### LIVE 평가 회원 조회
   const getLiveMatchTrgt = async () => {
     try {
       const { success, data } = await get_live_members();
@@ -222,15 +223,32 @@ export const Live = () => {
 
   };
 
-  // 이미지 스크롤 처리
+  // ####################################################################################### 이미지 스크롤 처리
   const handleScroll = (event) => {
     let contentOffset = event.nativeEvent.contentOffset;
     let index = Math.floor(contentOffset.x / (width-10));
     setPage(index);
   };
 
+  // ####################################################################################### 회원 튜토리얼 노출 정보 저장
+  const saveMemberTutorialInfo = async () => {
+    const body = {
+      tutorial_live_yn: 'N'
+    };
+    const { success, data } = await update_additional(body);
+    if(success) {
+      if(null != data.mbr_base && typeof data.mbr_base != 'undefined') {
+        dispatch(setPartialPrincipal({
+          mbr_base : data.mbr_base
+        }));
+      }
+    }
+  }
+
+  // ######################################################################################## 초기 실행 함수
   useFocusEffect(
     React.useCallback(() => {
+      console.log('live screent !!!!!!!!!!!!!!!!!!!!!!!!!!!!');
       getLiveMatchTrgt();
 
       return () => {
@@ -239,6 +257,27 @@ export const Live = () => {
       };
     }, []),
   );
+
+  React.useEffect(() => {
+    if(isFocus) {
+
+      // 튜토리얼 팝업 노출
+      if(memberBase?.tutorial_live_yn == 'Y') {
+        show({
+          type: 'GUIDE',
+          guideType: 'LIVE',
+          guideSlideYn: 'Y',
+          guideNexBtnExpoYn: 'Y',
+          confirmCallback: function(isNextChk) {
+            if(isNextChk) {
+              saveMemberTutorialInfo();
+            }
+          }
+        });
+      };
+    };
+  }, [isFocus]);
+  
 
   return isLoad ? (
     <>

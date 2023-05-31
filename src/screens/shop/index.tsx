@@ -22,7 +22,7 @@ import {
   requestPurchase,
   getAvailablePurchases,
 } from 'react-native-iap';
-import { get_banner_list, purchase_product } from 'api/models';
+import { get_banner_list, purchase_product, update_additional } from 'api/models';
 import { useIsFocused, useNavigation, useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 import * as properties from 'utils/properties';
@@ -37,6 +37,8 @@ import { CommonLoading } from 'component/CommonLoading';
 import AsyncStorage from '@react-native-community/async-storage';
 import { useDispatch } from 'react-redux';
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
+import { usePopup } from 'Context';
+import { useUserInfo } from 'hooks/useUserInfo';
 
 
 
@@ -60,11 +62,16 @@ interface Product {
 export const Shop = () => {
   const navigation = useNavigation<ScreenNavigationProp>();
   const dispatch = useDispatch();
+  const isFocus = useIsFocused();
+  const { show } = usePopup(); // 공통 팝업
 
   const [isLoading, setIsLoading] = useState(false);
   const [banner, setBanner] = useState([]);
 
   const [newItemCnt, setNewItemCnt] = useState(0);
+
+  // 회원 기본 데이터
+  const memberBase = useUserInfo();
 
   // 인벤토리 이동 함수
   const onPressInventory = () => {
@@ -75,17 +82,6 @@ export const Shop = () => {
   const loadingFunc = (isStatus: boolean) => {
     setIsLoading(isStatus);
   };
-
-  /* useEffect(() => {
-    const getBanner = async () => {
-      const invenConnectDate = await AsyncStorage.getItem('INVENTORY_CONNECT_DT');
-      const { success, data } = await get_banner_list({ banner_type: 'PROD', connect_dt: invenConnectDate });
-      if (success) {
-        setBanner(data?.banner_list);
-      }
-    };
-    getBanner();
-  }, []); */
 
   const getBanner = async () => {
     //const invenConnectDate = await AsyncStorage.getItem('INVENTORY_CONNECT_DT') || '20230524000000';
@@ -100,6 +96,22 @@ export const Shop = () => {
     }
   };
 
+  // ############################################################################# 회원 튜토리얼 노출 정보 저장
+  const saveMemberTutorialInfo = async () => {
+    const body = {
+      tutorial_shop_yn: 'N'
+    };
+    const { success, data } = await update_additional(body);
+    if(success) {
+      if(null != data.mbr_base && typeof data.mbr_base != 'undefined') {
+        dispatch(setPartialPrincipal({
+          mbr_base : data.mbr_base
+        }));
+      }
+    }
+  };
+
+  // ############################################################################# 초기 실행 실행
   useFocusEffect(
     React.useCallback(() => {
       getBanner();
@@ -109,6 +121,26 @@ export const Shop = () => {
       };
     }, []),
   );
+
+  useEffect(() => {
+    if(isFocus) {
+      // 튜토리얼 팝업 노출
+      if(memberBase?.tutorial_shop_yn == 'Y') {
+        show({
+          type: 'GUIDE',
+          guideType: 'SHOP_BASIC',
+          guideSlideYn: 'Y',
+          guideNexBtnExpoYn: 'Y',
+          confirmCallback: function(isNextChk) {
+            if(isNextChk) {
+              saveMemberTutorialInfo();
+            }
+          }
+        });
+      };
+    }
+  }, [isFocus]);
+
 
   return (
     <>

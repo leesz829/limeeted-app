@@ -75,7 +75,6 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
   // 상품번호(재고상품)
   const prod_seq = item?.prod_seq;
 
-
   // ######################################################### 상품 구매하기 함수
   const purchaseBtn = async () => {
 
