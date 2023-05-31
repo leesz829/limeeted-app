@@ -125,6 +125,7 @@ export const ICON = {
   refuseIncomeIcon: require('assets/icon/refuse_income_icon.png'),
   refuseMaleIcon: require('assets/icon/refuse_male_icon.png'),
   refuseFemaleIcon: require('assets/icon/refuse_female_icon.png'),
+  question: require('assets/icon/icon-question.png'),
 };
 
 export const GIF_IMG = {
@@ -153,35 +154,6 @@ export const IMAGE = {
   logoBanner: require('assets/img/logo_banner.jpg'),
 };
 
-export const START_IMAGE = {
-  view1: require('assets/startimg/view1.png'),
-  view2: require('assets/startimg/view2.png'),
-  view3: require('assets/startimg/view3.png'),
-  view4: require('assets/startimg/view4.png'),
-  view5: require('assets/startimg/view5.png'),
-  view6: require('assets/startimg/view6.png'),
-  view7: require('assets/startimg/view7.png'),
-  view8: require('assets/startimg/view8.png'),
-  view9: require('assets/startimg/view9.png'),
-  view10: require('assets/startimg/view10.png'),
-  view11: require('assets/startimg/view11.png'),
-  view12: require('assets/startimg/view12.png'),
-  view13: require('assets/startimg/view13.png'),
-  view14: require('assets/startimg/view14.png'),
-  view15: require('assets/startimg/view15.png'),
-  view16: require('assets/startimg/view16.png'),
-  view17: require('assets/startimg/view17.png'),
-  view18: require('assets/startimg/view18.png'),
-  view19: require('assets/startimg/view19.png'),
-  view20: require('assets/startimg/view20.png'),
-  view21: require('assets/startimg/view21.png'),
-  view22: require('assets/startimg/view22.png'),
-  view23: require('assets/startimg/view23.png'),
-  view24: require('assets/startimg/view24.png'),
-  view25: require('assets/startimg/view25.png'),
-  view26: require('assets/startimg/view26.png'),
-};
-
 export const PROFILE_IMAGE = {
   manTmp1: require('assets/img/tmp/profile_m_01.jpg'),
   manTmp2: require('assets/img/tmp/profile_m_02.jpg'),
@@ -199,6 +171,35 @@ export const PROFILE_IMAGE = {
   profileM1: require('assets/img/tmp/robby_tmp.jpg'),
   womanSample1: require('assets/img/tmp/womanSample1.jpg'),
 };
+
+export const GUIDE_IMAGE = {
+  daily01Thumnail: require('assets/img/guide/daily_01_thumnail.png'),
+  daily01Content: require('assets/img/guide/daily_01_content.png'),
+  daily02Content: require('assets/img/guide/daily_02_content.png'),
+  daily03Content: require('assets/img/guide/daily_03_content.png'),
+  live01Thumnail: require('assets/img/guide/live_01_thumnail.png'),
+  live02Thumnail: require('assets/img/guide/live_02_thumnail.png'),
+  live03Thumnail: require('assets/img/guide/live_03_thumnail.png'),
+  robyThumnail: require('assets/img/guide/roby_thumnail.png'),
+  roby01Content: require('assets/img/guide/roby_01_content.png'),
+  roby02Content: require('assets/img/guide/roby_02_content.png'),
+  roby03Content: require('assets/img/guide/roby_03_content.png'),
+  profile01Img: require('assets/img/guide/profile_01_img.png'),
+  profile02Img: require('assets/img/guide/profile_02_img.png'),
+  profile03Img: require('assets/img/guide/profile_03_img.png'),
+  shop01ContentBasic: require('assets/img/guide/shop_01_content_basic.png'),
+  shop01ContentBoosting: require('assets/img/guide/shop_01_content_boosting.png'),
+  shop01ContentPackage: require('assets/img/guide/shop_01_content_package.png'),
+  shop02Content: require('assets/img/guide/shop_02_content.png'),
+  shop03Content: require('assets/img/guide/shop_03_content.png'),
+  robyProfile01Content: require('assets/img/guide/roby_profile_01_content.png'),
+  robyProfile02Content: require('assets/img/guide/roby_profile_02_content.png'),
+  robyGrade01Content: require('assets/img/guide/roby_grade_01_content.png'),
+  robyGrade02Content: require('assets/img/guide/roby_grade_02_content.png'),
+  robyGrade03Content: require('assets/img/guide/roby_grade_03_content.png'),
+};
+
+
 
 export function findSourcePath(img_file_path: any) {
   if (img_file_path) {

@@ -258,8 +258,9 @@ export const Profile2 = (props: Props) => {
   };
 
   useEffect(() => {
-    getInterviewList();
-    
+    if(isFocus) {
+      getInterviewList();
+    }    
   }, [isFocus]);
 
   return (

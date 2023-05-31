@@ -1,12 +1,15 @@
 import { Slider } from '@miblanchard/react-native-slider';
-import {
-  RouteProp,
-  useIsFocused,
-  useNavigation,
-} from '@react-navigation/native';
+import { RouteProp, useIsFocused, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { BottomParamList, ColorType, ScreenNavigationProp } from '@types';
-import { request_reexamination, peek_member, get_board_list, update_setting, set_member_phone_book } from 'api/models';
+import { 
+  request_reexamination, 
+  peek_member, 
+  get_board_list, 
+  update_setting, 
+  set_member_phone_book,
+  update_additional 
+} from 'api/models';
 import { Color } from 'assets/styles/Color';
 import { layoutStyle, modalStyle, styles } from 'assets/styles/Styles';
 import axios from 'axios';
@@ -68,8 +71,6 @@ export const Roby = (props: Props) => {
 
   const { show } = usePopup(); // 공통 팝업
 
-  const jwtToken = hooksMember.getJwtToken(); // 토큰 추출
-
   // 회원 기본 정보
   const memberBase = useUserInfo(); //hooksMember.getBase();
   const mbrProfileImgList = useProfileImg();
@@ -82,11 +83,6 @@ export const Roby = (props: Props) => {
   const [friendMatchYn, setFriendMatchYn] = useState(false);
   const [friendTypeFlag, setFriendTypeFlag] = useState(false);
   
-  useEffect(() => {
-    getPeekMemberInfo();
-    setFriendMatchYn(memberBase?.friend_match_yn == 'N' ? true : false)
-  }, [isFocus]);
-
   // ###### 실시간성 회원 데이터 조회
   const getPeekMemberInfo = async () => {
     const body = {
@@ -226,31 +222,6 @@ export const Roby = (props: Props) => {
     }
   }
 
-  
-
-  // 별점 이미지 적용
-  const showStarImg = (score: number) => {
-    let starCnt = score / 2;
-    let starIntegerCnt = Math.floor(starCnt);
-    let starDecimalScore = score - Math.floor(score);
-
-    console.log('starIntegerCnt :::: ', starIntegerCnt);
-
-    let starImgArr = [];
-
-    for (let i = 1; i <= starIntegerCnt; i++) {
-      starImgArr.push(<Image source={ICON.star} style={styles.iconSize24} />);
-    }
-
-    if (starDecimalScore) {
-      starImgArr.push(
-        <Image source={ICON.starHalf} style={styles.iconSize24} />
-      );
-    }
-
-    return starImgArr;
-  };
-
   // ############################################################ 프로필 재심사 팝업 활성화
   const profileReexPopupOpen = async () => {
 
@@ -271,9 +242,7 @@ export const Roby = (props: Props) => {
           profileReexProc();
         },
       });
-    }
-
-    
+    }    
   }
 
   // ############################################################ 프로필 재심사 실행
@@ -349,6 +318,11 @@ export const Roby = (props: Props) => {
   const onPressCustomerInquiry = () => {
     navigation.navigate(STACK.COMMON, { screen: 'CustomerInquiry' });
   };
+  const onPressTutorialSetting = () => {
+    navigation.navigate(STACK.COMMON, { screen: 'TutorialSetting' });
+  };
+
+  // 보관함 이동
   const onPressStorage = async (index:any) => {
     navigation.navigate(STACK.COMMON, {
       screen: 'Storage',
@@ -359,6 +333,7 @@ export const Roby = (props: Props) => {
     });
   };
 
+  // 최근 소식 이동
   const onPressRecent = async () => {
     try {
       const { success, data } = await get_board_list();
@@ -388,6 +363,65 @@ export const Roby = (props: Props) => {
     } finally {
     }
   };
+
+  // 가이드 팝업 활성화
+  const popupProfileGuideOpen = async () => {
+    show({
+      type: 'GUIDE',
+      guideType: 'ROBY_PROFILE',
+      guideSlideYn: 'Y',
+      guideNexBtnExpoYn: 'N',
+    });
+  };
+
+  const popupGradeGuideOpen = async () => {
+    show({
+      type: 'GUIDE',
+      guideType: 'ROBY_GRADE',
+      guideSlideYn: 'Y',
+      guideNexBtnExpoYn: 'N',
+    });
+  }
+
+  // ####################################################################################### 회원 튜토리얼 노출 정보 저장
+  const saveMemberTutorialInfo = async () => {
+    const body = {
+      tutorial_roby_yn: 'N'
+    };
+    const { success, data } = await update_additional(body);
+    if(success) {
+      if(null != data.mbr_base && typeof data.mbr_base != 'undefined') {
+        dispatch(setPartialPrincipal({
+          mbr_base : data.mbr_base
+        }));
+      }
+    }
+  }
+
+  // ######################################################################################## 초기 실행 함수
+  useEffect(() => {
+    if(isFocus) {
+      getPeekMemberInfo();
+      setFriendMatchYn(memberBase?.friend_match_yn == 'N' ? true : false);
+
+      // 튜토리얼 팝업 노출
+      if(memberBase?.tutorial_roby_yn == 'Y') {
+        show({
+          type: 'GUIDE',
+          guideType: 'ROBY',
+          guideSlideYn: 'Y',
+          guideNexBtnExpoYn: 'Y',
+          confirmCallback: function(isNextChk) {
+            if(isNextChk) {
+              saveMemberTutorialInfo();
+            }
+          }
+        });
+      };
+    };
+  }, [isFocus]);
+
+
   return (
     <>
       <TopNavigation currentPath={''} theme />
@@ -501,6 +535,7 @@ export const Roby = (props: Props) => {
                   value={memberBase?.profile_score}
                   preScore={memberBase?.prev_profile_score}
                   isPennding={true}
+                  guideOnPress={popupProfileGuideOpen}
                 />
               ) : (
                 <RatingCard
@@ -508,6 +543,7 @@ export const Roby = (props: Props) => {
                   desc={`내 프로필을 평가한\n이성들의 평균 점수 입니다`}
                   value={memberBase?.profile_score}
                   isPennding={reassessment}
+                  guideOnPress={popupProfileGuideOpen}
                 />
               )}
               <RatingCard
@@ -523,6 +559,8 @@ export const Roby = (props: Props) => {
                 }
                 value={memberBase?.social_grade.toFixed(1)}
                 isPennding={reassessment}
+                type={'GRADE'}
+                guideOnPress={popupGradeGuideOpen}
               />
             </View>
           </View>
@@ -670,8 +708,8 @@ export const Roby = (props: Props) => {
 
             <TouchableOpacity
               style={_styles.manageProfile}
-              onPress={onPressMangeAccount}
-            >
+              onPress={onPressMangeAccount}>
+
               <Text style={_styles.profileText}>내 계정 정보</Text>
               <View style={_styles.row}>
                 <Image source={ICON.arrow_right} style={styles.iconSize} />
@@ -680,8 +718,8 @@ export const Roby = (props: Props) => {
 
             <TouchableOpacity
               style={_styles.manageProfile}
-              onPress={onPressCustomerInquiry}
-            >
+              onPress={onPressCustomerInquiry}>
+
               <Text style={_styles.profileText}>고객문의</Text>
               <View style={_styles.row}>
                 <Image source={ICON.arrow_right} style={styles.iconSize} />
@@ -689,7 +727,18 @@ export const Roby = (props: Props) => {
             </TouchableOpacity>
 
             <TouchableOpacity
+              style={_styles.manageProfile}
+              onPress={onPressTutorialSetting}>
+
+              <Text style={_styles.profileText}>튜토리얼 설정</Text>
+              <View style={_styles.row}>
+                <Image source={ICON.arrow_right} style={styles.iconSize} />
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity
               style={_styles.manageProfile}>
+
               <Text style={_styles.profileText}>푸시 알림 받기</Text>
               <CommonSwich
                 callbackFn={(value: boolean) => {
@@ -1046,13 +1095,14 @@ function RedDot() {
   );
 }
 
-function RatingCard({ title, desc, value, preScore, isPennding }) {
-
-  //value = 0.0; //
+function RatingCard({ title, desc, value, preScore, isPennding, guideOnPress }) {
 
   return (
     <View style={ratingCard.cardStyle}>
-      <Text style={ratingCard.cardTitle}>{title}</Text>
+      <TouchableOpacity style={{flexDirection: 'row'}} onPress={guideOnPress}>
+        <Text style={ratingCard.cardTitle}>{title}</Text>
+        <Image source={ICON.question} style={[styles.iconSize16, {marginTop: 4, marginLeft: 6}]} />
+      </TouchableOpacity>
 
       <View style={ratingCard.middleBox}>
         {/* {typeof preScore != 'undefined' && preScore != null && preScore != 0.0 &&

@@ -355,7 +355,6 @@ export const Signup02 = (props: Props) => {
     };
     try {
       const { success, data } = await regist_profile_image(body);
-      console.log('data ::::: ', data);
       if (success) {
         switch (data.result_code) {
           case SUCCESS:

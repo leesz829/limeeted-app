@@ -269,7 +269,6 @@ export const Signup01 = (props: Props) => {
       };
 
       const { success, data } = await get_second_auth(body);
-      console.log('data ::::: ' , body);
       if(success) {
         if(data.result_code == '0000') {
           authDataSet(data.auth_list);
