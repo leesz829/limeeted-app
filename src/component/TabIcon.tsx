@@ -53,7 +53,7 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
           }
           {memberBase?.new_item_cnt != null && typeof memberBase?.new_item_cnt != 'undefined' && memberBase?.new_item_cnt > 0 &&
             <View style={_style.shopIconArea}><Text style={_style.newText}>NEW</Text></View>
-          }
+          } 
         </>
       )
     }
@@ -66,8 +66,8 @@ export default TabIcon;
 
 const _style = StyleSheet.create({
   iconSize: {
-    width: 24,
-    height: 24,
+    width: 28,
+    height: 28,
     resizeMode: 'contain',
   },
   imgSize: (isOn: boolean) => {
