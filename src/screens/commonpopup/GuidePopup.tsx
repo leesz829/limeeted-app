@@ -345,8 +345,8 @@ export const GuidePopup = (props: Props) => {
                       <SpaceView mb={10} ml={15} viewStyle={layoutStyle.alignStart}><Text style={_styles.liveTxt01}>"상점" 알아보기</Text></SpaceView>
                       <SpaceView viewStyle={[{backgroundColor: '#ffffff'}]}>
                         <SpaceView viewStyle={layoutStyle.alignCenter} mb={10}>
-                          {props.guideType == 'SHOP_SUBSCRIPTION' && <Image source={GUIDE_IMAGE.shop01ContentBoosting} style={{width: width-96, height: height-526}} resizeMode={'cover'} /> }
-                          {props.guideType == 'SHOP_PACKAGE' && <Image source={GUIDE_IMAGE.shop01ContentPackage} style={{width: width-96, height: height-526}} resizeMode={'cover'} /> }
+                          {props.guideType == 'SHOP_SUBSCRIPTION' && <Image source={GUIDE_IMAGE.shop01ContentBoosting} style={{width: 320, height: 257}} resizeMode={'cover'} /> }
+                          {props.guideType == 'SHOP_PACKAGE' && <Image source={GUIDE_IMAGE.shop01ContentPackage} style={{width: 320, height: 257}} resizeMode={'cover'} /> }
                         </SpaceView>
 
                         <SpaceView viewStyle={commonStyle.paddingHorizontal15}>

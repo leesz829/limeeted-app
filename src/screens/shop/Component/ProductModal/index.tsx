@@ -49,6 +49,7 @@ interface Props {
 }
 
 export default function ProductModal({ isVisible, type, closeModal, item }: Props) {
+  const { width, height } = Dimensions.get('window');
   const navigation = useNavigation();
   const { show } = usePopup(); // 공통 팝업
   const { bottom } = useSafeAreaInsets();
@@ -371,7 +372,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
             </View>
 
             <View style={modalStyleProduct.infoContents}>
-              <ScrollView nestedScrollEnabled={true} contentContainerStyle={{ flexGrow: 1 }} style={{maxHeight: 160}}>
+              <ScrollView nestedScrollEnabled={true} style={{maxHeight: height - 575}}>
                 <View>
                   <Text style={modalStyleProduct.brandContentText}>{prod_content}</Text>
                 </View>
