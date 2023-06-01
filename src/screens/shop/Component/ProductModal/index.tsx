@@ -372,7 +372,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
             </View>
 
             <View style={modalStyleProduct.infoContents}>
-              <ScrollView nestedScrollEnabled={true} style={{maxHeight: height - 575}}>
+              <ScrollView nestedScrollEnabled={true} contentContainerStyle={{ flexGrow: 1 }} style={{maxHeight: height - 625}}>
                 <View>
                   <Text style={modalStyleProduct.brandContentText}>{prod_content}</Text>
                 </View>
