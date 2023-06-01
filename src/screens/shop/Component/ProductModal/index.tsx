@@ -115,13 +115,15 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
           });
           return false;
         }else{
-          show({
+          /* show({
             content: '구매되었습니다.'
             , confirmCallback: function () {
               setComfirmModalVisible(false);
               closeModal(true);
             },
-          });
+          }); */
+          closeModal(true);
+          Alert.alert('알림', '구매에 성공하였습니다.', [{ text: '확인' }]);
         }
         
       }
