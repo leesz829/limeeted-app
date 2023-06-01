@@ -45,26 +45,28 @@ export const TutorialSetting = (props: Props) => {
   const memberBase = useUserInfo(); // 회원 기본정보
 
   const [allSelected, setAllSelected] = React.useState<boolean>(false);
-  const [isDaily, setIsDaily] = React.useState<boolean>(memberBase?.tutorial_daily_yn == 'Y' ? true : false);
-  const [isLive, setIsLive] = React.useState<boolean>(memberBase?.tutorial_live_yn == 'Y' ? true : false);
-  const [isRoby, setIsRoby] = React.useState<boolean>(memberBase?.tutorial_roby_yn == 'Y' ? true : false);
-  const [isProfile, setIsProfile] = React.useState<boolean>(memberBase?.tutorial_profile_yn == 'Y' ? true : false);
-  const [isShop, setIsShop] = React.useState<boolean>(memberBase?.tutorial_shop_yn == 'Y' ? true : false);
-  const [isSubscriptionItem, setIsSubscriptionItem] = React.useState<boolean>(memberBase?.tutorial_subscription_item_yn == 'Y' ? true : false);
-  const [isPackageItem, setIsPackageItem] = React.useState<boolean>(memberBase?.tutorial_package_item_yn == 'Y' ? true : false);
-  
+
+  const [isChkData, setIsChkData] = React.useState({
+    isDaily: memberBase?.tutorial_daily_yn == 'Y' ? true : false,
+    isLive: memberBase?.tutorial_live_yn == 'Y' ? true : false,
+    isRoby: memberBase?.tutorial_roby_yn == 'Y' ? true : false,
+    isProfile: memberBase?.tutorial_profile_yn == 'Y' ? true : false,
+    isShop: memberBase?.tutorial_shop_yn == 'Y' ? true : false,
+    isSubscriptionItem: memberBase?.tutorial_subscription_item_yn == 'Y' ? true : false,
+    isPackageItem: memberBase?.tutorial_package_item_yn == 'Y' ? true : false,
+  });
 
   const saveMemberTutorialInfo = async (isAll:boolean, type:string, value:boolean) => {
     let body = {};
 
     if(!isAll) {
-      if(type == 'DAILY') { body = { tutorial_daily_yn: value ? 'Y' : 'N' }; setIsDaily(value);
-      } else if(type == 'LIVE') { body = { tutorial_live_yn: value ? 'Y' : 'N' }; setIsLive(value);
-      } else if(type == 'ROBY') { body = { tutorial_roby_yn: value ? 'Y' : 'N' }; setIsRoby(value);
-      } else if(type == 'PROFILE') { body = { tutorial_profile_yn: value ? 'Y' : 'N' }; setIsProfile(value);
-      } else if(type == 'SHOP') { body = { tutorial_shop_yn: value ? 'Y' : 'N' }; setIsShop(value);
-      } else if(type == 'SUBSCRIPTION_ITEM') { body = { tutorial_subscription_item_yn: value ? 'Y' : 'N' }; setIsSubscriptionItem(value);
-      } else if(type == 'PACKAGE_ITEM') { body = { tutorial_package_item_yn: value ? 'Y' : 'N' }; setIsPackageItem(value);
+      if(type == 'DAILY') { body = { tutorial_daily_yn: value ? 'Y' : 'N' }; setIsChkData({...isChkData, isDaily: value});
+      } else if(type == 'LIVE') { body = { tutorial_live_yn: value ? 'Y' : 'N' }; setIsChkData({...isChkData, isLive: value});
+      } else if(type == 'ROBY') { body = { tutorial_roby_yn: value ? 'Y' : 'N' }; setIsChkData({...isChkData, isRoby: value});
+      } else if(type == 'PROFILE') { body = { tutorial_profile_yn: value ? 'Y' : 'N' }; setIsChkData({...isChkData, isProfile: value});
+      } else if(type == 'SHOP') { body = { tutorial_shop_yn: value ? 'Y' : 'N' }; setIsChkData({...isChkData, isShop: value});
+      } else if(type == 'SUBSCRIPTION_ITEM') { body = { tutorial_subscription_item_yn: value ? 'Y' : 'N' }; setIsChkData({...isChkData, isSubscriptionItem: value});
+      } else if(type == 'PACKAGE_ITEM') { body = { tutorial_package_item_yn: value ? 'Y' : 'N' }; setIsChkData({...isChkData, isPackageItem: value});
       }
 
       if(!value) {
@@ -83,23 +85,15 @@ export const TutorialSetting = (props: Props) => {
         tutorial_package_item_yn: applyValue,
       }
 
-      if(value) {
-        setIsDaily(true);
-        setIsLive(true);
-        setIsRoby(true);
-        setIsProfile(true);
-        setIsShop(true);
-        setIsSubscriptionItem(true);
-        setIsPackageItem(true);
-      } else {
-        setIsDaily(false);
-        setIsLive(false);
-        setIsRoby(false);
-        setIsProfile(false);
-        setIsShop(false);
-        setIsSubscriptionItem(false);
-        setIsPackageItem(false);
-      }
+      setIsChkData({
+        isDaily: value,
+        isLive: value,
+        isRoby: value,
+        isProfile: value,
+        isShop: value,
+        isSubscriptionItem: value,
+        isPackageItem: value,
+      });
     };
 
     const { success, data } = await update_additional(body);
@@ -124,15 +118,15 @@ export const TutorialSetting = (props: Props) => {
   }, [isFocus]);
 
   React.useEffect(() => {
-    if(!isDaily || !isLive || !isRoby || !isProfile || !isShop || !isSubscriptionItem || !isPackageItem) {
+    if(!isChkData.isDaily || !isChkData.isLive || !isChkData.isRoby || !isChkData.isProfile || !isChkData.isShop || !isChkData.isSubscriptionItem || !isChkData.isPackageItem) {
       setAllSelected(false);
     }
 
-    if(isDaily && isLive && isRoby && isProfile && isShop && isSubscriptionItem && isPackageItem) {
+    if(isChkData.isDaily && isChkData.isLive && isChkData.isRoby && isChkData.isProfile && isChkData.isShop && isChkData.isSubscriptionItem && isChkData.isPackageItem) {
         setAllSelected(true);
     }
 
-  }, [isDaily, isLive, isRoby, isProfile, isShop, isSubscriptionItem, isPackageItem]);
+  }, [isChkData]);
 
 
 
@@ -153,7 +147,7 @@ export const TutorialSetting = (props: Props) => {
                 onColor={Color.primary}
                 offColor={Color.grayDDDD}
                 size="small"
-                onToggle={(isOn) => saveMemberTutorialInfo(true, '', value)}
+                onToggle={(isOn) => saveMemberTutorialInfo(true, '', isOn)}
                 trackOffStyle={{width: 45 ,height: 20}}
               />
             </View> 
@@ -165,7 +159,7 @@ export const TutorialSetting = (props: Props) => {
               <Text style={_styles.profileText}>데일리뷰</Text>
 
               <ToggleSwitch
-                isOn={isDaily}
+                isOn={isChkData.isDaily}
                 onColor={Color.primary}
                 offColor={Color.grayDDDD}
                 size="small"
@@ -178,7 +172,7 @@ export const TutorialSetting = (props: Props) => {
               <Text style={_styles.profileText}>라이브</Text>
               
               <ToggleSwitch
-                isOn={isLive}
+                isOn={isChkData.isLive}
                 onColor={Color.primary}
                 offColor={Color.grayDDDD}
                 size="small"
@@ -191,7 +185,7 @@ export const TutorialSetting = (props: Props) => {
               <Text style={_styles.profileText}>마이홈</Text>
               
               <ToggleSwitch
-                isOn={isRoby}
+                isOn={isChkData.isRoby}
                 onColor={Color.primary}
                 offColor={Color.grayDDDD}
                 size="small"
@@ -204,7 +198,7 @@ export const TutorialSetting = (props: Props) => {
               <Text style={_styles.profileText}>프로필 관리</Text>
              
               <ToggleSwitch
-                isOn={isProfile}
+                isOn={isChkData.isProfile}
                 onColor={Color.primary}
                 offColor={Color.grayDDDD}
                 size="small"
@@ -217,7 +211,7 @@ export const TutorialSetting = (props: Props) => {
               <Text style={_styles.profileText}>상점과 인벤토리</Text>
               
               <ToggleSwitch
-                isOn={isShop}
+                isOn={isChkData.isShop}
                 onColor={Color.primary}
                 offColor={Color.grayDDDD}
                 size="small"
@@ -230,7 +224,7 @@ export const TutorialSetting = (props: Props) => {
               <Text style={_styles.profileText}>상점 부스팅 상품</Text>
               
               <ToggleSwitch
-                isOn={isSubscriptionItem}
+                isOn={isChkData.isSubscriptionItem}
                 onColor={Color.primary}
                 offColor={Color.grayDDDD}
                 size="small"
@@ -243,7 +237,7 @@ export const TutorialSetting = (props: Props) => {
               <Text style={_styles.profileText}>상점 패키지 상품</Text>
              
               <ToggleSwitch
-                isOn={isPackageItem}
+                isOn={isChkData.isPackageItem}
                 onColor={Color.primary}
                 offColor={Color.grayDDDD}
                 size="small"

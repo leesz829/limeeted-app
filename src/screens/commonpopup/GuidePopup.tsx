@@ -36,14 +36,14 @@ export const GuidePopup = (props: Props) => {
   const pageIndex = 0;
   const [currentIndex, setCurrentIndex] = React.useState(pageIndex);
 
-  const [isNextChk, setIsNextChk] = React.useState(false);
+  //const [isNextChk, setIsNextChk] = React.useState(false);
   const memberBase = useUserInfo();
 
   /* console.log('width ::::: ', width);
   console.log('height ::::: ', height);
   console.log('gender ::::: ', memberBase.gender); */  
 
-  const onPressConfirm = () => {
+  const onPressConfirm = (isNextChk) => {
     if(props.confirmCallbackFunc == null && typeof props.confirmCallbackFunc != 'undefined') {
 
     } else {
@@ -58,7 +58,7 @@ export const GuidePopup = (props: Props) => {
 
   React.useEffect(() => {
     setCurrentIndex(0);
-    setIsNextChk(false);
+    //setIsNextChk(false);
   }, [props]);
 
   // ################################################################ 초기 실행 함수
@@ -69,7 +69,7 @@ export const GuidePopup = (props: Props) => {
         <View style={modalStyle.modalBackground}>
           <ScrollView 
             scrollEnabled={height < 800 ? true : false} 
-            style={[{maxHeight: height-70}]}>
+            contentContainerStyle={_styles.scrollViewArea(height)}>
 
             <View style={[modalStyle.modalStyle2]}>
 
@@ -120,7 +120,7 @@ export const GuidePopup = (props: Props) => {
                                 <SpaceView mt={20} viewStyle={{flexDirection: 'row', justifyContent: 'center',}}>
                                   {index == 0 && <Text style={_styles.liveTxt03}>"상대방에게 가장 어울리는 인상을 선택해주세요."</Text> }
                                   {index == 1 && <Text style={_styles.liveTxt03}>"상대방이 받을 별을 선택 후 <Text style={{color: '#697AE6'}}>확인</Text>을 눌러주세요."</Text> }
-                                  {index == 2 && <Text style={_styles.liveTxt03}>"인상 투표가 완료되며 <Text style={{color: '#697AE6'}}>패스 1개</Text>가 지급되요!"</Text> }
+                                  {index == 2 && <Text style={_styles.liveTxt03}>"인상 투표가 완료되며 <Text style={{color: '#697AE6'}}>패스 1개</Text>가 지급돼요!"</Text> }
                                 </SpaceView>
                               </SpaceView>
                             </>
@@ -148,7 +148,7 @@ export const GuidePopup = (props: Props) => {
                           }
 
                           {(props.guideType == 'SHOP_BASIC' || props.guideType == 'SHOP_SUBSCRIPTION' || props.guideType == 'SHOP_PACKAGE') && 
-                            <SpaceView viewStyle={[{backgroundColor: '#B8D1D1', paddingTop: 20}]}>
+                            <SpaceView viewStyle={[{backgroundColor: '#ffffff', paddingTop: 20}]}>
                               <SpaceView mb={10} ml={15} viewStyle={layoutStyle.alignStart}><Text style={_styles.liveTxt01}>"상점" 알아보기</Text></SpaceView>
                               <SpaceView viewStyle={[{backgroundColor: '#ffffff'}]}>
                                 <SpaceView viewStyle={layoutStyle.alignCenter} mb={10}>
@@ -195,7 +195,7 @@ export const GuidePopup = (props: Props) => {
                                   {index == 1 &&
                                     <>
                                       <Text style={_styles.liveTxt02}>#인벤토리</Text>
-                                      <Text style={_styles.liveTxt03}>구매한 아이템은 인벤토리에 보관되요.</Text>
+                                      <Text style={_styles.liveTxt03}>구매한 아이템은 인벤토리에 보관돼요.</Text>
                                       <Text style={[_styles.liveTxt03, {color: '#697AE6'}]}>TIP 리미티드의 다양한 보상도 인벤토리에서 확인 가능!</Text>
                                     </>
                                   }
@@ -237,7 +237,7 @@ export const GuidePopup = (props: Props) => {
                                       <Text style={[_styles.liveTxt02, {marginBottom: 8}]}>#프로필 평점</Text>
                                       <Text style={_styles.liveTxt03}>
                                         <Text style={{color: '#697AE6'}}>"내 프로필 재심사"</Text>를 받고 높은 프로필 평점에 도전해보세요.!{'\n'}
-                                        프로필 평점 <Text style={{color: '#697AE6'}}>7.0</Text>이 되면 프로필 인증 레벨이 <Text style={{color: '#697AE6'}}>+1</Text>이 가산되요.{'\n'}
+                                        프로필 평점 <Text style={{color: '#697AE6'}}>7.0</Text>이 되면 프로필 인증 레벨이 <Text style={{color: '#697AE6'}}>+1</Text>이 가산돼요.{'\n'}
                                         (7 / 8 / 9 / 10 마다 +1씩 가산)
                                       </Text>
                                     </>
@@ -261,7 +261,7 @@ export const GuidePopup = (props: Props) => {
                                   {index == 0 &&
                                     <>
                                       <Text style={[_styles.liveTxt02, {marginBottom: 8}]}>#올바른 매칭 문화의 클린 필터</Text>
-                                      <Text style={_styles.liveTxt03}>활동 이력을 기반으로 착한 회원, 나쁜 회원이 구분되요.</Text>
+                                      <Text style={_styles.liveTxt03}>활동 이력을 기반으로 착한 회원, 나쁜 회원이 구분돼요.</Text>
                                       <Text style={[_styles.liveTxt03, {color: '#697AE6'}]}>TIP 소셜 평점이 4.0 이하인 회원은 악성 회원일 확률이 높아요.</Text>
                                     </>
                                   }
@@ -282,7 +282,6 @@ export const GuidePopup = (props: Props) => {
                                 </SpaceView>
                               </LinearGradient>
                           }
-
                         </>
                       )
                     }}
@@ -320,58 +319,81 @@ export const GuidePopup = (props: Props) => {
                 </>
               ) : (
                 <>
-                  <SpaceView viewStyle={[{backgroundColor: '#B8D1D1', paddingTop: 20}]}>
-                    <SpaceView mb={10} ml={15} viewStyle={layoutStyle.alignStart}><Text style={_styles.liveTxt01}>"상점" 알아보기</Text></SpaceView>
-                    <SpaceView viewStyle={[{backgroundColor: '#ffffff'}]}>
+                  {props.guideType == 'STORAGE_GUIDE' ? (
+                    <LinearGradient 
+                      colors={['#DBEEEE', '#FFF']}
+                      start={{ x: 0.5, y: 0 }}
+                      end={{ x: 0.5, y: 1 }}>
+                      <SpaceView mb={10} ml={15} mt={20} viewStyle={layoutStyle.alignStart}><Text style={_styles.liveTxt01}>첫 "매칭 성공"을 축하 드려요!</Text></SpaceView>
                       <SpaceView viewStyle={layoutStyle.alignCenter} mb={10}>
-                        {props.guideType == 'SHOP_SUBSCRIPTION' && <Image source={GUIDE_IMAGE.shop01ContentBoosting} style={{width: width-96, height: height-526}} resizeMode={'cover'} /> }
-                        {props.guideType == 'SHOP_PACKAGE' && <Image source={GUIDE_IMAGE.shop01ContentPackage} style={{width: width-96, height: height-526}} resizeMode={'cover'} /> }
+                        <Image source={GUIDE_IMAGE.storageContent} style={{width: 300, height: 120}} resizeMode={'cover'} />
                       </SpaceView>
-
                       <SpaceView viewStyle={commonStyle.paddingHorizontal15}>
-                        {props.guideType == 'SHOP_SUBSCRIPTION' &&
-                          <>
-                            <Text style={_styles.liveTxt02}>#부스팅상품</Text>
-                            <Text style={_styles.liveTxt03}>
-                              관심 보낼 사람은 많은데 패스가 부족한가요?{'\n'}
-                              관심 보내기 자유 이용권을 구매하면 패스 걱정 없이 관심을 보낼 수 있어요.
-                            </Text>
-                          </>
-                        }
-                        {props.guideType == 'SHOP_PACKAGE' &&
-                          <>
-                            <Text style={_styles.liveTxt02}>#패키지상품</Text>
-                            <Text style={_styles.liveTxt03}>
-                              나에게 필요한 아이템을 저렴한 비용으로 획득하는 방법.{'\n'}
-                              높은 할인율의 패키지 상품을 만나 보세요!
-                            </Text>
-                          </>
-                        }
+                        <Text style={[_styles.liveTxt02, {marginBottom: 8}]}>#연락처 확인하기</Text>
+                        <Text style={_styles.liveTxt03}>
+                          리미티드는 허위 프로필 ZERO 정책! 응답없는 채팅방 NO!{'\n'}
+                          진짜 회원의 진짜 연락처로 진짜 매칭을 체험하세요.
+                        </Text>
+                        <Text style={[_styles.liveTxt03, {color: '#697AE6'}]}>
+                          TIP 첫 "연락처 확인하기" 비용은 리미티드가 부담할게요.{'\n'}
+                          편안함을 주는 메세지로 즐거운 대화하시길 바래요.
+                        </Text>
                       </SpaceView>
-                      
+                    </LinearGradient>
+                  ) : (
+                    <SpaceView viewStyle={[{backgroundColor: '#ffffff', paddingTop: 20}]}>
+                      <SpaceView mb={10} ml={15} viewStyle={layoutStyle.alignStart}><Text style={_styles.liveTxt01}>"상점" 알아보기</Text></SpaceView>
+                      <SpaceView viewStyle={[{backgroundColor: '#ffffff'}]}>
+                        <SpaceView viewStyle={layoutStyle.alignCenter} mb={10}>
+                          {props.guideType == 'SHOP_SUBSCRIPTION' && <Image source={GUIDE_IMAGE.shop01ContentBoosting} style={{width: width-96, height: height-526}} resizeMode={'cover'} /> }
+                          {props.guideType == 'SHOP_PACKAGE' && <Image source={GUIDE_IMAGE.shop01ContentPackage} style={{width: width-96, height: height-526}} resizeMode={'cover'} /> }
+                        </SpaceView>
+
+                        <SpaceView viewStyle={commonStyle.paddingHorizontal15}>
+                          {props.guideType == 'SHOP_SUBSCRIPTION' &&
+                            <>
+                              <Text style={_styles.liveTxt02}>#부스팅상품</Text>
+                              <Text style={_styles.liveTxt03}>
+                                관심 보낼 사람은 많은데 패스가 부족한가요?{'\n'}
+                                관심 보내기 자유 이용권을 구매하면 패스 걱정 없이 관심을 보낼 수 있어요.
+                              </Text>
+                            </>
+                          }
+                          {props.guideType == 'SHOP_PACKAGE' &&
+                            <>
+                              <Text style={_styles.liveTxt02}>#패키지상품</Text>
+                              <Text style={_styles.liveTxt03}>
+                                나에게 필요한 아이템을 저렴한 비용으로 획득하는 방법.{'\n'}
+                                높은 할인율의 패키지 상품을 만나 보세요!
+                              </Text>
+                            </>
+                          }
+                        </SpaceView>
+                      </SpaceView>
                     </SpaceView>
-                  </SpaceView>
+                  )}
                 </>
               )}
 
 
               {/* ################################################################################### 버튼 영역 */}
               <SpaceView mt={20} mb={10} viewStyle={modalStyle.guideModalBtnContainer}>
-                <TouchableOpacity style={[_styles.checkRadio(true)]} onPress={onPressConfirm}>
-                  <CommonText type={'h5'} fontWeight={'200'} color={'#697AE6'}>확인</CommonText>
-                </TouchableOpacity>
+                {props.guideType == 'STORAGE_GUIDE' ? (
+                  <TouchableOpacity style={[_styles.checkRadio(true), {backgroundColor: '#FE0456', borderColor: '#FE0456'}]} onPress={() => onPressConfirm(false)}>
+                    <CommonText type={'h5'} fontWeight={'200'} color={'#ffffff'}>패스 100개 받기</CommonText>
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity style={[_styles.checkRadio(true)]} onPress={() => onPressConfirm(false)}>
+                    <CommonText type={'h5'} fontWeight={'200'} color={'#697AE6'}>확인</CommonText>
+                  </TouchableOpacity>
+                )}
               </SpaceView>
 
               {typeof props.guideNexBtnExpoYn != 'undefined' && props.guideNexBtnExpoYn != null && props.guideNexBtnExpoYn == 'Y' &&
                 <SpaceView mb={10} viewStyle={modalStyle.guideModalBtnContainer}>
-                  <TouchableOpacity 
-                    style={[ _styles.checkRadio(isNextChk) ]} 
-                    onPress={() => {
-                      if(isNextChk) { setIsNextChk(false);
-                      } else { setIsNextChk(true); }
-                    }}>
+                  <TouchableOpacity style={[ _styles.checkRadio(true) ]} onPress={() => onPressConfirm(true)}>
                     <SpaceView ml={8}>
-                      <CommonText type={'h5'} fontWeight={'200'} color={isNextChk ? '#697AE6' : '#989898'}>다음부터는 알려주지 않아도 좋아요</CommonText>
+                      <CommonText type={'h5'} fontWeight={'200'} color={'#989898'}>그만보기</CommonText>
                     </SpaceView>
                   </TouchableOpacity>
                 </SpaceView>
@@ -438,6 +460,15 @@ const _styles = StyleSheet.create({
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 12,
     color: '#8E8E8E',
+  },
+
+  scrollViewArea: (height) => {
+    return {
+      maxHeight: height - 70, 
+      flex: 1, 
+      justifyContent: 'center',
+      alignItems: 'center',
+    };
   },
 
 });

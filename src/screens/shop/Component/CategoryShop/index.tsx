@@ -251,6 +251,8 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc }) {
       body = { tutorial_subscription_item_yn: 'N' };
     } else if(value == 'PACKAGE') {
       body = { tutorial_package_item_yn: 'N' };
+    } else if(value == 'PASS') {
+      body = { tutorial_shop_yn: 'N' };
     }
 
     const { success, data } = await update_additional(body);
@@ -264,15 +266,26 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc }) {
   };
 
   useEffect(() => {
-    if(selectedCategory?.value == 'SUBSCRIPTION' || selectedCategory?.value == 'PACKAGE') {
+    if(selectedCategory?.value == 'SUBSCRIPTION' || selectedCategory?.value == 'PACKAGE' || selectedCategory?.value == 'PASS') {
 
       // 튜토리얼 팝업 노출
       if((selectedCategory?.value == 'SUBSCRIPTION' && memberBase?.tutorial_subscription_item_yn == 'Y') ||
-      (selectedCategory?.value == 'PACKAGE' && memberBase?.tutorial_package_item_yn == 'Y')) {
+      (selectedCategory?.value == 'PACKAGE' && memberBase?.tutorial_package_item_yn == 'Y') ||
+      (selectedCategory?.value == 'PASS' && memberBase?.tutorial_shop_yn == 'Y')) {
+
+        let guideType = '';
+        if(selectedCategory?.value == 'SUBSCRIPTION') {
+          guideType = 'SHOP_SUBSCRIPTION';
+        } else if(selectedCategory?.value == 'PACKAGE') {
+          guideType = 'SHOP_PACKAGE';
+        } else if(selectedCategory?.value == 'PASS') {
+          guideType = 'SHOP_BASIC';
+        }
+
         show({
           type: 'GUIDE',
-          guideType: selectedCategory?.value == 'SUBSCRIPTION' ? 'SHOP_SUBSCRIPTION' : 'SHOP_PACKAGE',
-          guideSlideYn: 'N',
+          guideType: guideType,
+          guideSlideYn: guideType == 'SHOP_BASIC' ? 'Y' : 'N',
           guideNexBtnExpoYn: 'Y',
           confirmCallback: function(isNextChk) {
             if(isNextChk) {

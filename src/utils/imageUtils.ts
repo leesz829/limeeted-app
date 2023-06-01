@@ -212,6 +212,7 @@ export const GUIDE_IMAGE = {
   robyGrade01Content: require('assets/img/guide/roby_grade_01_content.png'),
   robyGrade02Content: require('assets/img/guide/roby_grade_02_content.png'),
   robyGrade03Content: require('assets/img/guide/roby_grade_03_content.png'),
+  storageContent: require('assets/img/guide/storage_content.png'),
 };
 
 

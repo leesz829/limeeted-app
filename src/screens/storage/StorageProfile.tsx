@@ -45,7 +45,9 @@ import {
     , get_matched_member_info
     , resolve_match
     , report_matched_user
-    , update_match_status } from 'api/models';
+    , update_match_status
+    , first_match_pass_add
+} from 'api/models';
 import { usePopup } from 'Context';
 import { ROUTES, STACK } from 'constants/routes';
 import { Slider } from '@miblanchard/react-native-slider';
@@ -193,6 +195,20 @@ export const StorageProfile = (props: Props) => {
       if(success) {
         if (data.result_code == '0000') {
           setData(data);
+
+          // 튜토리얼 팝업 노출
+          if(data?.match_base.first_match_yn == 'Y') {
+            show({
+              type: 'GUIDE',
+              guideType: 'STORAGE_GUIDE',
+              guideSlideYn: 'N',
+              guideNexBtnExpoYn: 'N',
+              confirmCallback: function(isNextChk) {
+                console.log('dddd');
+                procFirstMatchPassAdd();
+              }
+            });
+          };
         }
       }
     } catch (error) {
@@ -338,6 +354,26 @@ export const StorageProfile = (props: Props) => {
       console.log(error);
     } finally {
       selectMatchMemberInfo();
+    }
+  };
+
+  // ############################################################ 최초 매칭 성공 패스 포인트 지급처리
+  const procFirstMatchPassAdd = async () => {
+    const body = {
+      match_seq: matchSeq,
+    };
+    try {
+      const { success, data } = await first_match_pass_add(body);
+      if(success) {
+        if(data.result_code == '0000') {
+          dispatch(myProfile());
+        } else {
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
     }
   };
 
