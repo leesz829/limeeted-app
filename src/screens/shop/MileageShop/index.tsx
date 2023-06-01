@@ -65,7 +65,7 @@ export default function MileageShop() {
 
   return (
     <>
-      <CommonHeader title="마일리지샵" />
+       <CommonHeader title="리밋샵" />
 
       <View style={styles.root}>
         <ListHeaderComponent onPressTab={onPressTab} tab={tab} />

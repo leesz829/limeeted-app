@@ -19,7 +19,7 @@ import { SectionGrid } from 'react-native-super-grid';
 import { useUserInfo } from 'hooks/useUserInfo';
 import { TextInput } from 'react-native-gesture-handler';
 import { CommaFormat } from 'utils/functions';
-
+import { CommonLoading } from 'component/CommonLoading';
 
 const DATA = [
   {
@@ -40,19 +40,30 @@ export default function MileageOrder() {
     dlvr: 0
   });
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const [currentIndex, setCurrentIndex] = React.useState(0);
 
   useEffect(() => {
+    
     async function fetch() {
+      setIsLoading(true);
 
-      // 주문 목록 조회
-      const body = {};
-      const { success: sp, data: pd } = await get_order_list(body);
-      if (sp) {
-        console.log('pd?.order_list ::::: ', pd?.order_list);
-        setOrderList(pd?.order_list);
-        setOrderStatus(pd?.order_status_count);
+      try {
+        // 주문 목록 조회
+        const body = {};
+        const { success: sp, data: pd } = await get_order_list(body);
+        if (sp) {
+          console.log('pd?.order_list ::::: ', pd?.order_list);
+          setOrderList(pd?.order_list);
+          setOrderStatus(pd?.order_status_count);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
       }
+
     }
     fetch();
   }, []);
@@ -64,89 +75,95 @@ export default function MileageOrder() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: 'white' }}>
-      <LinearGradient
-        colors={['#895dfa', '#6b6dfa']}
-        style={{ width: '100%', height: Dimensions.get('window').width * 0.65 }}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-      >
-        <CommonHeader
-          containerStyle={{ backgroundColor: 'transparent' }}
-          backIcon={ICON.backWhite}
-          walletTextStyle={{ color: 'white' }}
-        />
-        <View style={styles.paddingBox}>
-          <Text style={styles.nameText}>{me?.name}</Text>
-          <View style={styles.addressBox}>
-            <TextInput
-              defaultValue={memberAddr}
-              onChangeText={(text) =>
-                setMemberAddr(text)
-              }
-              style={[styles.addressText]}
-              multiline={false}
-              placeholder={'배송받을 주소를 입력해 주세요!'}
-              placeholderTextColor={'#c6ccd3'}
-              numberOfLines={1}
-              maxLength={100}
-            />
+    <>
+      {isLoading && <CommonLoading />}
 
-            {/* <Text style={styles.addressText} numberOfLines={1}>
-              서울시 강서구 양천로738 한강G트리타워 3F, 302호 ㈜앱스쿼드
-            </Text> */}
-            <Image style={styles.pencil} source={ICON.pencil} />
-          </View>
-          <View style={styles.limitBox}>
-            <View style={styles.leftBox}>
-              <Image source={ICON.roundCrown} style={styles.roundCrown} />
-              <Text style={styles.limitText}>리밋</Text>
+      <View style={{ flex: 1, backgroundColor: 'white' }}>
+        <LinearGradient
+          colors={['#895dfa', '#6b6dfa']}
+          style={{ width: '100%', height: Dimensions.get('window').width * 0.65 }}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+        >
+          <CommonHeader
+            containerStyle={{ backgroundColor: 'transparent' }}
+            backIcon={ICON.backWhite}
+            walletTextStyle={{ color: 'white' }}
+          />
+          <View style={styles.paddingBox}>
+            <Text style={styles.nameText}>{me?.name}</Text>
+            <View style={styles.addressBox}>
+              {/*
+                <TextInput
+                  defaultValue={'교환한 기프티콘은 KT 비즈콘으로 문자 발송됩니다 :)'}
+                  onChangeText={(text) => setMemberAddr(text) }
+                  style={[style ㅕㅜㅛs.addressText]}
+                  multiline={false}
+                  placeholder={'!'}
+                  placeholderTextColor={'#c6ccd3'}
+                  numberOfLines={1}
+                  maxLength={100}
+                /> 
+              */}
+              
+              <Text style={styles.addressText} numberOfLines={1}>
+              교환한 기프티콘은 KT 비즈콘으로 문자 발송됩니다 :)
+              </Text>
+              {/* <Image style={styles.pencil} source={ICON.pencil} /> */}
             </View>
-            <Text style={styles.amountText}>{CommaFormat(me?.mileage_point)}</Text>
+            <View style={styles.limitBox}>
+              <View style={styles.leftBox}>
+                <Image source={ICON.roundCrown} style={styles.roundCrown} />
+                <Text style={styles.limitText}>리밋</Text>
+              </View>
+              <Text style={styles.amountText}>{CommaFormat(me?.mileage_point)}</Text>
+            </View>
+          </View>
+          <View style={styles.line} />
+        </LinearGradient>
+        { /*
+          <View style={styles.backMargin}>
+            <TouchableOpacity activeOpacity={1} style={styles.purpleBg}>
+              <Text style={styles.textLeft}>입찰완료</Text>
+              <Text style={styles.textRight}>{orderStatus.bid_success}건</Text>
+            </TouchableOpacity>
+            <TouchableOpacity activeOpacity={1} style={styles.whiteBg}>
+              <Text style={[styles.textLeft, { color: '#9d9d9d' }]}>입찰실패</Text>
+              <Text style={[styles.textRight, { color: '#9d9d9d' }]}>{orderStatus.bid_fail}건</Text>
+            </TouchableOpacity>
+            <TouchableOpacity activeOpacity={1} style={styles.whiteBg}>
+              <Text style={[styles.textLeft, { color: '#706afa' }]}>배송준비</Text>
+              <Text style={[styles.textRight, { color: '#706afa' }]}>{orderStatus.dlvr}건</Text>
+            </TouchableOpacity>
+            <TouchableOpacity activeOpacity={1} style={styles.whiteBg}>
+              <Text style={[styles.textLeft, { color: '#742dfa' }]}>주문완료</Text>
+              <Text style={[styles.textRight, { color: '#742dfa' }]}>{orderStatus.order_complet}건</Text>
+            </TouchableOpacity>
+          </View>
+        */ }
+        
+
+        <View style={styles.orderHistory}>
+          <View style={styles.rowBetween}>
+            <Text style={styles.historyText}>
+              주문내역
+              <Text style={styles.historySubText}>(최근 3개월 내역)</Text>
+            </Text>
+            {/* <Text style={styles.dateText}>23/01/04</Text> */}
           </View>
         </View>
-        <View style={styles.line} />
-      </LinearGradient>
 
-      <View style={styles.backMargin}>
-        <TouchableOpacity activeOpacity={1} style={styles.purpleBg}>
-          <Text style={styles.textLeft}>입찰완료</Text>
-          <Text style={styles.textRight}>{orderStatus.bid_success}건</Text>
-        </TouchableOpacity>
-        <TouchableOpacity activeOpacity={1} style={styles.whiteBg}>
-          <Text style={[styles.textLeft, { color: '#9d9d9d' }]}>입찰실패</Text>
-          <Text style={[styles.textRight, { color: '#9d9d9d' }]}>{orderStatus.bid_fail}건</Text>
-        </TouchableOpacity>
-        <TouchableOpacity activeOpacity={1} style={styles.whiteBg}>
-          <Text style={[styles.textLeft, { color: '#706afa' }]}>배송준비</Text>
-          <Text style={[styles.textRight, { color: '#706afa' }]}>{orderStatus.dlvr}건</Text>
-        </TouchableOpacity>
-        <TouchableOpacity activeOpacity={1} style={styles.whiteBg}>
-          <Text style={[styles.textLeft, { color: '#742dfa' }]}>주문완료</Text>
-          <Text style={[styles.textRight, { color: '#742dfa' }]}>{orderStatus.order_complet}건</Text>
-        </TouchableOpacity>
+        <FlatList
+          onScroll={handleScroll}
+          showsHorizontalScrollIndicator={false}
+          pagingEnabled={true}
+          horizontal={false}
+          data={orderList}
+          renderItem={(data) => <RenderItem dataList={orderList} />}
+        />
+
       </View>
-
-      <View style={styles.orderHistory}>
-        <View style={styles.rowBetween}>
-          <Text style={styles.historyText}>
-            주문내역
-            <Text style={styles.historySubText}>(최근 3개월 내역)</Text>
-          </Text>
-          {/* <Text style={styles.dateText}>23/01/04</Text> */}
-        </View>
-      </View>
-
-      <FlatList
-        onScroll={handleScroll}
-        showsHorizontalScrollIndicator={false}
-        pagingEnabled={true}
-        horizontal={false}
-        data={orderList}
-        renderItem={(data) => <RenderItem dataList={orderList} />}
-      />
-
-    </View>
+    </>
   );
 }
 
@@ -369,7 +386,7 @@ const styles = StyleSheet.create({
     color: '#ffffff',
   },
   orderHistory: {
-    marginTop: 50,
+    marginTop: 20,
     paddingHorizontal: 24,
   },
   rowBetween: {

@@ -49,22 +49,33 @@ function FemalePannel() {
             <Text style={female.pointText}>
               {me?.nickname} <Text>✨</Text>
             </Text>
-            {/* {route.name === ROUTES.Mileage_Shop && (
-              <View style={{ flexDirection: 'row' }}>
-                <TouchableOpacity onPress={onPressMileageHistory}>
-                  <Image
-                    style={female.mileageHistoryButton}
-                    source={ICON.mileageHistory}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={onPressMileageOrder}>
-                  <Image
-                    style={female.mileageOrderButton}
-                    source={ICON.mileageOrder}
-                  />
-                </TouchableOpacity>
-              </View>
-            )} */}
+              {route.name === ROUTES.Mileage_Shop && (
+                <View style={{ flexDirection: 'row' }}>
+                  <TouchableOpacity
+                    style={female.lmtShopButton}
+                    onPress={onPressMileageOrder}>
+
+                    <Text style={female.lmtButtonText3}>구매내역</Text>
+                  </TouchableOpacity>
+                  
+                  {/*
+                  <TouchableOpacity onPress={onPressMileageHistory}>
+                    <Image
+                      style={female.mileageHistoryButton}
+                      source={ICON.mileageHistory}
+                    />
+                  </TouchableOpacity>
+                
+                  <TouchableOpacity onPress={onPressMileageOrder}>
+                    <Image
+                      style={female.mileageOrderButton}
+                      source={ICON.mileageOrder}
+                    />
+                  </TouchableOpacity>
+                  */}
+                </View>
+                
+              )}
           </View>
           <View style={female.row}>
             
@@ -389,6 +400,17 @@ const female = StyleSheet.create({
     textAlign: 'left',
     color: '#7986ee',
     paddingHorizontal: 8,
+    paddingVertical: 2
+  },
+  lmtButtonText3: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 11,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#7986ee',
+    paddingHorizontal: 10,
     paddingVertical: 2
   },
   myBox: {
