@@ -8,6 +8,7 @@ import { CommonBtn } from './CommonBtn';
 import { CommonText } from 'component/CommonText';
 import SpaceView from './SpaceView';
 import { STACK } from 'constants/routes';
+import LinearGradient from 'react-native-linear-gradient';
 
 
 const { width } = Dimensions.get('window');
@@ -21,7 +22,50 @@ export default function ProfileAuth({ level, data, isButton }) {
         <SpaceView viewStyle={{flexDirection: `row`, alignItems: `center`, justifyContent: `center`,}}>
           <Text style={styles.title}>프로필 인증</Text>
           <View style={[styles.levelBadge, {marginRight: 0, marginTop: 1}]}>
-            <Text style={[styles.levelText, { color: 'white' }]}>LV.{level}</Text>
+
+            {/* ############# 인증 레벨 노출 */}
+            {level > 0 && level < 10 &&
+              <LinearGradient colors={['#7986EE', '#7986EE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.levelBadge}>
+                <Text style={styles.whiteText}>LV.1</Text>
+              </LinearGradient>
+            }
+
+            {level >= 10 && level < 15 &&
+              <LinearGradient colors={['#E0A9A9', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.levelBadge}>
+                <Image source={ICON.level10Icon} style={[styles.levelBadgeImg, {width: 23, height: 23}]} />
+                <Text style={styles.whiteText}>LV.{level}</Text>
+              </LinearGradient>
+            }
+
+            {level >= 15 && level < 20 &&
+              <LinearGradient colors={['#A9BBE0', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.levelBadge}>
+                <Image source={ICON.level15Icon} style={[styles.levelBadgeImg, {width: 23, height: 23}]} />
+                <Text style={styles.whiteText}>LV.{level}</Text>
+              </LinearGradient>
+            }
+
+            {level >= 20 && level < 25 &&
+              <LinearGradient colors={['#FEB961', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.levelBadge}>
+                <Image source={ICON.level20Icon} style={[styles.levelBadgeImg02, {width: 30, height: 30}]} />
+                <Text style={styles.whiteText}>LV.{level}</Text>
+              </LinearGradient>
+            }
+
+            {level >= 25 && level < 30 &&
+              <LinearGradient colors={['#9BFFB5', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.levelBadge}>
+                <Image source={ICON.level25Icon} style={[styles.levelBadgeImg02, {width: 30, height: 30}]} />
+                <Text style={styles.whiteText}>LV.{level}</Text>
+              </LinearGradient>
+            }
+
+            {level >= 30 &&
+              <LinearGradient colors={['#E84CEE', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.levelBadge}>
+                <Image source={ICON.level30Icon} style={[styles.levelBadgeImg02, {width: 30, height: 30}]} />
+                <Text style={styles.whiteText}>LV.{level}</Text>
+              </LinearGradient>
+            }
+
+            {/* <Text style={[styles.levelText, { color: 'white' }]}>LV.{level}</Text> */}
           </View>
         </SpaceView>
         
@@ -125,11 +169,21 @@ const styles = StyleSheet.create({
     width: 51,
     height: 21,
     borderRadius: 5,
-    backgroundColor: '#7986ee',
+    //backgroundColor: '#7986ee',
     flexDirection: `row`,
     alignItems: `center`,
     justifyContent: `center`,
     marginLeft: 8,
+  },
+  levelBadgeImg: {
+    marginLeft: -5,
+    marginRight: -2,
+    marginTop: 1
+  },
+  levelBadgeImg02: {
+    marginLeft: -9,
+    marginRight: -4,
+    marginTop: -3
   },
   levelText: {
     // opacity: 0.83,
@@ -140,6 +194,15 @@ const styles = StyleSheet.create({
     // letterSpacing: 0,
     textAlign: 'left',
     color: '#000000',
+  },
+  whiteText: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 10,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#ffffff',
   },
 
   certificateItemContainerOn: {

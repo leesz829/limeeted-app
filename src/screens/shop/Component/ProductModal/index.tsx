@@ -11,6 +11,7 @@ import {
   View,
   Alert,
   Platform,
+  PanResponder,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { findSourcePath, ICON } from 'utils/imageUtils';
@@ -37,6 +38,7 @@ import { usePopup } from 'Context';
 import { CommonLoading } from 'component/CommonLoading';
 import { purchase_product, order_goods } from 'api/models';
 import { ROUTES, STACK } from 'constants/routes';
+import { ScrollView } from 'react-native-gesture-handler';
 
 
 interface Props {
@@ -128,7 +130,6 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
     } finally {
       setIsPayLoading(false);
     }
-
   }
 
   // ######################################################### AOS 결제 처리
@@ -293,26 +294,60 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
     closeModal(false);
   };
 
+
+
+
+
+
+  const scrollViewRef = React.useRef(null);
+
+  const handlePanResponderMove = (event, gestureState) => {
+    if (gestureState.dy < -50) {
+      closeModal(false);
+    }
+    // 하단 영역에서의 스와이프 동작일 때 모달을 닫습니다.
+    if (gestureState.dy > 50 && gestureState.moveY > windowHeight - 100) {
+      closeModal(false);
+    }
+  };
+
+  const panResponder = React.useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderMove: handlePanResponderMove,
+    })
+  ).current;
+
   return (
     <>
-      <Modal isVisible={isVisible} 
-              style={modalStyleProduct.modal}
-              onSwipeComplete={toggleModal}
-              swipeDirection="down" // 아래 방향으로 스와이프
-              onRequestClose={() => { closeModal(false); }}>
+      <Modal 
+        isVisible={isVisible} 
+        style={modalStyleProduct.modal}
+        //onSwipeComplete={toggleModal}
+        onBackdropPress={toggleModal}
+        //swipeDirection="down" // 아래 방향으로 스와이프
+        onRequestClose={() => { closeModal(false); }}>
 
         <View style={modalStyleProduct.root}>
-          <View style={modalStyleProduct.closeContainer}>
-            <TouchableOpacity onPress={toggleModal} hitSlop={commonStyle.hipSlop20}>
-              <Image source={ICON.closeBlack} style={modalStyleProduct.close} />
-            </TouchableOpacity>
-          </View>
 
-          <ViewPager
-            data={images}
-            style={modalStyleProduct.pagerView}
-            renderItem={(data) => <Image source={data} style={modalStyleProduct.itemImages} />}
-          />
+          <View {...panResponder.panHandlers}>
+            <ScrollView ref={scrollViewRef}>
+              <View style={modalStyleProduct.closeContainer}>
+                  <TouchableOpacity onPress={toggleModal} hitSlop={commonStyle.hipSlop20}>
+                    <Image source={ICON.closeBlack} style={modalStyleProduct.close} />
+                  </TouchableOpacity>
+                </View>
+
+                <View>
+                  <ViewPager
+                    data={images}
+                    style={modalStyleProduct.pagerView}
+                    renderItem={(data) => <Image source={data} style={modalStyleProduct.itemImages} />} 
+                  />
+                </View>   
+            </ScrollView>
+          </View>
 
           <View style={modalStyleProduct.infoContainer}>
             {brand_name != '' && brand_name != null ? (
@@ -339,9 +374,15 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
                 {/*<Image source={ICON.crown} style={modalStyleProduct.crown} />*/}
               </View>  
             </View>
+
             <View style={modalStyleProduct.infoContents}>
-                <Text style={modalStyleProduct.brandContentText}>{prod_content}</Text>
+              <ScrollView contentContainerStyle={{ flexGrow: 1 }} style={{maxHeight: 100}}>
+                <View>
+                  <Text style={modalStyleProduct.brandContentText}>{prod_content}</Text>
+                </View>
+              </ScrollView>
             </View>
+            
             <View
               style={[
                 modalStyleProduct.bottomContainer,

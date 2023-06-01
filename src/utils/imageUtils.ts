@@ -126,6 +126,21 @@ export const ICON = {
   refuseMaleIcon: require('assets/icon/refuse_male_icon.png'),
   refuseFemaleIcon: require('assets/icon/refuse_female_icon.png'),
   question: require('assets/icon/icon-question.png'),
+  level10Icon: require('assets/icon/level_10_icon.png'),
+  level15Icon: require('assets/icon/level_15_icon.png'),
+  level20Icon: require('assets/icon/level_20_icon.png'),
+  level25Icon: require('assets/icon/level_25_icon.png'),
+  level30Icon: require('assets/icon/level_30_icon.png'),
+  score5Icon: require('assets/icon/score_5_icon.png'),
+  score6Icon: require('assets/icon/score_6_icon.png'),
+  scoreDiamondIcon: require('assets/icon/score_diamond_icon.png'),
+  scoreKingIcon: require('assets/icon/score_king_icon.png'),
+  addCategoryIcon: require('assets/icon/add_category_icon.png'),
+  addFlagIcon: require('assets/icon/add_flag_icon.png'),
+  addHeightIcon: require('assets/icon/add_height_icon.png'),
+  addPlayIcon: require('assets/icon/add_pray_icon.png'),
+  addSmokeIcon: require('assets/icon/add_smoke_icon.png'),
+  addWineIcon: require('assets/icon/add_wine_icon.png'),
 };
 
 export const GIF_IMG = {

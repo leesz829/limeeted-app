@@ -11,6 +11,8 @@ import { ROUTES, STACK } from 'constants/routes';
 import { get_auct_product, get_product_list, order_goods } from 'api/models';
 import { CommaFormat, getRemainTime } from 'utils/functions';
 import { usePopup } from 'Context';
+import { useDispatch } from 'react-redux';
+import { myProfile } from 'redux/reducers/authReducer';
 
 
 const DATA = [
@@ -36,6 +38,8 @@ export default function MileageShop() {
   const [tab, setTab] = useState(categories[0]);
   const [data, setData] = useState(DATA);
 
+  const dispatch = useDispatch();
+
   async function fetch() {
     if (tab.value === 'boutique') {
 
@@ -49,11 +53,15 @@ export default function MileageShop() {
       // 재고 상품 목록 조회
       const { success: sp, data: pd } = await get_product_list();
       if (sp) {
-        console.log('sp ::: ' , pd.prod_list[0].data);
         setData(pd?.prod_list);
       }
     }
-  }
+  };
+
+  async function purchaseCallFn() {
+    dispatch(myProfile());
+    fetch();
+  };
 
   useEffect(() => { 
     fetch();
@@ -83,7 +91,7 @@ export default function MileageShop() {
           renderItem={(props) => {
             //console.log('props : ', JSON.stringify(props));
             const { item, index, rowIndex } = props;
-            return <RenderItem type={tab.value} item={item} callFn={fetch} />;
+            return <RenderItem type={tab.value} item={item} callFn={purchaseCallFn} />;
           }}
         />
       </View>
@@ -151,7 +159,6 @@ const RenderItem = ({ item, type, callFn }) => {
 
     if(isPayConfirm) {
       callFn();
-      
     }
   };
 
