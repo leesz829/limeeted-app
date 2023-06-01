@@ -660,53 +660,57 @@ export default function Matching(props: Props) {
             )}
 
             {/* 추가 정보 */}
-            <SpaceView>
-              <Text style={styles.title}>추가 정보</Text>
-              <SpaceView mt={20} viewStyle={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                {data.match_member_info.height != null && data.match_member_info.height != '' &&
-                  <View style={styles.addItemArea}>
-                    <Image source={ICON.addHeightIcon} style={{width:11, height:16, marginRight: 10}} />
-                    <Text style={styles.addItemAreaText}><Text style={styles.addItemAreaTextBold}>{data.match_member_info.height}</Text>cm</Text>
-                  </View>
-                }
+            {((data.match_member_info.height != null && data.match_member_info.height != '') || (data.match_member_info.form_body_type != null && data.match_member_info.form_body_type != '') ||
+            (data.match_member_info.job_name != null && data.match_member_info.job_name != '') || (data.match_member_info.religion_type != null && data.match_member_info.religion_type != '') ||
+            (data.match_member_info.drink_type != null && data.match_member_info.drink_type != '') || (data.match_member_info.smoke_type != null && data.match_member_info.smoke_type != '')) &&
+              <SpaceView>
+                <Text style={styles.title}>추가 정보</Text>
+                <SpaceView mt={20} viewStyle={{flexDirection: 'row', flexWrap: 'wrap'}}>
+                  {data.match_member_info.height != null && data.match_member_info.height != '' &&
+                    <View style={styles.addItemArea}>
+                      <Image source={ICON.addHeightIcon} style={{width:11, height:16, marginRight: 10}} />
+                      <Text style={styles.addItemAreaText}><Text style={styles.addItemAreaTextBold}>{data.match_member_info.height}</Text>cm</Text>
+                    </View>
+                  }
 
-                {data.match_member_info.form_body_type != null && data.match_member_info.form_body_type != '' &&
-                  <View style={styles.addItemArea}>
-                    <Image source={ICON.addCategoryIcon} style={{width:16, height:16, marginRight: 10}} />
-                    <Text style={styles.addItemAreaText}>{data.match_member_info.form_body_type}</Text>
-                  </View>
-                }
+                  {data.match_member_info.form_body_type != null && data.match_member_info.form_body_type != '' &&
+                    <View style={styles.addItemArea}>
+                      <Image source={ICON.addCategoryIcon} style={{width:16, height:16, marginRight: 10}} />
+                      <Text style={styles.addItemAreaText}>{data.match_member_info.form_body_type}</Text>
+                    </View>
+                  }
 
-                {data.match_member_info.job_name != null && data.match_member_info.job_name != '' &&
-                  <View style={styles.addItemArea}>
-                    <Image source={ICON.addFlagIcon} style={{width:11, height:16, marginRight: 10}} />
-                    <Text style={styles.addItemAreaText}>{data.match_member_info.job_name}</Text>
-                  </View>
-                }
+                  {data.match_member_info.job_name != null && data.match_member_info.job_name != '' &&
+                    <View style={styles.addItemArea}>
+                      <Image source={ICON.addFlagIcon} style={{width:11, height:16, marginRight: 10}} />
+                      <Text style={styles.addItemAreaText}>{data.match_member_info.job_name}</Text>
+                    </View>
+                  }
 
-                {data.match_member_info.religion_type != null && data.match_member_info.religion_type != '' &&
-                  <View style={styles.addItemArea}>
-                    <Image source={ICON.addPlayIcon} style={{width:17, height:20, marginRight: 10}} />
-                    <Text style={styles.addItemAreaText}>{data.match_member_info.religion_type}</Text>
-                  </View>
-                }
+                  {data.match_member_info.religion_type != null && data.match_member_info.religion_type != '' &&
+                    <View style={styles.addItemArea}>
+                      <Image source={ICON.addPlayIcon} style={{width:17, height:20, marginRight: 10}} />
+                      <Text style={styles.addItemAreaText}>{data.match_member_info.religion_type}</Text>
+                    </View>
+                  }
 
-                {data.match_member_info.drink_type != null && data.match_member_info.drink_type != '' &&
-                  <View style={styles.addItemArea}>
-                    <Image source={ICON.addWineIcon} style={{width:13, height:20, marginRight: 10}} />
-                    <Text style={styles.addItemAreaText}>{data.match_member_info.drink_type}</Text>
-                  </View>
-                }
+                  {data.match_member_info.drink_type != null && data.match_member_info.drink_type != '' &&
+                    <View style={styles.addItemArea}>
+                      <Image source={ICON.addWineIcon} style={{width:13, height:20, marginRight: 10}} />
+                      <Text style={styles.addItemAreaText}>{data.match_member_info.drink_type}</Text>
+                    </View>
+                  }
 
-                {data.match_member_info.smoke_type != null && data.match_member_info.smoke_type != '' &&
-                  <View style={styles.addItemArea}>
-                    <Image source={ICON.addSmokeIcon} style={{width:20, height:13, marginRight: 10}} />
-                    <Text style={styles.addItemAreaText}>{data.match_member_info.smoke_type}</Text>
-                  </View>
-                }
-                
+                  {data.match_member_info.smoke_type != null && data.match_member_info.smoke_type != '' &&
+                    <View style={styles.addItemArea}>
+                      <Image source={ICON.addSmokeIcon} style={{width:20, height:13, marginRight: 10}} />
+                      <Text style={styles.addItemAreaText}>{data.match_member_info.smoke_type}</Text>
+                    </View>
+                  }
+                  
+                </SpaceView>
               </SpaceView>
-            </SpaceView>
+            }
 
             <Text style={styles.title}>프로필 활동지수</Text>
             <View style={styles.profileActivePannel}>
