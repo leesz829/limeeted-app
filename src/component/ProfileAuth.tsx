@@ -26,7 +26,7 @@ export default function ProfileAuth({ level, data, isButton }) {
             {/* ############# 인증 레벨 노출 */}
             {level > 0 && level < 10 &&
               <LinearGradient colors={['#7986EE', '#7986EE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.levelBadge}>
-                <Text style={styles.whiteText}>LV.1</Text>
+                <Text style={styles.whiteText}>LV.{level}</Text>
               </LinearGradient>
             }
 
