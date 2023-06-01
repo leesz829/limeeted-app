@@ -79,7 +79,7 @@ export default function ViewPager({ style, data, renderItem }) {
           marginHorizontal: 5,
         }}
         containerStyle={{
-          top: 200,
+          top: 185,
         }}
       />
       {/* <View style={styles.dotsContainer}>

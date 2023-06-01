@@ -100,7 +100,7 @@ export const GuidePopup = (props: Props) => {
                       return (
                         <>
                           {props.guideType == 'DAILY' && 
-                            <SpaceView viewStyle={layoutStyle.alignStart}>
+                            <SpaceView viewStyle={layoutStyle.alignCenter}>
                               {index == 0 && <Image source={GUIDE_IMAGE.daily01Content} style={{width: 281, height: 154, marginTop: 10}} resizeMode={'cover'} />}
                               {index == 1 && <Image source={GUIDE_IMAGE.daily02Content} style={{width: 281, height: 154, marginTop: 10}} resizeMode={'cover'} />}
                               {index == 2 && <Image source={GUIDE_IMAGE.daily03Content} style={{width: 281, height: 154, marginTop: 10}} resizeMode={'cover'} />}
@@ -114,10 +114,10 @@ export const GuidePopup = (props: Props) => {
                                 {index == 1 && <Image source={GUIDE_IMAGE.live02Thumnail} style={{width: 230, height: 366}} resizeMode={'cover'} /> }
                                 {index == 2 && <Image source={GUIDE_IMAGE.live03Thumnail} style={{width: 230, height: 366}} resizeMode={'cover'} /> }
                               </SpaceView>
-                              <SpaceView mt={15} ml={15}>
-                                <SpaceView mb={10}><Text style={_styles.liveTxt01}>"LIVE" 인상 투표</Text></SpaceView>
-                                <SpaceView><Text style={_styles.liveTxt02}>패스가 필요하신가요?{'\n'}인상 투표에 참여하시면 패스를 드려요!</Text></SpaceView>
-                                <SpaceView mt={20} viewStyle={{flexDirection: 'row', justifyContent: 'center',}}>
+                              <SpaceView mt={15}>
+                                <SpaceView mb={10} ml={15}><Text style={_styles.liveTxt01}>"LIVE" 인상 투표</Text></SpaceView>
+                                <SpaceView ml={15}><Text style={_styles.liveTxt02}>패스가 필요하신가요?{'\n'}인상 투표에 참여하시면 패스를 드려요!</Text></SpaceView>
+                                <SpaceView mt={20} viewStyle={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
                                   {index == 0 && <Text style={_styles.liveTxt03}>"상대방에게 가장 어울리는 인상을 선택해주세요."</Text> }
                                   {index == 1 && <Text style={_styles.liveTxt03}>"상대방이 받을 별을 선택 후 <Text style={{color: '#697AE6'}}>확인</Text>을 눌러주세요."</Text> }
                                   {index == 2 && <Text style={_styles.liveTxt03}>"인상 투표가 완료되며 <Text style={{color: '#697AE6'}}>패스 1개</Text>가 지급돼요!"</Text> }
@@ -237,8 +237,8 @@ export const GuidePopup = (props: Props) => {
                                       <Text style={[_styles.liveTxt02, {marginBottom: 8}]}>#프로필 평점</Text>
                                       <Text style={_styles.liveTxt03}>
                                         <Text style={{color: '#697AE6'}}>"내 프로필 재심사"</Text>를 받고 높은 프로필 평점에 도전해보세요.!{'\n'}
-                                        프로필 평점 <Text style={{color: '#697AE6'}}>7.0</Text>이 되면 프로필 인증 레벨이 <Text style={{color: '#697AE6'}}>+1</Text>이 가산돼요.{'\n'}
-                                        (7 / 8 / 9 / 10 마다 +1씩 가산)
+                                        {/* 프로필 평점 <Text style={{color: '#697AE6'}}>7.0</Text>이 되면 프로필 인증 레벨이 <Text style={{color: '#697AE6'}}>+1</Text>이 가산돼요.{'\n'}
+                                        (7 / 8 / 9 / 10 마다 +1씩 가산) */}
                                       </Text>
                                     </>
                                   }
@@ -269,7 +269,7 @@ export const GuidePopup = (props: Props) => {
                                     <>
                                       <Text style={[_styles.liveTxt02, {marginBottom: 8}]}>#높은 소셜 평점을 받으면,</Text>
                                       <Text style={_styles.liveTxt03}>데일리뷰에서 더 많은 이성을 소개받을 수 있어요.</Text>
-                                      <Text style={[_styles.liveTxt03, {color: '#697AE6'}]}>TIP 6.0 / 8.0 마다 데일리뷰에 프로필 소개 횟수 증가</Text>
+                                      <Text style={[_styles.liveTxt03, {color: '#697AE6'}]}>TIP 6.0 / 8.0을 넘기면 데일리뷰에 프로필 소개 횟수 증가</Text>
                                     </>
                                   }
                                   {index == 2 &&

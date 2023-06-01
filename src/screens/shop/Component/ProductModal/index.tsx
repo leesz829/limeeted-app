@@ -335,7 +335,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
               </TouchableOpacity>
             </View>
 
-            <View>
+            <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
               <ViewPager
                 data={images}
                 style={modalStyleProduct.pagerView}
@@ -371,7 +371,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
             </View>
 
             <View style={modalStyleProduct.infoContents}>
-              <ScrollView nestedScrollEnabled={true} contentContainerStyle={{ flexGrow: 1 }} style={{maxHeight: 100}}>
+              <ScrollView nestedScrollEnabled={true} contentContainerStyle={{ flexGrow: 1 }} style={{maxHeight: 160}}>
                 <View>
                   <Text style={modalStyleProduct.brandContentText}>{prod_content}</Text>
                 </View>
@@ -482,13 +482,13 @@ const modalStyleProduct = StyleSheet.create({
   },
   pagerView: {
     // flex: 1,
-    width: Dimensions.get('window').width - 60,
-    height: 229,
+    width: Dimensions.get('window').width - 150,
+    height: 169,
     marginTop: 28,
   },
   itemImages: {
-    width: Dimensions.get('window').width - 60,
-    height: 229,
+    width: Dimensions.get('window').width - 150,
+    height: 169,
     borderRadius: 10,
     backgroundColor: '#727272',
   },
@@ -562,9 +562,6 @@ const modalStyleProduct = StyleSheet.create({
   crown: {
     width: 17.67,
     height: 11.73,
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
     marginLeft: 5
   },
   bottomContainer: {
