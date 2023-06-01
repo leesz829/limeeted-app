@@ -1302,7 +1302,7 @@ const _styles = StyleSheet.create({
     borderColor: '#A6A9C5',
     borderRadius: 20,
     width: width / 3.5,
-    height: 45,
+    height: 35,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -1311,13 +1311,13 @@ const _styles = StyleSheet.create({
   },
   addItemAreaText: {
     fontFamily: 'AppleSDGothicNeoM00',
-    fontSize: 14,
+    fontSize: 12,
     color: '#7986EE',
     width: '60%',
     textAlign: 'center',
   },
   addItemAreaTextBold: {
-    fontSize: 18,
+    fontSize: 14,
   },
 });
 
