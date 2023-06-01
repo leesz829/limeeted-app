@@ -290,32 +290,27 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
     }
   };
 
-  const toggleModal = () => {
+  const toggleModal = async () => {
     closeModal(false);
   };
 
-
-
-
-
-
-  const scrollViewRef = React.useRef(null);
-
-  const handlePanResponderMove = (event, gestureState) => {
-    if (gestureState.dy < -50) {
-      closeModal(false);
-    }
-    // 하단 영역에서의 스와이프 동작일 때 모달을 닫습니다.
-    if (gestureState.dy > 50 && gestureState.moveY > windowHeight - 100) {
-      closeModal(false);
-    }
-  };
-
+  // 터치 컨트롤 함수
   const panResponder = React.useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: () => true,
-      onPanResponderMove: handlePanResponderMove,
+      onPanResponderMove: (_, gestureState) => {
+        if (gestureState.dy > 50 && gestureState.dy > gestureState.dx) {
+          toggleModal();
+          // 아래로 스와이프 동작이면 스크롤을 막음
+          //scrollViewRef.current.setNativeProps({ scrollEnabled: false });
+        } else {
+          // 위로 스와이프 동작이면 스크롤을 허용
+          //scrollViewRef.current.setNativeProps({ scrollEnabled: true });
+        }
+      },
+      onPanResponderRelease: () => {
+        //scrollViewRef.current.setNativeProps({ scrollEnabled: true });
+      },
     })
   ).current;
 
@@ -325,28 +320,26 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
         isVisible={isVisible} 
         style={modalStyleProduct.modal}
         //onSwipeComplete={toggleModal}
-        onBackdropPress={toggleModal}
+        //onBackdropPress={toggleModal} // 모달 외부 터치 시 모달 닫기
         //swipeDirection="down" // 아래 방향으로 스와이프
+        //propagateSwipe={true}
         onRequestClose={() => { closeModal(false); }}>
 
         <View style={modalStyleProduct.root}>
-
           <View {...panResponder.panHandlers}>
-            <ScrollView ref={scrollViewRef}>
-              <View style={modalStyleProduct.closeContainer}>
-                  <TouchableOpacity onPress={toggleModal} hitSlop={commonStyle.hipSlop20}>
-                    <Image source={ICON.closeBlack} style={modalStyleProduct.close} />
-                  </TouchableOpacity>
-                </View>
+            <View style={modalStyleProduct.closeContainer}>
+              <TouchableOpacity onPress={toggleModal} hitSlop={commonStyle.hipSlop20}>
+                <Image source={ICON.closeBlack} style={modalStyleProduct.close} />
+              </TouchableOpacity>
+            </View>
 
-                <View>
-                  <ViewPager
-                    data={images}
-                    style={modalStyleProduct.pagerView}
-                    renderItem={(data) => <Image source={data} style={modalStyleProduct.itemImages} />} 
-                  />
-                </View>   
-            </ScrollView>
+            <View>
+              <ViewPager
+                data={images}
+                style={modalStyleProduct.pagerView}
+                renderItem={(data) => <Image source={data} style={modalStyleProduct.itemImages} />} 
+              />
+            </View>
           </View>
 
           <View style={modalStyleProduct.infoContainer}>
@@ -376,7 +369,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
             </View>
 
             <View style={modalStyleProduct.infoContents}>
-              <ScrollView contentContainerStyle={{ flexGrow: 1 }} style={{maxHeight: 100}}>
+              <ScrollView nestedScrollEnabled={true} contentContainerStyle={{ flexGrow: 1 }} style={{maxHeight: 100}}>
                 <View>
                   <Text style={modalStyleProduct.brandContentText}>{prod_content}</Text>
                 </View>
@@ -478,7 +471,7 @@ const modalStyleProduct = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
-    marginTop: 30,
+    paddingTop: 30,
     paddingHorizontal: 7,
   },
   close: {
