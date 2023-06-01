@@ -429,7 +429,7 @@ export const Storage = (props: Props) => {
                   {/* ############# 인증 레벨 노출 */}
                   {item.auth_acct_cnt > 0 && item.auth_acct_cnt < 10 &&
                     <LinearGradient colors={['#7986EE', '#7986EE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
-                      <Text style={_styles.whiteText}>LV.1</Text>
+                      <Text style={_styles.whiteText}>LV.{item.auth_acct_cnt}</Text>
                     </LinearGradient>
                   }
 

@@ -83,12 +83,15 @@ function FemalePannel() {
               {route.name !== ROUTES.Mileage_Shop && (
                 <>
                   {/* <Text style={female.infoText}>{me?.nickname}님의 공주력</Text> */}
-                  <Text style={female.infoText}>리밋샵에 구경 오세요 :)</Text>
+                  {/* <Text style={female.infoText}>리밋샵에 구경 오세요 :)</Text> */}
+                  <View style={_styles.iconArea}>
+                    <Text style={_styles.newText}>NEW</Text>
+                  </View>
                   <TouchableOpacity
                     style={female.lmtShopButton}
                     onPress={onPressLimitShop}>
 
-                    <Text style={female.lmtButtonText2}>리밋샵 미리보기</Text>
+                    <Text style={female.lmtButtonText2}>리밋샵 입장하기</Text>
                   </TouchableOpacity>
                 </>
               )}
@@ -224,6 +227,25 @@ function MalePannel() {
 {/* ################################################################################################################
 ############### Style 영역
 ################################################################################################################ */}
+
+const _styles = StyleSheet.create({
+  iconArea: {
+    position: 'absolute',
+    top: -7,
+    left: -14,
+    zIndex: 1,
+  },
+  newText: {
+    backgroundColor: '#FF7E8C',
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 10,
+    color: ColorType.white,
+    borderRadius: 8,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    overflow: 'hidden',
+  }
+});
 
 const male = StyleSheet.create({
   floatWrapper: {

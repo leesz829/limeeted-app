@@ -154,10 +154,10 @@ export default function MileageOrder() {
         </View>
 
         <FlatList
-          onScroll={handleScroll}
+          /* onScroll={handleScroll}
           showsHorizontalScrollIndicator={false}
           pagingEnabled={true}
-          horizontal={false}
+          horizontal={false} */
           data={orderList}
           renderItem={(data) => <RenderItem dataList={orderList} />}
         />

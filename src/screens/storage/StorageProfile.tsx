@@ -393,7 +393,7 @@ export const StorageProfile = (props: Props) => {
               {/* ############# 인증 레벨 노출 */}
               {data?.match_member_info?.auth_acct_cnt > 0 && data?.match_member_info?.auth_acct_cnt < 10 &&
                 <LinearGradient colors={['#7986EE', '#7986EE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
-                  <Text style={_styles.whiteText}>LV.1</Text>
+                  <Text style={_styles.whiteText}>LV.{data?.match_member_info?.auth_acct_cnt}</Text>
                 </LinearGradient>
               }
 

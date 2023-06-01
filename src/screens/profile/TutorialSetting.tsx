@@ -45,54 +45,60 @@ export const TutorialSetting = (props: Props) => {
   const memberBase = useUserInfo(); // 회원 기본정보
 
   const [allSelected, setAllSelected] = React.useState<boolean>(false);
-  const [dailyYn, setDailyYn] = React.useState<any>(memberBase?.tutorial_daily_yn);
-  const [liveYn, setLiveYn] = React.useState<any>(memberBase?.tutorial_live_yn);
-  const [robyYn, setRobyYn] = React.useState<any>(memberBase?.tutorial_roby_yn);
-  const [profileYn, setProfileYn] = React.useState<any>(memberBase?.tutorial_profile_yn);
-  const [shopYn, setShopYn] = React.useState<any>(memberBase?.tutorial_shop_yn);
-  const [subscriptionItemYn, setSubscriptionItemYn] = React.useState<any>(memberBase?.tutorial_subscription_item_yn);
-  const [packageItemYn, setPackageItemYn] = React.useState<any>(memberBase?.tutorial_package_item_yn);
+  const [isDaily, setIsDaily] = React.useState<boolean>(memberBase?.tutorial_daily_yn == 'Y' ? true : false);
+  const [isLive, setIsLive] = React.useState<boolean>(memberBase?.tutorial_live_yn == 'Y' ? true : false);
+  const [isRoby, setIsRoby] = React.useState<boolean>(memberBase?.tutorial_roby_yn == 'Y' ? true : false);
+  const [isProfile, setIsProfile] = React.useState<boolean>(memberBase?.tutorial_profile_yn == 'Y' ? true : false);
+  const [isShop, setIsShop] = React.useState<boolean>(memberBase?.tutorial_shop_yn == 'Y' ? true : false);
+  const [isSubscriptionItem, setIsSubscriptionItem] = React.useState<boolean>(memberBase?.tutorial_subscription_item_yn == 'Y' ? true : false);
+  const [isPackageItem, setIsPackageItem] = React.useState<boolean>(memberBase?.tutorial_package_item_yn == 'Y' ? true : false);
   
 
-  const saveMemberTutorialInfo = async (isAll:boolean, type:string, value:string) => {
+  const saveMemberTutorialInfo = async (isAll:boolean, type:string, value:boolean) => {
     let body = {};
 
     if(!isAll) {
-      if(type == 'DAILY') { body = { tutorial_daily_yn: value };
-      } else if(type == 'LIVE') { body = { tutorial_live_yn: value };
-      } else if(type == 'ROBY') { body = { tutorial_roby_yn: value };
-      } else if(type == 'PROFILE') { body = { tutorial_profile_yn: value };
-      } else if(type == 'SHOP') { body = { tutorial_shop_yn: value };
-      } else if(type == 'SUBSCRIPTION_ITEM') { body = { tutorial_subscription_item_yn: value };
-      } else if(type == 'PACKAGE_ITEM') { body = { tutorial_package_item_yn: value };
-      }
-    } else {
-      body = {
-        tutorial_daily_yn: value,
-        tutorial_live_yn: value,
-        tutorial_roby_yn: value,
-        tutorial_profile_yn: value,
-        tutorial_shop_yn: value,
-        tutorial_subscription_item_yn: value,
-        tutorial_package_item_yn: value,
+      if(type == 'DAILY') { body = { tutorial_daily_yn: value ? 'Y' : 'N' }; setIsDaily(value);
+      } else if(type == 'LIVE') { body = { tutorial_live_yn: value ? 'Y' : 'N' }; setIsLive(value);
+      } else if(type == 'ROBY') { body = { tutorial_roby_yn: value ? 'Y' : 'N' }; setIsRoby(value);
+      } else if(type == 'PROFILE') { body = { tutorial_profile_yn: value ? 'Y' : 'N' }; setIsProfile(value);
+      } else if(type == 'SHOP') { body = { tutorial_shop_yn: value ? 'Y' : 'N' }; setIsShop(value);
+      } else if(type == 'SUBSCRIPTION_ITEM') { body = { tutorial_subscription_item_yn: value ? 'Y' : 'N' }; setIsSubscriptionItem(value);
+      } else if(type == 'PACKAGE_ITEM') { body = { tutorial_package_item_yn: value ? 'Y' : 'N' }; setIsPackageItem(value);
       }
 
-      if(value == 'Y') {
-        setDailyYn('Y');
-        setLiveYn('Y');
-        setRobyYn('Y');
-        setProfileYn('Y');
-        setShopYn('Y');
-        setSubscriptionItemYn('Y');
-        setPackageItemYn('Y');
+      if(!value) {
+        setAllSelected(false);
+      }
+    } else {
+      let applyValue = value ? 'Y' : 'N';
+
+      body = {
+        tutorial_daily_yn: applyValue,
+        tutorial_live_yn: applyValue,
+        tutorial_roby_yn: applyValue,
+        tutorial_profile_yn: applyValue,
+        tutorial_shop_yn: applyValue,
+        tutorial_subscription_item_yn: applyValue,
+        tutorial_package_item_yn: applyValue,
+      }
+
+      if(value) {
+        setIsDaily(true);
+        setIsLive(true);
+        setIsRoby(true);
+        setIsProfile(true);
+        setIsShop(true);
+        setIsSubscriptionItem(true);
+        setIsPackageItem(true);
       } else {
-        setDailyYn('N');
-        setLiveYn('N');
-        setRobyYn('N');
-        setProfileYn('N');
-        setShopYn('N');
-        setSubscriptionItemYn('N');
-        setPackageItemYn('N');
+        setIsDaily(false);
+        setIsLive(false);
+        setIsRoby(false);
+        setIsProfile(false);
+        setIsShop(false);
+        setIsSubscriptionItem(false);
+        setIsPackageItem(false);
       }
     };
 
@@ -103,26 +109,6 @@ export const TutorialSetting = (props: Props) => {
           mbr_base : data.mbr_base
         }));
       };
-
-      /* if(isAll) {
-        if(value == 'Y') {
-          setDailyYn('Y');
-          setLiveYn('Y');
-          setRobyYn('Y');
-          setProfileYn('Y');
-          setShopYn('Y');
-          setSubscriptionItemYn('Y');
-          setPackageItemYn('Y');
-        } else {
-          setDailyYn('N');
-          setLiveYn('N');
-          setRobyYn('N');
-          setProfileYn('N');
-          setShopYn('N');
-          setSubscriptionItemYn('N');
-          setPackageItemYn('N');
-        }
-      } */
     }
   }
 
@@ -137,6 +123,19 @@ export const TutorialSetting = (props: Props) => {
     };
   }, [isFocus]);
 
+  React.useEffect(() => {
+    if(!isDaily || !isLive || !isRoby || !isProfile || !isShop || !isSubscriptionItem || !isPackageItem) {
+      setAllSelected(false);
+    }
+
+    if(isDaily && isLive && isRoby && isProfile && isShop && isSubscriptionItem && isPackageItem) {
+        setAllSelected(true);
+    }
+
+  }, [isDaily, isLive, isRoby, isProfile, isShop, isSubscriptionItem, isPackageItem]);
+
+
+
   return (
     <>
       <CommonHeader title={'튜토리얼 설정'} />
@@ -148,10 +147,15 @@ export const TutorialSetting = (props: Props) => {
             <CommonText fontWeight={'200'} type={'h3'}>튜토리얼이 필요한 메뉴를{'\n'}선택해주세요.</CommonText>
             <View style={[layoutStyle.rowBetween, _styles.allChkArea]}>
               <CommonText textStyle={_styles.allChkText}>전체 선택</CommonText>
-              <CommonSwich
-                callbackFn={(value: boolean) => { saveMemberTutorialInfo(true, '', value ? 'Y' : 'N') }}
+              
+              <ToggleSwitch
                 isOn={allSelected}
-                height={20} />
+                onColor={Color.primary}
+                offColor={Color.grayDDDD}
+                size="small"
+                onToggle={(isOn) => saveMemberTutorialInfo(true, '', value)}
+                trackOffStyle={{width: 45 ,height: 20}}
+              />
             </View> 
           </SpaceView>
 
@@ -160,80 +164,91 @@ export const TutorialSetting = (props: Props) => {
             <SpaceView viewStyle={_styles.manageProfile}>
               <Text style={_styles.profileText}>데일리뷰</Text>
 
-              {/* <ToggleSwitch
-                isOn={dailyYn == 'Y' ? true : false}
+              <ToggleSwitch
+                isOn={isDaily}
                 onColor={Color.primary}
                 offColor={Color.grayDDDD}
                 size="small"
-                onToggle={(isOn) => saveMemberTutorialInfo(false, 'DAILY', isOn ? 'Y' : 'N')}
+                onToggle={(isOn) => saveMemberTutorialInfo(false, 'DAILY', isOn)}
                 trackOffStyle={{width: 45 ,height: 20}}
-              /> */}
-
-              <CommonSwich
-                callbackFn={(value: boolean) => {
-                  saveMemberTutorialInfo(false, 'DAILY', value ? 'Y' : 'N');
-                }}
-                isOn={dailyYn == 'Y' ? true : false}
               />
             </SpaceView>
 
             <SpaceView viewStyle={_styles.manageProfile}>
               <Text style={_styles.profileText}>라이브</Text>
-              <CommonSwich
-                callbackFn={(value: boolean) => {
-                  saveMemberTutorialInfo(false, 'LIVE', value ? 'Y' : 'N');
-                }}
-                isOn={liveYn == 'Y' ? true : false}
+              
+              <ToggleSwitch
+                isOn={isLive}
+                onColor={Color.primary}
+                offColor={Color.grayDDDD}
+                size="small"
+                onToggle={(isOn) => saveMemberTutorialInfo(false, 'LIVE', isOn)}
+                trackOffStyle={{width: 45 ,height: 20}}
               />
             </SpaceView>
 
             <SpaceView viewStyle={_styles.manageProfile}>
               <Text style={_styles.profileText}>마이홈</Text>
-              <CommonSwich
-                callbackFn={(value: boolean) => {
-                  saveMemberTutorialInfo(false, 'ROBY', value ? 'Y' : 'N');
-                }}
-                isOn={robyYn == 'Y' ? true : false}
+              
+              <ToggleSwitch
+                isOn={isRoby}
+                onColor={Color.primary}
+                offColor={Color.grayDDDD}
+                size="small"
+                onToggle={(isOn) => saveMemberTutorialInfo(false, 'ROBY', isOn)}
+                trackOffStyle={{width: 45 ,height: 20}}
               />
             </SpaceView>
 
             <SpaceView viewStyle={_styles.manageProfile}>
               <Text style={_styles.profileText}>프로필 관리</Text>
-              <CommonSwich
-                callbackFn={(value: boolean) => {
-                  saveMemberTutorialInfo(false, 'PROFILE', value ? 'Y' : 'N');
-                }}
-                isOn={profileYn == 'Y' ? true : false}
+             
+              <ToggleSwitch
+                isOn={isProfile}
+                onColor={Color.primary}
+                offColor={Color.grayDDDD}
+                size="small"
+                onToggle={(isOn) => saveMemberTutorialInfo(false, 'PROFILE', isOn)}
+                trackOffStyle={{width: 45 ,height: 20}}
               />
             </SpaceView>
 
             <SpaceView viewStyle={_styles.manageProfile}>
               <Text style={_styles.profileText}>상점과 인벤토리</Text>
-              <CommonSwich
-                callbackFn={(value: boolean) => {
-                  saveMemberTutorialInfo(false, 'SHOP', value ? 'Y' : 'N');
-                }}
-                isOn={shopYn == 'Y' ? true : false}
+              
+              <ToggleSwitch
+                isOn={isShop}
+                onColor={Color.primary}
+                offColor={Color.grayDDDD}
+                size="small"
+                onToggle={(isOn) => saveMemberTutorialInfo(false, 'SHOP', isOn)}
+                trackOffStyle={{width: 45 ,height: 20}}
               />
             </SpaceView>
 
             <SpaceView viewStyle={_styles.manageProfile}>
               <Text style={_styles.profileText}>상점 부스팅 상품</Text>
-              <CommonSwich
-                callbackFn={(value: boolean) => {
-                  saveMemberTutorialInfo(false, 'SUBSCRIPTION_ITEM', value ? 'Y' : 'N');
-                }}
-                isOn={subscriptionItemYn == 'Y' ? true : false}
+              
+              <ToggleSwitch
+                isOn={isSubscriptionItem}
+                onColor={Color.primary}
+                offColor={Color.grayDDDD}
+                size="small"
+                onToggle={(isOn) => saveMemberTutorialInfo(false, 'SUBSCRIPTION_ITEM', isOn)}
+                trackOffStyle={{width: 45 ,height: 20}}
               />
             </SpaceView>
 
             <SpaceView viewStyle={_styles.manageProfile}>
               <Text style={_styles.profileText}>상점 패키지 상품</Text>
-              <CommonSwich
-                callbackFn={(value: boolean) => {
-                  saveMemberTutorialInfo(false, 'PACKAGE_ITEM', value ? 'Y' : 'N');
-                }}
-                isOn={packageItemYn == 'Y' ? true : false}
+             
+              <ToggleSwitch
+                isOn={isPackageItem}
+                onColor={Color.primary}
+                offColor={Color.grayDDDD}
+                size="small"
+                onToggle={(isOn) => saveMemberTutorialInfo(false, 'PACKAGE_ITEM', isOn)}
+                trackOffStyle={{width: 45 ,height: 20}}
               />
             </SpaceView>
 

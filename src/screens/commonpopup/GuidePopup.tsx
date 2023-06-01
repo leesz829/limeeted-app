@@ -78,7 +78,7 @@ export const GuidePopup = (props: Props) => {
                 <>
                   {props.guideType == 'DAILY' && 
                     <SpaceView viewStyle={[layoutStyle.alignCenter, {backgroundColor: '#B8D1D1', paddingTop: 10}]}>
-                      <Image source={GUIDE_IMAGE.daily01Thumnail} style={{width: 250, height: 363}} resizeMode={'cover'} />
+                      <Image source={GUIDE_IMAGE.daily01Thumnail} style={{width: 230, height: 334}} resizeMode={'cover'} />
                     </SpaceView>
                   }
 
@@ -154,13 +154,13 @@ export const GuidePopup = (props: Props) => {
                                 <SpaceView viewStyle={layoutStyle.alignCenter} mb={10}>
                                   {index == 0 &&
                                     <>
-                                      {props.guideType == 'SHOP_BASIC' && <Image source={GUIDE_IMAGE.shop01ContentBasic} style={{width: width-96, height: height-526}} resizeMode={'cover'} /> }
-                                      {props.guideType == 'SHOP_SUBSCRIPTION' && <Image source={GUIDE_IMAGE.shop01ContentBoosting} style={{width: width-96, height: height-526}} resizeMode={'cover'} /> }
-                                      {props.guideType == 'SHOP_PACKAGE' && <Image source={GUIDE_IMAGE.shop01ContentPackage} style={{width: width-96, height: height-526}} resizeMode={'cover'} /> }
+                                      {props.guideType == 'SHOP_BASIC' && <Image source={GUIDE_IMAGE.shop01ContentBasic} style={{width: 320, height: 257}} resizeMode={'cover'} /> }
+                                      {props.guideType == 'SHOP_SUBSCRIPTION' && <Image source={GUIDE_IMAGE.shop01ContentBoosting} style={{width: 320, height: 257}} resizeMode={'cover'} /> }
+                                      {props.guideType == 'SHOP_PACKAGE' && <Image source={GUIDE_IMAGE.shop01ContentPackage} style={{width: 320, height: 257}} resizeMode={'cover'} /> }
                                     </>                                
                                   }
-                                  {index == 1 && <Image source={GUIDE_IMAGE.shop02Content} style={{width: width-96, height: height-526}} resizeMode={'cover'} /> }
-                                  {memberBase?.gender == 'W' && index == 2 && <Image source={GUIDE_IMAGE.shop03Content} style={{width: width-96, height: height-526}} resizeMode={'cover'} /> }
+                                  {index == 1 && <Image source={GUIDE_IMAGE.shop02Content} style={{width: 320, height: 257}} resizeMode={'cover'} /> }
+                                  {memberBase?.gender == 'W' && index == 2 && <Image source={GUIDE_IMAGE.shop03Content} style={{width: 320, height: 257}} resizeMode={'cover'} /> }
                                 </SpaceView>
 
                                 <SpaceView viewStyle={commonStyle.paddingHorizontal15}>
