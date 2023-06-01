@@ -144,6 +144,9 @@ const RenderItem = ({ item, type, callFn }) => {
   const onPressItem = (item) => {
     // ==================== 재고상품 주문 팝업
     if (type === 'gifticon') {
+      if(item.prod_cnt < 1){
+        return false;
+      }
       setTargetItem(item);
       setModalVisible(true);
     } else {
