@@ -36,24 +36,26 @@ export default function MileageShop() {
   const [tab, setTab] = useState(categories[0]);
   const [data, setData] = useState(DATA);
 
-  useEffect(() => {
-    async function fetch() {
-      if (tab.value === 'boutique') {
+  async function fetch() {
+    if (tab.value === 'boutique') {
 
-        // 경매 상품 목록 조회
-        const { success: sa, data: ad } = await get_auct_product();
-        if (sa) {
-          setData(ad?.prod_list);
-        }
-      } else {
+      // 경매 상품 목록 조회
+      const { success: sa, data: ad } = await get_auct_product();
+      if (sa) {
+        setData(ad?.prod_list);
+      }
+    } else {
 
-        // 재고 상품 목록 조회
-        const { success: sp, data: pd } = await get_product_list();
-        if (sp) {
-          setData(pd?.prod_list);
-        }
+      // 재고 상품 목록 조회
+      const { success: sp, data: pd } = await get_product_list();
+      if (sp) {
+        console.log('sp ::: ' , pd.prod_list[0].data);
+        setData(pd?.prod_list);
       }
     }
+  }
+
+  useEffect(() => { 
     fetch();
   }, [tab]);
 
@@ -76,11 +78,12 @@ export default function MileageShop() {
             
           } */
           stickySectionHeadersEnabled={false}
-          renderSectionHeader={renderSectionHeader}
+          // 상시판매 프로세스 적용으로 인해 삭제
+          // renderSectionHeader={renderSectionHeader}
           renderItem={(props) => {
             //console.log('props : ', JSON.stringify(props));
             const { item, index, rowIndex } = props;
-            return <RenderItem type={tab.value} item={item} />;
+            return <RenderItem type={tab.value} item={item} callFn={fetch} />;
           }}
         />
       </View>
@@ -120,7 +123,7 @@ function ListHeaderComponent({ onPressTab, tab }) {
 }
 
 // ######################################################################### 상품 아이템 렌더링
-const RenderItem = ({ item, type }) => {
+const RenderItem = ({ item, type, callFn }) => {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [targetItem, setTargetItem] = useState(null);
@@ -131,10 +134,7 @@ const RenderItem = ({ item, type }) => {
   const imagePath = findSourcePath(item?.file_path + item?.file_name);
 
   const onPressItem = (item) => {
-
-    // ==================== 임시 비활성화 처리
-    return;
-
+    // ==================== 재고상품 주문 팝업
     if (type === 'gifticon') {
       setTargetItem(item);
       setModalVisible(true);
@@ -145,7 +145,15 @@ const RenderItem = ({ item, type }) => {
       });
     }
   };
-  const closeModal = () => setModalVisible(false);
+  // const closeModal = () => setModalVisible(false);
+  const closeModal = (isPayConfirm: boolean) => {
+    setModalVisible(false);
+
+    if(isPayConfirm) {
+      callFn();
+      
+    }
+  };
 
   const remainTime = getRemainTime(
     item?.sell_yn === 'Y' ? item?.buy_end_dt : item?.buy_start_dt,
@@ -222,8 +230,13 @@ const RenderItem = ({ item, type }) => {
             </View>
             {type === 'gifticon' ? (
               <View style={styles.textContainer}>
-                {/* <Text style={styles.hintText}>100개 남음</Text> */}
-                <Text style={styles.hintText}>6/2 열림</Text>
+                {
+                  item.prod_cnt > 0 ?
+                    <Text style={styles.hintText}>{item.prod_cnt} 개 남음</Text> :
+                    <Text style={styles.soldOutText}>품절</Text>
+                }
+                
+                {/* <Text style={styles.hintText}>6/2 열림</Text> */}
                 <Text style={styles.price}></Text>
               </View>
             ) : (
@@ -242,7 +255,7 @@ const RenderItem = ({ item, type }) => {
           type={type}
           item={targetItem}
           closeModal={closeModal}
-          productPurchase={productPurchase}
+          // productPurchase={productPurchase}
         />
       </TouchableOpacity>
     </>
@@ -345,6 +358,15 @@ const styles = StyleSheet.create({
     letterSpacing: 0,
     textAlign: 'left',
     color: '#d3d3d3',
+  },
+  soldOutText: {
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 10,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#FE0456',
   },
   remainText: {
     position: 'absolute',

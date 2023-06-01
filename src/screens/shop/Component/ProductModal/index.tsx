@@ -35,9 +35,8 @@ import SpaceView from 'component/SpaceView';
 import { useNavigation } from '@react-navigation/native';
 import { usePopup } from 'Context';
 import { CommonLoading } from 'component/CommonLoading';
-import { purchase_product } from 'api/models';
+import { purchase_product, order_goods } from 'api/models';
 import { ROUTES, STACK } from 'constants/routes';
-import InAppBilling from 'react-native-billing';
 
 
 interface Props {
@@ -82,18 +81,55 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
       setIsPayLoading(true);
       
       try {
-
-        if(Platform.OS == 'android') {
-          purchaseAosProc();
-        } else if(Platform.OS == 'ios') {
-          purchaseIosProc();
-        }       
-  
+        if(type == 'bm'){
+          if(Platform.OS == 'android') {
+            purchaseAosProc();
+          } else if(Platform.OS == 'ios') {
+            purchaseIosProc();
+          }
+        }else{
+          buyProdsProc();
+        }
       } catch (err: any) {
         console.warn(err.code, err.message);
       }
     }
   };
+
+  const buyProdsProc = async () => {
+    try {
+      const { success, data } = await order_goods({
+        prod_seq : item.prod_seq
+        , modify_seq : item.modify_seq
+        , buy_price : item.buy_price
+        , mobile_os : Platform.OS
+      });
+      
+      if (success) {
+        if(data.result_code != '0000') {
+          show({
+            content: data.result_msg
+            , confirmCallback: function () {},
+          });
+          return false;
+        }else{
+          show({
+            content: '구매되었습니다.'
+            , confirmCallback: function () {
+              setComfirmModalVisible(false);
+              closeModal(true);
+            },
+          });
+        }
+        
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsPayLoading(false);
+    }
+
+  }
 
   // ######################################################### AOS 결제 처리
   const purchaseAosProc = async () => {
@@ -291,8 +327,14 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
                 {/* {CommaFormat(item?.buy_count_max)}개 남음 */}
               </Text>
               <View style={modalStyleProduct.rowCenter}>
-                <Text style={modalStyleProduct.price}>
-                  {CommaFormat(item?.shop_buy_price != null ? item?.shop_buy_price : item?.buy_price) + (item?.money_type_code == 'PASS' ? '패스' : '원')}
+               <Text style={modalStyleProduct.price}>
+                  {
+                    CommaFormat(item?.shop_buy_price != null ? item?.shop_buy_price : item?.buy_price)
+                  }
+
+                  { 
+                    type != 'bm'? <Image source={ICON.crown} style={modalStyleProduct.crown} /> : item?.money_type_code == 'PASS' ? '패스' : '원' 
+                  }
                 </Text>
                 {/*<Image source={ICON.crown} style={modalStyleProduct.crown} />*/}
               </View>  
@@ -356,7 +398,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
                     style={[modalStyle.modalBtn, {backgroundColor: Color.blue02, borderBottomRightRadius: 5}]}
                     onPress={() => purchaseBtn()}>
                     <CommonText type={'h5'} fontWeight={'500'} color={ColorType.white}>
-                      확인하기
+                      구매하기
                     </CommonText>
                   </TouchableOpacity>
                 </View>

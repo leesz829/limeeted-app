@@ -4,7 +4,7 @@ import { api_domain } from './properties';
 // axios 인스턴스 생성
 const YahooClient = axios.create({
   baseURL: api_domain,
-  // timeout: 1000,
+  timeout: 6000,
   headers: {
     // 커스텀헤더를 넣으면 오류남. 커스텀헤더에는 ' 가 생김.
     Accept: 'application/json',
