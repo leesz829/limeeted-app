@@ -145,7 +145,7 @@ export const TutorialSetting = (props: Props) => {
         <SpaceView viewStyle={{paddingHorizontal: 20}}>
 
           <SpaceView viewStyle={layoutStyle.rowBetween} mb={20}>
-            <CommonText fontWeight={'200'} type={'h3'}>튜토피얼이 필요한 메뉴를{'\n'}선택해주세요.</CommonText>
+            <CommonText fontWeight={'200'} type={'h3'}>튜토리얼이 필요한 메뉴를{'\n'}선택해주세요.</CommonText>
             <View style={[layoutStyle.rowBetween, _styles.allChkArea]}>
               <CommonText textStyle={_styles.allChkText}>전체 선택</CommonText>
               <CommonSwich

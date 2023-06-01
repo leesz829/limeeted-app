@@ -78,13 +78,13 @@ export const GuidePopup = (props: Props) => {
                 <>
                   {props.guideType == 'DAILY' && 
                     <SpaceView viewStyle={[layoutStyle.alignCenter, {backgroundColor: '#B8D1D1', paddingTop: 10}]}>
-                      <Image source={GUIDE_IMAGE.daily01Thumnail} style={{width: 280, height: 408}} resizeMode={'cover'} />
+                      <Image source={GUIDE_IMAGE.daily01Thumnail} style={{width: 250, height: 363}} resizeMode={'cover'} />
                     </SpaceView>
                   }
 
                   {props.guideType == 'ROBY' && 
                     <SpaceView viewStyle={[layoutStyle.alignCenter, {backgroundColor: '#B8D1D1', paddingVertical: 15}]}>
-                      <Image source={GUIDE_IMAGE.robyThumnail} style={{width: 250, height: 349}} resizeMode={'cover'} />
+                      <Image source={GUIDE_IMAGE.robyThumnail} style={{width: 230, height: 322}} resizeMode={'cover'} />
                     </SpaceView>
                   }
 
@@ -110,9 +110,9 @@ export const GuidePopup = (props: Props) => {
                           {props.guideType == 'LIVE' && 
                             <>
                               <SpaceView viewStyle={[layoutStyle.alignCenter, {backgroundColor: '#fff', paddingTop: 10, paddingBottom: 10}]}>
-                                {index == 0 && <Image source={GUIDE_IMAGE.live01Thumnail} style={{width: 250, height: 399}} resizeMode={'cover'} /> }
-                                {index == 1 && <Image source={GUIDE_IMAGE.live02Thumnail} style={{width: 250, height: 399}} resizeMode={'cover'} /> }
-                                {index == 2 && <Image source={GUIDE_IMAGE.live03Thumnail} style={{width: 250, height: 399}} resizeMode={'cover'} /> }
+                                {index == 0 && <Image source={GUIDE_IMAGE.live01Thumnail} style={{width: 230, height: 366}} resizeMode={'cover'} /> }
+                                {index == 1 && <Image source={GUIDE_IMAGE.live02Thumnail} style={{width: 230, height: 366}} resizeMode={'cover'} /> }
+                                {index == 2 && <Image source={GUIDE_IMAGE.live03Thumnail} style={{width: 230, height: 366}} resizeMode={'cover'} /> }
                               </SpaceView>
                               <SpaceView mt={15} ml={15}>
                                 <SpaceView mb={10}><Text style={_styles.liveTxt01}>"LIVE" 인상 투표</Text></SpaceView>
