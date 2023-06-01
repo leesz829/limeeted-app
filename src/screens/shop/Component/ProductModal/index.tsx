@@ -562,6 +562,9 @@ const modalStyleProduct = StyleSheet.create({
   crown: {
     width: 17.67,
     height: 11.73,
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
     marginLeft: 5
   },
   bottomContainer: {
