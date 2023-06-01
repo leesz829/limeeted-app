@@ -71,7 +71,7 @@ export const BasePopup = (props: Props) => {
                     style={[modalStyle.modalBtn, {backgroundColor: Color.grayD6D3D3, borderBottomLeftRadius: 5}]}
                     onPress={onPressCancel}>
                     <CommonText type={'h5'} fontWeight={'500'} color={ColorType.white}>
-                      {typeof props.cancelBtnText != 'undefined' ? props.cancelBtnText : '취소 할래요!'}
+                      {typeof props.cancelBtnText != 'undefined' ? props.cancelBtnText : '닫기'}
                     </CommonText>
                   </TouchableOpacity>
 

@@ -227,7 +227,7 @@ export default function Matching(props: Props) {
     } else if (activeType == 'pass') {
       show({
 				title: '매칭 취소',
-				content: '이성을 거부하시겠습니까?' ,
+				content: '매칭을 취소하고 다음 프로필 카드를 확인 하시겠습니까?' ,
         cancelCallback: function() {
 
         },
@@ -574,12 +574,12 @@ export default function Matching(props: Props) {
                 </View> */}
               </View>
 
-              {data.distance_val != null &&
+              {/* {data.distance_val != null &&
                 <View style={styles.distanceContainer}>
                   <Image source={ICON.marker} style={styles.markerIcon} />
                   <Text style={styles.regionText}>12.9Km</Text>
                 </View>
-              }
+              } */}
 
               <View style={styles.nameContainer}>
                 <Text style={styles.nameText}>{data.match_member_info?.nickname}, {data.match_member_info?.age}</Text>
@@ -1106,7 +1106,7 @@ const styles = StyleSheet.create({
   },
   yellowText: {
     fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: 'normal',
     fontStyle: 'normal',
     letterSpacing: 0,
@@ -1155,7 +1155,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0,
     textAlign: 'left',
     color: '#ffffff',
-    marginLeft: 4,
   },
   buttonsContainer: {
     flexDirection: 'row',

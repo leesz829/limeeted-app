@@ -56,6 +56,7 @@ import { myProfile } from 'redux/reducers/authReducer';
 import { RadioCheckBox_3 } from 'component/RadioCheckBox_3';
 import { useUserInfo } from 'hooks/useUserInfo';
 import { Watermark } from 'component/Watermark';
+import LinearGradient from 'react-native-linear-gradient';
 
 
 
@@ -389,11 +390,90 @@ export const StorageProfile = (props: Props) => {
           <View style={_styles.absoluteView}>
             <View style={_styles.badgeContainer}>
 
-              {/* {data?.second_auth_list.length > 0 && 
-                <View style={_styles.authBadge}>
-                  <Text style={_styles.whiteText}>인증 완료</Text>
-                </View>
-              } */}
+              {/* ############# 인증 레벨 노출 */}
+              {data?.match_member_info?.auth_acct_cnt > 0 && data?.match_member_info?.auth_acct_cnt < 10 &&
+                <LinearGradient colors={['#7986EE', '#7986EE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
+                  <Text style={_styles.whiteText}>LV.1</Text>
+                </LinearGradient>
+              }
+
+              {data?.match_member_info?.auth_acct_cnt >= 10 && data?.match_member_info?.auth_acct_cnt < 15 &&
+                <LinearGradient colors={['#E0A9A9', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
+                  <Image source={ICON.level10Icon} style={[_styles.authBadgeImg, {width: 23, height: 23}]} />
+                  <Text style={_styles.whiteText}>LV.{data?.match_member_info?.auth_acct_cnt}</Text>
+                </LinearGradient>
+              }
+
+              {data?.match_member_info?.auth_acct_cnt >= 15 && data?.match_member_info?.auth_acct_cnt < 20 &&
+                <LinearGradient colors={['#A9BBE0', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
+                  <Image source={ICON.level15Icon} style={[_styles.authBadgeImg, {width: 23, height: 23}]} />
+                  <Text style={_styles.whiteText}>LV.{data?.match_member_info?.auth_acct_cnt}</Text>
+                </LinearGradient>
+              }
+
+              {data?.match_member_info?.auth_acct_cnt >= 20 && data?.match_member_info?.auth_acct_cnt < 25 &&
+                <LinearGradient colors={['#FEB961', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
+                  <Image source={ICON.level20Icon} style={[_styles.authBadgeImg02, {width: 30, height: 30}]} />
+                  <Text style={_styles.whiteText}>LV.{data?.match_member_info?.auth_acct_cnt}</Text>
+                </LinearGradient>
+              }
+
+              {data?.match_member_info?.auth_acct_cnt >= 25 && data?.match_member_info?.auth_acct_cnt < 30 &&
+                <LinearGradient colors={['#9BFFB5', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
+                  <Image source={ICON.level25Icon} style={[_styles.authBadgeImg02, {width: 30, height: 30}]} />
+                  <Text style={_styles.whiteText}>LV.{data?.match_member_info?.auth_acct_cnt}</Text>
+                </LinearGradient>
+              }
+
+              {data?.match_member_info?.auth_acct_cnt >= 30 &&
+                <LinearGradient colors={['#E84CEE', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
+                  <Image source={ICON.level30Icon} style={[_styles.authBadgeImg02, {width: 30, height: 30}]} />
+                  <Text style={_styles.whiteText}>LV.{data?.match_member_info?.auth_acct_cnt}</Text>
+                </LinearGradient>
+              }
+
+              {/* ############# 프로필 평점 노출 */}
+              {data.match_member_info.profile_score < 6.0 &&
+                <LinearGradient colors={['#FF7EA6', '#FF7EA6']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
+                  <Image source={ICON.score5Icon} style={[_styles.scoreBadgeImg, {width: 12, height: 12}]} />
+                  <Text style={_styles.yellowText}>{data.match_member_info.profile_score}</Text>
+                </LinearGradient>
+              }
+
+              {data.match_member_info.profile_score >= 6.0 && data.match_member_info.profile_score < 7.0 &&
+                <LinearGradient colors={['#FF4381', '#FF4381']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
+                  <Image source={ICON.score6Icon} style={[_styles.scoreBadgeImg, {width: 16, height: 16}]} />
+                  <Text style={_styles.yellowText}>{data.match_member_info.profile_score}</Text>
+                </LinearGradient>
+              }
+
+              {data.match_member_info.profile_score >= 7.0 && data.match_member_info.profile_score < 8.0 &&
+                <LinearGradient colors={['#FF4381', '#FF4381']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
+                  <Image source={ICON.scoreKingIcon} style={[_styles.scoreBadgeImg, {width: 16, height: 16}]} />
+                  <Text style={_styles.yellowText}>{data.match_member_info.profile_score}</Text>
+                </LinearGradient>
+              }
+
+              {data.match_member_info.profile_score >= 8.0 && data.match_member_info.profile_score < 9.0 &&
+                <LinearGradient colors={['#FE0456', '#FF82AB']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
+                  <Image source={ICON.scoreKingIcon} style={[_styles.scoreBadgeImg, {width: 16, height: 16}]} />
+                  <Text style={_styles.yellowText}>{data.match_member_info.profile_score}</Text>
+                </LinearGradient>
+              }
+
+              {data.match_member_info.profile_score >= 9.0 && data.match_member_info.profile_score < 10.0 &&
+                <LinearGradient colors={['#FE0456', '#9E6DF5']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
+                  <Image source={ICON.scoreKingIcon} style={[_styles.scoreBadgeImg, {width: 16, height: 16}]} />
+                  <Text style={_styles.yellowText}>{data.match_member_info.profile_score}</Text>
+                </LinearGradient>
+              }
+
+              {data.match_member_info.profile_score >= 10.0 &&
+                <LinearGradient colors={['#FE0456', '#9E41E5']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
+                  <Image source={ICON.scoreDiamondIcon} style={[_styles.scoreBadgeImg, {width: 16, height: 16}]} />
+                  <Text style={_styles.yellowText}>{data.match_member_info.profile_score}</Text>
+                </LinearGradient>
+              }
 
               {/* 고평점 이성 소개받기 구독 아이템 표시 */}
               {/* <View style={styles.redBadge}>
@@ -402,12 +482,12 @@ export const StorageProfile = (props: Props) => {
               </View> */}
             </View>
 
-            {data.distance_val != null && 
+            {/* {data.distance_val != null && 
               <View style={_styles.distanceContainer}>
                 <Image source={ICON.marker} style={_styles.markerIcon} />
                 <Text style={_styles.regionText}>{data.distance_val}Km</Text>
               </View>
-            }
+            } */}
 
             <View style={_styles.nameContainer}>
               <Text style={_styles.nameText}>{data.match_member_info?.nickname}, {data.match_member_info?.age}</Text>
@@ -486,7 +566,7 @@ export const StorageProfile = (props: Props) => {
                   color={'#ACACAC'}
                   textStyle={[layoutStyle.textCenter, {marginTop: 5}]}
                 >
-                  상대방이 회원님의 관심을 두고 고민 중인가봐요.
+                  상대방이 회원님의 <Text style={{color: '#7986EE'}}>관심</Text>을 두고 고민중 인가봐요.
                 </CommonText>
               </SpaceView>
             </>
@@ -546,6 +626,59 @@ export const StorageProfile = (props: Props) => {
           {/* 프로필 인증 */}
           <ProfileAuth level={data.match_member_info.auth_acct_cnt} data={data.second_auth_list} />
 
+          {/* 추가 정보 */}
+          {((data.match_member_info.height != null && data.match_member_info.height != '') || (data.match_member_info.form_body_type != null && data.match_member_info.form_body_type != '') ||
+          (data.match_member_info.job_name != null && data.match_member_info.job_name != '') || (data.match_member_info.religion_type != null && data.match_member_info.religion_type != '') ||
+          (data.match_member_info.drink_type != null && data.match_member_info.drink_type != '') || (data.match_member_info.smoke_type != null && data.match_member_info.smoke_type != '')) &&
+            <SpaceView>
+              <Text style={_styles.title}>추가 정보</Text>
+              <SpaceView mt={20} viewStyle={{flexDirection: 'row', flexWrap: 'wrap'}}>
+                {data.match_member_info.height != null && data.match_member_info.height != '' &&
+                  <View style={_styles.addItemArea}>
+                    <Image source={ICON.addHeightIcon} style={{width:11, height:16, marginRight: 10}} />
+                    <Text style={_styles.addItemAreaText}><Text style={_styles.addItemAreaTextBold}>{data.match_member_info.height}</Text>cm</Text>
+                  </View>
+                }
+
+                {data.match_member_info.form_body_type != null && data.match_member_info.form_body_type != '' &&
+                  <View style={_styles.addItemArea}>
+                    <Image source={ICON.addCategoryIcon} style={{width:16, height:16, marginRight: 10}} />
+                    <Text style={_styles.addItemAreaText}>{data.match_member_info.form_body_type}</Text>
+                  </View>
+                }
+
+                {data.match_member_info.job_name != null && data.match_member_info.job_name != '' &&
+                  <View style={_styles.addItemArea}>
+                    <Image source={ICON.addFlagIcon} style={{width:11, height:16, marginRight: 10}} />
+                    <Text style={_styles.addItemAreaText}>{data.match_member_info.job_name}</Text>
+                  </View>
+                }
+
+                {data.match_member_info.religion_type != null && data.match_member_info.religion_type != '' &&
+                  <View style={_styles.addItemArea}>
+                    <Image source={ICON.addPlayIcon} style={{width:17, height:20, marginRight: 10}} />
+                    <Text style={_styles.addItemAreaText}>{data.match_member_info.religion_type}</Text>
+                  </View>
+                }
+
+                {data.match_member_info.drink_type != null && data.match_member_info.drink_type != '' &&
+                  <View style={_styles.addItemArea}>
+                    <Image source={ICON.addWineIcon} style={{width:13, height:20, marginRight: 10}} />
+                    <Text style={_styles.addItemAreaText}>{data.match_member_info.drink_type}</Text>
+                  </View>
+                }
+
+                {data.match_member_info.smoke_type != null && data.match_member_info.smoke_type != '' &&
+                  <View style={_styles.addItemArea}>
+                    <Image source={ICON.addSmokeIcon} style={{width:20, height:13, marginRight: 10}} />
+                    <Text style={_styles.addItemAreaText}>{data.match_member_info.smoke_type}</Text>
+                  </View>
+                }
+                
+              </SpaceView>
+            </SpaceView>
+          }
+
           <Text style={_styles.title}>프로필 활동지수</Text>
 
           <View style={_styles.profileActivePannel}>
@@ -556,7 +689,7 @@ export const StorageProfile = (props: Props) => {
               </Text>
               님의 리미티드 대표 인상
             </Text>
-            <Text style={_styles.profileActiveText2}>{data.match_member_info.face_code_name}</Text>
+            <Text style={_styles.profileActiveText2}>{data.match_member_info.best_face}</Text>
             <View style={_styles.sliderContainer}>
               <Text style={_styles.sliderText}>프로필 평점 {data.match_member_info.profile_score}</Text>
               <Slider
@@ -720,10 +853,21 @@ const _styles = StyleSheet.create({
     width: 48,
     height: 21,
     borderRadius: 5,
-    backgroundColor: '#7986ee',
+    //backgroundColor: '#7986ee',
     flexDirection: `row`,
     alignItems: `center`,
     justifyContent: `center`,
+    marginRight: 5,
+  },
+  scoreBadge: {
+    width: 48,
+    height: 21,
+    borderRadius: 5,
+    flexDirection: `row`,
+    alignItems: `center`,
+    justifyContent: `space-between`,
+    marginRight: 5,
+    paddingHorizontal: 5,
   },
   title: {
     fontFamily: 'AppleSDGothicNeoEB00',
@@ -754,6 +898,25 @@ const _styles = StyleSheet.create({
     letterSpacing: 0,
     textAlign: 'left',
     color: '#ffffff',
+  },
+  yellowText: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 11,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#FDFFD8',
+  },
+  authBadgeImg: {
+    marginLeft: -5,
+    marginRight: -2,
+    marginTop: -2
+  },
+  authBadgeImg02: {
+    marginLeft: -9,
+    marginRight: -4,
+    marginTop: -3
   },
   crownIcon: {
     width: 12.7,
@@ -797,7 +960,6 @@ const _styles = StyleSheet.create({
     letterSpacing: 0,
     textAlign: 'left',
     color: '#ffffff',
-    marginLeft: 4,
   },
   buttonsContainer: {
     flexDirection: 'row',
@@ -1098,6 +1260,28 @@ const _styles = StyleSheet.create({
   dotContainerStyle: {
     marginRight: 2,
     marginLeft: 2,
+  },
+  addItemArea: {
+    borderWidth: 1,
+    borderColor: '#A6A9C5',
+    borderRadius: 20,
+    width: width / 3.5,
+    height: 45,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 2,
+    marginBottom: 8,
+  },
+  addItemAreaText: {
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 14,
+    color: '#7986EE',
+    width: '60%',
+    textAlign: 'center',
+  },
+  addItemAreaTextBold: {
+    fontSize: 18,
   },
 });
 

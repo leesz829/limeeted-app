@@ -19,6 +19,8 @@ export const getStorageListData = (
          height: any;
          job_name: any;
          member_status: any;
+         profile_score: any;
+         auth_acct_cnt: any;
       },
    ],
 ) => {
@@ -40,6 +42,8 @@ export const getStorageListData = (
          height,
          job_name,
          member_status,
+         profile_score,
+         auth_acct_cnt,
       }: {
          match_seq: any;
          req_member_seq: any;
@@ -54,6 +58,8 @@ export const getStorageListData = (
          height: any;
          job_name: any;
          member_status: any;
+         profile_score: any;
+         auth_acct_cnt: any;
       }) => {
          const img_path = findSourcePath(img_file_path);
 
@@ -73,6 +79,8 @@ export const getStorageListData = (
             height: '',
             job_name: '',
             member_status: '',
+            profile_score: '',
+            auth_acct_cnt: '',
          };
          const dday_mod = 7 - Number(int_after_day);
 
@@ -89,6 +97,8 @@ export const getStorageListData = (
          dataJson.height = height;
          dataJson.job_name = job_name;
          dataJson.member_status = member_status;
+         dataJson.profile_score = profile_score;
+         dataJson.auth_acct_cnt = auth_acct_cnt;
 
          dataList.push(dataJson);
          hNum++;
