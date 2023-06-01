@@ -86,12 +86,12 @@ export default function MileageOrder() {
           end={{ x: 1, y: 1 }}
         >
           <CommonHeader
-            containerStyle={{ backgroundColor: 'transparent' }}
-            backIcon={ICON.backWhite}
+            title={'주문 내역'}
+            backIcon={ICON.back}
             walletTextStyle={{ color: 'white' }}
           />
           <View style={styles.paddingBox}>
-            <Text style={styles.nameText}>{me?.name}</Text>
+            <Text style={styles.nameText}>{me?.nickname}</Text>
             <View style={styles.addressBox}>
               {/*
                 <TextInput
@@ -239,6 +239,7 @@ const RenderItem = ({ dataList }) => {
 const styles = StyleSheet.create({
   paddingBox: {
     paddingHorizontal: 32,
+    marginTop: 20,
   },
   nameText: {
     marignTop: 25,
