@@ -71,6 +71,7 @@ import {
   INSERT_MEMBER_PHONE_BOOK,
   GET_APP_VERSION,
   DELETE_MEMBER_PROFILE_IMAGE,
+  FIRST_MATCH_PASS_ADD,
 } from './route';
 
 /* ========================================================================================================
@@ -470,6 +471,13 @@ export async function get_matched_member_info(body: { match_seq: number }) {
 //매칭된 회원의 기본 정보를 조회한다.
 export async function get_member_apply_item_info() {
   return send(MEMBER_APPLY_ITEM_INFO, 'POST', undefined, true, false);
+}
+
+//최초 매칭 성공시 패스를 지급한다.
+export async function first_match_pass_add(body: {
+  match_seq: number;
+}) {
+  return send(FIRST_MATCH_PASS_ADD, 'POST', body, true, false);
 }
 
 

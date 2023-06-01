@@ -125,7 +125,7 @@ export function Wallet({ theme }) {
               containerStyle={[_styles.tooltipDescContainer]}
               popover={
                 <View style={[_styles.tooltipArea('pass'), ]}>
-                  <Text style={_styles.tooltipAreaText}>범용적으로 사용되는 기본 재화.{'\n'}관심을 보내거나 확인하는데 사용되요.</Text>
+                  <Text style={_styles.tooltipAreaText}>범용적으로 사용되는 기본 재화.{'\n'}관심을 보내거나 확인하는데 사용돼요.</Text>
                 </View>
               }>
 
@@ -151,7 +151,7 @@ export function Wallet({ theme }) {
                 containerStyle={[_styles.tooltipDescContainer]}
                 popover={
                   <View style={[_styles.tooltipArea('royal'), ]}>
-                    <Text style={_styles.tooltipAreaText}>리미티드의 특수 재화.{'\n'}찐심을 보내는데 사용되요.</Text>
+                    <Text style={_styles.tooltipAreaText}>리미티드의 특수 재화.{'\n'}찐심을 보내는데 사용돼요.</Text>
                   </View>
                 }>
 
