@@ -188,7 +188,6 @@ export const Live = () => {
                 distance: data?.distance_val,
               });
 
-              console.log('data.distance_val ::::: ' , data.distance_val);
               setIsLoad(true);
             };
 
@@ -248,7 +247,6 @@ export const Live = () => {
   // ######################################################################################## 초기 실행 함수
   useFocusEffect(
     React.useCallback(() => {
-      console.log('live screent !!!!!!!!!!!!!!!!!!!!!!!!!!!!');
       getLiveMatchTrgt();
 
       return () => {
@@ -326,14 +324,14 @@ export const Live = () => {
                 <Text style={_styles.nameText}>{data.live_member_info.nickname}, {data.live_member_info.age}</Text>
               </View>
 
-              <View style={_styles.distanceContainer}>
+              {/* <View style={_styles.distanceContainer}>
                 {data.distance != null && data.distance != '' && data.distance != '0.0' &&
                   <View style={_styles.distanceContainer}>
                     <Image source={ICON.marker} style={_styles.markerIcon} />
                     <Text style={_styles.regionText}>{data.distance}Km</Text>
                   </View>
                 }
-              </View>
+              </View> */}
             </View>
           </View>
 

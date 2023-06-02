@@ -261,21 +261,23 @@ export const Login01 = () => {
 
   // ########################################################################## 초기 실행
   useEffect(() => {
-    //appVersionCheck();
+    if(isFocus) {
+      //appVersionCheck();
 
-    requestPermissions().then((result) => {
-      Geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setLatitude(latitude);
-          setLongitude(longitude);
-        },
-        (error) => {
-          console.log(error.code, error.message);
-        },
-        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-      );
-    });
+      requestPermissions().then((result) => {
+        Geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            setLatitude(latitude);
+            setLongitude(longitude);
+          },
+          (error) => {
+            console.log(error.code, error.message);
+          },
+          { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+        );
+      });
+    };
   }, [isFocus]);
 
   return (

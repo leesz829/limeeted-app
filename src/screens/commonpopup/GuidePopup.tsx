@@ -119,7 +119,7 @@ export const GuidePopup = (props: Props) => {
                                 <SpaceView ml={15}><Text style={_styles.liveTxt02}>패스가 필요하신가요?{'\n'}인상 투표에 참여하시면 패스를 드려요!</Text></SpaceView>
                                 <SpaceView mt={20} viewStyle={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
                                   {index == 0 && <Text style={_styles.liveTxt03}>"상대방에게 가장 어울리는 인상을 선택해주세요."</Text> }
-                                  {index == 1 && <Text style={_styles.liveTxt03}>"상대방이 받을 별을 선택 후 <Text style={{color: '#697AE6'}}>확인</Text>을 눌러주세요."</Text> }
+                                  {index == 1 && <Text style={_styles.liveTxt03}>"상대방이 받을 별점을 선택 후 <Text style={{color: '#697AE6'}}>확인</Text>을 눌러주세요."</Text> }
                                   {index == 2 && <Text style={_styles.liveTxt03}>"인상 투표가 완료되며 <Text style={{color: '#697AE6'}}>패스 1개</Text>가 지급돼요!"</Text> }
                                 </SpaceView>
                               </SpaceView>
