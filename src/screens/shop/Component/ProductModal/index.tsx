@@ -112,21 +112,29 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
         if(data.result_code != '0000') {
           show({
             content: data.result_msg
-            , confirmCallback: function () {},
+            , confirmCallback: function () {
+              closeModal(true)
+              setComfirmModalVisible(false);
+            },
           });
           return false;
         }else{
-          /* show({
+          show({
             content: '구매되었습니다.'
             , confirmCallback: function () {
               setComfirmModalVisible(false);
               closeModal(true);
             },
-          }); */
-          closeModal(true);
-          Alert.alert('알림', '구매에 성공하였습니다.', [{ text: '확인' }]);
+          });
         }
-        
+      }else{
+        show({
+          content: '기프티콘 발급 통신 오류입니다. 잠시 후 다시 시도해주세요.'
+          , confirmCallback: function () {
+            setComfirmModalVisible(false);
+            closeModal(true);
+          },
+        });
       }
     } catch (error) {
       console.log(error);

@@ -132,6 +132,7 @@ function ListHeaderComponent({ onPressTab, tab }) {
 
 // ######################################################################### 상품 아이템 렌더링
 const RenderItem = ({ item, type, callFn }) => {
+  
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [targetItem, setTargetItem] = useState(null);
@@ -177,7 +178,7 @@ const RenderItem = ({ item, type, callFn }) => {
         title: '상품 구매',
         content: '상품을 구매하시겠습니까?' ,
         cancelCallback: function() {
-          closeModal();
+          closeModal(false);
         },
         confirmCallback: async function() {
           const body = {
@@ -187,26 +188,28 @@ const RenderItem = ({ item, type, callFn }) => {
             mobile_os: Platform.OS,
           }
           const { success, data } = await order_goods(body);
-          console.log('data :::: ', data);
+          
+          closeModal(false);
+
           if (success) {
             if(data.result_code == '0000') {
               show({
                 content: '구매에 성공하였습니다.' ,
-                confirmCallback: function() { 
-                  closeModal(); 
+                confirmCallback: function() {
+                  closeModal(false);
                   navigation.navigate(STACK.TAB, { screen: 'Shop' });
                 }
               });
             } else {
               show({
                 content: data.result_msg ,
-                confirmCallback: function() { closeModal(); }
+                confirmCallback: function() { closeModal(false); }
               });
             }
           } else {
             show({
               content: '오류입니다. 관리자에게 문의해주세요.' ,
-              confirmCallback: function() { closeModal(); }
+              confirmCallback: function() { closeModal(false); }
             });
           }
         }
@@ -242,7 +245,7 @@ const RenderItem = ({ item, type, callFn }) => {
               <View style={styles.textContainer}>
                 {
                   item.prod_cnt > 0 ?
-                    <Text style={styles.hintText}>{item.prod_cnt} 개 남음</Text> :
+                    <Text style={styles.hintText}>{item.prod_cnt}개 남음 ({item.buy_cnt}/{item.base_buy_sanction_cnt}구매)</Text> :
                     <Text style={styles.soldOutText}>품절</Text>
                 }
                 
