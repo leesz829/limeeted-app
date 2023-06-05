@@ -54,7 +54,6 @@ export default function MileageOrder() {
         const body = {};
         const { success: sp, data: pd } = await get_order_list(body);
         if (sp) {
-          console.log('pd?.order_list ::::: ', pd?.order_list);
           setOrderList(pd?.order_list);
           setOrderStatus(pd?.order_status_count);
         }
@@ -169,8 +168,6 @@ export default function MileageOrder() {
 
 const RenderItem = ({ dataList }) => {
 
-  console.log('dataList ::::: ', dataList);
-  
   return (
     <>
       {dataList.map((order, index) => (
