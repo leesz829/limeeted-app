@@ -434,6 +434,7 @@ const female = StyleSheet.create({
     justifyContent: `center`,
     marginTop: 5,
     paddingVertical: 3,
+    width: 100,
   },
   lmtButtonText: {
     fontFamily: 'AppleSDGothicNeoB00',
