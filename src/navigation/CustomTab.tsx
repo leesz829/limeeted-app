@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   },
   tabContainer: {
     borderTopColor: Color.grayEEEE,
-    borderTopWidth: 2,
+    borderTopWidth: 1,
     flexDirection: 'row',
     // backgroundColor: 'white',
     height: 56,

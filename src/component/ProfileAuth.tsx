@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { RouteProp, useIsFocused, useNavigation, useFocusEffect } from '@react-navigation/native';
 import { StackParamList, ScreenNavigationProp } from '@types';
-import { Dimensions, Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { Dimensions, Image, StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
 import { SimpleGrid } from 'react-native-super-grid';
 import { ICON } from 'utils/imageUtils';
 import { CommonBtn } from './CommonBtn';
@@ -18,50 +18,50 @@ export default function ProfileAuth({ level, data, isButton }) {
 
   return (
     <>
-      <View style={styles.profileTitleContainer}>
+      <View style={_styles.profileTitleContainer}>
         <SpaceView viewStyle={{flexDirection: `row`, alignItems: `center`, justifyContent: `center`,}}>
-          <Text style={styles.title}>프로필 인증</Text>
-          <View style={[styles.levelBadge, {marginRight: 0, marginTop: 1}]}>
+          <Text style={_styles.title}>프로필 인증</Text>
+          <View style={[_styles.levelBadge, {marginRight: 0, marginTop: 1}]}>
 
             {/* ############# 인증 레벨 노출 */}
             {level > 0 && level < 10 &&
-              <LinearGradient colors={['#7986EE', '#7986EE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.levelBadge}>
-                <Text style={styles.whiteText}>LV.{level}</Text>
+              <LinearGradient colors={['#7986EE', '#7986EE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.levelBadge}>
+                <Text style={_styles.whiteText}>LV.{level}</Text>
               </LinearGradient>
             }
 
             {level >= 10 && level < 15 &&
-              <LinearGradient colors={['#E0A9A9', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.levelBadge}>
-                <Image source={ICON.level10Icon} style={[styles.levelBadgeImg, {width: 23, height: 23}]} />
-                <Text style={styles.whiteText}>LV.{level}</Text>
+              <LinearGradient colors={['#E0A9A9', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.levelBadge}>
+                <Image source={ICON.level10Icon} style={[_styles.levelBadgeImg, {width: 23, height: 23}]} />
+                <Text style={_styles.whiteText}>LV.{level}</Text>
               </LinearGradient>
             }
 
             {level >= 15 && level < 20 &&
-              <LinearGradient colors={['#A9BBE0', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.levelBadge}>
-                <Image source={ICON.level15Icon} style={[styles.levelBadgeImg, {width: 23, height: 23}]} />
-                <Text style={styles.whiteText}>LV.{level}</Text>
+              <LinearGradient colors={['#A9BBE0', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.levelBadge}>
+                <Image source={ICON.level15Icon} style={[_styles.levelBadgeImg, {width: 23, height: 23}]} />
+                <Text style={_styles.whiteText}>LV.{level}</Text>
               </LinearGradient>
             }
 
             {level >= 20 && level < 25 &&
-              <LinearGradient colors={['#FEB961', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.levelBadge}>
-                <Image source={ICON.level20Icon} style={[styles.levelBadgeImg02, {width: 30, height: 30}]} />
-                <Text style={styles.whiteText}>LV.{level}</Text>
+              <LinearGradient colors={['#FEB961', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.levelBadge}>
+                <Image source={ICON.level20Icon} style={[_styles.levelBadgeImg02, {width: 30, height: 30}]} />
+                <Text style={_styles.whiteText}>LV.{level}</Text>
               </LinearGradient>
             }
 
             {level >= 25 && level < 30 &&
-              <LinearGradient colors={['#9BFFB5', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.levelBadge}>
-                <Image source={ICON.level25Icon} style={[styles.levelBadgeImg02, {width: 30, height: 30}]} />
-                <Text style={styles.whiteText}>LV.{level}</Text>
+              <LinearGradient colors={['#9BFFB5', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.levelBadge}>
+                <Image source={ICON.level25Icon} style={[_styles.levelBadgeImg02, {width: 30, height: 30}]} />
+                <Text style={_styles.whiteText}>LV.{level}</Text>
               </LinearGradient>
             }
 
             {level >= 30 &&
-              <LinearGradient colors={['#E84CEE', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.levelBadge}>
-                <Image source={ICON.level30Icon} style={[styles.levelBadgeImg02, {width: 30, height: 30}]} />
-                <Text style={styles.whiteText}>LV.{level}</Text>
+              <LinearGradient colors={['#E84CEE', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.levelBadge}>
+                <Image source={ICON.level30Icon} style={[_styles.levelBadgeImg02, {width: 30, height: 30}]} />
+                <Text style={_styles.whiteText}>LV.{level}</Text>
               </LinearGradient>
             }
 
@@ -78,6 +78,7 @@ export default function ProfileAuth({ level, data, isButton }) {
                 });
               }} 
               style={{marginTop: 1, borderWidth:1, borderColor: '#C7C7C7', borderRadius: 7, paddingHorizontal: 5}}>
+              
               <CommonText 
                 type={'h6'} 
                 color={'#C7C7C7'}
@@ -88,6 +89,7 @@ export default function ProfileAuth({ level, data, isButton }) {
           </SpaceView>
         }
       </View>
+      
       <SimpleGrid
         style={{ marginTop: 10}}
         // staticDimension={width}
@@ -101,6 +103,16 @@ export default function ProfileAuth({ level, data, isButton }) {
         }
         renderItem={renderAuthInfo}
       />
+
+      {/* <ScrollView horizontal style={_styles.authWrapper}>
+        {data?.map((item, index) => (
+          <RenderAuthInfoNew
+            key={`RednerAuth-${index}`}
+            item={item}
+          />
+        ))}
+      </ScrollView> */}
+
     </>
   );
 }
@@ -110,20 +122,20 @@ const renderAuthInfo = ({ item }: { item: auth }) => (
   <View
     style={
       item?.auth_status === 'ACCEPT'
-        ? styles.certificateItemContainerOn
-        : styles.certificateItemContainerOff
+        ? _styles.certificateItemContainerOn
+        : _styles.certificateItemContainerOff
     }>
 
-    <View style={styles.rowCenter}>
+    <View style={_styles.rowCenter}>
       <Image
         source={convertTypeToImage(item)}
-        style={styles.certificateItemImage}
+        style={_styles.certificateItemImage}
       />
       <Text
         style={
           item?.auth_status === 'ACCEPT'
-            ? styles.certificateItemTextOn
-            : styles.certificateItemTextOff
+            ? _styles.certificateItemTextOn
+            : _styles.certificateItemTextOff
         }
       >
         {item.code_name}
@@ -131,13 +143,60 @@ const renderAuthInfo = ({ item }: { item: auth }) => (
     </View>
 
     {item?.auth_status === 'ACCEPT' && (
-      <Text style={styles.levelText}>
+      <Text style={_styles.levelText}>
         LV.
         <Text style={{ fontSize: 15, color: '#000000' }}>{item.auth_level}</Text>
       </Text>
     )}
   </View>
 );
+
+function RenderAuthInfoNew({ item }) {
+
+  const code = item?.common_code;
+  let imgSrc = ICON.jobNew;
+  let textDesc = '"비교불가의 전문성을 갖춘 리더이자 역경을 이겨낸 승리자"';
+
+  if(code == 'JOB') {
+    imgSrc = ICON.jobNew;
+  } else if(code == 'EDU') {
+    imgSrc = ICON.degreeNew;
+  } else if(code == 'INCOME') {
+    imgSrc = ICON.incomeNew;
+  } else if(code == 'ASSET') {
+    imgSrc = ICON.assetNew;
+  } else if(code == 'SNS') { 
+    imgSrc = ICON.snsNew;
+  } else if(code == 'VEHICLE') {
+    imgSrc = ICON.vehicleNew;
+  }
+
+  return (
+      <LinearGradient
+        colors={['#FFFFFF', '#E8FFFE']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={_styles.authArea}>
+
+        <SpaceView>
+          <Image source={imgSrc} style={_styles.authIcon} resizeMode={'contain'} />
+        </SpaceView>
+
+        <SpaceView mt={8}>
+          <Text style={_styles.authTit}>직업 LV 7</Text>
+        </SpaceView>
+
+        <SpaceView mt={20}>
+          <Text style={_styles.authText}>{textDesc}</Text>
+        </SpaceView>
+
+        <SpaceView mt={20} viewStyle={_styles.authIntroArea}>
+          <Text style={_styles.authIntroText}>앱스쿼드라는 이름의 전도유망한 IT회사를 운영하고 있습니다.</Text>
+        </SpaceView>
+
+      </LinearGradient>
+  );
+};
 
 
 
@@ -147,7 +206,7 @@ const renderAuthInfo = ({ item }: { item: auth }) => (
 ###########################################################################################################
 ####################################################################################################### */}
 
-const styles = StyleSheet.create({
+const _styles = StyleSheet.create({
   profileTitleContainer: {
     marginTop: 16,
     flexDirection: 'row',
@@ -262,7 +321,64 @@ const styles = StyleSheet.create({
     alignItems: `center`,
     justifyContent: `center`,
   },
+  authWrapper: {
+    width: '100%',
+    marginTop: 13,
+  },
+  authArea: {
+    width: width - 65,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20,
+    paddingVertical: 15,
+    marginRight: 7,
+    marginLeft: 4,
+    marginVertical: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 5.0,
+    elevation: 5,
+  },
+  authIcon: {
+    width: 95,
+    height: 64,
+  },
+  authTit: {
+    fontFamily: 'AppleSDGothicNeoH00',
+    fontSize: 10,
+    backgroundColor: '#7986EE',
+    color: '#fff',
+    paddingHorizontal: 12,
+    paddingVertical: 2,
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  authText: {
+    fontFamily: 'AppleSDGothicNeoR00',
+    fontSize: 11,
+    color: '#5A5A5A',
+  },
+  authIntroArea: {
+    width: width - 80,
+    backgroundColor: '#fff',
+    borderRadius: 17,
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+  },
+  authIntroText: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 11,
+    color: '#7986EE',
+    textAlign: 'center',
+    paddingHorizontal: 40,
+  },
 });
+
 const dummy = [
   {
     member_auth_seq: 26,

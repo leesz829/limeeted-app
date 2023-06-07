@@ -261,9 +261,6 @@ export const Storage = (props: Props) => {
   const [currentIndex, setCurrentIndex] = useState(pageIndex);
 
   const tabs = [
-    /* {
-      title: '찜 목록',
-    }, */
     {
       type: 'REQ',
       title: '받은 관심',
@@ -282,6 +279,12 @@ export const Storage = (props: Props) => {
       color: '#8669E6',
       data: dataStorage.matchTrgtList
     },
+    /* {
+      type: 'ZZIM',
+      title: '찜 목록',
+      color: '#8669E6',
+      data: dataStorage.matchTrgtList
+    }, */
   ];
 
   const onPressDot = (index) => {
@@ -310,7 +313,7 @@ export const Storage = (props: Props) => {
           <TopNavigation currentPath={''} />
         )}
 
-        <View style={_styles.topContainer}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={_styles.topContainer}>
           <View style={_styles.dotContainer}>
             {tabs.map((item, index) => (
               <TouchableOpacity 
@@ -331,7 +334,7 @@ export const Storage = (props: Props) => {
               </TouchableOpacity>
             ))}
           </View>
-        </View>
+        </ScrollView>
 
         <SpaceView mt={7} viewStyle={commonStyle.paddingHorizontal25}>
           <View style={_styles.row}>
@@ -553,17 +556,18 @@ const _styles = StyleSheet.create({
   },
   topContainer: {
     width: `100%`,
-    height: 50,
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: 'space-between',
-    paddingHorizontal: 24,
+    //height: 50,
+    //flexDirection: `row`,
+    //alignItems: `center`,
+    //justifyContent: 'space-between',
+    //paddingHorizontal: 24,
   },
   dotContainer: {
     //width: 60,
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: 'space-between',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingHorizontal: 24,
   },
   dot: {
     width: 9,

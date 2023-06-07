@@ -100,7 +100,9 @@ export const Message = (props: Props) => {
 
 	// ############################################################################# 최초 실행
 	React.useEffect(() => {
-		getMessageList();
+		if(isFocus) {
+			getMessageList();
+		}
 	}, [isFocus]);
 
 	return (

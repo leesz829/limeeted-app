@@ -187,8 +187,7 @@ export default function PointReward(element) {
                 리미티드 포인트 <Text>✌️</Text>
               </Text> */}
               <Text style={male.infoText}>
-                캐시백 보상까지 {CommaFormat(payInfo?.member_buy_price)} /
-                {CommaFormat(payInfo?.target_buy_price)}
+                캐시백 보상까지 {CommaFormat(payInfo?.member_buy_price)} / {CommaFormat(payInfo?.target_buy_price)}
               </Text>
             </View>
           </View>
@@ -601,7 +600,7 @@ const male = StyleSheet.create({
     marginTop: 8,
     height: 4,
     borderRadius: 13,
-    backgroundColor: '#E1E4FB',    
+    backgroundColor: '#E1E4FB',
   },
   sliderTrack: {
     height: 23,

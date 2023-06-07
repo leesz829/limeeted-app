@@ -56,13 +56,15 @@ import { MatchSearch } from 'screens/matching/MatchSearch';
 import { findSourcePath, ICON, IMAGE, GUIDE_IMAGE } from 'utils/imageUtils';
 import { Slider } from '@miblanchard/react-native-slider';
 import ProfileAuth from 'component/ProfileAuth';
-import InterviewRender from 'component/InterviewRender';
 import { formatNowDate} from 'utils/functions';
 import { Watermark } from 'component/Watermark';
 import SincerePopup from 'screens/commonpopup/sincerePopup';
 import Carousel from 'react-native-snap-carousel';
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
-import LinearGradient from 'react-native-linear-gradient';
+import VisualImage from 'component/match/VisualImage';
+import AddInfo from 'component/match/AddInfo';
+import ProfileActive from 'component/match/ProfileActive';
+import InterviewRender from 'component/match/InterviewRender';
 
 
 
@@ -269,7 +271,6 @@ export default function Matching(props: Props) {
 
   // ############################################################ 사용자 신고하기 - 신고사유 체크 Callback 함수
   const reportCheckCallbackFn = (value: string) => {
-    console.log('value :::: ;' , value);
     setCheckReportType(value);
   };
 
@@ -399,58 +400,6 @@ export default function Matching(props: Props) {
   return (
     data.profile_img_list.length > 0 && isLoad ? (
       <>
-        {/* <Modal visible={true} transparent={true}>
-          <View style={modalStyle.modalBackground}>
-            <View style={modalStyle.modalStyle2}>
-
-            <Carousel
-              ref={ref}
-              data={tabs}
-              firstItem={pageIndex}
-              onSnapToItem={setCurrentIndex}
-              sliderWidth={width}
-              itemWidth={width}
-              pagingEnabled
-              renderItem={({item, index}) => {
-                return (
-                  <>
-                    {item.data.length == 0 ? (
-                      <SpaceView viewStyle={_styles.noData}>
-                        <Text style={_styles.noDataText}>{item.title}이 없습니다.</Text>
-                      </SpaceView>
-                    ) : (
-                      <ScrollView>
-                        <View style={_styles.imageWarpper}>
-                          {item.data.map((i, n) => (
-                            <RenderItem item={i} index={n} type={item.type} />
-                          ))}
-                        </View>
-
-                        <View style={{ height: 50 }} />
-                      </ScrollView>
-                    )}
-                  </>
-                )
-              }}          
-            />
-
-              <SpaceView viewStyle={[layoutStyle.alignCenter, {backgroundColor: '#B8D1D1', paddingTop: 25}]}>
-                <Image source={GUIDE_IMAGE.daily01Thumnail} style={{width: 280, height: 398}} resizeMode={'cover'} />
-              </SpaceView>
-
-              <SpaceView viewStyle={layoutStyle.alignStart}>
-                <Image source={GUIDE_IMAGE.daily01Content} style={{width: 280, height: 143}} resizeMode={'cover'} />
-              </SpaceView>
-
-              <SpaceView mt={30} mb={10} viewStyle={modalStyle.guideModalBtnContainer}>
-                <TouchableOpacity style={[modalStyle.guideModalBtn]} onPress={null}>
-                  <CommonText type={'h4'} fontWeight={'200'} color={Color.white}>확인</CommonText>
-                </TouchableOpacity>
-              </SpaceView>
-            </View>
-          </View>
-        </Modal> */}
-
         <TopNavigation currentPath={'LIMEETED'} />
 
         <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -460,175 +409,50 @@ export default function Matching(props: Props) {
           #################################################################################### */}
           <View>
 
-            {/* ###### 이미지 indicator */}
-            <View style={styles.pagingContainer}>
-              {data?.profile_img_list.map((item, index) => {
-                return item.status == 'ACCEPT' && (
-                  <View style={styles.dotContainerStyle} key={'dot' + index}>
-                    <View style={[styles.pagingDotStyle, index == currentIndex && styles.activeDot]} />
-                  </View>
-                )
-              })}
-            </View>
+            {/* ############################################################## 상단 이미지 영역 */}
+            <VisualImage imgList={data?.profile_img_list} memberData={data?.match_member_info} />
 
-            <FlatList
-              data={data?.profile_img_list}
-              renderItem={RenderItem}
-              onScroll={handleScroll}
-              horizontal
-              pagingEnabled
-            />
-
+            {/* ######################### 버튼 영역 */}
             <View style={styles.absoluteView}>
-              <View style={styles.badgeContainer}>
-
-                {/* ############# 인증 레벨 노출 */}
-                {data?.match_member_info?.auth_acct_cnt > 0 && data?.match_member_info?.auth_acct_cnt < 10 &&
-                  <LinearGradient colors={['#7986EE', '#7986EE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.authBadge}>
-                    <Text style={styles.whiteText}>LV.{data?.match_member_info?.auth_acct_cnt}</Text>
-                  </LinearGradient>
-                }
-
-                {data?.match_member_info?.auth_acct_cnt >= 10 && data?.match_member_info?.auth_acct_cnt < 15 &&
-                  <LinearGradient colors={['#E0A9A9', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.authBadge}>
-                    <Image source={ICON.level10Icon} style={[styles.authBadgeImg, {width: 23, height: 23}]} />
-                    <Text style={styles.whiteText}>LV.{data?.match_member_info?.auth_acct_cnt}</Text>
-                  </LinearGradient>
-                }
-
-                {data?.match_member_info?.auth_acct_cnt >= 15 && data?.match_member_info?.auth_acct_cnt < 20 &&
-                  <LinearGradient colors={['#A9BBE0', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.authBadge}>
-                    <Image source={ICON.level15Icon} style={[styles.authBadgeImg, {width: 23, height: 23}]} />
-                    <Text style={styles.whiteText}>LV.{data?.match_member_info?.auth_acct_cnt}</Text>
-                  </LinearGradient>
-                }
-
-                {data?.match_member_info?.auth_acct_cnt >= 20 && data?.match_member_info?.auth_acct_cnt < 25 &&
-                  <LinearGradient colors={['#FEB961', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.authBadge}>
-                    <Image source={ICON.level20Icon} style={[styles.authBadgeImg02, {width: 30, height: 30}]} />
-                    <Text style={styles.whiteText}>LV.{data?.match_member_info?.auth_acct_cnt}</Text>
-                  </LinearGradient>
-                }
-
-                {data?.match_member_info?.auth_acct_cnt >= 25 && data?.match_member_info?.auth_acct_cnt < 30 &&
-                  <LinearGradient colors={['#9BFFB5', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.authBadge}>
-                    <Image source={ICON.level25Icon} style={[styles.authBadgeImg02, {width: 30, height: 30}]} />
-                    <Text style={styles.whiteText}>LV.{data?.match_member_info?.auth_acct_cnt}</Text>
-                  </LinearGradient>
-                }
-
-                {data?.match_member_info?.auth_acct_cnt >= 30 &&
-                  <LinearGradient colors={['#E84CEE', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.authBadge}>
-                    <Image source={ICON.level30Icon} style={[styles.authBadgeImg02, {width: 30, height: 30}]} />
-                    <Text style={styles.whiteText}>LV.{data?.match_member_info?.auth_acct_cnt}</Text>
-                  </LinearGradient>
-                }
-
-                {/* ############# 프로필 평점 노출 */}
-                {data.match_member_info.profile_score < 6.0 &&
-                  <LinearGradient colors={['#FF7EA6', '#FF7EA6']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.scoreBadge}>
-                    <Image source={ICON.score5Icon} style={[styles.scoreBadgeImg, {width: 12, height: 12}]} />
-                    <Text style={styles.yellowText}>{data.match_member_info.profile_score}</Text>
-                  </LinearGradient>
-                }
-
-                {data.match_member_info.profile_score >= 6.0 && data.match_member_info.profile_score < 7.0 &&
-                  <LinearGradient colors={['#FF4381', '#FF4381']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.scoreBadge}>
-                    <Image source={ICON.score6Icon} style={[styles.scoreBadgeImg, {width: 16, height: 16}]} />
-                    <Text style={styles.yellowText}>{data.match_member_info.profile_score}</Text>
-                  </LinearGradient>
-                }
-
-                {data.match_member_info.profile_score >= 7.0 && data.match_member_info.profile_score < 8.0 &&
-                  <LinearGradient colors={['#FF4381', '#FF4381']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.scoreBadge}>
-                    <Image source={ICON.scoreKingIcon} style={[styles.scoreBadgeImg, {width: 16, height: 16}]} />
-                    <Text style={styles.yellowText}>{data.match_member_info.profile_score}</Text>
-                  </LinearGradient>
-                }
-
-                {data.match_member_info.profile_score >= 8.0 && data.match_member_info.profile_score < 9.0 &&
-                  <LinearGradient colors={['#FE0456', '#FF82AB']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.scoreBadge}>
-                    <Image source={ICON.scoreKingIcon} style={[styles.scoreBadgeImg, {width: 16, height: 16}]} />
-                    <Text style={styles.yellowText}>{data.match_member_info.profile_score}</Text>
-                  </LinearGradient>
-                }
-
-                {data.match_member_info.profile_score >= 9.0 && data.match_member_info.profile_score < 10.0 &&
-                  <LinearGradient colors={['#FE0456', '#9E6DF5']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.scoreBadge}>
-                    <Image source={ICON.scoreKingIcon} style={[styles.scoreBadgeImg, {width: 16, height: 16}]} />
-                    <Text style={styles.yellowText}>{data.match_member_info.profile_score}</Text>
-                  </LinearGradient>
-                }
-
-                {data.match_member_info.profile_score >= 10.0 &&
-                  <LinearGradient colors={['#FE0456', '#9E41E5']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.scoreBadge}>
-                    <Image source={ICON.scoreDiamondIcon} style={[styles.scoreBadgeImg, {width: 16, height: 16}]} />
-                    <Text style={styles.yellowText}>{data.match_member_info.profile_score}</Text>
-                  </LinearGradient>
-                }
-
-                {/* 고평점 이성 소개받기 구독 아이템 표시 */}
-                {/* <View style={styles.redBadge}>
-                  <Image source={ICON.whiteCrown} style={styles.crownIcon} />
-                  <Text style={styles.whiteText}>{data.match_member_info?.profile_score}</Text>
-                </View> */}
-              </View>
-
-              {/* {data.distance_val != null &&
-                <View style={styles.distanceContainer}>
-                  <Image source={ICON.marker} style={styles.markerIcon} />
-                  <Text style={styles.regionText}>12.9Km</Text>
-                </View>
-              } */}
-
-              <View style={styles.nameContainer}>
-                <Text style={styles.nameText}>{data.match_member_info?.nickname}, {data.match_member_info?.age}</Text>
-                <Image source={ICON.checkICon} style={styles.checkIcon} />
-              </View>
-
-              <View style={styles.distanceContainer}>
-                <Text style={styles.regionText}>{data.match_member_info.comment}</Text>
-              </View>
-
               <View style={styles.buttonsContainer}>
+
+                {/* ######### 거절 버튼 */}
                 <TouchableOpacity onPress={() => { popupActive('pass'); }}>
                   <Image source={ICON.closeCircle} style={styles.smallButton} />
                 </TouchableOpacity>
 
+                {/* ######### 관심 버튼 */}
                 <TouchableOpacity onPress={() => { popupActive('interest'); }} style={styles.freePassContainer}>
                   <Image source={ICON.passCircle} style={styles.largeButton} />
 
-                  {/* ############ 부스터 아이템  */}
+                  {/* 부스터 아이템  */}
                   {data?.use_item != null && data?.use_item?.FREE_LIKE && data?.use_item?.FREE_LIKE?.use_yn == 'Y' &&
                     <View style={styles.freePassBage}>
                       <Text style={styles.freePassText}>자유이용권 ON</Text>
                     </View>
                   }
-
-                  {/* {data.item_list.length > 0 && (
-                    <View style={styles.freePassBage}>
-                      <Text style={styles.freePassText}>자유이용권 ON</Text>
-                    </View>
-                  )} */}
                 </TouchableOpacity>
 
+                {/* ######### 찐심 버튼 */}
                 <TouchableOpacity onPress={() => { popupActive('sincere'); }}>
                   <Image source={ICON.royalPassCircle} style={styles.largeButton} />
-                </TouchableOpacity >
+                </TouchableOpacity>
 
-                {/* 마킹 버튼 */}
+                {/* ######### 찜하기 버튼 */}
                 {/* <TouchableOpacity>
                   <Image source={ICON.starCircle} style={styles.smallButton} />
                 </TouchableOpacity> */}
               </View>
             </View>
 
+            {/* 퍼블 화면 */}
             {/* <AbsoluteView member={data.match_member_info}  /> */}
           </View>
 
           <View style={styles.padding}>
-            {/* 부스트 */}
-            {data.match_member_info.boost_yn === 'Y' && (
+
+            {/* ############################################################## 부스트 회원 노출 영역 */}
+            {data?.match_member_info?.boost_yn === 'Y' && (
               <View style={styles.boostPannel}>
                 <View style={styles.boostBadge}>
                   <Text style={styles.boostBadgeText}>BOOST</Text>
@@ -640,9 +464,10 @@ export default function Matching(props: Props) {
               </View>
             )}
             
-            {/* 프로필 인증 */}
-            <ProfileAuth level={data.match_member_info.auth_acct_cnt} data={data.second_auth_list} />
+            {/* ############################################################## 프로필 인증 영역 */}
+            <ProfileAuth level={data.match_member_info.auth_acct_cnt} data={data.second_auth_list} isButton={false} />
 
+            {/* ############################################################## 관심사 영역 */}
             {data.interest_list.length > 0 && (
               <>
                 <Text style={styles.title}>{data.match_member_info.nickname}님의 관심사</Text>
@@ -650,7 +475,7 @@ export default function Matching(props: Props) {
                   {data.interest_list.map((item, index) => {
                     const isOn = item.dup_chk == 0 ? false : true;
                     return (
-                      <View style={styles.interestItem(isOn)}>
+                      <View key={index} style={styles.interestItem(isOn)}>
                         <Text style={styles.interestText(isOn)}>{item.code_name}</Text>
                       </View>
                     );
@@ -659,185 +484,18 @@ export default function Matching(props: Props) {
               </>
             )}
 
-            {/* 추가 정보 */}
-            {((data.match_member_info.height != null && data.match_member_info.height != '') || (data.match_member_info.form_body_type != null && data.match_member_info.form_body_type != '') ||
-            (data.match_member_info.job_name != null && data.match_member_info.job_name != '') || (data.match_member_info.religion_type != null && data.match_member_info.religion_type != '') ||
-            (data.match_member_info.drink_type != null && data.match_member_info.drink_type != '') || (data.match_member_info.smoke_type != null && data.match_member_info.smoke_type != '')) &&
-              <SpaceView>
-                <Text style={styles.title}>추가 정보</Text>
-                <SpaceView mt={20} viewStyle={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                  {data.match_member_info.height != null && data.match_member_info.height != '' &&
-                    <View style={styles.addItemArea}>
-                      <Image source={ICON.addHeightIcon} style={{width:11, height:16, marginRight: 10}} />
-                      <Text style={styles.addItemAreaText}><Text style={styles.addItemAreaTextBold}>{data.match_member_info.height}</Text>cm</Text>
-                    </View>
-                  }
+            {/* ############################################################## 추가 정보 영역 */}
+            <AddInfo memberData={data?.match_member_info} />
 
-                  {data.match_member_info.form_body_type != null && data.match_member_info.form_body_type != '' &&
-                    <View style={styles.addItemArea}>
-                      <Image source={ICON.addCategoryIcon} style={{width:16, height:16, marginRight: 10}} />
-                      <Text style={styles.addItemAreaText}>{data.match_member_info.form_body_type}</Text>
-                    </View>
-                  }
+            {/* ############################################################## 프로필 활동지수 영역 */}
+            <ProfileActive memberData={data?.match_member_info} />
 
-                  {data.match_member_info.job_name != null && data.match_member_info.job_name != '' &&
-                    <View style={styles.addItemArea}>
-                      <Image source={ICON.addFlagIcon} style={{width:11, height:16, marginRight: 10}} />
-                      <Text style={styles.addItemAreaText}>{data.match_member_info.job_name}</Text>
-                    </View>
-                  }
-
-                  {data.match_member_info.religion_type != null && data.match_member_info.religion_type != '' &&
-                    <View style={styles.addItemArea}>
-                      <Image source={ICON.addPlayIcon} style={{width:17, height:20, marginRight: 10}} />
-                      <Text style={styles.addItemAreaText}>{data.match_member_info.religion_type}</Text>
-                    </View>
-                  }
-
-                  {data.match_member_info.drink_type != null && data.match_member_info.drink_type != '' &&
-                    <View style={styles.addItemArea}>
-                      <Image source={ICON.addWineIcon} style={{width:13, height:20, marginRight: 10}} />
-                      <Text style={styles.addItemAreaText}>{data.match_member_info.drink_type}</Text>
-                    </View>
-                  }
-
-                  {data.match_member_info.smoke_type != null && data.match_member_info.smoke_type != '' &&
-                    <View style={styles.addItemArea}>
-                      <Image source={ICON.addSmokeIcon} style={{width:20, height:13, marginRight: 10}} />
-                      <Text style={styles.addItemAreaText}>{data.match_member_info.smoke_type}</Text>
-                    </View>
-                  }
-                  
-                </SpaceView>
-              </SpaceView>
-            }
-
-            <Text style={styles.title}>프로필 활동지수</Text>
-            <View style={styles.profileActivePannel}>
-              <Text style={styles.profileEverageText}>프로필 평점</Text>
-              <Text style={styles.profileActiveText1}>
-                <Text style={{ fontFamily: 'AppleSDGothicNeoEB00' }}>
-                  {data.match_member_info.nickname}
-                </Text>
-                님의 리미티드 대표 인상
-              </Text>
-              <Text style={styles.profileActiveText2}>{data.match_member_info.face_code_name}</Text>
-              <View style={styles.sliderContainer}>
-                <Text style={styles.sliderText}>프로필 평점 {data.match_member_info.profile_score}</Text>
-                <Slider
-                  value={data.match_member_info.profile_score/10}
-                  animateTransitions={true}
-                  renderThumbComponent={() => null}
-                  maximumTrackTintColor={ColorType.purple}
-                  minimumTrackTintColor={ColorType.purple}
-                  containerStyle={styles.sliderContainerStyle}
-                  trackStyle={styles.sliderThumbStyle}
-                  trackClickable={false}
-                  disabled
-                />
-                <View style={styles.gageContainer}>
-                  <Text style={styles.gageText}>0</Text>
-                  <Text style={styles.gageText}>5</Text>
-                  <Text style={styles.gageText}>10</Text>
-                </View>
-              </View>
-            </View>
-
-            <View style={styles.socialContainer}>
-              <Text style={styles.socialEverageText}>소셜 평점</Text>
-              <Text style={[styles.socialText1, { fontFamily: 'AppleSDGothicNeoEB00' }]}>
-                {data.match_member_info?.social_grade > 9 && '천상계와 신계 그 어딘가의 존재'}
-                {data.match_member_info?.social_grade > 8 && data.match_member_info?.social_grade <= 9 && '미세먼지없이 맑은 하늘 위에 숨쉬는 존재'}
-                {data.match_member_info?.social_grade > 7 && data.match_member_info?.social_grade <= 8 && '쾌청한 하늘 아래 맑은 바닷물과 어울리는 분'}
-                {data.match_member_info?.social_grade > 6 && data.match_member_info?.social_grade <= 7 && '따사로운 햇살이 비치는 꽃길을 걷는 분'}
-                {data.match_member_info?.social_grade > 5 && data.match_member_info?.social_grade <= 6 && '어두운 골목과 화려한 조명의 조화 속에 숨은 사람'}
-                {data.match_member_info?.social_grade > 4 && data.match_member_info?.social_grade <= 5 && '심해로 통하는 어두운 바다에 몸을 담근 자'}
-                {data.match_member_info?.social_grade <= 4 && '깊은 심해를 탐험하는 자'}
-              </Text>
-              {/* <Text style={styles.socialText1}>매칭되면</Text>
-              <Text style={styles.socialText1}>
-                <Text style={{ fontFamily: 'AppleSDGothicNeoEB00' }}>
-                  후회하지 않을듯한
-                </Text>{' '}
-                느낌이 들어요
-              </Text> */}
-              <View style={styles.sliderContainer}>
-                <Text style={styles.sliderText}>소셜 평점 {data.match_member_info.social_grade.toFixed(1)}</Text>
-                <Slider
-                  value={data.match_member_info.social_grade/10}
-                  animateTransitions={true}
-                  renderThumbComponent={() => null}
-                  maximumTrackTintColor={'#fe0456'}
-                  minimumTrackTintColor={'#ff9fbe'}
-                  containerStyle={styles.socialSliderContainerStyle}
-                  trackStyle={styles.socialSliderThumbStyle}
-                  trackClickable={false}
-                  disabled
-                />
-                <View style={styles.gageContainer}>
-                  <Text style={styles.gageText}>0</Text>
-                  <Text style={styles.gageText}>5</Text>
-                  <Text style={styles.gageText}>10</Text>
-                </View>
-              </View>
-            </View>
-
-            {/* 인터뷰 영역 */}
+            {/* ############################################################## 인터뷰 영역 */}
             <SpaceView mt={30}>
-              <InterviewRender data={data?.interview_list} />
+              <InterviewRender title={'인터뷰'} dataList={data?.interview_list} />
             </SpaceView>
-            
-            {/* <View>
-              {data.interview_list?.map((e, index) => (
-                <View style={[style.contentItemContainer, index % 2 !== 0 && style.itemActive]}>
-                  {mode === 'delete' ? (
-                    <TouchableOpacity
-                      onPress={() => onSelectDeleteItem(e)}
-                      style={[
-                        style.checkContainer,
-                        deleteList.includes(e) && style.active,
-                      ]} >
-                      <Image
-                        source={deleteList.includes(e) ? ICON.checkOn : ICON.checkOff}
-                        style={style.checkIconStyle}
-                      />
-                    </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity
-                      onPress={() => onPressRegist(e.common_code)}
-                      style={style.penPosition}
-                    >
-                      <Image source={ICON.pen} style={style.penImage} />
-                    </TouchableOpacity>
-                  )}
-                  <View style={style.questionRow}>
-                    <Text style={style.questionText}>Q.</Text>
-                    <Text style={style.questionBoldText}>
-                      {indexToKr[index]}번째 질문 입니다.
-                      <Text style={style.questionNormalText}> {e?.code_name}</Text>
-                    </Text>
-                  </View>
-                  <View style={style.answerRow}>
-                    <Text style={style.answerText}>A.</Text>
-                    <TextInput
-                      defaultValue={e?.answer}
-                      onChangeText={(text) =>
-                        answerChangeHandler(e.member_interview_seq, text)
-                      }
-                      style={[style.answerNormalText]}
-                      multiline={true}
-                      placeholder={'대답을 등록해주세요!'}
-                      placeholderTextColor={'#c6ccd3'}
-                      numberOfLines={3}
-                      maxLength={200}
-                    />
-                  </View>
-                </View>
-              ))}
 
-            </View> */}
-
-            {/* 신고하기 영역 */}
+            {/* ############################################################## 신고하기 영역 */}
             <TouchableOpacity onPress={() => { report_onOpen(); }}>
               <View style={styles.reportButton}>
                 <Text style={styles.reportTextBtn}>신고 및 차단하기</Text>
@@ -845,7 +503,7 @@ export default function Matching(props: Props) {
             </TouchableOpacity>
           </View>
 
-          <View style={{ height: 50 }} />
+          <View style={{ height: 30 }} />
         </ScrollView>
 
         {/* ##################################################################################
@@ -1039,13 +697,11 @@ const styles = StyleSheet.create({
   badgeContainer: {
     flexDirection: `row`,
     alignItems: `center`,
-    // justifyContent: `center`,
   },
   authBadge: {
     width: 48,
     height: 21,
     borderRadius: 5,
-    //backgroundColor: '#7986ee',
     flexDirection: `row`,
     alignItems: `center`,
     justifyContent: `center`,
@@ -1061,25 +717,11 @@ const styles = StyleSheet.create({
     marginRight: -4,
     marginTop: -3
   },
-  scoreBadge: {
-    width: 48,
-    height: 21,
-    borderRadius: 5,
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: `space-between`,
-    marginRight: 5,
-    paddingHorizontal: 5,
-  },
-  scoreBadgeImg: {
-
-  },
   title: {
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 19,
     fontWeight: 'normal',
     fontStyle: 'normal',
-    // lineHeight: 26,
     letterSpacing: 0,
     textAlign: 'left',
     color: '#333333',
@@ -1103,15 +745,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0,
     textAlign: 'left',
     color: '#ffffff',
-  },
-  yellowText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 11,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#FDFFD8',
   },
   crownIcon: {
     width: 12.7,
@@ -1243,17 +876,6 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     color: '#8e8e8e',
   },
-
-  levelText: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 10,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    lineHeight: 22,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#000000',
-  },
   interestItem: (isOn) => {
     return {
       borderRadius: 5,
@@ -1278,129 +900,6 @@ const styles = StyleSheet.create({
       color: isOn ? '#7986ee' : '#b1b1b1',
     };
   },
-  profileActivePannel: {
-    width: '100%',
-    borderRadius: 20,
-    backgroundColor: '#ebedfc',
-    marginTop: 10,
-    paddingHorizontal: 20,
-    paddingVertical: 26,
-  },
-  profileEverageText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 12,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    lineHeight: 26,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#697ae6',
-  },
-  profileActiveText1: {
-    fontFamily: 'AppleSDGothicNeoM00',
-    fontSize: 15,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    lineHeight: 24,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#333333',
-    marginTop: 4,
-  },
-  profileActiveText2: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 20,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    lineHeight: 24,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#5d6ae2',
-    marginTop: 10,
-  },
-  sliderContainer: {
-    marginTop: 26,
-    alignItems: 'flex-start',
-  },
-  sliderText: {
-    fontFamily: 'AppleSDGothicNeoR00',
-    fontSize: 10,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    lineHeight: 16,
-    letterSpacing: 0,
-    textAlign: 'center',
-    color: '#b7b7b7',
-  },
-  sliderContainerStyle: {
-    width: '100%',
-    marginTop: 8,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: ColorType.primary,
-  },
-  sliderThumbStyle: {
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: 'white',
-  },
-  gageContainer: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  gageText: {
-    fontFamily: 'AppleSDGothicNeoM00',
-    fontSize: 10,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    lineHeight: 32,
-    letterSpacing: 0,
-    textAlign: 'center',
-    color: '#d0d0d0',
-  },
-  socialContainer: {
-    borderRadius: 20,
-    backgroundColor: '#feeff2',
-    width: '100%',
-    borderRadius: 20,
-    marginTop: 10,
-    paddingHorizontal: 20,
-    paddingVertical: 26,
-  },
-  socialEverageText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 12,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    lineHeight: 26,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#fe0456',
-  },
-  socialText1: {
-    fontFamily: 'AppleSDGothicNeoM00',
-    fontSize: 17,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    lineHeight: 24,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#1c1c1c',
-  },
-  socialSliderContainerStyle: {
-    width: '100%',
-    marginTop: 8,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: '#fe0456',
-  },
-  socialSliderThumbStyle: {
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: 'white',
-  },
   reportButton: {
     height: 43,
     borderRadius: 21.5,
@@ -1423,53 +922,6 @@ const styles = StyleSheet.create({
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 17,
     textAlign: 'left',
-  },
-  pagingContainer: {
-    position: 'absolute',
-    zIndex: 10,
-    alignItems: 'center',
-    width,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    top: 18,
-  },
-  pagingDotStyle: {
-    width: 19,
-    height: 2,
-    backgroundColor: 'rgba(255,255,255,0.3)',
-    borderRadius: 4,
-  },
-  activeDot: {
-    backgroundColor: 'white',
-  },
-  pagingContainerStyle: {
-    paddingTop: 16,
-  },
-  dotContainerStyle: {
-    marginRight: 2,
-    marginLeft: 2,
-  },
-  addItemArea: {
-    borderWidth: 1,
-    borderColor: '#A6A9C5',
-    borderRadius: 20,
-    width: width / 3.5,
-    height: 35,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginHorizontal: 2,
-    marginBottom: 8,
-  },
-  addItemAreaText: {
-    fontFamily: 'AppleSDGothicNeoM00',
-    fontSize: 12,
-    color: '#7986EE',
-    width: '60%',
-    textAlign: 'center',
-  },
-  addItemAreaTextBold: {
-    fontSize: 14,
   },
 
 });

@@ -100,9 +100,9 @@ export default function Inventory() {
                   // 조회된 매칭 노출 회원
                   // "profile_member_seq_list"
                   navigation.navigate(STACK.COMMON, {
-                      screen: 'ItemMatching'
-                      , params : {profile_member_seq_list: data.profile_member_seq_list.toString()}
-                    });
+                    screen: 'ItemMatching'
+                    , params : {profile_member_seq_list: data.profile_member_seq_list.toString()}
+                  });
                 }
                 dispatch(myProfile());
                 // navigation.navigate(STACK.TAB, { screen: 'Shop' });

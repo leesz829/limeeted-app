@@ -103,6 +103,7 @@ export type StackParamList = {
     orderSeq: Number;
   };
   TutorialSetting: undefined;
+  MyDailyView: undefined;
 };
 
 export type BottomParamList = {

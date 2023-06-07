@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useMemo, useRef } from 'react';
 import {
   Image,
   ScrollView,
@@ -39,6 +39,8 @@ import { useDispatch } from 'react-redux';
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
 import { usePopup } from 'Context';
 import { useUserInfo } from 'hooks/useUserInfo';
+import Carousel from 'react-native-snap-carousel';
+import useInterval from 'utils/useInterval';
 
 
 
@@ -65,6 +67,8 @@ export const Shop = () => {
   const isFocus = useIsFocused();
   const { show } = usePopup(); // 공통 팝업
 
+  const { width, height } = Dimensions.get('window');
+
   const [isLoading, setIsLoading] = useState(false);
   const [banner, setBanner] = useState([]);
 
@@ -83,9 +87,21 @@ export const Shop = () => {
     setIsLoading(isStatus);
   };
 
+
+
+  
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const flatListRef = useRef<FlatList>(null);
+  const snapToOffsets = useMemo(() => Array.from(Array(banner.length)).map((_, index) => index * width),
+  [banner],
+  );
+
+  // ############################################################################# 배너 목록 조회
   const getBanner = async () => {
     //const invenConnectDate = await AsyncStorage.getItem('INVENTORY_CONNECT_DT') || '20230524000000';
     const { success, data } = await get_banner_list({ banner_type: 'PROD' });
+
     if (success) {
       setBanner(data?.banner_list);
       setNewItemCnt(data?.mbr_base?.new_item_cnt);
@@ -95,6 +111,21 @@ export const Shop = () => {
       }));
     }
   };
+
+  /* useEffect(() => {
+    console.log('currentIndex ::::::::: ', currentIndex);
+    if (currentIndex !== snapToOffsets.length) {
+      flatListRef.current?.scrollToOffset({
+        animated: true,
+        offset: snapToOffsets[currentIndex],
+      });
+    }
+  }, [currentIndex, snapToOffsets]);
+
+  useInterval(() => {
+    setCurrentIndex(prev => (prev === snapToOffsets.length - 1 ? 0 : prev + 1));
+  }, isFocus ? 5000 : null); */
+
 
   // ############################################################################# 회원 튜토리얼 노출 정보 저장
   const saveMemberTutorialInfo = async () => {
@@ -155,16 +186,47 @@ export const Shop = () => {
       <ScrollView>
         <View>
           {/* ############################################### 상단 배너 */}
-          <FlatList
+
+          <Carousel
+            data={banner}
+            //layout={'default'}
+            sliderWidth={Math.round(width)} 
+            itemWidth={Math.round(width)}
+            horizontal={true}
+            useScrollView={true}
+            inactiveSlideScale={1}
+            inactiveSlideOpacity={0.5}
+            inactiveSlideShift={15}
+            firstItem={banner.length}
+            loop={true}
+            loopClonesPerSide={banner.length}
+            autoplay={true}
+            autoplayDelay={2000}
+            autoplayInterval={5000}
+            renderItem={({ item, index }) => {
+              const urlPath =  findSourcePath(item?.s_file_path + item?.s_file_name);
+              //return  <Image style={_styles.topBanner} source={urlPath} />;
+              return (
+                <View style={{width: Dimensions.get('window').width, justifyContent: 'center', alignItems: 'center'}}>
+                  <Image style={_styles.topBanner} source={urlPath} />
+                </View>
+              )
+            }}
+          />
+
+          {/* <FlatList
+            ref={flatListRef}
             data={banner}
             horizontal
             style={_styles.bannerWrapper}
             pagingEnabled
+            snapToOffsets={snapToOffsets}
+            keyExtractor={(_, index) => String(index)}
             renderItem={({ item, index }) => {
               const urlPath =  findSourcePath(item?.s_file_path + item?.s_file_name);
               return <Image style={_styles.topBanner} source={urlPath} />;
             }}
-          />
+          /> */}
 
           <View style={{ height: 50, paddingHorizontal: 16 }}>
             <BannerPannel />

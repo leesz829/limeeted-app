@@ -322,6 +322,11 @@ export const Roby = (props: Props) => {
     navigation.navigate(STACK.COMMON, { screen: 'TutorialSetting' });
   };
 
+  // 나의 데일리 뷰 화면 이동
+  const onPressMyDailyView = () => {
+    navigation.navigate(STACK.COMMON, { screen: 'MyDailyView' });
+  };
+
   // 보관함 이동
   const onPressStorage = async (index:any) => {
     navigation.navigate(STACK.COMMON, {
@@ -444,25 +449,20 @@ export const Roby = (props: Props) => {
             borderTopColor: '#00FFFF'
           }}
           start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}></LinearGradient>
+          end={{ x: 1, y: 1 }} />
 
         <SpaceView pl={16} pr={16}>
           <SpaceView
             mb={48}
-            viewStyle={[layoutStyle.alignCenter, { marginTop: -46 }]}
-          >
-            <SpaceView mb={8}>
-              <TouchableOpacity onPress={onPressEditProfile}>
+            viewStyle={[layoutStyle.alignCenter, { marginTop: -55 }]}>
+            
+            <SpaceView mb={12}>
+              <TouchableOpacity onPress={onPressMyDailyView}>
                 <View style={_styles.profileImageWrap}>
-                  <Image
-                    source={{
-                      uri: properties.img_domain + mbrProfileImgList[0]?.img_file_path,
-                    }}
-                    style={styles.profileImg}
-                  />
+                  <Image source={{ uri: properties.img_domain + mbrProfileImgList[0]?.img_file_path }} style={styles.profileImg} />
                 </View>
                 <View style={styles.profilePenContainer}>
-                    <Image source={ICON.pen} style={styles.iconSize24} />
+                    <Image source={ICON.searchWhite} style={styles.iconSquareSize(36)} />
                 </View>
               </TouchableOpacity>
             </SpaceView>
@@ -506,6 +506,13 @@ export const Roby = (props: Props) => {
                 </View>
               </>
             )}
+
+            <TouchableOpacity
+              style={_styles.manageProfile}
+              onPress={onPressEditProfile}>
+              <Text style={_styles.profileText}>내 소개하기</Text>
+              <Image source={ICON.arrow_right} style={styles.iconSize} />
+            </TouchableOpacity>
 
             <TouchableOpacity
               style={_styles.manageProfile}
@@ -920,13 +927,13 @@ export const Roby = (props: Props) => {
 
 const _styles = StyleSheet.create({
   profileImageWrap: {
-    width: 116,
-    height: 116,
+    width: 160,
+    height: 160,
     backgroundColor: '#ffffff',
     borderStyle: 'solid',
     borderWidth: 3,
     borderColor: '#7986ee',
-    borderRadius: 60,
+    borderRadius: 80,
     padding: 3,
     flexDirection: `row`,
     alignItems: `center`,

@@ -231,7 +231,7 @@ export default function Interview({
           </SpaceView>
 
           {interview?.map((e, index) => (
-            <View style={[style.contentItemContainer, index % 2 !== 0 && style.itemActive]}>
+            <View key={index} style={[style.contentItemContainer, index % 2 !== 0 && style.itemActive]}>
               {mode === 'delete' ? (
                 <TouchableOpacity hitSlop={commonStyle.hipSlop20}
                   /* onPress={() => onSelectDeleteItem(e)} */

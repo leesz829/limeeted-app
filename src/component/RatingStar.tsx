@@ -51,25 +51,49 @@ export const RatingStar: FC<Props> = (props) => {
         ? ICON.starHalf
         : ICON.star
       : ICON.starEmpty;
+    /* return starRatingOnOff[starNum]
+    ? isHasHalfStar === starNum
+      ? ICON.starHalfNew
+      : ICON.starNew
+    : ICON.starEmptyNew; */
   };
 
   const Star = ({ starNum }: { starNum: number }) => {
     return (
-      <View>
-        <TouchableOpacity
-          style={styles.overlayLeftContainer}
-          onPress={() => {
-            pressStarRating(starNum, true);
-          }}
-        />
-        <Image source={calcImg(starNum)} style={styles.iconSize} />
-        <TouchableOpacity
-          style={styles.overlayRightContainer}
-          onPress={() => {
-            pressStarRating(starNum, false);
-          }}
-        />
-      </View>
+      <>
+        <View>
+          <TouchableOpacity
+            style={styles.overlayLeftContainer}
+            onPress={() => {
+              pressStarRating(starNum, true);
+            }}
+          />
+          <Image source={calcImg(starNum)} style={styles.iconSize} />
+          <TouchableOpacity
+            style={styles.overlayRightContainer}
+            onPress={() => {
+              pressStarRating(starNum, false);
+            }}
+          />
+        </View>
+
+        {/* <View style={{marginHorizontal: 5}}>
+          <TouchableOpacity
+            style={styles.overlayLeftContainer}
+            onPress={() => {
+              pressStarRating(starNum, true);
+            }}
+          />
+          <Image source={calcImg(starNum)} style={{width: 40, height: 40}} />
+          <TouchableOpacity
+            style={styles.overlayRightContainer}
+            onPress={() => {
+              pressStarRating(starNum, false);
+            }}
+          /> 
+        </View> */}
+      </>
+      
     );
   };
 

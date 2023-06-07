@@ -35,6 +35,7 @@ import AuctionDetail from 'screens/shop/AuctionDetail';
 import MileageOrder from 'screens/shop/MileageOrder';
 import GifticonDetail from 'screens/shop/GifticonDetail';
 import ItemMatching from 'screens/matching/ItemMatching';
+import MyDailyView from 'screens/profile/MyDailyView';
 
 const CommonStack = createStackNavigator<StackParamList>();
 
@@ -73,6 +74,7 @@ const CommonNavigation = () => {
       <CommonStack.Screen name="GifticonDetail" component={GifticonDetail} />
       <CommonStack.Screen name="ItemMatching" component={ItemMatching} />
       <CommonStack.Screen name="ImagePreview" component={ImagePreview} />
+      <CommonStack.Screen name="MyDailyView" component={MyDailyView} />
     </CommonStack.Navigator>
   );
 };

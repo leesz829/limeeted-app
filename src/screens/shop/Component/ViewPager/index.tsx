@@ -62,7 +62,7 @@ export default function ViewPager({ style, data, renderItem }) {
         style={styles.PagerView}
         onPageScroll={onPageScroll}
       >
-        {data?.map((item, index) => renderItem({uri: item.uri}))}
+        {data?.map((item, index) => renderItem({uri: item.uri, index: index}))}
       </AnimatedPagerView>
       
       <ExpandingDot

@@ -870,7 +870,7 @@ export const Profile1 = (props: Props) => {
               <View style={_styles.impressionContainer}>
 
                 {profileFaceRankList.map((item : any, index) => (
-                  <View style={_styles.itemRow(index === profileFaceRankList.length - 1 ? true : false)}>
+                  <View key={index} style={_styles.itemRow(index === profileFaceRankList.length - 1 ? true : false)}>
                     <View style={_styles.subRow}>
                       {/* <Image source={ICON.fashion} style={_styles.icon} /> */}
                       <Text style={_styles.rankText(index)}>
@@ -897,17 +897,29 @@ export const Profile1 = (props: Props) => {
                 <Text style={_styles.scoreText}>{memberBase?.profile_score}</Text>
                 <View style={_styles.triangle}></View>
               </View>
-              <Slider
-                value={memberBase?.profile_score / 10}
-                animateTransitions={true}
-                renderThumbComponent={() => null}
-                maximumTrackTintColor={'#e3e3e3'}
-                minimumTrackTintColor={'#8854d2'}
-                containerStyle={_styles.sliderContainerStyle}
-                trackStyle={_styles.trackStyle}
-                trackClickable={false}
-                disabled
-              />
+
+              <View>
+                <LinearGradient
+                  colors={['#7986EE', '#8854D2']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={_styles.gradient(memberBase?.profile_score / 10)}>
+                </LinearGradient>
+
+                <Slider
+                  //value={memberBase?.profile_score / 10}
+                  animateTransitions={true}
+                  renderThumbComponent={() => null}
+                  /* maximumTrackTintColor={'#e3e3e3'}
+                  minimumTrackTintColor={'#8854d2'} */
+                  maximumTrackTintColor={'transparent'}
+                  minimumTrackTintColor={'transparent'}
+                  containerStyle={_styles.sliderContainerStyle}
+                  trackStyle={_styles.trackStyle}
+                  trackClickable={false}
+                  disabled
+                />
+              </View>
             </View>
             
             <View style={_styles.gageContainer}>
@@ -1062,7 +1074,7 @@ function ProfileImage({ item, onDelete, onAdd }) {
             </TouchableOpacity>
           </View>
 
-          <View style={profileImage.margin}>
+          <SpaceView mt={30}>
             <View>
               <CommonBtn
                 value={'사진 삭제'}
@@ -1072,7 +1084,7 @@ function ProfileImage({ item, onDelete, onAdd }) {
               <View style={{ height: 2 }} />
               <CommonBtn value={'취소'} type={'primary'} onPress={close} />
             </View>
-          </View>
+          </SpaceView>
         </View>
       </ReactNativeModal>
     </>
@@ -1261,13 +1273,15 @@ const _styles = StyleSheet.create({
   sliderContainerStyle: {
     width: '100%',
     height: 27,
-    marginTop: 7,
+    //marginTop: 7,
     borderRadius: 13,
+    backgroundColor: '#E3E3E3',
   },
   trackStyle: {
-    width: '100%',
     height: 27,
     borderRadius: 13,
+    position: 'absolute',
+    backgroundColor: 'transparent',
   },
   gageContainer: {
     width: '100%',
@@ -1278,12 +1292,10 @@ const _styles = StyleSheet.create({
   gageText: {
     fontFamily: 'AppleSDGothicNeoM00',
     fontSize: 10,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    lineHeight: 32,
+    lineHeight: 20,
     letterSpacing: 0,
     textAlign: 'center',
-    color: '#d0d0d0',
+    color: '#D0D0D0',
   },
   imageDimText: {
     textAlign: 'right',
@@ -1302,7 +1314,7 @@ const _styles = StyleSheet.create({
   },
   profileScoreContainer: {
     flex: 1,
-    alignItems: 'center',
+    //alignItems: 'flex-start',
     justifyContent: 'center',
   },
   scoreContainer: {
@@ -1319,7 +1331,6 @@ const _styles = StyleSheet.create({
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 5,
-    borderWidthBottom: 1,
     borderBottomColor: '#151515',
   },
   triangle: {
@@ -1342,6 +1353,21 @@ const _styles = StyleSheet.create({
     paddingHorizontal: 15,
     borderRadius: 8,
     minHeight: 100,
+  },
+  gradient: (value:any) => {
+    let percent = 0;
+
+    if(value != null && typeof value != 'undefined') {
+      percent = value * 100;
+    };
+
+    return {
+      position: 'absolute',
+      width: percent + '%',
+      height: 27,
+      zIndex: 1,
+      borderRadius: 13,
+    };
   },
 
 });
@@ -1414,9 +1440,6 @@ const profileImage = StyleSheet.create({
   titleText: {
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 20,
-  },
-  margin: {
-    marginTop: 30,
   },
 });
 

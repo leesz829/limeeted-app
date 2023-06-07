@@ -40,7 +40,7 @@ export default function InterviewRender({ title, dataList }) {
           {dataList.map((e, index) => (
             <>
               {e.answer != "" && e.answer != null && 
-                <View style={[style.contentItemContainer, index % 2 !== 0 && style.itemActive]}>
+                <View key={index} style={[style.contentItemContainer, index % 2 !== 0 && style.itemActive]}>
                   <View style={style.questionRow}>
                     <Text style={style.questionText}>Q.</Text>
                     <Text style={[style.questionBoldText]}> {e?.code_name}</Text>

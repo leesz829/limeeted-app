@@ -217,6 +217,12 @@ export const styles = StyleSheet.create({
     width: 80,
     height: 80,
   },
+  iconSquareSize: (size: number) => {
+    return {
+      width: size,
+      height: size,
+    };
+  },
   arrowIcon: {
     width: 20,
     height: 36,
@@ -402,21 +408,19 @@ export const styles = StyleSheet.create({
     maxWidth: 300,
   },
   profileImg: {
-    width: 104,
-    height: 104,
-    borderRadius: 52,
+    width: 150,
+    height: 150,
+    borderRadius: 80,
   },
-
   profileTmpImg: {
     width: 160,
     height: 160,
-    borderRadius: 16,
+    borderRadius: 80,
   },
-
   profilePenContainer: {
     position: 'absolute',
-    bottom: 0,
-    right: 0,
+    bottom: 5,
+    right: 5,
   },
   purpleContainer: {
     backgroundColor: Color.purple,

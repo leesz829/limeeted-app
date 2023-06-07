@@ -12,6 +12,8 @@ import { CommaFormat } from 'utils/functions';
 import { get_cashback_pay_info } from 'api/models';
 import SpaceView from 'component/SpaceView';
 import { commonStyle } from 'assets/styles/Styles';
+import LinearGradient from 'react-native-linear-gradient';
+
 
 export default function BannerPannel() {
   const me = useUserInfo();
@@ -181,35 +183,45 @@ function MalePannel() {
     <View style={male.floatWrapper}>
       <View style={male.floatContainer}>
         <View>
-          <Text style={male.pointText}>
-            리미티드 포인트 <Text>✌️</Text>
-          </Text>
-
-          <TouchableOpacity onPress={onPressPointReward}>
-            <Text style={male.infoText}>
-              즐거운 <Text style={male.cashbackText}>캐시백</Text> 생활 {CommaFormat(payInfo?.member_buy_price)} /
-              {CommaFormat(payInfo?.target_buy_price)}
-            </Text>
+          <TouchableOpacity onPress={onPressPointReward} hitSlop={commonStyle.hipSlop10}>
+            <Text style={male.infoText}>즐거운 <Text style={male.cashbackText}>캐시백</Text> 생활</Text>
+            <View style={male.pointIntroArea}>
+              <Text style={male.pointText}>리미티드 포인트</Text>
+              <View style={male.rewardBtn}><Text style={male.rewardAddText}>알아보기</Text></View>
+            </View>
           </TouchableOpacity>
         </View>
 
         <TouchableOpacity onPress={onPressPointReward} hitSlop={commonStyle.hipSlop10}>
+
+          <LinearGradient
+            colors={['#7986EE', '#8854D2']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={_styles.gradient(payInfo?.price_persent)}>
+          </LinearGradient>
+
           <Slider
-            value={payInfo?.price_persent}
+            //value={payInfo?.price_persent}
             animateTransitions={true}
             renderThumbComponent={() => null}
-            maximumTrackTintColor={ColorType.purple}
-            minimumTrackTintColor={ColorType.purple}
+            maximumTrackTintColor={'transparent'}
+            minimumTrackTintColor={'transparent'}
             containerStyle={male.sliderContainer}
             trackStyle={male.sliderTrack}
             trackClickable={false}
             disabled
           />
+          <View style={{position: 'absolute', bottom: -15, right: 0}}>
+            <Text style={male.infoText02}>
+              캐시백 보상까지 {CommaFormat(payInfo?.member_buy_price)} / {CommaFormat(payInfo?.target_buy_price)}
+            </Text>
+          </View>
         </TouchableOpacity>
         
-        <TouchableOpacity onPress={onPressPointReward} style={male.TooltipButton} hitSlop={commonStyle.hipSlop10}>
+        {/* <TouchableOpacity onPress={onPressPointReward} style={male.TooltipButton} hitSlop={commonStyle.hipSlop10}>
           <Image source={ICON.currencyTooltip} style={male.imageTooltip} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <View style={male.gradeArea}>
           <Text style={male.gradeText}><Text style={male.gradeEtc}>RANK</Text>{payInfo?.tmplt_name}</Text>
@@ -244,7 +256,23 @@ const _styles = StyleSheet.create({
     paddingHorizontal: 6,
     paddingVertical: 2,
     overflow: 'hidden',
-  }
+  },
+  gradient: (value:any) => {
+    let percent = 0;
+
+    if(value != null && typeof value != 'undefined') {
+      percent = value * 100;
+    };
+
+    return {
+      position: 'absolute',
+      top: 6,
+      width: percent + '%',
+      height: 7,
+      zIndex: 1,
+      borderRadius: 20,
+    };
+  },
 });
 
 const male = StyleSheet.create({
@@ -270,18 +298,41 @@ const male = StyleSheet.create({
     elevation: 5,
     justifyContent: 'space-around',
   },
+  pointIntroArea: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
   pointText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 19,
+    fontFamily: 'AppleSDGothicNeoEB00',
     color:'#333333'
+  },
+  rewardBtn: {
+    marginLeft: 5,
+    borderWidth: 1,
+    borderColor: '#7986EE',
+    borderRadius: 5,
+    paddingHorizontal: 7,
+    paddingVertical: 3,
+  },
+  rewardAddText: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 10,
+    color: '#7986EE',
   },
   infoText: {
     marginTop: 8,
     fontSize: 10,
     fontWeight: 'bold',
     fontFamily: 'AppleSDGothicNeoM00',
-    color: Color.grayAAAA,
+    color: '#B1B1B1',
+  },
+  infoText02: {
+    fontSize: 10,
+    fontFamily: 'AppleSDGothicNeoM00',
+    color: '#B1B1B1',
+    textAlign: 'right',
   },
   cashbackText: {
     marginTop: 14,
@@ -293,14 +344,15 @@ const male = StyleSheet.create({
   sliderContainer: {
     width: '100%',
     marginTop: 8,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: ColorType.primary,
+    height: 4,
+    borderRadius: 13,
+    backgroundColor: '#E1E4FB',
   },
   sliderTrack: {
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: ColorType.grayDDDD,
+    height: 23,
+    borderRadius: 13,
+    backgroundColor: 'transparent',
+    position: 'absolute',
   },
   TooltipButton: {
     position: 'absolute',
