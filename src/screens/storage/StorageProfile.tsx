@@ -496,7 +496,7 @@ export const StorageProfile = (props: Props) => {
           {data.interest_list.length > 0 && (
             <>
               <Text style={_styles.title}>{data.match_member_info.nickname}님의 관심사</Text>
-              <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10, marginBottom: 10 }}>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 13, marginBottom: 10 }}>
                 {data.interest_list.map((item, index) => {
                   const isOn = item.dup_chk == 0 ? false : true;
                   return (
@@ -650,10 +650,10 @@ const _styles = StyleSheet.create({
       borderRadius: 5,
       backgroundColor: isOn ? 'white' : '#f7f7f7',
       paddingHorizontal: 15,
-      paddingVertical: 5,
-      marginLeft: 3,
-      marginTop: 3,
-      borderColor: isOn ? '#7986ee' : '#f7f7f7',
+      paddingVertical: 4,
+      marginRight: 6,
+      marginBottom: 6,
+      borderColor: isOn ? '#697AE6' : '#f7f7f7',
       borderWidth: 1,
     };
   },
@@ -661,12 +661,9 @@ const _styles = StyleSheet.create({
     return {
       fontFamily: 'AppleSDGothicNeoR00',
       fontSize: 12,
-      fontWeight: 'normal',
-      fontStyle: 'normal',
       lineHeight: 22,
       letterSpacing: 0,
-      textAlign: 'left',
-      color: isOn ? '#7986ee' : '#b1b1b1',
+      color: isOn ? '#697AE6' : '#b1b1b1',
     };
   },
 });

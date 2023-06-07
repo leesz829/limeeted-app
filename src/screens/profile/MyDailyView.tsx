@@ -1,51 +1,23 @@
 import { RouteProp, useIsFocused, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { StackParamList, ColorType, ScreenNavigationProp } from '@types';
-import {
-  get_item_matched_info,
-  regist_match_status,
-  report_matched_user,
-  report_check_user,
-  report_check_user_confirm,
-} from 'api/models';
-import { ROUTES, STACK } from 'constants/routes';
-
+import { get_item_matched_info } from 'api/models';
 import CommonHeader from 'component/CommonHeader';
-import { CommonBtn } from 'component/CommonBtn';
-import { RadioCheckBox_3 } from 'component/RadioCheckBox_3';
-import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
-import TopNavigation from 'component/TopNavigation';
 import { usePopup } from 'Context';
 import { useUserInfo } from 'hooks/useUserInfo';
 import * as React from 'react';
-
 import { useEffect, useRef, useState } from 'react';
 import { modalStyle, layoutStyle, commonStyle } from 'assets/styles/Styles';
-import {
-  Dimensions,
-  FlatList,
-  Image,
-  
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  Text,
-} from 'react-native';
-import { Modalize } from 'react-native-modalize';
+import { Dimensions, FlatList, Image, ScrollView, StyleSheet, TouchableOpacity, View, Text } from 'react-native';
 import { useDispatch } from 'react-redux'; 
-import { myProfile } from 'redux/reducers/authReducer';
 import { findSourcePath, ICON, IMAGE } from 'utils/imageUtils';
 import { Slider } from '@miblanchard/react-native-slider';
 import ProfileAuth from 'component/ProfileAuth';
-import { formatNowDate} from 'utils/functions';
-import { Watermark } from 'component/Watermark';
 import VisualImage from 'component/match/VisualImage';
 import AddInfo from 'component/match/AddInfo';
 import ProfileActive from 'component/match/ProfileActive';
 import InterviewRender from 'component/match/InterviewRender';
-import SincerePopup from 'screens/commonpopup/sincerePopup';
 
 
 const { width, height } = Dimensions.get('window');
@@ -64,8 +36,6 @@ export default function MyDailyView(props: Props) {
   // 로딩 상태 체크
   const [isLoad, setIsLoad] = useState(false);
   const [isEmpty, setIsEmpty] = useState(false);
-
-  const [isCardIndex, setIsCardIndex] = useState(0);
 
   // 본인 데이터
   const memberBase = useUserInfo();
@@ -91,13 +61,12 @@ export default function MyDailyView(props: Props) {
       }
 
       const { success, data } = await get_item_matched_info(body);
-      setIsCardIndex(isCardIndex + 1);
       
       if (success) {
         if (data.result_code == '0000') {
           setData(data);
 
-          if(data?.match_member_info == null || data?.profile_img_list?.length == 0) {
+          if(data?.match_member_info == null) {
             setIsLoad(false);
             setIsEmpty(true);
           } else {
@@ -125,7 +94,7 @@ export default function MyDailyView(props: Props) {
 
 
   return (
-    data.profile_img_list.length > 0 && isLoad ? (
+    isLoad ? (
       <>
         <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
           <CommonHeader title={'내 프로필 카드'} />
@@ -133,12 +102,16 @@ export default function MyDailyView(props: Props) {
           {/* ####################################################################################
           ####################### 상단 영역
           #################################################################################### */}
-          <View>
 
-            {/* ############################################################## 상단 이미지 영역 */}
-            <VisualImage imgList={data?.profile_img_list} memberData={data?.match_member_info} />
-
-          </View>
+          {data?.profile_img_list.length > 0 ? (
+            <View>
+              <VisualImage imgList={data?.profile_img_list} memberData={data?.match_member_info} />
+            </View>
+          ) : (
+            <View style={{minHeight: height * 0.7, backgroundColor: '#D6D3D3', justifyContent: 'center', alignItems: 'center'}}>
+              <Text style={{fontFamily: 'AppleSDGothicNeoEB00', color: '#FE0456'}}>사진을 등록해 주세요!</Text>
+            </View>
+          )}
 
           <View style={_styles.padding}>
             
@@ -149,7 +122,7 @@ export default function MyDailyView(props: Props) {
             {data.interest_list.length > 0 && (
               <>
                 <Text style={_styles.title}>{data.match_member_info.nickname}님의 관심사</Text>
-                <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10, marginBottom: 10 }}>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 13, marginBottom: 10 }}>
                   {data.interest_list.map((item, index) => {
                     const isOn = true;
                     return (
@@ -184,9 +157,7 @@ export default function MyDailyView(props: Props) {
       </>
     )
   );
-
 }
-
 
 
 {/* #######################################################################################################
@@ -303,16 +274,15 @@ const _styles = StyleSheet.create({
     textAlign: 'left',
     color: '#8e8e8e',
   },
-
   interestItem: (isOn) => {
     return {
       borderRadius: 5,
       backgroundColor: isOn ? 'white' : '#f7f7f7',
       paddingHorizontal: 15,
-      paddingVertical: 5,
-      marginLeft: 3,
-      marginTop: 3,
-      borderColor: isOn ? '#7986ee' : '#f7f7f7',
+      paddingVertical: 4,
+      marginRight: 6,
+      marginBottom: 6,
+      borderColor: isOn ? '#697AE6' : '#f7f7f7',
       borderWidth: 1,
     };
   },
@@ -320,12 +290,9 @@ const _styles = StyleSheet.create({
     return {
       fontFamily: 'AppleSDGothicNeoR00',
       fontSize: 12,
-      fontWeight: 'normal',
-      fontStyle: 'normal',
       lineHeight: 22,
       letterSpacing: 0,
-      textAlign: 'left',
-      color: isOn ? '#7986ee' : '#b1b1b1',
+      color: isOn ? '#697AE6' : '#b1b1b1',
     };
   },
 });

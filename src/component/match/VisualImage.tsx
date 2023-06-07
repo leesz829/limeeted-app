@@ -241,8 +241,6 @@ const _styles = StyleSheet.create({
   whiteText: {
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 10,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     letterSpacing: 0,
     textAlign: 'left',
     color: '#ffffff',
@@ -250,8 +248,6 @@ const _styles = StyleSheet.create({
   yellowText: {
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 11,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     letterSpacing: 0,
     textAlign: 'left',
     color: '#FDFFD8',
@@ -292,8 +288,6 @@ const _styles = StyleSheet.create({
   nameText: {
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 25,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     lineHeight: 26,
     letterSpacing: 0,
     textAlign: 'left',
@@ -313,8 +307,6 @@ const _styles = StyleSheet.create({
   regionText: {
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 16,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     lineHeight: 22,
     letterSpacing: 0,
     textAlign: 'left',
