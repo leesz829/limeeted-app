@@ -201,7 +201,7 @@ export const Shop = () => {
       {isLoading && <CommonLoading />}
 
       <ScrollView>
-        <View>
+        <View style={{minHeight: 300}}>
 
           {/* ############################################### 상단 배너 */}
           <Carousel

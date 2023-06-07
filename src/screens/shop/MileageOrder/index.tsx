@@ -20,6 +20,8 @@ import { useUserInfo } from 'hooks/useUserInfo';
 import { TextInput } from 'react-native-gesture-handler';
 import { CommaFormat } from 'utils/functions';
 import { CommonLoading } from 'component/CommonLoading';
+import SpaceView from 'component/SpaceView';
+
 
 const DATA = [
   {
@@ -152,14 +154,20 @@ export default function MileageOrder() {
           </View>
         </View>
 
-        <FlatList
-          /* onScroll={handleScroll}
-          showsHorizontalScrollIndicator={false}
-          pagingEnabled={true}
-          horizontal={false} */
-          data={orderList}
-          renderItem={(data) => <RenderItem dataList={orderList} />}
-        />
+        {orderList.length > 0 ? (
+          <FlatList
+            /* onScroll={handleScroll}
+            showsHorizontalScrollIndicator={false}
+            pagingEnabled={true}
+            horizontal={false} */
+            data={orderList}
+            renderItem={(data) => <RenderItem dataList={orderList} />}
+          />
+        ) : (
+          <SpaceView viewStyle={{justifyContent: 'center', alignItems: 'center', height: 150}}>
+            <Text style={{fontFamily: 'AppleSDGothicNeoB00'}}>주문 내역이 없습니다.</Text>
+          </SpaceView>
+        )}
 
       </View>
     </>
