@@ -189,8 +189,7 @@ function PreFetcher(props) {
           //codePush.restartApp();
       }); */
       newPackage.install(codePush.InstallMode.IMMEDIATE).then(() => {
-        SplashScreen.show();
-        console.log('test!!!!!!!!!!!!!');
+        //SplashScreen.show();
         // 업데이트 설치 완료 후 로직
         codePush.notifyAppReady();
         //codePush.restartApp();
