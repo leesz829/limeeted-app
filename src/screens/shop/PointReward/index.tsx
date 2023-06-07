@@ -66,7 +66,7 @@ export default function PointReward(element) {
 
             show({
               title: '보상획득',
-              content: '리미티드 포인트 ' + item_name + '등급 보상을 획득하셨습니다.',
+              content: '리미티드 포인트' + item_name + '등급 보상을 획득하셨습니다.',
               confirmCallback: function() {
                 getCashBackPayInfo();
               }

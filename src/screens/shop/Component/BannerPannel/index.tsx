@@ -15,11 +15,11 @@ import { commonStyle } from 'assets/styles/Styles';
 import LinearGradient from 'react-native-linear-gradient';
 
 
-export default function BannerPannel() {
+export default function BannerPannel({ payInfo }) {
   const me = useUserInfo();
 
   if (!me) return null;
-  return me?.gender !== 'M' ? <FemalePannel /> : <MalePannel />;
+  return me?.gender !== 'M' ? <FemalePannel /> : <MalePannel payInfo={payInfo} />;
 }
 
 // ############################################################################################### 여성회원 Pannel
@@ -44,60 +44,67 @@ function FemalePannel() {
   return (
     <View style={female.floatWrapper}>
       <View style={female.floatContainer}>
-        <View>
-          <View
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}
-          >
-            <Text style={female.pointText}>
-              {me?.nickname} <Text>✨</Text>
-            </Text>
-              {route.name === ROUTES.Mileage_Shop && (
-                <View style={{ flexDirection: 'row' }}>
-                  <TouchableOpacity
-                    style={female.lmtShopButton}
-                    onPress={onPressMileageOrder}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          
+          <View style={{ flexDirection: 'column'}}>
+            <SpaceView mb={20} mt={route.name === ROUTES.Mileage_Shop ? 10 : 0}>
+              <Text style={female.pointText}>
+                {me?.nickname} <Text>✨</Text>
+              </Text>
+            </SpaceView>
 
-                    <Text style={female.lmtButtonText3}>구매내역</Text>
-                  </TouchableOpacity>
-                  
-                  {/*
-                  <TouchableOpacity onPress={onPressMileageHistory}>
-                    <Image
-                      style={female.mileageHistoryButton}
-                      source={ICON.mileageHistory}
-                    />
-                  </TouchableOpacity>
-                
-                  <TouchableOpacity onPress={onPressMileageOrder}>
-                    <Image
-                      style={female.mileageOrderButton}
-                      source={ICON.mileageOrder}
-                    />
-                  </TouchableOpacity>
-                  */}
-                </View>
-                
-              )}
-          </View>
-          <View style={female.row}>
-            
             <View>
               {route.name !== ROUTES.Mileage_Shop && (
                 <>
                   {/* <Text style={female.infoText}>{me?.nickname}님의 공주력</Text> */}
                   {/* <Text style={female.infoText}>리밋샵에 구경 오세요 :)</Text> */}
-                  <View style={_styles.iconArea}>
-                    <Text style={_styles.newText}>NEW</Text>
-                  </View>
+                  
                   <TouchableOpacity
                     style={female.lmtShopButton}
-                    onPress={onPressLimitShop}>
+                    onPress={onPressLimitShop}
+                    hitSlop={commonStyle.hipSlop20}>
+
+                    <View style={_styles.iconArea}>
+                      <Text style={_styles.newText}>NEW</Text>
+                    </View>
 
                     <Text style={female.lmtButtonText2}>리밋샵 입장하기</Text>
                   </TouchableOpacity>
                 </>
               )}
             </View>
+          </View>
+
+          <View style={{ flexDirection: 'column', alignItems: 'flex-end'}}>
+
+            {route.name === ROUTES.Mileage_Shop && (
+              <View>
+                <TouchableOpacity
+                  style={female.lmtShopButton}
+                  onPress={onPressMileageOrder}
+                  hitSlop={commonStyle.hipSlop20}>
+
+                  <Text style={female.lmtButtonText3}>구매내역</Text>
+                </TouchableOpacity>
+                
+                {/*
+                <TouchableOpacity onPress={onPressMileageHistory}>
+                  <Image
+                    style={female.mileageHistoryButton}
+                    source={ICON.mileageHistory}
+                  />
+                </TouchableOpacity>
+              
+                <TouchableOpacity onPress={onPressMileageOrder}>
+                  <Image
+                    style={female.mileageOrderButton}
+                    source={ICON.mileageOrder}
+                  />
+                </TouchableOpacity>
+                */}
+              </View>
+            )}
+            
             
             <View style={{ flexDirection: 'column' }}>
               <SpaceView viewStyle={female.myBox}>
@@ -135,10 +142,10 @@ const PAY_INFO = {
   , tmplt_level: 1
 };
 
-function MalePannel() {
+function MalePannel({ payInfo }) {
   const navigation = useNavigation<ScreenNavigationProp>();
   const isFocus = useIsFocused();
-  const [payInfo, setPayInfo] = useState(PAY_INFO);
+
   const onPressPointReward = () => {
     navigation.navigate(STACK.COMMON, { 
       screen: 'PointReward'
@@ -151,33 +158,6 @@ function MalePannel() {
       }
     });
   };
-
-  useEffect(() => {
-    const getCashBackPayInfo = async () => {
-      const { success, data } = await get_cashback_pay_info();
-      if (success) {
-
-        let lettmpltName = data?.result.tmplt_name;
-        let mbrPrice = data?.result.member_buy_price;
-        let trgtPrice = data?.result.target_buy_price;
-        let level = data?.result.tmplt_level;
-
-        let percent = (mbrPrice*100) / trgtPrice;
-        if(percent > 0) {
-         percent = percent / 100; 
-        }
-
-        setPayInfo({
-          member_buy_price: mbrPrice
-          , target_buy_price: trgtPrice
-          , price_persent: percent
-          , tmplt_name: lettmpltName.replace(/(\s*)/g, "")
-          , tmplt_level: level
-        });
-      }
-    };
-    getCashBackPayInfo();
-  }, [isFocus]);
 
   return (
     <View style={male.floatWrapper}>
@@ -243,7 +223,7 @@ function MalePannel() {
 const _styles = StyleSheet.create({
   iconArea: {
     position: 'absolute',
-    top: -7,
+    top: -14,
     left: -14,
     zIndex: 1,
   },
@@ -389,7 +369,7 @@ const male = StyleSheet.create({
 const female = StyleSheet.create({
   floatWrapper: {
     width: `100%`,
-    marginTop: -60,
+    marginTop: -70,
   },
   floatContainer: {
     position: 'relative',
@@ -405,7 +385,6 @@ const female = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-
     elevation: 5,
     justifyContent: 'space-around',
   },
@@ -459,8 +438,6 @@ const female = StyleSheet.create({
   lmtButtonText: {
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 10,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     letterSpacing: 0,
     textAlign: 'left',
     color: '#7986ee',
@@ -468,8 +445,6 @@ const female = StyleSheet.create({
   lmtButtonText2: {
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 11,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     letterSpacing: 0,
     textAlign: 'left',
     color: '#7986ee',
@@ -479,13 +454,11 @@ const female = StyleSheet.create({
   lmtButtonText3: {
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 11,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     letterSpacing: 0,
     textAlign: 'left',
     color: '#7986ee',
     paddingHorizontal: 10,
-    paddingVertical: 2
+    paddingVertical: 1
   },
   myBox: {
     flexDirection: `row`,

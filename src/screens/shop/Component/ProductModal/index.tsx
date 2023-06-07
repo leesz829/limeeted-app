@@ -99,6 +99,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
     }
   };
 
+  // ######################################################### 재고 상품 구매하기 함수
   const buyProdsProc = async () => {
     try {
       const { success, data } = await order_goods({
@@ -119,22 +120,46 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
           });
           return false;
         }else{
+          if(Platform.OS == 'android') {
+            show({
+              title: '알림',
+              content: '구매에 성공하였습니다.',
+              confirmCallback: function () {
+                setComfirmModalVisible(false);
+                closeModal(true);
+              },
+            });
+          } else {
+            Alert.alert('알림', '구매에 성공하였습니다.',
+            [{ 
+              text: '확인',
+              onPress: () => {
+                setComfirmModalVisible(false);
+                closeModal(true);
+              }
+            }]);
+          }
+        }
+      }else{
+        if(Platform.OS == 'android') {
           show({
-            content: '구매되었습니다.'
-            , confirmCallback: function () {
+            title: '알림',
+            content: '기프티콘 발급 통신 오류입니다. 잠시 후 다시 시도해주세요.',
+            confirmCallback: function () {
               setComfirmModalVisible(false);
               closeModal(true);
             },
           });
+        } else {
+          Alert.alert('알림', '기프티콘 발급 통신 오류입니다. 잠시 후 다시 시도해주세요.',
+          [{ 
+            text: '확인',
+            onPress: () => {
+              setComfirmModalVisible(false);
+              closeModal(true);
+            }
+          }]);
         }
-      }else{
-        show({
-          content: '기프티콘 발급 통신 오류입니다. 잠시 후 다시 시도해주세요.'
-          , confirmCallback: function () {
-            setComfirmModalVisible(false);
-            closeModal(true);
-          },
-        });
       }
     } catch (error) {
       console.log(error);
@@ -150,8 +175,6 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
       const result = await requestPurchase({
         skus: [item_code]
       });
-
-      console.log('result :::::: ', result);
 
       const receiptDataJson = JSON.parse(result[0].transactionReceipt);
 
@@ -266,38 +289,48 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
     console.log('data :::: ', data);
     if (success) {
       if(data?.result_code == '0000') {
-        //Alert.alert('구매에 성공하였습니다.');
         setIsPayLoading(false);
         setComfirmModalVisible(false);
         closeModal(true);
-        navigation.navigate(STACK.TAB, { screen: 'Shop' });
-        Alert.alert('알림', '구매에 성공하였습니다.', [{ text: '확인' }]);
-        /* show({
-          content: '구매에 성공하였습니다.' ,
-          confirmCallback: function() {
-            closeModal();
-          }
-        }); */
+        //navigation.navigate(STACK.TAB, { screen: 'Shop' });
+
+        if(Platform.OS == 'android') {
+          show({
+            content: '구매에 성공하였습니다.' ,
+            confirmCallback: function() { }
+          });
+        } else {
+          Alert.alert('알림', '구매에 성공하였습니다.', [{ text: '확인' }]);
+        }
       } else {
-        console.log('fail !!!!!!!!!!!!!!!!');
         closeModal(false);
         setIsPayLoading(false);
         setComfirmModalVisible(false);
-        /* show({
-          title: '알림',
-          content: data.result_msg ,
-          confirmCallback: function() { closeModal(); }
-        }); */
-        Alert.alert('구매에 실패하였습니다.');
+
+        if(Platform.OS == 'android') {
+          show({
+            title: '알림',
+            content: '구매에 실패하였습니다.',
+            confirmCallback: function() { }
+          });
+        } else {
+          Alert.alert('알림', '구매에 실패하였습니다.', [{ text: '확인' }]);
+        }
       }
     } else {
       closeModal(false);
       setIsPayLoading(false);
       setComfirmModalVisible(false);
-      show({
-        content: '오류입니다. 관리자에게 문의해주세요.' ,
-        confirmCallback: function() { closeModal(false); }
-      });
+
+      if(Platform.OS == 'android') {
+        show({
+          content: '오류입니다. 관리자에게 문의해주세요.' ,
+          confirmCallback: function() { }
+        });
+      } else {
+        Alert.alert('알림', '오류입니다. 관리자에게 문의해주세요.', [{ text: '확인' }]);
+      }
+
     }
   };
 
@@ -348,7 +381,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
               <ViewPager
                 data={images}
                 style={modalStyleProduct.pagerView}
-                renderItem={(data) => <Image source={data} style={modalStyleProduct.itemImages} />} 
+                renderItem={(data) => <Image key={data.index} source={data} style={modalStyleProduct.itemImages} />} 
               />
             </View>
           </View>

@@ -101,12 +101,13 @@ export default function MileageShop() {
 
 // ######################################################################### 카테고리 렌더링
 const RenderCategory = ({ onPressTab, tab }) => {
-  return categories?.map((item) => (
+  return categories?.map((item, index) => (
     <TouchableOpacity
+      key={index}
       activeOpacity={0.8}
       style={styles.categoryBorder(item.value === tab.value)}
-      onPress={() => onPressTab(item)}
-    >
+      onPress={() => onPressTab(item)}>
+
       <Text style={styles.categoryText(item.value === tab.value)}>
         {item?.label}
       </Text>

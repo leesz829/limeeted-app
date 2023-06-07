@@ -71,6 +71,7 @@ export const Shop = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [banner, setBanner] = useState([]);
+  const [payInfo, setPayInfo] = useState({});
 
   const [newItemCnt, setNewItemCnt] = useState(0);
 
@@ -87,32 +88,13 @@ export const Shop = () => {
     setIsLoading(isStatus);
   };
 
-
-
-  
-
-  const [currentIndex, setCurrentIndex] = useState(0);
+  /* const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
   const snapToOffsets = useMemo(() => Array.from(Array(banner.length)).map((_, index) => index * width),
   [banner],
   );
 
-  // ############################################################################# 배너 목록 조회
-  const getBanner = async () => {
-    //const invenConnectDate = await AsyncStorage.getItem('INVENTORY_CONNECT_DT') || '20230524000000';
-    const { success, data } = await get_banner_list({ banner_type: 'PROD' });
-
-    if (success) {
-      setBanner(data?.banner_list);
-      setNewItemCnt(data?.mbr_base?.new_item_cnt);
-
-      dispatch(setPartialPrincipal({
-        mbr_base : data?.mbr_base
-      }));
-    }
-  };
-
-  /* useEffect(() => {
+  useEffect(() => {
     console.log('currentIndex ::::::::: ', currentIndex);
     if (currentIndex !== snapToOffsets.length) {
       flatListRef.current?.scrollToOffset({
@@ -126,6 +108,41 @@ export const Shop = () => {
     setCurrentIndex(prev => (prev === snapToOffsets.length - 1 ? 0 : prev + 1));
   }, isFocus ? 5000 : null); */
 
+  // ############################################################################# 배너 목록 조회
+  const getBanner = async () => {
+    //const invenConnectDate = await AsyncStorage.getItem('INVENTORY_CONNECT_DT') || '20230524000000';
+    const { success, data } = await get_banner_list({ banner_type: 'PROD' });
+
+    if (success) {
+      setBanner(data?.banner_list);
+      setNewItemCnt(data?.mbr_base?.new_item_cnt);
+
+      if(typeof data?.pay_info != 'undefined') {
+        let payInfoData = data?.pay_info?.result;
+        let lettmpltName = payInfoData?.tmplt_name;
+        let mbrPrice = payInfoData?.member_buy_price;
+        let trgtPrice = payInfoData?.target_buy_price;
+        let level = payInfoData?.tmplt_level;
+
+        let percent = (mbrPrice*100) / trgtPrice;
+        if(percent > 0) {
+        percent = percent / 100;
+        }
+
+        setPayInfo({
+          member_buy_price: mbrPrice
+          , target_buy_price: trgtPrice
+          , price_persent: percent
+          , tmplt_name: lettmpltName.replace(/(\s*)/g, "")
+          , tmplt_level: level
+        });
+      }
+
+      dispatch(setPartialPrincipal({
+        mbr_base : data?.mbr_base
+      }));
+    }
+  };
 
   // ############################################################################# 회원 튜토리얼 노출 정보 저장
   const saveMemberTutorialInfo = async () => {
@@ -185,8 +202,8 @@ export const Shop = () => {
 
       <ScrollView>
         <View>
-          {/* ############################################### 상단 배너 */}
 
+          {/* ############################################### 상단 배너 */}
           <Carousel
             data={banner}
             //layout={'default'}
@@ -228,8 +245,8 @@ export const Shop = () => {
             }}
           /> */}
 
-          <View style={{ height: 50, paddingHorizontal: 16 }}>
-            <BannerPannel />
+          <View style={{ height: 55, paddingHorizontal: 16 }}>
+            <BannerPannel payInfo={payInfo} />
           </View>
         </View>
 
