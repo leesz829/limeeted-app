@@ -339,8 +339,9 @@ export default function ItemMatching(props: Props) {
   return (
     data.profile_img_list.length > 0 && isLoad ? (
       <>
+        <CommonHeader title={'프로필 카드 ( ' + (isCardIndex) + ' / ' + props.route.params.profile_member_seq_list.split(',').length +' )'} />
+
         <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
-          <CommonHeader title={'프로필 카드 ( ' + (isCardIndex) + ' / ' + props.route.params.profile_member_seq_list.split(',').length +' )'} />
 
           {/* ####################################################################################
           ####################### 상단 영역

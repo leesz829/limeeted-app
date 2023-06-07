@@ -96,8 +96,9 @@ export default function MyDailyView(props: Props) {
   return (
     isLoad ? (
       <>
+        <CommonHeader title={'내 프로필 카드'} />
+
         <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
-          <CommonHeader title={'내 프로필 카드'} />
 
           {/* ####################################################################################
           ####################### 상단 영역
