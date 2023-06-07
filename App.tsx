@@ -175,6 +175,10 @@ function PreFetcher(props) {
           const newPercent = parseInt(receivedBytes/totalBytes * 100);
           console.log('newPercent :::::: ' , newPercent);
           setUpdatePercent(newPercent);
+
+          if(Platform.OS == 'ios') {
+            SplashScreen.hide();
+          }
       });
       if (!newPackage) {
           return;
@@ -185,6 +189,7 @@ function PreFetcher(props) {
           //codePush.restartApp();
       }); */
       newPackage.install(codePush.InstallMode.IMMEDIATE).then(() => {
+        SplashScreen.show();
         console.log('test!!!!!!!!!!!!!');
         // 업데이트 설치 완료 후 로직
         codePush.notifyAppReady();
@@ -214,6 +219,9 @@ function PreFetcher(props) {
           }
         });
       } else {
+        if(Platform.OS == 'ios') {
+          SplashScreen.hide();
+        }
         setUpdateStatusCode('STORE');
       }
     });
@@ -254,17 +262,19 @@ function PreFetcher(props) {
       }
       {updateStatusCode == 'CODEPUSH' && (
         <>
-          <BasePopup
-            popupVisible={popupVisible}
-            setPopupVIsible={setPopupVisible}
-            title={'알림'}
-            text={'업데이트가 진행 중이에요.\n잠시 기다려 주세요.'}
-            subText={updatePercent + '%'}
-            isConfirm={false}
-            confirmCallbackFunc={null}
-            cancelCallbackFunc={null}
-            cancelConfirmText={'확인'}
-          /> 
+          <View style={{backgroundColor: '#8168dd', zIndex: 9999, width: '100%', height: '100%', position: 'absolute'}}>
+            <BasePopup
+              popupVisible={popupVisible}
+              setPopupVIsible={setPopupVisible}
+              title={'알림'}
+              text={'업데이트가 진행 중이에요.\n잠시 기다려 주세요.'}
+              subText={updatePercent + '%'}
+              isConfirm={false}
+              confirmCallbackFunc={null}
+              cancelCallbackFunc={null}
+              cancelConfirmText={'확인'}
+            /> 
+          </View>
         </>
       )}
 
