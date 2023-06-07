@@ -80,7 +80,7 @@ function FemalePannel() {
             {route.name === ROUTES.Mileage_Shop && (
               <View>
                 <TouchableOpacity
-                  style={female.lmtShopButton}
+                  style={female.lmtShopPayButton}
                   onPress={onPressMileageOrder}
                   hitSlop={commonStyle.hipSlop20}>
 
@@ -105,17 +105,14 @@ function FemalePannel() {
               </View>
             )}
             
-            
             <View style={{ flexDirection: 'column' }}>
               <SpaceView viewStyle={female.myBox}>
                 <TouchableOpacity onPress={onPressLimitInfo}>
                   <View style={female.myBox}>
                     <Text style={female.infoText}>리밋 획득방법 안내</Text>
-                    <Image
-                      style={{ width: 14, height: 12, bottom:3}}
-                      source={ICON.currencyTooltip}
-                    />
+                    <Image source={ICON.currencyTooltip} style={{ width: 14, height: 12, bottom:3}} />
                   </View>
+
                   <View style={{ marginTop: 10 }}>
                     <Text style={female.rate}>
                       {CommaFormat(me?.mileage_point)}
@@ -409,14 +406,11 @@ const female = StyleSheet.create({
     borderRadius: 13,
   },
   infoText: {
-    // marginTop: 8,
     opacity: 0.83,
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 10,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     letterSpacing: 0,
-    textAlign: 'left',
+    textAlign: 'right',
     color: '#b1b1b1',
     textAlignVertical: 'bottom',
   },
@@ -435,6 +429,17 @@ const female = StyleSheet.create({
     marginTop: 5,
     paddingVertical: 3,
     width: 100,
+  },
+  lmtShopPayButton: {
+    borderRadius: 5,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderColor: '#7986ee',
+    alignItems: `center`,
+    justifyContent: `center`,
+    marginTop: 5,
+    paddingVertical: 2,
+    width: 70,
   },
   lmtButtonText: {
     fontFamily: 'AppleSDGothicNeoB00',
@@ -456,7 +461,6 @@ const female = StyleSheet.create({
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 11,
     letterSpacing: 0,
-    textAlign: 'left',
     color: '#7986ee',
     paddingHorizontal: 10,
     paddingVertical: 1
@@ -464,6 +468,7 @@ const female = StyleSheet.create({
   myBox: {
     flexDirection: `row`,
     alignItems: 'flex-end',
+    justifyContent: 'flex-end',
     marginTop: 8,
   },
   rate: {
