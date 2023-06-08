@@ -288,6 +288,7 @@ export const Live = () => {
             <View style={_styles.indocatorContainer}>
               {data?.live_profile_img.map((e, index) => (
                 <View
+                  key={index}
                   style={[
                     _styles.indicator,
                     { backgroundColor: index === page ? 'white' : 'rgba(255,255,255,0.3)' },
@@ -339,10 +340,10 @@ export const Live = () => {
             <Text style={_styles.infoTitle}>인상을 선택해주세요.</Text>
             <View style={_styles.tagContainer}>
               {[
-                faceTypeList.map((e) => {
+                faceTypeList.map((e, i) => {
                   if(e.value != '') {
                     return (
-                      <TouchableOpacity onPress={() => { callBackFunction(true, e.value, ''); }}>
+                      <TouchableOpacity key={i} onPress={() => { callBackFunction(true, e.value, ''); }}>
                         <View style={_styles.tagBox}>
                           <Text style={_styles.tagText}>{e.label}</Text>
                         </View>
