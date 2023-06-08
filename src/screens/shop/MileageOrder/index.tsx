@@ -79,18 +79,18 @@ export default function MileageOrder() {
     <>
       {isLoading && <CommonLoading />}
 
+      <CommonHeader
+        title={'주문 내역'}
+        backIcon={ICON.back}
+        walletTextStyle={{ color: 'white' }} />
+
       <View style={{ flex: 1, backgroundColor: 'white' }}>
         <LinearGradient
           colors={['#895dfa', '#6b6dfa']}
-          style={{ width: '100%', height: Dimensions.get('window').width * 0.65 }}
+          style={{ width: '100%', height: Dimensions.get('window').width * 0.55, justifyContent: 'center' }}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
         >
-          <CommonHeader
-            title={'주문 내역'}
-            backIcon={ICON.back}
-            walletTextStyle={{ color: 'white' }}
-          />
           <View style={styles.paddingBox}>
             <Text style={styles.nameText}>{me?.nickname}</Text>
             <View style={styles.addressBox}>
@@ -108,7 +108,7 @@ export default function MileageOrder() {
               */}
               
               <Text style={styles.addressText} numberOfLines={1}>
-              교환한 기프티콘은 KT 비즈콘으로 문자 발송됩니다 :)
+                교환한 기프티콘은 KT 비즈콘으로 문자 발송됩니다 :)
               </Text>
               {/* <Image style={styles.pencil} source={ICON.pencil} /> */}
             </View>
@@ -244,10 +244,10 @@ const RenderItem = ({ dataList }) => {
 const styles = StyleSheet.create({
   paddingBox: {
     paddingHorizontal: 32,
-    marginTop: 20,
+    //marginTop: 20,
   },
   nameText: {
-    marignTop: 25,
+    //marginTop: 25,
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 24,
     fontWeight: 'normal',
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
     justifyContent: `center`,
     paddingHorizontal: 20,
     paddingVertical: 1,
-    height: 40
+    height: 30
   },
   addressText: {
     fontFamily: 'AppleSDGothicNeoM00',
@@ -317,12 +317,11 @@ const styles = StyleSheet.create({
     color: '#ffffff',
   },
   line: {
-    width: `100%`,
     height: 1,
     opacity: 0.09,
     backgroundColor: '#ffffff',
-    marginTop: 20,
-    marginHorizontal: 20,
+    marginTop: 10,
+    marginHorizontal: 30,
   },
   backMargin: {
     flexDirection: `row`,
