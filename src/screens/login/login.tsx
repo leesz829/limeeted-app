@@ -469,7 +469,7 @@ export const Login01 = () => {
 
 const _styles = StyleSheet.create({
   container: {
-    paddingTop: 24,
+    paddingTop: 5,
     backgroundColor: 'white',
     flex: 1,
   },

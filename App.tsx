@@ -231,8 +231,8 @@ function PreFetcher(props) {
     if (token) {
       prefetch();
     } else {
-      SplashScreen.hide();
       setUpdateStatusCode('NONE');
+      SplashScreen.hide();
     }
   };
 
