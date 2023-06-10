@@ -473,17 +473,6 @@ export const StorageProfile = (props: Props) => {
   };
 
 
-
-
-
-
-
-
-
-
-
-
-
   // 이미지 스크롤 처리
   const handleScroll = (event) => {
     let contentOffset = event.nativeEvent.contentOffset;
@@ -511,7 +500,7 @@ export const StorageProfile = (props: Props) => {
         {/* ####################################################################################
           ####################### 상단 영역
           #################################################################################### */}
-        <View>
+        <SpaceView viewStyle={{zIndex: 1}}>
 
           {/* ############################################################## 상단 이미지 영역 */}
           <VisualImage imgList={data?.profile_img_list} memberData={data?.match_member_info} />
@@ -553,7 +542,7 @@ export const StorageProfile = (props: Props) => {
             </View>
           }
           
-        </View>
+        </SpaceView>
 
         <SpaceView viewStyle={[styles.container, commonStyle.paddingHorizontal15]}>
 

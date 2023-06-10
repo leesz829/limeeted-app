@@ -578,7 +578,12 @@ export const Profile1 = (props: Props) => {
   // ############################################################################# 프로필 인증 코멘트 저장 함수
   const saveAuthComment = async () => {
     Keyboard.dismiss();
-    setIsLoading(true);
+    //setIsLoading(true);
+
+    setPopupAuthComment({
+      ...popupAuthComment,
+      visible: false,
+    });
 
     const body = {
       member_auth_seq: popupAuthComment.auth_seq,
@@ -591,15 +596,12 @@ export const Profile1 = (props: Props) => {
         switch (data.result_code) {
           case SUCCESS:
             getMemberProfileData();
-            setPopupAuthComment({
-              ...popupAuthComment,
-              visible: false,
-            });
+            /* 
             show({
               title: '알림',
               content: '코멘트가 저장되었습니다.' ,
               confirmCallback: function() {}
-            });  
+            });   */
 
             break;
           default:
@@ -1497,6 +1499,7 @@ const _styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 10,
     maxHeight: 80,
+    height: 80,
   },
   authArea: {
     width: '100%',
@@ -1508,7 +1511,7 @@ const _styles = StyleSheet.create({
     paddingTop: 30,
     paddingBottom: 10,
     marginVertical: 10,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 5,
