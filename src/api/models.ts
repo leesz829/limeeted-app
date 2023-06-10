@@ -72,6 +72,7 @@ import {
   GET_APP_VERSION,
   DELETE_MEMBER_PROFILE_IMAGE,
   FIRST_MATCH_PASS_ADD,
+  SAVE_PROFILE_AUTH_COMMENT,
 } from './route';
 
 /* ========================================================================================================
@@ -403,6 +404,14 @@ export async function get_member_profile_info() {
   return send(GET_MEMBER_PROFILE_INFO, 'POST', undefined, true, false);
 }
 
+// 회원 문의를 등록합니다.
+export async function save_profile_auth_comment(body: {
+  member_auth_seq: any;
+  auth_comment: any;
+}) {
+  return send(SAVE_PROFILE_AUTH_COMMENT, 'POST', body, true, false);
+}
+
 
 /* ========================================================================================================
 ==================================================== MATCH
@@ -424,6 +433,7 @@ export async function regist_match_status(body: {
   active_type: string;
   res_member_seq: number;
   special_level: number;
+  match_seq: number;
 }) {
   return send(REGIST_MATCHING_INFO, 'POST', body, true, false);
 }

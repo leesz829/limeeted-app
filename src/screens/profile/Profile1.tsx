@@ -2,7 +2,7 @@ import { Slider } from '@miblanchard/react-native-slider';
 import { RouteProp, useIsFocused, useNavigation, useFocusEffect } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { StackParamList, ScreenNavigationProp, ColorType } from '@types';
-import { get_member_profile_info, get_member_face_rank, update_profile, update_additional } from 'api/models';
+import { get_member_profile_info, update_profile, update_additional, save_profile_auth_comment } from 'api/models';
 import { Color } from 'assets/styles/Color';
 import { CommonBtn } from 'component/CommonBtn';
 import CommonHeader from 'component/CommonHeader';
@@ -24,6 +24,10 @@ import {
   Text,
   TouchableOpacity,
   View,
+  //Modal,
+  TextInput,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import ReactNativeModal from 'react-native-modal';
@@ -37,6 +41,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { CommonLoading } from 'component/CommonLoading';
 import SpaceView from 'component/SpaceView';
 import LinearGradient from 'react-native-linear-gradient';
+import Modal from 'react-native-modal';
 
 
 const options = {
@@ -66,10 +71,18 @@ export const Profile1 = (props: Props) => {
   const scrollViewRef = useRef();
   const [isLoading, setIsLoading] = useState(false);
 
+  // 프로필 2차 인증 코멘트 팝업 변수
+  const [popupAuthComment, setPopupAuthComment] = useState({
+    visible: false,
+    auth_seq: '',
+    code: '',
+    name: '',
+    comment: '',
+  });
+
   const [images, setImages] = useState([]);
 
   const memberBase = useUserInfo();           // 회원 기본정보
-  const mbrSecondAuthList = useSecondAth();   // 회원 2차 인증 정보
 
   // 프로필 사진
   const [imgData, setImgData] = React.useState<any>({
@@ -84,11 +97,11 @@ export const Profile1 = (props: Props) => {
   // 프로필 이미지 삭제 시퀀스 문자열
   const [imgDelSeqStr, setImgDelSeqStr] = React.useState('');
 
-  // 프로필 이미지 목록
-  const [profileImageList, setProfileImageList] = React.useState([]);
-
-  // 프로필 인상 순위 목록
-  const [profileFaceRankList, setProfileFaceRankList] = React.useState([]);
+  // 프로필 데이터
+  const [profileData, setProfileData] = React.useState({
+    authList: [],
+    faceRankList: [],
+  })
 
   // 적용할 인터뷰 목록
   const [applyInterviewList, setApplyInterviewList] = React.useState<any>([]);
@@ -142,7 +155,6 @@ export const Profile1 = (props: Props) => {
 
   // ################################################################ 프로필 이미지 데이터 적용
   const imageDataApply = (data: any) => {
-
     insertProfileImage(data);
 
     /* let dupChk = false;
@@ -337,26 +349,6 @@ export const Profile1 = (props: Props) => {
     scrollViewRef.current.scrollToEnd({animated: true})
   }
 
-
-
-  // ############################################################  프로필 랭크 순위 조회
-  const getMemberFaceRank = async () => {
-    try {
-      const { success, data } = await get_member_face_rank();
-      if (success) {
-        setProfileFaceRankList(data.face_rank_list);
-      } else {
-        show({
-          content: '오류입니다. 관리자에게 문의해주세요.',
-          confirmCallback: function () {},
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-    }
-  };
-
   const deleteImage = (item) => {
     const deleted = images.filter((e) => e !== item);
     deleted.push({});
@@ -386,7 +378,12 @@ export const Profile1 = (props: Props) => {
     try {
       const { success, data } = await get_member_profile_info();
       if (success) {
-        setProfileFaceRankList(data.mbr_face_rank_list);
+        const auth_list = data?.mbr_second_auth_list.filter(item => item.auth_status == 'ACCEPT');
+        setProfileData({
+          authList: auth_list,
+          faceRankList: data.mbr_face_rank_list,
+        });
+
         profileDataSet(data.mbr_img_list);
 
         dispatch(setPartialPrincipal({
@@ -404,6 +401,15 @@ export const Profile1 = (props: Props) => {
       console.log(error);
     } finally {
       setIsLoading(false);
+
+      if(typeof props.route.params?.isInterViewMove != 'undefined') {
+        if(props.route.params.isInterViewMove) {
+          setTimeout(() => {
+            scrollViewRef.current.scrollToEnd({animated: false});
+          }, 500);
+          props.route.params.isInterViewMove = false;
+        }
+      }
     }
   }
 
@@ -524,38 +530,6 @@ export const Profile1 = (props: Props) => {
 
       setImgData({ ...imgData, imgData });
     }
-
-    // ##### 2차 인증 구성
-    if (mbrSecondAuthList != null) {
-      mbrSecondAuthList.map(
-        ({
-          common_code,
-          auth_status,
-        }: {
-          common_code: any;
-          auth_status: any;
-        }) => {
-          if (common_code == 'JOB' && auth_status == 'ACCEPT') {
-            setIsJob(true);
-          }
-          if (common_code == 'EDU' && auth_status == 'ACCEPT') {
-            setIsEdu(true);
-          }
-          if (common_code == 'INCOME' && auth_status == 'ACCEPT') {
-            setIsIncome(true);
-          }
-          if (common_code == 'ASSET' && auth_status == 'ACCEPT') {
-            setIsAsset(true);
-          }
-          if (common_code == 'SNS' && auth_status == 'ACCEPT') {
-            setIsSns(true);
-          }
-          if (common_code == 'VEHICLE' && auth_status == 'ACCEPT') {
-            setIsVehicle(true);
-          }
-        }
-      );
-    }
   };
 
   // ################################################################ 초기 실행 함수
@@ -589,6 +563,70 @@ export const Profile1 = (props: Props) => {
       }
     }
   };
+
+  // ############################################################################# 프로필 인증 코멘트 입력 팝업 함수
+  const callbackAuthCommentPopup = async (auth_seq: any, code: any, name: any, comment: any) => {
+    setPopupAuthComment({
+      visible: true,
+      auth_seq: auth_seq,
+      code: code,
+      name: name,
+      comment: comment
+    })
+  }
+
+  // ############################################################################# 프로필 인증 코멘트 저장 함수
+  const saveAuthComment = async () => {
+    Keyboard.dismiss();
+    setIsLoading(true);
+
+    const body = {
+      member_auth_seq: popupAuthComment.auth_seq,
+      auth_comment: popupAuthComment.comment,
+    };
+
+    try {
+      const { success, data } = await save_profile_auth_comment(body);
+      if(success) {
+        switch (data.result_code) {
+          case SUCCESS:
+            getMemberProfileData();
+            setPopupAuthComment({
+              ...popupAuthComment,
+              visible: false,
+            });
+            show({
+              title: '알림',
+              content: '코멘트가 저장되었습니다.' ,
+              confirmCallback: function() {}
+            });  
+
+            break;
+          default:
+            show({
+              title: '알림',
+              content: '오류입니다. 관리자에게 문의해주세요.' ,
+              confirmCallback: function() {}
+            });
+            break;
+        }
+       
+      } else {
+        show({
+          title: '알림',
+          content: '오류입니다. 관리자에게 문의해주세요.' ,
+          confirmCallback: function() {}
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+
+  }
+
+
 
   // ############################################################################# 초기 실행 실행
   useFocusEffect(
@@ -637,8 +675,8 @@ export const Profile1 = (props: Props) => {
         } */
       />
 
-      <KeyboardAwareScrollView behavior={"padding"} style={{flex:1, backgroundColor: 'white'}} extraScrollHeight={70}>
-        <ScrollView ref={scrollViewRef} style={{ backgroundColor: 'white', flexGrow: 1 }}>
+      {/* <KeyboardAwareScrollView behavior={"padding"} style={{flex:1, backgroundColor: 'white'}} extraScrollHeight={70}> */}
+        <ScrollView ref={scrollViewRef} contentContainerStyle ={{ backgroundColor: 'white', flexGrow: 1 }}>
 
         {/* ####################################################################################
 					####################### 프로필 이미지 영역
@@ -858,36 +896,72 @@ export const Profile1 = (props: Props) => {
           {/* ####################################################################################
 					####################### 프로필 인증 영역
 					#################################################################################### */}
-          <ProfileAuth level={memberBase?.auth_acct_cnt} data={mbrSecondAuthList} isButton={true} />
+
+          {profileData.authList.length > 0 ? (
+            <ProfileAuth level={memberBase?.auth_acct_cnt} data={profileData.authList} isButton={true} callbackAuthCommentFn={callbackAuthCommentPopup} />
+          ) : (
+            <View style={{width: '100%', flexDirection: 'column', alignItems: 'flex-start'}}>
+              <Text style={_styles.title}>프로필 인증</Text>
+              <LinearGradient
+                colors={['#FFFFFF', '#E8FFFE']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={_styles.authArea}>
+
+                <SpaceView viewStyle={{flexDirection: 'row'}}>
+                  <SpaceView mr={7}><Image source={ICON.jobNew} style={{width: 40, height: 29}} /></SpaceView>
+                  <SpaceView mr={7}><Image source={ICON.degreeNew} style={{width: 40, height: 29}} /></SpaceView>
+                  <SpaceView mr={7}><Image source={ICON.incomeNew} style={{width: 40, height: 29}} /></SpaceView>
+                  <SpaceView mr={7}><Image source={ICON.assetNew} style={{width: 40, height: 29}} /></SpaceView>
+                  <SpaceView mr={7}><Image source={ICON.snsNew} style={{width: 40, height: 29}} /></SpaceView>
+                  <SpaceView><Image source={ICON.vehicleNew} style={{width: 40, height: 29}} /></SpaceView>
+                </SpaceView>
+
+                <SpaceView mt={20} viewStyle={_styles.authEmptyArea}>
+                  <SpaceView mb={13}><Text style={_styles.authEmptyTit}>프로필 인증 변경 심사 후 인증 레벨을 부여 받을 수 있어요.</Text></SpaceView>
+                  <SpaceView mt={5} viewStyle={{paddingHorizontal: 20}}>
+                    <TouchableOpacity 
+                      onPress={() => { navigation.navigate(STACK.COMMON, { screen: 'SecondAuth', }); }}
+                      hitSlop={commonStyle.hipSlop15}>
+                      
+                      <Text style={_styles.authEmptyBtn}>프로필 인증 변경</Text>
+                    </TouchableOpacity>
+                  </SpaceView>
+                </SpaceView>
+              </LinearGradient>
+            </View>
+          )}
 
           {/* ####################################################################################
 					####################### 인상 투표 결과 영역
 					#################################################################################### */}
 
-          {profileFaceRankList.length > 0 && (
+          {profileData.faceRankList.length > 0 && (
             <>
-              <Text style={_styles.title}>내 인상 투표 결과</Text>
-              <View style={_styles.impressionContainer}>
+              <SpaceView mt={30}>
+                <Text style={_styles.title}>내 인상 투표 결과</Text>
+                <View style={_styles.impressionContainer}>
 
-                {profileFaceRankList.map((item : any, index) => (
-                  <View key={index} style={_styles.itemRow(index === profileFaceRankList.length - 1 ? true : false)}>
-                    <View style={_styles.subRow}>
-                      {/* <Image source={ICON.fashion} style={_styles.icon} /> */}
-                      <Text style={_styles.rankText(index)}>
-                        {index+1}위
-                      </Text>
-                      <Text style={_styles.contentsText}>{item.face_code_name}</Text>
+                  {profileData.faceRankList.map((item : any, index) => (
+                    <View key={index} style={_styles.itemRow(index === profileData.faceRankList.length - 1 ? true : false)}>
+                      <View style={_styles.subRow}>
+                        {/* <Image source={ICON.fashion} style={_styles.icon} /> */}
+                        <Text style={_styles.rankText(index)}>
+                          {index+1}위
+                        </Text>
+                        <Text style={_styles.contentsText}>{item.face_code_name}</Text>
+                      </View>
+                      <View style={_styles.fashionPercent(index)}>
+                        <Text style={_styles.percentText}>{item.percent}%</Text>
+                      </View>
                     </View>
-                    <View style={_styles.fashionPercent(index)}>
-                      <Text style={_styles.percentText}>{item.percent}%</Text>
-                    </View>
-                  </View>
-                ))}
-              </View>
+                  ))}
+                </View>
+              </SpaceView>
             </>
           )}
 
-          <View style={_styles.myImpressionContainer}>
+          <SpaceView mt={30} mb={30} viewStyle={_styles.myImpressionContainer}>
             <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 25}}>
               <Text style={_styles.title}>내 평점은?</Text>
             </View>
@@ -927,9 +1001,7 @@ export const Profile1 = (props: Props) => {
               <Text style={_styles.gageText}>5</Text>
               <Text style={_styles.gageText}>10</Text>
             </View>
-          </View>
-
-          <View style={{ height: 30 }} />
+          </SpaceView>
 
           {/* ####################################################################################
 					####################### 인터뷰 영역
@@ -940,7 +1012,7 @@ export const Profile1 = (props: Props) => {
         </View>
         <View style={{ height: 10 }} />
       </ScrollView>
-      </KeyboardAwareScrollView>
+      {/* </KeyboardAwareScrollView> */}
 
       {/* ###############################################
 							사진 삭제 팝업
@@ -983,31 +1055,73 @@ export const Profile1 = (props: Props) => {
           }
 
           <SpaceView mb={10}>
-            <CommonBtn
-              value={'사진 보기'}
-              type={'primary'}
-              borderRadius={12}
-              onPress={goImgDetail}
-            />
+            <CommonBtn value={'사진 보기'} type={'primary'} borderRadius={12} onPress={goImgDetail} />
           </SpaceView>
           <SpaceView mb={10}>
-            <CommonBtn
-              value={'사진 삭제'}
-              type={'primary'}
-              borderRadius={12}
-              onPress={imgDelProc}
-            />
+            <CommonBtn value={'사진 삭제'} type={'primary'} borderRadius={12} onPress={imgDelProc} />
           </SpaceView>
           <SpaceView>
-            <CommonBtn
-                value={'취소'}
-                type={'primary2'}
-                borderRadius={12}
-                onPress={imgDel_onClose}
-              />
+            <CommonBtn value={'취소'} type={'primary2'} borderRadius={12} onPress={imgDel_onClose} />
           </SpaceView>          
         </View>
       </Modalize>
+
+      {/* ###############################################
+							인증 코멘트 등록 팝업
+			############################################### */}
+      <Modal 
+        isVisible={popupAuthComment.visible} 
+        onBackdropPress={() => { Keyboard.dismiss(); }}>
+
+        <View style={{backgroundColor: '#fff', borderRadius: 20,}}>
+          <SpaceView viewStyle={[modalStyle.modalBody]}>
+            
+            <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-start'}}>
+              <SpaceView>
+                  {popupAuthComment.code == 'JOB' && <Image source={ICON.jobNew} style={{width: 75, height: 56}} />}
+                  {popupAuthComment.code == 'EDU' && <Image source={ICON.degreeNew} style={{width: 75, height: 56}} />}
+                  {popupAuthComment.code == 'INCOME' && <Image source={ICON.incomeNew} style={{width: 75, height: 56}} />}
+                  {popupAuthComment.code == 'ASSET' && <Image source={ICON.assetNew} style={{width: 75, height: 56}} />}
+                  {popupAuthComment.code == 'SNS' && <Image source={ICON.snsNew} style={{width: 75, height: 56}} />}
+                  {popupAuthComment.code == 'VEHICLE' && <Image source={ICON.vehicleNew} style={{width: 75, height: 56}} />}
+              </SpaceView>
+              <SpaceView ml={15}>
+                <Text style={_styles.authCommentText}>{popupAuthComment.name} 인증{'\n'}코멘트를 남겨 주세요.</Text>
+              </SpaceView>
+            </SpaceView>
+
+            <SpaceView mt={15}>
+              <TextInput
+                defaultValue={popupAuthComment.comment}
+                onChangeText={(text) => setPopupAuthComment({...popupAuthComment, comment: text})}
+                style={[_styles.authCommentInput]}
+                multiline={true}
+                placeholder={'소개글을 자유롭게 입력해 주세요.'}
+                placeholderTextColor={'#C7C7C7'}
+                numberOfLines={4}
+                maxLength={200}
+                textAlignVertical={'top'}
+              />
+            </SpaceView>
+          </SpaceView>
+
+          <View style={{width: width - 39, flexDirection: 'row', justifyContent: 'space-between',}}>
+            <SpaceView viewStyle={{flexDirection: 'row', width: '100%', paddingHorizontal: 20, paddingBottom: 8}}>
+              <TouchableOpacity
+                style={[modalStyle.modalBtn, {backgroundColor: Color.grayD6D3D3, borderBottomLeftRadius: 10, borderTopLeftRadius: 10}]}
+                onPress={() => { setPopupAuthComment({...popupAuthComment, visible: false}) }}>
+                <CommonText type={'h5'} fontWeight={'500'} color={ColorType.white}>취소하기</CommonText>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[modalStyle.modalBtn, {backgroundColor: Color.blue02, borderBottomRightRadius: 10, borderTopRightRadius: 10}]}
+                onPress={() => { saveAuthComment(); }}>
+                <CommonText type={'h5'} fontWeight={'500'} color={ColorType.white}>저장하기</CommonText>
+              </TouchableOpacity>
+            </SpaceView>
+          </View>
+        </View>
+      </Modal>
 
     </>
   );
@@ -1163,7 +1277,6 @@ const _styles = StyleSheet.create({
     letterSpacing: 0,
     textAlign: 'left',
     color: '#333333',
-    marginTop: 30,
   },
   impressionContainer: {
     width: '100%',
@@ -1369,7 +1482,67 @@ const _styles = StyleSheet.create({
       borderRadius: 13,
     };
   },
-
+  authCommentText: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 19,
+    color: '#333333',
+    lineHeight: 22,
+  },
+  authCommentInput: {
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 12,
+    color: '#7986EE',
+    borderWidth: 1,
+    borderColor: '#EBE9EF',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    maxHeight: 80,
+  },
+  authArea: {
+    width: '100%',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20,
+    marginTop: 17,
+    paddingTop: 30,
+    paddingBottom: 10,
+    marginVertical: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 5.0,
+    elevation: 5,
+  },
+  authEmptyArea: {
+    width: '95%',
+    backgroundColor: '#ffffff', 
+    paddingVertical: 20,
+    paddingHorizontal: 10, 
+    marginHorizontal: 10, 
+    borderWidth: 1, 
+    borderRadius: 10, 
+    borderColor: '#8E9AEB', 
+    borderStyle: 'dotted',
+  },
+  authEmptyTit: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 11,
+    color: '#7986EE',
+    textAlign: 'center',
+  },
+  authEmptyBtn: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 12,
+    color: '#ffffff',
+    backgroundColor: '#697AE6',
+    borderRadius: 7,
+    textAlign: 'center',
+    paddingVertical: 8,
+  }
 });
 
 

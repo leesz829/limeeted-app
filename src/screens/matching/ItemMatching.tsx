@@ -54,6 +54,7 @@ import AddInfo from 'component/match/AddInfo';
 import ProfileActive from 'component/match/ProfileActive';
 import InterviewRender from 'component/match/InterviewRender';
 import SincerePopup from 'screens/commonpopup/sincerePopup';
+import MemberIntro from 'component/match/MemberIntro';
 
 
 const { width, height } = Dimensions.get('window');
@@ -143,7 +144,19 @@ export default function ItemMatching(props: Props) {
       
       if (success) {
         if (data.result_code == '0000') {
-          setData(data);
+          //setData(data);
+
+          const auth_list = data?.second_auth_list.filter(item => item.auth_status == 'ACCEPT');
+          setData({
+            match_member_info: data?.match_member_info,
+            profile_img_list: data?.profile_img_list,
+            second_auth_list: auth_list,
+            interview_list: data?.interview_list,
+            interest_list: data?.interest_list,
+            report_code_list: data?.report_code_list,
+            safe_royal_pass: data?.safe_royal_pass,
+            use_item: data?.use_item,
+          });
 
           if(data?.match_member_info == null || data?.profile_img_list?.length == 0) {
             setIsLoad(false);
@@ -405,7 +418,7 @@ export default function ItemMatching(props: Props) {
             <ProfileAuth level={data.match_member_info.auth_acct_cnt} data={data.second_auth_list} isButton={false} />
 
             {/* ############################################################## 관심사 영역 */}
-            {data.interest_list.length > 0 && (
+            {/* {data.interest_list.length > 0 && (
               <>
                 <Text style={styles.title}>{data.match_member_info.nickname}님의 관심사</Text>
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 13, marginBottom: 10 }}>
@@ -419,17 +432,20 @@ export default function ItemMatching(props: Props) {
                   })}
                 </View>
               </>
-            )}
+            )} */}
 
             {/* ############################################################## 추가 정보 영역 */}
-            <AddInfo memberData={data?.match_member_info} />
+            {/* <AddInfo memberData={data?.match_member_info} /> */}
 
             {/* ############################################################## 프로필 활동지수 영역 */}
             <ProfileActive memberData={data?.match_member_info} />
 
+            {/* ############################################################## 소개 */}
+            <MemberIntro memberData={data?.match_member_info} imgList={data?.profile_img_list} interestList={data?.interest_list} />
+
             {/* ############################################################## 인터뷰 영역 */}
             <SpaceView mt={30}>
-              <InterviewRender title={'인터뷰'} dataList={data?.interview_list} />
+              <InterviewRender title={data?.match_member_info?.nickname + '님을\n알려주세요!'} dataList={data?.interview_list} />
             </SpaceView>
             
             {/* ############################################################## 신고하기 영역 */}

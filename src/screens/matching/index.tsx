@@ -65,6 +65,7 @@ import VisualImage from 'component/match/VisualImage';
 import AddInfo from 'component/match/AddInfo';
 import ProfileActive from 'component/match/ProfileActive';
 import InterviewRender from 'component/match/InterviewRender';
+import MemberIntro from 'component/match/MemberIntro';
 
 
 
@@ -160,7 +161,20 @@ export default function Matching(props: Props) {
       
       if (success) {
         if (data.result_code == '0000') {
-          setData(data);
+
+          const auth_list = data?.second_auth_list.filter(item => item.auth_status == 'ACCEPT');
+          setData({
+            match_member_info: data?.match_member_info,
+            profile_img_list: data?.profile_img_list,
+            second_auth_list: auth_list,
+            interview_list: data?.interview_list,
+            interest_list: data?.interest_list,
+            report_code_list: data?.report_code_list,
+            safe_royal_pass: data?.safe_royal_pass,
+            use_item: data?.use_item,
+          });
+
+          //setData(data);
 
           if(data?.match_member_info == null) {
             setIsLoad(false);
@@ -237,6 +251,8 @@ export default function Matching(props: Props) {
           insertMatchInfo(activeType, 0);
 				}
 			});
+    } else if(activeType == 'zzim') {
+      insertMatchInfo(activeType, 0);
     }
   };
 
@@ -306,12 +322,6 @@ export default function Matching(props: Props) {
         setCheckReportType('');
         getDailyMatchInfo();
         setIsLoad(false);
-
-        // 스크롤 최상단 이동
-        /* scrollRef.current?.scrollTo({
-          y: 0,
-          animated: false,
-        }); */
       }
     } catch (error) {
       console.log(error);
@@ -396,13 +406,22 @@ export default function Matching(props: Props) {
     };
   }, [isFocus]);
 
+  useFocusEffect(
+    React.useCallback(() => {
+      return () => {
+        // 스크롤 최상단 이동
+        scrollRef.current?.scrollTo({y: 0, animated: false});
+      };
+    }, []),
+  );
+
 
   return (
     data.profile_img_list.length > 0 && isLoad ? (
       <>
         <TopNavigation currentPath={'LIMEETED'} />
 
-        <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
+        <ScrollView ref={scrollRef} style={{ flex: 1, backgroundColor: 'white' }}>
 
           {/* ####################################################################################
           ####################### 상단 영역
@@ -439,9 +458,11 @@ export default function Matching(props: Props) {
                 </TouchableOpacity>
 
                 {/* ######### 찜하기 버튼 */}
-                {/* <TouchableOpacity>
-                  <Image source={ICON.starCircle} style={styles.smallButton} />
-                </TouchableOpacity> */}
+                {data?.match_member_info?.zzim_yn === 'N' && (
+                  <TouchableOpacity onPress={() => { popupActive('zzim'); }}>
+                    <Image source={ICON.zzimIcon} style={styles.smallButton} />
+                  </TouchableOpacity>
+                )}
               </View>
             </View>
 
@@ -468,7 +489,7 @@ export default function Matching(props: Props) {
             <ProfileAuth level={data.match_member_info.auth_acct_cnt} data={data.second_auth_list} isButton={false} />
 
             {/* ############################################################## 관심사 영역 */}
-            {data.interest_list.length > 0 && (
+            {/* {data.interest_list.length > 0 && (
               <>
                 <Text style={styles.title}>{data.match_member_info.nickname}님의 관심사</Text>
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 13, marginBottom: 10 }}>
@@ -482,17 +503,20 @@ export default function Matching(props: Props) {
                   })}
                 </View>
               </>
-            )}
+            )} */}
 
             {/* ############################################################## 추가 정보 영역 */}
-            <AddInfo memberData={data?.match_member_info} />
+            {/* <AddInfo memberData={data?.match_member_info} /> */}
 
             {/* ############################################################## 프로필 활동지수 영역 */}
             <ProfileActive memberData={data?.match_member_info} />
 
+            {/* ############################################################## 소개 */}
+            <MemberIntro memberData={data?.match_member_info} imgList={data?.profile_img_list} interestList={data?.interest_list} />
+
             {/* ############################################################## 인터뷰 영역 */}
             <SpaceView mt={30}>
-              <InterviewRender title={'인터뷰'} dataList={data?.interview_list} />
+              <InterviewRender title={data?.match_member_info?.nickname + '님을\n알려주세요!'} dataList={data?.interview_list} />
             </SpaceView>
 
             {/* ############################################################## 신고하기 영역 */}

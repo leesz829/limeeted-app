@@ -47,6 +47,7 @@ import {
     , report_matched_user
     , update_match_status
     , first_match_pass_add
+    , regist_match_status
 } from 'api/models';
 import { usePopup } from 'Context';
 import { ROUTES, STACK } from 'constants/routes';
@@ -62,6 +63,9 @@ import VisualImage from 'component/match/VisualImage';
 import AddInfo from 'component/match/AddInfo';
 import ProfileActive from 'component/match/ProfileActive';
 import InterviewRender from 'component/match/InterviewRender';
+import MemberIntro from 'component/match/MemberIntro';
+import { formatNowDate} from 'utils/functions';
+import SincerePopup from 'screens/commonpopup/sincerePopup';
 
 
 
@@ -125,11 +129,30 @@ export const StorageProfile = (props: Props) => {
   const report_onOpen = () => {
     report_modalizeRef.current?.open();
   };
+
   const report_onClose = () => {
     report_modalizeRef.current?.close();
   };
+
   // 본인 보유 아이템 정보
   const [freeContactYN, setFreeContactYN] = useState('N');
+
+  // ################################################################ 찐심 모달 관련
+
+  // 찐심 보내기 모달 visible
+  const [sincereModalVisible, setSincereModalVisible] = useState(false);
+
+  // 찐심 닫기 함수
+  const sincereCloseModal = () => {
+    setSincereModalVisible(false);
+  };
+
+  // 찐심 보내기 함수
+  const sincereSend = (level:number) => {
+    insertMatchInfo('sincere', level);
+    setSincereModalVisible(false);
+  }
+
 
   // ################################################################ 초기 실행 함수
   // ##### 첫 렌더링
@@ -173,7 +196,17 @@ export const StorageProfile = (props: Props) => {
 
       if(success) {
         if (data.result_code == '0000') {
-          setData(data);
+
+          const auth_list = data?.second_auth_list.filter(item => item.auth_status == 'ACCEPT');
+          setData({
+            match_base: data?.match_base,
+            match_member_info: data?.match_member_info,
+            profile_img_list: data?.profile_img_list,
+            second_auth_list: auth_list,
+            interview_list: data?.interview_list,
+            interest_list: data?.interest_list,
+            report_code_list: data?.report_code_list,
+          });
 
           // 튜토리얼 팝업 노출
           if(data?.match_base.first_match_yn == 'Y') {
@@ -352,6 +385,105 @@ export const StorageProfile = (props: Props) => {
     }
   };
 
+  /* #######################################################################
+	##### 거부/찐심/관심 팝업 함수
+	##### - activeType : pass(거부), sincere(찐심), interest(관심)
+	####################################################################### */
+  const popupActive = (activeType: string) => {
+    if (activeType == 'interest') {
+      let title = '관심 보내기';
+      let content = '패스를 소모하여 관심을 보내시겠습니까?\n패스 x15';
+
+      // 관심 자유이용권 사용시
+      if(typeof data.use_item != 'undefined' && typeof data.use_item.FREE_LIKE != 'undefined') {
+        let endDt = data?.use_item?.FREE_LIKE?.end_dt;
+        if(endDt > formatNowDate()) {
+          title = '관심 보내기';
+          content = '관심 보내기 자유이용권 사용중\n패스 소모없이 관심을 보냅니다.';
+        } else {
+          title = '부스팅 만료';
+          content = '관심 보내기 자유이용권(1일) 아이템의 구독기간이 만료된 상태입니다.\n패스 15개가 소모됩니다.';
+        }
+      }
+
+      show({
+				title: title,
+				content: content,
+        cancelCallback: function() {
+
+        },
+				confirmCallback: function() {
+          insertMatchInfo(activeType, 0);
+				}
+			});
+    } else if (activeType == 'sincere') {
+      setSincereModalVisible(true);
+    } else if (activeType == 'pass') {
+      show({
+				title: '매칭 취소',
+				content: '매칭을 취소하고 다음 프로필 카드를 확인 하시겠습니까?' ,
+        cancelCallback: function() {
+
+        },
+				confirmCallback: function() {
+          insertMatchInfo(activeType, 0);
+				}
+			});
+    } else if(activeType == 'zzim') {
+      insertMatchInfo(activeType, 0);
+    }
+  };
+
+  // ############################################################ 찐심/관심/거부 저장
+  const insertMatchInfo = async (activeType: string, special_level: number) => {
+    const body = {
+      active_type: activeType,
+      res_member_seq: data.match_member_info.member_seq,
+      special_level: special_level,
+      match_seq: matchSeq,
+    };
+
+    try {
+      const { success, data } = await regist_match_status(body);
+
+      if(success) {
+        if(data.result_code == '0000') {
+          setIsLoad(false);
+          dispatch(myProfile());
+
+          navigation.navigate(STACK.TAB, {
+            screen: 'Storage',
+            params: {
+              pageIndex: 0,
+            },
+          });
+
+          //navigation.navigate(STACK.TAB, { screen: 'Roby' });
+        } else if (data.result_code == '6010') {
+          show({ content: '보유 패스가 부족합니다.' });
+          return false;
+        } else {
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+    }
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+
   // 이미지 스크롤 처리
   const handleScroll = (event) => {
     let contentOffset = event.nativeEvent.contentOffset;
@@ -369,7 +501,8 @@ export const StorageProfile = (props: Props) => {
         (() => {
           if(props.route.params.type == 'REQ') return '내가 받은 관심';
           else if(props.route.params.type == 'RES') return '내가 보낸 관심';
-          else if(props.route.params.type == 'MATCH') return '성공 매칭';
+          else if(props.route.params.type == 'MATCH') return '성공 매칭'
+          else if(props.route.params.type == 'ZZIM') return '찜한 프로필';
         })()
       } />
 
@@ -382,6 +515,43 @@ export const StorageProfile = (props: Props) => {
 
           {/* ############################################################## 상단 이미지 영역 */}
           <VisualImage imgList={data?.profile_img_list} memberData={data?.match_member_info} />
+
+          {/* ######################### 버튼 영역(찜 상태인 경우 활성화) */}
+          {props.route.params.type == 'ZZIM' &&
+            <View style={_styles.absoluteView}>
+              <View style={_styles.buttonsContainer}>
+
+                {/* ######### 거절 버튼 */}
+                <TouchableOpacity onPress={() => { popupActive('pass'); }}>
+                  <Image source={ICON.closeCircle} style={_styles.smallButton} />
+                </TouchableOpacity>
+
+                {/* ######### 관심 버튼 */}
+                <TouchableOpacity onPress={() => { popupActive('interest'); }} style={_styles.freePassContainer}>
+                  <Image source={ICON.passCircle} style={_styles.largeButton} />
+
+                  {/* 부스터 아이템  */}
+                  {data?.use_item != null && data?.use_item?.FREE_LIKE && data?.use_item?.FREE_LIKE?.use_yn == 'Y' &&
+                    <View style={_styles.freePassBage}>
+                      <Text style={_styles.freePassText}>자유이용권 ON</Text>
+                    </View>
+                  }
+                </TouchableOpacity>
+
+                {/* ######### 찐심 버튼 */}
+                <TouchableOpacity onPress={() => { popupActive('sincere'); }}>
+                  <Image source={ICON.royalPassCircle} style={_styles.largeButton} />
+                </TouchableOpacity>
+
+                {/* ######### 찜하기 버튼 */}
+                {/* {data?.match_member_info?.zzim_yn === 'N' && (
+                  <TouchableOpacity onPress={() => { popupActive('zzim'); }}>
+                    <Image source={ICON.zzimIcon} style={_styles.smallButton} />
+                  </TouchableOpacity>
+                )} */}
+              </View>
+            </View>
+          }
           
         </View>
 
@@ -493,7 +663,7 @@ export const StorageProfile = (props: Props) => {
 
           
           {/* ############################################################## 관심사 영역 */}
-          {data.interest_list.length > 0 && (
+          {/* {data.interest_list.length > 0 && (
             <>
               <Text style={_styles.title}>{data.match_member_info.nickname}님의 관심사</Text>
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 13, marginBottom: 10 }}>
@@ -507,17 +677,20 @@ export const StorageProfile = (props: Props) => {
                 })}
               </View>
             </>
-          )}
+          )} */}
 
           {/* ############################################################## 추가 정보 영역 */}
-          <AddInfo memberData={data?.match_member_info} />
+          {/* <AddInfo memberData={data?.match_member_info} /> */}
 
           {/* ############################################################## 프로필 활동지수 영역 */}
           <ProfileActive memberData={data?.match_member_info} />
 
+          {/* ############################################################## 소개 */}
+          <MemberIntro memberData={data?.match_member_info} imgList={data?.profile_img_list} interestList={data?.interest_list} />
+
           {/* ############################################################## 인터뷰 영역 */}
           <SpaceView mt={30}>
-            <InterviewRender title={'인터뷰'} dataList={data?.interview_list} />
+            <InterviewRender title={data?.match_member_info?.nickname + '님을\n알려주세요!'} dataList={data?.interview_list} />
           </SpaceView>
 
           {/* ############################################################## 신고하기 영역 */}
@@ -579,6 +752,15 @@ export const StorageProfile = (props: Props) => {
             </SpaceView>
           </View>
         </Modalize>
+
+        {/* ##################################################################################
+                    찐심 보내기 팝업
+        ################################################################################## */}
+        <SincerePopup
+          isVisible={sincereModalVisible}
+          closeModal={sincereCloseModal}
+          confirmFunc={sincereSend}
+        />
 
     </>
   ) : null;
@@ -665,5 +847,53 @@ const _styles = StyleSheet.create({
       letterSpacing: 0,
       color: isOn ? '#697AE6' : '#b1b1b1',
     };
+  },
+  absoluteView: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: -width * 0.15,
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    paddingHorizontal: '8%',
+    zIndex: 1,
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  smallButton: {
+    width: width * 0.2,
+    height: width * 0.2,
+  },
+  largeButton: {
+    width: width * 0.3,
+    height: width * 0.3,
+  },
+  freePassContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  freePassBage: {
+    position: 'absolute',
+    bottom: 20,
+    borderRadius: 11,
+    backgroundColor: '#ffffff',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderColor: '#ef486d',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+  },
+  freePassText: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 11,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#ed4771',
   },
 });

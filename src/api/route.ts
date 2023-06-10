@@ -56,6 +56,7 @@ export const REGIST_PROFILE_EVALUATION = '/profile/insertProfileAssessment';
 export const PROFILE_REEXAMINATION = '/profile/profileReexProc';
 export const GET_MEMBER_FACE_RANK = '/profile/getMemberFaceRankList';
 export const GET_MEMBER_PROFILE_INFO = '/profile/getMemberProfileData';
+export const SAVE_PROFILE_AUTH_COMMENT = '/profile/saveSecondAuthComment';
 
 /**
  * MATCHING

@@ -18,6 +18,8 @@ import VisualImage from 'component/match/VisualImage';
 import AddInfo from 'component/match/AddInfo';
 import ProfileActive from 'component/match/ProfileActive';
 import InterviewRender from 'component/match/InterviewRender';
+import MemberIntro from 'component/match/MemberIntro';
+import { STACK } from 'constants/routes';
 
 
 const { width, height } = Dimensions.get('window');
@@ -47,8 +49,6 @@ export default function MyDailyView(props: Props) {
     second_auth_list: [],
     interview_list: [],
     interest_list: [],
-    report_code_list: [],
-    safe_royal_pass: Number,
     use_item: {},
   });
 
@@ -64,7 +64,16 @@ export default function MyDailyView(props: Props) {
       
       if (success) {
         if (data.result_code == '0000') {
-          setData(data);
+          const auth_list = data?.second_auth_list.filter(item => item.auth_status == 'ACCEPT');
+
+          setData({
+            match_member_info: data?.match_member_info,
+            profile_img_list: data?.profile_img_list,
+            second_auth_list: auth_list,
+            interview_list: data?.interview_list,
+            interest_list: data?.interest_list,
+            use_item: data?.use_item,
+          });
 
           if(data?.match_member_info == null) {
             setIsLoad(false);
@@ -117,10 +126,32 @@ export default function MyDailyView(props: Props) {
           <View style={_styles.padding}>
             
             {/* ############################################################## 프로필 인증 영역 */}
-            <ProfileAuth level={data.match_member_info.auth_acct_cnt} data={data.second_auth_list} isButton={false} />
+            {data.second_auth_list.length > 0 ? (
+              <ProfileAuth level={data.match_member_info.auth_acct_cnt} data={data.second_auth_list} isButton={false} />
+            ) : (
+              <SpaceView viewStyle={{flexDirection: 'column', alignItems: 'flex-start'}}>
+                <Text style={_styles.title}>프로필 인증</Text>
+                <SpaceView mt={15} viewStyle={_styles.authEmptyArea}>
+                  <SpaceView mb={13}>
+                    <Text style={_styles.authEmptyTit}>
+                      리미티드의 프로필 인증은 결코 어렵지 않아요.{'\n'}
+                      내 사회적 매력을 뽐내 보세요.
+                    </Text>
+                  </SpaceView>
+                  <SpaceView mt={5} viewStyle={{paddingHorizontal: 20}}>
+                    <TouchableOpacity 
+                      onPress={() => { navigation.navigate(STACK.COMMON, { screen: 'SecondAuth', }); }}
+                      hitSlop={commonStyle.hipSlop15}>
+                      
+                      <Text style={_styles.authEmptyBtn}>프로필 인증 변경하기</Text>
+                    </TouchableOpacity>
+                  </SpaceView>
+                </SpaceView>
+              </SpaceView>
+            )}
 
             {/* ############################################################## 관심사 영역 */}
-            {data.interest_list.length > 0 && (
+            {/* {data.interest_list.length > 0 && (
               <>
                 <Text style={_styles.title}>{data.match_member_info.nickname}님의 관심사</Text>
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 13, marginBottom: 10 }}>
@@ -134,19 +165,53 @@ export default function MyDailyView(props: Props) {
                   })}
                 </View>
               </>
-            )}
+            )} */}
 
             {/* ############################################################## 추가 정보 영역 */}
-            <AddInfo memberData={data?.match_member_info} />
+            {/* <AddInfo memberData={data?.match_member_info} /> */}
 
             {/* ############################################################## 프로필 활동지수 영역 */}
             <ProfileActive memberData={data?.match_member_info} />
 
+            {/* ############################################################## 소개 */}
+            <MemberIntro memberData={data?.match_member_info} imgList={data?.profile_img_list} interestList={data?.interest_list} isNoDataArea={true} />
+
             {/* ############################################################## 인터뷰 영역 */}
-            <SpaceView mt={30}>
-              <InterviewRender title={'인터뷰'} dataList={data?.interview_list} />
-            </SpaceView>
-          
+            {data?.interview_list.length > 0 ? (
+              <SpaceView mt={30}>
+                <InterviewRender title={data?.match_member_info?.nickname + '님을\n알려주세요!'} dataList={data?.interview_list} />
+              </SpaceView>
+            ) : (
+              <>
+                <SpaceView mt={30} viewStyle={{flexDirection: 'column', alignItems: 'flex-start'}}>
+                  <Text style={_styles.title}>{data?.match_member_info?.nickname}님을{'\n'}알려주세요!</Text>
+                  <SpaceView mt={15} viewStyle={_styles.authEmptyArea}>
+                    <SpaceView mb={13}>
+                      <Text style={_styles.authEmptyTit}>
+                        등록된 인터뷰가 없네요.{'\n'}
+                        인터뷰를 등록하면 이성들의 관심을 더 많이 받을 수 있어요.
+                      </Text>
+                    </SpaceView>
+                    <SpaceView mt={5} viewStyle={{paddingHorizontal: 20}}>
+                      <TouchableOpacity 
+                        onPress={() => { 
+                          navigation.navigate(STACK.COMMON, { 
+                            screen: 'Profile1',
+                            params: {
+                              isInterViewMove: true
+                            },
+                          }); 
+                        }}
+                        hitSlop={commonStyle.hipSlop15}>
+                        
+                        <Text style={_styles.authEmptyBtn}>인터뷰 등록하기</Text>
+                      </TouchableOpacity>
+                    </SpaceView>
+                  </SpaceView>
+                </SpaceView>
+              </>
+            )}          
+
           </View>
 
           <View style={{ height: 30 }} />
@@ -296,4 +361,29 @@ const _styles = StyleSheet.create({
       color: isOn ? '#697AE6' : '#b1b1b1',
     };
   },
+  authEmptyArea: {
+    width: '100%',
+    backgroundColor: '#ffffff', 
+    paddingVertical: 20,
+    paddingHorizontal: 10,
+    borderWidth: 1, 
+    borderRadius: 10, 
+    borderColor: '#8E9AEB', 
+    borderStyle: 'dotted',
+  },
+  authEmptyTit: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 12,
+    color: '#7986EE',
+    textAlign: 'center',
+  },
+  authEmptyBtn: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 12,
+    color: '#ffffff',
+    backgroundColor: '#697AE6',
+    borderRadius: 7,
+    textAlign: 'center',
+    paddingVertical: 8,
+  }
 });

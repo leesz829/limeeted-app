@@ -208,10 +208,13 @@ export const Profile = (props: Props) => {
           show({ content: '보유 패스가 부족합니다.' });
           return false;
         } else if (data.result_code == '8005') {
-          show({ content: '존재하지 않는 닉네임입니다.' });
+          show({ content: '존재하지 않는 닉네임 입니다.' });
+          return false;
+        } else if (data.result_code == '8006') {
+          show({ content: '이미 사용하고 있는 닉네임 입니다.' });
           return false;
         } else {
-          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+          show({ content: '오류입니다. 관리자에게 문의해 주세요.' });
           return false;
         }
       }

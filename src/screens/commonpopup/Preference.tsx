@@ -103,6 +103,9 @@ export const Preference = (props: Props) => {
     mbrIdealType?.want_person3
   );
 
+  // 나이 에러 여부
+  const [isAgeError, setIsAgeError] = React.useState<boolean>(false);
+
   // 업종 그룹 코드 목록
   const busiGrpCdList = [
     { label: '일반', value: 'JOB_00' },
@@ -220,6 +223,12 @@ export const Preference = (props: Props) => {
   // 내 선호이성 저장
   const saveMemberIdealType = async () => {
 
+    if(wantAgeMin < 19) {
+      show({ content: '선호 이성의 나이를 확인해 주세요.' });
+      return false;
+    }
+
+
     const body = {
       ideal_type_seq: idealTypeSeq,
       want_local1: wantLocal1,
@@ -320,6 +329,15 @@ export const Preference = (props: Props) => {
     }
   }, [wantBusiness3]);
 
+  React.useEffect(() => {
+    if(wantAgeMin != '' && wantAgeMin != null && wantAgeMin < 19) {
+      setIsAgeError(true);
+    } else {
+      setIsAgeError(false);
+    }
+
+	}, [wantAgeMin]);
+
   return (
     <>
       <CommonHeader title={'내 선호 이성'} />
@@ -360,6 +378,12 @@ export const Preference = (props: Props) => {
                       />
                     </View>
                 </SpaceView>
+
+                {isAgeError &&
+                  <SpaceView mt={10}>
+                    <Text style={styles1.minAgeErrorText}>최소 나이는 19 이상으로 입력해야 합니다.</Text>
+                  </SpaceView>
+                }
                 
               </SpaceView>
 
@@ -539,6 +563,11 @@ const styles1 = StyleSheet.create({
     height: 16,
     transform: [{ rotate: '90deg' }],
   },
+  minAgeErrorText: {
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 11,
+    color: '#FE0456',
+  }
 });
 
 const pickerSelectStyles = StyleSheet.create({

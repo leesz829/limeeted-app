@@ -16,7 +16,7 @@ import { RadioCheckBox_2 } from 'component/RadioCheckBox_2';
 import * as properties from 'utils/properties';
 import { usePopup } from 'Context';
 import { regist_introduce, get_member_introduce_guide } from 'api/models';
-import { SUCCESS } from 'constants/reusltcode';
+import { SUCCESS, MEMBER_NICKNAME_DUP } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
 import { CommonLoading } from 'component/CommonLoading';
 
@@ -97,34 +97,40 @@ export const Signup03 = (props : Props) => {
 			const { success, data } = await regist_introduce(body);
 			if(success) {
 				switch (data.result_code) {
-				case SUCCESS:
-					navigation.reset({
-						routes: [
-							{
-								name : ROUTES.LOGIN01
-							}
-							, {
-								name: ROUTES.APPROVAL
-								, params: {
-									memberSeq: props.route.params.memberSeq,
-									accessType: 'JOIN',
-									mstImgPath: props.route.params.mstImgPath,
-									gender: props.route.params.gender,
-									refuseImgCnt: data.refuse_img_cnt,
-									refuseAuthCnt: data.refuse_auth_cnt,
-									authList: data.mbr_second_auth_list,
+					case SUCCESS:
+						navigation.reset({
+							routes: [
+								{
+									name : ROUTES.LOGIN01
 								}
-							}
-						]
-					});
-					break;
-				default:
-					show({
-						content: '오류입니다. 관리자에게 문의해주세요.' ,
-						confirmCallback: function() {}
-					});
-					break;
-				}
+								, {
+									name: ROUTES.APPROVAL
+									, params: {
+										memberSeq: props.route.params.memberSeq,
+										accessType: 'JOIN',
+										mstImgPath: props.route.params.mstImgPath,
+										gender: props.route.params.gender,
+										refuseImgCnt: data.refuse_img_cnt,
+										refuseAuthCnt: data.refuse_auth_cnt,
+										authList: data.mbr_second_auth_list,
+									}
+								}
+							]
+						});
+						break;
+					case MEMBER_NICKNAME_DUP: 
+						show({
+							content: '이미 사용하고 있는 닉네임 입니다.' ,
+						});
+						break;
+
+					default:
+						show({
+							content: '오류입니다. 관리자에게 문의해주세요.' ,
+							confirmCallback: function() {}
+						});
+						break;
+					}
 			} else {
 				show({
 					content: '오류입니다. 관리자에게 문의해주세요.' ,

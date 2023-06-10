@@ -9,110 +9,180 @@ import { CommonText } from 'component/CommonText';
 import SpaceView from './SpaceView';
 import { STACK } from 'constants/routes';
 import LinearGradient from 'react-native-linear-gradient';
+import Carousel from 'react-native-snap-carousel';
+import { commonStyle } from 'assets/styles/Styles';
 
 
 const { width } = Dimensions.get('window');
 
-export default function ProfileAuth({ level, data, isButton }) {
+export default function ProfileAuth({ level, data, isButton, callbackAuthCommentFn }) {
   const navigation = useNavigation<ScreenNavigationProp>();
+
+  const authRef = React.useRef();
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+
+  // 프로필 인증 변경 버튼 클릭 함수
+  const onPressSecondAuth = async () => {
+    navigation.navigate(STACK.COMMON, { screen: 'SecondAuth', });
+  };
+
+  const onPressAuthDot = (index) => {
+    authRef?.current?.snapToItem(index);
+  };
 
   return (
     <>
-      <View style={_styles.profileTitleContainer}>
-        <SpaceView viewStyle={{flexDirection: `row`, alignItems: `center`, justifyContent: `center`,}}>
-          <Text style={_styles.title}>프로필 인증</Text>
-          <View style={[_styles.levelBadge, {marginRight: 0, marginTop: 1}]}>
+      {data.length > 0 ? (
+        <>
+          <View style={_styles.profileTitleContainer}>
+            <SpaceView viewStyle={{flexDirection: `row`, alignItems: `center`, justifyContent: `center`,}}>
+              <Text style={_styles.title}>프로필 인증</Text>
+              <View style={[_styles.levelBadge, {marginRight: 0, marginTop: 1}]}>
 
-            {/* ############# 인증 레벨 노출 */}
-            {level > 0 && level < 10 &&
-              <LinearGradient colors={['#7986EE', '#7986EE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.levelBadge}>
-                <Text style={_styles.whiteText}>LV.{level}</Text>
-              </LinearGradient>
+                {/* ############# 인증 레벨 노출 */}
+                {level > 0 && level < 10 &&
+                  <LinearGradient colors={['#7986EE', '#7986EE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.levelBadge}>
+                    <Text style={_styles.whiteText}>LV.{level}</Text>
+                  </LinearGradient>
+                }
+
+                {level >= 10 && level < 15 &&
+                  <LinearGradient colors={['#E0A9A9', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.levelBadge}>
+                    <Image source={ICON.level10Icon} style={[_styles.levelBadgeImg, {width: 23, height: 23}]} />
+                    <Text style={_styles.whiteText}>LV.{level}</Text>
+                  </LinearGradient>
+                }
+
+                {level >= 15 && level < 20 &&
+                  <LinearGradient colors={['#A9BBE0', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.levelBadge}>
+                    <Image source={ICON.level15Icon} style={[_styles.levelBadgeImg, {width: 23, height: 23}]} />
+                    <Text style={_styles.whiteText}>LV.{level}</Text>
+                  </LinearGradient>
+                }
+
+                {level >= 20 && level < 25 &&
+                  <LinearGradient colors={['#FEB961', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.levelBadge}>
+                    <Image source={ICON.level20Icon} style={[_styles.levelBadgeImg02, {width: 30, height: 30}]} />
+                    <Text style={_styles.whiteText}>LV.{level}</Text>
+                  </LinearGradient>
+                }
+
+                {level >= 25 && level < 30 &&
+                  <LinearGradient colors={['#9BFFB5', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.levelBadge}>
+                    <Image source={ICON.level25Icon} style={[_styles.levelBadgeImg02, {width: 30, height: 30}]} />
+                    <Text style={_styles.whiteText}>LV.{level}</Text>
+                  </LinearGradient>
+                }
+
+                {level >= 30 &&
+                  <LinearGradient colors={['#E84CEE', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.levelBadge}>
+                    <Image source={ICON.level30Icon} style={[_styles.levelBadgeImg02, {width: 30, height: 30}]} />
+                    <Text style={_styles.whiteText}>LV.{level}</Text>
+                  </LinearGradient>
+                }
+
+                {/* <Text style={[styles.levelText, { color: 'white' }]}>LV.{level}</Text> */}
+              </View>
+            </SpaceView>
+            
+            {typeof isButton != 'undefined' && isButton && 
+              <SpaceView viewStyle={{flexDirection: `row`, alignItems: `center`, justifyContent: `center`,}}>
+                <TouchableOpacity 
+                  onPress={() => { navigation.navigate(STACK.COMMON, { screen: 'SecondAuth' }); }} 
+                  style={{marginTop: 3, borderWidth:1, borderColor: '#7986EE', backgroundColor: '#ffffff', borderRadius: 5, paddingHorizontal: 5}}
+                  hitSlop={commonStyle.hipSlop25}>
+                  
+                  <CommonText type={'h7'} color={'#7986EE'} fontWeight={'200'}>프로필 인증 변경</CommonText>
+                </TouchableOpacity>
+              </SpaceView>
             }
-
-            {level >= 10 && level < 15 &&
-              <LinearGradient colors={['#E0A9A9', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.levelBadge}>
-                <Image source={ICON.level10Icon} style={[_styles.levelBadgeImg, {width: 23, height: 23}]} />
-                <Text style={_styles.whiteText}>LV.{level}</Text>
-              </LinearGradient>
-            }
-
-            {level >= 15 && level < 20 &&
-              <LinearGradient colors={['#A9BBE0', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.levelBadge}>
-                <Image source={ICON.level15Icon} style={[_styles.levelBadgeImg, {width: 23, height: 23}]} />
-                <Text style={_styles.whiteText}>LV.{level}</Text>
-              </LinearGradient>
-            }
-
-            {level >= 20 && level < 25 &&
-              <LinearGradient colors={['#FEB961', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.levelBadge}>
-                <Image source={ICON.level20Icon} style={[_styles.levelBadgeImg02, {width: 30, height: 30}]} />
-                <Text style={_styles.whiteText}>LV.{level}</Text>
-              </LinearGradient>
-            }
-
-            {level >= 25 && level < 30 &&
-              <LinearGradient colors={['#9BFFB5', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.levelBadge}>
-                <Image source={ICON.level25Icon} style={[_styles.levelBadgeImg02, {width: 30, height: 30}]} />
-                <Text style={_styles.whiteText}>LV.{level}</Text>
-              </LinearGradient>
-            }
-
-            {level >= 30 &&
-              <LinearGradient colors={['#E84CEE', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.levelBadge}>
-                <Image source={ICON.level30Icon} style={[_styles.levelBadgeImg02, {width: 30, height: 30}]} />
-                <Text style={_styles.whiteText}>LV.{level}</Text>
-              </LinearGradient>
-            }
-
-            {/* <Text style={[styles.levelText, { color: 'white' }]}>LV.{level}</Text> */}
           </View>
-        </SpaceView>
-        
-        {typeof isButton != 'undefined' && isButton && 
-          <SpaceView viewStyle={{flexDirection: `row`, alignItems: `center`, justifyContent: `center`,}}>
-            <TouchableOpacity 
-              onPress={() => { 
-                navigation.navigate(STACK.COMMON, {
-                  screen: 'SecondAuth',
-                });
-              }} 
-              style={{marginTop: 1, borderWidth:1, borderColor: '#C7C7C7', borderRadius: 7, paddingHorizontal: 5}}>
-              
-              <CommonText 
-                type={'h6'} 
-                color={'#C7C7C7'}
-                fontWeight={'200'}>
-                프로필 인증 변경
-              </CommonText>
-            </TouchableOpacity>
+          
+          {/* <SimpleGrid
+            style={{ marginTop: 10}}
+            // staticDimension={width}
+            staticDimension={width + 20}
+            itemContainerStyle={{
+              width: '32%',
+            }}
+            spacing={width * 0.01}
+            data={
+              data?.length > 0 ? data : dummy
+            }
+            renderItem={renderAuthInfo}
+          /> */}
+
+          {/* <ScrollView horizontal style={_styles.authWrapper} showsHorizontalScrollIndicator={false}>
+            {data?.map((item, index) => (
+              <>
+                {item.auth_status == 'ACCEPT' &&
+                  <RenderAuthInfoNew
+                    key={`RednerAuth-${index}`}
+                    item={item}
+                  />
+                }
+              </>
+            ))}
+          </ScrollView> */}
+
+          <SpaceView mt={8}>
+            <SpaceView mt={8} viewStyle={{flexDirection: 'row'}}>
+                {data?.map((item, index) => (
+                  <TouchableOpacity 
+                    onPress={() => { onPressAuthDot(index); }}
+                    hitSlop={commonStyle.hipSlop15}>
+
+                    <SpaceView key={index} viewStyle={_styles.authIndicatorItem(index == currentIndex ? true : false)}>
+                      {item.common_code == 'JOB' && <Image source={ICON.jobNew} style={{width: 35, height: 26}} />}
+                      {item.common_code == 'EDU' && <Image source={ICON.degreeNew} style={{width: 35, height: 26}} />}
+                      {item.common_code == 'INCOME' && <Image source={ICON.incomeNew} style={{width: 35, height: 26}} />}
+                      {item.common_code == 'ASSET' && <Image source={ICON.assetNew} style={{width: 35, height: 26}} />}
+                      {item.common_code == 'SNS' && <Image source={ICON.snsNew} style={{width: 35, height: 26}} />}
+                      {item.common_code == 'VEHICLE' && <Image source={ICON.vehicleNew} style={{width: 35, height: 26}} />}
+
+                      <Text style={_styles.authIndicatorText}>{item.code_name}</Text>
+                    </SpaceView>
+                  </TouchableOpacity>
+                ))}
+            </SpaceView>
+
+            <Carousel
+              ref={authRef}
+              data={data}
+              //layout={'default'}
+              onSnapToItem={setCurrentIndex}
+              sliderWidth={Math.round(width)} 
+              itemWidth={Math.round(width-40)}
+              horizontal={true}
+              useScrollView={true}
+              inactiveSlideScale={1}
+              inactiveSlideOpacity={1}
+              inactiveSlideShift={5}
+              firstItem={data.length}
+              loop={false}
+              autoplay={false}
+              style={_styles.authWrapper}
+              containerCustomStyle={{ marginLeft: -22 }}
+              pagingEnabled
+              renderItem={({ item, index }) => {
+                return (
+                  <RenderAuthInfoNew
+                    key={`RednerAuth-${index}`}
+                    item={item}
+                    isButton={isButton}
+                    onPressSecondAuthFunc={onPressSecondAuth}
+                    onPressSecondCommentFunc={callbackAuthCommentFn}
+                  />
+                )
+              }}
+            />
           </SpaceView>
-        }
-      </View>
-      
-      <SimpleGrid
-        style={{ marginTop: 10}}
-        // staticDimension={width}
-        staticDimension={width + 20}
-        itemContainerStyle={{
-          width: '32%',
-        }}
-        spacing={width * 0.01}
-        data={
-          data?.length > 0 ? data : dummy
-        }
-        renderItem={renderAuthInfo}
-      />
+        </>
+      ) : (
+        <>
 
-      {/* <ScrollView horizontal style={_styles.authWrapper}>
-        {data?.map((item, index) => (
-          <RenderAuthInfoNew
-            key={`RednerAuth-${index}`}
-            item={item}
-          />
-        ))}
-      </ScrollView> */}
-
+        </>
+      )}
     </>
   );
 }
@@ -151,8 +221,7 @@ const renderAuthInfo = ({ item }: { item: auth }) => (
   </View>
 );
 
-function RenderAuthInfoNew({ item }) {
-
+function RenderAuthInfoNew({ item, isButton, onPressSecondAuthFunc, onPressSecondCommentFunc }) {
   const code = item?.common_code;
   let imgSrc = ICON.jobNew;
   let textDesc = '"비교불가의 전문성을 갖춘 리더이자 역경을 이겨낸 승리자"';
@@ -178,22 +247,54 @@ function RenderAuthInfoNew({ item }) {
         end={{ x: 1, y: 1 }}
         style={_styles.authArea}>
 
+        {/* {typeof isButton != 'undefined' && isButton && 
+          <SpaceView viewStyle={{position: 'absolute', top: 8, right: 10, alignItems: `center`, justifyContent: `center`,}}>
+            <TouchableOpacity 
+              onPress={() => { onPressSecondAuthFunc(); }} 
+              style={{marginTop: 1, borderWidth:1, borderColor: '#7986EE', backgroundColor: '#ffffff', borderRadius: 5, paddingHorizontal: 5}}
+              hitSlop={commonStyle.hipSlop20}>
+              
+              <CommonText type={'h7'} color={'#7986EE'} fontWeight={'200'}>프로필 인증 변경</CommonText>
+            </TouchableOpacity>
+          </SpaceView>
+        } */}
+
         <SpaceView>
           <Image source={imgSrc} style={_styles.authIcon} resizeMode={'contain'} />
         </SpaceView>
 
         <SpaceView mt={8}>
-          <Text style={_styles.authTit}>직업 LV 7</Text>
+          <Text style={_styles.authTit}>{item?.code_name} {item?.auth_level != null && 'LV ' + item?.auth_level}</Text>
         </SpaceView>
 
         <SpaceView mt={20}>
-          <Text style={_styles.authText}>{textDesc}</Text>
+          <Text style={_styles.authText}>{item?.slogan_name != null ? item?.slogan_name : '"프로필 인증 변경 심사 후 인증 레벨을 부여 받을 수 있어요."'}</Text>
         </SpaceView>
 
-        <SpaceView mt={20} viewStyle={_styles.authIntroArea}>
-          <Text style={_styles.authIntroText}>앱스쿼드라는 이름의 전도유망한 IT회사를 운영하고 있습니다.</Text>
-        </SpaceView>
 
+        {typeof onPressSecondCommentFunc != 'undefined' && onPressSecondAuthFunc != null ? (
+          <>
+            <TouchableOpacity onPress={() => { onPressSecondCommentFunc(item?.member_auth_seq, code, item?.code_name, item?.auth_comment); }}>
+              <SpaceView mt={20} viewStyle={_styles.authIntroArea}>
+                {item?.auth_comment != null && typeof item?.auth_comment != 'undefined' ? (
+                  <Text style={_styles.authIntroText}>{item?.auth_comment}</Text>
+                ) : (
+                  <Text style={_styles.authIntroTextInput}>여기를 터치하고 내 이야기를 남겨 주세요.</Text>
+                )}
+              </SpaceView>
+            </TouchableOpacity>
+          </>
+        ) : (
+          <>
+            {item?.auth_comment != null && typeof item?.auth_comment != 'undefined' ? (
+              <SpaceView mt={20} viewStyle={_styles.authIntroArea}>
+                <Text style={_styles.authIntroText}>{item?.auth_comment}</Text>
+              </SpaceView>
+            ) : (
+              <View style={{height: 7}} />
+            )}
+          </>
+        )}
       </LinearGradient>
   );
 };
@@ -326,13 +427,12 @@ const _styles = StyleSheet.create({
     marginTop: 13,
   },
   authArea: {
-    width: width - 65,
+    width: width - 55,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 20,
     paddingVertical: 15,
-    marginRight: 7,
     marginLeft: 4,
     marginVertical: 10,
     shadowColor: "#000",
@@ -346,7 +446,7 @@ const _styles = StyleSheet.create({
   },
   authIcon: {
     width: 95,
-    height: 64,
+    height: 71,
   },
   authTit: {
     fontFamily: 'AppleSDGothicNeoH00',
@@ -376,6 +476,32 @@ const _styles = StyleSheet.create({
     color: '#7986EE',
     textAlign: 'center',
     paddingHorizontal: 40,
+  },
+  authIntroTextInput: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 12,
+    color: '#A3A3A3',
+    textAlign: 'center',
+    paddingHorizontal: 40,
+    paddingVertical: 8,
+  },
+  authIndicatorItem: (isOn: boolean) => {
+    return {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      backgroundColor: isOn ? '#7986EE' : '#B1B3C7',
+      width: 65,
+      borderRadius: 50,
+      marginRight: 5,
+    };
+  },
+
+  authIndicatorText: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 10,
+    color: '#FFFFFF',
+    marginRight: 8,
   },
 });
 

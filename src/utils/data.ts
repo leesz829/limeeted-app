@@ -7,6 +7,7 @@ export const getStorageListData = (
    list: [
       {
          match_seq: any;
+         match_status: any;
          req_member_seq: any;
          res_member_seq: any;
          img_file_path: any;
@@ -30,6 +31,7 @@ export const getStorageListData = (
    list.map(
       ({
          match_seq,
+         match_status,
          req_member_seq,
          res_member_seq,
          img_file_path,
@@ -46,6 +48,7 @@ export const getStorageListData = (
          auth_acct_cnt,
       }: {
          match_seq: any;
+         match_status: any;
          req_member_seq: any;
          res_member_seq: any;
          img_file_path: any;
@@ -63,10 +66,9 @@ export const getStorageListData = (
       }) => {
          const img_path = findSourcePath(img_file_path);
 
-         console.log('img_path ::::::: ' , img_path);
-
          const dataJson = { 
             match_seq: '', 
+            match_status: '',
             req_member_seq: '', 
             res_member_seq: '', 
             img_path: '', 
@@ -82,9 +84,14 @@ export const getStorageListData = (
             profile_score: '',
             auth_acct_cnt: '',
          };
-         const dday_mod = 7 - Number(int_after_day);
+         let dday_mod = 7 - Number(int_after_day);
+
+         if(match_status == 'ZZIM') {
+            dday_mod = 30 - Number(int_after_day);
+         }
 
          dataJson.match_seq = match_seq;
+         dataJson.match_status = match_status;
          dataJson.req_member_seq = req_member_seq;
          dataJson.res_member_seq = res_member_seq;
          dataJson.img_path = img_path;

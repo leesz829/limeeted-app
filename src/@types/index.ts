@@ -87,7 +87,9 @@ export type StackParamList = {
   PreferencePopup: undefined;
   Profile: undefined;
   Sample: undefined;
-  Profile1: undefined;
+  Profile1: {
+    isInterViewMove: boolean;
+  };
   SecondAuth: undefined;
   Profile2: {
     tgtCode: string;

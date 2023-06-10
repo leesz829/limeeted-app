@@ -145,6 +145,7 @@ export const ICON = {
   addPlayIcon: require('assets/icon/add_pray_icon.png'),
   addSmokeIcon: require('assets/icon/add_smoke_icon.png'),
   addWineIcon: require('assets/icon/add_wine_icon.png'),
+  zzimIcon: require('assets/icon/zzim_icon.png'),
 };
 
 export const GIF_IMG = {

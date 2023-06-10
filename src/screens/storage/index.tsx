@@ -81,6 +81,7 @@ export const Storage = (props: Props) => {
     resLikeList: [],
     reqLikeList: [],
     matchTrgtList: [],
+    zzimTrgtList: [],
     resSpecialCnt: 0,
     reqSpecialCnt: 0,
     matchSpecialCnt: 0,
@@ -106,12 +107,15 @@ export const Storage = (props: Props) => {
           let matchTrgtListData: any = dataUtils.getStorageListData(
             data.match_trgt_list
           );
+          let zzimTrgtListData: any = dataUtils.getStorageListData(
+            data.zzim_trgt_list
+          );
 
           let tmpResSpecialCnt = 0;
           let tmpReqSpecialCnt = 0;
           let tmpMatchSpecialCnt = 0;
 
-          if (data.res_like_list.length > 0)
+          if (data.res_like_list.length > 0) {
             [
               data.res_like_list.map(
                 ({ special_interest_yn }: { special_interest_yn: any }) => {
@@ -120,9 +124,10 @@ export const Storage = (props: Props) => {
                   }
                 }
               ),
-            ];
+            ]
+          };            
 
-          if (data.req_like_list.length > 0)
+          if (data.req_like_list.length > 0) {
             [
               data.req_like_list.map(
                 ({ special_interest_yn }: { special_interest_yn: any }) => {
@@ -131,9 +136,10 @@ export const Storage = (props: Props) => {
                   }
                 }
               ),
-            ];
+            ]
+          };
 
-          if (data.match_trgt_list.length > 0)
+          if (data.match_trgt_list.length > 0) {
             [
               data.match_trgt_list.map(
                 ({ special_interest_yn }: { special_interest_yn: any }) => {
@@ -142,13 +148,16 @@ export const Storage = (props: Props) => {
                   }
                 }
               ),
-            ];
+            ]
+          };
+            
 
           setDataStorage({
             ...dataStorage,
             resLikeList: resLikeListData,
             reqLikeList: reqLikeListData,
             matchTrgtList: matchTrgtListData,
+            zzimTrgtList: zzimTrgtListData,
             resSpecialCnt: tmpResSpecialCnt,
             reqSpecialCnt: tmpReqSpecialCnt,
             matchSpecialCnt: tmpMatchSpecialCnt,
@@ -279,12 +288,12 @@ export const Storage = (props: Props) => {
       color: '#8669E6',
       data: dataStorage.matchTrgtList
     },
-    /* {
+    {
       type: 'ZZIM',
       title: '찜 목록',
       color: '#8669E6',
-      data: dataStorage.matchTrgtList
-    }, */
+      data: dataStorage.zzimTrgtList
+    },
   ];
 
   const onPressDot = (index) => {
@@ -393,7 +402,7 @@ export const Storage = (props: Props) => {
     } else if(type == 'RES') {
       tgt_member_seq = item.res_member_seq;
       profile_open_yn = 'Y';
-    } else if(type == 'MATCH') {
+    } else if(type == 'MATCH' || type == 'ZZIM') {
       if (item.req_member_seq != memberSeq) {
         tgt_member_seq = item.req_member_seq;
       } else {
