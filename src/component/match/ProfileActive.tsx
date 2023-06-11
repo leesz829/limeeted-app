@@ -82,7 +82,7 @@ export default function ProfileActive({ memberData }) {
             <View style={_styles.sliderContainer}>
               <Text style={_styles.sliderText}>프로필 평점 {memberData.profile_score}</Text>
 
-              <SpaceView mt={5}>
+              <SpaceView mt={5} viewStyle={{zIndex: 1}}>
                 <LinearGradient
                   colors={['#7986EE', '#8854D2']}
                   start={{ x: 0, y: 0 }}
@@ -152,7 +152,7 @@ export default function ProfileActive({ memberData }) {
           <View style={_styles.sliderContainer}>
             <Text style={_styles.sliderText}>소셜 평점 {memberData?.social_grade.toFixed(1)}</Text>
 
-            <SpaceView mt={5}>
+            <SpaceView mt={5} viewStyle={{zIndex: 1}}>
               <LinearGradient
                 colors={['#FF9FBE', '#FE0456']}
                 start={{ x: 0, y: 0 }}
@@ -313,6 +313,8 @@ const _styles = StyleSheet.create({
     if(value != null && typeof value != 'undefined') {
       percent = value * 100;
     };
+
+    console.log('percent :::::: ' , percent);
 
     return {
       position: 'absolute',
