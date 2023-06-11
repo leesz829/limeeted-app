@@ -2,9 +2,9 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { JWT_TOKEN } from 'constants/storeKey';
 
 // api 서버 도메인
-//export const api_domain = "http://61.72.154.106:9915";
+export const api_domain = "http://61.72.154.106:9915";
 //export const api_domain = 'http://118.67.134.149:9915';
-export const api_domain = 'http://115.85.182.94';
+//export const api_domain = 'http://115.85.182.94';
 
 // export const api_domain = 'http://59.5.92.43:8080';
 

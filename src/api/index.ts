@@ -60,6 +60,8 @@ export const send = (
 
       const result = await YahooClient(config);
 
+      console.log('result api url :::::::::::::::::::::::::::::: ', endPoint);
+
       if (result && result.data) {
         if (result.data.success !== undefined) {
           resolve(result.data);
