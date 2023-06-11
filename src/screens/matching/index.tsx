@@ -252,8 +252,22 @@ export default function Matching(props: Props) {
 				}
 			});
     } else if(activeType == 'zzim') {
-      insertMatchInfo(activeType, 0);
+
+      // 찜하기 사용시
+      if(typeof data.use_item != 'undefined' && typeof data.use_item.WISH != 'undefined') {
+        let endDt = data?.use_item?.WISH?.end_dt;
+        if(endDt < formatNowDate()) {
+          show({
+            title: '찜하기 이용권 만료',
+            content: '찜하기 이용권 아이템의 구독기간이 만료된 상태입니다.',
+            confirmCallback: function() {
+              
+            }
+          });
+        }
+      }
     }
+
   };
 
   // ############################################################ 찐심/관심/거부 저장
@@ -458,7 +472,7 @@ export default function Matching(props: Props) {
                 </TouchableOpacity>
 
                 {/* ######### 찜하기 버튼 */}
-                {data?.match_member_info?.zzim_yn === 'N' && (
+                {data?.match_member_info?.zzim_yn == 'Y' && (
                   <TouchableOpacity onPress={() => { popupActive('zzim'); }}>
                     <Image source={ICON.zzimIcon} style={styles.smallButton} />
                   </TouchableOpacity>

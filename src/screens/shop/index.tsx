@@ -220,6 +220,7 @@ export const Shop = () => {
             autoplay={true}
             autoplayDelay={2000}
             autoplayInterval={5000}
+            pagingEnabled
             renderItem={({ item, index }) => {
               const urlPath =  findSourcePath(item?.s_file_path + item?.s_file_name);
               //return  <Image style={_styles.topBanner} source={urlPath} />;

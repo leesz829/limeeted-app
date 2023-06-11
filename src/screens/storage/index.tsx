@@ -325,22 +325,15 @@ export const Storage = (props: Props) => {
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={_styles.topContainer}>
           <View style={_styles.dotContainer}>
             {tabs.map((item, index) => (
-              <TouchableOpacity 
-                onPress={() => {
-                  onPressDot(index);
-                }}>
-
-                <View
-                  style={[
-                    //_styles.dot,
-                    _styles.tabItem,
-                    {
-                      backgroundColor: index === currentIndex ? item.color : '#ececec',
-                    },
-                  ]}>
-                  <Text style={_styles.tabItemText}>{item.title} | {item.data.length}</Text>
-                </View>
-              </TouchableOpacity>
+              <>
+                {((item.type == 'ZZIM' && item.data.length > 0) || item.type != 'ZZIM') &&
+                  <TouchableOpacity onPress={() => { onPressDot(index); }}>
+                    <View style={[_styles.tabItem, { backgroundColor: index === currentIndex ? item.color : '#ececec' }]}>
+                      <Text style={_styles.tabItemText}>{item.title} | {item.data.length}</Text>
+                    </View>
+                  </TouchableOpacity>
+                }
+              </>
             ))}
           </View>
         </ScrollView>

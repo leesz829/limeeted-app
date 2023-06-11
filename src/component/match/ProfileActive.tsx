@@ -314,8 +314,6 @@ const _styles = StyleSheet.create({
       percent = value * 100;
     };
 
-    console.log('percent :::::: ' , percent);
-
     return {
       position: 'absolute',
       width: percent + '%',
