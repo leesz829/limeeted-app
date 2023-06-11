@@ -108,6 +108,9 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc }) {
       , 'prod_subs_b003'
       , 'prod_subs_b004'
       , 'prod_subs_b005'
+      , 'prod_subs_a001'
+      , 'prod_subs_a002'
+      , 'prod_subs_a003'
     ],
     android: [
       'prod_pass_a001'
@@ -142,6 +145,9 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc }) {
       , 'prod_subs_b003'
       , 'prod_subs_b004'
       , 'prod_subs_b005'
+      , 'prod_subs_a001'
+      , 'prod_subs_a002'
+      , 'prod_subs_a003'
     ],
   });
   
