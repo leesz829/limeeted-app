@@ -28,6 +28,7 @@ import {
   TextInput,
   TouchableWithoutFeedback,
   Keyboard,
+  Platform,
 } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import ReactNativeModal from 'react-native-modal';
@@ -910,7 +911,7 @@ export const Profile1 = (props: Props) => {
                   colors={['#FFFFFF', '#E8FFFE']}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
-                  style={_styles.authArea}>
+                  style={_styles.authArea(Platform.OS)}>
 
                   <SpaceView viewStyle={{flexDirection: 'row'}}>
                     <SpaceView mr={7}><Image source={ICON.jobNew} style={{width: 40, height: 29}} /></SpaceView>
@@ -1513,17 +1514,40 @@ const _styles = StyleSheet.create({
     overflow: 'visible',
     width: '100%',
   },
-  authArea: {
-    position: 'relative',
-    width: '100%',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 20,
-    marginTop: 17,
-    paddingTop: 30,
-    paddingBottom: 10,
-    marginVertical: 10,
+  authArea: (device:any) => {
+    if(device == 'ios') {
+      return {
+        position: 'relative',
+        width: '100%',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 20,
+        marginTop: 17,
+        paddingTop: 30,
+        paddingBottom: 10,
+        marginVertical: 10,
+      };
+    } else {
+      return {
+        position: 'relative',
+        width: '100%',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 20,
+        marginTop: 17,
+        paddingTop: 30,
+        paddingBottom: 10,
+        marginVertical: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 5 },
+        shadowOpacity: 0.23,
+        shadowRadius: 5.0,
+        elevation: 5,
+        overflow: 'visible',
+      };
+    }    
   },
   authEmptyArea: {
     width: '95%',
@@ -1550,6 +1574,7 @@ const _styles = StyleSheet.create({
     borderRadius: 7,
     textAlign: 'center',
     paddingVertical: 8,
+    overflow: 'hidden',
   }
 });
 

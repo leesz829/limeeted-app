@@ -397,8 +397,6 @@ export const Storage = (props: Props) => {
   );
 
   function RenderItem({ item, index, type }) {
-    console.log('item ::::::: ',  item);
-
     let tgt_member_seq = '';
     let profile_open_yn = 'N';
 
@@ -419,7 +417,7 @@ export const Storage = (props: Props) => {
 
     return (
       <>
-        {((isSpecialVisible && item.special_interest_yn == 'Y') || (!isSpecialVisible)) && 
+        {((isSpecialVisible && item.special_interest_yn == 'Y') || (!isSpecialVisible) || type == 'ZZIM') && 
 
           <TouchableOpacity
             onPress={() => {

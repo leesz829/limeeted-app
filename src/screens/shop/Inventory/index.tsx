@@ -165,7 +165,12 @@ export default function Inventory() {
         <View style={{ flexDirection: 'row' }}>
           <View style={_styles.thumb}>
             <Image source={findSourcePath(item?.file_path + item?.file_name)} style={{width: '100%', height: '100%'}} resizeMode='cover' />
-            {item?.item_qty > 0 && <Text style={_styles.qtyText}>{item.item_qty}개 보유</Text>}
+            {item?.item_qty > 0 && (
+              <View style={_styles.qtyArea}>
+                <Text style={_styles.qtyText}>{item.item_qty}개 보유</Text>
+                <View style={{backgroundColor: '#000000', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, opacity: 0.7}} />
+              </View>
+            )}
 
             {isNew &&
               <View style={_styles.iconArea}>
@@ -287,19 +292,21 @@ const _styles = StyleSheet.create({
     color: '#939393',
     marginTop: 5,
   },
-  qtyText: {
+  qtyArea: {
     position: 'absolute',
     bottom: 4,
     right: 4,
+    borderRadius: 7,
+    overflow: 'hidden',
+  },
+  qtyText: {
     fontFamily: 'AppleSDGothicNeoM00',
     fontSize: 12,
     textAlign: 'left',
     color: '#fff',
-    marginTop: 5,
-    backgroundColor: '#000000',
     paddingHorizontal: 6,
     paddingVertical: 1,
-    borderRadius: 7,
+    zIndex: 1,
   },
   buttonWrapper: {
     width: '100%',

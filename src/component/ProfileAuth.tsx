@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { RouteProp, useIsFocused, useNavigation, useFocusEffect } from '@react-navigation/native';
 import { StackParamList, ScreenNavigationProp } from '@types';
-import { Dimensions, Image, StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
+import { Dimensions, Image, StyleSheet, Text, View, TouchableOpacity, ScrollView, Platform } from 'react-native';
 import { SimpleGrid } from 'react-native-super-grid';
 import { ICON } from 'utils/imageUtils';
 import { CommonBtn } from './CommonBtn';
@@ -246,7 +246,7 @@ function RenderAuthInfoNew({ item, isButton, onPressSecondAuthFunc, onPressSecon
         colors={['#FFFFFF', '#E8FFFE']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        style={_styles.authArea}>
+        style={_styles.authArea(Platform.OS)}>
 
         {/* {typeof isButton != 'undefined' && isButton && 
           <SpaceView viewStyle={{position: 'absolute', top: 8, right: 10, alignItems: `center`, justifyContent: `center`,}}>
@@ -439,16 +439,38 @@ const _styles = StyleSheet.create({
     elevation: 5,
     overflow: 'visible',
   },
-  authArea: {
-    width: width - 55,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 20,
-    paddingVertical: 15,
-    marginLeft: 4,
-    marginVertical: 10,
+  authArea: (device:any) => {
+    if(device == 'ios') {
+      return {
+        width: width - 55,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 20,
+        paddingVertical: 15,
+        marginLeft: 4,
+        marginVertical: 10,
+      };
+    } else {
+      return {
+        width: width - 55,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 20,
+        paddingVertical: 15,
+        marginLeft: 4,
+        marginVertical: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.23,
+        shadowRadius: 3,
+        elevation: 5,
+        overflow: 'visible',
+      };
+    }    
   },
+
   authIcon: {
     width: 95,
     height: 71,
@@ -481,7 +503,7 @@ const _styles = StyleSheet.create({
   authIntroText: {
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 11,
-    color: '#7986EE',
+    color: '#B1B3C7',
     textAlign: 'center',
     paddingHorizontal: 35,
   },
