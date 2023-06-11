@@ -7,6 +7,9 @@ import SpaceView from 'component/SpaceView';
 import LinearGradient from 'react-native-linear-gradient';
 import { STACK } from 'constants/routes';
 import { modalStyle, layoutStyle, commonStyle } from 'assets/styles/Styles';
+import { isEmptyData } from 'utils/functions';
+
+
 
 
 const { width, height } = Dimensions.get('window');
@@ -16,8 +19,8 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
 
   return (
     <>
-      {((memberData?.height != null || memberData?.form_body != null || memberData?.job_name != null || memberData?.religion != null ||
-        memberData?.drinking != null || memberData?.smoking != null || interestList.length > 0) || isNoDataArea) ? (
+      {((isEmptyData(memberData?.height) || isEmptyData(memberData?.form_body) || isEmptyData(memberData?.job_name) || isEmptyData(memberData?.religion) ||
+        isEmptyData(memberData?.drinking) || isEmptyData(memberData?.smoking) || interestList.length > 0) || isNoDataArea) ? (
 
         <SpaceView mt={10}>
           <Text style={_styles.title}>{memberData?.nickname}님 소개</Text>
@@ -128,26 +131,26 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
               </SpaceView>
 
               {/* ############################################################################################### 추가 정보 영역 */}
-              {(memberData?.height != null || memberData?.form_body != null || memberData?.job_name != null || memberData?.religion != null ||
-                memberData?.drinking != null || memberData?.smoking != null) ? (
+              {(isEmptyData(memberData?.height) || isEmptyData(memberData?.form_body) || isEmptyData(memberData?.job_name) || isEmptyData(memberData?.religion) ||
+                isEmptyData(memberData?.drinking) || isEmptyData(memberData?.smoking)) ? (
 
                   <SpaceView mt={20}>
                     <Text style={_styles.addText}>
     
-                      {(memberData?.height != null || memberData?.form_body != null || memberData?.job_name != null) && (
+                      {(isEmptyData(memberData?.height) || isEmptyData(memberData?.form_body) || isEmptyData(memberData?.job_name)) && (
                         <>
                           저는{' '}
-                          {memberData?.height != null && (
+                          {isEmptyData(memberData?.height) && (
                             <>
                               <Text style={_styles.addActiveText}>{memberData?.height}cm</Text>
-                              {(memberData?.form_body != null || memberData?.job_name != null) ? (
+                              {(isEmptyData(memberData?.form_body) || isEmptyData(memberData?.job_name)) ? (
                                 <>이고,{' '}</>
                               ) : (
                                 <>{' '}입니다.</>
                               )}
                             </>
                           )}
-                          {memberData?.form_body != null && (
+                          {isEmptyData(memberData?.form_body) && (
                             <>
                               {memberData?.gender == 'M' ? (
                                 <>
@@ -214,20 +217,20 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                                 <>
                                   {(memberData?.form_body == 'NORMAL' || memberData?.form_body == 'SEXY' || memberData?.form_body == 'CHUBBY') && (
                                     <>
-                                      {memberData?.job_name != null ? ( 
+                                      {isEmptyData(memberData?.job_name) ? ( 
                                         <>
-                                          <Text>{memberData?.job_name}</Text> 체형의
+                                          <Text style={_styles.addActiveText}>{memberData?.form_body_type}</Text> 체형의
                                         </>
                                       ) : (
                                         <>
-                                          <Text style={_styles.addActiveText}>{memberData?.job_name}</Text> 체형 입니다.
+                                          <Text style={_styles.addActiveText}>{memberData?.form_body_type}</Text> 체형 입니다.
                                         </>
                                       )}
                                     </> 
                                   )}
                                   {memberData?.form_body == 'SKINNY' && (
                                     <>
-                                      {memberData?.job_name != null ? ( 
+                                      {isEmptyData(memberData?.job_name) ? ( 
                                         <>
                                           <Text style={_styles.addActiveText}>날씬한</Text> 체형의
                                         </>
@@ -240,7 +243,7 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                                   )}
                                   {memberData?.form_body == 'GLAMOUR' && (
                                     <>
-                                      {memberData?.job_name != null ? ( 
+                                      {isEmptyData(memberData?.job_name) ? ( 
                                         <Text style={_styles.addActiveText}>글래머러스한</Text>
                                       ) : (
                                         <>
@@ -251,7 +254,7 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                                   )}
                                   {memberData?.form_body == 'COMPACT' && (
                                     <>
-                                      {memberData?.job_name != null ? ( 
+                                      {isEmptyData(memberData?.job_name) ? ( 
                                         <>
                                           <Text style={_styles.addActiveText}>아담한 </Text>체형의
                                         </>
@@ -264,7 +267,7 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                                   )}
                                   {memberData?.form_body == 'MODEL' && (
                                     <>
-                                      {memberData?.job_name != null ? ( 
+                                      {isEmptyData(memberData?.job_name) ? ( 
                                         <>
                                           <Text style={_styles.addActiveText}>비율이 좋은</Text>
                                         </>
@@ -280,7 +283,7 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                             </>
                           )}
                           {' '}
-                          {memberData?.job_name != null && (
+                          {isEmptyData(memberData?.job_name) && (
                             <>
                               <Text style={_styles.addActiveText}>{memberData?.job_name}</Text> 입니다.{' '}
                             </>
@@ -290,12 +293,12 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
     
                       {(memberData?.religion != null || memberData?.drinking != null) && (
                         <>
-                          {memberData?.religion != null && (
+                          {isEmptyData(memberData?.religion) && (
                             <>
                               종교는{' '}
                               {memberData?.religion == 'NONE' &&
                                 <>
-                                  {memberData?.drinking != null ? ( 
+                                  {isEmptyData(memberData?.drinking) ? ( 
                                     <>
                                       <Text style={_styles.addActiveText}>무신론자</Text>이며{' '}
                                     </>
@@ -308,7 +311,7 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                               }
                               {memberData?.religion == 'THEIST' &&
                                 <>
-                                  {memberData?.drinking != null ? ( 
+                                  {isEmptyData(memberData?.drinking) ? ( 
                                     <>
                                       <Text style={_styles.addActiveText}>무교이지만 신앙은 존중</Text>하며{' '}
                                     </>
@@ -321,7 +324,7 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                               }
                               {memberData?.religion == 'JEJUS' &&
                                 <>
-                                  {memberData?.drinking != null ? ( 
+                                  {isEmptyData(memberData?.drinking) ? ( 
                                     <>
                                       신앙이 있으며{' '}<Text style={_styles.addActiveText}>기독교</Text>이고{' '}
                                     </>
@@ -334,7 +337,7 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                               }
                               {memberData?.religion == 'BUDDHA' &&
                                 <>
-                                  {memberData?.drinking != null ? ( 
+                                  {isEmptyData(memberData?.drinking) ? ( 
                                     <>
                                       신앙이 있으며{' '}<Text style={_styles.addActiveText}>불교</Text>이고{' '}
                                     </>
@@ -347,7 +350,7 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                               }
                               {memberData?.religion == 'ALLAH' &&
                                 <>
-                                  {memberData?.drinking != null ? ( 
+                                  {isEmptyData(memberData?.drinking) ? ( 
                                     <>
                                       신앙이 있으며{' '}<Text style={_styles.addActiveText}>이슬람교</Text>이고{' '}
                                     </>
@@ -360,7 +363,7 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                               }
                               {memberData?.religion == 'MARIA' &&
                                 <>
-                                  {memberData?.drinking != null ? ( 
+                                  {isEmptyData(memberData?.drinking) ? ( 
                                     <>
                                       신앙이 있으며{' '}<Text style={_styles.addActiveText}>천주교</Text>이고{' '}
                                     </>
@@ -374,21 +377,21 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                             </>
                           )}
     
-                          {memberData?.drinking != null && (
+                          {isEmptyData(memberData?.drinking) && (
                             <>
                               {memberData?.drinking == 'NONE' &&
                                 <>
-                                  <Text style={_styles.addActiveText}>술은 하지 않습니다.</Text>
+                                  술은 <Text style={_styles.addActiveText}>멀리하며</Text> 마시지 않습니다.
                                 </>
                               }
                               {memberData?.drinking == 'LIGHT' &&
                                 <>
-                                  <Text style={_styles.addActiveText}>술은 가볍게 즐기는{' '}</Text>편이에요.
+                                  술은 <Text style={_styles.addActiveText}>가볍게 즐기는</Text> 편이에요.
                                 </>
                               }
                               {memberData?.drinking == 'HARD' &&
                                 <>
-                                  술 자리도 즐겁게 참여하는 편이에요.
+                                  술은 <Text style={_styles.addActiveText}>자주 즐기는</Text> 편이에요.
                                 </>
                               }
                             </>
@@ -397,17 +400,22 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                         </>
                       )}
     
-                      {memberData?.smoking != null && (
+                      {isEmptyData(memberData?.smoking) && (
                         <>
-                          {/* {'\n'} */}
                           {memberData?.smoking == 'NONE' &&
-                            <>흡연은 하지 않으니 참고해 주세요.</>
+                            <>
+                              그리고 <Text style={_styles.addActiveText}>비흡연가</Text>이니 참고해 주세요.
+                            </>
                           }
                           {memberData?.smoking == 'LIGHT' &&
-                            <>흡연은 가끔 하는 편이니 참고해 주세요.</>
+                            <>
+                              <Text style={_styles.addActiveText}>흡연은 가끔</Text> 하는 편이니 참고해 주세요.
+                            </>
                           }
                           {memberData?.smoking == 'HARD' &&
-                            <>애연가이니 참고해주세요.</>
+                            <>
+                            <Text style={_styles.addActiveText}>애연가</Text>이니 참고해 주세요.
+                          </>
                           }
                         </>
                       )}

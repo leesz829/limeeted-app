@@ -580,16 +580,12 @@ export const StorageProfile = (props: Props) => {
           {/* ############################################## 보낸 관심 */}
           {props.route.params.type == 'RES' ? (
             <>
-              <SpaceView viewStyle={styles.textContainer}>
-                <SpaceView mb={8}>
-                  <Image source={ICON.wait} style={styles.iconSize48} />
+              <SpaceView viewStyle={{padding: 24, alignItems: 'center', borderRadius: 10, backgroundColor: '#F6F7FE'}}>
+                <SpaceView>
+                  <Image source={ICON.loveLetterIcon} style={styles.iconSquareSize(64)} />
                 </SpaceView>
                 <CommonText fontWeight={'700'}>매칭 대기중</CommonText>
-                <CommonText
-                  fontWeight={'500'}
-                  color={'#ACACAC'}
-                  textStyle={[layoutStyle.textCenter, {marginTop: 5}]}
-                >
+                <CommonText type={'h5'} fontWeight={'500'} color={'#ACACAC'} textStyle={[layoutStyle.textCenter, {marginTop: 5}]}>
                   상대방이 회원님의 <Text style={{color: '#7986EE'}}>관심</Text>을 두고 고민중 인가봐요.
                 </CommonText>
               </SpaceView>

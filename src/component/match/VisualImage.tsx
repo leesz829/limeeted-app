@@ -9,7 +9,7 @@ import LinearGradient from 'react-native-linear-gradient';
 
 const { width, height } = Dimensions.get('window');
 
-export default function VisualImage({ imgList, memberData }) {
+export default function VisualImage({ imgList, memberData, isButton }) {
   const navigation = useNavigation<ScreenNavigationProp>();
 
   // 이미지 인덱스
@@ -24,7 +24,7 @@ export default function VisualImage({ imgList, memberData }) {
 
   return (
     <>
-      <View>
+      <View style={{overflow: 'hidden', borderRadius: 20}}>
 
         {/* ####################################################################################################
         ##################################### 이미지 Indicator
@@ -50,8 +50,16 @@ export default function VisualImage({ imgList, memberData }) {
           pagingEnabled
         />
 
-        <View style={_styles.absoluteView}>
-          <View style={_styles.badgeContainer}>
+        <View style={_styles.absoluteView(isButton)}>
+          
+          <LinearGradient
+            colors={['transparent', '#000000']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={_styles.thumnailArea} />
+
+          <View style={{paddingLeft: 27}}>
+            <View style={_styles.badgeContainer}>
 
             {/* ####################################################################################################
             ##################################### 인증 레벨 노출 영역
@@ -116,7 +124,7 @@ export default function VisualImage({ imgList, memberData }) {
 
               {memberData?.profile_score >= 7.0 && memberData?.profile_score < 8.0 &&
                 <LinearGradient colors={['#FF4381', '#FF4381']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
-                  <Image source={ICON.scoreKingIcon} style={[{width: 16, height: 16}]} />
+                  <Image source={ICON.score7Icon} style={[{width: 16, height: 16}]} />
                   <Text style={_styles.yellowText}>{memberData?.profile_score}</Text>
                 </LinearGradient>
               }
@@ -130,14 +138,14 @@ export default function VisualImage({ imgList, memberData }) {
 
               {memberData?.profile_score >= 9.0 && memberData?.profile_score < 10.0 &&
                 <LinearGradient colors={['#FE0456', '#9E6DF5']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
-                  <Image source={ICON.scoreKingIcon} style={[{width: 16, height: 16}]} />
+                  <Image source={ICON.scoreDiamondIcon} style={[{width: 16, height: 16}]} />
                   <Text style={_styles.yellowText}>{memberData?.profile_score}</Text>
                 </LinearGradient>
               }
 
               {memberData?.profile_score >= 10.0 &&
                 <LinearGradient colors={['#FE0456', '#9E41E5']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
-                  <Image source={ICON.scoreDiamondIcon} style={[{width: 16, height: 16}]} />
+                  <Image source={ICON.score10Icon} style={[{width: 16, height: 16}]} />
                   <Text style={_styles.yellowText}>{memberData?.profile_score}</Text>
                 </LinearGradient>
               }
@@ -147,22 +155,24 @@ export default function VisualImage({ imgList, memberData }) {
                 <Image source={ICON.whiteCrown} style={styles.crownIcon} />
                 <Text style={styles.whiteText}>{data.match_member_info?.profile_score}</Text>
               </View> */}
-          </View>
+            </View>
 
-          {/* {data.distance_val != null &&
+            {/* {data.distance_val != null &&
             <View style={styles.distanceContainer}>
               <Image source={ICON.marker} style={styles.markerIcon} />
               <Text style={styles.regionText}>12.9Km</Text>
             </View>
-          } */}
+            } */}
 
-          <View style={_styles.nameContainer}>
-            <Text style={_styles.nameText}>{memberData?.nickname}, {memberData?.age}</Text>
-            <Image source={ICON.checkICon} style={_styles.checkIcon} />
-          </View>
+            <View style={_styles.nameContainer}>
+              <Text style={_styles.nameText}>{memberData?.nickname}, {memberData?.age}</Text>
+              <Image source={ICON.checkICon} style={_styles.checkIcon} />
+            </View>
 
-          <View style={_styles.distanceContainer}>
-            <Text style={_styles.regionText}>{memberData?.comment}</Text>
+            <View style={_styles.distanceContainer}>
+              <Text style={_styles.regionText}>{memberData?.comment}</Text>
+            </View>
+
           </View>
         </View> 
       </View>
@@ -224,15 +234,32 @@ const _styles = StyleSheet.create({
   activeDot: {
     backgroundColor: 'white',
   },
-  absoluteView: {
+  absoluteView: (isButton: boolean) => {
+    let isOn = true;
+    if(typeof isButton == 'undefined' || isButton) {
+      isOn = true;
+    } else {
+      isOn = false;
+    }
+
+    return {
+      position: 'absolute',
+      left: 0,
+      bottom: !isOn ? -width * -0.08 : -width * -0.16,
+      flexDirection: 'column',
+      justifyContent: 'flex-start',
+      zIndex: 1,
+      width: '100%'
+    };
+  },
+  thumnailArea: {
     position: 'absolute',
+    top: 0,
+    bottom: 0,
     left: 0,
-    bottom: -width * -0.16,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    paddingLeft: 27,
-    zIndex: 1,
-    width: 'auto'
+    right: 0,
+    opacity: 0.6,
+    height: height * 0.23,
   },
   badgeContainer: {
     flexDirection: `row`,

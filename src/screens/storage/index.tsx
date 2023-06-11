@@ -291,7 +291,7 @@ export const Storage = (props: Props) => {
     {
       type: 'ZZIM',
       title: '찜 목록',
-      color: '#8669E6',
+      color: '#69C9E6',
       data: dataStorage.zzimTrgtList
     },
   ];
@@ -346,15 +346,19 @@ export const Storage = (props: Props) => {
         </ScrollView>
 
         <SpaceView mt={7} viewStyle={commonStyle.paddingHorizontal25}>
-          <View style={_styles.row}>
-            <Text style={_styles.showText}>찐심만 보기</Text>
-            <ToggleSwitch
-              isOn={isSpecialVisible}
-              onColor={Color.primary}
-              offColor={Color.grayDDDD}
-              size="small"
-              onToggle={(isOn) => setIsSpecialVisible(isOn) }
-            />
+          <View style={[_styles.row, {minHeight: 30}]}>
+            {currentIndex < 3 &&
+              <>
+                <Text style={_styles.showText}>찐심만 보기</Text>
+                <ToggleSwitch
+                  isOn={isSpecialVisible}
+                  onColor={Color.primary}
+                  offColor={Color.grayDDDD}
+                  size="small"
+                  onToggle={(isOn) => setIsSpecialVisible(isOn) }
+                />
+              </>
+            }
           </View>
         </SpaceView>
 
@@ -428,17 +432,28 @@ export const Storage = (props: Props) => {
 
             <ImageBackground source={item.img_path} style={_styles.renderItemContainer}>
               <View style={_styles.renderItemTopContainer}>
-                <Image
-                  style={_styles.renderItemTopIcon}
-                  source={item.special_interest_yn == 'N' ? ICON.passCircle : ICON.royalPassCircle} />
-                <Text style={[_styles.renderItemTopText, (type == 'REQ' && profile_open_yn == 'N' && {color: '#787878'})]}>
-                  {item.dday > 0 ? item.dday + '일 남음' : '오늘까지'}
-                </Text>
+
+                {type == 'ZZIM' ? (
+                  <>
+                    <Image style={_styles.renderItemTopZzimIcon} source={ICON.zzimCircle} />
+                    <Text style={[_styles.renderItemTopText, {marginTop: 5}]}>
+                      {item.dday > 0 ? item.dday + '일 남음' : '오늘까지'}
+                    </Text>
+                  </>
+                ) : (
+                  <>
+                    <Image style={_styles.renderItemTopIcon} source={item.special_interest_yn == 'N' ? ICON.passCircle : ICON.royalPassCircle} />
+                    <Text style={[_styles.renderItemTopText, (type == 'REQ' && profile_open_yn == 'N' && {color: '#787878'})]}>
+                      {item.dday > 0 ? item.dday + '일 남음' : '오늘까지'}
+                    </Text>
+                  </>
+                )}
               </View>
 
               <View style={[_styles.renderItemBottomContainer]}>
-                <View style={{flexDirection: 'row', marginBottom: -2}}>
+                <View style={{flexDirection: 'row', marginBottom: -2, justifyContent: 'space-between'}}>
                   {/* ############# 인증 레벨 노출 */}
+
                   {item.auth_acct_cnt > 0 && item.auth_acct_cnt < 10 &&
                     <LinearGradient colors={['#7986EE', '#7986EE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
                       <Text style={_styles.whiteText}>LV.{item.auth_acct_cnt}</Text>
@@ -483,42 +498,42 @@ export const Storage = (props: Props) => {
                   {/* ############# 프로필 평점 노출 */}
                   {item.profile_score < 6.0 &&
                     <LinearGradient colors={['#FF7EA6', '#FF7EA6']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
-                      <Image source={ICON.score5Icon} style={[_styles.scoreBadgeImg, {width: 8, height: 8}]} />
+                      <Image source={ICON.score5Icon} style={[{width: 8, height: 8}]} />
                       <Text style={_styles.yellowText}>{item.profile_score}</Text>
                     </LinearGradient>
                   }
 
                   {item.profile_score >= 6.0 && item.profile_score < 7.0 &&
                     <LinearGradient colors={['#FF4381', '#FF4381']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
-                      <Image source={ICON.score6Icon} style={[_styles.scoreBadgeImg, {width: 10, height: 10}]} />
+                      <Image source={ICON.score6Icon} style={[{width: 10, height: 10}]} />
                       <Text style={_styles.yellowText}>{item.profile_score}</Text>
                     </LinearGradient>
                   }
 
                   {item.profile_score >= 7.0 && item.profile_score < 8.0 &&
                     <LinearGradient colors={['#FF4381', '#FF4381']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
-                      <Image source={ICON.scoreKingIcon} style={[_styles.scoreBadgeImg, {width: 10, height: 10}]} />
+                      <Image source={ICON.score7Icon} style={[{width: 10, height: 10}]} />
                       <Text style={_styles.yellowText}>{item.profile_score}</Text>
                     </LinearGradient>
                   }
 
                   {item.profile_score >= 8.0 && item.profile_score < 9.0 &&
                     <LinearGradient colors={['#FE0456', '#FF82AB']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
-                      <Image source={ICON.scoreKingIcon} style={[_styles.scoreBadgeImg, {width: 10, height: 10}]} />
+                      <Image source={ICON.scoreKingIcon} style={[{width: 10, height: 10}]} />
                       <Text style={_styles.yellowText}>{item.profile_score}</Text>
                     </LinearGradient>
                   }
 
                   {item.profile_score >= 9.0 && item.profile_score < 10.0 &&
                     <LinearGradient colors={['#FE0456', '#9E6DF5']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
-                      <Image source={ICON.scoreKingIcon} style={[_styles.scoreBadgeImg, {width: 10, height: 10}]} />
+                      <Image source={ICON.scoreDiamondIcon} style={[{width: 10, height: 10}]} />
                       <Text style={_styles.yellowText}>{item.profile_score}</Text>
                     </LinearGradient>
                   }
 
                   {item.profile_score >= 10.0 &&
                     <LinearGradient colors={['#FE0456', '#9E41E5']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
-                      <Image source={ICON.scoreDiamondIcon} style={[_styles.scoreBadgeImg, {width: 10, height: 10}]} />
+                      <Image source={ICON.score10Icon} style={[{width: 10, height: 10}]} />
                       <Text style={_styles.yellowText}>{item.profile_score}</Text>
                     </LinearGradient>
                   }
@@ -634,6 +649,12 @@ const _styles = StyleSheet.create({
     marginRight: 1,
     marginTop: 5,
     borderRadius: 10,
+  },
+  renderItemTopZzimIcon: {
+    width: 20,
+    height: 20,
+    marginRight: 3,
+    marginTop: 5,
   },
   renderItemTopText: {
     fontFamily: 'AppleSDGothicNeoB00',
@@ -759,14 +780,12 @@ const _styles = StyleSheet.create({
     flexDirection: `row`,
     alignItems: `center`,
     justifyContent: `space-between`,
-    marginRight: 5,
-    paddingHorizontal: 5,
+    paddingHorizontal: 3,
   },
   authBadge: {
     width: 40,
     height: 14,
     borderRadius: 5,
-    //backgroundColor: '#7986ee',
     flexDirection: `row`,
     alignItems: `center`,
     justifyContent: `center`,

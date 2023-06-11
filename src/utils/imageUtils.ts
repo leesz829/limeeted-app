@@ -120,6 +120,7 @@ export const ICON = {
   royalPassIconNew: require('assets/icon/loyalpass_icon_new.png'),
   passCircle: require('assets/icon/passCircle.png'),
   royalPassCircle: require('assets/icon/royalPassCircle.png'),
+  zzimCircle: require('assets/icon/zzimCircle.png'),
   inventoryIcon: require('assets/icon/inventory_icon.png'),
   refuseJobIcon: require('assets/icon/refuse_job_icon.png'),
   refuseAssetIcon: require('assets/icon/refuse_asset_icon.png'),
@@ -137,8 +138,14 @@ export const ICON = {
   level30Icon: require('assets/icon/level_30_icon.png'),
   score5Icon: require('assets/icon/score_5_icon.png'),
   score6Icon: require('assets/icon/score_6_icon.png'),
+  score7Icon: require('assets/icon/score_7_icon.png'),
+  score10Icon: require('assets/icon/score_10_icon.png'),
   scoreDiamondIcon: require('assets/icon/score_diamond_icon.png'),
   scoreKingIcon: require('assets/icon/score_king_icon.png'),
+  score7BigIcon: require('assets/icon/score_7_big_icon.png'),
+  score10BigIcon: require('assets/icon/score_10_big_icon.png'),
+  scoreDiamondBigIcon: require('assets/icon/score_diamond_big_icon.png'),
+  scoreKingBigIcon: require('assets/icon/score_king_big_icon.png'),
   addCategoryIcon: require('assets/icon/add_category_icon.png'),
   addFlagIcon: require('assets/icon/add_flag_icon.png'),
   addHeightIcon: require('assets/icon/add_height_icon.png'),
@@ -146,6 +153,7 @@ export const ICON = {
   addSmokeIcon: require('assets/icon/add_smoke_icon.png'),
   addWineIcon: require('assets/icon/add_wine_icon.png'),
   zzimIcon: require('assets/icon/zzim_icon.png'),
+  loveLetterIcon: require('assets/icon/icon-love-letter.png'),
 };
 
 export const GIF_IMG = {

@@ -5,6 +5,7 @@ import { Dimensions, Image, StyleSheet, Text, View, TouchableOpacity, FlatList }
 import { findSourcePath, ICON, IMAGE, GUIDE_IMAGE } from 'utils/imageUtils';
 import SpaceView from 'component/SpaceView';
 import { Slider } from '@miblanchard/react-native-slider';
+import LinearGradient from 'react-native-linear-gradient';
 
 
 const { width, height } = Dimensions.get('window');
@@ -13,36 +14,121 @@ export default function ProfileActive({ memberData }) {
 
   return (
     <>
-      <SpaceView>
-        <Text style={_styles.title}>프로필 활동지수</Text>
+      <SpaceView mt={30}>
+
+        <SpaceView viewStyle={{flexDirection: 'row', alignItems: `center`, justifyContent: `flex-start`,}}>
+          <Text style={_styles.title}>프로필 활동지수</Text>
+
+          <View style={[_styles.levelBadge, {marginRight: 0, marginTop: 1}]}>
+
+            {/* ####################################################################################################
+              ##################################### 프로필 평점 노출 영역
+              #################################################################################################### */}
+              {memberData?.profile_score < 6.0 &&
+                <LinearGradient colors={['#FF7EA6', '#FF7EA6']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
+                  <Image source={ICON.score5Icon} style={[{width: 12, height: 12}]} />
+                  <Text style={_styles.yellowText}>{memberData?.profile_score}</Text>
+                </LinearGradient>
+              }
+
+              {memberData?.profile_score >= 6.0 && memberData?.profile_score < 7.0 &&
+                <LinearGradient colors={['#FF4381', '#FF4381']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
+                  <Image source={ICON.score6Icon} style={[{width: 16, height: 16}]} />
+                  <Text style={_styles.yellowText}>{memberData?.profile_score}</Text>
+                </LinearGradient>
+              }
+
+              {memberData?.profile_score >= 7.0 && memberData?.profile_score < 8.0 &&
+                <LinearGradient colors={['#FF4381', '#FF4381']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
+                  <Image source={ICON.score7Icon} style={[{width: 16, height: 16}]} />
+                  <Text style={_styles.yellowText}>{memberData?.profile_score}</Text>
+                </LinearGradient>
+              }
+
+              {memberData?.profile_score >= 8.0 && memberData?.profile_score < 9.0 &&
+                <LinearGradient colors={['#FE0456', '#FF82AB']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
+                  <Image source={ICON.scoreKingIcon} style={[{width: 16, height: 16}]} />
+                  <Text style={_styles.yellowText}>{memberData?.profile_score}</Text>
+                </LinearGradient>
+              }
+
+              {memberData?.profile_score >= 9.0 && memberData?.profile_score < 10.0 &&
+                <LinearGradient colors={['#FE0456', '#9E6DF5']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
+                  <Image source={ICON.scoreDiamondIcon} style={[{width: 16, height: 16}]} />
+                  <Text style={_styles.yellowText}>{memberData?.profile_score}</Text>
+                </LinearGradient>
+              }
+
+              {memberData?.profile_score >= 10.0 &&
+                <LinearGradient colors={['#FE0456', '#9E41E5']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
+                  <Image source={ICON.score10Icon} style={[{width: 16, height: 16}]} />
+                  <Text style={_styles.yellowText}>{memberData?.profile_score}</Text>
+                </LinearGradient>
+              }
+          </View>
+
+        </SpaceView>
+
         <View style={_styles.profileActivePannel}>
-          <Text style={_styles.profileEverageText}>프로필 평점</Text>
-          <Text style={_styles.profileActiveText1}>
-            <Text style={{ fontFamily: 'AppleSDGothicNeoEB00' }}>
-              {memberData.nickname}
+          <View style={{zIndex: 1}}>
+            <Text style={_styles.profileEverageText}>프로필 평점</Text>
+            <Text style={_styles.profileActiveText1}>
+              <Text style={{ fontFamily: 'AppleSDGothicNeoEB00' }}>
+                {memberData.nickname}
+              </Text>
+              님의 리미티드 대표 인상
             </Text>
-            님의 리미티드 대표 인상
-          </Text>
-          <Text style={_styles.profileActiveText2}>{memberData.face_code_name}</Text>
-          <View style={_styles.sliderContainer}>
-            <Text style={_styles.sliderText}>프로필 평점 {memberData.profile_score}</Text>
-            <Slider
-              value={memberData.profile_score/10}
-              animateTransitions={true}
-              renderThumbComponent={() => null}
-              maximumTrackTintColor={ColorType.purple}
-              minimumTrackTintColor={ColorType.purple}
-              containerStyle={_styles.sliderContainerStyle}
-              trackStyle={_styles.sliderThumbStyle}
-              trackClickable={false}
-              disabled
-            />
-            <View style={_styles.gageContainer}>
-              <Text style={_styles.gageText}>0</Text>
-              <Text style={_styles.gageText}>5</Text>
-              <Text style={_styles.gageText}>10</Text>
+            <Text style={_styles.profileActiveText2}>{memberData.face_code_name}</Text>
+            <View style={_styles.sliderContainer}>
+              <Text style={_styles.sliderText}>프로필 평점 {memberData.profile_score}</Text>
+
+              <SpaceView mt={5}>
+                <LinearGradient
+                  colors={['#7986EE', '#8854D2']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={_styles.gradient(memberData?.profile_score/10)}>
+                </LinearGradient>
+              </SpaceView>
+
+              <Slider
+                animateTransitions={true}
+                renderThumbComponent={() => null}
+                containerStyle={_styles.sliderContainerStyle}
+                trackStyle={_styles.sliderThumbStyle}
+                trackClickable={false}
+                disabled
+              />
+
+              <View style={_styles.gageContainer}>
+                <Text style={_styles.gageText}>0</Text>
+                <Text style={_styles.gageText}>5</Text>
+                <Text style={_styles.gageText}>10</Text>
+              </View>
             </View>
           </View>
+          
+          {memberData?.profile_score >= 7.0 && memberData?.profile_score < 8.0 &&
+            <View style={{position: 'absolute', top: -10, right: 10}}>
+              <Image source={ICON.score7BigIcon} style={[{width: 180, height: 180, opacity: 0.6}]} />
+            </View>
+          }
+          {memberData?.profile_score >= 8.0 && memberData?.profile_score < 9.0 &&
+            <View style={{position: 'absolute', top: -5, right: 15}}>
+              <Image source={ICON.scoreKingIcon} style={[{width: 180, height: 180, opacity: 0.6}]} />
+            </View>
+          }
+          {memberData?.profile_score >= 9.0 && memberData?.profile_score < 10.0 &&
+            <View style={{position: 'absolute', top: 15, right: 5}}>
+              <Image source={ICON.scoreDiamondIcon} style={[{width: 180, height: 180, opacity: 0.6}]} />
+            </View>
+          }
+          {memberData?.profile_score >= 10.0 &&
+            <View style={{position: 'absolute', top: 0, right: 5}}>
+              <Image source={ICON.score10Icon} style={[{width: 180, height: 180, opacity: 0.6}]} />
+            </View>
+          }
+          
         </View>
 
         <View style={_styles.socialContainer}>
@@ -65,12 +151,22 @@ export default function ProfileActive({ memberData }) {
           </Text> */}
           <View style={_styles.sliderContainer}>
             <Text style={_styles.sliderText}>소셜 평점 {memberData?.social_grade.toFixed(1)}</Text>
+
+            <SpaceView mt={5}>
+              <LinearGradient
+                colors={['#FF9FBE', '#FE0456']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={_styles.gradient(memberData?.social_grade/10)}>
+              </LinearGradient>
+            </SpaceView>
+
             <Slider
-              value={memberData?.social_grade/10}
+              //value={memberData?.social_grade/10}
               animateTransitions={true}
               renderThumbComponent={() => null}
-              maximumTrackTintColor={'#fe0456'}
-              minimumTrackTintColor={'#ff9fbe'}
+              /* maximumTrackTintColor={'#fe0456'}
+              minimumTrackTintColor={'#ff9fbe'} */
               containerStyle={_styles.socialSliderContainerStyle}
               trackStyle={_styles.socialSliderThumbStyle}
               trackClickable={false}
@@ -102,13 +198,9 @@ const _styles = StyleSheet.create({
   title: {
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 19,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    // lineHeight: 26,
     letterSpacing: 0,
     textAlign: 'left',
     color: '#333333',
-    marginTop: 20,
   },
   profileActivePannel: {
     width: '100%',
@@ -116,13 +208,11 @@ const _styles = StyleSheet.create({
     backgroundColor: '#ebedfc',
     marginTop: 10,
     paddingHorizontal: 20,
-    paddingVertical: 26,
+    paddingVertical: 18,
   },
   profileEverageText: {
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 12,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     lineHeight: 26,
     letterSpacing: 0,
     textAlign: 'left',
@@ -131,8 +221,6 @@ const _styles = StyleSheet.create({
   profileActiveText1: {
     fontFamily: 'AppleSDGothicNeoM00',
     fontSize: 15,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     lineHeight: 24,
     letterSpacing: 0,
     textAlign: 'left',
@@ -142,8 +230,6 @@ const _styles = StyleSheet.create({
   profileActiveText2: {
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 20,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     lineHeight: 24,
     letterSpacing: 0,
     textAlign: 'left',
@@ -156,24 +242,21 @@ const _styles = StyleSheet.create({
   },
   sliderText: {
     fontFamily: 'AppleSDGothicNeoR00',
-    fontSize: 10,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
+    fontSize: 11,
     lineHeight: 16,
     letterSpacing: 0,
     textAlign: 'center',
-    color: '#b7b7b7',
+    color: '#ABABAB',
   },
   sliderContainerStyle: {
     width: '100%',
-    marginTop: 8,
-    height: 6,
-    borderRadius: 3,
+    height: 11,
+    borderRadius: 50,
     backgroundColor: ColorType.primary,
   },
   sliderThumbStyle: {
-    height: 6,
-    borderRadius: 3,
+    height: 11,
+    borderRadius: 50,
     backgroundColor: 'white',
   },
   gageContainer: {
@@ -181,13 +264,12 @@ const _styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginTop: 5,
   },
   gageText: {
     fontFamily: 'AppleSDGothicNeoM00',
     fontSize: 10,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    lineHeight: 32,
+    //lineHeight: 25,
     letterSpacing: 0,
     textAlign: 'center',
     color: '#d0d0d0',
@@ -203,34 +285,69 @@ const _styles = StyleSheet.create({
   socialEverageText: {
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 12,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     lineHeight: 26,
-    letterSpacing: 0,
     textAlign: 'left',
     color: '#fe0456',
   },
   socialText1: {
     fontFamily: 'AppleSDGothicNeoM00',
     fontSize: 17,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     lineHeight: 24,
-    letterSpacing: 0,
     textAlign: 'left',
     color: '#1c1c1c',
   },
   socialSliderContainerStyle: {
     width: '100%',
-    marginTop: 8,
-    height: 6,
-    borderRadius: 3,
+    height: 11,
+    borderRadius: 50,
     backgroundColor: '#fe0456',
   },
   socialSliderThumbStyle: {
-    height: 6,
-    borderRadius: 3,
+    height: 11,
+    borderRadius: 50,
     backgroundColor: 'white',
+  },
+  gradient: (value:any) => {
+    let percent = 0;
+
+    if(value != null && typeof value != 'undefined') {
+      percent = value * 100;
+    };
+
+    return {
+      position: 'absolute',
+      width: percent + '%',
+      height: 11,
+      zIndex: 1,
+      borderRadius: 13,
+    };
+  },
+  scoreBadge: {
+    width: 48,
+    height: 21,
+    borderRadius: 5,
+    flexDirection: `row`,
+    alignItems: `center`,
+    justifyContent: `space-between`,
+    marginRight: 5,
+    paddingHorizontal: 5,
+  },
+  yellowText: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 11,
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#FDFFD8',
+  },
+  levelBadge: {
+    width: 51,
+    height: 21,
+    borderRadius: 5,
+    //backgroundColor: '#7986ee',
+    flexDirection: `row`,
+    alignItems: `center`,
+    justifyContent: `center`,
+    marginLeft: 8,
   },
 
 });

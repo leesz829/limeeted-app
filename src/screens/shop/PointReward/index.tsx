@@ -103,7 +103,6 @@ export default function PointReward(element) {
 
   const getCashBackPayInfo = async () => {
     const { success, data } = await get_cashback_detail_info();
-    console.log('data.result :::: ', data);
     if (success) {
 
       let lettmpltName = data?.pay_info.tmplt_name;
@@ -145,7 +144,7 @@ export default function PointReward(element) {
           <View style={_styles.inner}>
             <View style={_styles.innerArea01}>
               <Text style={_styles.innerText01}>상품을 구입하면{'\n'}리미티드 포인트가 충전돼요.</Text>
-              <Text style={_styles.innerText02}>충전 등급이 올라가면 캐시백 보상이 지급됩니다.</Text>
+              <Text style={_styles.innerText02}>리미티드 포인트는 매월 1일 초기화 됩니다.</Text>
             </View>
 
             <View>

@@ -133,12 +133,12 @@ export default function ProfileAuth({ level, data, isButton, callbackAuthComment
                     hitSlop={commonStyle.hipSlop15}>
 
                     <SpaceView key={index} viewStyle={_styles.authIndicatorItem(index == currentIndex ? true : false)}>
-                      {item.common_code == 'JOB' && <Image source={ICON.jobNew} style={{width: 35, height: 26}} />}
-                      {item.common_code == 'EDU' && <Image source={ICON.degreeNew} style={{width: 35, height: 26}} />}
-                      {item.common_code == 'INCOME' && <Image source={ICON.incomeNew} style={{width: 35, height: 26}} />}
-                      {item.common_code == 'ASSET' && <Image source={ICON.assetNew} style={{width: 35, height: 26}} />}
-                      {item.common_code == 'SNS' && <Image source={ICON.snsNew} style={{width: 35, height: 26}} />}
-                      {item.common_code == 'VEHICLE' && <Image source={ICON.vehicleNew} style={{width: 35, height: 26}} />}
+                      {item.common_code == 'JOB' && <Image source={ICON.jobNew} style={{width: 30, height: 21}} />}
+                      {item.common_code == 'EDU' && <Image source={ICON.degreeNew} style={{width: 30, height: 21}} />}
+                      {item.common_code == 'INCOME' && <Image source={ICON.incomeNew} style={{width: 30, height: 21}} />}
+                      {item.common_code == 'ASSET' && <Image source={ICON.assetNew} style={{width: 30, height: 21}} />}
+                      {item.common_code == 'SNS' && <Image source={ICON.snsNew} style={{width: 30, height: 21}} />}
+                      {item.common_code == 'VEHICLE' && <Image source={ICON.vehicleNew} style={{width: 30, height: 21}} />}
 
                       <Text style={_styles.authIndicatorText}>{item.code_name}</Text>
                     </SpaceView>
@@ -163,7 +163,7 @@ export default function ProfileAuth({ level, data, isButton, callbackAuthComment
               autoplay={false}
               style={_styles.authWrapper}
               containerCustomStyle={{ marginLeft: -22 }}
-              pagingEnabled
+              //pagingEnabled
               renderItem={({ item, index }) => {
                 return (
                   <RenderAuthInfoNew
@@ -461,6 +461,7 @@ const _styles = StyleSheet.create({
     fontFamily: 'AppleSDGothicNeoR00',
     fontSize: 13,
     color: '#5A5A5A',
+    paddingHorizontal: 35,
   },
   authIntroArea: {
     width: width - 80,
@@ -474,7 +475,7 @@ const _styles = StyleSheet.create({
     fontSize: 13,
     color: '#7986EE',
     textAlign: 'center',
-    paddingHorizontal: 40,
+    paddingHorizontal: 35,
   },
   authIntroTextInput: {
     fontFamily: 'AppleSDGothicNeoB00',
@@ -490,7 +491,7 @@ const _styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'space-between',
       backgroundColor: isOn ? '#7986EE' : '#B1B3C7',
-      width: 65,
+      width: 58,
       borderRadius: 50,
       marginRight: 5,
     };
@@ -500,7 +501,7 @@ const _styles = StyleSheet.create({
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 10,
     color: '#FFFFFF',
-    marginRight: 8,
+    marginRight: 7,
   },
 });
 
