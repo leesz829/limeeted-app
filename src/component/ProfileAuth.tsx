@@ -241,6 +241,7 @@ function RenderAuthInfoNew({ item, isButton, onPressSecondAuthFunc, onPressSecon
   }
 
   return (
+    <View style={_styles.authShadowArea}>
       <LinearGradient
         colors={['#FFFFFF', '#E8FFFE']}
         start={{ x: 0, y: 0 }}
@@ -298,8 +299,8 @@ function RenderAuthInfoNew({ item, isButton, onPressSecondAuthFunc, onPressSecon
             </>
           )}
         </SpaceView>
-
       </LinearGradient>
+    </View>
   );
 };
 
@@ -430,9 +431,16 @@ const _styles = StyleSheet.create({
     width: '100%',
     marginTop: 15,
   },
+  authShadowArea: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.23,
+    shadowRadius: 3,
+    elevation: 5,
+    overflow: 'visible',
+  },
   authArea: {
     width: width - 55,
-    backgroundColor: '#fff',
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
@@ -440,12 +448,6 @@ const _styles = StyleSheet.create({
     paddingVertical: 15,
     marginLeft: 4,
     marginVertical: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.23,
-    shadowRadius: 3,
-    elevation: 5,
-    overflow: 'visible',
   },
   authIcon: {
     width: 95,

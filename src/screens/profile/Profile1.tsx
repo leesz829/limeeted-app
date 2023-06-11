@@ -904,33 +904,36 @@ export const Profile1 = (props: Props) => {
           ) : (
             <View style={{width: '100%', flexDirection: 'column', alignItems: 'flex-start'}}>
               <Text style={_styles.title}>프로필 인증</Text>
-              <LinearGradient
-                colors={['#FFFFFF', '#E8FFFE']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={_styles.authArea}>
 
-                <SpaceView viewStyle={{flexDirection: 'row'}}>
-                  <SpaceView mr={7}><Image source={ICON.jobNew} style={{width: 40, height: 29}} /></SpaceView>
-                  <SpaceView mr={7}><Image source={ICON.degreeNew} style={{width: 40, height: 29}} /></SpaceView>
-                  <SpaceView mr={7}><Image source={ICON.incomeNew} style={{width: 40, height: 29}} /></SpaceView>
-                  <SpaceView mr={7}><Image source={ICON.assetNew} style={{width: 40, height: 29}} /></SpaceView>
-                  <SpaceView mr={7}><Image source={ICON.snsNew} style={{width: 40, height: 29}} /></SpaceView>
-                  <SpaceView><Image source={ICON.vehicleNew} style={{width: 40, height: 29}} /></SpaceView>
-                </SpaceView>
+              <View style={_styles.authShadowArea}>
+                <LinearGradient
+                  colors={['#FFFFFF', '#E8FFFE']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={_styles.authArea}>
 
-                <SpaceView mt={20} viewStyle={_styles.authEmptyArea}>
-                  <SpaceView mb={13}><Text style={_styles.authEmptyTit}>프로필 인증 변경 심사 후 인증 레벨을 부여 받을 수 있어요.</Text></SpaceView>
-                  <SpaceView mt={5} viewStyle={{paddingHorizontal: 20}}>
-                    <TouchableOpacity 
-                      onPress={() => { navigation.navigate(STACK.COMMON, { screen: 'SecondAuth', }); }}
-                      hitSlop={commonStyle.hipSlop15}>
-                      
-                      <Text style={_styles.authEmptyBtn}>프로필 인증 변경</Text>
-                    </TouchableOpacity>
+                  <SpaceView viewStyle={{flexDirection: 'row'}}>
+                    <SpaceView mr={7}><Image source={ICON.jobNew} style={{width: 40, height: 29}} /></SpaceView>
+                    <SpaceView mr={7}><Image source={ICON.degreeNew} style={{width: 40, height: 29}} /></SpaceView>
+                    <SpaceView mr={7}><Image source={ICON.incomeNew} style={{width: 40, height: 29}} /></SpaceView>
+                    <SpaceView mr={7}><Image source={ICON.assetNew} style={{width: 40, height: 29}} /></SpaceView>
+                    <SpaceView mr={7}><Image source={ICON.snsNew} style={{width: 40, height: 29}} /></SpaceView>
+                    <SpaceView><Image source={ICON.vehicleNew} style={{width: 40, height: 29}} /></SpaceView>
                   </SpaceView>
-                </SpaceView>
-              </LinearGradient>
+
+                  <SpaceView mt={20} viewStyle={_styles.authEmptyArea}>
+                    <SpaceView mb={13}><Text style={_styles.authEmptyTit}>프로필 인증 변경 심사 후 인증 레벨을 부여 받을 수 있어요.</Text></SpaceView>
+                    <SpaceView mt={5} viewStyle={{paddingHorizontal: 20}}>
+                      <TouchableOpacity 
+                        onPress={() => { navigation.navigate(STACK.COMMON, { screen: 'SecondAuth', }); }}
+                        hitSlop={commonStyle.hipSlop15}>
+                        
+                        <Text style={_styles.authEmptyBtn}>프로필 인증 변경</Text>
+                      </TouchableOpacity>
+                    </SpaceView>
+                  </SpaceView>
+                </LinearGradient>
+              </View>
             </View>
           )}
 
@@ -1501,7 +1504,17 @@ const _styles = StyleSheet.create({
     maxHeight: 80,
     height: 80,
   },
+  authShadowArea: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.23,
+    shadowRadius: 5.0,
+    elevation: 5,
+    overflow: 'visible',
+    width: '100%',
+  },
   authArea: {
+    position: 'relative',
     width: '100%',
     flexDirection: 'column',
     justifyContent: 'center',
@@ -1511,14 +1524,6 @@ const _styles = StyleSheet.create({
     paddingTop: 30,
     paddingBottom: 10,
     marginVertical: 10,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 5.0,
-    elevation: 5,
   },
   authEmptyArea: {
     width: '95%',
