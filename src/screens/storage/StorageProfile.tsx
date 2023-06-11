@@ -431,21 +431,6 @@ export const StorageProfile = (props: Props) => {
           insertMatchInfo(activeType, 0);
 				}
 			});
-    } else if(activeType == 'zzim') {
-
-      // 찜하기 사용시
-      if(typeof data.use_item != 'undefined' && typeof data.use_item.WISH != 'undefined') {
-        let endDt = data?.use_item?.WISH?.end_dt;
-        if(endDt < formatNowDate()) {
-          show({
-            title: '찜하기 이용권 만료',
-            content: '찜하기 이용권 아이템의 구독기간이 만료된 상태입니다.',
-            confirmCallback: function() {
-              
-            }
-          });
-        }
-      }
     }
     
   };
@@ -547,13 +532,6 @@ export const StorageProfile = (props: Props) => {
                 <TouchableOpacity onPress={() => { popupActive('sincere'); }}>
                   <Image source={ICON.royalPassCircle} style={_styles.largeButton} />
                 </TouchableOpacity>
-
-                {/* ######### 찜하기 버튼 */}
-                {data?.match_member_info?.zzim_yn == 'Y' && (
-                  <TouchableOpacity onPress={() => { popupActive('zzim'); }}>
-                    <Image source={ICON.zzimIcon} style={styles.smallButton} />
-                  </TouchableOpacity>
-                )}
               </View>
             </View>
           }
