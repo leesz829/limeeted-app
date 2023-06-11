@@ -126,7 +126,7 @@ export default function ProfileAuth({ level, data, isButton, callbackAuthComment
           </ScrollView> */}
 
           <SpaceView mt={8}>
-            <SpaceView mt={8} viewStyle={{flexDirection: 'row'}}>
+            <SpaceView mt={8} mb={5} viewStyle={{flexDirection: 'row'}}>
                 {data?.map((item, index) => (
                   <TouchableOpacity 
                     onPress={() => { onPressAuthDot(index); }}
@@ -157,7 +157,7 @@ export default function ProfileAuth({ level, data, isButton, callbackAuthComment
               useScrollView={true}
               inactiveSlideScale={1}
               inactiveSlideOpacity={1}
-              inactiveSlideShift={5}
+              inactiveSlideShift={1}
               firstItem={data.length}
               loop={false}
               autoplay={false}
@@ -268,7 +268,7 @@ function RenderAuthInfoNew({ item, isButton, onPressSecondAuthFunc, onPressSecon
         </SpaceView>
 
         <SpaceView mt={20}>
-          <Text style={_styles.authText}>{item?.slogan_name != null ? item?.slogan_name : '"프로필 인증 변경 심사 후 인증 레벨을 부여 받을 수 있어요."'}</Text>
+          <Text style={_styles.authText}>{item?.slogan_name != null ? '"' + item?.slogan_name + '"' : '"프로필 인증 변경 심사 후 인증 레벨을 부여 받을 수 있어요."'}</Text>
         </SpaceView>
 
 
@@ -424,10 +424,11 @@ const _styles = StyleSheet.create({
   },
   authWrapper: {
     width: '100%',
-    marginTop: 13,
+    marginTop: 15,
   },
   authArea: {
     width: width - 55,
+    backgroundColor: '#fff',
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
@@ -435,11 +436,12 @@ const _styles = StyleSheet.create({
     paddingVertical: 15,
     marginLeft: 4,
     marginVertical: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 5 },
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.23,
-    shadowRadius: 5,
+    shadowRadius: 3,
     elevation: 5,
+    overflow: 'visible',
   },
   authIcon: {
     width: 95,
