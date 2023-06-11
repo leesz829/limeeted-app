@@ -436,12 +436,9 @@ const _styles = StyleSheet.create({
     marginLeft: 4,
     marginVertical: 10,
     shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
+    shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.23,
-    shadowRadius: 5.0,
+    shadowRadius: 5,
     elevation: 5,
   },
   authIcon: {
@@ -460,7 +457,7 @@ const _styles = StyleSheet.create({
   },
   authText: {
     fontFamily: 'AppleSDGothicNeoR00',
-    fontSize: 11,
+    fontSize: 13,
     color: '#5A5A5A',
   },
   authIntroArea: {
@@ -472,7 +469,7 @@ const _styles = StyleSheet.create({
   },
   authIntroText: {
     fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 11,
+    fontSize: 13,
     color: '#7986EE',
     textAlign: 'center',
     paddingHorizontal: 40,

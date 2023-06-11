@@ -153,7 +153,7 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                                 <>
                                   {(memberData?.form_body == 'NORMAL' || memberData?.form_body == 'SKINNY') && (
                                     <>
-                                      <Text style={_styles.addActiveText}>{memberData?.form_body_type}</Text>
+                                      <Text style={_styles.addActiveText}>{memberData?.form_body == 'NORMAL' ? '보통 체형' : memberData?.form_body_type}</Text>
                                       {memberData?.job_name != null ? '의' : ' 입니다.'}
                                     </> 
                                   )}
