@@ -132,18 +132,13 @@ export default function MyDailyView(props: Props) {
               <SpaceView viewStyle={{flexDirection: 'column', alignItems: 'flex-start'}}>
                 <Text style={_styles.title}>프로필 인증</Text>
                 <SpaceView mt={15} viewStyle={_styles.authEmptyArea}>
-                  <SpaceView mb={13}>
-                    <Text style={_styles.authEmptyTit}>
-                      리미티드의 프로필 인증은 결코 어렵지 않아요.{'\n'}
-                      내 사회적 매력을 뽐내 보세요.
-                    </Text>
-                  </SpaceView>
+                  <SpaceView mb={13}><Text style={_styles.authEmptyTit}>프로필 인증 변경 심사 후 인증 레벨을 부여 받을 수 있어요.</Text></SpaceView>
                   <SpaceView mt={5} viewStyle={{paddingHorizontal: 20}}>
                     <TouchableOpacity 
                       onPress={() => { navigation.navigate(STACK.COMMON, { screen: 'SecondAuth', }); }}
                       hitSlop={commonStyle.hipSlop15}>
                       
-                      <Text style={_styles.authEmptyBtn}>프로필 인증 변경하기</Text>
+                      <Text style={_styles.authEmptyBtn}>프로필 인증 변경</Text>
                     </TouchableOpacity>
                   </SpaceView>
                 </SpaceView>

@@ -133,12 +133,12 @@ export default function ProfileAuth({ level, data, isButton, callbackAuthComment
                     hitSlop={commonStyle.hipSlop15}>
 
                     <SpaceView key={index} viewStyle={_styles.authIndicatorItem(index == currentIndex ? true : false)}>
-                      {item.common_code == 'JOB' && <Image source={ICON.jobNew} style={{width: 30, height: 21}} />}
-                      {item.common_code == 'EDU' && <Image source={ICON.degreeNew} style={{width: 30, height: 21}} />}
-                      {item.common_code == 'INCOME' && <Image source={ICON.incomeNew} style={{width: 30, height: 21}} />}
-                      {item.common_code == 'ASSET' && <Image source={ICON.assetNew} style={{width: 30, height: 21}} />}
-                      {item.common_code == 'SNS' && <Image source={ICON.snsNew} style={{width: 30, height: 21}} />}
-                      {item.common_code == 'VEHICLE' && <Image source={ICON.vehicleNew} style={{width: 30, height: 21}} />}
+                      {item.common_code == 'JOB' && <Image source={ICON.jobNew} style={{width: 25, height: 17}} />}
+                      {item.common_code == 'EDU' && <Image source={ICON.degreeNew} style={{width: 25, height: 17}} />}
+                      {item.common_code == 'INCOME' && <Image source={ICON.incomeNew} style={{width: 25, height: 17}} />}
+                      {item.common_code == 'ASSET' && <Image source={ICON.assetNew} style={{width: 25, height: 17}} />}
+                      {item.common_code == 'SNS' && <Image source={ICON.snsNew} style={{width: 25, height: 17}} />}
+                      {item.common_code == 'VEHICLE' && <Image source={ICON.vehicleNew} style={{width: 25, height: 17}} />}
 
                       <Text style={_styles.authIndicatorText}>{item.code_name}</Text>
                     </SpaceView>
@@ -264,37 +264,41 @@ function RenderAuthInfoNew({ item, isButton, onPressSecondAuthFunc, onPressSecon
         </SpaceView>
 
         <SpaceView mt={8}>
-          <Text style={_styles.authTit}>{item?.code_name} {item?.auth_level != null && 'LV ' + item?.auth_level}</Text>
+          <Text style={_styles.authTit}>{/* {item?.code_name} */}{item?.auth_level != null && 'LV ' + item?.auth_level}</Text>
         </SpaceView>
 
-        <SpaceView mt={20}>
+        <SpaceView viewStyle={{minHeight: 35, justifyContent: 'center'}}>
           <Text style={_styles.authText}>{item?.slogan_name != null ? '"' + item?.slogan_name + '"' : '"프로필 인증 변경 심사 후 인증 레벨을 부여 받을 수 있어요."'}</Text>
         </SpaceView>
 
-
-        {typeof onPressSecondCommentFunc != 'undefined' && onPressSecondAuthFunc != null ? (
-          <>
-            <TouchableOpacity onPress={() => { onPressSecondCommentFunc(item?.member_auth_seq, code, item?.code_name, item?.auth_comment); }}>
-              <SpaceView mt={20} viewStyle={_styles.authIntroArea}>
-                {item?.auth_comment != null && typeof item?.auth_comment != 'undefined' ? (
+        <SpaceView viewStyle={{justifyContent: 'flex-start'}}>
+          {typeof onPressSecondCommentFunc != 'undefined' && onPressSecondAuthFunc != null ? (
+            <>
+              <TouchableOpacity onPress={() => { onPressSecondCommentFunc(item?.member_auth_seq, code, item?.code_name, item?.auth_comment); }}>
+                <SpaceView mt={10} viewStyle={_styles.authIntroArea}>
+                  {item?.auth_comment != null && typeof item?.auth_comment != 'undefined' ? (
+                    <Text style={_styles.authIntroText}>{item?.auth_comment}</Text>
+                  ) : (
+                    <Text style={_styles.authIntroTextInput}>여기를 터치하고 내 이야기를 남겨 주세요.</Text>
+                  )}
+                </SpaceView>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <>
+              {item?.auth_comment != null && typeof item?.auth_comment != 'undefined' ? (
+                <SpaceView mt={10} viewStyle={_styles.authIntroArea}>
                   <Text style={_styles.authIntroText}>{item?.auth_comment}</Text>
-                ) : (
-                  <Text style={_styles.authIntroTextInput}>여기를 터치하고 내 이야기를 남겨 주세요.</Text>
-                )}
-              </SpaceView>
-            </TouchableOpacity>
-          </>
-        ) : (
-          <>
-            {item?.auth_comment != null && typeof item?.auth_comment != 'undefined' ? (
-              <SpaceView mt={20} viewStyle={_styles.authIntroArea}>
-                <Text style={_styles.authIntroText}>{item?.auth_comment}</Text>
-              </SpaceView>
-            ) : (
-              <View style={{height: 7}} />
-            )}
-          </>
-        )}
+                </SpaceView>
+              ) : (
+                <SpaceView mt={10} viewStyle={_styles.authIntroArea}>
+                  <Text style={_styles.authIntroText}>코멘트가 등록되어 있지 않아요.</Text>
+                </SpaceView>
+              )}
+            </>
+          )}
+        </SpaceView>
+
       </LinearGradient>
   );
 };
@@ -458,28 +462,30 @@ const _styles = StyleSheet.create({
     overflow: 'hidden',
   },
   authText: {
-    fontFamily: 'AppleSDGothicNeoR00',
-    fontSize: 13,
-    color: '#5A5A5A',
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 11,
+    color: '#7986EE',
     paddingHorizontal: 35,
   },
   authIntroArea: {
     width: width - 80,
     backgroundColor: '#fff',
     borderRadius: 17,
-    paddingVertical: 10,
+    paddingVertical: 3,
     paddingHorizontal: 5,
+    minHeight: 70,
+    justifyContent: 'center',
   },
   authIntroText: {
     fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 13,
+    fontSize: 11,
     color: '#7986EE',
     textAlign: 'center',
     paddingHorizontal: 35,
   },
   authIntroTextInput: {
     fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 12,
+    fontSize: 11,
     color: '#A3A3A3',
     textAlign: 'center',
     paddingHorizontal: 40,
@@ -491,9 +497,9 @@ const _styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'space-between',
       backgroundColor: isOn ? '#7986EE' : '#B1B3C7',
-      width: 58,
+      width: 52,
       borderRadius: 50,
-      marginRight: 5,
+      marginRight: 3,
     };
   },
 

@@ -397,6 +397,8 @@ export const Storage = (props: Props) => {
   );
 
   function RenderItem({ item, index, type }) {
+    console.log('item ::::::: ',  item);
+
     let tgt_member_seq = '';
     let profile_open_yn = 'N';
 
@@ -442,7 +444,10 @@ export const Storage = (props: Props) => {
                   </>
                 ) : (
                   <>
-                    <Image style={_styles.renderItemTopIcon} source={item.special_interest_yn == 'N' ? ICON.passCircle : ICON.royalPassCircle} />
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <Image style={_styles.renderItemTopIcon} source={item.special_interest_yn == 'N' ? ICON.passCircle : ICON.royalPassCircle} />
+                      {isEmptyData(item?.special_level) && <Text style={_styles.levelText}>Lv.{item.special_level}</Text>}
+                    </View>
                     <Text style={[_styles.renderItemTopText, (type == 'REQ' && profile_open_yn == 'N' && {color: '#787878'})]}>
                       {item.dday > 0 ? item.dday + '일 남음' : '오늘까지'}
                     </Text>
@@ -638,10 +643,12 @@ const _styles = StyleSheet.create({
     position: 'absolute',
     flexDirection: `row`,
     alignItems: `center`,
-    justifyContent: `center`,
-    left: 5,
+    justifyContent: 'space-between',
+    left: 0,
+    right: 0,
     top: 3,
     zIndex: 1,
+    paddingHorizontal: 5,
   },
   renderItemTopIcon: {
     width: 25,
@@ -658,13 +665,11 @@ const _styles = StyleSheet.create({
   },
   renderItemTopText: {
     fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 14,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
+    fontSize: 13,
     letterSpacing: 0,
     textAlign: 'left',
     color: '#ffffff',
-    marginLeft: 0,
+    marginRight: 3,
   },
   renderItemBottomContainer: {
     position: 'absolute',
@@ -676,8 +681,6 @@ const _styles = StyleSheet.create({
   renderItemBottomTextName: {
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 14,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     letterSpacing: 0,
     textAlign: 'left',
     color: '#ffffff',
@@ -687,11 +690,14 @@ const _styles = StyleSheet.create({
     opacity: 0.86,
     fontFamily: 'AppleSDGothicNeoR00',
     fontSize: 10,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     letterSpacing: 0,
     textAlign: 'left',
     color: '#ffffff',
+  },
+  levelText: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 13,
+    color: '#fff',
   },
   tabItem: {
     flexDirection: `row`,
@@ -704,8 +710,6 @@ const _styles = StyleSheet.create({
   tabItemText: {
     flexDirection: `row`,
     fontSize: 14,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     fontFamily: 'AppleSDGothicNeoEB00',
     color: ColorType.white,
     letterSpacing: 0,

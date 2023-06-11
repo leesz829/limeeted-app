@@ -13,6 +13,7 @@ export const getStorageListData = (
          img_file_path: any;
          int_after_day: any;
          special_interest_yn: any;
+         special_level: any;
          req_profile_open_yn: any;
          res_profile_open_yn: any;
          nickname: any;
@@ -37,6 +38,7 @@ export const getStorageListData = (
          img_file_path,
          int_after_day,
          special_interest_yn,
+         special_level,
          req_profile_open_yn,
          res_profile_open_yn,
          nickname,
@@ -54,6 +56,7 @@ export const getStorageListData = (
          img_file_path: any;
          int_after_day: any;
          special_interest_yn: any;
+         special_level: any;
          req_profile_open_yn: any;
          res_profile_open_yn: any;
          nickname: any;
@@ -74,6 +77,7 @@ export const getStorageListData = (
             img_path: '', 
             dday: 0, 
             special_interest_yn: '', 
+            special_level: '',
             req_profile_open_yn: '', 
             res_profile_open_yn: '',
             nickname: '',
@@ -97,6 +101,7 @@ export const getStorageListData = (
          dataJson.img_path = img_path;
          dataJson.dday = dday_mod;
          dataJson.special_interest_yn = special_interest_yn;
+         dataJson.special_level = special_level;
          dataJson.req_profile_open_yn = req_profile_open_yn;
          dataJson.res_profile_open_yn = res_profile_open_yn;
          dataJson.nickname = nickname;

@@ -258,8 +258,8 @@ const _styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    opacity: 0.6,
-    height: height * 0.23,
+    opacity: 0.8,
+    height: height * 0.20,
   },
   badgeContainer: {
     flexDirection: `row`,
