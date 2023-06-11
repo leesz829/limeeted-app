@@ -140,8 +140,8 @@ android {
         applicationId "com.appsquad.limeeted"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 81
-        versionName "1.7.5"
+        versionCode 82
+        versionName "1.7.6"
         missingDimensionStrategy 'store', 'play'
         resValue 'string', "CODE_PUSH_APK_BUILD_TIME", String.format("\"%d\"", System.currentTimeMillis())
     }   
@@ -186,7 +186,7 @@ android {
             signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-            resValue "string", "CodePushDeploymentKey", "${CODEPUSH_DEPLOYMENT_KEY_PRODUCTION}"
+            resValue "string", "CodePushDeploymentKey", "${CODEPUSH_DEPLOYMENT_KEY_STAGING}"
         }
         releaseStaging {
             initWith release
