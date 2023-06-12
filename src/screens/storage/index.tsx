@@ -98,59 +98,57 @@ export const Storage = (props: Props) => {
           console.log(data.result_msg);
           return false;
         } else {
-          let resLikeListData: any = dataUtils.getStorageListData(
+          let resLikeListData = [];
+          let reqLikeListData = [];
+          let matchTrgtListData = [];
+          let zzimTrgtListData = [];
+
+          resLikeListData = dataUtils.getStorageListData(
             data.res_like_list
           );
-          let reqLikeListData: any = dataUtils.getStorageListData(
+          reqLikeListData = dataUtils.getStorageListData(
             data.req_like_list
           );
-          let matchTrgtListData: any = dataUtils.getStorageListData(
+          matchTrgtListData = dataUtils.getStorageListData(
             data.match_trgt_list
           );
-          let zzimTrgtListData: any = dataUtils.getStorageListData(
-            data.zzim_trgt_list
-          );
+
+          if(typeof data.zzim_trgt_list != 'undefined') {
+            zzimTrgtListData = dataUtils.getStorageListData(
+              data.zzim_trgt_list
+            );
+          }
 
           let tmpResSpecialCnt = 0;
           let tmpReqSpecialCnt = 0;
           let tmpMatchSpecialCnt = 0;
 
-          if (data.res_like_list.length > 0) {
-            [
-              data.res_like_list.map(
-                ({ special_interest_yn }: { special_interest_yn: any }) => {
-                  if (special_interest_yn == 'Y') {
-                    tmpResSpecialCnt++;
-                  }
+          if(data?.res_like_list.length > 0) {
+            data?.res_like_list.map(({ special_interest_yn } : { special_interest_yn: any }) => {
+                if (special_interest_yn == 'Y') {
+                  tmpResSpecialCnt++;
                 }
-              ),
-            ]
+              }
+            );
           };            
 
-          if (data.req_like_list.length > 0) {
-            [
-              data.req_like_list.map(
-                ({ special_interest_yn }: { special_interest_yn: any }) => {
-                  if (special_interest_yn == 'Y') {
-                    tmpReqSpecialCnt++;
-                  }
+          if(data?.req_like_list.length > 0) {
+            data?.req_like_list.map(({ special_interest_yn }: { special_interest_yn: any }) => {
+                if (special_interest_yn == 'Y') {
+                  tmpReqSpecialCnt++;
                 }
-              ),
-            ]
+              }
+            );
           };
 
-          if (data.match_trgt_list.length > 0) {
-            [
-              data.match_trgt_list.map(
-                ({ special_interest_yn }: { special_interest_yn: any }) => {
-                  if (special_interest_yn == 'Y') {
-                    tmpMatchSpecialCnt++;
-                  }
+          if(data?.match_trgt_list.length > 0) {
+            data?.match_trgt_list.map(({ special_interest_yn }: { special_interest_yn: any }) => {
+                if (special_interest_yn == 'Y') {
+                  tmpMatchSpecialCnt++;
                 }
-              ),
-            ]
+              }
+            );
           };
-            
 
           setDataStorage({
             ...dataStorage,
@@ -162,8 +160,8 @@ export const Storage = (props: Props) => {
             reqSpecialCnt: tmpReqSpecialCnt,
             matchSpecialCnt: tmpMatchSpecialCnt,
           });
+          
         }
-        
       }
     } catch (error) {
       console.log(error);
@@ -327,7 +325,7 @@ export const Storage = (props: Props) => {
             {tabs.map((item, index) => (
               <>
                 {((item.type == 'ZZIM' && item.data.length > 0) || item.type != 'ZZIM') &&
-                  <TouchableOpacity onPress={() => { onPressDot(index); }}>
+                  <TouchableOpacity key={index} onPress={() => { onPressDot(index); }}>
                     <View style={[_styles.tabItem, { backgroundColor: index === currentIndex ? item.color : '#ececec' }]}>
                       <Text style={_styles.tabItemText}>{item.title} | {item.data.length}</Text>
                     </View>
@@ -410,7 +408,7 @@ export const Storage = (props: Props) => {
 
     return (
       <>
-        {((isSpecialVisible && item.special_interest_yn == 'Y') || (!isSpecialVisible) || type == 'ZZIM') && 
+        {((isSpecialVisible && item.special_interest_yn == 'Y') || (!isSpecialVisible) || (type == 'ZZIM')) && 
 
           <TouchableOpacity
             onPress={() => {
