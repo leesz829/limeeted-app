@@ -365,6 +365,7 @@ const _styles = StyleSheet.create({
     paddingVertical: 2,
     borderRadius: 5,
     borderBottomColor: '#151515',
+    overflow: 'hidden',
   },
   triangle: {
     marginTop: -1,
