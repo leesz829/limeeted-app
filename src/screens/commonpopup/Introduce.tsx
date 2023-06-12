@@ -123,24 +123,31 @@ export const Introduce = (props: Props) => {
 
   // 활동지 항목 목록
 
-  // 체형 항목 목록
+  // 남자 체형 항목 목록
   const manBodyItemList = [
     { label: '보통', value: 'NORMAL' },
     { label: '마른 체형', value: 'SKINNY' },
     { label: '근육질', value: 'FIT' },
     { label: '건장한', value: 'GIANT' },
+    { label: '슬림 근육', value: 'SLIM' },
+    { label: '통통한', value: 'CHUBBY' },
   ];
 
+  // 여자 체형 항목 목록
   const womanBodyItemList = [
     { label: '보통', value: 'NORMAL' },
     { label: '마른 체형', value: 'SKINNY' },
     { label: '섹시한', value: 'SEXY' },
     { label: '글래머', value: 'GLAMOUR' },
+    { label: '아담한', value: 'COMPACT' },
+    { label: '모델핏', value: 'MODEL' },
+    { label: '통통한', value: 'CHUBBY' },
   ];
 
   // 종교 항목 목록
   const religionItemList = [
-    { label: '무교', value: 'NONE' },
+    { label: '무교(무신론자)', value: 'NONE' },
+    { label: '무교(유신론자)', value: 'THEIST' },
     { label: '기독교', value: 'JEJUS' },
     { label: '불교', value: 'BUDDHA' },
     { label: '이슬람', value: 'ALLAH' },
