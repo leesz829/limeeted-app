@@ -314,8 +314,7 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc }) {
               style={_styles.categoryBorder(item.value === selectedCategory.value)}
               onPress={() => onPressCategory(item)}>
 
-              <Text
-                style={_styles.categoryText(item.value === selectedCategory.value)}>
+              <Text style={_styles.categoryText(item.value === selectedCategory.value)}>
                 {item?.label}
               </Text>
             </TouchableOpacity>
@@ -344,27 +343,48 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc }) {
 
 // ######################################################### 상품 RenderItem
 function RenderItem({ item, openModal }) {
+  const imagePath = findSourcePath(item?.file_path + item?.file_name);
   const isNew = (item.connect_date == null || item.connect_date < item.reg_dt) ? true : false;
 
-  const onPressItem = () => openModal(item);
-  const imagePath = findSourcePath(item?.file_path + item?.file_name);
+  const buyCountCycle = item?.buy_count_cycle;
+  const buyCount = item?.buy_count;
+  const buyCountMax = item?.buy_count_max;
+
+  const onPressItem = () => {
+    let isChk = true;
+
+    if(buyCountCycle != 'NONE') {
+      if(buyCount >= buyCountMax) {
+        isChk = false;
+      }
+    }
+
+    if(isChk) {
+      openModal(item);
+    }
+  };
 
   return (
     <TouchableOpacity style={_styles.itemContainer} onPress={onPressItem}>
       <View style={{ flexDirection: 'row' }}>
-        <View>
-          <Image
-            source={ imagePath }
-            style={_styles.tumbs}
-          />
+        <View style={{width: 110, height: 80}}>
+          <Image source={ imagePath } style={_styles.tumbs} />
           {isNew &&
             <View style={_styles.iconArea}>
               <Text style={_styles.newText}>NEW</Text>
             </View>
           }
+
+          {item?.buy_count_cycle != 'NONE' && (
+            <View style={_styles.imgBottomArea}>
+              <Text style={_styles.imgBottomText}>{item?.buy_count}/{item?.buy_count_max}구매</Text>
+              <View style={{backgroundColor: '#000000', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, opacity: 0.7}} />
+            </View>
+          )}
         </View>
+
         <View style={_styles.textContainer}>
-          <Text style={_styles.BESTText}>BEST</Text>
+          {/* <Text style={_styles.BESTText}>BEST</Text> */}
           <Text style={{ fontSize: 13, fontWeight: 'bold', color:'#363636' }}>
             {item?.item_name}
           </Text>
@@ -380,10 +400,11 @@ function RenderItem({ item, openModal }) {
             </Text>
           </View>
           <View style={_styles.boxWrapper}>
-            {
-              (item?.discount_rate && item.discount_rate != 0 ? true : false) && <View style={_styles.box}>
-                <Text style={_styles.boxText}>특가할인</Text>
-              </View>
+            {(item?.discount_rate && item.discount_rate != 0 ? true : false) && 
+              <View style={_styles.box}><Text style={_styles.boxText}>특가할인</Text></View>
+            }
+            {item?.buy_count_cycle == 'MONTH' &&
+              <View style={_styles.box}><Text style={_styles.boxText}>월1회구매</Text></View>
             }
           </View>
         </View>
@@ -401,6 +422,7 @@ const _styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
     paddingHorizontal: 16,
+    backgroundColor: '#ffffff',
   },
   categoriesContainer: {
     marginTop: 30,
@@ -470,13 +492,16 @@ const _styles = StyleSheet.create({
     marginTop: 4,
   },
   box: {
-    padding: 4,
-    backgroundColor: Color.grayDDDD,
-    borderRadius: 5,
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    backgroundColor: '#F2F2F2',
+    borderRadius: 3,
+    marginRight: 3,
   },
   boxText: {
-    fontSize: 10,
-    color: Color.purple,
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 9,
+    color: '#8854D2',
   },
   iconArea: {
     position: 'absolute',
@@ -492,7 +517,23 @@ const _styles = StyleSheet.create({
     paddingHorizontal: 6,
     paddingVertical: 2,
     overflow: 'hidden',
-  }
+  },
+  imgBottomArea: {
+    position: 'absolute',
+    bottom: 4,
+    right: 4,
+    borderRadius: 7,
+    overflow: 'hidden',
+  },
+  imgBottomText: {
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 12,
+    textAlign: 'left',
+    color: '#fff',
+    paddingHorizontal: 6,
+    paddingVertical: 1,
+    zIndex: 1,
+  },
 });
 
 const categories = [

@@ -24,13 +24,14 @@ import {
 import { useDispatch } from 'react-redux';
 import { STACK } from 'constants/routes';
 import { useUserInfo } from 'hooks/useUserInfo';
-import { get_common_code, update_additional, get_member_introduce } from 'api/models';
+import { get_common_code, update_additional, get_member_introduce, save_member_introduce } from 'api/models';
 import { usePopup } from 'Context';
 import { myProfile } from 'redux/reducers/authReducer';
 import { Color } from 'assets/styles/Color';
 import { ICON } from 'utils/imageUtils';
 import { Modalize } from 'react-native-modalize';
 import { SUCCESS } from 'constants/reusltcode';
+import { isEmptyData } from 'utils/functions';
 
 
 /* ################################################################################################################
@@ -63,7 +64,7 @@ export const Introduce = (props: Props) => {
   const [form_body, setForm_body] = React.useState<any>(memberBase.form_body);
   const [religion, setReligion] = React.useState<any>(memberBase.religion);
   const [drinking, setDrinking] = React.useState<any>(memberBase.drinking);
-  const [smoking, setSmoking] = React.useState<any>(memberBase.smoking);
+  const [smoking, setSmoking] = React.useState<any>(isEmptyData(memberBase?.smoking) ? memberBase?.smoking : '');
 
   const int_modalizeRef = useRef<Modalize>(null);
 	const int_onOpen = () => { int_modalizeRef.current?.open(); };
@@ -280,6 +281,12 @@ export const Introduce = (props: Props) => {
 
   // ############################################################ 내 소개하기 저장
   const saveMemberAddInfo = async () => {
+
+    if(!isEmptyData(comment)) {
+      show({ content: '한줄 소개를 입력해 주세요.' });
+      return false;
+    };
+
     const body = {
       comment: comment,
       business: business,
@@ -293,7 +300,7 @@ export const Introduce = (props: Props) => {
       interest_list : checkIntList
     };
     try {
-			const { success, data } = await update_additional(body);
+			const { success, data } = await save_member_introduce(body);
 			if(success) {
 				switch (data.result_code) {
 				case SUCCESS:
@@ -347,12 +354,16 @@ export const Introduce = (props: Props) => {
 
   // 첫 렌더링 때 실행
   React.useEffect(() => {
-    getMemberIntroduce(memberBase.business);
 
-    //if (memberBase.business != '') {
-      //getJobCodeList(memberBase.business);
-      //getMemberIntroduce(memberBase.business);
-    //}
+    if(isFocus) {
+      getMemberIntroduce(memberBase.business);
+
+      //if (memberBase.business != '') {
+        //getJobCodeList(memberBase.business);
+        //getMemberIntroduce(memberBase.business);
+      //}
+    }
+
   }, [isFocus]);
 
   return (

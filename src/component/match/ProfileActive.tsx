@@ -6,6 +6,7 @@ import { findSourcePath, ICON, IMAGE, GUIDE_IMAGE } from 'utils/imageUtils';
 import SpaceView from 'component/SpaceView';
 import { Slider } from '@miblanchard/react-native-slider';
 import LinearGradient from 'react-native-linear-gradient';
+import { isEmptyData } from 'utils/functions';
 
 
 const { width, height } = Dimensions.get('window');
@@ -73,14 +74,19 @@ export default function ProfileActive({ memberData }) {
           <View style={{zIndex: 1}}>
             <Text style={_styles.profileEverageText}>프로필 평점</Text>
             <Text style={_styles.profileActiveText1}>
-              <Text style={{ fontFamily: 'AppleSDGothicNeoEB00' }}>
-                {memberData.nickname}
-              </Text>
+              <Text style={{ fontFamily: 'AppleSDGothicNeoEB00' }}>{memberData.nickname}</Text>
               님의 리미티드 대표 인상
             </Text>
             <Text style={_styles.profileActiveText2}>{memberData.face_code_name}</Text>
             <View style={_styles.sliderContainer}>
               <Text style={_styles.sliderText}>프로필 평점 {memberData.profile_score}</Text>
+
+              {isEmptyData(memberData?.profile_score) && memberData?.profile_score > 0 &&
+                <View style={[_styles.scoreContainer, { left: memberData?.profile_score == 0 ? 0 : memberData?.profile_score * 10 - 5 + '%' }]}>
+                  <Text style={_styles.scoreText}>{memberData?.profile_score}</Text>
+                  <View style={_styles.triangle}></View>
+                </View>
+              }
 
               <SpaceView mt={5} viewStyle={{zIndex: 1}}>
                 <LinearGradient
@@ -108,7 +114,7 @@ export default function ProfileActive({ memberData }) {
             </View>
           </View>
           
-          {memberData?.profile_score >= 7.0 && memberData?.profile_score < 8.0 &&
+          {/* {memberData?.profile_score >= 7.0 && memberData?.profile_score < 8.0 &&
             <View style={{position: 'absolute', top: -10, right: 10}}>
               <Image source={ICON.score7BigIcon} style={[{width: 180, height: 180, opacity: 0.6}]} />
             </View>
@@ -127,7 +133,7 @@ export default function ProfileActive({ memberData }) {
             <View style={{position: 'absolute', top: 0, right: 5}}>
               <Image source={ICON.score10Icon} style={[{width: 180, height: 180, opacity: 0.6}]} />
             </View>
-          }
+          } */}
           
         </View>
 
@@ -151,6 +157,13 @@ export default function ProfileActive({ memberData }) {
           </Text> */}
           <View style={_styles.sliderContainer}>
             <Text style={_styles.sliderText}>소셜 평점 {memberData?.social_grade.toFixed(1)}</Text>
+
+            {isEmptyData(memberData?.social_grade) && memberData?.social_grade > 0 &&
+              <View style={[_styles.scoreContainer, { left: memberData?.social_grade == 0 ? 0 : memberData?.social_grade * 10 - 5 + '%' }]}>
+                <Text style={_styles.scoreText}>{memberData?.social_grade}</Text>
+                <View style={_styles.triangle}></View>
+              </View>
+            }
 
             <SpaceView mt={5} viewStyle={{zIndex: 1}}>
               <LinearGradient
@@ -205,7 +218,7 @@ const _styles = StyleSheet.create({
   profileActivePannel: {
     width: '100%',
     borderRadius: 20,
-    backgroundColor: '#ebedfc',
+    backgroundColor: '#D5DAFC',
     marginTop: 10,
     paddingHorizontal: 20,
     paddingVertical: 18,
@@ -214,15 +227,12 @@ const _styles = StyleSheet.create({
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 12,
     lineHeight: 26,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#697ae6',
+    color: '#697AE6',
   },
   profileActiveText1: {
     fontFamily: 'AppleSDGothicNeoM00',
     fontSize: 15,
     lineHeight: 24,
-    letterSpacing: 0,
     textAlign: 'left',
     color: '#333333',
     marginTop: 4,
@@ -230,11 +240,8 @@ const _styles = StyleSheet.create({
   profileActiveText2: {
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 20,
-    lineHeight: 24,
-    letterSpacing: 0,
-    textAlign: 'left',
     color: '#5d6ae2',
-    marginTop: 10,
+    marginTop: 3,
   },
   sliderContainer: {
     marginTop: 26,
@@ -243,10 +250,8 @@ const _styles = StyleSheet.create({
   sliderText: {
     fontFamily: 'AppleSDGothicNeoR00',
     fontSize: 11,
-    lineHeight: 16,
-    letterSpacing: 0,
     textAlign: 'center',
-    color: '#ABABAB',
+    color: '#8A8DA4',
   },
   sliderContainerStyle: {
     width: '100%',
@@ -269,14 +274,11 @@ const _styles = StyleSheet.create({
   gageText: {
     fontFamily: 'AppleSDGothicNeoM00',
     fontSize: 10,
-    //lineHeight: 25,
-    letterSpacing: 0,
-    textAlign: 'center',
-    color: '#d0d0d0',
+    color: '#8A8DA4',
   },
   socialContainer: {
     borderRadius: 20,
-    backgroundColor: '#feeff2',
+    backgroundColor: '#FEEFF2',
     width: '100%',
     marginTop: 10,
     paddingHorizontal: 20,
@@ -286,7 +288,6 @@ const _styles = StyleSheet.create({
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 12,
     lineHeight: 26,
-    textAlign: 'left',
     color: '#fe0456',
   },
   socialText1: {
@@ -348,6 +349,36 @@ const _styles = StyleSheet.create({
     alignItems: `center`,
     justifyContent: `center`,
     marginLeft: 8,
+  },
+  scoreContainer: {
+    position: 'absolute',
+    transform: [{ translateY: -6 }], // 수직 중앙 정렬을 위한 translateY
+    alignItems: 'center',
+  },
+  scoreText: {
+    backgroundColor: '#151515',
+    color: ColorType.white,
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 10,
+    fontWeight: 'bold',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 5,
+    borderBottomColor: '#151515',
+  },
+  triangle: {
+    marginTop: -1,
+    width: 0,
+    height: 0,
+    backgroundColor: 'transparent',
+    borderStyle: 'solid',
+    borderLeftWidth: 5,
+    borderRightWidth: 5,
+    borderBottomWidth: 5,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderBottomColor: '#151515',
+    transform: [{ rotate: '180deg' }],
   },
 
 });

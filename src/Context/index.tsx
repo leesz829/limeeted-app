@@ -14,6 +14,7 @@ interface PopupContextProps {
   guideType: string | undefined;
   guideSlideYn: string | undefined;
   guideNexBtnExpoYn: string | undefined;
+  btnExpYn: string | undefined;
 }
 
 export const PopupProvider = ({ children }: any) => {
@@ -28,6 +29,7 @@ export const PopupProvider = ({ children }: any) => {
     guideType: '',
     guideSlideYn: '',
     guideNexBtnExpoYn: '',
+    btnExpYn: '',
   });
 
   function show(content: PopupContextProps) {
@@ -46,6 +48,7 @@ export const PopupProvider = ({ children }: any) => {
       guideType: '',
       guideSlideYn: '',
       guideNexBtnExpoYn: '',
+      btnExpYn: '',
     });
   }
 
@@ -75,6 +78,7 @@ export const PopupProvider = ({ children }: any) => {
           }
           confirmCallbackFunc={contents.confirmCallback}
           cancelCallbackFunc={contents.cancelCallback}
+          btnExpYn={contents.btnExpYn}
         />
       )}
     </PopupContext.Provider>

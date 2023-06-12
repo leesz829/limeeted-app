@@ -73,6 +73,7 @@ import {
   DELETE_MEMBER_PROFILE_IMAGE,
   FIRST_MATCH_PASS_ADD,
   SAVE_PROFILE_AUTH_COMMENT,
+  SAVE_MEMBER_INTRODUCE,
 } from './route';
 
 /* ========================================================================================================
@@ -374,6 +375,21 @@ export async function report_check_user_confirm(body: {
   report_member_seq: number;
 }) {
   return send(CHECK_REPORT_CONFIRM, 'POST', body, true, false);
+}
+
+// 회원의 소개 정보를 저장한다.
+export async function save_member_introduce(body: {
+  comment: string;
+  business: string;
+  job: string;
+  height: string;
+  form_body: string;
+  religion: string;
+  drinking: string;
+  smoking: string;
+  interest_list: any;
+}) {
+  return send(SAVE_MEMBER_INTRODUCE, 'POST', body, true, false);
 }
 
 

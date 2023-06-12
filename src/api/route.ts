@@ -48,6 +48,7 @@ export const CHECK_REPORT = '/member/selectCheckReport';
 export const CHECK_REPORT_CONFIRM = '/member/updateCheckReportConfirm';
 export const INSERT_MEMBER_PHONE_BOOK = '/member/insertMemberPhoneBook';
 export const MEMBER_APPLY_ITEM_INFO = '/item/selectMemberApplyItemList';
+export const SAVE_MEMBER_INTRODUCE = '/member/saveMemberIntroduce'
 
 /**
  * PROFILE
