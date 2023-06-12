@@ -46,6 +46,7 @@ export default function VisualImage({ imgList, memberData, isButton }) {
           data={imgList}
           renderItem={RenderItem}
           onScroll={handleScroll}
+          showsHorizontalScrollIndicator={false}
           horizontal
           pagingEnabled
         />
