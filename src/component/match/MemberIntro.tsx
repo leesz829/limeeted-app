@@ -164,7 +164,7 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                                     <>
                                       {memberData?.job_name != null ? (
                                         <>
-                                          <Text style={_styles.addActiveText}>헬스를 즐기는</Text>{' '}
+                                          <Text style={_styles.addActiveText}>헬스를 즐기는</Text>
                                         </>
                                       ) : (
                                         <>
