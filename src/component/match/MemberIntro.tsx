@@ -448,19 +448,21 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
             </SpaceView>
 
             {/* ############################################################################################### 관심사 영역 */}
-            <SpaceView mt={20} mb={15} viewStyle={_styles.interestWrap}>
-              <Text style={_styles.interestTitle}>관심사를 공유해요 : )</Text>
-              <SpaceView viewStyle={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 13, marginBottom: 10 }}>
-                {interestList.map((item, index) => {
-                  const isOn = item.dup_chk == 0 ? false : true;
-                  return (
-                    <View key={index} style={_styles.interestItem(isOn)}>
-                      <Text style={_styles.interestText(isOn)}>{item.code_name}</Text>
-                    </View>
-                  );
-                })}
+            {interestList.length > 0 &&
+              <SpaceView mt={20} mb={15} viewStyle={_styles.interestWrap}>
+                <Text style={_styles.interestTitle}>관심사를 공유해요 : )</Text>
+                <SpaceView viewStyle={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 13, marginBottom: 10 }}>
+                  {interestList.map((item, index) => {
+                    const isOn = item.dup_chk == 0 ? false : true;
+                    return (
+                      <View key={index} style={_styles.interestItem(isOn)}>
+                        <Text style={_styles.interestText(isOn)}>{item.code_name}</Text>
+                      </View>
+                    );
+                  })}
+                </SpaceView>
               </SpaceView>
-            </SpaceView>
+            }
 
           </SpaceView>
         </SpaceView>
