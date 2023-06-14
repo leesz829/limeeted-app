@@ -59,7 +59,7 @@ export default function VisualImage({ imgList, memberData, isButton }) {
             end={{ x: 0, y: 1 }}
             style={_styles.thumnailArea} />
 
-          <View style={{paddingLeft: 27}}>
+          <View style={{paddingHorizontal: 27}}>
             <View style={_styles.badgeContainer}>
 
             {/* ####################################################################################################

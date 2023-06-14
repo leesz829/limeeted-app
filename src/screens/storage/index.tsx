@@ -85,6 +85,7 @@ export const Storage = (props: Props) => {
     resSpecialCnt: 0,
     reqSpecialCnt: 0,
     matchSpecialCnt: 0,
+    zzimItemUseYn: 'N',
   });
 
   // ################################################################################# 보관함 정보 조회
@@ -102,6 +103,7 @@ export const Storage = (props: Props) => {
           let reqLikeListData = [];
           let matchTrgtListData = [];
           let zzimTrgtListData = [];
+          let zzimItemUseYn = data.zzimItemUseYn;
 
           resLikeListData = dataUtils.getStorageListData(
             data.res_like_list
@@ -159,6 +161,7 @@ export const Storage = (props: Props) => {
             resSpecialCnt: tmpResSpecialCnt,
             reqSpecialCnt: tmpReqSpecialCnt,
             matchSpecialCnt: tmpMatchSpecialCnt,
+            zzimItemUseYn: zzimItemUseYn,
           });
           
         }
@@ -324,7 +327,7 @@ export const Storage = (props: Props) => {
           <View style={_styles.dotContainer}>
             {tabs.map((item, index) => (
               <>
-                {((item.type == 'ZZIM' && item.data.length > 0) || item.type != 'ZZIM') &&
+                {((item.type == 'ZZIM' && dataStorage.zzimItemUseYn == 'Y') || item.type != 'ZZIM') &&
                   <TouchableOpacity key={index} onPress={() => { onPressDot(index); }}>
                     <View style={[_styles.tabItem, { backgroundColor: index === currentIndex ? item.color : '#ececec' }]}>
                       <Text style={_styles.tabItemText}>{item.title} | {item.data.length}</Text>
