@@ -93,30 +93,6 @@ export const Live = () => {
 
   };
 
-  /* const callBackFunction = (flag: boolean, faceType: string, score: string) => {
-    setClickEventFlag(flag);
-
-    let tmpClickFaceType = faceType ? faceType : clickFaceType;
-    setClickFaceTypeCode(tmpClickFaceType);
-
-    for (let idx in faceTypeList) {
-      if (faceTypeList[idx].value == tmpClickFaceType) {
-        setClickFaceType(faceTypeList[idx].label);
-        break;
-      }
-    }
-
-    if (score) {
-      clickFaceScore = score;
-      setFaceScore(score);
-      setFaceTypeList([LabelObj]);
-      insertProfileAssessment();
-    }
-  }; */
-
-
-
-
   // ####################################################################################### 평점 선택 콜백 함수
   const scoreSelectedCallBackFunc = (score: number) => {
     // 2.5 보다 아래 체크
@@ -124,6 +100,8 @@ export const Live = () => {
     
     if(score == 0) {
       show({ content: '프로필 평점을 다시 선택해 주세요!' , });
+    } else if(score < 2.5) {
+      insertProfileAssessment(score);
     } else {
       setSelectedScore(score);
       setPageIndex(2);
@@ -146,22 +124,15 @@ export const Live = () => {
   };
 
   // ####################################################################################### 프로필 평가 등록
-  const insertProfileAssessment = async () => {
+  const insertProfileAssessment = async (score:number) => {
     const body = {
-      profile_score: selectedScore,
+      profile_score: score,
       face_code: clickFaceTypeCode,
       member_seq: data.live_member_info?.member_seq,
       approval_profile_seq : data.live_member_info?.approval_profile_seq
     };
 
-
-    console.log('body ::::::: ' , body);
-
-    setIsLoad(false);
-    setLiveModalVisible(false);
-    getLiveMatchTrgt();
-
-    return;
+    console.log('body :::::::: ' , body);
 
     try {
       const { success, data } = await regist_profile_evaluation(body);
@@ -192,6 +163,8 @@ export const Live = () => {
   // ####################################################################################### LIVE 평가 회원 조회
   const getLiveMatchTrgt = async () => {
     setPageIndex(1);
+    setClickFaceTypeCode('');
+    setSelectedScore(0);
 
     try {
       const { success, data } = await get_live_members();
@@ -281,20 +254,6 @@ export const Live = () => {
       }
     }
   };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -531,14 +490,14 @@ export const Live = () => {
               <Text style={_styles.authBadgeText}>심사중</Text>
             </View>
 
-            <View style={{position: 'absolute', top: 0, left: 10, flexDirection: 'row'}}>
+            {/* <View style={{position: 'absolute', top: 0, left: 10, flexDirection: 'row'}}>
               <TouchableOpacity onPress={() => { prevBtn(); }}>
                 <Text style={{backgroundColor: '#000', borderRadius: 20, paddingHorizontal: 5, paddingVertical: 2, color: '#fff', marginRight: 5}}>이전</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => { nextBtn(); }}>
                 <Text style={{backgroundColor: '#000', borderRadius: 20, paddingHorizontal: 5, paddingVertical: 2, color: '#fff'}}>다음</Text>
               </TouchableOpacity>
-            </View>
+            </View> */}
           </View>
 
           <FlatList
@@ -555,7 +514,7 @@ export const Live = () => {
           {/* ############################################################# 페이지 1 */}
           {pageIndex == 1 &&
             <>
-              <View style={_styles.absoluteView}>
+              <View style={_styles.absoluteView()}>
                 <View style={_styles.nameContainer}>
                   <Text style={_styles.nameText}>{data.live_member_info.nickname}, {data.live_member_info.age}</Text>
                 </View>
@@ -586,7 +545,7 @@ export const Live = () => {
                 end={{ x: 0, y: 1 }}
                 style={_styles.blackBg} />
 
-              <View style={_styles.absoluteView}>
+              <View style={_styles.absoluteView()}>
                 <Animated.View style={{
                   opacity: fadeAnimation,
                   /* transform: [{translateY: transYAnimation, translateX: transXAnimation, rotate: rotateAnimation}] */
@@ -654,7 +613,7 @@ export const Live = () => {
 
               <TouchableOpacity
                 style={[modalStyle.modalBtn, {backgroundColor: '#697AE6', borderBottomRightRadius: 15, borderTopRightRadius: 15}]}
-                onPress={() => { insertProfileAssessment(); }}>
+                onPress={() => { insertProfileAssessment(selectedScore); }}>
                 <CommonText type={'h5'} fontWeight={'500'} color={ColorType.white}>저장하기</CommonText>
               </TouchableOpacity>
             </SpaceView>
@@ -878,15 +837,27 @@ const _styles = StyleSheet.create({
     textAlign: 'left',
     color: '#ffffff',
   },
-  absoluteView: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: height > 800 ? height * 0.07 : height * 0.03,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    paddingHorizontal: '6%',
-    zIndex: 1,
+  absoluteView: () => {
+    let bottomNumber = height * 0.03;
+
+    if(height > 800) {
+      bottomNumber = height * 0.07;
+    } else if(height <= 800 && height > 700) {
+      bottomNumber = height * 0.03;
+    } else if(height <= 700) {
+      bottomNumber = height * 0.03;
+    }
+
+    return {
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      bottom: bottomNumber,
+      flexDirection: 'column',
+      justifyContent: 'center',
+      paddingHorizontal: '6%',
+      zIndex: 1,
+    };
   },
   badgeContainer: {
     flexDirection: `row`,
