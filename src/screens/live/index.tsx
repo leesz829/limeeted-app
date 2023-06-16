@@ -65,6 +65,8 @@ export const Live = () => {
   // Live 팝업 Modal
   const [liveModalVisible, setLiveModalVisible] = useState(false);
 
+  const [isBlackBg, setIsBlackBg] = useState(false);
+
   // 로딩 상태 체크
   const [isLoad, setIsLoad] = useState(false);
   const [isEmpty, setIsEmpty] = useState(false);
@@ -165,6 +167,7 @@ export const Live = () => {
     setPageIndex(1);
     setClickFaceTypeCode('');
     setSelectedScore(0);
+    setIsBlackBg(false);
 
     try {
       const { success, data } = await get_live_members();
@@ -443,7 +446,11 @@ export const Live = () => {
       //action01(true);
       //action02(true);
       //action03(true);
-      action04(true);
+      
+      setIsBlackBg(true);
+      setTimeout(() => {
+        action04(true);
+      }, 100);
     }
 
   }, [pageIndex]);
@@ -535,15 +542,17 @@ export const Live = () => {
             </>
           }
 
+          {isBlackBg &&
+            <LinearGradient
+              colors={['rgba(0,0,0,0.0)', 'rgba(0,0,0,1)']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+              style={_styles.blackBg} />
+          }
+
           {/* ############################################################# 페이지 2 */}
           {pageIndex == 2 &&
             <>
-              <LinearGradient
-                colors={['rgba(0,0,0,0.0)', 'rgba(0,0,0,1)']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 0, y: 1 }}
-                style={_styles.blackBg} />
-
               <View style={_styles.absoluteView()}>
                 <Animated.View style={{
                   opacity: fadeAnimation,
@@ -580,7 +589,7 @@ export const Live = () => {
       </View>
 
       {/* ################################################################################# LIVE 팝업 */}
-      <Modal isVisible={liveModalVisible} >
+      <Modal isVisible={liveModalVisible} animationOut={'slideOutDown'} animationOutTiming={500}>
         <View style={{backgroundColor: '#fff', borderRadius: 20,}}>
           <SpaceView viewStyle={[modalStyle.modalBody]}>
             <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-start'}}>
@@ -607,10 +616,14 @@ export const Live = () => {
               <TouchableOpacity
                 style={[modalStyle.modalBtn, {backgroundColor: '#D6D3D3', borderBottomLeftRadius: 15, borderTopLeftRadius: 15}]}
                 onPress={() => { 
+                  setLiveModalVisible(false); 
                   setPageIndex(1);
                   setSelectedScore(0);
                   setClickFaceTypeCode('');
-                  setLiveModalVisible(false); 
+
+                  setTimeout(() => {
+                    setIsBlackBg(false);
+                  }, 350);
                 }}>
                 <CommonText type={'h5'} fontWeight={'500'} color={ColorType.white}>취소하기</CommonText>
               </TouchableOpacity>
@@ -686,7 +699,7 @@ export const Live = () => {
               source={{uri: url}}
               style={{
                 width: width,
-                height: height * 0.72
+                height: (height * 0.72)
                 //height: width * 1.44,
                 //height: '100%',
                 /* alignSelf:'center',
