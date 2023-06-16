@@ -17,7 +17,7 @@ import TopNavigation from 'component/TopNavigation';
 import { ViualSlider } from 'component/ViualSlider';
 import * as React from 'react';
 import { useState, useRef, useEffect } from 'react';
-import { ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity, Animated, Easing, PanResponder } from 'react-native';
+import { ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity, Animated, Easing, PanResponder, Platform } from 'react-native';
 import { LivePopup } from 'screens/commonpopup/LivePopup';
 import { LiveSearch } from 'screens/live/LiveSearch';
 import * as hooksMember from 'hooks/member';
@@ -692,6 +692,8 @@ export const Live = () => {
   function RenderItem({ item }) {
     const url = item?.url?.uri;
 
+    const imgHeight = Platform.OS == 'android' ? height * 0.72 : (height * 0.72) - (width * 0.13);
+
     return (
       <>
         <View>
@@ -699,7 +701,7 @@ export const Live = () => {
               source={{uri: url}}
               style={{
                 width: width,
-                height: (height * 0.72)
+                height: imgHeight,
                 //height: width * 1.44,
                 //height: '100%',
                 /* alignSelf:'center',
