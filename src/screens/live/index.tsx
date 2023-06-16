@@ -631,7 +631,7 @@ export const Live = () => {
               <TouchableOpacity
                 style={[modalStyle.modalBtn, {backgroundColor: '#697AE6', borderBottomRightRadius: 15, borderTopRightRadius: 15}]}
                 onPress={() => { insertProfileAssessment(selectedScore); }}>
-                <CommonText type={'h5'} fontWeight={'500'} color={ColorType.white}>저장하기</CommonText>
+                <CommonText type={'h5'} fontWeight={'500'} color={ColorType.white}>확인하기</CommonText>
               </TouchableOpacity>
             </SpaceView>
           </View>
