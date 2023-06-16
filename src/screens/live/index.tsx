@@ -552,73 +552,71 @@ export const Live = () => {
             onScroll={handleScroll}
           />
 
-          
-
-            {/* ############################################################# 페이지 1 */}
-            {pageIndex == 1 &&
-              <>
-                <View style={_styles.absoluteView}>
-                  <View style={_styles.nameContainer}>
-                    <Text style={_styles.nameText}>{data.live_member_info.nickname}, {data.live_member_info.age}</Text>
-                  </View>
-
-                  <LinearGradient
-                    colors={['rgba(199,123,222,0.5)', 'rgba(255,245,253,0.5)']}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 0, y: 2 }}
-                    style={_styles.ratingArea}>
-
-                    <RatingStar callBackFunction={scoreSelectedCallBackFunc} isFixed={false} score={0} />
-                  </LinearGradient>
-
-                  {/* <View style={_styles.ratingArea}>
-                    <RatingStar callBackFunction={callBackFunctionNew} />
-                    <View style={{backgroundColor: '#D3A7FF', opacity: 0.4, width: '100%', height: 100, position: 'absolute', top: 0, left: 0, right: 0, bottom: 0}} />
-                  </View> */}
+          {/* ############################################################# 페이지 1 */}
+          {pageIndex == 1 &&
+            <>
+              <View style={_styles.absoluteView}>
+                <View style={_styles.nameContainer}>
+                  <Text style={_styles.nameText}>{data.live_member_info.nickname}, {data.live_member_info.age}</Text>
                 </View>
-              </>
-            }
 
-            {/* ############################################################# 페이지 2 */}
-            {pageIndex == 2 &&
-              <>
                 <LinearGradient
-                  colors={['rgba(0,0,0,0.0)', 'rgba(0,0,0,1)']}
+                  colors={['rgba(199,123,222,0.5)', 'rgba(255,245,253,0.5)']}
                   start={{ x: 0, y: 0 }}
-                  end={{ x: 0, y: 1 }}
-                  style={_styles.blackBg} />
+                  end={{ x: 0, y: 2 }}
+                  style={_styles.ratingArea}>
 
-                <View style={_styles.absoluteView}>
-                  <Animated.View style={{
-                    opacity: fadeAnimation,
-                    /* transform: [{translateY: transYAnimation, translateX: transXAnimation, rotate: rotateAnimation}] */
+                  <RatingStar callBackFunction={scoreSelectedCallBackFunc} isFixed={false} score={0} />
+                </LinearGradient>
 
-                    /* transform: [{translateY: transYAnimation, rotate: rotateAnimation}] */
+                {/* <View style={_styles.ratingArea}>
+                  <RatingStar callBackFunction={callBackFunctionNew} />
+                  <View style={{backgroundColor: '#D3A7FF', opacity: 0.4, width: '100%', height: 100, position: 'absolute', top: 0, left: 0, right: 0, bottom: 0}} />
+                </View> */}
+              </View>
+            </>
+          }
 
-                    transform: [{scale: scaleAnimation}]
+          {/* ############################################################# 페이지 2 */}
+          {pageIndex == 2 &&
+            <>
+              <LinearGradient
+                colors={['rgba(0,0,0,0.0)', 'rgba(0,0,0,1)']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 0, y: 1 }}
+                style={_styles.blackBg} />
 
-                  }}>
-                  {/* <Animated.View style={animateStyle}> */}
+              <View style={_styles.absoluteView}>
+                <Animated.View style={{
+                  opacity: fadeAnimation,
+                  /* transform: [{translateY: transYAnimation, translateX: transXAnimation, rotate: rotateAnimation}] */
 
-                    <View style={_styles.tagContainer}>
-                      {[
-                        faceTypeList.map((e, index) => {
-                          if(e.value != '') {
-                            return (
-                              <TouchableOpacity key={index} onPress={() => { selectedFaceType(e.value); /* callBackFunction(true, e.value, ''); */ }}>
-                                <View style={_styles.tagBox}>
-                                  <Text style={_styles.tagText}>{e.label}</Text>
-                                </View>
-                              </TouchableOpacity>
-                            )
-                          }
-                        }),
-                      ]}
-                    </View>
-                  </Animated.View>
-                </View>
-              </>
-            }
+                  /* transform: [{translateY: transYAnimation, rotate: rotateAnimation}] */
+
+                  transform: [{scale: scaleAnimation}]
+
+                }}>
+                {/* <Animated.View style={animateStyle}> */}
+
+                  <View style={_styles.tagContainer}>
+                    {[
+                      faceTypeList.map((e, index) => {
+                        if(e.value != '') {
+                          return (
+                            <TouchableOpacity key={index} onPress={() => { selectedFaceType(e.value); /* callBackFunction(true, e.value, ''); */ }}>
+                              <View style={_styles.tagBox}>
+                                <Text style={_styles.tagText}>{e.label}</Text>
+                              </View>
+                            </TouchableOpacity>
+                          )
+                        }
+                      }),
+                    ]}
+                  </View>
+                </Animated.View>
+              </View>
+            </>
+          }
 
         </View>
       </View>
@@ -717,6 +715,7 @@ export const Live = () => {
      */
   function RenderItem({ item }) {
     const url = item?.url?.uri;
+
     return (
       <>
         <View>
@@ -724,9 +723,11 @@ export const Live = () => {
               source={{uri: url}}
               style={{
                 width: width,
-                height: height * 0.725,
-                alignSelf:'center',
-                alignItems: 'center',
+                height: height * 0.72
+                //height: width * 1.44,
+                //height: '100%',
+                /* alignSelf:'center',
+                alignItems: 'center', */
               }}
               resizeMode={'cover'}
             />
@@ -749,7 +750,7 @@ export const Live = () => {
 
 const _styles = StyleSheet.create({
   root: {
-    //flex: 1,
+    flex: 1,
     backgroundColor: 'white',
   },
   indocatorContainer: {
@@ -881,7 +882,7 @@ const _styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    bottom: width * 0.06,
+    bottom: height > 800 ? height * 0.07 : height * 0.03,
     flexDirection: 'column',
     justifyContent: 'center',
     paddingHorizontal: '6%',
@@ -955,8 +956,10 @@ const _styles = StyleSheet.create({
     right: 0,
   },
   titArea: {
-    paddingVertical: 10,
+    //paddingVertical: 10,
     paddingHorizontal: 15,
+    height: width * 0.20,
+    justifyContent: 'center',
   },
   titText: {
     fontFamily: 'AppleSDGothicNeoEB00',
