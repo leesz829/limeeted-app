@@ -30,9 +30,6 @@ export const ImagePreview = (props: Props) => {
 	const ref = React.useRef();
 
 	const [imgList, setImgList] = React.useState<any>(props.route.params.imgList);
-	console.log('imgList ::::::: ' , imgList);
-
-	console.log('orderSeq ::::::: ' , props.route.params.orderSeq);
 
 	// 이미지 인덱스
 	const [currentIndex, setCurrentIndex] = React.useState(props.route.params.orderSeq-1);
