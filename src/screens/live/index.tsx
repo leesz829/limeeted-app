@@ -468,7 +468,6 @@ export const Live = () => {
       };
     };
   }, [isFocus]);
-  
 
   return isLoad ? (
     <>
@@ -480,7 +479,7 @@ export const Live = () => {
           {pageIndex == 2 && <Text style={_styles.titText}><Text style={{color: '#97A1EF'}}>{data.live_member_info.nickname}</Text>님의{'\n'}인상을 선택해 주세요.</Text>}
         </SpaceView>
 
-        <View style={{borderTopLeftRadius: 31, borderTopRightRadius: 31, overflow: 'hidden'}}>
+        <View style={{borderTopLeftRadius: 31, borderTopRightRadius: 31, overflow: 'hidden', position: 'absolute', bottom: 0}}>
           <View style={_styles.indocatorContainer}>
             {data?.live_profile_img.map((e, index) => (
               <View style={[ _styles.indicator, { backgroundColor: index === page ? 'white' : 'rgba(255,255,255,0.3)' }, ]} key={index} />
@@ -607,7 +606,12 @@ export const Live = () => {
             <SpaceView viewStyle={{flexDirection: 'row', width: '100%', paddingHorizontal: 10, paddingBottom: 8}}>
               <TouchableOpacity
                 style={[modalStyle.modalBtn, {backgroundColor: '#D6D3D3', borderBottomLeftRadius: 15, borderTopLeftRadius: 15}]}
-                onPress={() => { setLiveModalVisible(false); }}>
+                onPress={() => { 
+                  setPageIndex(1);
+                  setSelectedScore(0);
+                  setClickFaceTypeCode('');
+                  setLiveModalVisible(false); 
+                }}>
                 <CommonText type={'h5'} fontWeight={'500'} color={ColorType.white}>취소하기</CommonText>
               </TouchableOpacity>
 
@@ -711,6 +715,8 @@ const _styles = StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: 'white',
+    width: width,
+    height: height,
   },
   indocatorContainer: {
     width: '100%',
@@ -838,21 +844,21 @@ const _styles = StyleSheet.create({
     color: '#ffffff',
   },
   absoluteView: () => {
-    let bottomNumber = height * 0.03;
+    let bottomNumber = height * 0.05;
 
     if(height > 800) {
       bottomNumber = height * 0.07;
     } else if(height <= 800 && height > 700) {
-      bottomNumber = height * 0.03;
+      bottomNumber = height * 0.05;
     } else if(height <= 700) {
-      bottomNumber = height * 0.03;
+      bottomNumber = height * 0.05;
     }
 
     return {
       position: 'absolute',
       left: 0,
       right: 0,
-      bottom: bottomNumber,
+      bottom: height * 0.03,
       flexDirection: 'column',
       justifyContent: 'center',
       paddingHorizontal: '6%',
