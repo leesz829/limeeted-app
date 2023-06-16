@@ -8,7 +8,7 @@ import {
   LiveProfileImg,
   ScreenNavigationProp,
 } from '@types';
-import { styles, layoutStyle, commonStyle } from 'assets/styles/Styles';
+import { styles, layoutStyle, commonStyle, modalStyle } from 'assets/styles/Styles';
 import axios from 'axios';
 import { CommonText } from 'component/CommonText';
 import { RadioCheckBox } from 'component/RadioCheckBox';
@@ -16,8 +16,8 @@ import SpaceView from 'component/SpaceView';
 import TopNavigation from 'component/TopNavigation';
 import { ViualSlider } from 'component/ViualSlider';
 import * as React from 'react';
-import { useState } from 'react';
-import { ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity } from 'react-native';
+import { useState, useRef, useEffect } from 'react';
+import { ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity, Animated, Easing, PanResponder } from 'react-native';
 import { LivePopup } from 'screens/commonpopup/LivePopup';
 import { LiveSearch } from 'screens/live/LiveSearch';
 import * as hooksMember from 'hooks/member';
@@ -33,6 +33,11 @@ import { ICON } from 'utils/imageUtils';
 import { Watermark } from 'component/Watermark';
 import { useUserInfo } from 'hooks/useUserInfo';
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
+//import { Easing } from 'react-native-reanimated';
+import RatingStar from 'component/RatingStar';
+import LinearGradient from 'react-native-linear-gradient';
+import Modal from 'react-native-modal';
+import { ColorType } from '@types';
 
 
 
@@ -54,8 +59,11 @@ export const Live = () => {
   // 이미지 인덱스
   const [page, setPage] = useState(0);
 
-  const jwtToken = hooksMember.getJwtToken(); // 토큰
-  const { show } = usePopup();  // 공통 팝업
+  // 공통 팝업
+  const { show } = usePopup();
+
+  // Live 팝업 Modal
+  const [liveModalVisible, setLiveModalVisible] = useState(false);
 
   // 로딩 상태 체크
   const [isLoad, setIsLoad] = useState(false);
@@ -71,9 +79,6 @@ export const Live = () => {
   // 회원 인상 정보
   const [faceTypeList, setFaceTypeList] = useState([LabelObj]);
 
-  // 팝업 이벤트 제어 변수
-  const [clickEventFlag, setClickEventFlag] = useState(false);
-
   // 이상형 타입 코드
   const [clickFaceTypeCode, setClickFaceTypeCode] = useState('');
 
@@ -81,10 +86,14 @@ export const Live = () => {
   const [clickFaceType, setClickFaceType] = useState('');
 
   // 선택한 인상 점수
-  let clickFaceScore = '';
+  const [selectedScore, setSelectedScore] = useState(0);
 
-  // ####################################################################################### 팝업 화면 콜백 함수
-  const callBackFunction = (flag: boolean, faceType: string, score: string) => {
+  // 임시 함수
+  const callBackFunctionTemp = (score: number) => {
+
+  };
+
+  /* const callBackFunction = (flag: boolean, faceType: string, score: string) => {
     setClickEventFlag(flag);
 
     let tmpClickFaceType = faceType ? faceType : clickFaceType;
@@ -99,19 +108,61 @@ export const Live = () => {
 
     if (score) {
       clickFaceScore = score;
+      setFaceScore(score);
       setFaceTypeList([LabelObj]);
       insertProfileAssessment();
     }
+  }; */
+
+
+
+
+  // ####################################################################################### 평점 선택 콜백 함수
+  const scoreSelectedCallBackFunc = (score: number) => {
+    // 2.5 보다 아래 체크
+    console.log('score :::::::::: ' , score);
+    
+    if(score == 0) {
+      show({ content: '프로필 평점을 다시 선택해 주세요!' , });
+    } else {
+      setSelectedScore(score);
+      setPageIndex(2);
+    }
+  };
+
+  // ####################################################################################### 인상 선택 함수
+  const selectedFaceType = (code:string) => {
+    let tmpClickFaceType = code ? code : clickFaceType;
+    setClickFaceTypeCode(tmpClickFaceType);
+
+    for (let idx in faceTypeList) {
+      if (faceTypeList[idx].value == tmpClickFaceType) {
+        setClickFaceType(faceTypeList[idx].label);
+        break;
+      }
+    }
+
+    setLiveModalVisible(true);
   };
 
   // ####################################################################################### 프로필 평가 등록
   const insertProfileAssessment = async () => {
     const body = {
-      profile_score: clickFaceScore,
+      profile_score: selectedScore,
       face_code: clickFaceTypeCode,
-      member_seq: data.live_member_info.member_seq,
-      approval_profile_seq : data.live_member_info.approval_profile_seq
+      member_seq: data.live_member_info?.member_seq,
+      approval_profile_seq : data.live_member_info?.approval_profile_seq
     };
+
+
+    console.log('body ::::::: ' , body);
+
+    setIsLoad(false);
+    setLiveModalVisible(false);
+    getLiveMatchTrgt();
+
+    return;
+
     try {
       const { success, data } = await regist_profile_evaluation(body);
       if(success) {
@@ -119,21 +170,16 @@ export const Live = () => {
           case SUCCESS:
             dispatch(myProfile());
             setIsLoad(false);
+            setLiveModalVisible(false);
             getLiveMatchTrgt();
             break;
           default:
-            show({
-              content: '오류입니다. 관리자에게 문의해주세요.' ,
-              confirmCallback: function() {}
-            });
+            show({ content: '오류입니다. 관리자에게 문의해주세요.' , });
             break;
         }
        
       } else {
-        show({
-          content: '오류입니다. 관리자에게 문의해주세요.' ,
-          confirmCallback: function() {}
-        });
+        show({ content: '오류입니다. 관리자에게 문의해주세요.' });
       }
     } catch (error) {
       console.log(error);
@@ -145,6 +191,8 @@ export const Live = () => {
 
   // ####################################################################################### LIVE 평가 회원 조회
   const getLiveMatchTrgt = async () => {
+    setPageIndex(1);
+
     try {
       const { success, data } = await get_live_members();
       if(success) {
@@ -188,7 +236,7 @@ export const Live = () => {
                 distance: data?.distance_val,
               });
 
-              setIsLoad(true);
+              setIsLoad(true);              
             };
 
             break;
@@ -197,22 +245,12 @@ export const Live = () => {
             setIsEmpty(true);
             break;
           default:
-            show({
-              content: '오류입니다. 관리자에게 문의해주세요.' ,
-              confirmCallback: function() {
-                
-              }
-            });
+            show({ content: '오류입니다. 관리자에게 문의해주세요.' , });
             break;
         }
        
       } else {
-        show({
-          content: '오류입니다. 관리자에게 문의해주세요.' ,
-          confirmCallback: function() {
-            
-          }
-        });
+        show({ content: '오류입니다. 관리자에게 문의해주세요.' , });
       }
     } catch (error) {
       console.log(error);
@@ -242,7 +280,185 @@ export const Live = () => {
         }));
       }
     }
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /* ###################################################################################################################################
+  ######################################################################################################################################
+  ######### UI 변경 및 애니메이션 관련
+  ######################################################################################################################################
+  ################################################################################################################################### */
+
+  // 페이지 변수
+  const [pageIndex, setPageIndex] = useState(1);
+
+  // 애니메이션 변수
+  const fadeAnimation = useRef(new Animated.Value(0)).current;
+  const transYAnimation = useRef(new Animated.Value(-50)).current;
+  const transXAnimation = useRef(new Animated.Value(-50)).current;
+  const rotateAnimation = useRef(new Animated.Value(360)).current;
+  const scaleAnimation = useRef(new Animated.Value(1.5)).current;
+
+  let animateStyle = {
+    opacity: fadeAnimation,
+    transform: [{translateY: transYAnimation,  translateX: transXAnimation}],
+  };
+
+  // ######################### 액션0
+  const action00 = (isActive:boolean) => {
+    if(isActive) {
+      Animated.parallel([
+        Animated.timing(fadeAnimation, {
+          toValue: 1,
+          duration: 400,
+          useNativeDriver: true,
+        }),
+        Animated.timing(transXAnimation, {
+          toValue: 1,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+        Animated.timing(transYAnimation, {
+          toValue: 1,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    } else {
+      fadeAnimation.setValue(0);
+      transXAnimation.setValue(-50);
+      transYAnimation.setValue(-50);
+    }
+  };
+
+  // ######################### 액션1
+  const action01 = (isActive:boolean) => {
+    if(isActive) {
+      Animated.parallel([
+        Animated.timing(fadeAnimation, {
+          toValue: 1,
+          duration: 400,
+          useNativeDriver: true,
+        }),
+        Animated.timing(transXAnimation, {
+          toValue: 1,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    } else {
+      fadeAnimation.setValue(0);
+      transXAnimation.setValue(-50);
+    }
+  };
+
+  // ######################### 액션2
+  const action02 = (isActive:boolean) => {
+    if(isActive) {
+      Animated.parallel([
+        Animated.timing(fadeAnimation, {
+          toValue: 1,
+          duration: 400,
+          useNativeDriver: true,
+        }),
+        Animated.timing(transYAnimation, {
+          toValue: 1,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    } else {
+      fadeAnimation.setValue(0);
+      transYAnimation.setValue(-50);
+    }
   }
+
+  // ######################### 액션3
+  const action03 = (isActive:boolean) => {
+    if(isActive) {
+      Animated.parallel([
+        Animated.timing(fadeAnimation, {
+          toValue: 1,
+          duration: 400,
+          useNativeDriver: true,
+        }),
+        Animated.timing(transYAnimation, {
+          toValue: 1,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+        Animated.timing(rotateAnimation, {
+          toValue: 0,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    } else {
+      fadeAnimation.setValue(0);
+      transYAnimation.setValue(-50);
+      rotateAnimation.setValue(360);
+    }
+  }
+
+  // ######################### 액션4
+  const action04 = (isActive:boolean) => {
+    if(isActive) {
+      Animated.parallel([
+        Animated.timing(fadeAnimation, {
+          toValue: 1,
+          duration: 400,
+          useNativeDriver: true,
+        }),
+        Animated.timing(scaleAnimation, {
+          toValue: 1,
+          duration: 350,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    } else {
+      fadeAnimation.setValue(0);
+      scaleAnimation.setValue(1.5);
+    }
+  }
+
+
+
+  const prevBtn = async () => {
+    setPageIndex(pageIndex-1);
+  }
+
+  const nextBtn = async () => {
+    setPageIndex(pageIndex+1);
+  }
+
+
+
+
+  // ##################################################################################################################################
 
   // ######################################################################################## 초기 실행 함수
   useFocusEffect(
@@ -256,8 +472,26 @@ export const Live = () => {
     }, []),
   );
 
+  useEffect(() => {
+    if(pageIndex != 2) {
+      //action00(false);
+      //action01(false);
+      //action02(false);
+      //action03(false);
+      action04(false);
+    } else {
+      //action00(true);
+      //action01(true);
+      //action02(true);
+      //action03(true);
+      action04(true);
+    }
+
+  }, [pageIndex]);
+
   React.useEffect(() => {
     if(isFocus) {
+      //traslateXActiveReset();
 
       // 튜토리얼 팝업 노출
       if(memberBase?.tutorial_live_yn == 'Y') {
@@ -282,87 +516,154 @@ export const Live = () => {
       <TopNavigation currentPath={'LIVE'} />
 
       <View style={_styles.root}>
-        <ScrollView style={_styles.root}>
+        <SpaceView viewStyle={_styles.titArea}>
+          {pageIndex == 1 && <Text style={_styles.titText}><Text style={{color: '#97A1EF'}}>{data.live_member_info.nickname}</Text>님의{'\n'}프로필 평점을 선택해 주세요.</Text>}
+          {pageIndex == 2 && <Text style={_styles.titText}><Text style={{color: '#97A1EF'}}>{data.live_member_info.nickname}</Text>님의{'\n'}인상을 선택해 주세요.</Text>}
+        </SpaceView>
 
-          <View>
-            <View style={_styles.indocatorContainer}>
-              {data?.live_profile_img.map((e, index) => (
-                <View
-                  key={index}
-                  style={[
-                    _styles.indicator,
-                    { backgroundColor: index === page ? 'white' : 'rgba(255,255,255,0.3)' },
-                  ]}
-                />
-              ))}
+        <View style={{borderTopLeftRadius: 31, borderTopRightRadius: 31, overflow: 'hidden'}}>
+          <View style={_styles.indocatorContainer}>
+            {data?.live_profile_img.map((e, index) => (
+              <View style={[ _styles.indicator, { backgroundColor: index === page ? 'white' : 'rgba(255,255,255,0.3)' }, ]} key={index} />
+            ))}
 
-              <View style={_styles.badgeIcon}>
-                <Text style={_styles.authBadgeText}>심사중</Text>
-              </View>
+            <View style={_styles.badgeIcon}>
+              <Text style={_styles.authBadgeText}>심사중</Text>
             </View>
 
-            <FlatList
-              data={data?.live_profile_img}
-              renderItem={RenderItem}
-              horizontal={true}
-              alwaysBounceVertical={false}
-              pagingEnabled
-              showsHorizontalScrollIndicator={false}
-              keyExtractor={(item, index) => index.toString()}
-              onScroll={handleScroll}
-            />
-
-            <View style={_styles.absoluteView}>
-              <View style={_styles.badgeContainer}>
-                {/* {data.second_auth_list.length > 0 && 
-                  <View style={styles.authBadge}>
-                    <Text style={styles.whiteText}>인증 완료</Text>
-                  </View>
-                } */}
-              </View>
-
-              <View style={_styles.nameContainer}>
-                <Text style={_styles.nameText}>{data.live_member_info.nickname}, {data.live_member_info.age}</Text>
-              </View>
-
-              {/* <View style={_styles.distanceContainer}>
-                {data.distance != null && data.distance != '' && data.distance != '0.0' &&
-                  <View style={_styles.distanceContainer}>
-                    <Image source={ICON.marker} style={_styles.markerIcon} />
-                    <Text style={_styles.regionText}>{data.distance}Km</Text>
-                  </View>
-                }
-              </View> */}
+            <View style={{position: 'absolute', top: 0, left: 10, flexDirection: 'row'}}>
+              <TouchableOpacity onPress={() => { prevBtn(); }}>
+                <Text style={{backgroundColor: '#000', borderRadius: 20, paddingHorizontal: 5, paddingVertical: 2, color: '#fff', marginRight: 5}}>이전</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => { nextBtn(); }}>
+                <Text style={{backgroundColor: '#000', borderRadius: 20, paddingHorizontal: 5, paddingVertical: 2, color: '#fff'}}>다음</Text>
+              </TouchableOpacity>
             </View>
           </View>
 
-          <View style={_styles.infoContainer}>
-            <Text style={_styles.infoTitle}>인상을 선택해주세요.</Text>
-            <View style={_styles.tagContainer}>
-              {[
-                faceTypeList.map((e, i) => {
-                  if(e.value != '') {
-                    return (
-                      <TouchableOpacity key={i} onPress={() => { callBackFunction(true, e.value, ''); }}>
-                        <View style={_styles.tagBox}>
-                          <Text style={_styles.tagText}>{e.label}</Text>
-                        </View>
-                      </TouchableOpacity>
-                    )
-                  }
-                }),
-              ]}
-            </View>
-          </View>
-        </ScrollView>
+          <FlatList
+            data={data?.live_profile_img}
+            renderItem={RenderItem}
+            horizontal={true}
+            alwaysBounceVertical={false}
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={(item, index) => index.toString()}
+            onScroll={handleScroll}
+          />
+
+          
+
+            {/* ############################################################# 페이지 1 */}
+            {pageIndex == 1 &&
+              <>
+                <View style={_styles.absoluteView}>
+                  <View style={_styles.nameContainer}>
+                    <Text style={_styles.nameText}>{data.live_member_info.nickname}, {data.live_member_info.age}</Text>
+                  </View>
+
+                  <LinearGradient
+                    colors={['rgba(199,123,222,0.5)', 'rgba(255,245,253,0.5)']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 0, y: 2 }}
+                    style={_styles.ratingArea}>
+
+                    <RatingStar callBackFunction={scoreSelectedCallBackFunc} isFixed={false} score={0} />
+                  </LinearGradient>
+
+                  {/* <View style={_styles.ratingArea}>
+                    <RatingStar callBackFunction={callBackFunctionNew} />
+                    <View style={{backgroundColor: '#D3A7FF', opacity: 0.4, width: '100%', height: 100, position: 'absolute', top: 0, left: 0, right: 0, bottom: 0}} />
+                  </View> */}
+                </View>
+              </>
+            }
+
+            {/* ############################################################# 페이지 2 */}
+            {pageIndex == 2 &&
+              <>
+                <LinearGradient
+                  colors={['rgba(0,0,0,0.0)', 'rgba(0,0,0,1)']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 0, y: 1 }}
+                  style={_styles.blackBg} />
+
+                <View style={_styles.absoluteView}>
+                  <Animated.View style={{
+                    opacity: fadeAnimation,
+                    /* transform: [{translateY: transYAnimation, translateX: transXAnimation, rotate: rotateAnimation}] */
+
+                    /* transform: [{translateY: transYAnimation, rotate: rotateAnimation}] */
+
+                    transform: [{scale: scaleAnimation}]
+
+                  }}>
+                  {/* <Animated.View style={animateStyle}> */}
+
+                    <View style={_styles.tagContainer}>
+                      {[
+                        faceTypeList.map((e, index) => {
+                          if(e.value != '') {
+                            return (
+                              <TouchableOpacity key={index} onPress={() => { selectedFaceType(e.value); /* callBackFunction(true, e.value, ''); */ }}>
+                                <View style={_styles.tagBox}>
+                                  <Text style={_styles.tagText}>{e.label}</Text>
+                                </View>
+                              </TouchableOpacity>
+                            )
+                          }
+                        }),
+                      ]}
+                    </View>
+                  </Animated.View>
+                </View>
+              </>
+            }
+
+        </View>
       </View>
 
-      {clickEventFlag && (
-        <LivePopup
-          callBackFunction={callBackFunction}
-          faceType={clickFaceType}
-        />
-      )}
+      {/* ################################################################################# LIVE 팝업 */}
+      <Modal isVisible={liveModalVisible} >
+        <View style={{backgroundColor: '#fff', borderRadius: 20,}}>
+          <SpaceView viewStyle={[modalStyle.modalBody]}>
+            <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-start'}}>
+              <Text style={_styles.liveModalTitle}>인상 투표</Text>
+            </SpaceView>
+
+            <SpaceView mt={15} viewStyle={{alignItems: 'center', justifyContent: 'center'}}>
+              <SpaceView>
+                <Image source={{uri: data?.live_profile_img[0].url.uri}} style={{ width: 82, height: 82, borderRadius: 80 }} resizeMode={'cover'} />
+              </SpaceView>
+
+              <SpaceView mt={10}>
+                <Text style={_styles.liveModalFaceText}>#{clickFaceType}</Text>
+              </SpaceView>
+
+              <SpaceView mt={10} viewStyle={_styles.liveModalRatingArea}>
+                <RatingStar callBackFunction={callBackFunctionTemp} isFixed={true} score={selectedScore} starSize={30} />
+              </SpaceView>
+            </SpaceView>
+          </SpaceView>
+
+          <View style={{width: width - 39, flexDirection: 'row', justifyContent: 'space-between',}}>
+            <SpaceView viewStyle={{flexDirection: 'row', width: '100%', paddingHorizontal: 10, paddingBottom: 8}}>
+              <TouchableOpacity
+                style={[modalStyle.modalBtn, {backgroundColor: '#D6D3D3', borderBottomLeftRadius: 15, borderTopLeftRadius: 15}]}
+                onPress={() => { setLiveModalVisible(false); }}>
+                <CommonText type={'h5'} fontWeight={'500'} color={ColorType.white}>취소하기</CommonText>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[modalStyle.modalBtn, {backgroundColor: '#697AE6', borderBottomRightRadius: 15, borderTopRightRadius: 15}]}
+                onPress={() => { insertProfileAssessment(); }}>
+                <CommonText type={'h5'} fontWeight={'500'} color={ColorType.white}>저장하기</CommonText>
+              </TouchableOpacity>
+            </SpaceView>
+          </View>
+        </View>
+      </Modal>
+
     </>
   ) : (
     <>
@@ -423,8 +724,11 @@ export const Live = () => {
               source={{uri: url}}
               style={{
                 width: width,
-                height: height * 0.7,
+                height: height * 0.725,
+                alignSelf:'center',
+                alignItems: 'center',
               }}
+              resizeMode={'cover'}
             />
             <Watermark value={memberBase?.phone_number}/>
           </View>
@@ -445,7 +749,7 @@ export const Live = () => {
 
 const _styles = StyleSheet.create({
   root: {
-    flex: 1,
+    //flex: 1,
     backgroundColor: 'white',
   },
   indocatorContainer: {
@@ -472,6 +776,9 @@ const _styles = StyleSheet.create({
     borderRadius: 19,
     alignItems: 'center',
     justifyContent: 'center',
+    borderColor: '#7986EE',
+    borderWidth: 1,
+    borderStyle: 'dotted',
   },
   image: {
     width: width,
@@ -497,8 +804,6 @@ const _styles = StyleSheet.create({
     opacity: 0.83,
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 10,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     letterSpacing: 0,
     textAlign: 'left',
     color: '#ffffff',
@@ -511,8 +816,6 @@ const _styles = StyleSheet.create({
   nickname: {
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 25,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     color: '#ffffff',
   },
   authIcon: {
@@ -532,8 +835,6 @@ const _styles = StyleSheet.create({
   locationText: {
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 16,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     lineHeight: 22,
     letterSpacing: 0,
     textAlign: 'left',
@@ -548,8 +849,6 @@ const _styles = StyleSheet.create({
   infoTitle: {
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 19,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     lineHeight: 26,
     letterSpacing: 0,
     textAlign: 'left',
@@ -565,39 +864,32 @@ const _styles = StyleSheet.create({
   },
   tagBox: {
     borderRadius: 5,
-    backgroundColor: '#ffffff',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderColor: '#b7b7b9',
+    backgroundColor: 'rgba(211, 167, 255, 0.75)',
     marginLeft: 7,
     marginTop: 7,
     paddingHorizontal: 10,
     paddingVertical: 7,
+    overflow: 'hidden',
   },
   tagText: {
     fontFamily: 'AppleSDGothicNeoR00',
     fontSize: 16,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    lineHeight: 22,
-    letterSpacing: 0,
     textAlign: 'left',
-    color: '#b1b1b1',
+    color: '#ffffff',
   },
   absoluteView: {
     position: 'absolute',
     left: 0,
     right: 0,
-    bottom: width * 0.15,
+    bottom: width * 0.06,
     flexDirection: 'column',
-    justifyContent: 'flex-end',
-    paddingHorizontal: '8%',
+    justifyContent: 'center',
+    paddingHorizontal: '6%',
     zIndex: 1,
   },
   badgeContainer: {
     flexDirection: `row`,
     alignItems: `center`,
-    // justifyContent: `center`,
   },
   distanceContainer: {
     flexDirection: 'row',
@@ -607,8 +899,6 @@ const _styles = StyleSheet.create({
   regionText: {
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 16,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     lineHeight: 22,
     letterSpacing: 0,
     textAlign: 'left',
@@ -622,8 +912,6 @@ const _styles = StyleSheet.create({
   nameText: {
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 25,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     lineHeight: 26,
     letterSpacing: 0,
     textAlign: 'left',
@@ -647,11 +935,56 @@ const _styles = StyleSheet.create({
   authBadgeText: {
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 10,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     letterSpacing: 0,
     textAlign: 'left',
     color: '#7986EE',
+  },
+  ratingArea: {
+    marginTop: 15,
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 7,
+    overflow: 'hidden',
+  },
+  blackBg: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
+  titArea: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+  },
+  titText: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 20,
+    color: '#646467',
+  },
+  liveModalTitle: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 20,
+    color: '#333333',
+  },
+  liveModalFaceText: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 14,
+    color: '#697AE6',
+  },
+  liveModalRatingArea: {
+    position: 'relative',
+    backgroundColor: 'white',
+    borderRadius: 30,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    shadowColor: '#707070',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 1.84,
+    elevation: 4,
+    overflow: 'visible',
   },
 
 });
