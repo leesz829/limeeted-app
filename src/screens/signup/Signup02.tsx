@@ -136,7 +136,7 @@ export const Signup02 = (props: Props) => {
   // ############################################################################# 사진 삭제
   const imgDelProc = () => {
 
-    /* let tmpCnt = 0;
+    let tmpCnt = 0;
     for (var key in imgData) {
       if (imgData[key].delYn == 'N' && (imgData[key].url || imgData[key].uri)) {
         tmpCnt++;
@@ -146,7 +146,7 @@ export const Signup02 = (props: Props) => {
     if (tmpCnt <= 3) {
       show({ content: '프로필 사진은 최소 3장 등록되어야 합니다.' });
       return;
-    } */
+    }
 
     if (isDelImgData.order_seq == '1') {
       setImgData({
