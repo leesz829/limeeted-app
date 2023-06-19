@@ -230,10 +230,9 @@ export default function ItemMatching(props: Props) {
           show({
             title: '찜하기 이용권 만료',
             content: '찜하기 이용권 아이템의 구독기간이 만료된 상태입니다.',
-            confirmCallback: function() {
-              
-            }
           });
+        } else {
+          insertMatchInfo(activeType, 0);
         }
       }
     }

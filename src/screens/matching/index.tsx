@@ -253,17 +253,19 @@ export default function Matching(props: Props) {
 			});
     } else if(activeType == 'zzim') {
 
+      console.log('zzim!!!!! ', data.use_item.WISH);
+
       // 찜하기 사용시
       if(typeof data.use_item != 'undefined' && typeof data.use_item.WISH != 'undefined') {
+        let nowDate = formatNowDate();
         let endDt = data?.use_item?.WISH?.end_dt;
-        if(endDt < formatNowDate()) {
+        if(Number(endDt) < Number(formatNowDate())) {
           show({
             title: '찜하기 이용권 만료',
             content: '찜하기 이용권 아이템의 구독기간이 만료된 상태입니다.',
-            confirmCallback: function() {
-              
-            }
           });
+        } else {
+          insertMatchInfo(activeType, 0);
         }
       }
     }
