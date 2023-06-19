@@ -253,8 +253,6 @@ export default function Matching(props: Props) {
 			});
     } else if(activeType == 'zzim') {
 
-      console.log('zzim!!!!! ', data.use_item.WISH);
-
       // 찜하기 사용시
       if(typeof data.use_item != 'undefined' && typeof data.use_item.WISH != 'undefined') {
         let nowDate = formatNowDate();
