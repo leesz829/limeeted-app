@@ -498,7 +498,7 @@ export const Live = () => {
           {pageIndex == 2 && <Text style={_styles.titText}><Text style={{color: '#97A1EF'}}>{data.live_member_info.nickname}</Text>님의{'\n'}인상을 선택해 주세요.</Text>}
         </SpaceView>
 
-        <View style={{borderTopLeftRadius: 31, borderTopRightRadius: 31, overflow: 'hidden', position: 'absolute', bottom: 0}}>
+        <View style={{borderRadius: 31, overflow: 'hidden', position: 'absolute', bottom: 0}}>
           <View style={_styles.indocatorContainer}>
             {data?.live_profile_img.map((e, index) => (
               <View style={[ _styles.indicator, { backgroundColor: index === page ? 'white' : 'rgba(255,255,255,0.3)' }, ]} key={index} />
@@ -720,20 +720,27 @@ export const Live = () => {
     return (
       <>
         <View>
-            <Image
-              source={{uri: url}}
-              style={{
-                width: width,
-                height: imgHeight,
-                //height: width * 1.44,
-                //height: '100%',
-                /* alignSelf:'center',
-                alignItems: 'center', */
-              }}
-              resizeMode={'cover'}
-            />
-            <Watermark value={memberBase?.phone_number}/>
-          </View>
+          <LinearGradient
+            colors={['transparent', '#000000']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={_styles.thumnailArea} />
+
+          <Image
+            source={{uri: url}}
+            style={{
+              width: width,
+              height: imgHeight,
+              //height: width * 1.44,
+              //height: '100%',
+              /* alignSelf:'center',
+              alignItems: 'center', */
+            }}
+            resizeMode={'cover'}
+          />
+
+          <Watermark value={memberBase?.phone_number}/>
+        </View>
       </>
     );
   }
@@ -1004,5 +1011,14 @@ const _styles = StyleSheet.create({
     elevation: 4,
     overflow: 'visible',
   },
-
+  thumnailArea: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    opacity: 0.8,
+    height: height * 0.24,
+    zIndex: 1,
+  },
+  
 });
