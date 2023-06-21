@@ -129,6 +129,7 @@ export default function ProfileAuth({ level, data, isButton, callbackAuthComment
             <SpaceView mt={8} mb={5} viewStyle={{flexDirection: 'row'}}>
                 {data?.map((item, index) => (
                   <TouchableOpacity 
+                    key={index}
                     onPress={() => { onPressAuthDot(index); }}
                     hitSlop={commonStyle.hipSlop15}>
 

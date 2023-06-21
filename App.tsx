@@ -1,6 +1,6 @@
 import { NavigationContainer, useIsFocused } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { LogBox, SafeAreaView, StatusBar, StyleSheet, Alert, Linking, Platform, Modal, View, Text, PermissionsAndroid, Image, Dimensions } from 'react-native';
+import { AppState, AppStateStatus, LogBox, SafeAreaView, StatusBar, StyleSheet, Linking, Platform, View, PermissionsAndroid, Dimensions } from 'react-native';
 import { Notifications } from 'react-native-notifications';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -142,13 +142,14 @@ const App = () => {
 };
 
 function PreFetcher(props) {
+  const appState = React.useRef(AppState.currentState);
   const dispatch = useDispatch();
 
   const [updateStatusCode, setUpdateStatusCode] = useState('');
   const [popupVisible, setPopupVisible] = useState(true);
   const [updatePercent, setUpdatePercent] = useState(0);
 
-  // 스토어 업데이트
+  // ########################################################## 스토어 업데이트 함수
   const storeUpdate = async () => {
     // 구글 플레이 스토어 링크
     const GOOGLE_PLAY_STORE_LINK = 'market://details?id=com.appsquad.limeeted';
@@ -163,34 +164,24 @@ function PreFetcher(props) {
     RNExitApp.exitApp();
   };
 
-  // 코드푸시 업데이트
+  // ########################################################## 코드푸시 업데이트 함수
   const codepushUpdate = async (needUpdate:any) => {
     try {
       setUpdateStatusCode('CODEPUSH');
 
       const newPackage = await needUpdate.download(({totalBytes, receivedBytes}) => {
-          if (totalBytes === 0) {
-              return;
-          }
+          if (totalBytes === 0) { return; }
           const newPercent = parseInt(receivedBytes/totalBytes * 100);
-          console.log('newPercent :::::: ' , newPercent);
           setUpdatePercent(newPercent);
 
-          if(Platform.OS == 'ios') {
-            SplashScreen.hide();
-          }
+          // IOS 인 경우 스플래시 화면 강제 숨김
+          if(Platform.OS == 'ios') { SplashScreen.hide(); }
       });
-      if (!newPackage) {
-          return;
-      };
-      /* newPackage.install().then(() => {
-          //authCheck();
-          //setUpdateStatusCode('NONE');
-          //codePush.restartApp();
-      }); */
+
+      if (!newPackage) { return; };
+
+      // 업데이트 설치 완료 후 로직
       newPackage.install(codePush.InstallMode.IMMEDIATE).then(() => {
-        //SplashScreen.show();
-        // 업데이트 설치 완료 후 로직
         codePush.notifyAppReady();
         //codePush.restartApp();
 
@@ -206,13 +197,15 @@ function PreFetcher(props) {
     }
   };
 
-  useEffect(() => {
+  // ########################################################## 버전 체크 함수
+  const versionCheck = async (isInactive:boolean) => {
     appVersionCheck().then((result) => {
       if(result) {
         codepushVersionCheck().then((update) => {
           console.log('update :::::: ' , update);
           if(update) {
-              codepushUpdate(update);
+            if(isInactive) { SplashScreen.show(); }
+            codepushUpdate(update);
           } else {
             authCheck();
           }
@@ -224,9 +217,10 @@ function PreFetcher(props) {
         setUpdateStatusCode('STORE');
       }
     });
-  }, []);
+  };
 
-  async function authCheck() {
+  // ########################################################## 인증 체크 및 실행 함수
+  const authCheck = async () => {
     const token = await AsyncStorage.getItem(JWT_TOKEN);
     if (token) {
       prefetch();
@@ -240,6 +234,29 @@ function PreFetcher(props) {
     dispatch(myProfile());
     setUpdateStatusCode('NONE');
   };
+
+  // ########################################################## 초기 실행
+  useEffect(() => {
+    const handleAppStateChange = nextAppState => {
+      //console.log('⚽️appState nextAppState', appState.current, nextAppState);
+
+      // 포그라운드 진입 감지
+      if(appState.current.match(/inactive|background/) && nextAppState === 'active') {
+        console.log('App has come to the foreground!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+        versionCheck(true);
+      };
+
+      // 백그라운드 진입 감지
+      if(appState.current.match(/inactive|active/) && nextAppState === 'background') {
+        console.log('App has come to the background!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+      };
+      appState.current = nextAppState;
+    };
+
+    AppState.addEventListener('change', handleAppStateChange);
+
+    versionCheck(false);
+  }, []);
 
   return (
     <>
@@ -274,20 +291,6 @@ function PreFetcher(props) {
           </View>
         </>
       )}
-
-      {/* <Modal>
-        <View style={_style.loadingArea}>
-          <Text>dasdsada</Text>
-          <Image source={GIF_IMG.soon} style={_style.loadingIcon} />
-        </View>
-
-      </Modal> */}
-      {/* <View style={_style.loadingArea}>
-        <Text>dasdsada</Text>
-        <Image source={GIF_IMG.soon} style={_style.loadingIcon} />
-      </View>
-
-      <Text>dasdsada</Text> */}
     </>
   )
 }

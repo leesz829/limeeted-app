@@ -17,10 +17,9 @@ import TopNavigation from 'component/TopNavigation';
 import { ViualSlider } from 'component/ViualSlider';
 import * as React from 'react';
 import { useState, useRef, useEffect } from 'react';
-import { ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity, Animated, Easing, PanResponder, Platform } from 'react-native';
+import { ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity, Animated, Easing, PanResponder, Platform, TouchableWithoutFeedback } from 'react-native';
 import { LivePopup } from 'screens/commonpopup/LivePopup';
 import { LiveSearch } from 'screens/live/LiveSearch';
-import * as hooksMember from 'hooks/member';
 import { get_live_members, regist_profile_evaluation, get_common_code, update_additional } from 'api/models';
 import { useMemberseq } from 'hooks/useMemberseq';
 import { findSourcePath, IMAGE, GIF_IMG } from 'utils/imageUtils';
@@ -95,6 +94,10 @@ export const Live = () => {
 
   };
 
+  // 평가 확인 클릭 여부 함수
+  const [isClickable, setIsClickable] = useState(true);
+
+
   // ####################################################################################### 평점 선택 콜백 함수
   const scoreSelectedCallBackFunc = (score: number) => {
     // 2.5 보다 아래 체크
@@ -127,43 +130,52 @@ export const Live = () => {
 
   // ####################################################################################### 프로필 평가 등록
   const insertProfileAssessment = async (score:number) => {
-    const body = {
-      profile_score: score,
-      face_code: clickFaceTypeCode,
-      member_seq: data.live_member_info?.member_seq,
-      approval_profile_seq : data.live_member_info?.approval_profile_seq
-    };
 
-    console.log('body :::::::: ' , body);
+    // 중복 클릭 방지 설정
+    if(isClickable) {
+      setIsClickable(false);
 
-    try {
-      const { success, data } = await regist_profile_evaluation(body);
-      if(success) {
-        switch (data.result_code) {
-          case SUCCESS:
-            dispatch(myProfile());
-            setIsLoad(false);
-            setLiveModalVisible(false);
-            getLiveMatchTrgt();
-            break;
-          default:
-            show({ content: '오류입니다. 관리자에게 문의해주세요.' , });
-            break;
+      const body = {
+        profile_score: score,
+        face_code: clickFaceTypeCode,
+        member_seq: data.live_member_info?.member_seq,
+        approval_profile_seq : data.live_member_info?.approval_profile_seq
+      };
+  
+      console.log('body :::::::: ' , body);
+
+      try {
+        const { success, data } = await regist_profile_evaluation(body);
+        if(success) {
+          switch (data.result_code) {
+            case SUCCESS:
+              dispatch(myProfile());
+              setIsLoad(false);
+              setLiveModalVisible(false);
+              getLiveMatchTrgt();
+              break;
+            default:
+              show({ content: '오류입니다. 관리자에게 문의해주세요.' , });
+              setIsClickable(true);
+              break;
+          }
+        } else {
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+          setIsClickable(true);
         }
-       
-      } else {
-        show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+      } catch (error) {
+        console.log(error);
+        setIsClickable(true);
+      } finally {
+        
       }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      
-    }
 
+    };
   };
 
   // ####################################################################################### LIVE 평가 회원 조회
   const getLiveMatchTrgt = async () => {
+    setIsClickable(true);
     setPageIndex(1);
     setClickFaceTypeCode('');
     setSelectedScore(0);
@@ -630,7 +642,8 @@ export const Live = () => {
 
               <TouchableOpacity
                 style={[modalStyle.modalBtn, {backgroundColor: '#697AE6', borderBottomRightRadius: 15, borderTopRightRadius: 15}]}
-                onPress={() => { insertProfileAssessment(selectedScore); }}>
+                onPress={() => { insertProfileAssessment(selectedScore); }}
+                disabled={!isClickable}>
                 <CommonText type={'h5'} fontWeight={'500'} color={ColorType.white}>확인하기</CommonText>
               </TouchableOpacity>
             </SpaceView>
@@ -652,15 +665,25 @@ export const Live = () => {
             {paddingBottom : 90}
           ]}
         >
-          <SpaceView mb={20} viewStyle={layoutStyle.alignCenter}>
-            <Image source={IMAGE.logoMark} style={styles.iconSize48} />
-          </SpaceView>
+          {/* <SpaceView mb={20} viewStyle={layoutStyle.alignCenter}>
+            <Image source={IMAGE.logoIcon} style={styles.iconSize48} />
+          </SpaceView> */}
 
           <View style={layoutStyle.alignCenter}>
             <CommonText type={'h4'} textStyle={[layoutStyle.textCenter, commonStyle.fontSize16, commonStyle.lineHeight23]}>
-              오늘 소개해드린 LIVE가 마감 되었어요.{'\n'}
-              새로운 LIVE 소개는 매일 자정에 공개 됩니다.
+              오늘 소개해드린 <Text style={{color: '#7986EE'}}>LIVE</Text>가 마감 되었어요.{'\n'}
+              새로운 <Text style={{color: '#7986EE'}}>LIVE</Text> 소개는 매일 자정에 공개 됩니다.
             </CommonText>
+
+            <View style={{position: 'absolute', top: 0, left: 0, bottom: 0, right: 0, justifyContent: 'center', alignItems: 'center'}}>
+              <Image source={IMAGE.logoIcon03} style={{width: 230, height: 230}} />
+            </View>
+
+            <View style={{position: 'absolute', top: -50, left: 30}}><Image source={IMAGE.heartImg01} style={{width: 40, height: 40}} /></View>
+            {/* <View style={{position: 'absolute', top: 80, left: -15}}><Image source={IMAGE.heartImg02} style={{width: 60, height: 60}} /></View>
+            <View style={{position: 'absolute', top: -100, right: -15}}><Image source={IMAGE.heartImg02} style={{width: 60, height: 60}} /></View> */}
+            <View style={{position: 'absolute', top: 55, right: 30}}><Image source={IMAGE.heartImg01} style={{width: 40, height: 40}} /></View>
+
           </View>
         </View>
       ) : (

@@ -176,6 +176,11 @@ export const IMAGE = {
   royalpassImg: require('assets/img/royalpass_img.png'),
   passImg: require('assets/img/pass_img.png'),
   logoBanner: require('assets/img/logo_banner.jpg'),
+  logoIcon: require('assets/img/logo_icon.png'),
+  logoIcon02: require('assets/img/logo_icon02.png'),
+  logoIcon03: require('assets/img/logo_icon03.png'),
+  heartImg01: require('assets/img/heart_img.png'),
+  heartImg02: require('assets/img/heart_img02.png'),
 };
 
 export const PROFILE_IMAGE = {
@@ -193,7 +198,6 @@ export const PROFILE_IMAGE = {
   womanTmp6: require('assets/img/tmp/profile_w_06.jpg'),
   womanTmp7: require('assets/img/tmp/profile_w_07.jpg'),
   profileM1: require('assets/img/tmp/robby_tmp.jpg'),
-  womanSample1: require('assets/img/tmp/womanSample1.jpg'),
 };
 
 export const GUIDE_IMAGE = {

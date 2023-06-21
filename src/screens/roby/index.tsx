@@ -1288,7 +1288,7 @@ const ratingCard = StyleSheet.create({
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
-    borderWidthBottom: 1,
+    borderBottomWidth: 1,
     borderBottomColor: '#151515',
   },
   triangle: {

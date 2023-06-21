@@ -70,6 +70,9 @@ export default function ProfileActive({ memberData }) {
 
         </SpaceView>
 
+        {/* ##############################################################################################
+        ############### 프로필 평점 영역
+        ############################################################################################## */}
         <View style={_styles.profileActivePannel}>
           <View style={{zIndex: 1}}>
             <Text style={_styles.profileEverageText}>프로필 평점</Text>
@@ -137,6 +140,10 @@ export default function ProfileActive({ memberData }) {
           
         </View>
 
+
+        {/* ##############################################################################################
+        ############### 소셜 평점 영역
+        ############################################################################################## */}
         <View style={_styles.socialContainer}>
           <Text style={_styles.socialEverageText}>소셜 평점</Text>
           <Text style={[_styles.socialText1, { fontFamily: 'AppleSDGothicNeoEB00' }]}>

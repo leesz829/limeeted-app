@@ -291,11 +291,12 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                         </>
                       )}
     
-                      {(memberData?.religion != null || memberData?.drinking != null) && (
+                      {(isEmptyData(memberData?.religion) || isEmptyData(memberData?.drinking)) && (
                         <>
                           {isEmptyData(memberData?.religion) && (
                             <>
                               종교는{' '}
+                              
                               {memberData?.religion == 'NONE' &&
                                 <>
                                   {isEmptyData(memberData?.drinking) ? ( 

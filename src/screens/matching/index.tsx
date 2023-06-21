@@ -274,7 +274,7 @@ export default function Matching(props: Props) {
   const insertMatchInfo = async (activeType: string, special_level: number) => {
     const body = {
       active_type: activeType,
-      res_member_seq: data.match_member_info.member_seq,
+      res_member_seq: data.match_member_info?.member_seq,
       special_level: special_level,
     };
 
@@ -319,7 +319,7 @@ export default function Matching(props: Props) {
     
     const body = {
       report_type_code: checkReportType,
-      report_member_seq: data.match_member_info.member_seq,
+      report_member_seq: data.match_member_info?.member_seq,
     };
     
     try {
@@ -348,7 +348,7 @@ export default function Matching(props: Props) {
   const checkUserReport = async () => {
 
     const body = {
-      report_member_seq: data.match_member_info.member_seq
+      report_member_seq: data.match_member_info?.member_seq
     };
 
     try {
@@ -374,7 +374,7 @@ export default function Matching(props: Props) {
 
   const reportCheckUserConfirm = () => {
     const body = {
-      report_member_seq: data.match_member_info.member_seq
+      report_member_seq: data.match_member_info?.member_seq
     };
     report_check_user_confirm(body);
   };
@@ -606,23 +606,33 @@ export default function Matching(props: Props) {
       <>
         <TopNavigation currentPath={'LIMEETED'} />
         {isEmpty ? (
-          <View
-            style={[
-              layoutStyle.alignCenter,
-              layoutStyle.justifyCenter,
-              layoutStyle.flex1,
-              {backgroundColor: 'white', paddingBottom: 90},
-            ]}>
-            <SpaceView mb={20} viewStyle={layoutStyle.alignCenter}>
-              <Image source={IMAGE.logoMark} style={{width: 48, height: 48}} />
-            </SpaceView>
-            <View style={[layoutStyle.alignCenter]}>
-              <CommonText type={'h4'} textStyle={[layoutStyle.textCenter, commonStyle.fontSize16, commonStyle.lineHeight23]}>
-                오늘 소개해드릴 데일리뷰가 마감되었어요.{"\n"}
-                데일리뷰에서 제공해드릴 프로필 카드는 {"\n"}운영 정책에 따라 늘려 나갈 예정이니 기대해주세요.
-              </CommonText>
+          <>
+            <View
+              style={[
+                layoutStyle.alignCenter,
+                layoutStyle.justifyCenter,
+                layoutStyle.flex1,
+                {backgroundColor: 'white', paddingBottom: 90},
+              ]}>
+
+              <View style={[layoutStyle.alignCenter]}>
+                <CommonText type={'h4'} textStyle={[layoutStyle.textCenter, commonStyle.fontSize16, commonStyle.lineHeight23]}>
+                  오늘 소개하여 드린 <Text style={{color: '#7986EE'}}>데일리 뷰</Text>가 마감되었어요.{"\n"}
+                  <Text style={{color: '#7986EE'}}>데일리 뷰</Text>에서 제공해드릴 프로필 카드는 {"\n"}운영 정책에 따라 늘려 나갈 예정입니다.
+                </CommonText>
+
+                <View style={{position: 'absolute', top: 0, left: 0, bottom: 0, right: 0, justifyContent: 'center', alignItems: 'center'}}>
+                  <Image source={IMAGE.logoIcon03} style={{width: 230, height: 230}} />
+                </View>
+
+                <View style={{position: 'absolute', top: -50, left: 30}}><Image source={IMAGE.heartImg01} style={{width: 40, height: 40}} /></View>
+                {/* <View style={{position: 'absolute', top: 80, left: -15}}><Image source={IMAGE.heartImg02} style={{width: 60, height: 60}} /></View>
+                <View style={{position: 'absolute', top: -100, right: -15}}><Image source={IMAGE.heartImg02} style={{width: 60, height: 60}} /></View> */}
+                <View style={{position: 'absolute', top: 80, right: 30}}><Image source={IMAGE.heartImg01} style={{width: 40, height: 40}} /></View>
+
+              </View>
             </View>
-          </View>
+          </>
         ) : (
           <View
             style={[
@@ -633,7 +643,7 @@ export default function Matching(props: Props) {
             ]}>
             <SpaceView mb={20} viewStyle={layoutStyle.alignCenter}>
               {/* <Image source={GIF_IMG.faceScan} style={styles.iconSize48} /> */}
-              <Image source={IMAGE.logoMark} style={{width: 48, height: 48}} />
+              <Image source={IMAGE.logoIcon} style={{width: 48, height: 48}} />
             </SpaceView>
             <View style={layoutStyle.alignCenter}>
               <CommonText type={'h4'}>다음 매칭 회원을 찾고 있어요.</CommonText>
