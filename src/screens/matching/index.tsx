@@ -66,6 +66,7 @@ import AddInfo from 'component/match/AddInfo';
 import ProfileActive from 'component/match/ProfileActive';
 import InterviewRender from 'component/match/InterviewRender';
 import MemberIntro from 'component/match/MemberIntro';
+import { isEmptyData } from 'utils/functions';
 
 
 
@@ -404,7 +405,7 @@ export default function Matching(props: Props) {
       getDailyMatchInfo();
 
       // 튜토리얼 팝업 노출
-      if(memberBase?.tutorial_daily_yn == 'Y') {
+      if(!isEmptyData(memberBase?.tutorial_daily_yn) || memberBase?.tutorial_daily_yn == 'Y') {
         show({
           type: 'GUIDE',
           guideType: 'DAILY',
@@ -618,7 +619,7 @@ export default function Matching(props: Props) {
               <View style={[layoutStyle.alignCenter]}>
                 <CommonText type={'h4'} textStyle={[layoutStyle.textCenter, commonStyle.fontSize16, commonStyle.lineHeight23]}>
                   오늘 소개하여 드린 <Text style={{color: '#7986EE'}}>데일리 뷰</Text>가 마감되었어요.{"\n"}
-                  <Text style={{color: '#7986EE'}}>데일리 뷰</Text>에서 제공해드릴 프로필 카드는 {"\n"}운영 정책에 따라 늘려 나갈 예정입니다.
+                  <Text style={{color: '#7986EE'}}>데일리 뷰</Text>에서 제공해드릴 프로필 카드는 {"\n"}운영 정책에 따라 다양하게 늘려 나갈 예정입니다.
                 </CommonText>
 
                 <View style={{position: 'absolute', top: 0, left: 0, bottom: 0, right: 0, justifyContent: 'center', alignItems: 'center'}}>

@@ -138,14 +138,16 @@ export const Signup02 = (props: Props) => {
 
     let tmpCnt = 0;
     for (var key in imgData) {
-      if (imgData[key].delYn == 'N' && (imgData[key].url || imgData[key].uri)) {
+      if (imgData[key].delYn == 'N' && imgData[key].status == 'ACCEPT' && (imgData[key].url || imgData[key].uri)) {
         tmpCnt++;
       }
     }
 
-    if (tmpCnt <= 3) {
-      show({ content: '프로필 사진은 최소 3장 등록되어야 합니다.' });
-      return;
+    if(isDelImgData.status == 'ACCEPT') {
+      if (tmpCnt <= 3) {
+        show({ content: '프로필 승인된 사진은 최소3장이 등록되어야 합니다.' });
+        return;
+      }
     }
 
     if (isDelImgData.order_seq == '1') {
@@ -335,14 +337,14 @@ export const Signup02 = (props: Props) => {
         if (imgData[key].delYn == 'N' && (imgData[key].url || imgData[key].uri)) {
           tmpCnt++;
         }
-      }      
+      }
     }
     for (var key in profileImageList) {
       tmpCnt++;
     }
 
     if (tmpCnt < 3) {
-      show({ content: '프로필 사진은 최소3장 등록되어야 합니다.' });
+      show({ content: '프로필 사진은 반려된 사진을 제외한\n최소3장이 등록되어야 합니다.' });
       return;
     }
 

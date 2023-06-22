@@ -361,12 +361,7 @@ export const SecondAuthPopup = (props: Props) => {
               </SpaceView>
 
               <SpaceView mb={12} viewStyle={_styles.refuseArea}>
-                <CommonText
-                  color={'#848484'} 
-                  fontWeight={'500'}
-                  lineHeight={17}
-                  type={'h6'}
-                  textStyle={{marginTop: 4}}>{props.return_reason}</CommonText>
+                <Text style={_styles.returnReasonText}>{props.return_reason}</Text>
               </SpaceView>
             </SpaceView>
           }
@@ -790,6 +785,12 @@ const _styles = StyleSheet.create({
     paddingHorizontal: 15,
     borderRadius: 8,
     minHeight: 100,
+  },
+  returnReasonText: {
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 13,
+    color: '#989898',
+    lineHeight: 17,
   },
 
 })

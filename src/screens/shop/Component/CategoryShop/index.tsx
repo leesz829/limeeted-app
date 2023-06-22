@@ -35,6 +35,7 @@ import { ColorType } from '@types';
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
 import { useDispatch } from 'react-redux';
 import { useUserInfo } from 'hooks/useUserInfo';
+import { isEmptyData } from 'utils/functions';
 
 
 interface Props {
@@ -275,9 +276,9 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc }) {
     if(selectedCategory?.value == 'SUBSCRIPTION' || selectedCategory?.value == 'PACKAGE' || selectedCategory?.value == 'PASS') {
 
       // 튜토리얼 팝업 노출
-      if((selectedCategory?.value == 'SUBSCRIPTION' && memberBase?.tutorial_subscription_item_yn == 'Y') ||
-      (selectedCategory?.value == 'PACKAGE' && memberBase?.tutorial_package_item_yn == 'Y') ||
-      (selectedCategory?.value == 'PASS' && memberBase?.tutorial_shop_yn == 'Y')) {
+      if((selectedCategory?.value == 'SUBSCRIPTION' && (!isEmptyData(memberBase?.tutorial_subscription_item_yn) || memberBase?.tutorial_subscription_item_yn == 'Y')) ||
+        (selectedCategory?.value == 'PACKAGE' && (!isEmptyData(memberBase?.tutorial_package_item_yn) || memberBase?.tutorial_package_item_yn == 'Y')) ||
+        (selectedCategory?.value == 'PASS' && (!isEmptyData(memberBase?.tutorial_shop_yn) || memberBase?.tutorial_shop_yn == 'Y'))) {
 
         let guideType = '';
         if(selectedCategory?.value == 'SUBSCRIPTION') {

@@ -37,6 +37,7 @@ import RatingStar from 'component/RatingStar';
 import LinearGradient from 'react-native-linear-gradient';
 import Modal from 'react-native-modal';
 import { ColorType } from '@types';
+import { isEmptyData } from 'utils/functions';
 
 
 
@@ -472,7 +473,7 @@ export const Live = () => {
       //traslateXActiveReset();
 
       // 튜토리얼 팝업 노출
-      if(memberBase?.tutorial_live_yn == 'Y') {
+      if(!isEmptyData(memberBase?.tutorial_live_yn) || memberBase?.tutorial_live_yn == 'Y') {
         show({
           type: 'GUIDE',
           guideType: 'LIVE',

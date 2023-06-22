@@ -50,6 +50,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { Rating, AirbnbRating } from 'react-native-ratings';
 import Contacts from 'react-native-contacts';
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
+import { isEmptyData } from 'utils/functions';
 
 
 
@@ -409,8 +410,10 @@ export const Roby = (props: Props) => {
       getPeekMemberInfo();
       setFriendMatchYn(memberBase?.friend_match_yn == 'N' ? true : false);
 
+      console.log('memberBase?.tutorial_roby_yn ::::::: ' , memberBase?.tutorial_roby_yn);
+
       // 튜토리얼 팝업 노출
-      if(memberBase?.tutorial_roby_yn == 'Y') {
+      if(!isEmptyData(memberBase?.tutorial_roby_yn) || memberBase?.tutorial_roby_yn == 'Y') {
         show({
           type: 'GUIDE',
           guideType: 'ROBY',

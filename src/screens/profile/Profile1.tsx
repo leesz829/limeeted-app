@@ -43,6 +43,7 @@ import { CommonLoading } from 'component/CommonLoading';
 import SpaceView from 'component/SpaceView';
 import LinearGradient from 'react-native-linear-gradient';
 import Modal from 'react-native-modal';
+import { isEmptyData } from 'utils/functions';
 
 
 const options = {
@@ -646,7 +647,7 @@ export const Profile1 = (props: Props) => {
     if(isFocus) {
 
       // 튜토리얼 팝업 노출
-      if(memberBase?.tutorial_profile_yn == 'Y') {
+      if(!isEmptyData(memberBase?.tutorial_profile_yn) || memberBase?.tutorial_profile_yn == 'Y') {
         show({
           type: 'GUIDE',
           guideType: 'PROFILE',

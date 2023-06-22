@@ -41,6 +41,8 @@ import { usePopup } from 'Context';
 import { useUserInfo } from 'hooks/useUserInfo';
 import Carousel from 'react-native-snap-carousel';
 import useInterval from 'utils/useInterval';
+import { isEmptyData } from 'utils/functions';
+
 
 
 
@@ -173,7 +175,7 @@ export const Shop = () => {
   useEffect(() => {
     if(isFocus) {
       // 튜토리얼 팝업 노출
-      if(memberBase?.tutorial_shop_yn == 'Y') {
+      if(!isEmptyData(memberBase?.tutorial_shop_yn) || memberBase?.tutorial_shop_yn == 'Y') {
         show({
           type: 'GUIDE',
           guideType: 'SHOP_BASIC',

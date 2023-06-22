@@ -22,6 +22,7 @@ import { CommonSwich } from 'component/CommonSwich';
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
 import ToggleSwitch from 'toggle-switch-react-native';
 import { Color } from 'assets/styles/Color';
+import { isEmptyData } from 'utils/functions';
 
 
 /* ################################################################################################################
@@ -47,13 +48,13 @@ export const TutorialSetting = (props: Props) => {
   const [allSelected, setAllSelected] = React.useState<boolean>(false);
 
   const [isChkData, setIsChkData] = React.useState({
-    isDaily: memberBase?.tutorial_daily_yn == 'Y' ? true : false,
-    isLive: memberBase?.tutorial_live_yn == 'Y' ? true : false,
-    isRoby: memberBase?.tutorial_roby_yn == 'Y' ? true : false,
-    isProfile: memberBase?.tutorial_profile_yn == 'Y' ? true : false,
-    isShop: memberBase?.tutorial_shop_yn == 'Y' ? true : false,
-    isSubscriptionItem: memberBase?.tutorial_subscription_item_yn == 'Y' ? true : false,
-    isPackageItem: memberBase?.tutorial_package_item_yn == 'Y' ? true : false,
+    isDaily: (!isEmptyData(memberBase?.tutorial_daily_yn) || memberBase?.tutorial_daily_yn == 'Y') ? true : false,
+    isLive: (!isEmptyData(memberBase?.tutorial_live_yn) || memberBase?.tutorial_live_yn == 'Y') ? true : false,
+    isRoby: (!isEmptyData(memberBase?.tutorial_roby_yn) || memberBase?.tutorial_roby_yn == 'Y') ? true : false,
+    isProfile: (!isEmptyData(memberBase?.tutorial_profile_yn) || memberBase?.tutorial_profile_yn == 'Y') ? true : false,
+    isShop: (!isEmptyData(memberBase?.tutorial_shop_yn) || memberBase?.tutorial_shop_yn == 'Y') ? true : false,
+    isSubscriptionItem: (!isEmptyData(memberBase?.tutorial_subscription_item_yn) || memberBase?.tutorial_subscription_item_yn == 'Y') ? true : false,
+    isPackageItem: (!isEmptyData(memberBase?.tutorial_package_item_yn) || memberBase?.tutorial_package_item_yn == 'Y') ? true : false,
   });
 
   const saveMemberTutorialInfo = async (isAll:boolean, type:string, value:boolean) => {
