@@ -39,10 +39,6 @@ export const GuidePopup = (props: Props) => {
   //const [isNextChk, setIsNextChk] = React.useState(false);
   const memberBase = useUserInfo();
 
-  /* console.log('width ::::: ', width);
-  console.log('height ::::: ', height);
-  console.log('gender ::::: ', memberBase.gender); */  
-
   const onPressConfirm = (isNextChk) => {
     if(props.confirmCallbackFunc == null && typeof props.confirmCallbackFunc != 'undefined') {
 
@@ -90,7 +86,7 @@ export const GuidePopup = (props: Props) => {
 
                   <Carousel
                     ref={ref}
-                    data={(props.guideType == 'SHOP_BASIC' && memberBase.gender == 'M') || props.guideType == 'ROBY_PROFILE' ? [1,2] : [1,2,3]}
+                    data={(props.guideType == 'SHOP_BASIC' && memberBase?.gender == 'M') || props.guideType == 'ROBY_PROFILE' ? [1,2] : [1,2,3]}
                     firstItem={pageIndex}
                     onSnapToItem={setCurrentIndex}
                     sliderWidth={width-62}
@@ -288,7 +284,7 @@ export const GuidePopup = (props: Props) => {
                   />
 
                   <SpaceView viewStyle={_styles.dotContainer}>
-                    {(props.guideType == 'SHOP_BASIC' && memberBase.gender == 'M') || props.guideType == 'ROBY_PROFILE' ? (
+                    {(props.guideType == 'SHOP_BASIC' && memberBase?.gender == 'M') || props.guideType == 'ROBY_PROFILE' ? (
                         [1,2].map((_, index) => (
                           <TouchableOpacity
                             key={index}

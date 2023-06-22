@@ -88,6 +88,28 @@ export const Storage = (props: Props) => {
     zzimItemUseYn: 'N',
   });
 
+  // 탭 목록
+  const [tabs, setTabs] = React.useState([
+    {
+      type: 'REQ',
+      title: '받은 관심',
+      color: '#FF7E8C',
+      data: []
+    },
+    {
+      type: 'RES',
+      title: '보낸 관심',
+      color: '#697AE6',
+      data: []
+    },
+    {
+      type: 'MATCH',
+      title: '성공 매칭',
+      color: '#8669E6',
+      data: []
+    },
+  ]);
+
   // ################################################################################# 보관함 정보 조회
   const getStorageData = async () => {
     setIsLoading(true);
@@ -99,6 +121,8 @@ export const Storage = (props: Props) => {
           console.log(data.result_msg);
           return false;
         } else {
+          let tabsData = [];
+
           let resLikeListData = [];
           let reqLikeListData = [];
           let matchTrgtListData = [];
@@ -108,9 +132,11 @@ export const Storage = (props: Props) => {
           resLikeListData = dataUtils.getStorageListData(
             data.res_like_list
           );
+
           reqLikeListData = dataUtils.getStorageListData(
             data.req_like_list
           );
+
           matchTrgtListData = dataUtils.getStorageListData(
             data.match_trgt_list
           );
@@ -120,6 +146,37 @@ export const Storage = (props: Props) => {
               data.zzim_trgt_list
             );
           }
+
+          // tabs 데이터 구성
+          tabsData = [
+            {
+              type: 'REQ',
+              title: '받은 관심',
+              color: '#FF7E8C',
+              data: resLikeListData
+            },
+            {
+              type: 'RES',
+              title: '보낸 관심',
+              color: '#697AE6',
+              data: reqLikeListData
+            },
+            {
+              type: 'MATCH',
+              title: '성공 매칭',
+              color: '#8669E6',
+              data: matchTrgtListData
+            },
+          ];
+
+          if(zzimItemUseYn == 'Y') {
+            tabsData.push({
+              type: 'ZZIM',
+              title: '찜 목록',
+              color: '#69C9E6',
+              data: zzimTrgtListData
+            })
+          };
 
           let tmpResSpecialCnt = 0;
           let tmpReqSpecialCnt = 0;
@@ -163,7 +220,8 @@ export const Storage = (props: Props) => {
             matchSpecialCnt: tmpMatchSpecialCnt,
             zzimItemUseYn: zzimItemUseYn,
           });
-          
+
+          setTabs(tabsData);
         }
       }
     } catch (error) {
@@ -270,33 +328,6 @@ export const Storage = (props: Props) => {
   const ref = useRef();
   const [currentIndex, setCurrentIndex] = useState(pageIndex);
 
-  const tabs = [
-    {
-      type: 'REQ',
-      title: '받은 관심',
-      color: '#FF7E8C',
-      data: dataStorage.resLikeList
-    },
-    {
-      type: 'RES',
-      title: '보낸 관심',
-      color: '#697AE6',
-      data: dataStorage.reqLikeList
-    },
-    {
-      type: 'MATCH',
-      title: '성공 매칭',
-      color: '#8669E6',
-      data: dataStorage.matchTrgtList
-    },
-    {
-      type: 'ZZIM',
-      title: '찜 목록',
-      color: '#69C9E6',
-      data: dataStorage.zzimTrgtList
-    },
-  ];
-
   const onPressDot = (index) => {
     ref?.current?.snapToItem(index);
   };
@@ -314,7 +345,6 @@ export const Storage = (props: Props) => {
       {isLoading && <CommonLoading />}
 
       <View style={_styles.root}>
-
         {/* <CommonHeader title={tabs[currentIndex].title} right={<Wallet theme />} /> */}
 
         {props.route.params?.headerType == 'common' ? (
@@ -327,13 +357,11 @@ export const Storage = (props: Props) => {
           <View style={_styles.dotContainer}>
             {tabs.map((item, index) => (
               <>
-                {((item.type == 'ZZIM' && dataStorage.zzimItemUseYn == 'Y') || item.type != 'ZZIM') &&
-                  <TouchableOpacity key={index} onPress={() => { onPressDot(index); }}>
-                    <View style={[_styles.tabItem, { backgroundColor: index === currentIndex ? item.color : '#ececec' }]}>
-                      <Text style={_styles.tabItemText}>{item.title} | {item.data.length}</Text>
-                    </View>
-                  </TouchableOpacity>
-                }
+                <TouchableOpacity key={index} onPress={() => { onPressDot(index); }}>
+                  <View style={[_styles.tabItem, { backgroundColor: index === currentIndex ? item.color : '#ececec' }]}>
+                    <Text style={_styles.tabItemText}>{item.title} | {item.data.length}</Text>
+                  </View>
+                </TouchableOpacity>
               </>
             ))}
           </View>
@@ -692,7 +720,9 @@ const _styles = StyleSheet.create({
     color: '#fff',
   },
   tabItem: {
-    flexDirection: `row`,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 20,
