@@ -153,15 +153,18 @@ function PreFetcher(props) {
   const storeUpdate = async () => {
     // 구글 플레이 스토어 링크
     const GOOGLE_PLAY_STORE_LINK = 'market://details?id=com.appsquad.limeeted';
-    const APPLE_PLAY_STORE_LINK = 'https://apps.apple.com/app/6447423352';
+    const APPLE_PLAY_STORE_LINK = 'https://apps.apple.com/kr/app/리미티드-검증형-소개팅-데이트-소셜-마일리지/id6447423352';
 
     if(Platform.OS == 'android') {
       Linking.openURL(GOOGLE_PLAY_STORE_LINK);
+      RNExitApp.exitApp();
     } else {
       Linking.openURL(APPLE_PLAY_STORE_LINK);
+
+      setTimeout(() => {
+        RNExitApp.exitApp();
+      }, 300);
     }
-    
-    RNExitApp.exitApp();
   };
 
   // ########################################################## 코드푸시 업데이트 함수
