@@ -1336,7 +1336,7 @@ const _styles = StyleSheet.create({
   },
   fashionPercent: (idx: number) => {
     return {
-      width: 45,
+      width: 48,
       height: 27,
       borderRadius: 13.5,
       backgroundColor: idx == 0 ? '#FE0456' : '#7986ee',
@@ -1365,10 +1365,9 @@ const _styles = StyleSheet.create({
   },
   percentText: {
     fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: 'normal',
     fontStyle: 'normal',
-    lineHeight: 18,
     letterSpacing: 0,
     textAlign: 'left',
     color: '#fff',

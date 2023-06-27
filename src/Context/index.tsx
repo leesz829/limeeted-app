@@ -1,20 +1,24 @@
 import React, { createContext, useContext, useState } from 'react';
 import { BasePopup } from 'screens/commonpopup/BasePopup';
 import { GuidePopup } from 'screens/commonpopup/GuidePopup';
+import { EventPopup } from 'screens/commonpopup/EventPopup';
 
 export const PopupContext = createContext({} as any);
 
 interface PopupContextProps {
-  title: string | undefined;
-  content: string | undefined;
-  subContent: string | undefined;
-  confirmCallback: Function | undefined;
-  cancelCallback: Function | undefined;
-  type: string | undefined;
-  guideType: string | undefined;
-  guideSlideYn: string | undefined;
-  guideNexBtnExpoYn: string | undefined;
-  btnExpYn: string | undefined;
+  title: string | undefined; // 제목
+  content: string | undefined; // 내용
+  subContent: string | undefined; // 부가 내용
+  confirmCallback: Function | undefined; // 확인 콜백 함수
+  cancelCallback: Function | undefined; // 취소 콜백 함수
+  type: string | undefined; // 팝업 유형
+  guideType: string | undefined; // 가이드 팝업 유형
+  guideSlideYn: string | undefined; // 가이드 팝업 슬라이드 여부
+  guideNexBtnExpoYn: string | undefined; // 가이드 팝업 그만보기 버튼 노출 여부
+  btnExpYn: string | undefined; // 버튼 노출 여부
+  eventType: string | undefined; // 이벤트 팝업 유형
+  eventPopupList: any | undefined; // 이벤트 목록
+  etcCallback: Function | undefined; // 기타 콜백 함수
 }
 
 export const PopupProvider = ({ children }: any) => {
@@ -30,6 +34,9 @@ export const PopupProvider = ({ children }: any) => {
     guideSlideYn: '',
     guideNexBtnExpoYn: '',
     btnExpYn: '',
+    eventType: '',
+    eventPopupList: [],
+    etcCallback: undefined,
   });
 
   function show(content: PopupContextProps) {
@@ -49,6 +56,9 @@ export const PopupProvider = ({ children }: any) => {
       guideSlideYn: '',
       guideNexBtnExpoYn: '',
       btnExpYn: '',
+      eventType: '',
+      eventPopupList: [],
+      etcCallback: undefined,
     });
   }
 
@@ -64,6 +74,15 @@ export const PopupProvider = ({ children }: any) => {
           guideType={contents.guideType}
           guideSlideYn={contents.guideSlideYn}
           guideNexBtnExpoYn={contents.guideNexBtnExpoYn}
+        />
+      ) : contents.type == 'EVENT' ? (
+        <EventPopup
+          popupVisible={visible}
+          setPopupVIsible={setVisible}
+          confirmCallbackFunc={contents.confirmCallback}
+          eventType={contents.eventType}
+          eventPopupList={contents.eventPopupList}
+          etcCallbackFunc={contents.etcCallback}
         />
       ) : (
         <BasePopup

@@ -53,7 +53,7 @@ import { SimpleGrid } from 'react-native-super-grid';
 import { useDispatch } from 'react-redux'; 
 import { myProfile } from 'redux/reducers/authReducer';
 import { MatchSearch } from 'screens/matching/MatchSearch';
-import { findSourcePath, ICON, IMAGE, GUIDE_IMAGE } from 'utils/imageUtils';
+import { findSourcePath, ICON, IMAGE, GUIDE_IMAGE, GIF_IMG } from 'utils/imageUtils';
 import { Slider } from '@miblanchard/react-native-slider';
 import ProfileAuth from 'component/ProfileAuth';
 import { formatNowDate} from 'utils/functions';
@@ -67,6 +67,8 @@ import ProfileActive from 'component/match/ProfileActive';
 import InterviewRender from 'component/match/InterviewRender';
 import MemberIntro from 'component/match/MemberIntro';
 import { isEmptyData } from 'utils/functions';
+import { STACK } from 'constants/routes';
+import AsyncStorage from '@react-native-community/async-storage';
 
 
 
@@ -134,6 +136,10 @@ export default function Matching(props: Props) {
     setCurrentIndex(index);
   };
 
+  // 팝업 목록
+  let popupList = [];
+  let isPopup = true;
+
   // ################################################################ 찐심 모달 관련
 
   // 찐심 보내기 모달 visible
@@ -151,7 +157,7 @@ export default function Matching(props: Props) {
   }
 
   // ############################################################ 데일리 매칭 정보 조회
-  const getDailyMatchInfo = async () => {
+  const getDailyMatchInfo = async (isPopupShow:boolean) => {
 
     // 기존 데이터 존재 여부
     let ordMemberSeq = data?.match_member_info?.member_seq;
@@ -175,8 +181,6 @@ export default function Matching(props: Props) {
             use_item: data?.use_item,
           });
 
-          //setData(data);
-
           if(data?.match_member_info == null) {
             setIsLoad(false);
             setIsEmpty(true);
@@ -186,6 +190,17 @@ export default function Matching(props: Props) {
             }
             setIsLoad(true);
           }
+
+          // 이벤트 팝업 노출
+          if(data.popup_list?.length > 0) {
+            popupList = data.popup_list;
+
+            // 튜토리얼 팝업 닫혀있는 경우 호출
+            if(isPopupShow) {
+              popupShow();
+            }
+          };
+
         } else {
           setIsLoad(false);
           setIsEmpty(true);
@@ -196,6 +211,40 @@ export default function Matching(props: Props) {
     } finally {
     }
   };
+
+  // ############################################################ 팝업 활성화
+  const popupShow = async () => {
+    if(popupList.length > 0 && isPopup) {
+      let type = popupList[0].type;  // 팝업 유형
+      let nowDt = formatNowDate().substring(0, 8);
+      let endDt = await AsyncStorage.getItem('POPUP_ENDDT_' + type);
+
+      if(null == endDt || endDt < nowDt) {
+        show({
+          type: 'EVENT',
+          eventType: 'EVENT',
+          eventPopupList: popupList,
+          confirmCallback: async function(isNextChk) {
+            if(isNextChk) {
+              // 팝업 종료 일시 Storage 저장
+              await AsyncStorage.setItem('POPUP_ENDDT_' + type, nowDt);
+              isPopup = false;
+            }
+          },
+          etcCallback: async function(pop_bas_seq, sub_img_path) {
+            navigation.navigate(STACK.COMMON, { 
+              screen: 'EventDetail',
+              params: {
+                pop_bas_seq: pop_bas_seq,
+                sub_img_path: sub_img_path
+              }
+            });
+          },
+        });
+      }
+    }
+  };
+
 
   /* #######################################################################
 	##### 거부/찐심/관심 팝업 함수
@@ -231,16 +280,6 @@ export default function Matching(props: Props) {
     } else if (activeType == 'sincere') {
       setSincereModalVisible(true);
 
-      /* show({
-				title: '찐심 보내기',
-				content: '로얄패스를 소모하여 찐심을 보내시겠습니까?\n로얄패스 x2' ,
-        cancelCallback: function() {
-
-        },
-				confirmCallback: function() {
-          insertMatchInfo(activeType);
-				}
-			}); */
     } else if (activeType == 'pass') {
       show({
 				title: '매칭 취소',
@@ -357,14 +396,11 @@ export default function Matching(props: Props) {
       if(success) {
         if(data.report_cnt < 10) return false;
         
-        show({ 
-          title: '제제 알림'
-          , content: '<이용 약관>에 근거하여 회원 제제 상태로 전환되었습니다.\n상대에 대한 배려를 당부드려요'
-          , confirmCallback : reportCheckUserConfirm() });
-        /*
-        confirmCallback: Function | undefined;
-        cancelCallback: Function | undefined;
-        */
+        show({
+          title: '제제 알림',
+          content: '<이용 약관>에 근거하여 회원 제제 상태로 전환되었습니다.\n상대에 대한 배려를 당부드려요',
+          confirmCallback : reportCheckUserConfirm() 
+        });
       }
     } catch (error) {
       console.log(error);
@@ -380,7 +416,7 @@ export default function Matching(props: Props) {
     report_check_user_confirm(body);
   };
 
-  // 회원 튜토리얼 노출 정보 저장
+  // ############################################################ 회원 튜토리얼 노출 정보 저장
   const saveMemberTutorialInfo = async () => {
     const body = {
       tutorial_daily_yn: 'N'
@@ -393,19 +429,20 @@ export default function Matching(props: Props) {
         }));
       }
     }
-  }
+  };
 
   // ################################################################ 초기 실행 함수
   useEffect(() => {
     if(isFocus) {
       checkUserReport();
       setIsEmpty(false);
-
-      // 데일리 매칭 정보 조회
-      getDailyMatchInfo();
+      
+      let isPopupShow = true;
 
       // 튜토리얼 팝업 노출
       if(!isEmptyData(memberBase?.tutorial_daily_yn) || memberBase?.tutorial_daily_yn == 'Y') {
+        isPopupShow = false;
+
         show({
           type: 'GUIDE',
           guideType: 'DAILY',
@@ -415,9 +452,13 @@ export default function Matching(props: Props) {
             if(isNextChk) {
               saveMemberTutorialInfo();
             }
+            popupShow();
           }
         });
       };
+
+      // 데일리 매칭 정보 조회
+      getDailyMatchInfo(isPopupShow);
     };
   }, [isFocus]);
 
@@ -643,8 +684,7 @@ export default function Matching(props: Props) {
               {backgroundColor: 'white', paddingBottom: 90},
             ]}>
             <SpaceView mb={20} viewStyle={layoutStyle.alignCenter}>
-              {/* <Image source={GIF_IMG.faceScan} style={styles.iconSize48} /> */}
-              <Image source={IMAGE.logoIcon} style={{width: 48, height: 48}} />
+              <Image source={GIF_IMG.faceScan} style={{width: 48, height: 48}} />
             </SpaceView>
             <View style={layoutStyle.alignCenter}>
               <CommonText type={'h4'}>다음 매칭 회원을 찾고 있어요.</CommonText>

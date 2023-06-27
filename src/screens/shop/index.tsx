@@ -42,6 +42,7 @@ import { useUserInfo } from 'hooks/useUserInfo';
 import Carousel from 'react-native-snap-carousel';
 import useInterval from 'utils/useInterval';
 import { isEmptyData } from 'utils/functions';
+import { formatNowDate} from 'utils/functions';
 
 
 
@@ -90,6 +91,10 @@ export const Shop = () => {
     setIsLoading(isStatus);
   };
 
+  // 팝업 목록
+  let popupList = [];
+  let isPopup = true;
+
   /* const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
   const snapToOffsets = useMemo(() => Array.from(Array(banner.length)).map((_, index) => index * width),
@@ -111,7 +116,7 @@ export const Shop = () => {
   }, isFocus ? 5000 : null); */
 
   // ############################################################################# 배너 목록 조회
-  const getBanner = async () => {
+  const getBanner = async (isPopupShow:boolean) => {
     //const invenConnectDate = await AsyncStorage.getItem('INVENTORY_CONNECT_DT') || '20230524000000';
     const { success, data } = await get_banner_list({ banner_type: 'PROD' });
 
@@ -128,7 +133,7 @@ export const Shop = () => {
 
         let percent = (mbrPrice*100) / trgtPrice;
         if(percent > 0) {
-        percent = percent / 100;
+          percent = percent / 100;
         }
 
         setPayInfo({
@@ -140,9 +145,20 @@ export const Shop = () => {
         });
       }
 
+      // 회원 기본 데이터 저장
       dispatch(setPartialPrincipal({
         mbr_base : data?.mbr_base
       }));
+
+      // 이벤트 팝업 노출
+      if(data.popup_list?.length > 0) {
+        popupList = data.popup_list;
+
+        // 튜토리얼 팝업 닫혀있는 경우 호출
+        if(isPopupShow) {
+          popupShow();
+        }
+      };
     }
   };
 
@@ -161,8 +177,41 @@ export const Shop = () => {
     }
   };
 
+  // ############################################################ 팝업 활성화
+  const popupShow = async () => {
+    if(popupList.length > 0 && isPopup) {
+      let type = popupList[0].type;  // 팝업 유형
+      let nowDt = formatNowDate().substring(0, 8);
+      let endDt = await AsyncStorage.getItem('POPUP_ENDDT_' + type);
+
+      if(null == endDt || endDt < nowDt) {
+        show({
+          type: 'EVENT',
+          eventType: 'EVENT',
+          eventPopupList: popupList,
+          confirmCallback: async function(isNextChk) {
+            if(isNextChk) {
+              // 팝업 종료 일시 Storage 저장
+              await AsyncStorage.setItem('POPUP_ENDDT_' + type, nowDt);
+              isPopup = false;
+            }
+          },
+          etcCallback: async function(pop_bas_seq, sub_img_path) {
+            navigation.navigate(STACK.COMMON, { 
+              screen: 'EventDetail',
+              params: {
+                pop_bas_seq: pop_bas_seq,
+                sub_img_path: sub_img_path
+              }
+            });
+          },
+        });
+      }
+    }
+  };
+
   // ############################################################################# 초기 실행 실행
-  useFocusEffect(
+  /* useFocusEffect(
     React.useCallback(() => {
       getBanner();
       
@@ -170,12 +219,16 @@ export const Shop = () => {
         
       };
     }, []),
-  );
+  ); */
 
   useEffect(() => {
     if(isFocus) {
+      let isPopupShow = true;
+
       // 튜토리얼 팝업 노출
       if(!isEmptyData(memberBase?.tutorial_shop_yn) || memberBase?.tutorial_shop_yn == 'Y') {
+        isPopupShow = false;
+
         show({
           type: 'GUIDE',
           guideType: 'SHOP_BASIC',
@@ -185,9 +238,12 @@ export const Shop = () => {
             if(isNextChk) {
               saveMemberTutorialInfo();
             }
+            popupShow();
           }
         });
       };
+
+      getBanner(isPopupShow);
     }
   }, [isFocus]);
 
