@@ -27,6 +27,7 @@ import {
   useNavigation,
   useIsFocused,
   CommonActions,
+  useFocusEffect,
 } from '@react-navigation/native';
 import * as dataUtils from 'utils/data';
 import { useDispatch } from 'react-redux';
@@ -378,6 +379,14 @@ export const Storage = (props: Props) => {
     setCurrentIndex(index);
   };
 
+  useFocusEffect(
+    React.useCallback(() => {
+      return () => {
+        onPressDot(0);
+      };
+    }, []),
+  );
+
   return (
     <>
       {isLoading && <CommonLoading />}
@@ -422,7 +431,7 @@ export const Storage = (props: Props) => {
               </>
             }
 
-            {tabs[currentIndex].type == 'LIVE' &&
+            {tabs[currentIndex]?.type == 'LIVE' &&
               <View style={_styles.liveTabArea}>
                 <TouchableOpacity onPress={() => { onLiveTab('RES'); }} style={_styles.liveTabItem(isLiveResVisible, 'RES')}>
                   <Text style={_styles.liveTabText(isLiveResVisible, 'RES')}>받은 LIVE</Text>
