@@ -12,7 +12,7 @@ export const api_domain = 'http://www.api.limeeted.com';
 export const img_domain = 'http://www.api.limeeted.com' + '/uploads';
 
 // token 값
-export const jwt_token = () => {
+export const jwt_token = () => { 
   return new Promise(async (resolve, reject) => {
     try {
       const value = await AsyncStorage.getItem(JWT_TOKEN);

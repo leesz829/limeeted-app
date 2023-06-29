@@ -449,7 +449,7 @@ export const Policy = (props: Props) => {
             mb={24}
             viewStyle={{ width: width - 32, backgroundColor: Color.grayF8F8 }}
           >
-            <Privacy />
+            <LocationService />
           </SpaceView>
         </View>
       </Modalize>
