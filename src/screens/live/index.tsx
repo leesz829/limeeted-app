@@ -505,9 +505,11 @@ export const Live = () => {
               <View style={[ _styles.indicator, { backgroundColor: index === page ? 'white' : 'rgba(255,255,255,0.3)' }, ]} key={index} />
             ))}
 
-            <View style={_styles.badgeIcon}>
-              <Text style={_styles.authBadgeText}>심사중</Text>
-            </View>
+            {data.live_member_info.member_status == 'APPROVAL' &&
+              <View style={_styles.badgeIcon}>
+                <Text style={_styles.authBadgeText}>심사중</Text>
+              </View>
+            }
 
             {/* <View style={{position: 'absolute', top: 0, left: 10, flexDirection: 'row'}}>
               <TouchableOpacity onPress={() => { prevBtn(); }}>

@@ -152,11 +152,9 @@ export const Message = (props: Props) => {
 									<View style={_styles.descText}>
 										<CommonText type={'h5'}>{contents}</CommonText>
 
-										{template_type === 'AUTO_SEND' && 
-											<View style={_styles.dateArea}>
-												<CommonText textStyle={_styles.dateText} type={'h5'}>{reg_dt}</CommonText>
-											</View>
-										}
+										<View style={_styles.dateArea}>
+											<CommonText textStyle={_styles.dateText} type={'h5'}>{reg_dt}</CommonText>
+										</View>
 									</View>
 
 									{(

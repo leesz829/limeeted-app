@@ -261,9 +261,17 @@ export const Storage = (props: Props) => {
   ) => {
     
     if(member_status != 'ACTIVE') {
+      let msg = '최근에 휴면 또는 탈퇴를 하신 회원이에요.';
+      
+      if(member_status == 'APPROVAL') {
+        msg = '해당 회원은 가입심사 대기중 회원이에요.';
+      } else if(member_status == 'BLOCK' || member_status == 'RESTRICT') {
+        msg = '해당 회원은 계정이 정지된 회원이에요.';
+      }
+
       show({
         title: '프로필 열람 실패',
-        content: '최근에 휴면 또는 탈퇴를 하신 회원입니다.',
+        content: msg,
       });
 
       return;
@@ -528,10 +536,14 @@ export const Storage = (props: Props) => {
                   <>
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
                       {type == 'LIVE' ? (
-                        <View style={_styles.liveScoreArea(item.match_type)}>
-                          {/* <Text>★</Text> */}
-                          <Text style={_styles.liveScoreText(item.match_type)}>★ {item.req_profile_score}</Text>
-                        </View>
+                        <>
+                          {item.req_profile_score != null &&
+                            <View style={_styles.liveScoreArea(item.match_type)}>
+                              {/* <Text>★</Text> */}
+                              <Text style={_styles.liveScoreText(item.match_type)}>★ {item.req_profile_score}</Text>
+                            </View>
+                          }
+                        </>
                       ) : (
                         <>
                           <Image style={_styles.renderItemTopIcon} source={item.special_interest_yn == 'N' ? ICON.passCircle : ICON.royalPassCircle} />
