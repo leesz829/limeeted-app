@@ -98,6 +98,7 @@ export type StackParamList = {
     matchSeq: Number;
     tgtMemberSeq: Number;
     type: string;
+    matchType: string;
   };
   ItemMatching: undefined;
   ImagePreview: {

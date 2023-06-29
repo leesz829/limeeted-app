@@ -171,7 +171,6 @@ export const StorageProfile = (props: Props) => {
       if(success) {
         if (data.result_code == '0000') {
           if(data.use_item.FREE_CONTACT){
-            console.log('FREE_CONTACT ::: ', data.use_item.FREE_CONTACT);
             setFreeContactYN('Y');
           }else{
             setFreeContactYN('N')
@@ -216,7 +215,6 @@ export const StorageProfile = (props: Props) => {
               guideSlideYn: 'N',
               guideNexBtnExpoYn: 'N',
               confirmCallback: function(isNextChk) {
-                console.log('dddd');
                 procFirstMatchPassAdd();
               }
             });
@@ -441,7 +439,7 @@ export const StorageProfile = (props: Props) => {
       active_type: activeType,
       res_member_seq: data.match_member_info.member_seq,
       special_level: special_level,
-      match_seq: matchSeq,
+      //match_seq: matchSeq,
     };
 
     try {
@@ -489,10 +487,12 @@ export const StorageProfile = (props: Props) => {
     <>
       <CommonHeader title={
         (() => {
-          if(props.route.params.type == 'REQ') return '내가 받은 관심';
-          else if(props.route.params.type == 'RES') return '내가 보낸 관심';
+          if(props.route.params.type == 'RES') return '내가 받은 관심';
+          else if(props.route.params.type == 'REQ') return '내가 보낸 관심';
           else if(props.route.params.type == 'MATCH') return '성공 매칭'
-          else if(props.route.params.type == 'ZZIM') return '찜한 프로필';
+          else if(props.route.params.type == 'ZZIM') return '찜한 프로필'
+          else if(props.route.params.type == 'LIVE' && props.route.params.matchType == 'LIVE_RES') return '받은 고평점 LIVE'
+          else if(props.route.params.type == 'LIVE' && props.route.params.matchType == 'LIVE_REQ') return '보낸 고평점 LIVE';
         })()
       } />
 
@@ -507,7 +507,7 @@ export const StorageProfile = (props: Props) => {
           <VisualImage imgList={data?.profile_img_list} memberData={data?.match_member_info} />
 
           {/* ######################### 버튼 영역(찜 상태인 경우 활성화) */}
-          {props.route.params.type == 'ZZIM' &&
+          {(props.route.params.type == 'ZZIM' || props.route.params.type == 'LIVE') &&
             <View style={_styles.absoluteView}>
               <View style={_styles.buttonsContainer}>
 
@@ -541,7 +541,7 @@ export const StorageProfile = (props: Props) => {
         <SpaceView viewStyle={[styles.container, commonStyle.paddingHorizontal15]}>
 
           {/* ############################################## 받은 관심 */}
-          {props.route.params.type == 'REQ' ? (
+          {props.route.params.type == 'RES' ? (
             <>
               <SpaceView viewStyle={[styles.rowStyle]}>
                 <View style={{marginRight: 3, flex: 1}}>
@@ -572,7 +572,7 @@ export const StorageProfile = (props: Props) => {
           ) : null}
 
           {/* ############################################## 보낸 관심 */}
-          {props.route.params.type == 'RES' ? (
+          {props.route.params.type == 'REQ' ? (
             <>
               <SpaceView viewStyle={{padding: 24, alignItems: 'center', borderRadius: 10, backgroundColor: '#F6F7FE'}}>
                 <SpaceView>

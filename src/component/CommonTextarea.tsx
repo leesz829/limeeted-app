@@ -19,6 +19,7 @@ type Props = {
   fontSize?: number;
   fontColor?: string;
   lineCount?: number;
+  backgroundColor?: string;
 } & StyleProp<TextInputProps>;
 
 /**
@@ -96,34 +97,3 @@ const _styles = (props: Props) => {
     },
   })
 };
-
-/* 
-const styles = StyleSheet.create({
-  labelContainer: {
-    marginBottom: 15,
-  },
-  labelStyle: {
-    fontSize: 14, 
-    lineHeight: 20,
-    fontFamily: 'AppleSDGothicNeoR00',
-    color: Color.gray6666,
-  },
-  inputContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  inputStyle: {
-    width: '100%',
-    height: 420,
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 10,
-    textAlignVertical: 'top',
-    backgroundColor: '#ffffff',
-    color: '#000000',
-    borderColor: "#ebe9ef",
-    borderStyle: "solid",
-  },
-});
- */

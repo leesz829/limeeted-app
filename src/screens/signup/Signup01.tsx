@@ -36,9 +36,6 @@ interface Props {
 }
 
 export const Signup01 = (props: Props) => {
-  console.log('## Signup01 memberSeq ::: ', props.route.params.memberSeq);
-  console.log('## Signup01 gender ::: ', props.route.params.gender);
-
   const navigation = useNavigation<ScreenNavigationProp>();
   const isFocus = useIsFocused();
   const { show } = usePopup();  // 공통 팝업
@@ -61,6 +58,7 @@ export const Signup01 = (props: Props) => {
     , filePath02 : ''
     , filePath03 : ''
     , auth_status : ''
+    , auth_comment: ''
     , return_reason : ''
   });
 
@@ -135,6 +133,7 @@ export const Signup01 = (props: Props) => {
       , filePath02: ''
       , filePath03: ''
       , auth_status: ''
+      , auth_comment: ''
       , return_reason: ''
     });
 
@@ -153,6 +152,7 @@ export const Signup01 = (props: Props) => {
             let filePath02 = '';
             let filePath03 = '';
             let auth_status_val = '';
+            let auth_comment_val = '';
             let return_reason_val = '';
 
             data.auth_detail_list.map(({img_file_path, order_seq, auth_status, return_reason} : {img_file_path: any; order_seq: any; auth_status: any; return_reason: any;}) => {
@@ -173,11 +173,20 @@ export const Signup01 = (props: Props) => {
               }
             });
 
+            if(type === 'JOB') { auth_comment_val = secondData.jobData.auth_comment;
+            } else if(type === 'EDU') { auth_comment_val = secondData.eduData.auth_comment;
+            } else if(type === 'INCOME') { auth_comment_val = secondData.incomeData.auth_comment;
+            } else if(type === 'ASSET') { auth_comment_val = secondData.assetData.auth_comment;
+            } else if(type === 'SNS') { auth_comment_val = secondData.snsData.auth_comment;
+            } else if(type === 'VEHICLE') { auth_comment_val = secondData.vehicleData.auth_comment;
+            }
+
             setFilePathData({
               filePath01: filePath01
               , filePath02: filePath02
               , filePath03: filePath03
               , auth_status: auth_status_val
+              , auth_comment: auth_comment_val
               , return_reason: return_reason_val
             });
 
@@ -212,25 +221,20 @@ export const Signup01 = (props: Props) => {
   }
 
   // ############################################################################# 2차인증 저장 함수
-  const saveSecondAuth = async(type: string, file_list: any) => {
+  const saveSecondAuth = async(type: string, file_list: any, auth_code: string, auth_comment: string) => {
     setIsLoading(true);
 
-    let imgCnt = 0;
-
-    for(let key in file_list){
-      if(file_list[key]){
-        imgCnt++;
-      }
-    }
-
-    if((file_list.length + imgCnt) < 1){
+    if(file_list.length == 0 && filePathData.filePath01 == '' && filePathData.filePath02 == '' && filePathData.filePath03 == ''){
       show({ content: '인증 심사를 위한 증빙 자료 이미지를 올려주세요.' });
+      setIsLoading(false);
        return false;
     }
 
     const body = {
       member_seq: props.route.params.memberSeq,
-      file_list: file_list
+      file_list: file_list,
+      auth_code: auth_code,
+      auth_comment: auth_comment,
     };
     try {
       const { success, data } = await regist_second_auth(body);
@@ -248,7 +252,7 @@ export const Signup01 = (props: Props) => {
               else if(type == 'SNS') { sns_onClose(); }
               else if(type == 'VEHICLE') { vehicle_onClose(); }
             }
-          });          
+          });
         } else {
           show({ content: '오류입니다. 관리자에게 문의해주세요.' });
           return false;
@@ -305,8 +309,6 @@ export const Signup01 = (props: Props) => {
         vehicleData = item;
       }
     });
-
-    console.log('jobData ::::: ' , jobData);
 
     setSecondData({
       ...secondData
@@ -452,7 +454,9 @@ export const Signup01 = (props: Props) => {
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
           auth_status={filePathData.auth_status}
+          auth_comment={filePathData.auth_comment}
           return_reason={filePathData.return_reason}
+          isShopComment={true}
         />
       </Modalize>
 
@@ -475,7 +479,9 @@ export const Signup01 = (props: Props) => {
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
           auth_status={filePathData.auth_status}
+          auth_comment={filePathData.auth_comment}
           return_reason={filePathData.return_reason}
+          isShopComment={true}
         />
       </Modalize>
 
@@ -498,7 +504,9 @@ export const Signup01 = (props: Props) => {
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
           auth_status={filePathData.auth_status}
+          auth_comment={filePathData.auth_comment}
           return_reason={filePathData.return_reason}
+          isShopComment={true}
         />
       </Modalize>
 
@@ -521,7 +529,9 @@ export const Signup01 = (props: Props) => {
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
           auth_status={filePathData.auth_status}
+          auth_comment={filePathData.auth_comment}
           return_reason={filePathData.return_reason}
+          isShopComment={true}
         />
       </Modalize>
 
@@ -544,7 +554,9 @@ export const Signup01 = (props: Props) => {
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
           auth_status={filePathData.auth_status}
+          auth_comment={filePathData.auth_comment}
           return_reason={filePathData.return_reason}
+          isShopComment={true}
         />
       </Modalize>
 
@@ -567,7 +579,9 @@ export const Signup01 = (props: Props) => {
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
           auth_status={filePathData.auth_status}
+          auth_comment={filePathData.auth_comment}
           return_reason={filePathData.return_reason}
+          isShopComment={true}
         />
       </Modalize>
     </>

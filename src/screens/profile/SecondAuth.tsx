@@ -61,6 +61,7 @@ export const SecondAuth = () => {
     filePath02 : '',
     filePath03 : '',
     auth_status: '',
+    auth_comment: '',
     return_reason: '',
   });
 
@@ -117,13 +118,6 @@ export const SecondAuth = () => {
   const vehicle_onClose = () => {
     vehicle_modalizeRef.current?.close();
   };
-
-  // ############################################################################# 최초 실행
-  React.useEffect(() => {
-    //authDataSet(mbrSecondAuthList);
-
-    getMemberProfileSecondAuth();
-  }, [isFocus]);
 
   // ############################################################################# 프로필 2차 인증 정보 조회 함수
   const getMemberProfileSecondAuth = async () => {
@@ -184,6 +178,7 @@ export const SecondAuth = () => {
       filePath02: '',
       filePath03: '',
       auth_status: '',
+      auth_comment: '',
       return_reason: '',
     });
 
@@ -200,6 +195,7 @@ export const SecondAuth = () => {
             let filePath02 = '';
             let filePath03 = '';
             let auth_status_val = '';
+            let auth_comment_val = '';
             let return_reason_val = '';
 
             data.auth_detail_list.map(({img_file_path, order_seq, auth_status, return_reason} : {img_file_path: any; order_seq: any; auth_status: any, return_reason: any}) => {
@@ -221,11 +217,20 @@ export const SecondAuth = () => {
               }
             });
 
+            if(type === 'JOB') { auth_comment_val = secondData.jobData.auth_comment;
+            } else if(type === 'EDU') { auth_comment_val = secondData.eduData.auth_comment;
+            } else if(type === 'INCOME') { auth_comment_val = secondData.incomeData.auth_comment;
+            } else if(type === 'ASSET') { auth_comment_val = secondData.assetData.auth_comment;
+            } else if(type === 'SNS') { auth_comment_val = secondData.snsData.auth_comment;
+            } else if(type === 'VEHICLE') { auth_comment_val = secondData.vehicleData.auth_comment;
+            }
+
             setFilePathData({
               filePath01: filePath01
               , filePath02: filePath02
               , filePath03: filePath03
               , auth_status: auth_status_val
+              , auth_comment: auth_comment_val
               , return_reason: return_reason_val
             });
 
@@ -260,25 +265,19 @@ export const SecondAuth = () => {
   }
 
   // ############################################################################# 2차인증 저장 함수
-  const saveSecondAuth = async(type: string, file_list: any) => {
+  const saveSecondAuth = async(type: string, file_list: any, auth_code: string, auth_comment: string) => {
     setIsLoading(true);
 
-    let imgCnt = 0;
-
-    for(let key in file_list){
-      if(file_list[key]){
-        imgCnt++;
-      }
-    }
-
-    if((file_list.length + imgCnt) < 1){
+    if(file_list.length == 0){
       show({ content: '인증 심사를 위한 증빙 자료 이미지를 올려주세요.' });
       setIsLoading(false);
       return false;
     }
 
     const body = {
-      file_list: file_list
+      file_list: file_list,
+      auth_code: auth_code,
+      auth_comment: auth_comment,
     };
     try {
       const { success, data } = await save_profile_auth(body);
@@ -309,6 +308,14 @@ export const SecondAuth = () => {
       setIsLoading(false);
     }
   }
+
+
+  // ############################################################################# 최초 실행
+  React.useEffect(() => {
+    //authDataSet(mbrSecondAuthList);
+
+    getMemberProfileSecondAuth();
+  }, [isFocus]);
 
 
   /* const saveSecondAuth = async () => {
@@ -454,7 +461,9 @@ export const SecondAuth = () => {
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
           auth_status={filePathData.auth_status}
+          auth_comment={filePathData.auth_comment}
           return_reason={filePathData.return_reason}
+          isShopComment={false}
         />
       </Modalize>
 
@@ -475,7 +484,9 @@ export const SecondAuth = () => {
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
           auth_status={filePathData.auth_status}
+          auth_comment={filePathData.auth_comment}
           return_reason={filePathData.return_reason}
+          isShopComment={false}
         />
       </Modalize>
 
@@ -497,7 +508,9 @@ export const SecondAuth = () => {
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
           auth_status={filePathData.auth_status}
+          auth_comment={filePathData.auth_comment}
           return_reason={filePathData.return_reason}
+          isShopComment={false}
         />
       </Modalize>
 
@@ -518,7 +531,9 @@ export const SecondAuth = () => {
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
           auth_status={filePathData.auth_status}
+          auth_comment={filePathData.auth_comment}
           return_reason={filePathData.return_reason}
+          isShopComment={false}
         />
       </Modalize>
 
@@ -539,7 +554,9 @@ export const SecondAuth = () => {
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
           auth_status={filePathData.auth_status}
+          auth_comment={filePathData.auth_comment}
           return_reason={filePathData.return_reason}
+          isShopComment={false}
         />
       </Modalize>
 
@@ -560,7 +577,9 @@ export const SecondAuth = () => {
           filePath02={filePathData.filePath02}
           filePath03={filePathData.filePath03}
           auth_status={filePathData.auth_status}
+          auth_comment={filePathData.auth_comment}
           return_reason={filePathData.return_reason}
+          isShopComment={false}
         />
       </Modalize>
     </>

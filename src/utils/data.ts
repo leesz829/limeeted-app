@@ -23,6 +23,8 @@ export const getStorageListData = (
          member_status: any;
          profile_score: any;
          auth_acct_cnt: any;
+         match_type: any;
+         req_profile_score: any;
       },
    ],
 ) => {
@@ -48,6 +50,8 @@ export const getStorageListData = (
          member_status,
          profile_score,
          auth_acct_cnt,
+         match_type,
+         req_profile_score,
       }: {
          match_seq: any;
          match_status: any;
@@ -66,6 +70,8 @@ export const getStorageListData = (
          member_status: any;
          profile_score: any;
          auth_acct_cnt: any;
+         match_type: any;
+         req_profile_score: any;
       }) => {
          const img_path = findSourcePath(img_file_path);
 
@@ -87,6 +93,8 @@ export const getStorageListData = (
             member_status: '',
             profile_score: '',
             auth_acct_cnt: '',
+            match_type: '',
+            req_profile_score: '',
          };
          let dday_mod = 7 - Number(int_after_day);
 
@@ -111,6 +119,8 @@ export const getStorageListData = (
          dataJson.member_status = member_status;
          dataJson.profile_score = profile_score;
          dataJson.auth_acct_cnt = auth_acct_cnt;
+         dataJson.match_type = match_type;
+         dataJson.req_profile_score = req_profile_score;
 
          dataList.push(dataJson);
          hNum++;

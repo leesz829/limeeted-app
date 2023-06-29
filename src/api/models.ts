@@ -140,6 +140,8 @@ export async function regist_introduce(body: {
 export async function regist_second_auth(body: {
   member_seq: number;
   file_list: any;
+  auth_code: string;
+  auth_comment: string;
 }) {
   return send(REGIST_MEMBER_SECOND_AUTH, 'POST', body, false, false);
 }
@@ -325,7 +327,11 @@ export async function get_member_second_detail(body: {
 }
 
 // 회원 2차 인증을 저장한다.
-export async function save_profile_auth(body: { file_list: any }) {
+export async function save_profile_auth(body: { 
+  file_list: any;
+  auth_code: string;
+  auth_comment: string;
+}) {
   return send(SAVE_PROFILE_AUTH, 'POST', body, true, false);
 }
 

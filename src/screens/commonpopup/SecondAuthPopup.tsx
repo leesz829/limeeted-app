@@ -17,6 +17,7 @@ import { usePopup } from 'Context';
 import { useDispatch } from 'react-redux';
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
 import { useSecondAth } from 'hooks/useSecondAth';
+import { CommonTextarea } from 'component/CommonTextarea';
 
 
 /* ################################################################################################################
@@ -38,17 +39,19 @@ interface Props {
   onCloseFn: () => void;
   saveFn: (
       type: string,
-      list: any
+      list: any,
+      comment: string,
   ) => void;
   filePath01?: string
   filePath02?: string
   filePath03?: string
   auth_status?: string
+  auth_comment?: string
   return_reason?: string
+  isShopComment?: boolean
 }
 
 export const SecondAuthPopup = (props: Props) => {
-
   const dispatch = useDispatch();
   const { show } = usePopup();  // 공통 팝업
   const isFocus = useIsFocused();
@@ -71,6 +74,8 @@ export const SecondAuthPopup = (props: Props) => {
   const [authFile_01, setAuthFile_01] = React.useState('');
   const [authFile_02, setAuthFile_02] = React.useState('');
   const [authFile_03, setAuthFile_03] = React.useState('');
+
+  const [authComment, setAuthComment] = React.useState<any>(props.auth_comment);
 
 
   if (type == 'JOB') {
@@ -177,7 +182,7 @@ export const SecondAuthPopup = (props: Props) => {
 
   // ################################################################ 2차 인증 저장 함수
   const saveSecondAuth = async () => {
-    props.saveFn(props.type, fileDataList);
+    props.saveFn(props.type, fileDataList, type, authComment);
 
     /* const body = {
       file_list: fileDataList
@@ -348,6 +353,26 @@ export const SecondAuthPopup = (props: Props) => {
               </View>
             </View>
           </SpaceView>
+
+          {/* ####################################################### 인증 코멘트 입력 영역 */}
+          {props.isShopComment &&
+            <SpaceView mb={30} viewStyle={_styles.commentArea}>
+              <CommonTextarea
+                  label={''} 
+                  value={authComment}
+                  onChangeText={(authComment) => setAuthComment(authComment)}
+                  placeholder={'인증 코멘트를 작성해 주세요.\n※ 심사 후에는 인증 레벨과 인증 코멘트만 공개 됩니다.'}
+                  placeholderTextColor={'#989898'}
+                  maxLength={50}
+                  height={90}
+                  borderRadius={15}
+                  fontSize={13}
+                  fontColor={'#989898'}
+                  lineCount={3}
+                  backgroundColor={'transparent'}
+              />
+            </SpaceView>
+          }
 
           {/* ####################################################### 반려 사유 안내 영역 */}
           {props.auth_status == 'REFUSE' && props.return_reason != '' && typeof props.return_reason != 'undefined' &&
@@ -791,6 +816,11 @@ const _styles = StyleSheet.create({
     fontSize: 13,
     color: '#989898',
     lineHeight: 17,
+  },
+  commentArea: {
+    backgroundColor: '#F4F4F4',
+    borderRadius: 5,
+    overflow: 'hidden',
   },
 
 })

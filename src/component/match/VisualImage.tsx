@@ -5,12 +5,15 @@ import { Dimensions, Image, StyleSheet, Text, View, TouchableOpacity, FlatList }
 import { findSourcePath, ICON, IMAGE, GUIDE_IMAGE } from 'utils/imageUtils';
 import { Watermark } from 'component/Watermark';
 import LinearGradient from 'react-native-linear-gradient';
+import { useUserInfo } from 'hooks/useUserInfo';
 
 
 const { width, height } = Dimensions.get('window');
 
 export default function VisualImage({ imgList, memberData, isButton }) {
   const navigation = useNavigation<ScreenNavigationProp>();
+
+  const memberBase = useUserInfo(); //hooksMember.getBase();
 
   // 이미지 인덱스
   const [currentIndex, setCurrentIndex] = React.useState(0);
@@ -182,6 +185,7 @@ export default function VisualImage({ imgList, memberData, isButton }) {
 
   function RenderItem({ item }) {
     const url = findSourcePath(item?.img_file_path);
+
     return (
       <>
         {item.status == 'ACCEPT' &&
@@ -194,7 +198,7 @@ export default function VisualImage({ imgList, memberData, isButton }) {
                 borderRadius: 20,
               }}
             />
-            {/* <Watermark value={memberBase?.phone_number}/> */}
+            <Watermark value={memberBase?.phone_number}/>
           </View>
         }
       </>

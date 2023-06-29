@@ -70,6 +70,8 @@ export const Storage = (props: Props) => {
   const [btnStatus2, setBtnStatus2] = useState(true);
 
   const [isSpecialVisible, setIsSpecialVisible] = React.useState(false);
+  const [isLiveResVisible, setIsLiveResVisible] = React.useState(true);
+  const [isLiveReqVisible, setIsLiveReqVisible] = React.useState(true);
 
   /* ################################################
    ######## Storage Data 구성
@@ -82,6 +84,7 @@ export const Storage = (props: Props) => {
     reqLikeList: [],
     matchTrgtList: [],
     zzimTrgtList: [],
+    liveHighList: [],
     resSpecialCnt: 0,
     reqSpecialCnt: 0,
     matchSpecialCnt: 0,
@@ -91,13 +94,13 @@ export const Storage = (props: Props) => {
   // 탭 목록
   const [tabs, setTabs] = React.useState([
     {
-      type: 'REQ',
+      type: 'RES',
       title: '받은 관심',
       color: '#FF7E8C',
       data: []
     },
     {
-      type: 'RES',
+      type: 'REQ',
       title: '보낸 관심',
       color: '#697AE6',
       data: []
@@ -127,6 +130,7 @@ export const Storage = (props: Props) => {
           let reqLikeListData = [];
           let matchTrgtListData = [];
           let zzimTrgtListData = [];
+          let liveHighListData = [];
           let zzimItemUseYn = data.zzimItemUseYn;
 
           resLikeListData = dataUtils.getStorageListData(
@@ -147,16 +151,20 @@ export const Storage = (props: Props) => {
             );
           }
 
+          liveHighListData = dataUtils.getStorageListData(
+            data.live_high_list
+          );
+
           // tabs 데이터 구성
           tabsData = [
             {
-              type: 'REQ',
+              type: 'RES',
               title: '받은 관심',
               color: '#FF7E8C',
               data: resLikeListData
             },
             {
-              type: 'RES',
+              type: 'REQ',
               title: '보낸 관심',
               color: '#697AE6',
               data: reqLikeListData
@@ -175,8 +183,18 @@ export const Storage = (props: Props) => {
               title: '찜 목록',
               color: '#69C9E6',
               data: zzimTrgtListData
-            })
+            });
           };
+
+          if(liveHighListData.length > 0) {
+            tabsData.push({
+              type: 'LIVE',
+              title: 'LIVE',
+              color: '#FFC100',
+              data: liveHighListData
+            });
+          };
+
 
           let tmpResSpecialCnt = 0;
           let tmpReqSpecialCnt = 0;
@@ -189,7 +207,7 @@ export const Storage = (props: Props) => {
                 }
               }
             );
-          };            
+          };
 
           if(data?.req_like_list.length > 0) {
             data?.req_like_list.map(({ special_interest_yn }: { special_interest_yn: any }) => {
@@ -215,6 +233,7 @@ export const Storage = (props: Props) => {
             reqLikeList: reqLikeListData,
             matchTrgtList: matchTrgtListData,
             zzimTrgtList: zzimTrgtListData,
+            liveHighList: liveHighListData,
             resSpecialCnt: tmpResSpecialCnt,
             reqSpecialCnt: tmpReqSpecialCnt,
             matchSpecialCnt: tmpMatchSpecialCnt,
@@ -238,6 +257,7 @@ export const Storage = (props: Props) => {
     type: any,
     profile_open_yn: any,
     member_status: any,
+    match_type: any,
   ) => {
     
     if(member_status != 'ACTIVE') {
@@ -250,7 +270,6 @@ export const Storage = (props: Props) => {
     }
     
     if (profile_open_yn == 'N') {
-
       show({
         title: '프로필 열람',
         content: '패스를 소모하여 프로필을 열람하시겠습니까?\n패스 x15',
@@ -258,7 +277,7 @@ export const Storage = (props: Props) => {
 
         },
         confirmCallback: function() {
-          goProfileOpen(match_seq, tgt_member_seq, type);
+          goProfileOpen(match_seq, tgt_member_seq, type, match_type);
         },
       });
 
@@ -267,18 +286,19 @@ export const Storage = (props: Props) => {
         matchSeq: match_seq,
         tgtMemberSeq: tgt_member_seq,
         type: type,
+        matchType: match_type,
       } });
     }
   };
 
   // ################################################################################# 프로필 열람 이동
-  const goProfileOpen = async (match_seq:any, tgt_member_seq:any, type:any) => {
+  const goProfileOpen = async (match_seq:any, tgt_member_seq:any, type:any, match_type:any) => {
     let req_profile_open_yn = '';
     let res_profile_open_yn = '';
 
-    if (type == 'REQ') {
+    if (type == 'REQ' || match_type == 'LIVE_REQ') {
       req_profile_open_yn = 'Y';
-    } else if (type == 'RES') {
+    } else if (type == 'RES' || match_type == 'LIVE_RES') {
       res_profile_open_yn = 'Y';
     }
 
@@ -287,6 +307,7 @@ export const Storage = (props: Props) => {
       req_profile_open_yn: req_profile_open_yn,
       res_profile_open_yn: res_profile_open_yn,
     };
+
     try {
       const { success, data } = await update_match(body);
       if(success) {
@@ -310,6 +331,15 @@ export const Storage = (props: Props) => {
       console.log(error);
     } finally {
 
+    }
+  };
+
+  // 라이브 탭 활성
+  const onLiveTab = (type:string) => {
+    if(type == 'RES') {
+      setIsLiveResVisible(isLiveResVisible ? false : true);
+    } else if(type == 'REQ') {
+      setIsLiveReqVisible(isLiveReqVisible ? false : true);
     }
   };
 
@@ -353,21 +383,23 @@ export const Storage = (props: Props) => {
           <TopNavigation currentPath={''} />
         )}
 
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={_styles.topContainer}>
-          <View style={_styles.dotContainer}>
-            {tabs.map((item, index) => (
-              <>
-                <TouchableOpacity key={index} onPress={() => { onPressDot(index); }}>
-                  <View style={[_styles.tabItem, { backgroundColor: index === currentIndex ? item.color : '#ececec' }]}>
-                    <Text style={_styles.tabItemText}>{item.title} | {item.data.length}</Text>
-                  </View>
-                </TouchableOpacity>
-              </>
-            ))}
-          </View>
-        </ScrollView>
+        <SpaceView mt={30} mb={6}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={_styles.topContainer}>
+            <View style={_styles.dotContainer}>
+              {tabs.map((item, index) => (
+                <>
+                  <TouchableOpacity key={index} onPress={() => { onPressDot(index); }}>
+                    <View style={[_styles.tabItem(index === currentIndex, item.color)]}>
+                      <Text style={_styles.tabItemText}>{item.title} | {item.data.length}</Text>
+                    </View>
+                  </TouchableOpacity>
+                </>
+              ))}
+            </View>
+          </ScrollView>
+        </SpaceView>
 
-        <SpaceView mt={7} viewStyle={commonStyle.paddingHorizontal25}>
+        <SpaceView mt={7} mb={13} viewStyle={commonStyle.paddingHorizontal25}>
           <View style={[_styles.row, {minHeight: 30}]}>
             {currentIndex < 3 &&
               <>
@@ -381,51 +413,80 @@ export const Storage = (props: Props) => {
                 />
               </>
             }
+
+            {tabs[currentIndex].type == 'LIVE' &&
+              <View style={_styles.liveTabArea}>
+                <TouchableOpacity onPress={() => { onLiveTab('RES'); }} style={_styles.liveTabItem(isLiveResVisible, 'RES')}>
+                  <Text style={_styles.liveTabText(isLiveResVisible, 'RES')}>받은 LIVE</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => { onLiveTab('REQ'); }} style={_styles.liveTabItem(isLiveReqVisible, 'REQ')}>
+                  <Text style={_styles.liveTabText(isLiveReqVisible, 'REQ')}>보낸 LIVE</Text>
+                </TouchableOpacity>
+              </View>
+            }
           </View>
         </SpaceView>
 
-        <Carousel
-          ref={ref}
-          data={tabs}
-          firstItem={pageIndex}
-          onSnapToItem={setCurrentIndex}
-          sliderWidth={width}
-          itemWidth={width}
-          pagingEnabled
-          renderItem={({item, index}) => {
-            return (
-              <>
-                {item.data.length == 0 ? (
-                  <SpaceView viewStyle={_styles.noData}>
-                    <Text style={_styles.noDataText}>{item.title}이 없습니다.</Text>
-                  </SpaceView>
-                ) : (
-                  <ScrollView>
-                    <View style={_styles.imageWarpper}>
-                      {item.data.map((i, n) => (
-                        <RenderItem item={i} index={n} type={item.type} />
-                      ))}
-                    </View>
+        <SpaceView>
+          <Carousel
+            ref={ref}
+            data={tabs}
+            firstItem={pageIndex}
+            onSnapToItem={setCurrentIndex}
+            sliderWidth={width}
+            itemWidth={width}
+            pagingEnabled
+            renderItem={({item, index}) => {
+              return (
+                <>
+                  {item.data.length == 0 ? (
+                    <SpaceView viewStyle={_styles.noData}>
+                      <Text style={_styles.noDataText}>{item.title}이 없습니다.</Text>
+                    </SpaceView>
+                  ) : (
+                    <ScrollView showsVerticalScrollIndicator={false} style={{width: '100%', height: height-220}}>
+                      <View style={_styles.imageWarpper}>
+                        {item.data.map((i, n) => (
+                          <RenderItem item={i} index={n} type={item.type} />
+                        ))}
+                      </View>
 
-                    <View style={{ height: 50 }} />
-                  </ScrollView>
-                )}
-              </>
-            )
-          }}          
-        />
+                      <View style={{ height: 50 }} />
+                    </ScrollView>
+                  )}
+                </>
+              )
+            }}
+          />
+        </SpaceView>
       </View>
     </>
   );
 
   function RenderItem({ item, index, type }) {
+
+    let matchType = item.match_type;  // 매칭 유형
+
+    let isShow = true;  // 노출 여부
     let tgt_member_seq = '';
     let profile_open_yn = 'N';
 
-    if(type == 'REQ') {
+    // 노출 여부 설정
+    if(type == 'REQ' || type == 'RES' || type == 'MATCH') {
+      if((!isSpecialVisible && item.special_interest_yn == 'Y') || (isSpecialVisible && item.special_interest_yn == 'N')) {
+        isShow = false;
+      }
+    } else if(type == 'LIVE') {
+      if((matchType == 'LIVE_RES' && !isLiveResVisible) || (matchType == 'LIVE_REQ' && !isLiveReqVisible)) {
+        isShow = false;
+      }
+    }
+
+    // 대상 회원 번호, 프로필 열람 여부 설정
+    if(type == 'RES' || matchType == 'LIVE_RES') {
       tgt_member_seq = item.req_member_seq;
-      profile_open_yn = item.req_profile_open_yn;
-    } else if(type == 'RES') {
+      profile_open_yn = item.res_profile_open_yn;
+    } else if(type == 'REQ' || matchType == 'LIVE_REQ') {
       tgt_member_seq = item.res_member_seq;
       profile_open_yn = 'Y';
     } else if(type == 'MATCH' || type == 'ZZIM') {
@@ -439,7 +500,7 @@ export const Storage = (props: Props) => {
 
     return (
       <>
-        {((isSpecialVisible && item.special_interest_yn == 'Y') || (!isSpecialVisible) || (type == 'ZZIM')) && 
+        {isShow && 
 
           <TouchableOpacity
             onPress={() => {
@@ -448,7 +509,8 @@ export const Storage = (props: Props) => {
                 tgt_member_seq,
                 type,
                 profile_open_yn,
-                item.member_status
+                item.member_status,
+                matchType
               );
             }}>
 
@@ -465,10 +527,19 @@ export const Storage = (props: Props) => {
                 ) : (
                   <>
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                      <Image style={_styles.renderItemTopIcon} source={item.special_interest_yn == 'N' ? ICON.passCircle : ICON.royalPassCircle} />
-                      {isEmptyData(item?.special_level) && <Text style={_styles.levelText}>Lv.{item.special_level}</Text>}
+                      {type == 'LIVE' ? (
+                        <View style={_styles.liveScoreArea(item.match_type)}>
+                          {/* <Text>★</Text> */}
+                          <Text style={_styles.liveScoreText(item.match_type)}>★ {item.req_profile_score}</Text>
+                        </View>
+                      ) : (
+                        <>
+                          <Image style={_styles.renderItemTopIcon} source={item.special_interest_yn == 'N' ? ICON.passCircle : ICON.royalPassCircle} />
+                          {isEmptyData(item?.special_level) && <Text style={_styles.levelText}>Lv.{item.special_level}</Text>}
+                        </>
+                      )}
                     </View>
-                    <Text style={[_styles.renderItemTopText, (type == 'REQ' && profile_open_yn == 'N' && {color: '#787878'})]}>
+                    <Text style={[_styles.renderItemTopText, ((type == 'RES' || matchType == 'LIVE_RES') && profile_open_yn == 'N' && {color: '#787878'})]}>
                       {item.dday > 0 ? item.dday + '일 남음' : '오늘까지'}
                     </Text>
                   </>
@@ -574,7 +645,7 @@ export const Storage = (props: Props) => {
                 } */}
               </View>
 
-              {type == 'REQ' && profile_open_yn == 'N' && (
+              {(type == 'RES' || matchType == 'LIVE_RES') && profile_open_yn == 'N' && (
                 <>
                   <View style={_styles.reqRenderThumb}></View>
                   <View style={_styles.reqRenderItem}>
@@ -600,23 +671,20 @@ export const Storage = (props: Props) => {
 
 const _styles = StyleSheet.create({
   root: {
-    flex: 1,
+    //flex: 1,
+    /* flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start', */
     backgroundColor: 'white',
+    height: height,
+    width: width,
   },
   topContainer: {
-    width: `100%`,
-    //height: 50,
-    //flexDirection: `row`,
-    //alignItems: `center`,
-    //justifyContent: 'space-between',
-    //paddingHorizontal: 24,
+    marginHorizontal: 24,
+    overflow: 'hidden',
   },
   dotContainer: {
-    //width: 60,
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    paddingHorizontal: 24,
   },
   dot: {
     width: 9,
@@ -651,10 +719,9 @@ const _styles = StyleSheet.create({
   renderItemContainer: {
     width: (width - 54) / 2,
     height: (width - 54) / 2,
-    marginTop: 12,
+    marginBottom: 12,
     borderRadius: 15,
     backgroundColor: '#000000',
-    borderStyle: 'solid',
     borderWidth: 1,
     borderColor: '#ebe9ef',
     overflow: 'hidden',
@@ -719,18 +786,20 @@ const _styles = StyleSheet.create({
     fontSize: 13,
     color: '#fff',
   },
-  tabItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 8,
-    height: 27,
-    borderRadius: 20,
-    marginRight: 5,
-    backgroundColor: '#ECECEC',
+  tabItem: (isOn: boolean, itemColor: string) => {
+    return {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingHorizontal: 12,
+      height: 25,
+      borderRadius: 20,
+      marginRight: 5,
+      backgroundColor: isOn ? itemColor : '#ECECEC',
+    }
   },
   tabItemText: {
-    flexDirection: `row`,
+    //flexDirection: `row`,
     fontSize: 14,
     fontFamily: 'AppleSDGothicNeoEB00',
     color: ColorType.white,
@@ -817,4 +886,52 @@ const _styles = StyleSheet.create({
     justifyContent: `center`,
     marginRight: 5,
   },
+  liveTabArea: {
+    flexDirection: 'row',
+  },
+  liveTabItem: (isOn: boolean, type: string) => {
+    return {
+      backgroundColor: isOn ? type == 'RES' ? '#FE0456' : '#7986EE' : '#fff',
+      borderWidth: 1,
+      borderColor: type == 'RES' ? '#FE0456' : '#7986EE',
+      borderRadius: 8,
+      width: 70,
+      height: 22,
+      alignItems: `center`,
+      justifyContent: `center`,
+      marginLeft: 4,
+    }
+  },
+  liveTabText: (isOn: boolean, type: string) => {
+    return {
+      fontFamily: 'AppleSDGothicNeoEB00',
+      fontSize: 11,
+      color: !isOn ? type == 'RES' ? '#FE0456' : '#7986EE' : '#fff',
+    };
+  },
+  liveScoreArea: (type: string) => {
+    return {
+      flexDirection: `row`,
+      alignItems: `center`,
+      justifyContent: `center`,
+      borderWidth: 1,
+      borderColor: type == 'LIVE_RES' ? '#FE0456' : '#7986EE',
+      borderRadius: 5,
+      paddingHorizontal: 5,
+      height: 19,
+      backgroundColor: '#fff',
+      marginTop: 2,
+      marginLeft: 3,
+    };
+  },
+  liveScoreText: (type: string) => {
+    return {
+      fontFamily: 'AppleSDGothicNeoB00',
+      fontSize: 12,
+      color: type == 'LIVE_RES' ? '#FE0456' : '#7986EE',
+    };
+  }
+
+
+  
 });
