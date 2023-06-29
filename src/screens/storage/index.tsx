@@ -473,7 +473,7 @@ export const Storage = (props: Props) => {
 
     // 노출 여부 설정
     if(type == 'REQ' || type == 'RES' || type == 'MATCH') {
-      if((!isSpecialVisible && item.special_interest_yn == 'Y') || (isSpecialVisible && item.special_interest_yn == 'N')) {
+      if(isSpecialVisible && item.special_interest_yn == 'N') {
         isShow = false;
       }
     } else if(type == 'LIVE') {
