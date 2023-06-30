@@ -15,6 +15,8 @@ export default function VisualImage({ imgList, memberData, isButton }) {
 
   const memberBase = useUserInfo(); //hooksMember.getBase();
 
+  const imgRef = React.useRef();
+
   // 이미지 인덱스
   const [currentIndex, setCurrentIndex] = React.useState(0);
 
@@ -24,6 +26,14 @@ export default function VisualImage({ imgList, memberData, isButton }) {
     let index = Math.floor(contentOffset.x / (width-10));
     setCurrentIndex(index);
   };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      return () => {
+        imgRef?.current?.scrollToIndex({ index: 0, animated: false });
+      };
+    }, []),
+  );
 
   return (
     <>
@@ -46,6 +56,7 @@ export default function VisualImage({ imgList, memberData, isButton }) {
         ##################################### 이미지 렌더링
         #################################################################################################### */}
         <FlatList
+          ref={imgRef}
           data={imgList}
           renderItem={RenderItem}
           onScroll={handleScroll}

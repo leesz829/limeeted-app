@@ -83,9 +83,6 @@ export default function Matching(props: Props) {
   const isFocus = useIsFocused();
   const dispatch = useDispatch();
 
-  // 이미지 인덱스
-  const [currentIndex, setCurrentIndex] = React.useState(0);
-
   const scrollRef = useRef();
 
   const { show } = usePopup(); // 공통 팝업
@@ -98,7 +95,7 @@ export default function Matching(props: Props) {
   const memberBase = useUserInfo(); //hooksMember.getBase();
 
   // 매칭 회원 관련 데이터
-  const [data, setData] = useState<any>({
+  const [matchData, setMatchData] = useState<any>({
     match_member_info: {},
     profile_img_list: [],
     second_auth_list: [],
@@ -107,6 +104,7 @@ export default function Matching(props: Props) {
     report_code_list: [],
     safe_royal_pass: Number,
     use_item: {},
+    refuse_list: [],
   });
 
   // 신고목록
@@ -130,11 +128,11 @@ export default function Matching(props: Props) {
   };
 
   // 이미지 스크롤 처리
-  const handleScroll = (event) => {
+  /* const handleScroll = (event) => {
     let contentOffset = event.nativeEvent.contentOffset;
     let index = Math.floor(contentOffset.x / (width-10));
     setCurrentIndex(index);
-  };
+  }; */
 
   // 팝업 목록
   let popupList = [];
@@ -160,7 +158,7 @@ export default function Matching(props: Props) {
   const getDailyMatchInfo = async (isPopupShow:boolean) => {
 
     // 기존 데이터 존재 여부
-    let ordMemberSeq = data?.match_member_info?.member_seq;
+    let ordMemberSeq = matchData?.match_member_info?.member_seq;
 
     try {
       const { success, data } = await get_daily_matched_info();
@@ -170,7 +168,7 @@ export default function Matching(props: Props) {
         if (data.result_code == '0000') {
 
           const auth_list = data?.second_auth_list.filter(item => item.auth_status == 'ACCEPT');
-          setData({
+          setMatchData({
             match_member_info: data?.match_member_info,
             profile_img_list: data?.profile_img_list,
             second_auth_list: auth_list,
@@ -179,15 +177,13 @@ export default function Matching(props: Props) {
             report_code_list: data?.report_code_list,
             safe_royal_pass: data?.safe_royal_pass,
             use_item: data?.use_item,
+            refuse_list: data?.refuse_list,
           });
 
           if(data?.match_member_info == null) {
             setIsLoad(false);
             setIsEmpty(true);
           } else {
-            if(ordMemberSeq !== data?.match_member_info?.member_seq) {
-              setCurrentIndex(0);
-            }
             setIsLoad(true);
           }
 
@@ -256,8 +252,8 @@ export default function Matching(props: Props) {
       let content = '패스를 소모하여 관심을 보내시겠습니까?\n패스 x15';
 
       // 관심 자유이용권 사용시
-      if(typeof data.use_item != 'undefined' && typeof data.use_item.FREE_LIKE != 'undefined') {
-        let endDt = data?.use_item?.FREE_LIKE?.end_dt;
+      if(typeof matchData.use_item != 'undefined' && typeof matchData.use_item.FREE_LIKE != 'undefined') {
+        let endDt = matchData?.use_item?.FREE_LIKE?.end_dt;
         if(endDt > formatNowDate()) {
           title = '관심 보내기';
           content = '관심 보내기 자유이용권 사용중\n패스 소모없이 관심을 보냅니다.';
@@ -294,9 +290,9 @@ export default function Matching(props: Props) {
     } else if(activeType == 'zzim') {
 
       // 찜하기 사용시
-      if(typeof data.use_item != 'undefined' && typeof data.use_item.WISH != 'undefined') {
+      if(typeof matchData.use_item != 'undefined' && typeof matchData.use_item.WISH != 'undefined') {
         let nowDate = formatNowDate();
-        let endDt = data?.use_item?.WISH?.end_dt;
+        let endDt = matchData?.use_item?.WISH?.end_dt;
         if(Number(endDt) < Number(formatNowDate())) {
           show({
             title: '찜하기 이용권 만료',
@@ -314,7 +310,7 @@ export default function Matching(props: Props) {
   const insertMatchInfo = async (activeType: string, special_level: number) => {
     const body = {
       active_type: activeType,
-      res_member_seq: data.match_member_info?.member_seq,
+      res_member_seq: matchData.match_member_info?.member_seq,
       special_level: special_level,
     };
 
@@ -359,7 +355,7 @@ export default function Matching(props: Props) {
     
     const body = {
       report_type_code: checkReportType,
-      report_member_seq: data.match_member_info?.member_seq,
+      report_member_seq: matchData.match_member_info?.member_seq,
     };
     
     try {
@@ -388,7 +384,7 @@ export default function Matching(props: Props) {
   const checkUserReport = async () => {
 
     const body = {
-      report_member_seq: data.match_member_info?.member_seq
+      report_member_seq: matchData.match_member_info?.member_seq
     };
 
     try {
@@ -411,7 +407,7 @@ export default function Matching(props: Props) {
 
   const reportCheckUserConfirm = () => {
     const body = {
-      report_member_seq: data.match_member_info?.member_seq
+      report_member_seq: matchData.match_member_info?.member_seq
     };
     report_check_user_confirm(body);
   };
@@ -429,6 +425,21 @@ export default function Matching(props: Props) {
         }));
       }
     }
+  };
+
+  // ################################################################ 스킵 회원 다시 보기
+  const refuseMatchReplay = async (match_seq: number, member_seq: number) => {
+    let memberSeqList = [];
+    memberSeqList.push(member_seq);
+
+    navigation.navigate(STACK.COMMON, {
+      screen: 'ItemMatching'
+      , params : {
+        type: 'DAILY_REPLAY',
+        memberSeqList: memberSeqList,
+        matchSeq: match_seq,
+      }
+    });
   };
 
   // ################################################################ 초기 실행 함수
@@ -467,13 +478,15 @@ export default function Matching(props: Props) {
       return () => {
         // 스크롤 최상단 이동
         scrollRef.current?.scrollTo({y: 0, animated: false});
+        setIsLoad(false);
+        setIsEmpty(false);
       };
     }, []),
   );
 
 
   return (
-    data.profile_img_list.length > 0 && isLoad ? (
+    matchData.profile_img_list.length > 0 && isLoad ? (
       <>
         <TopNavigation currentPath={'LIMEETED'} />
 
@@ -485,38 +498,38 @@ export default function Matching(props: Props) {
           <View>
 
             {/* ############################################################## 상단 이미지 영역 */}
-            <VisualImage imgList={data?.profile_img_list} memberData={data?.match_member_info} />
+            <VisualImage imgList={matchData?.profile_img_list} memberData={matchData?.match_member_info} isButton={true} />
 
             {/* ######################### 버튼 영역 */}
-            <View style={styles.absoluteView}>
-              <View style={styles.buttonsContainer}>
+            <View style={_styles.absoluteView}>
+              <View style={_styles.buttonsContainer}>
 
                 {/* ######### 거절 버튼 */}
                 <TouchableOpacity onPress={() => { popupActive('pass'); }}>
-                  <Image source={ICON.closeCircle} style={styles.smallButton} />
+                  <Image source={ICON.closeCircle} style={_styles.smallButton} />
                 </TouchableOpacity>
 
                 {/* ######### 관심 버튼 */}
-                <TouchableOpacity onPress={() => { popupActive('interest'); }} style={styles.freePassContainer}>
-                  <Image source={ICON.passCircle} style={styles.largeButton} />
+                <TouchableOpacity onPress={() => { popupActive('interest'); }} style={_styles.freePassContainer}>
+                  <Image source={ICON.passCircle} style={_styles.largeButton} />
 
                   {/* 부스터 아이템  */}
-                  {data?.use_item != null && data?.use_item?.FREE_LIKE && data?.use_item?.FREE_LIKE?.use_yn == 'Y' &&
-                    <View style={styles.freePassBage}>
-                      <Text style={styles.freePassText}>자유이용권 ON</Text>
+                  {matchData?.use_item != null && matchData?.use_item?.FREE_LIKE && matchData?.use_item?.FREE_LIKE?.use_yn == 'Y' &&
+                    <View style={_styles.freePassBage}>
+                      <Text style={_styles.freePassText}>자유이용권 ON</Text>
                     </View>
                   }
                 </TouchableOpacity>
 
                 {/* ######### 찐심 버튼 */}
                 <TouchableOpacity onPress={() => { popupActive('sincere'); }}>
-                  <Image source={ICON.royalPassCircle} style={styles.largeButton} />
+                  <Image source={ICON.royalPassCircle} style={_styles.largeButton} />
                 </TouchableOpacity>
 
                 {/* ######### 찜하기 버튼 */}
-                {data?.match_member_info?.zzim_yn == 'Y' && (
+                {matchData?.match_member_info?.zzim_yn == 'Y' && (
                   <TouchableOpacity onPress={() => { popupActive('zzim'); }}>
-                    <Image source={ICON.zzimIcon} style={styles.smallButton} />
+                    <Image source={ICON.zzimIcon} style={_styles.smallButton} />
                   </TouchableOpacity>
                 )}
               </View>
@@ -526,23 +539,23 @@ export default function Matching(props: Props) {
             {/* <AbsoluteView member={data.match_member_info}  /> */}
           </View>
 
-          <View style={styles.padding}>
+          <View style={_styles.padding}>
 
             {/* ############################################################## 부스트 회원 노출 영역 */}
-            {data?.match_member_info?.boost_yn === 'Y' && (
-              <View style={styles.boostPannel}>
-                <View style={styles.boostBadge}>
-                  <Text style={styles.boostBadgeText}>BOOST</Text>
+            {matchData?.match_member_info?.boost_yn === 'Y' && (
+              <View style={_styles.boostPannel}>
+                <View style={_styles.boostBadge}>
+                  <Text style={_styles.boostBadgeText}>BOOST</Text>
                 </View>
-                <Text style={styles.boostTitle}>부스터 회원을 만났습니다.</Text>
-                <Text style={styles.boostDescription}>
+                <Text style={_styles.boostTitle}>부스터 회원을 만났습니다.</Text>
+                <Text style={_styles.boostDescription}>
                   관심이나 찐심을 보내면 소셜 평점 보너스가 부여됩니다.
                 </Text>
               </View>
             )}
             
             {/* ############################################################## 프로필 인증 영역 */}
-            <ProfileAuth level={data.match_member_info.auth_acct_cnt} data={data.second_auth_list} isButton={false} />
+            <ProfileAuth level={matchData.match_member_info.auth_acct_cnt} data={matchData.second_auth_list} isButton={false} />
 
             {/* ############################################################## 관심사 영역 */}
             {/* {data.interest_list.length > 0 && (
@@ -565,20 +578,20 @@ export default function Matching(props: Props) {
             {/* <AddInfo memberData={data?.match_member_info} /> */}
 
             {/* ############################################################## 프로필 활동지수 영역 */}
-            <ProfileActive memberData={data?.match_member_info} />
+            <ProfileActive memberData={matchData?.match_member_info} />
 
             {/* ############################################################## 소개 */}
-            <MemberIntro memberData={data?.match_member_info} imgList={data?.profile_img_list} interestList={data?.interest_list} />
+            <MemberIntro memberData={matchData?.match_member_info} imgList={matchData?.profile_img_list} interestList={matchData?.interest_list} />
 
             {/* ############################################################## 인터뷰 영역 */}
             <SpaceView mt={30}>
-              <InterviewRender title={data?.match_member_info?.nickname + '님을\n알려주세요!'} dataList={data?.interview_list} />
+              <InterviewRender title={matchData?.match_member_info?.nickname + '님을\n알려주세요!'} dataList={matchData?.interview_list} />
             </SpaceView>
 
             {/* ############################################################## 신고하기 영역 */}
             <TouchableOpacity onPress={() => { report_onOpen(); }}>
-              <View style={styles.reportButton}>
-                <Text style={styles.reportTextBtn}>신고 및 차단하기</Text>
+              <View style={_styles.reportButton}>
+                <Text style={_styles.reportTextBtn}>신고 및 차단하기</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -620,14 +633,14 @@ export default function Matching(props: Props) {
           <View style={[modalStyle.modalBody, {paddingBottom: 0, paddingHorizontal: 30}]}>
             <SpaceView mb={13} viewStyle={{borderBottomWidth: 1, borderColor: '#e0e0e0', paddingBottom: 20}}>
               <CommonText 
-                textStyle={[styles.reportText, {color: ColorType.black0000}]}
+                textStyle={[_styles.reportText, {color: ColorType.black0000}]}
                 type={'h5'}>
                 신고사유를 알려주시면 더 좋은 리미티드를{'\n'}만드는데 도움이 됩니다.</CommonText>
             </SpaceView>
 
             <SpaceView>
               <RadioCheckBox_3
-                  items={data.report_code_list}
+                  items={matchData.report_code_list}
                   callBackFunction={reportCheckCallbackFn}
               />
             </SpaceView>
@@ -649,16 +662,9 @@ export default function Matching(props: Props) {
         <TopNavigation currentPath={'LIMEETED'} />
         {isEmpty ? (
           <>
-            <View
-              style={[
-                layoutStyle.alignCenter,
-                layoutStyle.justifyCenter,
-                layoutStyle.flex1,
-                {backgroundColor: 'white', paddingBottom: 90},
-              ]}>
-
+            <View style={[layoutStyle.justifyCenter, layoutStyle.flex1, {backgroundColor: 'white'} ]}>
               <View style={[layoutStyle.alignCenter]}>
-                <CommonText type={'h4'} textStyle={[layoutStyle.textCenter, commonStyle.fontSize16, commonStyle.lineHeight23]}>
+                <CommonText type={'h4'} textStyle={_styles.emptyText}>
                   오늘 소개하여 드린 <Text style={{color: '#7986EE'}}>데일리 뷰</Text>가 마감되었어요.{"\n"}
                   <Text style={{color: '#7986EE'}}>데일리 뷰</Text>에서 제공해드릴 프로필 카드는 {"\n"}운영 정책에 따라 다양하게 늘려 나갈 예정입니다.
                 </CommonText>
@@ -667,12 +673,28 @@ export default function Matching(props: Props) {
                   <Image source={IMAGE.logoIcon03} style={{width: 230, height: 230}} />
                 </View>
 
-                <View style={{position: 'absolute', top: -50, left: 30}}><Image source={IMAGE.heartImg01} style={{width: 40, height: 40}} /></View>
-                {/* <View style={{position: 'absolute', top: 80, left: -15}}><Image source={IMAGE.heartImg02} style={{width: 60, height: 60}} /></View>
-                <View style={{position: 'absolute', top: -100, right: -15}}><Image source={IMAGE.heartImg02} style={{width: 60, height: 60}} /></View> */}
-                <View style={{position: 'absolute', top: 80, right: 30}}><Image source={IMAGE.heartImg01} style={{width: 40, height: 40}} /></View>
-
+                <View style={{position: 'absolute', top: -50, left: 75}}><Image source={IMAGE.heartImg01} style={{width: 40, height: 40}} /></View>
+                <View style={{position: 'absolute', top: 80, right: 75}}><Image source={IMAGE.heartImg01} style={{width: 40, height: 40}} /></View>
               </View>
+
+              {matchData.refuse_list.length > 0 &&
+                <SpaceView mt={130} viewStyle={_styles.refuseArea}>
+                  <Text style={_styles.refuseAreaTit}>스킵 회원 다시보기</Text>
+
+                  <SpaceView mt={10} viewStyle={_styles.refuseListArea}>
+                    {matchData.refuse_list.map((item, index) => {
+                      const url = findSourcePath(item?.mst_img_path);
+                      return (
+                        <TouchableOpacity key={index} onPress={() => { refuseMatchReplay(item?.match_seq, item?.res_member_seq); }}>
+                          <SpaceView viewStyle={_styles.refuseItem}>
+                            <Image source={url} style={_styles.refuseImg} />
+                          </SpaceView>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </SpaceView>
+                </SpaceView>
+              }
             </View>
           </>
         ) : (
@@ -725,39 +747,39 @@ export default function Matching(props: Props) {
  */
 function AbsoluteView(data:any) {
   return (
-    <View style={styles.absoluteView}>
-      <View style={styles.badgeContainer}>
-        <View style={styles.authBadge}>
-          <Text style={styles.whiteText}>인증 완료</Text>
+    <View style={_styles.absoluteView}>
+      <View style={_styles.badgeContainer}>
+        <View style={_styles.authBadge}>
+          <Text style={_styles.whiteText}>인증 완료</Text>
         </View>
-        <View style={styles.redBadge}>
-          <Image source={ICON.whiteCrown} style={styles.crownIcon} />
-          <Text style={styles.whiteText}>{data.member?.profile_score}</Text>
+        <View style={_styles.redBadge}>
+          <Image source={ICON.whiteCrown} style={_styles.crownIcon} />
+          <Text style={_styles.whiteText}>{data.member?.profile_score}</Text>
         </View>
       </View>
-      <View style={styles.nameContainer}>
-        <Text style={styles.nameText}>{data.member?.nickname}, {data.member?.age}</Text>
-        <Image source={ICON.checkICon} style={styles.checkIcon} />
+      <View style={_styles.nameContainer}>
+        <Text style={_styles.nameText}>{data.member?.nickname}, {data.member?.age}</Text>
+        <Image source={ICON.checkICon} style={_styles.checkIcon} />
       </View>
-      <View style={styles.distanceContainer}>
-        <Image source={ICON.marker} style={styles.markerIcon} />
-        <Text style={styles.regionText}>경기도 수원시 12.9Km</Text>
+      <View style={_styles.distanceContainer}>
+        <Image source={ICON.marker} style={_styles.markerIcon} />
+        <Text style={_styles.regionText}>경기도 수원시 12.9Km</Text>
       </View> 
-      <View style={styles.buttonsContainer}>
+      <View style={_styles.buttonsContainer}>
         <TouchableOpacity>
-          <Image source={ICON.closeCircle} style={styles.smallButton} />
+          <Image source={ICON.closeCircle} style={_styles.smallButton} />
         </TouchableOpacity>
         <TouchableOpacity>
-          <Image source={ICON.ticketCircle} style={styles.largeButton} />
+          <Image source={ICON.ticketCircle} style={_styles.largeButton} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.freePassContainer}>
-          <Image source={ICON.heartCircle} style={styles.largeButton} />
-          <View style={styles.freePassBage}>
-            <Text style={styles.freePassText}>자유이용권 ON</Text>
+        <TouchableOpacity style={_styles.freePassContainer}>
+          <Image source={ICON.heartCircle} style={_styles.largeButton} />
+          <View style={_styles.freePassBage}>
+            <Text style={_styles.freePassText}>자유이용권 ON</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity>
-          <Image source={ICON.starCircle} style={styles.smallButton} />
+          <Image source={ICON.starCircle} style={_styles.smallButton} />
         </TouchableOpacity>
       </View>
     </View>
@@ -772,7 +794,7 @@ function AbsoluteView(data:any) {
 ###########################################################################################################
 ####################################################################################################### */}
 
-const styles = StyleSheet.create({
+const _styles = StyleSheet.create({
   absoluteView: {
     position: 'absolute',
     left: 0,
@@ -1008,6 +1030,42 @@ const styles = StyleSheet.create({
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 17,
     textAlign: 'left',
+  },
+  emptyText: {
+    textAlign: 'center',
+    fontSize: 16,
+    lineHeight: 23,
+    minHeight: 50,
+    textAlignVertical: 'center',
+  },
+  refuseArea: {
+    paddingHorizontal: 30,
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+  },
+  refuseAreaTit: {
+    fontFamily: 'AppleSDGothicNeoSB00',
+    fontSize: 14,
+    color: '#7986EE',
+  },
+  refuseListArea: {
+    flexDirection: 'row',
+  },
+  refuseItem: {
+    width: 55,
+    height: 55,
+    backgroundColor: '#ffffff',
+    borderWidth: 2,
+    borderColor: '#697AE6',
+    borderRadius: 80,
+    alignItems: `center`,
+    justifyContent: `center`,
+    marginRight: 8,
+  },
+  refuseImg: {
+    width: 48,
+    height: 48,
+    borderRadius: 80,
   },
 
 });

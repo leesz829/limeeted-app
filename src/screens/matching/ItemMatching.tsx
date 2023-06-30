@@ -44,7 +44,7 @@ import {
 import { Modalize } from 'react-native-modalize';
 import { useDispatch } from 'react-redux'; 
 import { myProfile } from 'redux/reducers/authReducer';
-import { findSourcePath, ICON, IMAGE } from 'utils/imageUtils';
+import { findSourcePath, ICON, IMAGE, GIF_IMG } from 'utils/imageUtils';
 import { Slider } from '@miblanchard/react-native-slider';
 import ProfileAuth from 'component/ProfileAuth';
 import { formatNowDate} from 'utils/functions';
@@ -69,6 +69,10 @@ export default function ItemMatching(props: Props) {
   const dispatch = useDispatch();
   const scrollRef = useRef();
   const { show } = usePopup(); // 공통 팝업
+
+  const [type, setType] = useState(props.route.params.type);
+  const [matchSeq, setMatchSeq] = useState(props.route.params.matchSeq);
+  const [memberSeqList, setMemberSeqList] = useState<[]>(props.route.params.memberSeqList);
 
   // 로딩 상태 체크
   const [isLoad, setIsLoad] = useState(false);
@@ -125,18 +129,28 @@ export default function ItemMatching(props: Props) {
   const sincereSend = (level:number) => {
     insertMatchInfo('sincere', level);
     setSincereModalVisible(false);
-  }
+  };
 
   // ############################################################ 데일리 매칭 정보 조회
   const getItemMatchedInfo = async () => {
     try {
     
-      if(props.route.params.profile_member_seq_list.split(',').length <= isCardIndex){
+      /* if(profile_member_seq_list.split(',').length <= isCardIndex){
         navigation.navigate(STACK.COMMON, { screen: ROUTES.SHOP_INVENTORY });
       }
 
       const body = {
-        match_member_seq: props.route.params.profile_member_seq_list.split(',')[isCardIndex].toString()
+        match_member_seq: profile_member_seq_list.split(',')[isCardIndex].toString()
+      } */
+
+      if(type != 'DAILY_REPLAY') {
+        if(memberSeqList.length <= isCardIndex){
+          navigation.navigate(STACK.COMMON, { screen: ROUTES.SHOP_INVENTORY });
+        }
+      }
+
+      const body = {
+        match_member_seq: memberSeqList[isCardIndex]
       }
 
       const { success, data } = await get_item_matched_info(body);
@@ -212,7 +226,7 @@ export default function ItemMatching(props: Props) {
     } else if (activeType == 'pass') {
       show({
 				title: '매칭 취소',
-				content: '매칭을 취소하고 다음 프로필 카드를 확인 하시겠습니까?' ,
+				content: '매칭을 취소 하시겠습니까?' ,
         cancelCallback: function() {
 
         },
@@ -240,11 +254,18 @@ export default function ItemMatching(props: Props) {
 
   // ############################################################ 찐심/관심/거부 저장
   const insertMatchInfo = async (activeType: string, special_level: number) => {
-    const body = {
+    let body = {
       active_type: activeType,
       res_member_seq: data.match_member_info.member_seq,
       special_level: special_level,
     };
+
+    if(type == 'DAILY_REPLAY') {
+      body.match_seq = matchSeq;
+    }
+
+    console.log('body ::::: ' , body);
+
     try {
       const { success, data } = await regist_match_status(body);
 
@@ -253,6 +274,13 @@ export default function ItemMatching(props: Props) {
           dispatch(myProfile());
           getItemMatchedInfo();
           setIsLoad(false);
+
+          if(type == 'DAILY_REPLAY') {
+            navigation.navigate(STACK.TAB, {
+              screen: 'Matching',
+            });
+          }
+
         } else if (data.result_code == '6010') {
           show({ content: '보유 패스가 부족합니다.' });
           return false;
@@ -367,7 +395,11 @@ export default function ItemMatching(props: Props) {
   return (
     data.profile_img_list.length > 0 && isLoad ? (
       <>
-        <CommonHeader title={'프로필 카드 ( ' + (isCardIndex) + ' / ' + props.route.params.profile_member_seq_list.split(',').length +' )'} />
+        {type == 'DAILY_REPLAY' ? (
+          <CommonHeader title={'스킵 회원 다시 보기'} />
+        ) : (
+          <CommonHeader title={'프로필 카드 ( ' + (isCardIndex) + ' / ' + memberSeqList.length +' )'} />
+        )}
 
         <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
 
@@ -380,35 +412,35 @@ export default function ItemMatching(props: Props) {
             <VisualImage imgList={data?.profile_img_list} memberData={data?.match_member_info} />
 
             {/* ######################### 버튼 영역 */}
-            <View style={styles.absoluteView}>
-              <View style={styles.buttonsContainer}>
+            <View style={_styles.absoluteView}>
+              <View style={_styles.buttonsContainer}>
 
                 {/* ######### 거절 버튼 */}
                 <TouchableOpacity onPress={() => { popupActive('pass'); }}>
-                  <Image source={ICON.closeCircle} style={styles.smallButton} />
+                  <Image source={ICON.closeCircle} style={_styles.smallButton} />
                 </TouchableOpacity>
 
                 {/* ######### 관심 버튼 */}
-                <TouchableOpacity onPress={() => { popupActive('interest'); }} style={styles.freePassContainer}>
-                  <Image source={ICON.passCircle} style={styles.largeButton} />
+                <TouchableOpacity onPress={() => { popupActive('interest'); }} style={_styles.freePassContainer}>
+                  <Image source={ICON.passCircle} style={_styles.largeButton} />
 
                   {/* ############ 부스터 아이템  */}
                   {data?.use_item != null && data?.use_item?.FREE_LIKE && data?.use_item?.FREE_LIKE?.use_yn == 'Y' &&
-                    <View style={styles.freePassBage}>
-                      <Text style={styles.freePassText}>자유이용권 ON</Text>
+                    <View style={_styles.freePassBage}>
+                      <Text style={_styles.freePassText}>자유이용권 ON</Text>
                     </View>
                   }
                 </TouchableOpacity>
 
                 {/* ######### 찐심 버튼 */}
                 <TouchableOpacity onPress={() => { popupActive('sincere'); }}>
-                  <Image source={ICON.royalPassCircle} style={styles.largeButton} />
+                  <Image source={ICON.royalPassCircle} style={_styles.largeButton} />
                 </TouchableOpacity >
 
                 {/* ######### 찜하기 버튼 */}
                 {data?.match_member_info?.zzim_yn == 'Y' && (
                   <TouchableOpacity onPress={() => { popupActive('zzim'); }}>
-                    <Image source={ICON.zzimIcon} style={styles.smallButton} />
+                    <Image source={ICON.zzimIcon} style={_styles.smallButton} />
                   </TouchableOpacity>
                 )}
               </View>
@@ -416,16 +448,16 @@ export default function ItemMatching(props: Props) {
 
           </View>
 
-          <View style={styles.padding}>
+          <View style={_styles.padding}>
 
             {/* ############################################################## 부스트 회원 노출 영역 */}
             {data?.match_member_info?.boost_yn === 'Y' && (
-              <View style={styles.boostPannel}>
-                <View style={styles.boostBadge}>
-                  <Text style={styles.boostBadgeText}>BOOST</Text>
+              <View style={_styles.boostPannel}>
+                <View style={_styles.boostBadge}>
+                  <Text style={_styles.boostBadgeText}>BOOST</Text>
                 </View>
-                <Text style={styles.boostTitle}>부스터 회원을 만났습니다.</Text>
-                <Text style={styles.boostDescription}>
+                <Text style={_styles.boostTitle}>부스터 회원을 만났습니다.</Text>
+                <Text style={_styles.boostDescription}>
                   관심이나 찐심을 보내면 소셜 평점 보너스가 부여됩니다.
                 </Text>
               </View>
@@ -467,8 +499,8 @@ export default function ItemMatching(props: Props) {
             
             {/* ############################################################## 신고하기 영역 */}
             <TouchableOpacity onPress={() => { report_onOpen(); }}>
-              <View style={styles.reportButton}>
-                <Text style={styles.reportTextBtn}>신고 및 차단하기</Text>
+              <View style={_styles.reportButton}>
+                <Text style={_styles.reportTextBtn}>신고 및 차단하기</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -510,7 +542,7 @@ export default function ItemMatching(props: Props) {
           <View style={[modalStyle.modalBody, {paddingBottom: 0, paddingHorizontal: 30}]}>
             <SpaceView mb={13} viewStyle={{borderBottomWidth: 1, borderColor: '#e0e0e0', paddingBottom: 20}}>
               <CommonText 
-                textStyle={[styles.reportText, {color: ColorType.black0000}]}
+                textStyle={[_styles.reportText, {color: ColorType.black0000}]}
                 type={'h5'}>
                 신고사유를 알려주시면 더 좋은 리미티드를{'\n'}만드는데 도움이 됩니다.</CommonText>
             </SpaceView>
@@ -536,23 +568,36 @@ export default function ItemMatching(props: Props) {
       </>
     ) : (
       <>
-        <CommonHeader title={'프로필 카드 ( ' + (isCardIndex) + ' / ' + props.route.params.profile_member_seq_list.split(',').length +' )'} />
+        {type == 'DAILY_REPLAY' ? (
+          <CommonHeader title={'스킵 회원 다시 보기'} />
+        ) : (
+          <CommonHeader title={'프로필 카드 ( ' + (isCardIndex) + ' / ' + memberSeqList.length +' )'} />
+        )}
+
         {isEmpty ? (
-          <View
-            style={[
-              layoutStyle.alignCenter,
-              layoutStyle.justifyCenter,
-              layoutStyle.flex1,
-              {backgroundColor: 'white', paddingBottom: 90},
-            ]}>
-            <SpaceView mb={20} viewStyle={layoutStyle.alignCenter}>
+          <View style={[layoutStyle.justifyCenter, layoutStyle.flex1, {backgroundColor: 'white'}]}>
+
+            <View style={[layoutStyle.alignCenter]}>
+              <CommonText type={'h4'} textStyle={_styles.emptyText}>
+                프로필 카드 이용이 마감되었어요.
+              </CommonText>
+
+              <View style={{position: 'absolute', top: 0, left: 0, bottom: 0, right: 0, justifyContent: 'center', alignItems: 'center'}}>
+                <Image source={IMAGE.logoIcon03} style={{width: 230, height: 230}} />
+              </View>
+
+              <View style={{position: 'absolute', top: -50, left: 75}}><Image source={IMAGE.heartImg01} style={{width: 40, height: 40}} /></View>
+              <View style={{position: 'absolute', top: 80, right: 75}}><Image source={IMAGE.heartImg01} style={{width: 40, height: 40}} /></View>
+            </View>
+
+            {/* <SpaceView mb={20} viewStyle={layoutStyle.alignCenter}>
               <Image source={IMAGE.logoMark} style={{width: 48, height: 48}} />
             </SpaceView>
             <View style={[layoutStyle.alignCenter]}>
               <CommonText type={'h4'} textStyle={[layoutStyle.textCenter, commonStyle.fontSize16, commonStyle.lineHeight23]}>
                 프로필 카드 이용이 마감되었어요.
               </CommonText>
-            </View>
+            </View> */}
           </View>
         ) : (
           <View
@@ -563,11 +608,10 @@ export default function ItemMatching(props: Props) {
               {backgroundColor: 'white', paddingBottom: 90},
             ]}>
             <SpaceView mb={20} viewStyle={layoutStyle.alignCenter}>
-              {/* <Image source={GIF_IMG.faceScan} style={styles.iconSize48} /> */}
-              <Image source={IMAGE.logoMark} style={{width: 48, height: 48}} />
+              <Image source={GIF_IMG.faceScan} style={{width: 48, height: 48}} />
             </SpaceView>
             <View style={layoutStyle.alignCenter}>
-              <CommonText type={'h4'}>프로필 카드 매칭 회원을 찾고 있어요.</CommonText>
+              <CommonText type={'h4'}>매칭 회원을 찾고 있어요.</CommonText>
             </View>
           </View>
         )}
@@ -585,7 +629,7 @@ export default function ItemMatching(props: Props) {
 ###########################################################################################################
 ####################################################################################################### */}
 
-const styles = StyleSheet.create({
+const _styles = StyleSheet.create({
   absoluteView: {
     position: 'absolute',
     left: 0,
@@ -737,5 +781,12 @@ const styles = StyleSheet.create({
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 17,
     textAlign: 'left',
+  },
+  emptyText: {
+    textAlign: 'center',
+    fontSize: 16,
+    lineHeight: 23,
+    minHeight: 70,
+    textAlignVertical: 'center',
   },
 });
