@@ -125,6 +125,16 @@ export const Storage = (props: Props) => {
           console.log(data.result_msg);
           return false;
         } else {
+          if(tabs[currentIndex]?.type == 'ZZIM') {
+            if(data.zzim_trgt_list.length == 0) {
+              onPressDot(0);
+            }
+          } else if(tabs[currentIndex]?.type == 'LIVE') {
+            if(data.live_high_list.length == 0) {
+              onPressDot(0);
+            }
+          }
+
           let tabsData = [];
 
           let resLikeListData = [];
@@ -382,7 +392,7 @@ export const Storage = (props: Props) => {
   useFocusEffect(
     React.useCallback(() => {
       return () => {
-        onPressDot(0);
+        //onPressDot(0);
       };
     }, []),
   );
