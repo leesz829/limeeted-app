@@ -442,6 +442,28 @@ export default function Matching(props: Props) {
     });
   };
 
+  // ################################################################ 프로필 카드 추가 팝업
+  const profileCardOpenPopup = async () => {
+
+    if(memberBase?.pass_has_amt >= 20) {
+      show({
+        title: '프로필 카드 열어 보기',
+        content: '새로운 프로필 카드 1개를 오픈합니다.',
+        subContent: '패스 20',
+        confirmCallback: function() {
+          if(memberBase?.pass_has_amt >= 20) {
+            
+          }
+        },
+        cancelCallback: function() {
+  
+        },
+      });
+    } else {
+      show({ content: '보유 패스가 부족합니다.' });
+    }
+  };
+
   // ################################################################ 초기 실행 함수
   useEffect(() => {
     if(isFocus) {
@@ -663,7 +685,7 @@ export default function Matching(props: Props) {
         {isEmpty ? (
           <>
             <View style={[layoutStyle.justifyCenter, layoutStyle.flex1, {backgroundColor: 'white'} ]}>
-              <View style={[layoutStyle.alignCenter]}>
+              <SpaceView mb={50} viewStyle={[layoutStyle.alignCenter]}>
                 <CommonText type={'h4'} textStyle={_styles.emptyText}>
                   오늘 소개하여 드린 <Text style={{color: '#7986EE'}}>데일리 뷰</Text>가 마감되었어요.{"\n"}
                   <Text style={{color: '#7986EE'}}>데일리 뷰</Text>에서 제공해드릴 프로필 카드는 {"\n"}운영 정책에 따라 다양하게 늘려 나갈 예정입니다.
@@ -675,10 +697,18 @@ export default function Matching(props: Props) {
 
                 <View style={{position: 'absolute', top: -50, left: 75}}><Image source={IMAGE.heartImg01} style={{width: 40, height: 40}} /></View>
                 <View style={{position: 'absolute', top: 80, right: 75}}><Image source={IMAGE.heartImg01} style={{width: 40, height: 40}} /></View>
-              </View>
+              </SpaceView>
+
+              {/* <SpaceView mt={40} viewStyle={_styles.profileAddArea}>
+                <Text style={_styles.profileAddText}>20 패스로 열어볼 수 있는 프로필 카드가 더 준비되어 있어요.</Text>
+
+                <TouchableOpacity onPress={() => { profileCardOpenPopup(); }} style={{width: '100%'}}>
+                  <Text style={_styles.profileAddBtn}>프로필 카드 열어 보기</Text>
+                </TouchableOpacity>
+              </SpaceView> */}
 
               {matchData.refuse_list.length > 0 &&
-                <SpaceView mt={130} viewStyle={_styles.refuseArea}>
+                <SpaceView mt={70} viewStyle={_styles.refuseArea}>
                   <Text style={_styles.refuseAreaTit}>스킵 회원 다시보기</Text>
 
                   <SpaceView mt={10} viewStyle={_styles.refuseListArea}>
@@ -1037,6 +1067,32 @@ const _styles = StyleSheet.create({
     lineHeight: 23,
     minHeight: 50,
     textAlignVertical: 'center',
+  },
+  profileAddArea: {
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#8E9AEB',
+    borderStyle: 'dotted',
+    borderRadius: 6,
+    marginHorizontal: 25,
+    paddingVertical: 20,
+    paddingHorizontal: 18,
+    marginBottom: -30,
+  },
+  profileAddText: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 12,
+    color: '#7986EE',
+    marginBottom: 20,
+  },
+  profileAddBtn: {
+    backgroundColor: '#697AE6',
+    borderRadius: 6,
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 13,
+    color: '#ffffff',
+    textAlign: 'center',
+    paddingVertical: 8,
   },
   refuseArea: {
     paddingHorizontal: 30,

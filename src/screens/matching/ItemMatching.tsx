@@ -34,12 +34,12 @@ import {
   Dimensions,
   FlatList,
   Image,
-  
   ScrollView,
   StyleSheet,
   TouchableOpacity,
   View,
   Text,
+  BackHandler,
 } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import { useDispatch } from 'react-redux'; 
@@ -275,12 +275,7 @@ export default function ItemMatching(props: Props) {
           getItemMatchedInfo();
           setIsLoad(false);
 
-          if(type == 'DAILY_REPLAY') {
-            navigation.navigate(STACK.TAB, {
-              screen: 'Matching',
-            });
-          }
-
+          navigation.goBack();
         } else if (data.result_code == '6010') {
           show({ content: '보유 패스가 부족합니다.' });
           return false;
@@ -326,17 +321,12 @@ export default function ItemMatching(props: Props) {
           return false;
         }
 
-        show({ content: '신고 처리 되었습니다.' });
-
-        setCheckReportType('');
-        getItemMatchedInfo();
-        setIsLoad(false);
-
-        // 스크롤 최상단 이동
-        /* scrollRef.current?.scrollTo({
-          y: 0,
-          animated: false,
-        }); */
+        show({ 
+          content: '신고 처리 되었습니다.',
+          confirmCallback : function() {
+            navigation.goBack();
+          }
+        });
       }
     } catch (error) {
       console.log(error);
@@ -576,10 +566,10 @@ export default function ItemMatching(props: Props) {
 
         {isEmpty ? (
           <View style={[layoutStyle.justifyCenter, layoutStyle.flex1, {backgroundColor: 'white'}]}>
-
             <View style={[layoutStyle.alignCenter]}>
               <CommonText type={'h4'} textStyle={_styles.emptyText}>
-                프로필 카드 이용이 마감되었어요.
+                {/* 프로필 카드 이용이 마감되었어요. */}
+                매칭 회원이 존재하지 않아요.
               </CommonText>
 
               <View style={{position: 'absolute', top: 0, left: 0, bottom: 0, right: 0, justifyContent: 'center', alignItems: 'center'}}>
@@ -589,15 +579,6 @@ export default function ItemMatching(props: Props) {
               <View style={{position: 'absolute', top: -50, left: 75}}><Image source={IMAGE.heartImg01} style={{width: 40, height: 40}} /></View>
               <View style={{position: 'absolute', top: 80, right: 75}}><Image source={IMAGE.heartImg01} style={{width: 40, height: 40}} /></View>
             </View>
-
-            {/* <SpaceView mb={20} viewStyle={layoutStyle.alignCenter}>
-              <Image source={IMAGE.logoMark} style={{width: 48, height: 48}} />
-            </SpaceView>
-            <View style={[layoutStyle.alignCenter]}>
-              <CommonText type={'h4'} textStyle={[layoutStyle.textCenter, commonStyle.fontSize16, commonStyle.lineHeight23]}>
-                프로필 카드 이용이 마감되었어요.
-              </CommonText>
-            </View> */}
           </View>
         ) : (
           <View
