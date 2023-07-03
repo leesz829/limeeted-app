@@ -77,20 +77,32 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
   // 상품번호(재고상품)
   const prod_seq = item?.prod_seq;
 
+  // 재화 구분 코드
+  const money_type_code = item?.money_type_code;
+
   // ######################################################### 상품 구매하기 함수
   const purchaseBtn = async () => {
-
     if(!isPayLoading) {
       setIsPayLoading(true);
       
       try {
         if(type == 'bm'){
-          if(Platform.OS == 'android') {
-            purchaseAosProc();
-          } else if(Platform.OS == 'ios') {
-            purchaseIosProc();
+
+          // 재화 유형 구분 : 인앱상품
+          if(money_type_code == 'INAPP') {
+            if(Platform.OS == 'android') {
+              purchaseAosProc();
+            } else if(Platform.OS == 'ios') {
+              purchaseIosProc();
+            }
+          
+          // 재화 유형 구분 : 패스상품(임시처리::추후수정)
+          } else if(money_type_code == 'PASS') {
+            closeModal(false);
+            setIsPayLoading(false);
+            setComfirmModalVisible(false);
           }
-        }else{
+        } else {
           buyProdsProc();
         }
       } catch (err: any) {

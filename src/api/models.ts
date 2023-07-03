@@ -74,6 +74,7 @@ import {
   FIRST_MATCH_PASS_ADD,
   SAVE_PROFILE_AUTH_COMMENT,
   SAVE_MEMBER_INTRODUCE,
+  DAILY_MATCH_ADD_OPEN,
 } from './route';
 
 /* ========================================================================================================
@@ -510,6 +511,13 @@ export async function first_match_pass_add(body: {
   match_seq: number;
 }) {
   return send(FIRST_MATCH_PASS_ADD, 'POST', body, true, false);
+}
+
+// 데일리 매칭 추가 프로필 카드를 공개한다.
+export async function daily_match_add_open(body: {
+  trgt_member_seq: number;
+}) {
+  return send(DAILY_MATCH_ADD_OPEN, 'POST', body, true, false);
 }
 
 

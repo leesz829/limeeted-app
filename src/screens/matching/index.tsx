@@ -20,6 +20,7 @@ import {
   report_check_user,
   report_check_user_confirm,
   update_additional,
+  daily_match_add_open,
 } from 'api/models';
 import { Color } from 'assets/styles/Color';
 import { BarGrap } from 'component/BarGrap';
@@ -105,6 +106,7 @@ export default function Matching(props: Props) {
     safe_royal_pass: Number,
     use_item: {},
     refuse_list: [],
+    add_list: [],
   });
 
   // 신고목록
@@ -178,6 +180,7 @@ export default function Matching(props: Props) {
             safe_royal_pass: data?.safe_royal_pass,
             use_item: data?.use_item,
             refuse_list: data?.refuse_list,
+            add_list: data?.profile_add_list,
           });
 
           if(data?.match_member_info == null) {
@@ -445,14 +448,14 @@ export default function Matching(props: Props) {
   // ################################################################ 프로필 카드 추가 팝업
   const profileCardOpenPopup = async () => {
 
-    if(memberBase?.pass_has_amt >= 20) {
+    if(memberBase?.pass_has_amt >= 20 && matchData.add_list?.length > 0) {
       show({
-        title: '프로필 카드 열어 보기',
-        content: '새로운 프로필 카드 1개를 오픈합니다.',
+        title: '프로필 카드 열어보기',
+        content: '새로운 프로필 카드 1개를 오픈 합니다.',
         subContent: '패스 20',
         confirmCallback: function() {
           if(memberBase?.pass_has_amt >= 20) {
-            
+            profileCardOpen();
           }
         },
         cancelCallback: function() {
@@ -461,6 +464,36 @@ export default function Matching(props: Props) {
       });
     } else {
       show({ content: '보유 패스가 부족합니다.' });
+    }
+  };
+
+  // ################################################################ 프로필 카드 추가
+  const profileCardOpen = async () => {
+
+    const body = {
+      trgt_member_seq: matchData.add_list[0].member_seq
+    };
+    try {
+      const { success, data } = await daily_match_add_open(body);
+      if(success) {
+        dispatch(myProfile());
+
+        let memberSeqList = [];
+        memberSeqList.push(matchData.add_list[0].member_seq);
+
+        navigation.navigate(STACK.COMMON, {
+          screen: 'ItemMatching'
+          , params : {
+            type: 'PROFILE_CARD',
+            memberSeqList: memberSeqList,
+            matchSeq: data.match_seq,
+          }
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      
     }
   };
 
@@ -688,7 +721,7 @@ export default function Matching(props: Props) {
               <SpaceView mb={50} viewStyle={[layoutStyle.alignCenter]}>
                 <CommonText type={'h4'} textStyle={_styles.emptyText}>
                   오늘 소개하여 드린 <Text style={{color: '#7986EE'}}>데일리 뷰</Text>가 마감되었어요.{"\n"}
-                  <Text style={{color: '#7986EE'}}>데일리 뷰</Text>에서 제공해드릴 프로필 카드는 {"\n"}운영 정책에 따라 다양하게 늘려 나갈 예정입니다.
+                  <Text style={{color: '#7986EE'}}>데일리 뷰</Text>에서 제공해드릴 프로필 카드는 {"\n"}운영 정책에 따라 다양하게 늘려나갈 예정입니다.
                 </CommonText>
 
                 <View style={{position: 'absolute', top: 0, left: 0, bottom: 0, right: 0, justifyContent: 'center', alignItems: 'center'}}>
@@ -699,27 +732,32 @@ export default function Matching(props: Props) {
                 <View style={{position: 'absolute', top: 80, right: 75}}><Image source={IMAGE.heartImg01} style={{width: 40, height: 40}} /></View>
               </SpaceView>
 
-              {/* <SpaceView mt={40} viewStyle={_styles.profileAddArea}>
-                <Text style={_styles.profileAddText}>20 패스로 열어볼 수 있는 프로필 카드가 더 준비되어 있어요.</Text>
 
-                <TouchableOpacity onPress={() => { profileCardOpenPopup(); }} style={{width: '100%'}}>
-                  <Text style={_styles.profileAddBtn}>프로필 카드 열어 보기</Text>
-                </TouchableOpacity>
-              </SpaceView> */}
+              {matchData.add_list?.length > 0 && 
+                <SpaceView mt={40} viewStyle={_styles.profileAddArea}>
+                  <Text style={_styles.profileAddText}>20 패스로 열어볼 수 있는 프로필 카드가 더 준비되어 있어요.</Text>
+
+                  <TouchableOpacity onPress={() => { profileCardOpenPopup(); }} style={{width: '100%'}}>
+                    <Text style={_styles.profileAddBtn}>프로필 카드 열어보기</Text>
+                  </TouchableOpacity>
+                </SpaceView>
+              }
 
               {matchData.refuse_list.length > 0 &&
-                <SpaceView mt={70} viewStyle={_styles.refuseArea}>
-                  <Text style={_styles.refuseAreaTit}>스킵 회원 다시보기</Text>
+                <SpaceView mt={65} viewStyle={_styles.refuseArea}>
+                  <Text style={_styles.refuseAreaTit}>데일리 뷰 다시보기</Text>
 
                   <SpaceView mt={10} viewStyle={_styles.refuseListArea}>
                     {matchData.refuse_list.map((item, index) => {
                       const url = findSourcePath(item?.mst_img_path);
                       return (
-                        <TouchableOpacity key={index} onPress={() => { refuseMatchReplay(item?.match_seq, item?.res_member_seq); }}>
-                          <SpaceView viewStyle={_styles.refuseItem}>
-                            <Image source={url} style={_styles.refuseImg} />
-                          </SpaceView>
-                        </TouchableOpacity>
+                        <>
+                          <TouchableOpacity key={index} onPress={() => { refuseMatchReplay(item?.match_seq, item?.res_member_seq); }}>
+                            <SpaceView viewStyle={_styles.refuseItem}>
+                              <Image source={url} style={_styles.refuseImg} />
+                            </SpaceView>
+                          </TouchableOpacity>
+                        </>
                       );
                     })}
                   </SpaceView>
@@ -1105,6 +1143,7 @@ const _styles = StyleSheet.create({
     color: '#7986EE',
   },
   refuseListArea: {
+    flexWrap: 'wrap',
     flexDirection: 'row',
   },
   refuseItem: {
@@ -1117,6 +1156,7 @@ const _styles = StyleSheet.create({
     alignItems: `center`,
     justifyContent: `center`,
     marginRight: 8,
+    marginBottom: 6,
   },
   refuseImg: {
     width: 48,

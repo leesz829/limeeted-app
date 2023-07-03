@@ -2,6 +2,7 @@ import {
   RouteProp,
   useIsFocused,
   useNavigation,
+  useFocusEffect,
 } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import {
@@ -145,7 +146,8 @@ export default function ItemMatching(props: Props) {
 
       if(type != 'DAILY_REPLAY') {
         if(memberSeqList.length <= isCardIndex){
-          navigation.navigate(STACK.COMMON, { screen: ROUTES.SHOP_INVENTORY });
+          //navigation.navigate(STACK.COMMON, { screen: ROUTES.SHOP_INVENTORY });
+          navigation.goBack();
         }
       }
 
@@ -159,6 +161,8 @@ export default function ItemMatching(props: Props) {
       if (success) {
         if (data.result_code == '0000') {
           //setData(data);
+
+          console.log('data?.match_member_info :::: ' ,data?.match_member_info);
 
           const auth_list = data?.second_auth_list.filter(item => item.auth_status == 'ACCEPT');
           setData({
@@ -260,7 +264,7 @@ export default function ItemMatching(props: Props) {
       special_level: special_level,
     };
 
-    if(type == 'DAILY_REPLAY') {
+    if(type == 'DAILY_REPLAY' || type == 'PROFILE_CARD') {
       body.match_seq = matchSeq;
     }
 
@@ -272,10 +276,14 @@ export default function ItemMatching(props: Props) {
       if(success) {
         if(data.result_code == '0000') {
           dispatch(myProfile());
-          getItemMatchedInfo();
           setIsLoad(false);
 
-          navigation.goBack();
+          if(type == 'DAILY_REPLAY' || type == 'PROFILE_CARD') {
+            navigation.goBack();
+          } else {
+            getItemMatchedInfo();
+          }
+          
         } else if (data.result_code == '6010') {
           show({ content: '보유 패스가 부족합니다.' });
           return false;
@@ -381,12 +389,20 @@ export default function ItemMatching(props: Props) {
     }
   }, [isFocus]);
 
+  useFocusEffect(
+    React.useCallback(() => {
+      return () => {
+
+      };
+    }, []),
+  );
+
 
   return (
     data.profile_img_list.length > 0 && isLoad ? (
       <>
         {type == 'DAILY_REPLAY' ? (
-          <CommonHeader title={'스킵 회원 다시 보기'} />
+          <CommonHeader title={'데일리 뷰 다시보기'} />
         ) : (
           <CommonHeader title={'프로필 카드 ( ' + (isCardIndex) + ' / ' + memberSeqList.length +' )'} />
         )}
@@ -559,7 +575,7 @@ export default function ItemMatching(props: Props) {
     ) : (
       <>
         {type == 'DAILY_REPLAY' ? (
-          <CommonHeader title={'스킵 회원 다시 보기'} />
+          <CommonHeader title={'데일리 뷰 다시보기'} />
         ) : (
           <CommonHeader title={'프로필 카드 ( ' + (isCardIndex) + ' / ' + memberSeqList.length +' )'} />
         )}

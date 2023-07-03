@@ -71,6 +71,7 @@ export const UPDATE_MATCH = '/match/updateMatchInfo';
 export const UPDATE_MATCH_STATUS = '/match/updateMatchStatus';
 export const RESOLVE_MATCH = '/match/procMatchMemberHpOpen';
 export const FIRST_MATCH_PASS_ADD = '/match/firstMatchPassAddProc';
+export const DAILY_MATCH_ADD_OPEN = '/match/profileCardAddOpen';
 
 /**
  * ORDER
