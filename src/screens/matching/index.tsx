@@ -452,7 +452,7 @@ export default function Matching(props: Props) {
       show({
         title: '프로필 카드 열어보기',
         content: '새로운 프로필 카드 1개를 오픈 합니다.',
-        subContent: '패스 20',
+        subContent: '패스 x20',
         confirmCallback: function() {
           if(memberBase?.pass_has_amt >= 20) {
             profileCardOpen();
@@ -733,7 +733,7 @@ export default function Matching(props: Props) {
               </SpaceView>
 
 
-              {matchData.add_list?.length > 0 && 
+              {/* {matchData.add_list?.length > 0 && 
                 <SpaceView mt={40} viewStyle={_styles.profileAddArea}>
                   <Text style={_styles.profileAddText}>20 패스로 열어볼 수 있는 프로필 카드가 더 준비되어 있어요.</Text>
 
@@ -741,7 +741,7 @@ export default function Matching(props: Props) {
                     <Text style={_styles.profileAddBtn}>프로필 카드 열어보기</Text>
                   </TouchableOpacity>
                 </SpaceView>
-              }
+              } */}
 
               {matchData.refuse_list.length > 0 &&
                 <SpaceView mt={65} viewStyle={_styles.refuseArea}>
