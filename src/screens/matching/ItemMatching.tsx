@@ -397,14 +397,13 @@ export default function ItemMatching(props: Props) {
     }, []),
   );
 
-
   return (
     data.profile_img_list.length > 0 && isLoad ? (
       <>
         {type == 'DAILY_REPLAY' ? (
           <CommonHeader title={'데일리 뷰 다시보기'} />
         ) : (
-          <CommonHeader title={'프로필 카드 ( ' + (isCardIndex) + ' / ' + memberSeqList.length +' )'} />
+          <CommonHeader title={'프로필 카드 ' + (memberSeqList.length > 1 ? '( ' + (isCardIndex) + ' / ' + memberSeqList.length + ' )' : '')} />
         )}
 
         <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -577,7 +576,7 @@ export default function ItemMatching(props: Props) {
         {type == 'DAILY_REPLAY' ? (
           <CommonHeader title={'데일리 뷰 다시보기'} />
         ) : (
-          <CommonHeader title={'프로필 카드 ( ' + (isCardIndex) + ' / ' + memberSeqList.length +' )'} />
+          <CommonHeader title={'프로필 카드 ' + (memberSeqList.length > 1 ? '( ' + (isCardIndex) + ' / ' + memberSeqList.length + ' )' : '')} />
         )}
 
         {isEmpty ? (

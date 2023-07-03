@@ -471,7 +471,7 @@ export const Storage = (props: Props) => {
                       <Text style={_styles.noDataText}>{item.title}이 없습니다.</Text>
                     </SpaceView>
                   ) : (
-                    <ScrollView showsVerticalScrollIndicator={false} style={{width: '100%', height: height-220}}>
+                    <ScrollView showsVerticalScrollIndicator={false} style={{width: '100%', height: height-250}}>
                       <View style={_styles.imageWarpper}>
                         {item.data.map((i, n) => (
                           <RenderItem item={i} index={n} type={item.type} />
