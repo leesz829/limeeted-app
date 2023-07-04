@@ -511,7 +511,7 @@ export const StorageProfile = (props: Props) => {
         <SpaceView viewStyle={{zIndex: 1}}>
 
           {/* ############################################################## 상단 이미지 영역 */}
-          <VisualImage imgList={data?.profile_img_list} memberData={data?.match_member_info} />
+          <VisualImage imgList={data?.profile_img_list} memberData={data?.match_member_info} isButton={props.route.params.type == 'ZZIM' || props.route.params.type == 'LIVE' ? true : false} />
 
           {/* ######################### 버튼 영역(찜 상태인 경우 활성화) */}
           {(props.route.params.type == 'ZZIM' || props.route.params.type == 'LIVE') &&
