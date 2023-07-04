@@ -419,7 +419,9 @@ export const StorageProfile = (props: Props) => {
       setSincereModalVisible(true);
 
     } else if (activeType == 'pass') {
-      show({
+      navigation.goBack();
+      
+      /* show({
 				title: '매칭 취소',
 				content: '매칭을 취소하고 다음 프로필 카드를 확인 하시겠습니까?' ,
         cancelCallback: function() {
@@ -428,7 +430,7 @@ export const StorageProfile = (props: Props) => {
 				confirmCallback: function() {
           insertMatchInfo(activeType, 0);
 				}
-			});
+			}); */
     }
     
   };

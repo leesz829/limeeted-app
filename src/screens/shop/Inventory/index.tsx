@@ -191,7 +191,7 @@ export default function Inventory() {
                 onPress={() => {useItem(item);}} >
                 <Text style={_styles.buttonText(item?.use_yn == 'N' && item?.be_in_use_yn == 'N')}>
                   {item?.use_yn == 'N' && item?.be_in_use_yn == 'N' && '사용 / 획득'}
-                  {item?.use_yn == 'N' && item?.be_in_use_yn == 'Y' && '0일 후 열림'}
+                  {item?.use_yn == 'N' && item?.be_in_use_yn == 'Y' && item?.subscription_end_day + '일 후 열림'}
                   {item?.use_yn == 'Y' && '사용중('+ item?.subscription_end_day +'일남음)'}
                 </Text>
               </TouchableOpacity>
