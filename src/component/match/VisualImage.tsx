@@ -261,16 +261,17 @@ const _styles = StyleSheet.create({
     return {
       position: 'absolute',
       left: 0,
-      bottom: !isOn ? -width * -0.08 : -width * -0.16,
+      //bottom: !isOn ? -width * -0.08 : -width * -0.16,
+      bottom: 0,
       flexDirection: 'column',
       justifyContent: 'flex-start',
       zIndex: 1,
-      width: '100%'
+      width: '100%',
+      paddingBottom: isOn ? 75 : 35,
     };
   },
   thumnailArea: {
     position: 'absolute',
-    top: 0,
     bottom: 0,
     left: 0,
     right: 0,

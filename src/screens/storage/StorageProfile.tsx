@@ -419,30 +419,35 @@ export const StorageProfile = (props: Props) => {
       setSincereModalVisible(true);
 
     } else if (activeType == 'pass') {
-      navigation.goBack();
+      //navigation.goBack();
       
-      /* show({
-				title: '매칭 취소',
-				content: '매칭을 취소하고 다음 프로필 카드를 확인 하시겠습니까?' ,
+      show({
+				title: '보관함 삭제',
+				content: '매칭을 취소하고 보관함에서 삭제하시겠습니까?',
         cancelCallback: function() {
 
         },
 				confirmCallback: function() {
           insertMatchInfo(activeType, 0);
 				}
-			}); */
+			});
     }
     
   };
 
   // ############################################################ 찐심/관심/거부 저장
   const insertMatchInfo = async (activeType: string, special_level: number) => {
-    const body = {
+    let body = {
       active_type: activeType,
       res_member_seq: data.match_member_info.member_seq,
       special_level: special_level,
-      //match_seq: matchSeq,
     };
+
+    if(props.route.params.type == 'ZZIM') {
+      body.match_seq = matchSeq;
+    }
+
+    console.log('body :::::: ' , body);
 
     try {
       const { success, data } = await regist_match_status(body);
@@ -514,9 +519,11 @@ export const StorageProfile = (props: Props) => {
               <View style={_styles.buttonsContainer}>
 
                 {/* ######### 거절 버튼 */}
-                <TouchableOpacity onPress={() => { popupActive('pass'); }}>
-                  <Image source={ICON.closeCircle} style={_styles.smallButton} />
-                </TouchableOpacity>
+                {props.route.params.type != 'LIVE' &&
+                  <TouchableOpacity onPress={() => { popupActive('pass'); }}>
+                    <Image source={ICON.closeCircle} style={_styles.smallButton} />
+                  </TouchableOpacity>
+                }
 
                 {/* ######### 관심 버튼 */}
                 <TouchableOpacity onPress={() => { popupActive('interest'); }} style={_styles.freePassContainer}>
