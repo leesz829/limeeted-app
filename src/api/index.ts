@@ -3,6 +3,7 @@ import { AxiosRequestConfig, Method } from 'axios';
 import storeKey from 'constants/storeKey';
 import YahooClient from 'utils/client';
 import { api_domain } from 'utils/properties';
+import axios from 'axios';
 
 interface ResponseProps {
   success: boolean;
@@ -54,6 +55,7 @@ export const send = (
             'jwt-token': token,
             //'push-token': push_token ? push_token : '',
             'Content-Type': contentType,
+            ip : await getIpClient(),
           },
         };
       }
@@ -88,6 +90,17 @@ export const send = (
     }
   });
 
+
+  async function getIpClient() {
+    try {
+      const response = await axios.get('https://ipinfo.io/json');
+      return response.data.ip;
+      
+    } catch (error) {
+      console.error(error);
+      return '';
+    }
+  }
 // ######################## 파일 전송
 export const send_file = (
   url: string,
