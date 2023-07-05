@@ -33,6 +33,7 @@ export type StackParamList = {
     type: string;
     phoneNumber: string;
     emailId: string;
+    mrktAgreeYn: string;
   };
   Login01: undefined;
   Policy: undefined;
@@ -44,6 +45,7 @@ export type StackParamList = {
     birthday: string;
     sns_type: string;
     sns_token: string;
+    marketing_agree_yn: string;
   };
   Signup01: {
     memberSeq: Number;

@@ -218,52 +218,9 @@ export const Login01 = () => {
     }
   }
 
-  // ########################################################################## 앱버전 체크
-	async function appVersionCheck() {
-
-		// 구글 플레이 스토어 링크
-		const GOOGLE_PLAY_STORE_LINK = 'market://details?id=com.appsquad.limeeted';
-		const APPLE_PLAY_STORE_LINK = 'https://apps.apple.com/app/6447423352';
-
-		const body = {
-			device_type: Platform.OS == 'android' ? 'AOS' : 'IOS',
-		};
-		const { success, data } = await get_app_version(body);
-
-		if(success) {
-			console.log('data :::::::: ', data);
-			console.log('getCurrentVersion  ::::::: ', VersionCheck.getCurrentVersion());
-			console.log('getCurrentBuildNumber  ::::::: ', VersionCheck.getCurrentBuildNumber());
-
-			const versionName = data?.version_name.toString().replace(/\./g, '').padStart(5, "0");
-			const currentVersion = VersionCheck.getCurrentVersion().toString().replace(/\./g, '').padStart(5, "0");
-			
-			if(
-				(Platform.OS == 'android' && data?.version_code > VersionCheck.getCurrentBuildNumber()) || 
-				(Platform.OS == 'ios' && versionName > currentVersion)
-			) {
-				show({
-					title: '앱 버전 알림',
-					content: '새로운 앱버전이 있습니다.\n업데이트 해주세요.',
-					confirmCallback: function() {
-						if(Platform.OS == 'android') {
-							Linking.openURL(GOOGLE_PLAY_STORE_LINK);
-						} else {
-							Linking.openURL(APPLE_PLAY_STORE_LINK);
-						}
-						
-						RNExitApp.exitApp();
-					},
-				});
-			}
-		}
-	}
-
   // ########################################################################## 초기 실행
   useEffect(() => {
     if(isFocus) {
-      //appVersionCheck();
-
       requestPermissions().then((result) => {
         Geolocation.getCurrentPosition(
           (position) => {

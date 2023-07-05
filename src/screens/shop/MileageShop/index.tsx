@@ -430,8 +430,8 @@ const categories = [
     label: '기프티콘',
     value: 'gifticon',
   },
-  {
+  /* {
     label: '부띠끄',
     value: 'boutique',
-  },
+  }, */
 ];

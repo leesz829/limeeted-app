@@ -35,6 +35,7 @@ export const NiceAuth = (props: Props) => {
 	const memberBase = useUserInfo(); //hooksMember.getBase();
 	const phoneNumber = props.route.params.phoneNumber;
 	const emailId = props.route.params.emailId;
+	const mrktAgreeYn = props.route.params.mrktAgreeYn;
 
 	const [niceWebViewBody, setNiceWebViewBody] = React.useState(String);
 
@@ -46,7 +47,7 @@ export const NiceAuth = (props: Props) => {
 
 	/* web -> native */
 	const webToNative = (data: any) => {
-		console.log('webToNative data :::: ', data);
+		//console.log('webToNative data :::: ', data);
 
 		let dataJson = JSON.parse(data);
 
@@ -81,7 +82,8 @@ export const NiceAuth = (props: Props) => {
 										name: dataJson.name,
 										gender: dataJson.gender,
 										mobile: dataJson.mobile,
-										birthday: dataJson.birthday
+										birthday: dataJson.birthday,
+										marketing_agree_yn: mrktAgreeYn,
 									}
 								}
 							],

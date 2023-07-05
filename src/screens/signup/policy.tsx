@@ -98,6 +98,41 @@ export const Policy = (props: Props) => {
     }
   };
 
+  // 다음 버튼
+  const nextBtn = async () => {
+    if(!termsAgree) {
+      show({
+        content: '이용약관에 동의해 주세요.' ,
+        confirmCallback: function() { }
+      });
+      return;
+    }
+
+    if(!privacyAgree) {
+      show({
+        content: '개인정보처리방침에 동의해 주세요.' ,
+        confirmCallback: function() { }
+      });
+      return;
+    }
+
+    if(!locationAgree) {
+      show({
+        content: '위치기반서비스 이용약관에 동의해 주세요.' ,
+        confirmCallback: function() { }
+      });
+      return;
+    }
+
+    navigation.navigate({
+      name : 'NiceAuth',
+      params : {
+        type : 'JOIN',
+        mrktAgreeYn: mrktAgree ? 'Y' : 'N',
+      }
+    });
+  }
+
   return (
     <>
       <CommonHeader title={'서비스 정책'} />
@@ -226,36 +261,7 @@ export const Policy = (props: Props) => {
             height={60}
             borderRadius={1}
             onPress={() => {
-              if(!termsAgree) {
-                show({
-                  content: '이용약관에 동의해 주세요.' ,
-                  confirmCallback: function() { }
-                });
-                return;
-              }
-
-              if(!privacyAgree) {
-                show({
-                  content: '개인정보처리방침에 동의해 주세요.' ,
-                  confirmCallback: function() { }
-                });
-                return;
-              }
-
-              if(!locationAgree) {
-                show({
-                  content: '위치기반서비스 이용약관에 동의해 주세요.' ,
-                  confirmCallback: function() { }
-                });
-                return;
-              }
-
-              navigation.navigate({
-                name : 'NiceAuth',
-                params : {
-                  type : 'JOIN'
-                }
-              });
+              nextBtn();
             }}
           />
         </SpaceView>

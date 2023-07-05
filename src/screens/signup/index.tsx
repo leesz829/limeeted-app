@@ -50,6 +50,7 @@ export const Signup00 = (props: Props) => {
   const [birthday, setBirthday] = React.useState(props.route.params?.birthday);
   const [snsType, setSnsType] = React.useState(props.route.params?.sns_type);
   const [snsToken, setSnsToken] = React.useState(props.route.params?.sns_token);
+  const [mrktAgreeYn, setMrktAgreeYn] = React.useState(props.route.params?.marketing_agree_yn);
 
   // 성별 항목 목록
   const genderItemList = [
@@ -112,6 +113,7 @@ export const Signup00 = (props: Props) => {
       snsType: snsType,
       snsToken: snsToken,
       device_gubun: Platform.OS,
+      marketing_agree_yn: mrktAgreeYn,
     };
 
     try {
