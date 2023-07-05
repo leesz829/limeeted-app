@@ -14,6 +14,7 @@ import { api_domain } from 'utils/properties';
 import { order_auct } from 'api/models';
 import { usePopup } from 'Context';
 import { ROUTES, STACK } from 'constants/routes';
+import SpaceView from 'component/SpaceView';
 
 
 
@@ -38,23 +39,30 @@ export default function AuctionDetail() {
   const [data, setData] = useState(null);
   const me = useUserInfo();
 
-  const images = data?.images?.filter((e) => e.represent_yn == 'Y')?.map((img) => {
+  /* const images = data?.images?.filter((e) => e.represent_yn == 'Y')?.map((img) => {
+    const imagePath =  findSourcePath(img?.file_path + img?.file_name);
+    return imagePath;
+  }); */
+
+  const images = data?.images?.map((img) => {
     const imagePath =  findSourcePath(img?.file_path + img?.file_name);
     return imagePath;
   });
 
-  useEffect(() => {
-    async function fetch() {
-      const body = { prod_seq, modify_seq };
-      const { success, data } = await get_auct_detail(body);
-      if (success) {
-        setData({
-          images: data?.prod_img_list,
-          ...data?.prod_detail,
-          auct_list: data?.auct_list,
-        });
-      }
+  const fetch = async () => {
+    const body = { prod_seq, modify_seq };
+    const { success, data } = await get_auct_detail(body);
+
+    if (success) {
+      setData({
+        images: data?.prod_img_list,
+        ...data?.prod_detail,
+        auct_list: data?.auct_list,
+      });
     }
+  }
+
+  useEffect(() => {
     fetch();
   }, []);
 
@@ -112,8 +120,8 @@ export default function AuctionDetail() {
 
 
   return (
-    <View style={styles.root}>
-      <CommonHeader title="경매" />
+    <View style={_styles.root}>
+      <CommonHeader title="입찰하기" />
 
       <FlatList
         data={data?.auct_list}
@@ -124,68 +132,74 @@ export default function AuctionDetail() {
             {images != null ? (
               <ViewPager
                 data={images}
-                style={styles.pagerView}
-                renderItem={() => <Image style={styles.itemImages} />}
+                style={_styles.pagerView}
+                renderItem={(data) => <Image source={data} style={_styles.itemImages} />}
               />
             ) : null}
             
-            <View style={styles.infoContainer}>
-              <Text style={styles.brandText}>{data?.brand_name}</Text>
-              <Text style={styles.giftName}>{data?.prod_name}</Text>
-              <View style={styles.rowBetween}>
-                <Text style={styles.inventory}></Text>
-                <View style={styles.rowCenter}>
-                  <Text style={styles.price}>{data?.asking_price}</Text>
-                  <Image source={ICON.crown} style={styles.crown} />
+            <View style={_styles.infoContainer}>
+              <Text style={_styles.brandText}>{data?.brand_name}</Text>
+              <Text style={_styles.giftName}>{data?.prod_name}</Text>
+              <View style={_styles.rowBetween}>
+                <Text style={_styles.inventory}></Text>
+                <View style={_styles.rowCenter}>
+                  <Text style={_styles.price}>{data?.asking_price}</Text>
+                  <Image source={ICON.crown} style={_styles.crown} />
                 </View>
               </View>
-              <View style={styles.spacer} />
-              <View style={styles.currency}>
+              <View style={_styles.spacer} />
+              <View style={_styles.currency}>
                 <View>
-                  <Text style={styles.currencyText}>현재 나의 보유 리밋</Text>
+                  <Text style={_styles.currencyText}>현재 나의 보유 리밋</Text>
                 </View>
                 <View style={{ flexDirection: 'row' }}>
-                  <Image style={styles.roundCrown} source={ICON.roundCrown} />
-                  <Text style={styles.currenyAmount}>
+                  <Image style={_styles.roundCrown} source={ICON.roundCrown} />
+                  <Text style={_styles.currenyAmount}>
                     {CommaFormat(me?.mileage_point)}
                   </Text>
                 </View>
               </View>
-              <Text style={styles.duration}>
-                경매기간 : {dayjs(data?.buy_start_dt).format('MM/DD')} ~{' '}
-                {dayjs(data?.buy_end_dt).format('MM/DD')}
-                <Text style={styles.durationSub}>
-                  {getRemainTime(data?.buy_end_dt, true)}
+
+              <SpaceView mt={15} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                <Text style={_styles.duration}>
+                  경매기간 : {dayjs(data?.buy_start_dt).format('MM/DD')} ~{' '}
+                  {dayjs(data?.buy_end_dt).format('MM/DD')}
                 </Text>
-              </Text>
-              <View style={styles.dashline} />
-              <View style={styles.tableHeader}>
-                <Text style={styles.tableHeaderText}>현재 입찰 상황</Text>
+                <Text style={_styles.durationSub}>
+                  ({getRemainTime(data?.buy_end_dt, true)})
+                </Text>
+              </SpaceView>
+
+              <View style={_styles.dashline} />
+
+              <View style={_styles.tableHeader}>
+                <Text style={_styles.tableHeaderText}>현재 입찰 상황</Text>
               </View>
 
-              <View style={styles.rowStyle}>
-                <Text style={styles.rowTextLeft}>상황</Text>
-                <Text style={styles.rowTextCenter}>입찰가</Text>
-                <Text style={styles.rowTextRight}>상태</Text>
+              <View style={_styles.rowStyle}>
+                <Text style={_styles.rowTextLeft}>상황</Text>
+                <Text style={_styles.rowTextCenter}>입찰가</Text>
+                <Text style={_styles.rowTextRight}>상태</Text>
               </View>
+
             </View>
           </>
         }
         renderItem={({ item, index }) => (
-          <View style={styles.itemStyle}>
+          <View style={_styles.itemStyle}>
             <Text
               style={
                 index === 0
-                  ? styles.ItemRowTextLeftPurple
-                  : styles.ItemRowTextLeft
+                  ? _styles.ItemRowTextLeftPurple
+                  : _styles.ItemRowTextLeft
               }
             >
               {indextToText(index)}
             </Text>
-            <Text style={styles.ItemRowTextCenter}>
+            <Text style={_styles.ItemRowTextCenter}>
               {CommaFormat(item?.bid_price)}원
             </Text>
-            <Text style={styles.ItemRowTextRight}>
+            <Text style={_styles.ItemRowTextRight}>
               {index === 0 && '20분 후 낙찰'}
             </Text>
           </View>
@@ -199,25 +213,25 @@ export default function AuctionDetail() {
           },
         ]}
       >
-        <View style={styles.rowAround}>
-          <TouchableOpacity style={styles.puchageButton} onPress={() => productPurchase('Y')}>
-            <Text style={styles.puchageText}>구매</Text>
+        <View style={_styles.rowAround}>
+          <TouchableOpacity style={_styles.puchageButton} onPress={() => productPurchase('Y')}>
+            <Text style={_styles.puchageText}>구매</Text>
             <Seperator />
             <View>
-              <Text style={styles.priceText}>
+              <Text style={_styles.priceText}>
                 {CommaFormat(data?.now_buy_price)}
               </Text>
-              <Text style={styles.additionalText}>즉시구매가</Text>
+              <Text style={_styles.additionalText}>즉시구매가</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.bidButton} onPress={() => productPurchase('N')}>
-            <Text style={styles.puchageText}>입찰</Text>
+          <TouchableOpacity style={_styles.bidButton} onPress={() => productPurchase('N')}>
+            <Text style={_styles.puchageText}>입찰</Text>
             <Seperator />
             <View>
-              <Text style={styles.priceText}>
+              <Text style={_styles.priceText}>
                 {CommaFormat(data?.asking_price)}
               </Text>
-              <Text style={styles.additionalText}>입찰대기10분</Text>
+              <Text style={_styles.additionalText}>입찰대기10분</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -244,7 +258,7 @@ const Seperator = () => (
 ############### Style 영역
 ################################################################################################################ */}
 
-const styles = StyleSheet.create({
+const _styles = StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: 'white',
@@ -337,6 +351,7 @@ const styles = StyleSheet.create({
   crown: {
     width: 17.67,
     height: 11.73,
+    marginLeft: 5,
   },
   spacer: {
     width: '100%',
@@ -379,21 +394,19 @@ const styles = StyleSheet.create({
     color: '#ffffff',
   },
   duration: {
-    marginTop: 18.5,
     fontFamily: 'AppleSDGothicNeoM00',
     fontSize: 14,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0,
     textAlign: 'left',
     color: '#7b7b7b',
     marginLeft: 5,
   },
   durationSub: {
+    fontFamily: 'AppleSDGothicNeoM00',
     color: '#d3d3d3',
+    marginLeft: 3,
   },
   dashline: {
-    height: 2,
+    height: 1,
     borderWidth: 1,
     borderColor: '#e3e3e3',
     borderStyle: 'dashed',

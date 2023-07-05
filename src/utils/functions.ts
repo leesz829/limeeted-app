@@ -87,7 +87,7 @@ export const getRemainTime = (time, isOpen) => {
 
   if (!remail) return '';
   if (isOpen) {
-    return `${remail}남음`;
+    return `${remail}후 닫힘`;
   }
   return `${remail}후 열림`;
 };

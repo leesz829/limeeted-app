@@ -13,6 +13,8 @@ import { CommaFormat, getRemainTime } from 'utils/functions';
 import { usePopup } from 'Context';
 import { useDispatch } from 'react-redux';
 import { myProfile } from 'redux/reducers/authReducer';
+import { CommonLoading } from 'component/CommonLoading';
+import SpaceView from 'component/SpaceView';
 
 
 const DATA = [
@@ -38,22 +40,29 @@ export default function MileageShop() {
   const [tab, setTab] = useState(categories[0]);
   const [data, setData] = useState(DATA);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const dispatch = useDispatch();
 
   async function fetch() {
-    if (tab.value === 'boutique') {
+    setIsLoading(true);
+
+    if(tab.value === 'boutique') {
 
       // 경매 상품 목록 조회
       const { success: sa, data: ad } = await get_auct_product();
       if (sa) {
         setData(ad?.prod_list);
+        setIsLoading(false);
       }
+
     } else {
 
       // 재고 상품 목록 조회
       const { success: sp, data: pd } = await get_product_list();
       if (sp) {
         setData(pd?.prod_list);
+        setIsLoading(false);
       }
     }
   };
@@ -73,9 +82,11 @@ export default function MileageShop() {
 
   return (
     <>
-       <CommonHeader title="리밋샵" />
+      {isLoading && <CommonLoading />}
 
-      <View style={styles.root}>
+      <CommonHeader title="리밋샵" />
+
+      <View style={_styles.root}>
         <ListHeaderComponent onPressTab={onPressTab} tab={tab} />
 
         <SectionGrid
@@ -105,10 +116,10 @@ const RenderCategory = ({ onPressTab, tab }) => {
     <TouchableOpacity
       key={index}
       activeOpacity={0.8}
-      style={styles.categoryBorder(item.value === tab.value)}
+      style={_styles.categoryBorder(item.value === tab.value)}
       onPress={() => onPressTab(item)}>
 
-      <Text style={styles.categoryText(item.value === tab.value)}>
+      <Text style={_styles.categoryText(item.value === tab.value)}>
         {item?.label}
       </Text>
     </TouchableOpacity>
@@ -124,7 +135,7 @@ function ListHeaderComponent({ onPressTab, tab }) {
           <BannerPannel />
         </View>
       </View>
-      <View style={styles.categoriesContainer}>
+      <View style={_styles.categoriesContainer}>
         <RenderCategory onPressTab={onPressTab} tab={tab} />
       </View>
     </View>
@@ -154,7 +165,10 @@ const RenderItem = ({ item, type, callFn }) => {
     } else {
       navigation.navigate(STACK.COMMON, {
         screen: ROUTES.Auction_Detail,
-        params: { prod_seq: item?.prod_seq, modify_seq: item?.modify_seq },
+        params: {
+          prod_seq: item?.prod_seq, 
+          modify_seq: item?.modify_seq 
+        },
       });
     }
   };
@@ -224,43 +238,56 @@ const RenderItem = ({ item, type, callFn }) => {
 
   return (
     <>
-      <TouchableOpacity
-        activeOpacity={0.8}
-        style={styles.renderItem}
-        onPress={() => onPressItem(item)}>
-
+      <TouchableOpacity activeOpacity={0.8} style={_styles.renderItem} onPress={() => onPressItem(item)}>
         <View style={{ flexDirection: 'column' }}>
-          <Image style={styles.thumb} source={imagePath} />
+
+          <SpaceView viewStyle={_styles.thumbArea}>
+            <Image style={_styles.thumb} source={imagePath} resizeMode={'cover'} />
+          </SpaceView>
 
           <View style={{ paddingHorizontal: 3 }}>
-            <Text style={styles.brandName}>{item?.brand_name}</Text>
-            <Text style={styles.productName}>{item?.prod_name}</Text>
-            <View style={[styles.textContainer, { marginTop: 5, justifyContent: 'flex-start' }]}>
-              <Text style={styles.price}>{CommaFormat(item?.buy_price)}</Text>
-              <Image source={ICON.crown} style={styles.crown} />
-              {type !== 'gifticon' && (
-                <Text style={styles.hintText}>즉시 구매가</Text>
-              )}
-            </View>
-            {type === 'gifticon' ? (
-              <View style={styles.textContainer}>
-                {
-                  item.prod_cnt > 0 ?
-                    <Text style={styles.hintText}>{item.prod_cnt}개 남음 ({item.buy_cnt}/{item.base_buy_sanction_cnt}구매)</Text> :
-                    <Text style={styles.soldOutText}>품절</Text>
-                }
+            <Text style={_styles.brandName}>{item?.brand_name}</Text>
+            <Text style={_styles.productName}>{item?.prod_name}</Text>
+
+            <SpaceView mt={5}>
+              <View style={[_styles.textContainer]}>
+                <View style={{flexDirection: 'row'}}>
+                  <Text style={_styles.price}>{type === 'gifticon' ? CommaFormat(item?.buy_price) : CommaFormat(item?.now_buy_price)}</Text>
+                  <Image source={ICON.crown} style={_styles.crown} />
+                </View>
                 
-                {/* <Text style={styles.hintText}>6/2 열림</Text> */}
-                <Text style={styles.price}></Text>
+                {type !== 'gifticon' && (
+                  <View>
+                    <Text style={_styles.hintText}>즉시구매가</Text>
+                  </View>
+                )}
               </View>
-            ) : (
-              <View style={styles.textContainer}>
-                <Text style={styles.price}>50,000</Text>
-                <Text style={styles.hintText}>입찰가</Text>
-              </View>
-            )}
+              {type === 'gifticon' ? (
+                <View style={_styles.textContainer}>
+                  {
+                    item.prod_cnt > 0 ?
+                      <Text style={_styles.hintText}>{item.prod_cnt}개 남음 ({item.buy_cnt}/{item.base_buy_sanction_cnt}구매)</Text> :
+                      <Text style={_styles.soldOutText}>품절</Text>
+                  }
+                  
+                  {/* <Text style={styles.hintText}>6/2 열림</Text> */}
+                  <Text style={_styles.price}></Text>
+                </View>
+              ) : (
+                <View style={_styles.textContainer}>
+                  <View style={{flexDirection: 'row'}}>
+                    <Text style={_styles.price}>{CommaFormat(item?.req_bid_price)}</Text>
+                    <Image source={ICON.crown} style={_styles.crown} />
+                  </View>
+                  <View>
+                    <Text style={_styles.hintText}>입찰가</Text>
+                  </View>
+                </View>
+              )}
+            </SpaceView>
           </View>
-          <Text style={styles.remainText}>{remainTime}</Text>
+
+          <Text style={_styles.remainText}>{remainTime}</Text>
         </View>
 
         {/* ####################### 상품 팝업 */}
@@ -292,30 +319,36 @@ const renderSectionHeader = (props) => {
   }
 };
 
-const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: 'white', paddingHorizontal: 0 },
+const _styles = StyleSheet.create({
+  root: { 
+    flex: 1, 
+    backgroundColor: 'white', 
+    paddingHorizontal: 0,
+  },
   categoriesContainer: {
     marginTop: 160,
     marginBottom: 10,
     flexDirection: `row`,
     alignItems: `center`,
     justifyContent: 'flex-start',
-    paddingHorizontal: 10
+    paddingHorizontal: 20
   },
   categoryBorder: (isSelected: boolean) => {
     return {
+      width: 80,
       paddingVertical: 9,
-      paddingHorizontal: 15,
       borderWidth: 1,
-      borderColor: isSelected ? Color.primary : Color.grayAAAA,
+      borderColor: isSelected ? Color.primary : '#ECECEC',
       borderRadius: 9,
-      marginLeft: 8,
+      marginRight: 8,
     };
   },
   categoryText: (isSelected: boolean) => {
     return {
+      fontFamily: 'AppleSDGothicNeoM00',
       fontSize: 14,
-      color: isSelected ? Color.primary : Color.grayAAAA,
+      color: isSelected ? Color.primary : '#A5A5A5',
+      textAlign: 'center',
     };
   },
   renderItem: {
@@ -323,9 +356,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
     flex: 1,
   },
+  thumbArea: {
+    
+  },
   thumb: {
-    width: (Dimensions.get('window').width - 72) / 3,
-    height: (Dimensions.get('window').width - 72) / 3,
+    width: (Dimensions.get('window').width - 75) / 3,
+    height: (Dimensions.get('window').width - 75) / 3,
     borderRadius: 5,
     backgroundColor: '#ffffff',
     borderWidth: 1,
@@ -333,8 +369,6 @@ const styles = StyleSheet.create({
   },
   brandName: {
     fontSize: 10,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     fontFamily: 'AppleSDGothicNeoM00',
     letterSpacing: 0,
     textAlign: 'left',
@@ -343,8 +377,6 @@ const styles = StyleSheet.create({
   },
   productName: {
     fontSize: 13,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     fontFamily: 'AppleSDGothicNeoM00',
     letterSpacing: 0,
     textAlign: 'left',
@@ -354,12 +386,12 @@ const styles = StyleSheet.create({
   textContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
   price: {
-    // fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 13,
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 12,
     fontWeight: 'bold',
-    fontStyle: 'normal',
     letterSpacing: 0,
     textAlign: 'left',
     color: '#363636',
@@ -367,8 +399,6 @@ const styles = StyleSheet.create({
   hintText: {
     fontFamily: 'AppleSDGothicNeoM00',
     fontSize: 10,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     letterSpacing: 0,
     textAlign: 'left',
     color: '#d3d3d3',
@@ -376,8 +406,6 @@ const styles = StyleSheet.create({
   soldOutText: {
     fontFamily: 'AppleSDGothicNeoM00',
     fontSize: 10,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     letterSpacing: 0,
     textAlign: 'left',
     color: '#FE0456',
@@ -393,7 +421,7 @@ const styles = StyleSheet.create({
     width: 12.7,
     height: 8.43,
     marginTop: 5,
-    marginLeft: 2,
+    marginLeft: 4,
   },
 });
 
@@ -402,8 +430,8 @@ const categories = [
     label: '기프티콘',
     value: 'gifticon',
   },
-  /* {
+  {
     label: '부띠끄',
     value: 'boutique',
-  }, */
+  },
 ];

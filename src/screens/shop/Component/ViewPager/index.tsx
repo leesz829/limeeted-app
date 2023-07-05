@@ -55,31 +55,32 @@ export default function ViewPager({ style, data, renderItem }) {
   );
 
   return (
-    <SafeAreaView style={style || styles.flex}>
+    <SafeAreaView style={style || _styles.flex}>
       <AnimatedPagerView
         initialPage={0}
         ref={ref}
-        style={styles.PagerView}
-        onPageScroll={onPageScroll}
-      >
+        style={_styles.PagerView}
+        onPageScroll={onPageScroll}>
+        
         {data?.map((item, index) => renderItem({uri: item.uri, index: index}))}
       </AnimatedPagerView>
       
       <ExpandingDot
         data={data}
-        expandingDotWidth={20}
+        expandingDotWidth={18}
         //@ts-ignore
         scrollX={scrollX}
-        inActiveDotOpacity={0.6}
+        inActiveDotOpacity={1}
+        inActiveDotColor={'#EEEEEE'}
+        activeDotColor={'#545454'}
         dotStyle={{
-          width: 10,
-          height: 10,
-          backgroundColor: Color.primary,
-          borderRadius: 5,
-          marginHorizontal: 5,
+          width: 13,
+          height: 6,
+          borderRadius: 50,
+          marginHorizontal: 2,
         }}
         containerStyle={{
-          top: 185,
+          top: 230,
         }}
       />
       {/* <View style={styles.dotsContainer}>
@@ -124,7 +125,7 @@ export default function ViewPager({ style, data, renderItem }) {
   );
 }
 
-const styles = StyleSheet.create({
+const _styles = StyleSheet.create({
   flex: {
     flex: 1,
     // backgroundColor: 'red',

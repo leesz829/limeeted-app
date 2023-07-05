@@ -393,7 +393,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
               <ViewPager
                 data={images}
                 style={modalStyleProduct.pagerView}
-                renderItem={(data) => <Image key={data.index} source={data} style={modalStyleProduct.itemImages} />} 
+                renderItem={(data) => <Image key={data.index} source={data} style={modalStyleProduct.itemImages} resizeMode={'contain'} />} 
               />
             </View>
           </View>
@@ -544,7 +544,7 @@ const modalStyleProduct = StyleSheet.create({
     width: Dimensions.get('window').width - 150,
     height: 169,
     borderRadius: 10,
-    backgroundColor: '#727272',
+    backgroundColor: '#ffffff',
   },
   dot: {
     width: 9,
