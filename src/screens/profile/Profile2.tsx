@@ -31,6 +31,7 @@ import { setPartialPrincipal } from 'redux/reducers/authReducer';
 import { useDispatch } from 'react-redux';
 import { STACK } from 'constants/routes';
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
+import { isEmptyData } from 'utils/functions';
 
 
 /* ################################################################################################################
@@ -194,6 +195,10 @@ export const Profile2 = (props: Props) => {
 
   // ############################################# 인터뷰 정보 저장 API 호출
   const saveAPI = async (dataList: [], callbackFn : Function) => {
+    if(!isEmptyData(target?.answer)) {
+      show({content: '답변을 입력해 주세요.'});
+      return;
+    }
 
     show({ 
       content: '저장하시겠습니까?' ,
@@ -236,7 +241,6 @@ export const Profile2 = (props: Props) => {
     };
     try {
       const { success, data } = await get_member_interview(body);
-      console.log('data :::::::: ', data);
       if(success) {
         if(data.result_code == '0000') {
           setInterview(data.interview_list);

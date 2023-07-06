@@ -66,6 +66,8 @@ export const Storage = (props: Props) => {
 
   const memberSeq = useMemberseq(); // 회원번호
 
+  const tabScrollRef = useRef();
+
   const [btnStatus, setBtnStatus] = useState(true);
   const [btnStatus1, setBtnStatus1] = useState(true);
   const [btnStatus2, setBtnStatus2] = useState(true);
@@ -381,7 +383,6 @@ export const Storage = (props: Props) => {
     ref?.current?.snapToItem(index);
   };
 
-
   // 이미지 스크롤 처리
   const handleScroll = (event) => {
     let contentOffset = event.nativeEvent.contentOffset;
@@ -389,13 +390,13 @@ export const Storage = (props: Props) => {
     setCurrentIndex(index);
   };
 
-  useFocusEffect(
-    React.useCallback(() => {
-      return () => {
-        //onPressDot(0);
-      };
-    }, []),
-  );
+  React.useEffect(() => {
+    if(currentIndex == 0) {
+      tabScrollRef.current.scrollTo({x:0, animated:true});
+    } else if(currentIndex > 2) {
+      tabScrollRef.current.scrollToEnd({animated: true});
+    }
+  }, [currentIndex]);
 
   return (
     <>
@@ -410,8 +411,13 @@ export const Storage = (props: Props) => {
           <TopNavigation currentPath={''} />
         )}
 
-        <SpaceView mt={30} mb={6}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={_styles.topContainer}>
+        <SpaceView mt={10} mb={6}>
+          <ScrollView 
+            horizontal 
+            ref={tabScrollRef}
+            showsHorizontalScrollIndicator={false} 
+            style={_styles.topContainer}>
+
             <View style={_styles.dotContainer}>
               {tabs.map((item, index) => (
                 <>

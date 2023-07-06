@@ -32,6 +32,7 @@ import { ICON } from 'utils/imageUtils';
 import { Modalize } from 'react-native-modalize';
 import { SUCCESS } from 'constants/reusltcode';
 import { isEmptyData } from 'utils/functions';
+import { CommonLoading } from 'component/CommonLoading';
 
 
 /* ################################################################################################################
@@ -51,6 +52,7 @@ export const Introduce = (props: Props) => {
   const dispatch = useDispatch();
   const { show } = usePopup();  // 공통 팝업
   const { width, height } = Dimensions.get('window');
+  const [isLoading, setIsLoading] = useState(false);
 
   const memberBase = useUserInfo(); // 회원 기본정보
 
@@ -175,6 +177,7 @@ export const Introduce = (props: Props) => {
       group_code: value
     };
     try {
+      setIsLoading(true);
 			const { success, data } = await get_common_code(body);
 			if(success) {
 				switch (data.result_code) {
@@ -212,7 +215,7 @@ export const Introduce = (props: Props) => {
 		} catch (error) {
 			console.log(error);
 		} finally {
-			
+			setIsLoading(false);
 		}
 
   };
@@ -223,6 +226,7 @@ export const Introduce = (props: Props) => {
       group_code: group_code
     };
     try {
+      setIsLoading(true);
 			const { success, data } = await get_member_introduce(body);
 			if(success) {
 				switch (data.result_code) {
@@ -274,9 +278,8 @@ export const Introduce = (props: Props) => {
 		} catch (error) {
 			console.log(error);
 		} finally {
-			
+			setIsLoading(false);
 		}
-
   };
 
   // ############################################################ 내 소개하기 저장
@@ -306,9 +309,10 @@ export const Introduce = (props: Props) => {
 				case SUCCESS:
           dispatch(myProfile());
           show({ content: '저장되었습니다.' });
-          /* navigation.navigate(STACK.TAB, {
+          navigation.navigate(STACK.TAB, {
             screen: 'Roby',
-          }); */					
+          });
+          //navigation.goBack();
 					break;
 				default:
 					show({
@@ -368,6 +372,8 @@ export const Introduce = (props: Props) => {
 
   return (
     <>
+      {isLoading && <CommonLoading />}
+
       <CommonHeader title={'내 소개하기'} />
       <ScrollView style={styles.scrollContainerAll}>
         <View style={commonStyle.paddingHorizontal20}>
@@ -444,7 +450,6 @@ export const Introduce = (props: Props) => {
                 items={busiGrpCdList}
                 selectValue={business}
                 callbackFn={busiCdCallbackFn}
-                
               />
             </View>
 

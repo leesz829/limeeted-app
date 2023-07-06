@@ -539,7 +539,6 @@ export default function Matching(props: Props) {
     }, []),
   );
 
-
   return (
     matchData.profile_img_list.length > 0 && isLoad ? (
       <>
@@ -710,7 +709,6 @@ export default function Matching(props: Props) {
           closeModal={sincereCloseModal}
           confirmFunc={sincereSend}
         />
-
       </>
     ) : (
       <>
@@ -1163,7 +1161,6 @@ const _styles = StyleSheet.create({
     height: 48,
     borderRadius: 80,
   },
-
 });
 
 

@@ -40,23 +40,23 @@ export default function SincerePopup({ isVisible, closeModal, confirmFunc }: Pro
   const datas = [
     {
       level: 1,
-      title: 'LV.1 찐심 2개'
+      title: 'LV.1 로얄패스 2개'
     },
     {
       level: 2,
-      title: 'LV.2 찐심 3개'
+      title: 'LV.2 로얄패스 3개'
     },
     {
       level: 3,
-      title: 'LV.3 찐심 4개'
+      title: 'LV.3 로얄패스 4개'
     },
     {
       level: 4,
-      title: 'LV.4 찐심 9개'
+      title: 'LV.4 로얄패스 9개'
     },
     {
       level: 5,
-      title: 'LV.5 찐심 13개'
+      title: 'LV.5 로얄패스 13개'
     },
   ];
 
@@ -108,6 +108,7 @@ export default function SincerePopup({ isVisible, closeModal, confirmFunc }: Pro
                   onSnapToItem={setCurrentIndex}
                   sliderWidth={width * 0.6}
                   itemWidth={width * 0.6}
+                  pagingEnabled
                   renderItem={({item, index}) => {
                     return (
                       <View style={_styles.passStyle}>

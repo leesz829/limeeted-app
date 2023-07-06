@@ -14,8 +14,9 @@ import { Image, ScrollView, StyleSheet, View, Platform } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import * as properties from 'utils/properties';
 import { usePopup } from 'Context';
-import { SUCCESS } from 'constants/reusltcode';
+import { SUCCESS, MEMBER_EMAIL_DUP } from 'constants/reusltcode';
 import { regist_member_base_info } from 'api/models';
+import { ROUTES } from 'constants/routes';
 
 
 interface Props {
@@ -122,16 +123,32 @@ export const Signup00 = (props: Props) => {
       if(success) {
         switch (data.result_code) {
           case SUCCESS:
-            navigation.navigate('Signup01', {
+            /* navigation.navigate('Signup01', {
               memberSeq: data.member_seq,
               gender: gender
-            });
+            }); */
+
+            navigation.reset({
+							routes: [
+								{
+									name : ROUTES.LOGIN01
+								}
+								, {
+									name: ROUTES.SIGNUP01
+									, params: {
+										memberSeq: data.member_seq,
+                    gender: gender,
+									}
+								}
+							]
+						});
+
+            break;
+          case MEMBER_EMAIL_DUP:
+            show({ content: '이미 사용하고 있는 이메일 입니다.' });
             break;
           default:
-            show({
-              content: '오류입니다. 관리자에게 문의해주세요.' ,
-              confirmCallback: function() {}
-            });
+            show({ content: '오류입니다. 관리자에게 문의해주세요.' });
             break;
         }
        

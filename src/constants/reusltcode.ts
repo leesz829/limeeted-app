@@ -12,6 +12,7 @@ export const LOGIN_BLOCK = "0006";     // 신고회원
 export const PASSWORD_ERROR = "0010";     // 패스워드 틀림
 
 export const MEMBER_NICKNAME_DUP = "8006";  // 닉네임 중복
+export const MEMBER_EMAIL_DUP = "8007";  // 이메일 중복
 
 
 
@@ -27,4 +28,5 @@ export default {
   SANCTIONS,
   PASSWORD_ERROR,
   MEMBER_NICKNAME_DUP,
+  MEMBER_EMAIL_DUP,
 };
