@@ -391,7 +391,7 @@ export const Storage = (props: Props) => {
   };
 
   React.useEffect(() => {
-    if(currentIndex == 0) {
+    if(currentIndex == 0 || currentIndex == 1) {
       tabScrollRef.current.scrollTo({x:0, animated:true});
     } else if(currentIndex > 2) {
       tabScrollRef.current.scrollToEnd({animated: true});
