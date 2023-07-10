@@ -731,5 +731,5 @@ export async function set_member_phone_book(body: {
 export async function get_app_version(body: {
   device_type: string;
 }) {
-  return send(GET_APP_VERSION, 'POST', body, false, false);
+  return send(GET_APP_VERSION, 'POST', body, true, false);
 }
