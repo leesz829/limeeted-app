@@ -204,10 +204,12 @@ export default function VisualImage({ imgList, memberData, isButton }) {
             <Image
               source={url}
               style={{
+                flex: 1,
                 width: width,
                 height: height * 0.7,
                 borderRadius: 20,
               }}
+              resizeMode={'cover'}
             />
             <Watermark value={memberBase?.phone_number}/>
           </View>

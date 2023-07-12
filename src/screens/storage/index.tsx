@@ -472,21 +472,25 @@ export const Storage = (props: Props) => {
             renderItem={({item, index}) => {
               return (
                 <>
-                  {item.data.length == 0 ? (
-                    <SpaceView viewStyle={_styles.noData}>
-                      <Text style={_styles.noDataText}>{item.title}이 없습니다.</Text>
-                    </SpaceView>
-                  ) : (
-                    <ScrollView showsVerticalScrollIndicator={false} style={{width: '100%', height: height-250}}>
-                      <View style={_styles.imageWarpper}>
-                        {item.data.map((i, n) => (
-                          <RenderItem item={i} index={n} type={item.type} />
-                        ))}
-                      </View>
+                  <View key={index}>
+                    {item.data.length == 0 ? (
+                      <SpaceView viewStyle={_styles.noData}>
+                        <Text style={_styles.noDataText}>{item.title}이 없습니다.</Text>
+                      </SpaceView>
+                    ) : (
+                      <ScrollView showsVerticalScrollIndicator={false} style={{width: '100%', height: height-250}}>
+                        <View style={_styles.imageWarpper}>
+                          {item.data.map((i, n) => (
+                            <View key={n}>
+                              <RenderItem item={i} index={n} type={item.type} />
+                            </View>
+                          ))}
+                        </View>
 
-                      <View style={{ height: 50 }} />
-                    </ScrollView>
-                  )}
+                        <View style={{ height: 50 }} />
+                      </ScrollView>
+                    )}
+                  </View>
                 </>
               )
             }}
