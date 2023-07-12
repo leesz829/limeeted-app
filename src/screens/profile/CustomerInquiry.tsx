@@ -40,6 +40,9 @@ export const CustomerInquiry = (props : Props) => {
 	const jwtToken  = hooksMember.getJwtToken();   // 토큰
 	const memberSeq = hooksMember.getMemberSeq(); // 회원번호
 
+	// 클릭 여부
+	const [isClickable, setIsClickable] = useState(true);
+
 	const [comfirmModalVisible, setComfirmModalVisible] = useState(false);
 	
 	// ################### 팝업 관련 #####################
@@ -47,55 +50,49 @@ export const CustomerInquiry = (props : Props) => {
 
 	 // 문의 저장
 	const insertCustomerInquiry = async () => {
+
+		// 중복 클릭 방지 설정
+		if(isClickable) {
+			setIsClickable(false);
+
+			try {
+				if(title.length < 10 || title.length > 30) {
+					show({ content: '제목은 10~30글자 이내로 입력해 주셔야해요.' });
+					return;
+				}
 		
-		if(title.length < 10 || title.length > 30) {
-			show({
-				title: '알림',
-				content: '제목은 10~30글자 이내로 입력해 주셔야해요.' ,
-				confirmCallback: function() {
+				const body = {
+					title: title,
+					contents: contents
+				};
 
+				const { success, data } = await insert_member_inquiry(body);
+				if(success) {
+					switch (data.result_code) {
+						case SUCCESS:
+							show({
+								title: '문의 완료',
+								content: '문의하신 내용이 접수되었습니다.\n문의 내용은 관리자 확인 후 우편함으로\n답변드릴 예정입니다.' ,
+								confirmCallback: function() {
+									navigation.navigate(STACK.TAB, {
+										screen: 'Roby',
+									});
+								}
+							});
+							break;
+						default:
+							show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+							break;
+					}
+				} else {
+					show({ content: '오류입니다. 관리자에게 문의해주세요.' });
 				}
-			});
-
-			return;
-		}
-
-		const body = {
-			title: title
-			, contents: contents
-		};
-		try {
-			const { success, data } = await insert_member_inquiry(body);
-			if(success) {
-				switch (data.result_code) {
-					case SUCCESS:
-						show({
-							title: '문의 완료',
-							content: '문의하신 내용이 접수되었습니다.\n문의 내용은 관리자 확인 후 우편함으로\n답변드릴 예정입니다.' ,
-							confirmCallback: function() {
-								navigation.navigate(STACK.TAB, {
-									screen: 'Roby',
-								});
-							}
-						});
-						break;
-					default:
-						show({
-							content: '오류입니다. 관리자에게 문의해주세요.' ,
-							confirmCallback: function() {}
-						});
-						break;
-				}
-			} else {
-				show({
-					content: '오류입니다. 관리자에게 문의해주세요.' ,
-					confirmCallback: function() {}
-				});
+			} catch (error) {
+				console.log(error);
+			} finally {
+				setIsClickable(true);
 			}
-		} catch (error) {
-			console.log(error);
-		} finally {
-			
+
 		}
 	};
 

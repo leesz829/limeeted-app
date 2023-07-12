@@ -72,6 +72,9 @@ export const Introduce = (props: Props) => {
 	const int_onOpen = () => { int_modalizeRef.current?.open(); };
 	const int_onClose = () => {	int_modalizeRef.current?.close(); };
 
+  // 클릭 여부
+  const [isClickable, setIsClickable] = useState(true);
+
   // 관심사 목록
 	const [intList, setIntList] = React.useState([]);
 
@@ -285,64 +288,65 @@ export const Introduce = (props: Props) => {
   // ############################################################ 내 소개하기 저장
   const saveMemberAddInfo = async () => {
 
-    if(!isEmptyData(comment)) {
-      show({ content: '한줄 소개를 입력해 주세요.' });
-      return false;
-    };
+    // 중복 클릭 방지 설정
+    if(isClickable) {
+      setIsClickable(false);
 
-    // 업종 선택한 경우 직업 필수 선택 체크
-    if(isEmptyData(business) && !isEmptyData(job)) {
-      show({ content: '직업을 선택해 주세요.' });
-      return false;
+      try {
+
+        if(!isEmptyData(comment)) {
+          show({ content: '한줄 소개를 입력해 주세요.' });
+          return false;
+        };
+    
+        // 업종 선택한 경우 직업 필수 선택 체크
+        if(isEmptyData(business) && !isEmptyData(job)) {
+          show({ content: '직업을 선택해 주세요.' });
+          return false;
+        }
+    
+        const body = {
+          comment: comment,
+          business: business,
+          job: job,
+          job_name: job_name,
+          height: mbrHeight,
+          form_body: form_body,
+          religion: religion,
+          drinking: drinking,
+          smoking: smoking,
+          interest_list : checkIntList
+        };
+
+        const { success, data } = await save_member_introduce(body);
+        if(success) {
+          switch (data.result_code) {
+          case SUCCESS:
+            dispatch(myProfile());
+            show({ 
+              content: '저장되었습니다.',
+              confirmCallback: function() {
+                navigation.navigate(STACK.TAB, {
+                  screen: 'Roby',
+                });
+              },
+            });
+            //navigation.goBack();
+            break;
+          default:
+            show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+            break;
+          }
+        } else {
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsClickable(true);
+      }
+
     }
-
-    const body = {
-      comment: comment,
-      business: business,
-      job: job,
-      job_name: job_name,
-      height: mbrHeight,
-      form_body: form_body,
-      religion: religion,
-      drinking: drinking,
-      smoking: smoking,
-      interest_list : checkIntList
-    };
-    try {
-			const { success, data } = await save_member_introduce(body);
-			if(success) {
-				switch (data.result_code) {
-				case SUCCESS:
-          dispatch(myProfile());
-          show({ 
-            content: '저장되었습니다.',
-            confirmCallback: function() {
-              navigation.navigate(STACK.TAB, {
-                screen: 'Roby',
-              });
-            },
-          });
-          //navigation.goBack();
-					break;
-				default:
-					show({
-						content: '오류입니다. 관리자에게 문의해주세요.' ,
-						confirmCallback: function() {}
-					});
-					break;
-				}
-			} else {
-				show({
-					content: '오류입니다. 관리자에게 문의해주세요.' ,
-					confirmCallback: function() {}
-				});
-			}
-		} catch (error) {
-			console.log(error);
-		} finally {
-			
-		}
-
   };
 
   // 셀렉트 박스 콜백 함수

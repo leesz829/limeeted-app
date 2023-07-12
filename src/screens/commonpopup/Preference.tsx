@@ -66,6 +66,9 @@ export const Preference = (props: Props) => {
   const memberBase = useUserInfo(); // 회원 기본정보
   const mbrIdealType = useIdeal();  // 회원 선호이성 정보
 
+  // 클릭 여부
+  const [isClickable, setIsClickable] = React.useState(true);
+
   const [idealTypeSeq, setIdealTypeSeq] = React.useState<any>(
     mbrIdealType?.ideal_type_seq
   );
@@ -223,61 +226,60 @@ export const Preference = (props: Props) => {
   // 내 선호이성 저장
   const saveMemberIdealType = async () => {
 
-    if(wantAgeMin < 19) {
-      show({ content: '선호 이성의 나이를 확인해 주세요.' });
-      return false;
-    }
+    // 중복 클릭 방지 설정
+    if(isClickable) {
+      setIsClickable(false);
 
-
-    const body = {
-      ideal_type_seq: idealTypeSeq,
-      want_local1: wantLocal1,
-      want_local2: wantLocal2,
-      want_age_min: wantAgeMin,
-      want_age_max: wantAgeMax,
-      want_business1: wantBusiness1,
-      want_business2: wantBusiness2,
-      want_business3: wantBusiness3,
-      want_job1: wantJob1,
-      want_job2: wantJob2,
-      want_job3: wantJob3,
-      want_person1: wantPerson1,
-      want_person2: wantPerson2,
-      want_person3: wantPerson3,
-    };
-    try {
-      const { success, data } = await update_prefference(body);
-      if(success) {
-        if(data.result_code == '0000') {
-          console.log('data.mbr_ideal_type :::: ', data.mbr_ideal_type);
-
-          dispatch(setPartialPrincipal({mbr_ideal_type : data.mbr_ideal_type}));
-          //dispatch(mbrReducer.setIdealType(data.mbr_ideal_type));
-          //show({ content: '저장되었습니다.' });
-
-          show({ 
-            content: '저장되었습니다.' ,
-            confirmCallback: function() {
-              navigation.navigate(STACK.TAB, {
-                screen: 'Roby',
-              });
-            }
-          });
-
-          /* navigation.navigate('Main', {
-            screen: 'Roby',
-          }); */
-        } else {
-          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+      try {
+        if(wantAgeMin < 19) {
+          show({ content: '선호 이성의 나이를 확인해 주세요.' });
           return false;
         }
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      
-    }
+    
+        const body = {
+          ideal_type_seq: idealTypeSeq,
+          want_local1: wantLocal1,
+          want_local2: wantLocal2,
+          want_age_min: wantAgeMin,
+          want_age_max: wantAgeMax,
+          want_business1: wantBusiness1,
+          want_business2: wantBusiness2,
+          want_business3: wantBusiness3,
+          want_job1: wantJob1,
+          want_job2: wantJob2,
+          want_job3: wantJob3,
+          want_person1: wantPerson1,
+          want_person2: wantPerson2,
+          want_person3: wantPerson3,
+        };
 
+        const { success, data } = await update_prefference(body);
+        if(success) {
+          if(data.result_code == '0000') {  
+            dispatch(setPartialPrincipal({mbr_ideal_type : data.mbr_ideal_type}));
+            //dispatch(mbrReducer.setIdealType(data.mbr_ideal_type));
+            //show({ content: '저장되었습니다.' });
+  
+            show({ 
+              content: '저장되었습니다.' ,
+              confirmCallback: function() {
+                navigation.navigate(STACK.TAB, {
+                  screen: 'Roby',
+                });
+              }
+            });
+          } else {
+            show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+            return false;
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsClickable(true);
+      }
+
+    }
   };
 
   // 셀렉트 박스 콜백 함수

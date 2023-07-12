@@ -20,6 +20,7 @@ import { useSecondAth } from 'hooks/useSecondAth';
 import { CommonTextarea } from 'component/CommonTextarea';
 
 
+
 /* ################################################################################################################
 ###################################################################################################################
 ###### 2차 인증 팝업
@@ -57,6 +58,9 @@ export const SecondAuthPopup = (props: Props) => {
   const isFocus = useIsFocused();
 
   const mbrSecondAuthList = useSecondAth();  // 회원 2차 인증 정보
+
+  // 클릭 여부
+  const [isClickable, setIsClickable] = React.useState(true);
   
   const type = props.type;
   let title = '';
@@ -182,7 +186,19 @@ export const SecondAuthPopup = (props: Props) => {
 
   // ################################################################ 2차 인증 저장 함수
   const saveSecondAuth = async () => {
-    props.saveFn(props.type, fileDataList, type, authComment);
+
+    // 중복 클릭 방지 설정
+    if(isClickable) {
+      setIsClickable(false);
+
+      try {
+        props.saveFn(props.type, fileDataList, type, authComment);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        
+      }
+    }
 
     /* const body = {
       file_list: fileDataList
