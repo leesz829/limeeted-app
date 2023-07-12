@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState } from 'react';
 import { BasePopup } from 'screens/commonpopup/BasePopup';
 import { GuidePopup } from 'screens/commonpopup/GuidePopup';
 import { EventPopup } from 'screens/commonpopup/EventPopup';
+import { ResponsivePopup } from 'screens/commonpopup/ResponsivePopup';
 
 export const PopupContext = createContext({} as any);
 
@@ -83,6 +84,13 @@ export const PopupProvider = ({ children }: any) => {
           eventType={contents.eventType}
           eventPopupList={contents.eventPopupList}
           etcCallbackFunc={contents.etcCallback}
+        />
+      ) : contents.type == 'RESPONSIVE' ? (
+        <ResponsivePopup
+          popupVisible={visible}
+          setPopupVIsible={setVisible}
+          text={contents.content}
+          subText={contents.subContent}
         />
       ) : (
         <BasePopup
