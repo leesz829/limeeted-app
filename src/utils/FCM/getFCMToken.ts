@@ -29,7 +29,7 @@ export default async function getFCMToken() {
   const saveTokenToStorage = async (token) => {
     try {
       await AsyncStorage.setItem('FCM_TOKEN', token);
-      console.log('Token saved to storage:', token);
+      //console.log('Token saved to storage:', token);
     } catch (error) {
       console.log('Error saving token to storage:', error);
     }

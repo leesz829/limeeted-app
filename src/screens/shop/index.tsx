@@ -14,7 +14,6 @@ import {
 import TopNavigation from 'component/TopNavigation';
 import { findSourcePath, ICON } from 'utils/imageUtils';
 import SpaceView from 'component/SpaceView';
-
 import { ColorType, ScreenNavigationProp } from '@types';
 import {
   initConnection,
@@ -24,9 +23,6 @@ import {
 } from 'react-native-iap';
 import { get_banner_list, purchase_product, update_additional } from 'api/models';
 import { useIsFocused, useNavigation, useFocusEffect } from '@react-navigation/native';
-import axios from 'axios';
-import * as properties from 'utils/properties';
-import * as hooksMember from 'hooks/member';
 import { Color } from 'assets/styles/Color';
 import { Slider } from '@miblanchard/react-native-slider';
 import RecommandProduct from './Component/RecommandProduct';
@@ -41,8 +37,7 @@ import { usePopup } from 'Context';
 import { useUserInfo } from 'hooks/useUserInfo';
 import Carousel from 'react-native-snap-carousel';
 import useInterval from 'utils/useInterval';
-import { isEmptyData } from 'utils/functions';
-import { formatNowDate} from 'utils/functions';
+import { isEmptyData, formatNowDate } from 'utils/functions';
 
 
 
@@ -121,6 +116,17 @@ export const Shop = () => {
     const { success, data } = await get_banner_list({ banner_type: 'PROD' });
 
     if (success) {
+
+      // 이벤트 팝업 노출
+      if(data.popup_list?.length > 0) {
+        popupList = data.popup_list;
+
+        // 튜토리얼 팝업 닫혀있는 경우 호출
+        if(isPopupShow) {
+          popupShow();
+        }
+      };
+
       setBanner(data?.banner_list);
       setNewItemCnt(data?.mbr_base?.new_item_cnt);
 
@@ -149,16 +155,6 @@ export const Shop = () => {
       dispatch(setPartialPrincipal({
         mbr_base : data?.mbr_base
       }));
-
-      // 이벤트 팝업 노출
-      if(data.popup_list?.length > 0) {
-        popupList = data.popup_list;
-
-        // 튜토리얼 팝업 닫혀있는 경우 호출
-        if(isPopupShow) {
-          popupShow();
-        }
-      };
     }
   };
 

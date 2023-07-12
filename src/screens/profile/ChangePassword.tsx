@@ -185,63 +185,64 @@ export const ChangePassword = (props : Props) => {
 		<>
 			<CommonHeader title={'비밀번호 변경'} />
 			<ScrollView contentContainerStyle={[styles.scrollContainer]}>
-				<View style={layoutStyle.alignCenter}>
-					<SpaceView mt={15}>
-						<Image source={IMAGE.logoRenew} style={[styles.logo, {width: 151, height: 105}]} />
+				<View style={{paddingHorizontal: 10}}>
+					<View style={layoutStyle.alignCenter}>
+						<SpaceView mt={15}>
+							<Image source={IMAGE.logoRenew} style={[styles.logo, {width: 151, height: 105}]} />
+						</SpaceView>
+						{/* <SpaceView mt={30}>
+							<Image source={IMAGE.logoMarkRenew} style={styles.logoMark} />
+						</SpaceView> */}
+						{/* <SpaceView mb={15}>
+							<Image source={IMAGE.logoText} style={styles.logo} resizeMode="contain" />
+						</SpaceView> */}
+					</View>
+
+					<SpaceView mb={24} mt={60}>
+						<CommonInput
+							label="현재 비밀번호"
+							value={oldPassword}
+							onChangeText={(oldPassword) => setOldPassword(oldPassword)}
+							isMasking={true}
+							maxLength={20}
+
+						/>
+						{/* {isOldPassword && (<Text style={{color: oldPasswordConfirmMessageColor}}>{oldPasswordConfirmMessage}</Text>)} */}
+						{oldPasswordConfirmMessage !== '' && (<Text style={{marginTop: 10, color: oldPasswordConfirmMessageColor}}>{oldPasswordConfirmMessage}</Text>)}
 					</SpaceView>
-					{/* <SpaceView mt={30}>
-						<Image source={IMAGE.logoMarkRenew} style={styles.logoMark} />
-					</SpaceView> */}
-					{/* <SpaceView mb={15}>
-						<Image source={IMAGE.logoText} style={styles.logo} resizeMode="contain" />
-					</SpaceView> */}
+
+					<SpaceView mb={24}>
+						<CommonInput
+							label="새 비밀번호 입력"
+							value={newPassword}
+							onChangeText={(newPassword) => setNewPassword(newPassword)}
+							isMasking={true}
+							maxLength={20}
+						/>
+						{isNewPassword && (<Text style={{color: newPasswordConfirmMessageColor, marginTop: 10}}>{newPasswordConfirmMessage}</Text>)}
+					</SpaceView>
+
+					<SpaceView mb={24}>
+						<CommonInput
+							label="새 비밀번호 재입력"
+							value={newPasswordChk}
+							onChangeText={(newPasswordChk) => setNewPasswordChk(newPasswordChk)}
+							isMasking={true}
+							maxLength={20}
+						/>
+						{isNewPasswordChk && (<Text style={{color: newPasswordChkConfirmMessageColor, marginTop: 10}}>{newPasswordChkConfirmMessage}</Text>)}
+					</SpaceView>
+
+					<SpaceView mb={24}>
+						<CommonBtn
+							value={'비밀번호 변경'}
+							type={'primary'}
+							onPress={() => { 
+								validatePassword();
+							}}
+						/>
+					</SpaceView>
 				</View>
-
-				<SpaceView mb={24} mt={60}>
-					<CommonInput
-						label="현재 비밀번호"
-						value={oldPassword}
-						onChangeText={(oldPassword) => setOldPassword(oldPassword)}
-						isMasking={true}
-						maxLength={20}
-
-					/>
-					{/* {isOldPassword && (<Text style={{color: oldPasswordConfirmMessageColor}}>{oldPasswordConfirmMessage}</Text>)} */}
-					{oldPasswordConfirmMessage !== '' && (<Text style={{marginTop: 10}}>{oldPasswordConfirmMessage}</Text>)}
-				</SpaceView>
-
-				<SpaceView mb={24}>
-					<CommonInput
-						label="새 비밀번호 입력"
-						value={newPassword}
-						onChangeText={(newPassword) => setNewPassword(newPassword)}
-						isMasking={true}
-						maxLength={20}
-					/>
-					{isNewPassword && (<Text style={{color: newPasswordConfirmMessageColor, marginTop: 10}}>{newPasswordConfirmMessage}</Text>)}
-				</SpaceView>
-
-				<SpaceView mb={24}>
-					<CommonInput
-						label="새 비밀번호 재입력"
-						value={newPasswordChk}
-						onChangeText={(newPasswordChk) => setNewPasswordChk(newPasswordChk)}
-						isMasking={true}
-						maxLength={20}
-					/>
-					{isNewPasswordChk && (<Text style={{color: newPasswordChkConfirmMessageColor, marginTop: 10}}>{newPasswordChkConfirmMessage}</Text>)}
-				</SpaceView>
-
-				<SpaceView mb={24}>
-					<CommonBtn
-						value={'비밀번호 변경'}
-						type={'primary'}
-						onPress={() => { 
-							validatePassword();
-						}}
-					/>
-				</SpaceView>		
-
 			</ScrollView>
 		</>
 	);
