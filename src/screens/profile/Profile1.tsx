@@ -16,6 +16,7 @@ import { useSecondAth } from 'hooks/useSecondAth';
 import React, { useEffect, useMemo, useState, useRef  } from 'react';
 import { Modalize } from 'react-native-modalize';
 import { ImagePicker } from 'component/ImagePicker';
+import { CommonImagePicker } from 'component/CommonImagePicker';
 import {
   Dimensions,
   Image,
@@ -210,8 +211,6 @@ export const Profile1 = (props: Props) => {
 
     let tmpCnt = 0;
     for (var key in imgData) {
-      console.log('imgData[key] ::::: ' , imgData[key]);
-
       if(isDelImgData.status != 'ACCEPT') {
         if (imgData[key].delYn == 'N' && (imgData[key].url || imgData[key].uri)) {
           tmpCnt++;
@@ -222,8 +221,6 @@ export const Profile1 = (props: Props) => {
         }
       }
     }
-
-    console.log('tmpCnt ::::: ' ,tmpCnt);
 
     if (tmpCnt <= 3) {
       show({ content: '승인된 프로필 사진은 최소 3장 등록되어야 합니다.' });
@@ -718,11 +715,13 @@ export const Profile1 = (props: Props) => {
                 )}
               </TouchableOpacity>
             ) : (
-              <ImagePicker
-                isAuth={false}
-                callbackFn={fileCallBack1}
-                uriParam={''}
-              />
+              <>
+                <CommonImagePicker
+                  isAuth={false}
+                  callbackFn={fileCallBack1}
+                  uriParam={''}
+                />
+              </>
             )}
           </View>
           <View style={_styles.container}>
@@ -750,7 +749,7 @@ export const Profile1 = (props: Props) => {
                 )}
               </TouchableOpacity>
             ) : (
-              <ImagePicker
+              <CommonImagePicker
                 isAuth={false}
                 callbackFn={fileCallBack2}
                 uriParam={''}
@@ -782,7 +781,7 @@ export const Profile1 = (props: Props) => {
                 )}
               </TouchableOpacity>
             ) : (
-              <ImagePicker
+              <CommonImagePicker
                 isAuth={false}
                 callbackFn={fileCallBack3}
                 uriParam={''}
@@ -814,7 +813,7 @@ export const Profile1 = (props: Props) => {
                 )}
               </TouchableOpacity>
             ) : (
-              <ImagePicker
+              <CommonImagePicker
                 isAuth={false}
                 callbackFn={fileCallBack4}
                 uriParam={''}
@@ -846,11 +845,13 @@ export const Profile1 = (props: Props) => {
                 )}
               </TouchableOpacity>
             ) : (
-              <ImagePicker
-                isAuth={false}
-                callbackFn={fileCallBack5}
-                uriParam={''}
-              />
+              <>
+                <CommonImagePicker
+                  isAuth={false}
+                  callbackFn={fileCallBack5}
+                  uriParam={''}
+                />
+              </>
             )}
           </View>
           <View style={_styles.container}>
@@ -879,7 +880,7 @@ export const Profile1 = (props: Props) => {
               </TouchableOpacity>
             ) : (
               <>
-                <ImagePicker
+                <CommonImagePicker
                   isAuth={false}
                   callbackFn={fileCallBack6}
                   uriParam={''}/>

@@ -20,6 +20,7 @@ import { get_profile_imgage_guide, regist_profile_image, delete_profile_image } 
 import { SUCCESS } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
 import { CommonLoading } from 'component/CommonLoading';
+import { CommonImagePicker } from 'component/CommonImagePicker';
 
 
 /* ################################################################################################################
@@ -432,7 +433,7 @@ export const Signup02 = (props: Props) => {
                 )}
               </TouchableOpacity>
             ) : (
-              <ImagePicker
+              <CommonImagePicker
                 isAuth={false}
                 callbackFn={fileCallBack1}
                 uriParam={''}
@@ -464,7 +465,7 @@ export const Signup02 = (props: Props) => {
                 )}
               </TouchableOpacity>
             ) : (
-              <ImagePicker
+              <CommonImagePicker
                 isAuth={false}
                 callbackFn={fileCallBack2}
                 uriParam={''}
@@ -496,7 +497,7 @@ export const Signup02 = (props: Props) => {
                 )}
               </TouchableOpacity>
             ) : (
-              <ImagePicker
+              <CommonImagePicker
                 isAuth={false}
                 callbackFn={fileCallBack3}
                 uriParam={''}
@@ -528,7 +529,7 @@ export const Signup02 = (props: Props) => {
                 )}
               </TouchableOpacity>
             ) : (
-              <ImagePicker
+              <CommonImagePicker
                 isAuth={false}
                 callbackFn={fileCallBack4}
                 uriParam={''}
@@ -560,7 +561,7 @@ export const Signup02 = (props: Props) => {
                 )}
               </TouchableOpacity>
             ) : (
-              <ImagePicker
+              <CommonImagePicker
                 isAuth={false}
                 callbackFn={fileCallBack5}
                 uriParam={''}
@@ -592,7 +593,7 @@ export const Signup02 = (props: Props) => {
                 )}
               </TouchableOpacity>
             ) : (
-              <ImagePicker
+              <CommonImagePicker
                 isAuth={false}
                 callbackFn={fileCallBack6}
                 uriParam={''}
