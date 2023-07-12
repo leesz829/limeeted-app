@@ -92,14 +92,11 @@ function NaviButtons({ navName, theme }: { navName: string; theme?: string }) {
 
   return (
     <View style={{ flexDirection: 'row' }}>
-      <TouchableOpacity style={[_styles.tab]} onPress={onPressLimeeted}>
-        <Image
-          style={_styles.limitedIcon}
-          source={limitedIcon}
-          resizeMode="contain"
-        />
+      <TouchableOpacity style={[_styles.tab]} onPress={onPressLimeeted} disabled={navName == 'LIMEETED' ? true : false}>
+        <Image style={_styles.limitedIcon} source={limitedIcon} resizeMode="contain" />
       </TouchableOpacity>
-      <TouchableOpacity style={[_styles.tab]} onPress={onPressLive}>
+      
+      <TouchableOpacity style={[_styles.tab]} onPress={onPressLive} disabled={navName == 'LIVE' ? true : false}>
         <Image style={_styles.liveIcon} source={liveIcon} resizeMode="contain" />
       </TouchableOpacity>
     </View>

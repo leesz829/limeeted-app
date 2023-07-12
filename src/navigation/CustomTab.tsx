@@ -17,6 +17,7 @@ const CustomTab = ({
   return (
     <View style={styles.tabContainer} key={'CustomTab'}>
       {state.routes.map((route, index) => {
+
         const { options } = descriptors[route.key];
         const label =
           options.tabBarLabel !== undefined
@@ -45,6 +46,7 @@ const CustomTab = ({
             <TouchableOpacity
               key={route.key}
               onPress={onPress}
+              disabled={isFocused ? true : false}
               accessibilityRole="button"
               style={styles.tab}
               testID={options.tabBarTestID}
