@@ -290,6 +290,12 @@ export const Introduce = (props: Props) => {
       return false;
     };
 
+    // 업종 선택한 경우 직업 필수 선택 체크
+    if(isEmptyData(business) && !isEmptyData(job)) {
+      show({ content: '직업을 선택해 주세요.' });
+      return false;
+    }
+
     const body = {
       comment: comment,
       business: business,
@@ -308,9 +314,13 @@ export const Introduce = (props: Props) => {
 				switch (data.result_code) {
 				case SUCCESS:
           dispatch(myProfile());
-          show({ content: '저장되었습니다.' });
-          navigation.navigate(STACK.TAB, {
-            screen: 'Roby',
+          show({ 
+            content: '저장되었습니다.',
+            confirmCallback: function() {
+              navigation.navigate(STACK.TAB, {
+                screen: 'Roby',
+              });
+            },
           });
           //navigation.goBack();
 					break;
