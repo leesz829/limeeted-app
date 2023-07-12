@@ -197,7 +197,6 @@ export const PROFILE_IMAGE = {
   womanTmp4: require('assets/img/tmp/profile_w_04.jpg'),
   womanTmp5: require('assets/img/tmp/profile_w_05.jpg'),
   womanTmp6: require('assets/img/tmp/profile_w_06.jpg'),
-  womanTmp7: require('assets/img/tmp/profile_w_07.jpg'),
   profileM1: require('assets/img/tmp/robby_tmp.jpg'),
 };
 
