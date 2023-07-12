@@ -27,9 +27,7 @@ export const myProfile = createAsyncThunk<PrincipalProps>(
       console.log(err);
       return undefined;
     } finally {
-      setTimeout(() => {
-        SplashScreen.hide();
-      }, 2000);
+      
     }
   }
 );
