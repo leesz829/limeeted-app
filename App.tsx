@@ -40,9 +40,9 @@ const appVersionCheck = async () => {
   };
   const { success, data } = await get_app_version(body);
   if(success) {
-    console.log('appVersionCheck data :::::::: ', data);
-    console.log('getCurrentVersion  ::::::: ', VersionCheck.getCurrentVersion());
-    console.log('getCurrentBuildNumber  ::::::: ', VersionCheck.getCurrentBuildNumber());
+    //console.log('appVersionCheck data :::::::: ', data);
+    //console.log('getCurrentVersion  ::::::: ', VersionCheck.getCurrentVersion());
+    //console.log('getCurrentBuildNumber  ::::::: ', VersionCheck.getCurrentBuildNumber());
 
     const versionName = data?.version_name.toString().replace(/\./g, '').padStart(5, "0");
     const currentVersion = VersionCheck.getCurrentVersion().toString().replace(/\./g, '').padStart(5, "0");
@@ -257,7 +257,6 @@ function PreFetcher(props) {
     };
 
     AppState.addEventListener('change', handleAppStateChange);
-
     versionCheck(false);
   }, []);
 

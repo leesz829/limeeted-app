@@ -6,11 +6,19 @@ import AuthNavigation from 'navigation/AuthNavigation';
 import CommonNavigation from 'navigation/CommonNavigation';
 import React from 'react';
 import BottomNavigation from '../TabNavigation';
+import SplashScreen from 'react-native-splash-screen';
 
 const MainStack = createStackNavigator();
 
 const MainStackNavigation = () => {
   const isLogin = useIsLogedin();
+
+  React.useEffect(() => {
+    if(isLogin) {
+      SplashScreen.hide();
+    }
+  }, [isLogin]);
+
   return (
     <MainStack.Navigator
       // initialRouteName={isLogin ? STACK.TAB : STACK.AUTH}
