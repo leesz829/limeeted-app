@@ -106,7 +106,7 @@ export const CommonImagePicker: FC<Props> = (props) => {
               resizeMode="cover"
               resizeMethod="scale"
               style={styles.tempBoxBase}
-              source={{ imgPath }}
+              source={{uri : imgPath}}
             />
 
             <View style={styles.disabled}>
