@@ -59,56 +59,49 @@ export const Signup02 = (props: Props) => {
   const [imgDelSeqStr, setImgDelSeqStr] = React.useState('');
 
   // ################################################################ 프로필 이미지 파일 콜백 함수
-  const fileCallBack1 = (uri: any, base64: string) => {
+  const fileCallBack1 = async (uri: any, base64: string) => {
     let data = { file_uri: uri, file_base64: base64, order_seq: 1 };
     imageDataApply(data);
   };
 
-  const fileCallBack2 = (uri: any, base64: string) => {
+  const fileCallBack2 = async (uri: any, base64: string) => {
     let data = { file_uri: uri, file_base64: base64, order_seq: 2 };
     imageDataApply(data);
   };
 
-  const fileCallBack3 = (uri: any, base64: string) => {
+  const fileCallBack3 = async (uri: any, base64: string) => {
     let data = { file_uri: uri, file_base64: base64, order_seq: 3 };
     imageDataApply(data);
   };
 
-  const fileCallBack4 = (uri: any, base64: string) => {
+  const fileCallBack4 = async (uri: any, base64: string) => {
     let data = { file_uri: uri, file_base64: base64, order_seq: 4 };
     imageDataApply(data);
   };
 
-  const fileCallBack5 = (uri: any, base64: string) => {
+  const fileCallBack5 = async (uri: any, base64: string) => {
     let data = { file_uri: uri, file_base64: base64, order_seq: 5 };
     imageDataApply(data);
   };
 
-  const fileCallBack6 = (uri: any, base64: string) => {
+  const fileCallBack6 = async (uri: any, base64: string) => {
     let data = { file_uri: uri, file_base64: base64, order_seq: 6 };
     imageDataApply(data);
   };
 
   // ################################################################ 프로필 이미지 데이터 적용
-  const imageDataApply = (data: any) => {
-    let dupChk = false;
-    profileImageList.map(({ order_seq }: { order_seq: any }) => {
-      if (order_seq == data.order_seq) {
-        dupChk = true;
+  const imageDataApply = async (data:any) => {
+    setProfileImageList((prev) => {
+      const dupChk = prev.some(item => item.order_seq === data.order_seq);
+      if (!dupChk) {
+          return [...prev, data];
+      } else {
+          return prev.map((item) => item.order_seq === data.order_seq 
+              ? { ...item, uri: data.file_uri, file_base64: data.file_base64 }
+              : item
+          );
       }
     });
-
-    if (!dupChk) {
-      setProfileImageList([...profileImageList, data]);
-    } else {
-      setProfileImageList((prev) =>
-        prev.map((item: any) =>
-          item.order_seq === data.order_seq
-            ? { ...item, uri: data.file_uri, file_base64: data.file_base64 }
-            : item
-        )
-      );
-    }
   };
 
   // ############################################################################# 사진삭제 컨트롤 변수
@@ -343,6 +336,8 @@ export const Signup02 = (props: Props) => {
     for (var key in profileImageList) {
       tmpCnt++;
     }
+
+    console.log('tmpCnt :::::: ' , tmpCnt);
 
     if (tmpCnt < 3) {
       show({ content: '프로필 사진은 반려된 사진을 제외한\n최소3장이 등록되어야 합니다.' });
@@ -714,7 +709,7 @@ export const Signup02 = (props: Props) => {
       
 
       {/* ###############################################
-			사진 삭제 팝업
+			##### 사진 삭제 팝업
 			############################################### */}
       <Modalize
         ref={imgDel_modalizeRef}
