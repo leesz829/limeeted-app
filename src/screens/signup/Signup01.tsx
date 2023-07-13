@@ -632,12 +632,19 @@ const AuthItemRender = (dataObj: any) => {
               fontWeight={'500'} 
               color={ColorType.white}>미인증</CommonText>
           </View>
-        ) : data.auth_status == 'REFUSE' && (
+        ) : data.auth_status == 'REFUSE' ? (
           <View style={[layoutStyle.row, _styles.levelArea(data.auth_status), {backgroundColor: ColorType.redF20456}]}>
             <CommonText 
               type={'h7'} 
               fontWeight={'500'} 
               color={ColorType.white}>반려</CommonText>
+          </View>
+        ) : data.auth_level !== '' && typeof data.auth_level !== 'undefined' && (
+          <View style={[layoutStyle.row, _styles.levelArea(data.auth_status)]}>
+            <CommonText 
+              type={'h7'} 
+              fontWeight={'700'} 
+              color={'#697AE6'}>LV. {data.auth_level}</CommonText>
           </View>
         )}
 

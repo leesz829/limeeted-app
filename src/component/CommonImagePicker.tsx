@@ -1,5 +1,6 @@
 import { styles } from 'assets/styles/Styles';
 import React from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { Image, TouchableOpacity, StyleSheet, View } from 'react-native';
 import {
   launchImageLibrary,
@@ -83,6 +84,16 @@ export const CommonImagePicker: FC<Props> = (props) => {
       console.log
     );
   }
+
+  useFocusEffect(
+    React.useCallback(() => {
+      return () => {
+        setImgPath('');
+      };
+    }, []),
+  );
+
+
   return (
     <>
       <TouchableOpacity
