@@ -21,20 +21,24 @@ const { width, height } = Dimensions.get('window');
 export default function EventDetail(element) {
   const { show } = usePopup(); // 공통 팝업
   const [isLoading, setIsLoading] = useState(false);
-
+  
   const [subImgPath, setSubImgPath] = useState(element.route.params.sub_img_path);
 
-  useEffect(() => {
-
+  const [index, setIndex] = useState(element.route.params.index);
+  const ref = useRef();
+  
+  React.useEffect(() => {
+    ref.current.scrollTo({y:(height-80)*index ,animated:true});
   }, []);
 
   return (
     <>
-      <CommonHeader title="이벤트 상세" />
+      <CommonHeader title="이벤트 상세"/>
 
-      <View>
-        <Image source={findSourcePath(subImgPath)} style={{width: width, height: height-80}} resizeMode={'cover'} />
-      </View>
+      <ScrollView ref={ref}>
+        <View><Image source={findSourcePath(subImgPath)} style={{width: width, height: height-80}} resizeMode={'cover'} /></View>
+        <View><Image source={findSourcePath(subImgPath)} style={{width: width, height: height-80}} resizeMode={'cover'} /></View>
+      </ScrollView>
     </>
   );
 }

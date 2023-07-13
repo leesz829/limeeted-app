@@ -49,8 +49,8 @@ export const EventPopup = (props: Props) => {
     };
   };
 
-  const onPressEtc = (pop_bas_seq:number, sub_img_path:string) => {
-    props.etcCallbackFunc(pop_bas_seq, sub_img_path);
+  const onPressEtc = (pop_bas_seq:number, sub_img_path:string, index:number) => {
+    props.etcCallbackFunc(pop_bas_seq, sub_img_path, index);
     props.setPopupVIsible(false);
   }
 
@@ -106,7 +106,7 @@ export const EventPopup = (props: Props) => {
                             {/* 상세보기 버튼 영역 */}
                             <TouchableOpacity 
                               style={_styles.detailBtn} 
-                              onPress={() => onPressEtc(item?.pop_bas_seq, item?.sub_img_path)}>
+                              onPress={() => onPressEtc(item?.pop_bas_seq, item?.sub_img_path, index)}>
 
                               <Text style={_styles.detailBtnText}>상세보기</Text>
                             </TouchableOpacity>
