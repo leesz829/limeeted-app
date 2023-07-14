@@ -75,6 +75,7 @@ import {
   SAVE_PROFILE_AUTH_COMMENT,
   SAVE_MEMBER_INTRODUCE,
   DAILY_MATCH_ADD_OPEN,
+  GET_MEMBER_CHK
 } from './route';
 
 /* ========================================================================================================
@@ -146,6 +147,13 @@ export async function regist_second_auth(body: {
   auth_comment: string;
 }) {
   return send(REGIST_MEMBER_SECOND_AUTH, 'POST', body, false, false);
+}
+
+// 회원 존재여부를 체크한다.
+export async function get_member_chk(body: {
+  push_token: string;
+}) {
+  return send(GET_MEMBER_CHK, 'POST', body, false, false);
 }
 
 // 아이디 찾기

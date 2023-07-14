@@ -132,15 +132,15 @@ export const ResponsivePopup = (props: Props) => {
 
   return (
     <>
-      {props.popupVisible &&
-				<Animated.View style={[_styles.exam, { 
-					opacity: fadeAnimation,
-					transform: [{translateY: transYAnimation}]
-				}]}>
+		{props.popupVisible &&
+			<Animated.View style={[_styles.exam, { 
+				opacity: fadeAnimation,
+				transform: [{translateY: transYAnimation}]
+			}]}>
 
-					<Text style={[_styles.examText]}>{props.text}</Text>
-				</Animated.View>
-			}
+				<Text style={[_styles.examText]}>{props.text}</Text>
+			</Animated.View>
+		}
     </>
   );
 };
@@ -161,7 +161,7 @@ const _styles = StyleSheet.create({
 		left: 0,
 		right: 0,
 		backgroundColor: '#464646',
-		zIndex: 1,
+		zIndex: 99999,
 		//width: '80%',
 		marginHorizontal: 50,
 		borderRadius: 50,

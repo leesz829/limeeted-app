@@ -13,6 +13,9 @@ export const REGIST_BASE_INFO = '/join/insertMemberInfo';
 export const REGIST_MEMBER_PROFILE_IMAGE = '/join/insertMemberProfileImage';
 export const REGIST_MEMBER_INTEREST = '/join/insertMemberIntro';
 export const REGIST_MEMBER_SECOND_AUTH = '/join/insertMemberSecondAuth';
+
+export const GET_MEMBER_CHK = '/join/getMemberChk';
+
 export const SEARCH_EMAIL_ID = '/login/searchEmailId';
 export const SEARCH_PASSWORD = '/login/searchPassword';
 export const CREATE_TEMP_PASSWORD = '/login/createTempPassword';

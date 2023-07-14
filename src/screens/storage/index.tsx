@@ -421,11 +421,13 @@ export const Storage = (props: Props) => {
             <View style={_styles.dotContainer}>
               {tabs.map((item, index) => (
                 <>
-                  <TouchableOpacity key={index} onPress={() => { onPressDot(index); }}>
-                    <View style={[_styles.tabItem(index === currentIndex, item.color)]}>
-                      <Text style={_styles.tabItemText}>{item.title} | {item.data.length}</Text>
-                    </View>
-                  </TouchableOpacity>
+                  <View key={index}>
+                    <TouchableOpacity onPress={() => { onPressDot(index); }}>
+                      <View style={[_styles.tabItem(index === currentIndex, item.color)]}>
+                        <Text style={_styles.tabItemText}>{item.title} | {item.data.length}</Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
                 </>
               ))}
             </View>

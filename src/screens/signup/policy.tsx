@@ -12,15 +12,17 @@ import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import { Image, ScrollView, StyleSheet, View, TouchableOpacity, Dimensions } from 'react-native';
 import { ICON } from 'utils/imageUtils';
-import * as properties from 'utils/properties';
 import { usePopup } from 'Context';
-import { color } from 'react-native-reanimated';
 import { CommonSwich } from 'component/CommonSwich';
 import { Modalize } from 'react-native-modalize';
 import { Terms } from 'screens/commonpopup/terms';
 import { Privacy } from 'screens/commonpopup/privacy';
 import { LocationService } from 'screens/commonpopup/locationService';
 import ToggleSwitch from 'toggle-switch-react-native';
+import AsyncStorage from '@react-native-community/async-storage';
+import { FCM_TOKEN } from 'constants/storeKey';
+import { get_member_chk } from 'api/models';
+import { ROUTES } from 'constants/routes';
 
 
 /* ################################################################################################################
@@ -101,36 +103,85 @@ export const Policy = (props: Props) => {
   // 다음 버튼
   const nextBtn = async () => {
     if(!termsAgree) {
-      show({
-        content: '이용약관에 동의해 주세요.' ,
-        confirmCallback: function() { }
-      });
+      show({ content: '이용약관에 동의해 주세요.' });
       return;
     }
 
     if(!privacyAgree) {
-      show({
-        content: '개인정보처리방침에 동의해 주세요.' ,
-        confirmCallback: function() { }
-      });
+      show({ content: '개인정보처리방침에 동의해 주세요.' });
       return;
     }
 
     if(!locationAgree) {
-      show({
-        content: '위치기반서비스 이용약관에 동의해 주세요.' ,
-        confirmCallback: function() { }
-      });
+      show({ content: '위치기반서비스 이용약관에 동의해 주세요.' });
       return;
     }
 
-    navigation.navigate({
-      name : 'NiceAuth',
-      params : {
-        type : 'JOIN',
-        mrktAgreeYn: mrktAgree ? 'Y' : 'N',
-      }
-    });
+    const push_token = await AsyncStorage.getItem(FCM_TOKEN);
+    const body = {
+      push_token : push_token
+    };
+
+    const { success, data } = await get_member_chk(body);
+			if(success) {
+
+        if(typeof data.mbr_base != 'undefined') {
+          const memberStatus = data.mbr_base.status;
+          const joinStatus = data.mbr_base.join_status;
+
+          if (memberStatus == 'PROCEED' || memberStatus == 'APPROVAL') {
+            if (memberStatus == 'APPROVAL') {
+              navigation.navigate(ROUTES.APPROVAL, {
+                memberSeq: data.mbr_base.member_seq,
+                gender: data.mbr_base.gender,
+                mstImgPath : data.mbr_base.mst_img_path,
+                accessType: 'LOGIN',
+              });
+            } else {
+              if (null != joinStatus) {
+                if (joinStatus == '01') {
+                  navigation.navigate(ROUTES.SIGNUP01, {
+                    memberSeq: data.mbr_base.member_seq,
+                    gender: data.mbr_base.gender,
+                  });
+                } else if (joinStatus == '02') {
+                  navigation.navigate(ROUTES.SIGNUP02, {
+                    memberSeq: data.mbr_base.member_seq,
+                    gender: data.mbr_base.gender,
+                  });
+                } else if (joinStatus == '03') {
+                  navigation.navigate(ROUTES.SIGNUP03, {
+                    memberSeq: data.mbr_base.member_seq,
+                    gender: data.mbr_base.gender,
+                    mstImgPath: data.mbr_base.mst_img_path,
+                  });
+                } else if (joinStatus == '04') {
+                  navigation.navigate(ROUTES.APPROVAL, {
+                    memberSeq: data.mbr_base.member_seq,
+                    gender: data.mbr_base.gender,
+                    mstImgPath: data.mbr_base.mst_img_path,
+                    accessType: 'LOGIN',
+                  });
+                }
+              }
+            }
+          } else {
+            show({ content: '이미 등록된 회원 입니다.\n로그인을 진행해 주세요.' });
+          };
+
+        } else {
+          navigation.navigate({
+            name : 'NiceAuth',
+            params : {
+              type : 'JOIN',
+              mrktAgreeYn: mrktAgree ? 'Y' : 'N',
+            }
+          });
+        };
+				
+			} else {
+				show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+			}
   }
 
   return (

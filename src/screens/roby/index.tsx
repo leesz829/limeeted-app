@@ -51,6 +51,7 @@ import { Rating, AirbnbRating } from 'react-native-ratings';
 import Contacts from 'react-native-contacts';
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
 import { isEmptyData } from 'utils/functions';
+import { CommonLoading } from 'component/CommonLoading';
 
 
 
@@ -70,7 +71,14 @@ export const Roby = (props: Props) => {
   const isFocus = useIsFocused();
   const dispatch = useDispatch();
 
-  const { show } = usePopup(); // 공통 팝업
+  // 공통 팝업
+  const { show } = usePopup();
+
+  // 
+  const [isLoading, setIsLoading] = useState(false);
+
+  // 클릭 여부
+  const [isClickable, setIsClickable] = useState(true);
 
   // 회원 기본 정보
   const memberBase = useUserInfo(); //hooksMember.getBase();
@@ -141,8 +149,6 @@ export const Roby = (props: Props) => {
 
   // 회원 정보 수정
   const updateMemberInfo = async (type: string, value: string) => {
-    console.log('value ::: ' ,value);
-
     let body = {};
     /*
      * 01 : 내 프로필 공개
@@ -225,7 +231,6 @@ export const Roby = (props: Props) => {
 
   // ############################################################ 프로필 재심사 팝업 활성화
   const profileReexPopupOpen = async () => {
-
     if(memberBase?.pass_has_amt < 30) {
       show({
         title: '재화 부족',
@@ -243,33 +248,48 @@ export const Roby = (props: Props) => {
           profileReexProc();
         },
       });
-    }    
+    }
   }
 
   // ############################################################ 프로필 재심사 실행
   const profileReexProc = async () => {
-    const { success, data } = await request_reexamination();
-    if (success) {
-      dispatch(myProfile());
 
-      show({
-        title: '알림',
-        content: '프로필 재심사가 시작되었습니다.',
-        confirmCallback: function () {
-          
-        },
-      });
-    } else {
-      //show({ content: data.result_msg });
+    // 중복 클릭 방지 설정
+    if(isClickable) {
+      setIsClickable(false);
+      setIsLoading(true);
 
-      show({
-        title: '알림',
-        content: '일시적인 오류가 발생했습니다.',
-        confirmCallback: function () {
-          
-        },
-      });
+      try {
+        const { success, data } = await request_reexamination();
+        if (success) {  
+          dispatch(setPartialPrincipal({
+            mbr_base : data.mbr_base
+          }));
+
+          show({
+            title: '알림',
+            content: '프로필 재심사가 시작되었습니다.',
+            confirmCallback: function () {
+              
+            },
+          });
+  
+        } else {
+          show({ content: '일시적인 오류가 발생했습니다.' });
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsClickable(true);
+        setIsLoading(false);
+
+        /* show({
+          type: 'RESPONSIVE',
+          content: '프로필 재심사가 시작되었어요.',
+        }); */
+      }
     }
+
   };
 
   // ####################################################### 팝업 관련 #######################################################
@@ -432,6 +452,8 @@ export const Roby = (props: Props) => {
 
   return (
     <>
+      {isLoading && <CommonLoading />}
+
       <TopNavigation currentPath={''} theme />
 
       <ScrollView
@@ -667,6 +689,7 @@ export const Roby = (props: Props) => {
             </TouchableOpacity>
 
             <TouchableOpacity
+              disabled
               style={_styles.manageProfile}>
               <ToolTip
                 title={'내 프로필 공개'}
@@ -681,6 +704,7 @@ export const Roby = (props: Props) => {
             </TouchableOpacity>
 
             <TouchableOpacity
+              disabled
               style={_styles.manageProfile}>
               <ToolTip
                 title={'아는 사람 제외'}
@@ -747,6 +771,7 @@ export const Roby = (props: Props) => {
             </TouchableOpacity>
 
             <TouchableOpacity
+              disabled
               style={_styles.manageProfile}>
 
               <Text style={_styles.profileText}>푸시 알림 받기</Text>

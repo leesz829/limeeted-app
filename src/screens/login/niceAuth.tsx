@@ -50,26 +50,127 @@ export const NiceAuth = (props: Props) => {
 		//console.log('webToNative data :::: ', data);
 
 		let dataJson = JSON.parse(data);
+		
+		// ########## 회원가입 진행
+		if(type == 'JOIN') {
+			
+			if (null != dataJson) {
 
-		if (dataJson.dupYn == 'Y' && type !== 'SEARCH') {
-			show({ 
-				content: '이미 등록된 회원 입니다.' ,
-				confirmCallback: async function() {
-					navigation.dispatch(
-						CommonActions.reset({
-							index: 1,
-							routes: [
-								{ name: 'Login01' }
-							],
-						})
-					);
-				}
-			});
+				if (dataJson.dupYn == 'Y') {
+					const memberStatus = dataJson.member_status;
+					const joinStatus = dataJson.join_status;
+					const memberSeq = dataJson.member_seq;
+					const gender = dataJson.gender;
+					const mstImgPath = dataJson.mst_img_path;
 
-		} else {
-			// ########## 회원가입 진행
-			if(type == 'JOIN') {
-				if (null != dataJson) {
+					if (memberStatus == 'PROCEED' || memberStatus == 'APPROVAL') {
+						if (memberStatus == 'APPROVAL') {
+							navigation.dispatch(
+								CommonActions.reset({
+									index: 1,
+									routes: [
+										{ name: 'Login01' }
+										, {
+											name: ROUTES.APPROVAL
+											, params: {
+												memberSeq: memberSeq,
+												gender: gender,
+												mstImgPath : mstImgPath,
+												accessType: 'LOGIN',
+											}
+										}
+									],
+								})
+							);
+						} else {
+							if (null != joinStatus) {
+								if (joinStatus == '01') {
+									navigation.dispatch(
+										CommonActions.reset({
+											index: 1,
+											routes: [
+												{ name: 'Login01' }
+												, {
+													name: ROUTES.SIGNUP01
+													, params: {
+														memberSeq: memberSeq,
+														gender: gender,
+													}
+												}
+											],
+										})
+									);
+								} else if (joinStatus == '02') {
+									navigation.dispatch(
+										CommonActions.reset({
+											index: 1,
+											routes: [
+												{ name: 'Login01' }
+												, {
+													name: ROUTES.SIGNUP02
+													, params: {
+														memberSeq: memberSeq,
+														gender: gender,
+													}
+												}
+											],
+										})
+									);
+								} else if (joinStatus == '03') {
+									navigation.dispatch(
+										CommonActions.reset({
+											index: 1,
+											routes: [
+												{ name: 'Login01' }
+												, {
+													name: ROUTES.SIGNUP03
+													, params: {
+														memberSeq: memberSeq,
+														gender: gender,
+														mstImgPath: mstImgPath,
+													}
+												}
+											],
+										})
+									);
+								} else if (joinStatus == '04') {
+									navigation.dispatch(
+										CommonActions.reset({
+											index: 1,
+											routes: [
+												{ name: 'Login01' }
+												, {
+													name: ROUTES.APPROVAL
+													, params: {
+														memberSeq: memberSeq,
+														gender: gender,
+														mstImgPath: mstImgPath,
+														accessType: 'LOGIN',
+													}
+												}
+											],
+										})
+									);
+								}
+							}
+						}
+					} else {
+						show({ 
+							content: '이미 등록된 회원 입니다.\n로그인을 진행해 주세요.' ,
+							confirmCallback: async function() {
+								navigation.dispatch(
+									CommonActions.reset({
+										index: 1,
+										routes: [
+											{ name: 'Login01' }
+										],
+									})
+								);
+							}
+						});
+					}
+
+				} else {
 					navigation.dispatch(
 						CommonActions.reset({
 							index: 1,
@@ -90,9 +191,19 @@ export const NiceAuth = (props: Props) => {
 						})
 					);
 				}
+			}
+			
+		// ########## 전화번호 수정
+		} else if(type == 'MODFY') {
 
-			// ########## 전화번호 수정
-			} else if(type == 'MODFY') {
+			if (dataJson.dupYn == 'Y') {
+				show({ 
+					content: '이미 등록된 회원 입니다.' ,
+					confirmCallback: async function() {
+						navigation.navigate(STACK.TAB, { screen: 'Roby' });
+					}
+				});
+			} else {
 				if(memberBase.name != dataJson.name) {
 					show({ 
 						content: '본인인증이 일치하지 않아 수정이 불가능합니다.' ,
@@ -103,26 +214,27 @@ export const NiceAuth = (props: Props) => {
 				} else {
 					updatePhoneNumber(dataJson);
 				}
-
-			// ########### 비밀번호 찾기
-			} else if(type == 'SEARCH') {
-				let phoneNumberFmt = phoneNumber.replace(/-/g, "");
-				console.log('phoneNumberFmt ::::: ', phoneNumberFmt);
-
-				if(phoneNumberFmt != dataJson.mobile) {
-					show({ 
-						content: '등록된 전화번호와 본인인증이 일치하지 않습니다.' ,
-						confirmCallback: async function() {
-							navigation.navigate('Login01');
-						}
-					});
-				} else {
-
-					// 임시 비밀번호 생성
-					createTempPassword(phoneNumber, emailId);
-				}
 			}
-		}		
+
+		// ########### 비밀번호 찾기
+		} else if(type == 'SEARCH') {
+			let phoneNumberFmt = phoneNumber.replace(/-/g, "");
+			console.log('phoneNumberFmt ::::: ', phoneNumberFmt);
+
+			if(phoneNumberFmt != dataJson.mobile) {
+				show({ 
+					content: '등록된 전화번호와 본인인증이 일치하지 않습니다.' ,
+					confirmCallback: async function() {
+						navigation.navigate('Login01');
+					}
+				});
+			} else {
+
+				// 임시 비밀번호 생성
+				createTempPassword(phoneNumber, emailId);
+			}
+		}
+		
 	};
 
 	// ######################################################### 전화번호 변경 실행

@@ -33,6 +33,7 @@ import { Modalize } from 'react-native-modalize';
 import { SUCCESS } from 'constants/reusltcode';
 import { isEmptyData } from 'utils/functions';
 import { CommonLoading } from 'component/CommonLoading';
+import { setPartialPrincipal } from 'redux/reducers/authReducer';
 
 
 /* ################################################################################################################
@@ -291,6 +292,7 @@ export const Introduce = (props: Props) => {
     // 중복 클릭 방지 설정
     if(isClickable) {
       setIsClickable(false);
+      setIsLoading(true);
 
       try {
 
@@ -322,16 +324,27 @@ export const Introduce = (props: Props) => {
         if(success) {
           switch (data.result_code) {
           case SUCCESS:
-            dispatch(myProfile());
-            show({ 
+
+            // 갱신된 회원 기본 정보 저장
+            dispatch(setPartialPrincipal({
+              mbr_base : data.mbr_base
+            }));
+
+            //dispatch(myProfile());
+            /* show({ 
               content: '저장되었습니다.',
               confirmCallback: function() {
                 navigation.navigate(STACK.TAB, {
                   screen: 'Roby',
                 });
               },
+            }); */
+
+            show({
+              type: 'RESPONSIVE',
+              content: '저장 되었어요.',
             });
-            //navigation.goBack();
+            
             break;
           default:
             show({ content: '오류입니다. 관리자에게 문의해주세요.' });
@@ -344,6 +357,7 @@ export const Introduce = (props: Props) => {
         console.log(error);
       } finally {
         setIsClickable(true);
+        setIsLoading(false);
       }
 
     }
