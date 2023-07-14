@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { ColorType } from '@types';
-import { signin, get_app_version } from 'api/models';
+import { signin, get_app_version, get_member_chk } from 'api/models';
 import { layoutStyle, modalStyle, styles, commonStyle } from 'assets/styles/Styles';
 import { CommonBtn } from 'component/CommonBtn';
 import { CommonInput } from 'component/CommonInput';
@@ -44,6 +44,7 @@ import { Color } from 'assets/styles/Color';
 import Geolocation from 'react-native-geolocation-service';
 import RNExitApp from 'react-native-exit-app';
 import VersionCheck from 'react-native-version-check';
+import { FCM_TOKEN } from 'constants/storeKey';
 
 
 
@@ -199,6 +200,71 @@ export const Login01 = () => {
 
   };
 
+  // ########################################################################## 회원가입 실행
+  const joinProc = async () => {
+
+    const push_token = await AsyncStorage.getItem(FCM_TOKEN);
+    const body = {
+      push_token : push_token
+    };
+
+    const { success, data } = await get_member_chk(body);
+    if(success) {
+
+      if(typeof data.mbr_base != 'undefined') {
+        const memberStatus = data.mbr_base.status;
+        const joinStatus = data.mbr_base.join_status;
+
+        if (memberStatus == 'PROCEED' || memberStatus == 'APPROVAL') {
+          if (memberStatus == 'APPROVAL') {
+            navigation.navigate(ROUTES.APPROVAL, {
+              memberSeq: data.mbr_base.member_seq,
+              gender: data.mbr_base.gender,
+              mstImgPath : data.mbr_base.mst_img_path,
+              accessType: 'LOGIN',
+            });
+          } else {
+            if (null != joinStatus) {
+              if (joinStatus == '01') {
+                navigation.navigate(ROUTES.SIGNUP01, {
+                  memberSeq: data.mbr_base.member_seq,
+                  gender: data.mbr_base.gender,
+                });
+              } else if (joinStatus == '02') {
+                navigation.navigate(ROUTES.SIGNUP02, {
+                  memberSeq: data.mbr_base.member_seq,
+                  gender: data.mbr_base.gender,
+                });
+              } else if (joinStatus == '03') {
+                navigation.navigate(ROUTES.SIGNUP03, {
+                  memberSeq: data.mbr_base.member_seq,
+                  gender: data.mbr_base.gender,
+                  mstImgPath: data.mbr_base.mst_img_path,
+                });
+              } else if (joinStatus == '04') {
+                navigation.navigate(ROUTES.APPROVAL, {
+                  memberSeq: data.mbr_base.member_seq,
+                  gender: data.mbr_base.gender,
+                  mstImgPath: data.mbr_base.mst_img_path,
+                  accessType: 'LOGIN',
+                });
+              }
+            }
+          }
+        } else {
+          show({ content: '이미 등록된 회원 입니다.\n로그인을 진행해 주세요.' });
+        };
+
+      } else {
+        navigation.navigate('Policy');
+      };
+      
+    } else {
+      show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+    }
+  };
+
+
   // ########################################################################## 사용자 위치 확인
   async function requestPermissions() {
     try {
@@ -341,7 +407,7 @@ export const Login01 = () => {
               <SpaceView viewStyle={_styles.joinText}>
                 <CommonText type={"h5"}>계정이 없으신가요?</CommonText>
                 <View style={_styles.joinTextLine} />
-                <TouchableOpacity onPress={() => { navigation.navigate('Policy'); }} hitSlop={commonStyle.hipSlop10}>
+                <TouchableOpacity onPress={() => { joinProc(); }} hitSlop={commonStyle.hipSlop10}>
                   <CommonText type={"h5"} color={Color.blue01} fontWeight={'700'}>회원가입</CommonText>
                 </TouchableOpacity>
               </SpaceView>
