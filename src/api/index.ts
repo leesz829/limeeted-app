@@ -95,9 +95,9 @@ export const send = (
     try {
       const response = await axios.get('https://ipinfo.io/json');
       return response.data.ip;
-      
+
     } catch (error) {
-      console.error(error);
+      console.log(error);
       return '';
     }
   }
