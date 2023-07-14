@@ -45,6 +45,7 @@ import Geolocation from 'react-native-geolocation-service';
 import RNExitApp from 'react-native-exit-app';
 import VersionCheck from 'react-native-version-check';
 import { FCM_TOKEN } from 'constants/storeKey';
+import { isEmptyData } from 'utils/functions';
 
 
 
@@ -208,60 +209,65 @@ export const Login01 = () => {
       push_token : push_token
     };
 
-    const { success, data } = await get_member_chk(body);
-    if(success) {
+    if(isEmptyData(push_token)) {
+      const { success, data } = await get_member_chk(body);
+      if(success) {
 
-      if(typeof data.mbr_base != 'undefined') {
-        const memberStatus = data.mbr_base.status;
-        const joinStatus = data.mbr_base.join_status;
+        if(typeof data.mbr_base != 'undefined') {
+          const memberStatus = data.mbr_base.status;
+          const joinStatus = data.mbr_base.join_status;
 
-        if (memberStatus == 'PROCEED' || memberStatus == 'APPROVAL') {
-          if (memberStatus == 'APPROVAL') {
-            navigation.navigate(ROUTES.APPROVAL, {
-              memberSeq: data.mbr_base.member_seq,
-              gender: data.mbr_base.gender,
-              mstImgPath : data.mbr_base.mst_img_path,
-              accessType: 'LOGIN',
-            });
-          } else {
-            if (null != joinStatus) {
-              if (joinStatus == '01') {
-                navigation.navigate(ROUTES.SIGNUP01, {
-                  memberSeq: data.mbr_base.member_seq,
-                  gender: data.mbr_base.gender,
-                });
-              } else if (joinStatus == '02') {
-                navigation.navigate(ROUTES.SIGNUP02, {
-                  memberSeq: data.mbr_base.member_seq,
-                  gender: data.mbr_base.gender,
-                });
-              } else if (joinStatus == '03') {
-                navigation.navigate(ROUTES.SIGNUP03, {
-                  memberSeq: data.mbr_base.member_seq,
-                  gender: data.mbr_base.gender,
-                  mstImgPath: data.mbr_base.mst_img_path,
-                });
-              } else if (joinStatus == '04') {
-                navigation.navigate(ROUTES.APPROVAL, {
-                  memberSeq: data.mbr_base.member_seq,
-                  gender: data.mbr_base.gender,
-                  mstImgPath: data.mbr_base.mst_img_path,
-                  accessType: 'LOGIN',
-                });
+          if (memberStatus == 'PROCEED' || memberStatus == 'APPROVAL') {
+            if (memberStatus == 'APPROVAL') {
+              navigation.navigate(ROUTES.APPROVAL, {
+                memberSeq: data.mbr_base.member_seq,
+                gender: data.mbr_base.gender,
+                mstImgPath : data.mbr_base.mst_img_path,
+                accessType: 'LOGIN',
+              });
+            } else {
+              if (null != joinStatus) {
+                if (joinStatus == '01') {
+                  navigation.navigate(ROUTES.SIGNUP01, {
+                    memberSeq: data.mbr_base.member_seq,
+                    gender: data.mbr_base.gender,
+                  });
+                } else if (joinStatus == '02') {
+                  navigation.navigate(ROUTES.SIGNUP02, {
+                    memberSeq: data.mbr_base.member_seq,
+                    gender: data.mbr_base.gender,
+                  });
+                } else if (joinStatus == '03') {
+                  navigation.navigate(ROUTES.SIGNUP03, {
+                    memberSeq: data.mbr_base.member_seq,
+                    gender: data.mbr_base.gender,
+                    mstImgPath: data.mbr_base.mst_img_path,
+                  });
+                } else if (joinStatus == '04') {
+                  navigation.navigate(ROUTES.APPROVAL, {
+                    memberSeq: data.mbr_base.member_seq,
+                    gender: data.mbr_base.gender,
+                    mstImgPath: data.mbr_base.mst_img_path,
+                    accessType: 'LOGIN',
+                  });
+                }
               }
             }
-          }
-        } else {
-          show({ content: '이미 등록된 회원 입니다.\n로그인을 진행해 주세요.' });
-        };
+          } else {
+            show({ content: '이미 등록된 회원 입니다.\n로그인을 진행해 주세요.' });
+          };
 
+        } else {
+          navigation.navigate('Policy');
+        };
+        
       } else {
-        navigation.navigate('Policy');
-      };
-      
+        show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+      }
     } else {
-      show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+      navigation.navigate('Policy');
     }
+
   };
 
 
