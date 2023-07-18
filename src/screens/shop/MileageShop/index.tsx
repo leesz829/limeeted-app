@@ -52,6 +52,9 @@ export default function MileageShop() {
       // 경매 상품 목록 조회
       const { success: sa, data: ad } = await get_auct_product();
       if (sa) {
+
+        console.log('ad?.prod_list ::: ' , ad?.prod_list[0].data);
+
         setData(ad?.prod_list);
         setIsLoading(false);
       }
@@ -276,7 +279,7 @@ const RenderItem = ({ item, type, callFn }) => {
               ) : (
                 <View style={_styles.textContainer}>
                   <View style={{flexDirection: 'row'}}>
-                    <Text style={_styles.price}>{CommaFormat(item?.req_bid_price)}</Text>
+                    <Text style={_styles.price}>{CommaFormat(item?.now_bid_price)}</Text>
                     <Image source={ICON.crown} style={_styles.crown} />
                   </View>
                   <View>
