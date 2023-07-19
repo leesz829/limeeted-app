@@ -161,7 +161,7 @@ export default function MileageOrder() {
             pagingEnabled={true}
             horizontal={false} */
             data={orderList}
-            renderItem={(data) => <RenderItem dataList={orderList} />}
+            renderItem={(data) => <RenderItem data={data} />}
           />
         ) : (
           <SpaceView viewStyle={{justifyContent: 'center', alignItems: 'center', height: 150}}>
@@ -174,66 +174,68 @@ export default function MileageOrder() {
   );
 }
 
-const RenderItem = ({ dataList }) => {
+const RenderItem = ({ data }) => {
+  const dateStr = data.item.title;
+  const prodList = data.item.data;
 
   return (
     <>
-      {dataList.map((order, index) => (
+      <View style={styles.dateTitle}>
+        <Text style={[styles.dateText]}>{dateStr}</Text>
+      </View>
+
+      {prodList.map((item, idx) => (
         <>
-          <View style={styles.dateTitle} key={'order_' + index}>
-            <Text style={[styles.dateText]}>{order.title}</Text>
-          </View>
+          <View style={styles.itemBox} key={'order_item_' + idx}>
+            <ImageBackground source={findSourcePath(item?.file_path + item?.file_name)} style={styles.thumb}>
+              {/* 분기 */}
 
-          {order.data.map((item, idx) => (
-            <>
-              <View style={styles.itemBox} key={'order_item_' + idx}>
-                <ImageBackground source={findSourcePath(item?.file_path + item?.file_name)} style={styles.thumb}>
-                  {/* 분기 */}
-
-                  {item.status_code == 'COMPLET' ? (
-                    <View style={styles.completeMark}>
-                      <Text style={styles.completeText}>판매완료</Text>
-                    </View>
-                  ) : null}
-
-                  {/* <View style={styles.bidCompleteMark}>
-                    <Text style={styles.bidCompleteText}>입찰완료</Text>
-                  </View>
-                  <View style={styles.readyMark}>
-                    <Text style={styles.readyText}>발송준비</Text>
-                  </View>
-                  <View style={styles.completeMark}>
-                    <Text style={styles.completeText}>배송완료</Text>
-                  </View> */}
-                  {/* 분기 */}
-                </ImageBackground>
-
-                <View style={styles.itemInfoBox}>
-                  <Text style={styles.brandName}>{item.brand_name}</Text>
-                  <Text style={styles.title}>{item.prod_name}</Text>
-                  <View style={styles.rowBetween2}>
-                    <View style={styles.row}>
-                      <Text style={styles.price}>{CommaFormat(item?.buy_price)}</Text>
-                      <Image source={ICON.crown} style={styles.crown} />
-                    </View>
-
-                    {/* 조건부 */}
-                    {item.invc_num != null ? (
-                      <View style={styles.copyCode}>
-                        <Text style={styles.copyText}>송장번호 복사</Text>
-                      </View>
-                    ) : null}
-                    {/* 조건부 */}
-                  </View>
+              {item.status_code == 'COMPLET' ? (
+                <View style={styles.completeMark}>
+                  <Text style={styles.completeText}>판매완료</Text>
                 </View>
+              ) : null}
+
+              {/* <View style={styles.bidCompleteMark}>
+                <Text style={styles.bidCompleteText}>입찰완료</Text>
               </View>
-            </>
-          ))}
+              <View style={styles.readyMark}>
+                <Text style={styles.readyText}>발송준비</Text>
+              </View>
+              <View style={styles.completeMark}>
+                <Text style={styles.completeText}>배송완료</Text>
+              </View> */}
+              {/* 분기 */}
+            </ImageBackground>
+
+            <View style={styles.itemInfoBox}>
+              <Text style={styles.brandName}>{item.brand_name}</Text>
+              <Text style={styles.title}>{item.prod_name}</Text>
+              <View style={styles.rowBetween2}>
+                <View style={styles.row}>
+                  <Text style={styles.price}>{CommaFormat(item?.buy_price)}</Text>
+                  <Image source={ICON.crown} style={styles.crown} />
+                </View>
+
+                {/* 조건부 */}
+                {item.invc_num != null ? (
+                  <View style={styles.copyCode}>
+                    <Text style={styles.copyText}>송장번호 복사</Text>
+                  </View>
+                ) : null}
+                {/* 조건부 */}
+              </View>
+            </View>
+          </View>
         </>
       ))}
     </>
   );
 };
+
+
+
+
 
 
 
