@@ -72,6 +72,7 @@ export default function AuctionDetail() {
 
     let modalTitle = nowBuyYn == 'Y' ? '즉시 구매하기' : '입찰하기';
     let modalContent = nowBuyYn == 'Y' ? '표기 된 리밋 수량을 소모하고\n 즉시구매 하시겠습니까?' : '표기 된 호가로 입찰 신청하시겠습니까?';
+    let req_bid_price = nowBuyYn == 'Y' ? data?.now_buy_price : data?.now_bid_price;
 
     try {
       show({
@@ -81,19 +82,20 @@ export default function AuctionDetail() {
           
         },
         confirmCallback: async function() {
+          
           const body = {
             prod_seq: prod_seq,
             modify_seq: modify_seq,
-            req_bid_price: data?.now_buy_price,
+            req_bid_price: req_bid_price,
             now_buy_yn: nowBuyYn,
             mobile_os: Platform.OS,
           }
           const { success, data } = await order_auct(body);
-          console.log('data :::: ', data);
+          
           if (success) {
             if(data.result_code == '0000') {
               show({
-                content: '구매에 성공하였습니다.' ,
+                content: nowBuyYn == 'Y'?'구매에 성공하였습니다.':'입찰되었습니다.' ,
                 confirmCallback: function() { 
                   navigation.navigate(STACK.TAB, { screen: 'Shop' });
                 }
@@ -143,7 +145,7 @@ export default function AuctionDetail() {
               <View style={_styles.rowBetween}>
                 <Text style={_styles.inventory}></Text>
                 <View style={_styles.rowCenter}>
-                  <Text style={_styles.price}>{data?.asking_price}</Text>
+                  <Text style={_styles.price}>{data?.now_bid_price}</Text>
                   <Image source={ICON.crown} style={_styles.crown} />
                 </View>
               </View>
@@ -229,7 +231,7 @@ export default function AuctionDetail() {
             <Seperator />
             <View>
               <Text style={_styles.priceText}>
-                {CommaFormat(data?.asking_price)}
+                {CommaFormat(data?.now_bid_price)}
               </Text>
               <Text style={_styles.additionalText}>입찰대기10분</Text>
             </View>
