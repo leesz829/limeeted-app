@@ -165,11 +165,14 @@ export default function Interview({
       const { success, data } = await update_interview(body);
       if (success) {
         if (data.result_code == '0000') {
-          dispatch( setPartialPrincipal({ mbr_interview_list: data.mbr_interview_list }) );
-          
+          dispatch(
+            setPartialPrincipal({ mbr_interview_list: data.mbr_interview_list })
+          );
           show({
-            type: 'RESPONSIVE',
-            content: '인터뷰가 삭제되었습니다.',
+            content: '삭제되었습니다.',
+            confirmCallback: function () {
+
+            },
           });
         } else {
           show({

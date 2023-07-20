@@ -166,9 +166,7 @@ export const Roby = (props: Props) => {
 
       const { success, data } = await update_setting(body);
       if (success) {
-        dispatch(setPartialPrincipal({
-          mbr_base : data.mbr_base
-        }));
+        dispatch(myProfile());
       }
 
     }
@@ -263,12 +261,17 @@ export const Roby = (props: Props) => {
 
       try {
         const { success, data } = await request_reexamination();
-        if (success) {
-          dispatch(setPartialPrincipal({ mbr_base : data.mbr_base }));
+        if (success) {  
+          dispatch(setPartialPrincipal({
+            mbr_base : data.mbr_base
+          }));
 
           show({
-            type: 'RESPONSIVE',
+            title: '알림',
             content: '프로필 재심사가 시작되었습니다.',
+            confirmCallback: function () {
+              
+            },
           });
   
         } else {
@@ -279,6 +282,11 @@ export const Roby = (props: Props) => {
       } finally {
         setIsClickable(true);
         setIsLoading(false);
+
+        /* show({
+          type: 'RESPONSIVE',
+          content: '프로필 재심사가 시작되었어요.',
+        }); */
       }
     }
 
@@ -555,8 +563,7 @@ export const Roby = (props: Props) => {
               {memberBase?.reex_yn == 'Y' ? (
                 <RatingCard
                   title={'프로필 심사중'}
-                  //desc={'내 프로필에 ' + memberBase?.profile_eval_cnt + '명의 회원님이\n평가를 남겨 주셨어요.'}
-                  desc={'LIVE에서 노출되고 있는 내 프로필을 회원님들이 직접 평가 진행중 이에요.'}
+                  desc={'내 프로필에 ' + memberBase?.profile_eval_cnt + '명의 회원님이\n평가를 남겨 주셨어요.'}
                   value={memberBase?.profile_score}
                   preScore={memberBase?.prev_profile_score}
                   isPennding={true}
@@ -592,7 +599,7 @@ export const Roby = (props: Props) => {
 
           {memberBase?.reex_yn == 'Y' ? (
             <View style={[_styles.pennding, layoutStyle.mb20]}>
-              <Text style={_styles.submitText}>내 프로필 심사 진행중!</Text>
+              <Text style={_styles.submitText}>내 프로필을 심사중이에요!</Text>
             </View>
           ) : (
             <TouchableOpacity
@@ -603,12 +610,10 @@ export const Roby = (props: Props) => {
           )}
 
           {/* ################################################################################ 보관함 영역 */}
-          <SpaceView mt={40}>
-            <SpaceView mb={10}>
-              <CommonText fontWeight={'700'} type={'h3'}>
-                보관함
-              </CommonText>
-            </SpaceView>
+          <View style={{ marginTop: 16 }}>
+            <CommonText fontWeight={'700'} type={'h3'}>
+              보관함
+            </CommonText>
 
             <TouchableOpacity
               style={_styles.manageProfile}
@@ -664,15 +669,14 @@ export const Roby = (props: Props) => {
                 </SpaceView>
               ))}
             </ScrollView> */}
-          </SpaceView>
+          </View>
 
-          {/* ################################################################################ 보관함 영역 */}
-          <SpaceView mt={40}>
-            <SpaceView mb={10}>
+          <SpaceView mb={48}>
+            <View style={{ marginTop: 20 }}>
               <CommonText fontWeight={'700'} type={'h3'}>
                 매칭 설정
               </CommonText>
-            </SpaceView>
+            </View>
 
             <TouchableOpacity
               style={_styles.manageProfile}
@@ -719,9 +723,8 @@ export const Roby = (props: Props) => {
             </TouchableOpacity>
           </SpaceView>
 
-          {/* ################################################################################ 그 외 기타 */}
-          <SpaceView mt={40} mb={40}>
-            <SpaceView mb={10}>
+          <SpaceView mb={40}>
+            <SpaceView mb={16}>
               <CommonText fontWeight={'700'} type={'h3'}>
                 그 외 기타
               </CommonText>

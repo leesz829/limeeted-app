@@ -190,11 +190,6 @@ export const Profile2 = (props: Props) => {
 
     saveAPI(applyInterviewList, function() {
       navigation.navigate(STACK.COMMON, { screen: 'Profile1' });
-
-      show({
-        type: 'RESPONSIVE',
-        content: '인터뷰가 저장되었습니다.',
-      });
     });
   };
 

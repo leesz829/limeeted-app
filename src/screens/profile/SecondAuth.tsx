@@ -648,22 +648,22 @@ const AuthItemRender = (dataObj:any) => {
           </View>
         )}
 
+        {data.auth_status == 'PROGRESS' ? (
+          <View style={[layoutStyle.row, _styles.statusArea2]}>
+            <CommonText
+              type={'h7'} 
+              fontWeight={'500'} 
+              color={ColorType.white}>
+                심사중
+            </CommonText>
+          </View>
+        ) : null}
+
         <SpaceView>
           <View style={[layoutStyle.row, layoutStyle.alignCenter]}>
             <CommonText type={'h4'} fontWeight={'700'}>{data.code_name}</CommonText>
             <Image source={ICON.arrRight} style={styles.arrowIcon} />
           </View>
-
-          {data.auth_status == 'PROGRESS' ? (
-            <View style={[_styles.statusArea2]}>
-              <CommonText
-                type={'h7'} 
-                fontWeight={'500'} 
-                color={ColorType.white}>
-                  심사중
-              </CommonText>
-            </View>
-          ) : null}
         </SpaceView>
 
         <CommonText
@@ -691,7 +691,7 @@ const _styles = StyleSheet.create({
     return {
       position: 'absolute',
       top: 10,
-      right: 16,
+      right: 10,
       borderWidth: status === 'REFUSE' ? 0 : 1,
       borderColor: '#697AE6',
       borderRadius: 5,
@@ -710,8 +710,8 @@ const _styles = StyleSheet.create({
   },
   statusArea2: {
     position: 'absolute',
-    bottom: 8,
-    right: 0,
+    bottom: 65,
+    right: 10,
     backgroundColor: '#697AE6',
     borderWidth: 1,
     borderColor: '#697AE6',

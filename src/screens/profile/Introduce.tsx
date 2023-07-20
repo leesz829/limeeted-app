@@ -326,15 +326,23 @@ export const Introduce = (props: Props) => {
           case SUCCESS:
 
             // 갱신된 회원 기본 정보 저장
-            dispatch(setPartialPrincipal({ mbr_base : data.mbr_base }));
+            dispatch(setPartialPrincipal({
+              mbr_base : data.mbr_base
+            }));
+
+            //dispatch(myProfile());
+            /* show({ 
+              content: '저장되었습니다.',
+              confirmCallback: function() {
+                navigation.navigate(STACK.TAB, {
+                  screen: 'Roby',
+                });
+              },
+            }); */
 
             show({
               type: 'RESPONSIVE',
-              content: '내 소개 정보가 저장되었습니다.',
-            });
-
-            navigation.navigate(STACK.TAB, {
-              screen: 'Roby',
+              content: '저장 되었어요.',
             });
             
             break;

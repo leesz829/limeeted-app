@@ -296,14 +296,13 @@ export const Profile1 = (props: Props) => {
               , mbr_img_list : data.mbr_img_list
               , mbr_interview_list : data.mbr_interview_list
             }));
-
-            profileDataSet(data.mbr_img_list);
-
+  
             show({
-              type: 'RESPONSIVE',
-              content: '프로필 사진이 삭제되었습니다.',
+              content: '삭제되었습니다.' ,
+              confirmCallback: function() {
+                profileDataSet(data.mbr_img_list);
+              }
             });
-
             break;
           default:
             show({
@@ -312,6 +311,7 @@ export const Profile1 = (props: Props) => {
             });
             break;
         }
+       
       } else {
         show({
           content: '오류입니다. 관리자에게 문의해주세요.' ,
@@ -436,14 +436,13 @@ export const Profile1 = (props: Props) => {
               , mbr_img_list : data.mbr_img_list
               , mbr_interview_list : data.mbr_interview_list
             }));
-
-            profileDataSet(data.mbr_img_list);
-
+  
             show({
-              type: 'RESPONSIVE',
-              content: '프로필 사진이 등록되었습니다.\n심사가 진행 중이니 조금 기다려주세요.',
+              content: '등록되었습니다.' ,
+              confirmCallback: function() {
+                profileDataSet(data.mbr_img_list);
+              }
             });
-
             break;
           default:
             show({

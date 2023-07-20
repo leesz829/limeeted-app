@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage';
-import { send } from 'api';
+import { send, send_file } from 'api';
 import { FCM_TOKEN } from 'constants/storeKey';
 import {
   GET_POINT,
@@ -293,7 +293,6 @@ export async function peek_member(body: {
   auth_acct_cnt: number;
 }) {
   const inventory_connect_dt = await AsyncStorage.getItem('INVENTORY_CONNECT_DT');
-  console.log('inventory_connect_dt :::::::::: ' , inventory_connect_dt);
   return send(PEEK_MEMBER, 'POST', { ...body, inventory_connect_dt }, true, false);
 }
 
@@ -424,8 +423,7 @@ export async function regist_profile_evaluation(body: {
 
 // 프로필 재심사를 진행한다.
 export async function request_reexamination() {
-  const inventory_connect_dt = await AsyncStorage.getItem('INVENTORY_CONNECT_DT');
-  return send(PROFILE_REEXAMINATION, 'POST', { inventory_connect_dt }, true, false);
+  return send(PROFILE_REEXAMINATION, 'POST', undefined, true, false);
 }
 
 // 회원 프로필 인상 순위를 조회한다.

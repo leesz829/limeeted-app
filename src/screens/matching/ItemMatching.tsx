@@ -264,7 +264,7 @@ export default function ItemMatching(props: Props) {
       special_level: special_level,
     };
 
-    if(type == 'DAILY_REPLAY' || type == 'PROFILE_CARD_ADD') {
+    if(type == 'DAILY_REPLAY' || type == 'PROFILE_CARD') {
       body.match_seq = matchSeq;
     }
 
@@ -278,7 +278,7 @@ export default function ItemMatching(props: Props) {
           dispatch(myProfile());
           setIsLoad(false);
 
-          if(type == 'DAILY_REPLAY' || type == 'PROFILE_CARD_ADD') {
+          if(type == 'DAILY_REPLAY' || type == 'PROFILE_CARD') {
             navigation.goBack();
           } else {
             getItemMatchedInfo();
@@ -469,14 +469,7 @@ export default function ItemMatching(props: Props) {
             )}
             
             {/* ############################################################## 프로필 인증 영역 */}
-            {data.second_auth_list.length > 0 ? (
-              <ProfileAuth level={data.match_member_info.auth_acct_cnt} data={data.second_auth_list} isButton={false} />
-            ) : (
-              <SpaceView mt={10} viewStyle={_styles.authNoDataArea}>
-                <SpaceView mb={8}><Text style={_styles.authNoDataTit}>프로필 인증없이 가입한 회원입니다.</Text></SpaceView>
-                <SpaceView><Text style={_styles.authNoDataSubTit}>프로필 인증은 직업, 학업, 소득, 자산, SNS, 차량 등의 인증 항목을 의미합니다.</Text></SpaceView>
-              </SpaceView>
-            )}
+            <ProfileAuth level={data.match_member_info.auth_acct_cnt} data={data.second_auth_list} isButton={false} />
 
             {/* ############################################################## 관심사 영역 */}
             {/* {data.interest_list.length > 0 && (
@@ -791,27 +784,5 @@ const _styles = StyleSheet.create({
     lineHeight: 23,
     minHeight: 70,
     textAlignVertical: 'center',
-  },
-  authNoDataArea: {
-    width: '100%',
-    backgroundColor: '#ffffff', 
-    paddingVertical: 15,
-    paddingHorizontal: 10,
-    borderWidth: 1, 
-    borderRadius: 10, 
-    borderColor: '#8E9AEB', 
-    borderStyle: 'dotted',
-  },
-  authNoDataTit: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 14,
-    color: '#7986EE',
-    textAlign: 'center',
-  },
-  authNoDataSubTit: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 10,
-    color: '#C3C3C8',
-    textAlign: 'center',
   },
 });

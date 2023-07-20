@@ -22,8 +22,6 @@ import { update_setting, member_logout, update_member_exit } from 'api/models';
 import { usePopup } from 'Context';
 import { myProfile } from 'redux/reducers/authReducer';
 import { SUCCESS } from 'constants/reusltcode';
-import { setPartialPrincipal } from 'redux/reducers/authReducer';
-import { isEmptyData } from 'utils/functions';
 
 
 /* ################################################################################################################
@@ -46,6 +44,7 @@ export const Profile = (props: Props) => {
 
   const memberBase = useUserInfo(); // 회원 기본정보
 
+
   const [emailId, setEmailId] = React.useState<any>(memberBase?.email_id);
   const [nickname, setNickname] = React.useState<any>(memberBase?.nickname);
   const [name, setName] = React.useState<any>(memberBase?.name);
@@ -55,9 +54,8 @@ export const Profile = (props: Props) => {
     memberBase?.phone_number
   );
   const [recommender, setRecommender] = React.useState<any>(memberBase?.recommender);
-  
 
-  // ###################################################################### 닉네임 저장 버튼
+  // 닉네임 저장 버튼
   const btnSaveNickName = async () => {
     let special_pattern = /[^a-zA-Z0-9ㄱ-힣]/g;
 
@@ -104,7 +102,7 @@ export const Profile = (props: Props) => {
     }
   };
 
-  // ###################################################################### 추천인 저장 버튼
+  // 추천인 저장 버튼
   const btnSaveRecommender = async () => {
 
     if(!recommender) {
@@ -143,6 +141,8 @@ export const Profile = (props: Props) => {
   // ###################################################################### 탈퇴 처리
   const exitProc = async () => {
     const { success, data } = await update_member_exit();
+    console.log('success ::: ', success);
+    console.log('data ::: ', data);
     if(success) {
       switch (data.result_code) {
         case SUCCESS:
@@ -162,7 +162,7 @@ export const Profile = (props: Props) => {
         confirmCallback: function() {}
       });
     }
-  };
+  }
 
 
 	// ###################################################################### 탈퇴 버튼
@@ -182,47 +182,33 @@ export const Profile = (props: Props) => {
     } finally {
       
     }
-  };
+  }
 
 	// ###################################################################### 비밀번호 변경 버튼
 	const btnChangePassword = async () => {
 		navigation.navigate('ChangePassword', {});
-	};
+	}
 
   // ###################################################################### 내 계정 정보 저장
   const saveMemberBase = async (dataJson:any) => {
     const body = dataJson;
     try {
       const { success, data } = await update_setting(body);
+
       if (success) {
         if (data.result_code == '0000' || data.result_code == '0055') {
-          dispatch(setPartialPrincipal({
-            mbr_base : data.mbr_base
-          }));
-
-          //let content = data.result_code == '0055'?'입력하신 추천인이 등록되었습니다.':'저장되었습니다.';
-          let content = '저장되었습니다.';
-
-          if(isEmptyData(dataJson.nickname)) {
-            content = '닉네임이 변경되었습니다.';
-          } else if(isEmptyData(dataJson.recommender)) {
-            content = '추천인이 등록되었습니다.';
-          }
-
-          show({
-            type: 'RESPONSIVE',
-            content: content,
-          });
+          let content = data.result_code == '0055'?'입력하신 추천인이 등록되었습니다.':'저장되었습니다.';
+          dispatch(myProfile());
+          show({ content: content });
 
           /* navigation.navigate(STACK.TAB, {
             screen: 'Roby',
           }); */
-
         } else if (data.result_code == '6010') {
           show({ content: '보유 패스가 부족합니다.' });
           return false;
         } else if (data.result_code == '8005') {
-          show({ content: '존재하지 않는 추천인 입니다.' });
+          show({ content: '존재하지 않는 닉네임 입니다.' });
           return false;
         } else if (data.result_code == '8006') {
           show({ content: '이미 사용하고 있는 닉네임 입니다.' });

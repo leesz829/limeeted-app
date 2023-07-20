@@ -24,7 +24,6 @@ interface PopupContextProps {
 
 export const PopupProvider = ({ children }: any) => {
   const [visible, setVisible] = useState(false);
-  const [visibleResponsive, setVisibleResponsive] = useState(false);
   const [contents, setContents] = useState<PopupContextProps>({
     title: '',
     content: '',
@@ -42,16 +41,11 @@ export const PopupProvider = ({ children }: any) => {
   });
 
   function show(content: PopupContextProps) {
-    if(content.type == 'RESPONSIVE') {
-      setVisibleResponsive(true);
-    } else {
-      setVisible(true);
-    }
+    setVisible(true);
     setContents(content);
   }
   function hide() {
     setVisible(false);
-    
     setContents({
       title: '',
       content: '',
@@ -93,8 +87,8 @@ export const PopupProvider = ({ children }: any) => {
         />
       ) : contents.type == 'RESPONSIVE' ? (
         <ResponsivePopup
-          popupVisible={visibleResponsive}
-          setPopupVIsible={setVisibleResponsive}
+          popupVisible={visible}
+          setPopupVIsible={setVisible}
           text={contents.content}
           subText={contents.subContent}
         />
