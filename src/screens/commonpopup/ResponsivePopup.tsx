@@ -76,7 +76,7 @@ export const ResponsivePopup = (props: Props) => {
 				}),
 			]).start();
 
-		  	// 팝업이 표시된 후 3초 후에 자동으로 닫히도록 설정
+		  	// 팝업이 표시된 후 1초 후에 자동으로 닫히도록 설정
 			const timer = setTimeout(() => {
 
 				Animated.parallel([
@@ -94,7 +94,7 @@ export const ResponsivePopup = (props: Props) => {
 
 				/* fadeAnimation.setValue(0);
 		  		transYAnimation.setValue(-50); */
-			}, 1000);
+			}, 1300);
 
 			// 컴포넌트가 언마운트될 때 타이머를 정리하여 메모리 누수 방지
 			return () => clearTimeout(timer);
@@ -133,12 +133,12 @@ export const ResponsivePopup = (props: Props) => {
   return (
     <>
 		{props.popupVisible &&
-			<Animated.View style={[_styles.exam, { 
+			<Animated.View style={[_styles.animateArea(height), { 
 				opacity: fadeAnimation,
 				transform: [{translateY: transYAnimation}]
 			}]}>
 
-				<Text style={[_styles.examText]}>{props.text}</Text>
+				<Text style={[_styles.animateAreaText]}>{props.text}</Text>
 			</Animated.View>
 		}
     </>
@@ -155,18 +155,20 @@ export const ResponsivePopup = (props: Props) => {
 ####################################################################################################### */}
 
 const _styles = StyleSheet.create({
-	exam: {
-		position: 'absolute',
-		top: 30,
-		left: 0,
-		right: 0,
-		backgroundColor: '#464646',
-		zIndex: 99999,
-		//width: '80%',
-		marginHorizontal: 50,
-		borderRadius: 50,
+	animateArea: (height) => {
+		return {
+			position: 'absolute',
+			top: height/2.4,
+			left: 0,
+			right: 0,
+			backgroundColor: '#464646',
+			zIndex: 99999,
+			//width: '80%',
+			marginHorizontal: 50,
+			borderRadius: 50,
+		};
 	},
-	examText: {
+	animateAreaText: {
 		textAlign: 'center',
 		color: '#fff',
 		paddingVertical: 5,

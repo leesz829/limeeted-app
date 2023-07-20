@@ -325,6 +325,14 @@ export default function Matching(props: Props) {
           dispatch(myProfile());
           getDailyMatchInfo();
           setIsLoad(false);
+
+          if(activeType == 'zzim') {
+            show({
+              type: 'RESPONSIVE',
+              content: '찜하기가 성공되었습니다.\n보관함에서 찜한 이성을 확인해 주세요.',
+            });
+          }
+
         } else if (data.result_code == '6010') {
           show({ content: '보유 패스가 부족합니다.' });
           return false;
@@ -484,7 +492,7 @@ export default function Matching(props: Props) {
         navigation.navigate(STACK.COMMON, {
           screen: 'ItemMatching'
           , params : {
-            type: 'PROFILE_CARD',
+            type: 'PROFILE_CARD_ADD',
             memberSeqList: memberSeqList,
             matchSeq: data.match_seq,
           }
@@ -609,7 +617,14 @@ export default function Matching(props: Props) {
             )}
             
             {/* ############################################################## 프로필 인증 영역 */}
-            <ProfileAuth level={matchData.match_member_info.auth_acct_cnt} data={matchData.second_auth_list} isButton={false} />
+            {matchData.second_auth_list.length > 0 ? (
+              <ProfileAuth level={matchData.match_member_info.auth_acct_cnt} data={matchData.second_auth_list} isButton={false} />
+            ) : (
+              <SpaceView mt={10} viewStyle={_styles.authNoDataArea}>
+                <SpaceView mb={8}><Text style={_styles.authNoDataTit}>프로필 인증없이 가입한 회원입니다.</Text></SpaceView>
+                <SpaceView><Text style={_styles.authNoDataSubTit}>프로필 인증은 직업, 학업, 소득, 자산, SNS, 차량 등의 인증 항목을 의미합니다.</Text></SpaceView>
+              </SpaceView>
+            )}
 
             {/* ############################################################## 관심사 영역 */}
             {/* {data.interest_list.length > 0 && (
@@ -1160,6 +1175,28 @@ const _styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 80,
+  },
+  authNoDataArea: {
+    width: '100%',
+    backgroundColor: '#ffffff', 
+    paddingVertical: 15,
+    paddingHorizontal: 10,
+    borderWidth: 1, 
+    borderRadius: 10, 
+    borderColor: '#8E9AEB', 
+    borderStyle: 'dotted',
+  },
+  authNoDataTit: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 14,
+    color: '#7986EE',
+    textAlign: 'center',
+  },
+  authNoDataSubTit: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 10,
+    color: '#C3C3C8',
+    textAlign: 'center',
   },
 });
 

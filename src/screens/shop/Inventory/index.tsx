@@ -39,7 +39,7 @@ export default function Inventory() {
   const dispatch = useDispatch();
 
 
-  // 데이터 조회
+  // ########################################################################################## 데이터 조회
   const fetchData = async (item:any) => {
     const body = {
       cate_group_code: item.value
@@ -59,23 +59,13 @@ export default function Inventory() {
     await AsyncStorage.setItem('INVENTORY_CONNECT_DT', formatNowDate());
   }
 
-  useFocusEffect(
-    React.useCallback(() => {
-      async function fetch() {
-        onPressTab(categories[0]);
-      };
-      fetch();
-      return async() => {
-      };
-    }, []),
-  );
-
+  // ########################################################################################## 탭 클릭
   const onPressTab = (item:any) => {
     setTab(item);
     fetchData(item);
   };
 
-  // ########################################## 아이템 사용
+  // ########################################################################################## 아이템 사용
   const useItem = async (item) => {
     show({
       title: '사용/획득',
@@ -91,6 +81,7 @@ export default function Inventory() {
           cate_group_code: item.cate_group_code,
           cate_common_code: item.cate_common_code
         };
+
         try {
           const { success, data } = await use_item(body);
           if(success) {
@@ -99,13 +90,23 @@ export default function Inventory() {
                 if(body.cate_common_code == 'STANDARD'){
                   // 조회된 매칭 노출 회원
                   // "profile_member_seq_list"
-                  /* navigation.navigate(STACK.COMMON, {
-                    screen: 'ItemMatching'
-                    , params : {
-                      memberSeqList: data.profile_member_seq_list.toString()
+
+                  let memberSeqList = [];
+                  data.profile_member_seq_list.map((item, index) => {
+                    memberSeqList.push(item.member_seq);
+                  });
+
+                  console.log('memberSeqList :::::::: ', memberSeqList);
+
+                  navigation.navigate(STACK.COMMON, {
+                    screen: 'ItemMatching',
+                    params : {
+                      type: 'PROFILE_CARD_ITEM',
+                      memberSeqList: memberSeqList,
                     }
-                  }); */
+                  });
                 }
+
                 dispatch(myProfile());
                 // navigation.navigate(STACK.TAB, { screen: 'Shop' });
                 fetchData(tab);
@@ -137,6 +138,18 @@ export default function Inventory() {
       }
     });
   }
+
+  // ########################################################################################## 포커스 실행 함수
+  useFocusEffect(
+    React.useCallback(() => {
+      async function fetch() {
+        onPressTab(categories[0]);
+      };
+      fetch();
+      return async() => {
+      };
+    }, []),
+  );
 
   function ListHeaderComponent() {
     return (
