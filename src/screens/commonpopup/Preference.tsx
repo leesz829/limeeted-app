@@ -238,6 +238,16 @@ export const Preference = (props: Props) => {
           show({ content: '선호 이성의 나이를 확인해 주세요.' });
           return false;
         }
+
+        if(wantAgeMin > wantAgeMax) {
+          show({ content: '선호 이성의 나이는 최대값이 최소값보다 많거나 같아야 합니다.' });
+          return false;
+        }
+
+        if(wantLocal1 >= wantLocal2) {
+          show({ content: '거리는 최대값이 최소값보다 많아야 합니다.' });
+          return false;
+        }
     
         const body = {
           ideal_type_seq: idealTypeSeq,

@@ -96,7 +96,7 @@ export const ResponsivePopup = (props: Props) => {
 		  		transYAnimation.setValue(-50); */
 
 				props.setPopupVIsible(false);
-			}, 1300);
+			}, 1500);
 
 			// 컴포넌트가 언마운트될 때 타이머를 정리하여 메모리 누수 방지
 			return () => clearTimeout(timer);

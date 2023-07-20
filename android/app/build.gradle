@@ -140,8 +140,8 @@ android {
         applicationId "com.appsquad.limeeted"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 86
-        versionName "1.7.10"
+        versionCode 87
+        versionName "1.7.11"
         missingDimensionStrategy 'store', 'play'
         resValue 'string', "CODE_PUSH_APK_BUILD_TIME", String.format("\"%d\"", System.currentTimeMillis())
         vectorDrawables.useSupportLibrary true
