@@ -17,27 +17,34 @@ import { IMAGE, PROFILE_IMAGE, findSourcePath } from 'utils/imageUtils';
 
 
 const { width, height } = Dimensions.get('window');
-
 export default function EventDetail(element) {
   const { show } = usePopup(); // 공통 팝업
   const [isLoading, setIsLoading] = useState(false);
   
   const [subImgPath, setSubImgPath] = useState(element.route.params.sub_img_path);
-
+  
   const [index, setIndex] = useState(element.route.params.index);
+  const [imgPosition, setImgPosition] = useState({ x:0, y:0 });
   const ref = useRef();
   
+  const imgLayout = (event) => {
+    const { x, y } = event.nativeEvent.layout;
+    setImgPosition({x,y});
+    ref.current.scrollTo({y:y, animated:true});
+  };
+  
   React.useEffect(() => {
-    ref.current.scrollTo({y:(height-80)*index ,animated:true});
+
   }, []);
 
   return (
     <>
       <CommonHeader title="이벤트 상세"/>
-
       <ScrollView ref={ref}>
-        <View><Image source={findSourcePath(subImgPath)} style={{width: width, height: height-80}} resizeMode={'cover'} /></View>
-        <View><Image source={findSourcePath(subImgPath)} style={{width: width, height: height-80}} resizeMode={'cover'} /></View>
+          <View onLayout={index === 0 ? imgLayout : null}><Image source={findSourcePath(subImgPath)} style={{width: width, height: height}} resizeMode={'cover'} /></View>
+          <View onLayout={index === 1 ? imgLayout : null}><Image source={findSourcePath(subImgPath)} style={{width: width, height: height-340}} resizeMode={'cover'} /></View>
+          <View onLayout={index === 2 ? imgLayout : null}><Image source={findSourcePath(subImgPath)} style={{width: width, height: height-460}} resizeMode={'cover'} /></View> 
+          <View onLayout={index === 3 ? imgLayout : null}><Image source={findSourcePath(subImgPath)} style={{width: width, height: height+280}} resizeMode={'cover'} /></View> 
       </ScrollView>
     </>
   );
