@@ -59,7 +59,7 @@ export const ResponsivePopup = (props: Props) => {
 
   const [isVisible, setIsvisible] = React.useState(true);
   const fadeAnimation = React.useRef(new Animated.Value(0)).current;
-	const transYAnimation = React.useRef(new Animated.Value(-50)).current;
+  const transYAnimation = React.useRef(new Animated.Value(-50)).current;
 
   const action02 = (isActive:boolean) => {
 		if(isActive) {
@@ -161,9 +161,8 @@ const _styles = StyleSheet.create({
 			top: height/2.4,
 			left: 0,
 			right: 0,
-			backgroundColor: '#464646',
+			backgroundColor: 'rgba(70, 70, 70, 0.85)',
 			zIndex: 99999,
-			//width: '80%',
 			marginHorizontal: 50,
 			borderRadius: 50,
 		};
