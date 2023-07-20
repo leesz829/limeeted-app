@@ -722,7 +722,11 @@ export const Live = () => {
      */
   function RenderItem({ item }) {
     const url = item?.url?.uri;
-    const imgHeight = height / 1.5;
+    let imgHeight = height / 1.5;
+
+    if(height > 700 && height < 800) {
+      imgHeight = height / 1.35;
+    };
 
     return (
       <>
