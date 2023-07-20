@@ -26,6 +26,7 @@
     "@invertase/react-native-apple-authentication": "2.2.2",
     "@kichiyaki/react-native-barcode-generator": "^0.6.7",
     "@miblanchard/react-native-slider": "^2.2.0",
+    "@react-native-admob/admob": "^2.0.1",
     "@react-native-community/async-storage": "1.12.1",
     "@react-native-community/datetimepicker": "5.1.0",
     "@react-native-community/push-notification-ios": "1.10.1",

@@ -4,13 +4,12 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
 import { Color } from 'assets/styles/Color';
 import { layoutStyle, styles, modalStyle, commonStyle } from 'assets/styles/Styles';
-import axios from 'axios';
 import { CommonBtn } from 'component/CommonBtn';
 import CommonHeader from 'component/CommonHeader';
 import { CommonInput } from 'component/CommonInput';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
-import { Image, ScrollView, StyleSheet, View, TouchableOpacity, Dimensions } from 'react-native';
+import { Image, ScrollView, StyleSheet, View, TouchableOpacity, Dimensions, Platform } from 'react-native';
 import { ICON } from 'utils/imageUtils';
 import { usePopup } from 'Context';
 import { CommonSwich } from 'component/CommonSwich';
@@ -19,10 +18,8 @@ import { Terms } from 'screens/commonpopup/terms';
 import { Privacy } from 'screens/commonpopup/privacy';
 import { LocationService } from 'screens/commonpopup/locationService';
 import ToggleSwitch from 'toggle-switch-react-native';
-import AsyncStorage from '@react-native-community/async-storage';
-import { FCM_TOKEN } from 'constants/storeKey';
-import { get_member_chk } from 'api/models';
-import { ROUTES } from 'constants/routes';
+import { BannerAd, BannerAdSize, useInterstitialAd, TestIds, RewardedAd } from '@react-native-admob/admob';
+
 
 
 /* ################################################################################################################
@@ -36,7 +33,7 @@ interface Props {
 export const Policy = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
 
-  const { show } = usePopup();  // 공통 팝업
+  //const { show } = usePopup();  // 공통 팝업
   const { width, height } = Dimensions.get('window');
 
   const [allAgree, setAllAgree] = useState<boolean>(false);
@@ -44,6 +41,12 @@ export const Policy = (props: Props) => {
   const [privacyAgree, setPrivacyAgree] = useState<boolean>(false); // 개인정보처리방침
   const [locationAgree, setLocationAgree] = useState<boolean>(false); // 위치기반서비스
   const [mrktAgree, setMrktAgree] = useState<boolean>(false); // 마케팅 수신동의
+
+  /* const PLATFORM_FULLPAGE_AD_ID = Platform.select({
+    ios: 'ca-app-pub-7259908680706846~2194056790',
+    android: 'ca-app-pub-7259908680706846~5492241778',
+  }) || '';
+  const { adLoaded, adDismissed, show, load } = useInterstitialAd(PLATFORM_FULLPAGE_AD_ID); */
 
   // 전체 동의
   const allAgreeBtn = async (value: boolean) => {
@@ -126,6 +129,19 @@ export const Policy = (props: Props) => {
     });
 
   }
+
+  /* useEffect(() => {
+    const userVisitedToAd = adLoaded && adDismissed;
+    if (userVisitedToAd) {
+      // stage save
+      navigation.push('Policy');
+      
+      // load new ad for next time
+      load();
+      show();
+    }
+    
+  }, [adLoaded, adDismissed]); */
 
   return (
     <>
@@ -247,6 +263,13 @@ export const Policy = (props: Props) => {
             </View>
           </SpaceView>
         </SpaceView>
+
+        {/* Admob 배너 광고 */}
+        {/* <SpaceView mb={60} viewStyle={{alignItems:'center', justifyContent:'center'}}>
+          <SpaceView viewStyle={{alignItems:'center', justifyContent:'center'}}>
+            <BannerAd size={BannerAdSize.BANNER} unitId={TestIds.BANNER} />
+          </SpaceView>
+        </SpaceView> */}
 
         <SpaceView>
           <CommonBtn

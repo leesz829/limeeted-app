@@ -256,6 +256,8 @@ dependencies {
     // firebase
     //implementation platform('com.google.firebase:firebase-bom:29.1.0')
     //implementation "com.google.firebase:firebase-analytics"
+
+    implementation 'com.google.android.gms:play-services-ads:22.2.0'
 }
 
 // Run this once to be able to run the application with BUCK
