@@ -66,7 +66,8 @@ export const GuidePopup = (props: Props) => {
           <View style={_styles.guideModalArea(height)}>
             <ScrollView 
               showsVerticalScrollIndicator={false}
-              scrollEnabled={height < 800 ? true : false} >
+              scrollEnabled={height < 800 ? true : false}
+              style={_styles.guideScrollArea}>
 
               <View style={[_styles.guideModalStyle]}>
 
@@ -471,16 +472,23 @@ const _styles = StyleSheet.create({
   guideModalArea: (height) => {
     return {
       maxHeight: height - 50,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginHorizontal: 30,
       borderRadius: 15,
-      //backgroundColor: 'white',
       overflow: 'hidden',
     };
+  },
+  guideScrollArea: {
+
   },
   guideModalStyle: {
     //width: width - 62,
     backgroundColor: 'white',
     paddingHorizontal: 0,
     borderRadius: 15,
+    overflow: 'hidden',
   },
 
 });
