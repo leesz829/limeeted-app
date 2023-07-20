@@ -647,7 +647,14 @@ export const StorageProfile = (props: Props) => {
         <View style={_styles.padding}>
 
           {/* ############################################################## 프로필 인증 영역 */}
-          <ProfileAuth level={data.match_member_info.auth_acct_cnt} data={data.second_auth_list} isButton={false} />
+          {data.second_auth_list.length > 0 ? (
+            <ProfileAuth level={data.match_member_info.auth_acct_cnt} data={data.second_auth_list} isButton={false} />
+          ) : (
+            <SpaceView mt={10} viewStyle={_styles.authNoDataArea}>
+              <SpaceView mb={8}><Text style={_styles.authNoDataTit}>프로필 인증없이 가입한 회원입니다.</Text></SpaceView>
+              <SpaceView><Text style={_styles.authNoDataSubTit}>프로필 인증은 직업, 학업, 소득, 자산, SNS, 차량 등의 인증 항목을 의미합니다.</Text></SpaceView>
+            </SpaceView>
+          )}
 
           
           {/* ############################################################## 관심사 영역 */}
@@ -883,5 +890,27 @@ const _styles = StyleSheet.create({
     letterSpacing: 0,
     textAlign: 'left',
     color: '#ed4771',
+  },
+  authNoDataArea: {
+    width: '100%',
+    backgroundColor: '#ffffff', 
+    paddingVertical: 15,
+    paddingHorizontal: 10,
+    borderWidth: 1, 
+    borderRadius: 10, 
+    borderColor: '#8E9AEB', 
+    borderStyle: 'dotted',
+  },
+  authNoDataTit: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 14,
+    color: '#7986EE',
+    textAlign: 'center',
+  },
+  authNoDataSubTit: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 10,
+    color: '#C3C3C8',
+    textAlign: 'center',
   },
 });

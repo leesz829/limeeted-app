@@ -148,7 +148,7 @@ export const Approval = (props: Props) => {
                   {authList.map((item:any, index) => {
                     if(item.auth_status == 'REFUSE') {
                       return (
-                        <View style={_styles.refuseIconItem}>
+                        <View key={index} style={_styles.refuseIconItem}>
                           {item.common_code == 'JOB' && <Image source={ICON.refuseJobIcon} style={_styles.refuseIcon} />}
                           {item.common_code == 'EDU' && <Image source={ICON.refuseEduIcon} style={_styles.refuseIcon} />}
                           {item.common_code == 'INCOME' && <Image source={ICON.refuseIncomeIcon} style={_styles.refuseIcon} />}

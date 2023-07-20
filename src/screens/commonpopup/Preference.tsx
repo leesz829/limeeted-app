@@ -40,6 +40,7 @@ import { usePopup } from 'Context';
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
 import { ROUTES, STACK } from 'constants/routes';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { CommonLoading } from 'component/CommonLoading';
 
 
 
@@ -60,6 +61,7 @@ export const Preference = (props: Props) => {
 
   const isFocus = useIsFocused();
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const { show } = usePopup();  // 공통 팝업
 
@@ -229,6 +231,7 @@ export const Preference = (props: Props) => {
     // 중복 클릭 방지 설정
     if(isClickable) {
       setIsClickable(false);
+      setIsLoading(true);
 
       try {
         if(wantAgeMin < 19) {
@@ -257,17 +260,25 @@ export const Preference = (props: Props) => {
         if(success) {
           if(data.result_code == '0000') {  
             dispatch(setPartialPrincipal({mbr_ideal_type : data.mbr_ideal_type}));
-            //dispatch(mbrReducer.setIdealType(data.mbr_ideal_type));
-            //show({ content: '저장되었습니다.' });
   
-            show({ 
+            /* show({ 
               content: '저장되었습니다.' ,
               confirmCallback: function() {
                 navigation.navigate(STACK.TAB, {
                   screen: 'Roby',
                 });
               }
+            }); */
+
+            show({
+              type: 'RESPONSIVE',
+              content: '내 선호 이성 정보가 저장되었습니다.',
             });
+
+            navigation.navigate(STACK.TAB, {
+              screen: 'Roby',
+            });
+
           } else {
             show({ content: '오류입니다. 관리자에게 문의해주세요.' });
             return false;
@@ -277,6 +288,7 @@ export const Preference = (props: Props) => {
         console.log(error);
       } finally {
         setIsClickable(true);
+        setIsLoading(false);
       }
 
     }
@@ -342,6 +354,8 @@ export const Preference = (props: Props) => {
 
   return (
     <>
+      {isLoading && <CommonLoading />}
+
       <CommonHeader title={'내 선호 이성'} />
       <ScrollView style={[ styles.scrollContainer ]}>
 
