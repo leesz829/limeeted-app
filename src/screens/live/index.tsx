@@ -98,9 +98,6 @@ export const Live = () => {
   // 평가 확인 클릭 여부 함수
   const [isClickable, setIsClickable] = useState(true);
 
-  const [titleAreaHeight, setTitleAreaHeight] = useState(0);
-
-
 
   // ####################################################################################### 평점 선택 콜백 함수
   const scoreSelectedCallBackFunc = (score: number) => {
@@ -502,13 +499,7 @@ export const Live = () => {
       <TopNavigation currentPath={'LIVE'} />
 
       <View style={_styles.root}>
-        <View 
-          style={_styles.titArea}
-          onLayout={(event) => {
-            const { height } = event.nativeEvent.layout;
-            setTitleAreaHeight(height);
-          }}>
-
+        <View style={_styles.titArea}>
           {pageIndex == 1 && <Text style={_styles.titText}><Text style={{color: '#97A1EF'}}>{data.live_member_info.nickname}</Text>님의{'\n'}프로필 평점을 선택해 주세요.</Text>}
           {pageIndex == 2 && <Text style={_styles.titText}><Text style={{color: '#97A1EF'}}>{data.live_member_info.nickname}</Text>님의{'\n'}인상을 선택해 주세요.</Text>}
         </View>
@@ -731,17 +722,7 @@ export const Live = () => {
      */
   function RenderItem({ item }) {
     const url = item?.url?.uri;
-
-    //console.log('titleAreaHeight ::::: ' , titleAreaHeight);
-
-    //const imgHeight = Platform.OS == 'android' ? height * 0.75 : (height * 0.72) - (width * 0.13);
-    //const imgHeight = height - titleAreaHeight - 150;
-    const imgHeight = height - titleAreaHeight - (170-(height/20));
-    //const imgHeight = height * 0.75;
-
-    /* console.log('height ::::: ' , height);
-    console.log('imgHeight ::::: ' , imgHeight);
-    console.log('height1111 ::::: ' , 190-(height/20)); */
+    const imgHeight = height / 1.5;
 
     return (
       <>
