@@ -94,6 +94,8 @@ export const ResponsivePopup = (props: Props) => {
 
 				/* fadeAnimation.setValue(0);
 		  		transYAnimation.setValue(-50); */
+
+				props.setPopupVIsible(false);
 			}, 1300);
 
 			// 컴포넌트가 언마운트될 때 타이머를 정리하여 메모리 누수 방지
@@ -109,11 +111,6 @@ export const ResponsivePopup = (props: Props) => {
     action02(true);
   }, [props]);
 
-
-
-
-
-
   /* React.useEffect(() => {
 		if (isVisible) {
 			// 팝업이 표시된 후 3초 후에 자동으로 닫히도록 설정
@@ -125,8 +122,6 @@ export const ResponsivePopup = (props: Props) => {
 			return () => clearTimeout(timer);
 		}
 	}, [isVisible]); */
-
-
 
   // ################################################################ 초기 실행 함수
 

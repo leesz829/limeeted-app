@@ -602,7 +602,7 @@ export const Signup01 = (props: Props) => {
 const AuthItemRender = (dataObj: any) => {
   const data = dataObj.data;
 
-  let imgSrc:any = '';
+  let imgSrc:any;
   let authDesc = '';
 
   if(data.common_code == 'JOB') {
