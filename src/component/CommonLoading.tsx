@@ -26,7 +26,7 @@ const _styles = StyleSheet.create({
   },
   loadingDim : {
     backgroundColor: 'black',
-    opacity: 0.2,
+    opacity: 0.1,
     position: 'absolute',
     width: '100%',
     height: '100%',
