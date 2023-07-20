@@ -319,6 +319,29 @@ export const Signup01 = (props: Props) => {
       , snsData
       , vehicleData
     })
+  };
+
+  // ############################################################################# 다음 버튼
+  const nextBtn = async () => {
+
+    /* if(props.route.params.gender == 'M' && typeof secondData.jobData.member_seq == 'undefined' && typeof secondData.eduData.member_seq == 'undefined' && typeof secondData.incomeData.member_seq == 'undefined'
+      && typeof secondData.assetData.member_seq == 'undefined' && typeof secondData.snsData.member_seq == 'undefined' && typeof secondData.vehicleData.member_seq == 'undefined') {
+      show({
+        title: '안내',
+        content: '프로필 인증은 최소 1개 필수 등록해주셔야 합니다.' ,
+        confirmCallback: function() {}
+      });
+    } else {
+      navigation.navigate('Signup02', {
+        memberSeq: props.route.params.memberSeq,
+        gender: props.route.params.gender,
+      });
+    } */
+
+    navigation.navigate('Signup02', {
+      memberSeq: props.route.params.memberSeq,
+      gender: props.route.params.gender,
+    });
   }
 
   // ############################################################################# 최초 실행
@@ -361,12 +384,9 @@ export const Signup01 = (props: Props) => {
             아래 버튼을 선택 후{'\n'}인증 뱃지를 등록 할 수 있습니다.
           </CommonText>
 
-          {props.route.params.gender == 'W' &&
-            <CommonText textStyle={_styles.femaleInfoText}>
-              여성 회원은 인증 뱃지 등록을 하지 않아도 가입 심사 기간 동안{'\n'}
-              프로필 평점 7.0 이상이 되면 가입 승인 처리됩니다.
-            </CommonText>
-          }
+          <CommonText textStyle={_styles.femaleInfoText}>
+            인증 뱃지 등록은 선택 사항이며 다음 단계로 넘어갈 수 있습니다.
+          </CommonText>
         </SpaceView>
 
         {/* <SpaceView mb={24}>
@@ -416,20 +436,7 @@ export const Signup01 = (props: Props) => {
           height={60}
           borderRadius={1}
           onPress={() => {
-
-            if(props.route.params.gender == 'M' && typeof secondData.jobData.member_seq == 'undefined' && typeof secondData.eduData.member_seq == 'undefined' && typeof secondData.incomeData.member_seq == 'undefined'
-              && typeof secondData.assetData.member_seq == 'undefined' && typeof secondData.snsData.member_seq == 'undefined' && typeof secondData.vehicleData.member_seq == 'undefined') {
-              show({
-                title: '안내',
-                content: '프로필 인증은 최소 1개 필수 등록해주셔야 합니다.' ,
-                confirmCallback: function() {}
-              });
-            } else {
-              navigation.navigate('Signup02', {
-                memberSeq: props.route.params.memberSeq,
-                gender: props.route.params.gender,
-              });
-            }
+            nextBtn();
           }}
         />
       </SpaceView>
@@ -648,22 +655,22 @@ const AuthItemRender = (dataObj: any) => {
           </View>
         )}
 
-        {data.auth_status == 'PROGRESS' ? (
-          <View style={[layoutStyle.row, _styles.statusArea2]}>
-            <CommonText
-              type={'h7'} 
-              fontWeight={'500'} 
-              color={ColorType.white}>
-                심사중
-            </CommonText>
-          </View>
-        ) : null}
-
         <SpaceView>
           <View style={[layoutStyle.row, layoutStyle.alignCenter]}>
             <CommonText type={'h4'} fontWeight={'700'}>{data.code_name}</CommonText>
             <Image source={ICON.arrRight} style={styles.arrowIcon} />
           </View>
+
+          {data.auth_status == 'PROGRESS' ? (
+            <View style={[_styles.statusArea2]}>
+              <CommonText
+                type={'h7'} 
+                fontWeight={'500'} 
+                color={ColorType.white}>
+                  심사중
+              </CommonText>
+            </View>
+          ) : null}
         </SpaceView>
 
         <CommonText
@@ -701,7 +708,7 @@ const _styles = StyleSheet.create({
     return {
       position: 'absolute',
       top: 10,
-      right: 10,
+      right: 16,
       borderWidth: status === 'REFUSE' ? 0 : 1,
       borderColor: '#697AE6',
       borderRadius: 5,
@@ -720,8 +727,8 @@ const _styles = StyleSheet.create({
   },
   statusArea2: {
     position: 'absolute',
-    bottom: 65,
-    right: 10,
+    bottom: 8,
+    right: 0,
     backgroundColor: '#697AE6',
     borderWidth: 1,
     borderColor: '#697AE6',
@@ -729,11 +736,10 @@ const _styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   femaleInfoText: {
-    color: '#9A9A9A',
+    color: '#FE0456',
     fontSize: 13,
     fontFamily: 'AppleSDGothicNeoM00',
-    lineHeight: 16,
-    marginTop: 5,
+    marginTop: 3,
   },
 });
 
