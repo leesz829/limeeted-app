@@ -852,6 +852,7 @@ const _styles = StyleSheet.create({
       paddingHorizontal: isBlur ? 9 : 0,
       paddingVertical: isBlur ? 2 : 0,
       borderRadius: isBlur ? 20 : 0,
+      overflow: 'hidden',
     }
   },
   tabItem: (isOn: boolean, itemColor: string) => {
@@ -911,6 +912,7 @@ const _styles = StyleSheet.create({
     paddingHorizontal: 13,
     paddingVertical: 2,
     borderRadius: 15,
+    overflow: 'hidden',
   },
   whiteText: {
     fontFamily: 'AppleSDGothicNeoEB00',
