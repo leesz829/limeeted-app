@@ -1042,7 +1042,7 @@ const _styles = StyleSheet.create({
   },
   backBtnText: {
     backgroundColor: 'rgba(150, 146, 161, 0.65)',
-    borderRadius: 20,
+    borderRadius: Platform.OS == 'android' ? 20 : 13,
     paddingVertical: 3,
     color: '#fff',
     textAlign: 'center',

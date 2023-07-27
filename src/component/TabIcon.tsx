@@ -133,7 +133,7 @@ const _style = StyleSheet.create({
   },
   shopIconArea: {
     position: 'absolute',
-    top: -7,
+    top: -3,
     right: 16,
   },
   shopLimitArea: {

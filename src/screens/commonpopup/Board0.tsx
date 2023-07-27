@@ -2,7 +2,7 @@ import { styles, layoutStyle } from 'assets/styles/Styles';
 import CommonHeader from 'component/CommonHeader';
 import { useState } from 'react';
 import * as React from 'react';
-import { ScrollView, View, Image, Modal, TouchableOpacity, Alert, Text, StyleSheet, Dimensions } from 'react-native';
+import { ScrollView, View, Image, Modal, TouchableOpacity, Alert, Text, StyleSheet, Dimensions, Platform } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
 import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
@@ -258,7 +258,7 @@ const _styles = StyleSheet.create({
 			color: '#fff',
 			backgroundColor: color,
 			textAlign: 'center',
-			borderRadius: 10,
+			borderRadius: Platform.OS == 'android' ? 10 : 7,
 			marginRight: 5,
 			overflow: 'hidden',
 		};
