@@ -692,11 +692,14 @@ export const Live = () => {
             </View>
           </View>
 
-          <SpaceView viewStyle={{position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: '#fff', alignItems:'center', justifyContent:'center'}}>
-            <SpaceView viewStyle={{alignItems:'center', justifyContent:'center'}}>
-              <BannerAd size={BannerAdSize.BANNER} unitId={'ca-app-pub-7259908680706846~5492241778'} />
+          {Platform.OS == 'android' &&
+            <SpaceView viewStyle={{position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: '#fff', alignItems:'center', justifyContent:'center'}}>
+              <SpaceView viewStyle={{alignItems:'center', justifyContent:'center'}}>
+                <BannerAd size={BannerAdSize.BANNER} unitId={'ca-app-pub-7259908680706846~5492241778'} />
+              </SpaceView>
             </SpaceView>
-          </SpaceView>
+          }
+
         </>
       ) : (
         <View
@@ -1045,6 +1048,7 @@ const _styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 16,
     fontFamily: 'AppleSDGothicNeoR00',
+    overflow: 'hidden',
   },
   
 });
