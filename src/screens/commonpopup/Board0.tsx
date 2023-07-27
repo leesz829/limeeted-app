@@ -130,11 +130,17 @@ export const Board0 = (props: Props) => {
 								}}>
 								
 								<View style={[_styles.titleContainer, activeIndex === item.board_seq && _styles.active]}>
-									{/* <View style={{flexDirection:'row'}}>
-										{item.new_yn == 'Y' && (
-											<Text style={_styles.iconType('#FF67F0')}>NEW</Text>
-										)}
-									</View> */}
+									<View style={{flexDirection:'row'}}>
+										{item.board_type == 'EVENT' &&
+											<Text style={_styles.iconType('#FEE16F')}>이벤트</Text>
+										}
+										{(item.board_type == 'RECENT_NEWS' && item.board_sub_type == 'NOTICE') &&
+											<Text style={_styles.iconType('#00FFDC')}>공지사항</Text>
+										}
+										{(item.board_type == 'RECENT_NEWS' && item.board_sub_type == 'GUIDE') &&
+											<Text style={_styles.iconType('#7F67FF')}>가이드</Text>
+										}
+									</View>
 
 									<View>
 										{(item.new_yn == 'Y' && item.view_yn == 'N') && (
