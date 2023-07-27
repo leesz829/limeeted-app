@@ -260,6 +260,7 @@ const _styles = StyleSheet.create({
 			textAlign: 'center',
 			borderRadius: 10,
 			marginRight: 5,
+			overflow: 'hidden',
 		};
 	},
 	newIcon: {
