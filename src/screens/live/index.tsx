@@ -38,7 +38,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import Modal from 'react-native-modal';
 import { ColorType } from '@types';
 import { isEmptyData } from 'utils/functions';
-
+import { BannerAd, BannerAdSize, useInterstitialAd, TestIds, RewardedAd } from '@react-native-admob/admob';
 
 
 /* ################################################################################################################
@@ -100,9 +100,8 @@ export const Live = () => {
 
 
   // ####################################################################################### 평점 선택 콜백 함수
-  const scoreSelectedCallBackFunc = (score: number) => {
+  const scoreSelectedCallBackFunc = async (score: number) => {
     // 2.5 보다 아래 체크
-    
     if(score == 0) {
       show({ content: '프로필 평점을 다시 선택해 주세요!' , });
     } else if(score < 3.0) {
@@ -141,8 +140,6 @@ export const Live = () => {
         member_seq: data.live_member_info?.member_seq,
         approval_profile_seq : data.live_member_info?.approval_profile_seq
       };
-  
-      console.log('body :::::::: ' , body);
 
       try {
         const { success, data } = await regist_profile_evaluation(body);
@@ -153,11 +150,6 @@ export const Live = () => {
               setIsLoad(false);
               setLiveModalVisible(false);
               getLiveMatchTrgt();
-
-              /* show({
-                type: 'RESPONSIVE',
-                content: '평가가 완료되었습니다.',
-              }); */
 
               break;
             default:
@@ -515,15 +507,6 @@ export const Live = () => {
                 <Text style={_styles.authBadgeText}>심사중</Text>
               </View>
             }
-
-            {/* <View style={{position: 'absolute', top: 0, left: 10, flexDirection: 'row'}}>
-              <TouchableOpacity onPress={() => { prevBtn(); }}>
-                <Text style={{backgroundColor: '#000', borderRadius: 20, paddingHorizontal: 5, paddingVertical: 2, color: '#fff', marginRight: 5}}>이전</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => { nextBtn(); }}>
-                <Text style={{backgroundColor: '#000', borderRadius: 20, paddingHorizontal: 5, paddingVertical: 2, color: '#fff'}}>다음</Text>
-              </TouchableOpacity>
-            </View> */}
           </View>
 
           <FlatList
@@ -545,43 +528,48 @@ export const Live = () => {
                   <Text style={_styles.nameText}>{data.live_member_info.nickname}, {data.live_member_info.age}</Text>
                 </View>
 
-                <LinearGradient
-                  colors={['rgba(199,123,222,0.5)', 'rgba(255,245,253,0.5)']}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 0, y: 2 }}
-                  style={_styles.ratingArea}>
+                <SpaceView>
+                  <LinearGradient
+                    colors={['rgba(199,123,222,0.5)', 'rgba(255,245,253,0.5)']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 0, y: 2 }}
+                    style={_styles.ratingArea}>
 
-                  <RatingStar callBackFunction={scoreSelectedCallBackFunc} isFixed={false} score={0} />
-                </LinearGradient>
+                    <RatingStar callBackFunction={scoreSelectedCallBackFunc} isFixed={false} score={0} />
+                  </LinearGradient>
 
-                {/* <View style={_styles.ratingArea}>
-                  <RatingStar callBackFunction={callBackFunctionNew} />
-                  <View style={{backgroundColor: '#D3A7FF', opacity: 0.4, width: '100%', height: 100, position: 'absolute', top: 0, left: 0, right: 0, bottom: 0}} />
-                </View> */}
+                  {!isClickable && (
+                    <View style={{position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, zIndex: 1}} />
+                  )}
+
+                  {/* <View style={_styles.ratingArea}>
+                    <RatingStar callBackFunction={callBackFunctionNew} />
+                    <View style={{backgroundColor: '#D3A7FF', opacity: 0.4, width: '100%', height: 100, position: 'absolute', top: 0, left: 0, right: 0, bottom: 0}} />
+                  </View> */}
+
+                </SpaceView>
               </View>
             </>
           }
 
-          {isBlackBg &&
-            <LinearGradient
-              colors={['rgba(0,0,0,0.0)', 'rgba(0,0,0,1)']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0, y: 1 }}
-              style={_styles.blackBg} />
-          }
-
           {/* ############################################################# 페이지 2 */}
+
           {pageIndex == 2 &&
             <>
+              {isBlackBg &&
+                <LinearGradient
+                  colors={['rgba(0,0,0,0.0)', 'rgba(0,0,0,1)']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 0, y: 1 }}
+                  style={_styles.blackBg} />
+              }
+
               <View style={_styles.absoluteView()}>
                 <Animated.View style={{
                   opacity: fadeAnimation,
                   /* transform: [{translateY: transYAnimation, translateX: transXAnimation, rotate: rotateAnimation}] */
-
                   /* transform: [{translateY: transYAnimation, rotate: rotateAnimation}] */
-
                   transform: [{scale: scaleAnimation}]
-
                 }}>
                 {/* <Animated.View style={animateStyle}> */}
 
@@ -601,6 +589,14 @@ export const Live = () => {
                     ]}
                   </View>
                 </Animated.View>
+
+                {/* 뒤로가기 */}
+                <SpaceView mt={15} viewStyle={{width: '100%', flexDirection: 'row'}}>
+                  <TouchableOpacity onPress={() => { prevBtn(); }} style={{width: '100%'}}>
+                    <Text style={_styles.backBtnText}>뒤로가기</Text>
+                  </TouchableOpacity>
+                </SpaceView>
+
               </View>
             </>
           }
@@ -664,36 +660,44 @@ export const Live = () => {
     <>
       <TopNavigation currentPath={'LIVE'} />
       {isEmpty ? (
-        <View
-          style={[
-            layoutStyle.alignCenter,
-            layoutStyle.justifyCenter,
-            layoutStyle.flex1,
-            styles.whiteBack,
-            {paddingBottom : 90}
-          ]}
-        >
-          {/* <SpaceView mb={20} viewStyle={layoutStyle.alignCenter}>
-            <Image source={IMAGE.logoIcon} style={styles.iconSize48} />
-          </SpaceView> */}
+        <>
+          <View
+            style={[
+              layoutStyle.alignCenter,
+              layoutStyle.justifyCenter,
+              layoutStyle.flex1,
+              styles.whiteBack,
+              {paddingBottom : 70}
+            ]}
+          >
+            {/* <SpaceView mb={20} viewStyle={layoutStyle.alignCenter}>
+              <Image source={IMAGE.logoIcon} style={styles.iconSize48} />
+            </SpaceView> */}
 
-          <View style={layoutStyle.alignCenter}>
-            <CommonText type={'h4'} textStyle={[layoutStyle.textCenter, commonStyle.fontSize16, commonStyle.lineHeight23]}>
-              오늘 소개해드린 <Text style={{color: '#7986EE'}}>LIVE</Text>가 마감 되었어요.{'\n'}
-              새로운 <Text style={{color: '#7986EE'}}>LIVE</Text> 소개는 매일 자정에 공개 됩니다.
-            </CommonText>
+            <View style={layoutStyle.alignCenter}>
+              <CommonText type={'h4'} textStyle={[layoutStyle.textCenter, commonStyle.fontSize16, commonStyle.lineHeight23]}>
+                오늘 소개해드린 <Text style={{color: '#7986EE'}}>LIVE</Text>가 마감 되었어요.{'\n'}
+                새로운 <Text style={{color: '#7986EE'}}>LIVE</Text> 소개는 매일 자정에 공개 됩니다.
+              </CommonText>
 
-            <View style={{position: 'absolute', top: 0, left: 0, bottom: 0, right: 0, justifyContent: 'center', alignItems: 'center'}}>
-              <Image source={IMAGE.logoIcon03} style={{width: 230, height: 230}} />
+              <View style={{position: 'absolute', top: 0, left: 0, bottom: 0, right: 0, justifyContent: 'center', alignItems: 'center'}}>
+                <Image source={IMAGE.logoIcon03} style={{width: 230, height: 230}} />
+              </View>
+
+              <View style={{position: 'absolute', top: -50, left: 30}}><Image source={IMAGE.heartImg01} style={{width: 40, height: 40}} /></View>
+              {/* <View style={{position: 'absolute', top: 80, left: -15}}><Image source={IMAGE.heartImg02} style={{width: 60, height: 60}} /></View>
+              <View style={{position: 'absolute', top: -100, right: -15}}><Image source={IMAGE.heartImg02} style={{width: 60, height: 60}} /></View> */}
+              <View style={{position: 'absolute', top: 55, right: 30}}><Image source={IMAGE.heartImg01} style={{width: 40, height: 40}} /></View>
+
             </View>
-
-            <View style={{position: 'absolute', top: -50, left: 30}}><Image source={IMAGE.heartImg01} style={{width: 40, height: 40}} /></View>
-            {/* <View style={{position: 'absolute', top: 80, left: -15}}><Image source={IMAGE.heartImg02} style={{width: 60, height: 60}} /></View>
-            <View style={{position: 'absolute', top: -100, right: -15}}><Image source={IMAGE.heartImg02} style={{width: 60, height: 60}} /></View> */}
-            <View style={{position: 'absolute', top: 55, right: 30}}><Image source={IMAGE.heartImg01} style={{width: 40, height: 40}} /></View>
-
           </View>
-        </View>
+
+          <SpaceView viewStyle={{position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: '#fff', alignItems:'center', justifyContent:'center'}}>
+            <SpaceView viewStyle={{alignItems:'center', justifyContent:'center'}}>
+              <BannerAd size={BannerAdSize.BANNER} unitId={'ca-app-pub-7259908680706846~5492241778'} />
+            </SpaceView>
+          </SpaceView>
+        </>
       ) : (
         <View
           style={[
@@ -725,7 +729,8 @@ export const Live = () => {
     let imgHeight = height / 1.5;
 
     if(height > 700 && height < 800) {
-      imgHeight = height / 1.35;
+      //imgHeight = height / 1.35;
+      imgHeight = height / 1.4;
     };
 
     return (
@@ -1031,6 +1036,15 @@ const _styles = StyleSheet.create({
     opacity: 0.8,
     height: height * 0.24,
     zIndex: 1,
+  },
+  backBtnText: {
+    backgroundColor: 'rgba(150, 146, 161, 0.65)',
+    borderRadius: 20,
+    paddingVertical: 3,
+    color: '#fff',
+    textAlign: 'center',
+    fontSize: 16,
+    fontFamily: 'AppleSDGothicNeoR00',
   },
   
 });
