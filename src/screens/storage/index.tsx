@@ -42,6 +42,8 @@ import ToggleSwitch from 'toggle-switch-react-native';
 import { Color } from 'assets/styles/Color';
 import { isEmptyData } from 'utils/functions';
 import { CommonLoading } from 'component/CommonLoading';
+import { BlurView } from "@react-native-community/blur";
+
 
 
 
@@ -334,11 +336,16 @@ export const Storage = (props: Props) => {
       if(success) {
         if (data.result_code == '0000') {
           dispatch(myProfile());
-          navigation.navigate(STACK.COMMON, { screen: 'StorageProfile', params: {
-            matchSeq: match_seq,
-            tgtMemberSeq: tgt_member_seq,
-            type: type,
-          } });
+          navigation.navigate(STACK.COMMON,
+            {
+              screen: 'StorageProfile', 
+              params: {
+                matchSeq: match_seq,
+                tgtMemberSeq: tgt_member_seq,
+                type: type,
+                matchType: match_type
+              }
+            });
 
         } else if (data.result_code == '6010') {
           show({ content: '보유 패스가 부족합니다.' });
@@ -509,6 +516,7 @@ export const Storage = (props: Props) => {
     let isShow = true;  // 노출 여부
     let tgt_member_seq = '';
     let profile_open_yn = 'N';
+    let isBlur = false;
 
     // 노출 여부 설정
     if(type == 'REQ' || type == 'RES' || type == 'MATCH') {
@@ -525,15 +533,21 @@ export const Storage = (props: Props) => {
     if(type == 'RES' || matchType == 'LIVE_RES') {
       tgt_member_seq = item.req_member_seq;
       profile_open_yn = item.res_profile_open_yn;
+
+      if(item.res_profile_open_yn == 'N') {
+        isBlur = true;
+      };
+
     } else if(type == 'REQ' || matchType == 'LIVE_REQ') {
       tgt_member_seq = item.res_member_seq;
       profile_open_yn = 'Y';
+
     } else if(type == 'MATCH' || type == 'ZZIM') {
       if (item.req_member_seq != memberSeq) {
         tgt_member_seq = item.req_member_seq;
       } else {
         tgt_member_seq = item.res_member_seq;
-      }
+      };
       profile_open_yn = 'Y';
     };
 
@@ -554,8 +568,9 @@ export const Storage = (props: Props) => {
             }}>
 
             <ImageBackground source={item.img_path} style={_styles.renderItemContainer}>
-              <View style={_styles.renderItemTopContainer}>
 
+              {/* 상단 영역 */}
+              <View style={_styles.renderItemTopContainer}>
                 {type == 'ZZIM' ? (
                   <>
                     <Image style={_styles.renderItemTopZzimIcon} source={ICON.zzimCircle} />
@@ -578,17 +593,18 @@ export const Storage = (props: Props) => {
                       ) : (
                         <>
                           <Image style={_styles.renderItemTopIcon} source={item.special_interest_yn == 'N' ? ICON.passCircle : ICON.royalPassCircle} />
-                          {isEmptyData(item?.special_level) && <Text style={_styles.levelText}>Lv.{item.special_level}</Text>}
+                          {isEmptyData(item?.special_level) && <Text style={_styles.levelText(isBlur)}>Lv.{item.special_level}</Text>}
                         </>
                       )}
                     </View>
-                    <Text style={[_styles.renderItemTopText, ((type == 'RES' || matchType == 'LIVE_RES') && profile_open_yn == 'N' && {color: '#787878'})]}>
+                    <Text style={[_styles.renderItemTopText]}>
                       {item.dday > 0 ? item.dday + '일 남음' : '오늘까지'}
                     </Text>
                   </>
                 )}
               </View>
 
+              {/* 하단 영역 */}
               <View style={[_styles.renderItemBottomContainer]}>
                 <View style={{flexDirection: 'row', marginBottom: -2, justifyContent: 'space-between'}}>
                   {/* ############# 인증 레벨 노출 */}
@@ -688,17 +704,20 @@ export const Storage = (props: Props) => {
                 } */}
               </View>
 
-              {(type == 'RES' || matchType == 'LIVE_RES') && profile_open_yn == 'N' && (
+              {isBlur && (
                 <>
-                  <View style={_styles.reqRenderThumb}></View>
                   <View style={_styles.reqRenderItem}>
-                    <Image source={IMAGE.logoMark} style={{width: 70, height: 70, marginTop: 20, opacity: 0.6}} resizeMode="contain" />
                     <Text style={_styles.reqRenderItemText}>터치하고 열어보기</Text>
                   </View>
+
+                  <BlurView 
+                    style={{position: 'absolute', top: 0, bottom: 0, left: 0, right: 0}}
+                    blurType='dark'
+                    blurAmount={5} />
                 </>
               )}
-            </ImageBackground>
 
+            </ImageBackground>
           </TouchableOpacity>
         }
       </>
@@ -824,10 +843,16 @@ const _styles = StyleSheet.create({
     textAlign: 'left',
     color: '#ffffff',
   },
-  levelText: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 13,
-    color: '#fff',
+  levelText: (isBlur: boolean) => {
+    return {
+      fontFamily: 'AppleSDGothicNeoB00',
+      fontSize: 13,
+      color: '#fff',
+      backgroundColor: isBlur ? 'rgba(0, 0, 0, 0.4)' : 'transparent',
+      paddingHorizontal: isBlur ? 9 : 0,
+      paddingVertical: isBlur ? 2 : 0,
+      borderRadius: isBlur ? 20 : 0,
+    }
   },
   tabItem: (isOn: boolean, itemColor: string) => {
     return {
@@ -878,10 +903,14 @@ const _styles = StyleSheet.create({
     zIndex: 1,
   },
   reqRenderItemText: {
-    color: '#787878',
+    color: '#fff',
     fontSize: 14,
     fontFamily: 'AppleSDGothicNeoB00',
-    marginTop: 10,
+    marginTop: '70%',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    paddingHorizontal: 13,
+    paddingVertical: 2,
+    borderRadius: 15,
   },
   whiteText: {
     fontFamily: 'AppleSDGothicNeoEB00',
@@ -973,8 +1002,6 @@ const _styles = StyleSheet.create({
       fontSize: 12,
       color: type == 'LIVE_RES' ? '#FE0456' : '#7986EE',
     };
-  }
-
-
+  },
   
 });
