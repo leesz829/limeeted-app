@@ -83,11 +83,6 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
           }
           {memberBase.gender == 'W' && (
             <>
-              {/* <View style={_style.shopLimitArea}>
-                <Text style={_style.limitText}>{CommaFormat(memberBase.mileage_point)}리밋 보유 중!{'\n'}리밋샵에 획득 가능한 상품이 있어요</Text>
-                <View style={_style.triangle}></View>
-              </View> */}
-
               <Animated.View style={[_style.shopLimitArea, { opacity: fadeAnim }]}>
                 <Text style={_style.limitText}>{CommaFormat(memberBase.mileage_point)}리밋 보유 중!{'\n'}리밋샵에 획득 가능한 상품이 있어요</Text>
                 <View style={_style.triangle}></View>
@@ -166,6 +161,7 @@ const _style = StyleSheet.create({
     textAlign: 'center',
     width: 120,
     paddingVertical: 2,
+    overflow: 'hidden',
   },
   triangle: {
     marginTop: -1,
