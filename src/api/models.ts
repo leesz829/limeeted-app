@@ -39,6 +39,7 @@ import {
   SAVE_PROFILE_AUTH,
   MEMBER_AUTH_DETAIL,
   BOARD_LIST,
+  BOARD_DETAIL_VIEW,
   GET_MEMBER_FACE_RANK,
   GET_MEMBER_PROFILE_INFO,
   NICE_AUTH,
@@ -75,7 +76,8 @@ import {
   SAVE_PROFILE_AUTH_COMMENT,
   SAVE_MEMBER_INTRODUCE,
   DAILY_MATCH_ADD_OPEN,
-  GET_MEMBER_CHK
+  GET_MEMBER_CHK,
+  GET_MEMBER_APPROVAL,
 } from './route';
 
 /* ========================================================================================================
@@ -154,6 +156,13 @@ export async function get_member_chk(body: {
   push_token: string;
 }) {
   return send(GET_MEMBER_CHK, 'POST', body, false, false);
+}
+
+// 회원의 가입심사진행 정보를 조회한다.
+export async function get_member_approval(body: {
+  member_seq: number;
+}) {
+  return send(GET_MEMBER_APPROVAL, 'POST', body, false, false);
 }
 
 // 아이디 찾기
@@ -293,7 +302,6 @@ export async function peek_member(body: {
   auth_acct_cnt: number;
 }) {
   const inventory_connect_dt = await AsyncStorage.getItem('INVENTORY_CONNECT_DT');
-  console.log('inventory_connect_dt :::::::::: ' , inventory_connect_dt);
   return send(PEEK_MEMBER, 'POST', { ...body, inventory_connect_dt }, true, false);
 }
 
@@ -435,7 +443,8 @@ export async function get_member_face_rank() {
 
 // 회원 프로필 정보를 조회한다.
 export async function get_member_profile_info() {
-  return send(GET_MEMBER_PROFILE_INFO, 'POST', undefined, true, false);
+  const inventory_connect_dt = await AsyncStorage.getItem('INVENTORY_CONNECT_DT');
+  return send(GET_MEMBER_PROFILE_INFO, 'POST', { inventory_connect_dt }, true, false);
 }
 
 // 회원 문의를 등록합니다.
@@ -722,6 +731,13 @@ export async function get_common_code(body: { group_code: string }) {
 // #### 최근소식 목록을 조회한다.
 export async function get_board_list() {
   return send(BOARD_LIST, 'POST', undefined, true, false);
+}
+
+// #### 최근소식 상세를 본다.
+export async function board_detail_view(body: { 
+  board_seq: number 
+}) {
+  return send(BOARD_DETAIL_VIEW, 'POST', body, true, false);
 }
 
 // #### 나이스 인증 모듈을 실행한다.

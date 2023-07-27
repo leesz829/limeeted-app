@@ -15,6 +15,7 @@ export const REGIST_MEMBER_INTEREST = '/join/insertMemberIntro';
 export const REGIST_MEMBER_SECOND_AUTH = '/join/insertMemberSecondAuth';
 
 export const GET_MEMBER_CHK = '/join/getMemberChk';
+export const GET_MEMBER_APPROVAL = '/join/getMemberApprovalInfo';
 
 export const SEARCH_EMAIL_ID = '/login/searchEmailId';
 export const SEARCH_PASSWORD = '/login/searchPassword';
@@ -120,5 +121,6 @@ export const EVENT_CASHBACK_RECEIVE = '/event/receiveItem';
  */
 export const COMMON_CODE = '/common/selectGroupCodeList';
 export const BOARD_LIST = '/board/selectBoardList';
+export const BOARD_DETAIL_VIEW = '/board/boardDetailView';
 export const NICE_AUTH = '/nice/authToken';
 export const GET_APP_VERSION = '/login/getAppVersion';
