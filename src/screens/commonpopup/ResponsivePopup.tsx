@@ -57,11 +57,11 @@ export const ResponsivePopup = (props: Props) => {
     //setIsNextChk(false);
   }, [props]); */
 
-  const [isVisible, setIsvisible] = React.useState(true);
-  const fadeAnimation = React.useRef(new Animated.Value(0)).current;
-  const transYAnimation = React.useRef(new Animated.Value(-50)).current;
+	const [isVisible, setIsvisible] = React.useState(true);
+	const fadeAnimation = React.useRef(new Animated.Value(0)).current;
+	const transYAnimation = React.useRef(new Animated.Value(-50)).current;
 
-  const action02 = (isActive:boolean) => {
+	const action02 = (isActive:boolean) => {
 		if(isActive) {
 		  	Animated.parallel([
 				Animated.timing(fadeAnimation, {
@@ -76,7 +76,7 @@ export const ResponsivePopup = (props: Props) => {
 				}),
 			]).start();
 
-		  	// 팝업이 표시된 후 1초 후에 자동으로 닫히도록 설정
+		  	// 팝업이 표시된 후 1.5초 후에 자동으로 닫히도록 설정
 			const timer = setTimeout(() => {
 
 				Animated.parallel([
@@ -107,11 +107,11 @@ export const ResponsivePopup = (props: Props) => {
 		}
 	};
 
-  React.useEffect(() => {
-    action02(true);
-  }, [props]);
+	React.useEffect(() => {
+    	action02(true);
+  	}, [props]);
 
-  /* React.useEffect(() => {
+  	/* React.useEffect(() => {
 		if (isVisible) {
 			// 팝업이 표시된 후 3초 후에 자동으로 닫히도록 설정
 			const timer = setTimeout(() => {
@@ -123,21 +123,21 @@ export const ResponsivePopup = (props: Props) => {
 		}
 	}, [isVisible]); */
 
-  // ################################################################ 초기 실행 함수
+  	// ################################################################ 초기 실행 함수
 
-  return (
-    <>
-		{props.popupVisible &&
-			<Animated.View style={[_styles.animateArea(height), { 
-				opacity: fadeAnimation,
-				transform: [{translateY: transYAnimation}]
-			}]}>
+  	return (
+		<>
+			{props.popupVisible &&
+				<Animated.View style={[_styles.animateArea(height), { 
+					opacity: fadeAnimation,
+					transform: [{translateY: transYAnimation}]
+				}]}>
 
-				<Text style={[_styles.animateAreaText]}>{props.text}</Text>
-			</Animated.View>
-		}
-    </>
-  );
+					<Text style={[_styles.animateAreaText]}>{props.text}</Text>
+				</Animated.View>
+			}
+		</>
+  	);
 };
 
 
@@ -156,7 +156,7 @@ const _styles = StyleSheet.create({
 			top: height/2.4,
 			left: 0,
 			right: 0,
-			backgroundColor: 'rgba(70, 70, 70, 0.85)',
+			backgroundColor: 'rgba(70, 70, 70, 0.75)',
 			zIndex: 99999,
 			marginHorizontal: 50,
 			borderRadius: 50,
