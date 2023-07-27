@@ -150,12 +150,14 @@ export const ICON = {
   addWineIcon: require('assets/icon/add_wine_icon.png'),
   zzimIcon: require('assets/icon/zzim_icon.png'),
   loveLetterIcon: require('assets/icon/icon-love-letter.png'),
+  playIcon: require('assets/icon/play_icon.png'),
 };
 
 export const GIF_IMG = {
   faceScan: require('assets/img/gif/face-scan.gif'),
   loading: require('assets/img/gif/loading.gif'),
-  soon: require('assets/img/gif/soon.gif'),
+  soon: require('assets/img/gif/loading_icon.gif'),
+  loadingIcon: require('assets/img/gif/loading_icon_2.gif'),
 };
 
 export const IMAGE = {
@@ -182,6 +184,7 @@ export const IMAGE = {
   heartImg01: require('assets/img/heart_img.png'),
   heartImg02: require('assets/img/heart_img02.png'),
   popupLogo: require('assets/img/popup_logo.png'),
+  clothesImg: require('assets/img/clothes.png'),
 };
 
 export const PROFILE_IMAGE = {
