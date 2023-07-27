@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ICON } from 'utils/imageUtils';
-
 import { Slider } from '@miblanchard/react-native-slider';
 import { useNavigation, useRoute, useIsFocused, useFocusEffect } from '@react-navigation/native';
 import { ColorType, ScreenNavigationProp } from '@types';
@@ -42,91 +41,127 @@ function FemalePannel() {
   };
 
   return (
-    <View style={female.floatWrapper}>
-      <View style={female.floatContainer}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          
-          <View style={{ flexDirection: 'column'}}>
-            <SpaceView mb={20} mt={route.name === ROUTES.Mileage_Shop ? 10 : 0}>
-              <Text style={female.pointText}>
-                {me?.nickname} <Text>✨</Text>
-              </Text>
-            </SpaceView>
+    <>
+      <View style={female.floatWrapper(route.name)}>
 
-            <View>
-              {route.name !== ROUTES.Mileage_Shop && (
-                <>
-                  {/* <Text style={female.infoText}>{me?.nickname}님의 공주력</Text> */}
-                  {/* <Text style={female.infoText}>리밋샵에 구경 오세요 :)</Text> */}
-                  
-                  <TouchableOpacity
-                    style={female.lmtShopButton}
-                    onPress={onPressLimitShop}
-                    hitSlop={commonStyle.hipSlop20}>
+        {route.name !== ROUTES.Mileage_Shop ? (
 
-                    <View style={_styles.iconArea}>
-                      <Text style={_styles.newText}>NEW</Text>
-                    </View>
+          <LinearGradient
+            colors={['#882173', '#18315B']}
+            start={{ x: 1, y: 0 }}
+            end={{ x: 0, y: 2 }}
+            style={female.floatContainer(route.name)}>
 
-                    <Text style={female.lmtButtonText2}>리밋샵 입장하기</Text>
-                  </TouchableOpacity>
-                </>
-              )}
-            </View>
-          </View>
+            <View style={{ flexDirection: 'column', justifyContent: 'space-between' }}>
+              <SpaceView mb={20} pt={3} viewStyle={{flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20}}>
+                <View style={{ flexDirection: 'column'}}>
+                  <SpaceView>
+                    <Text style={female.openText}>리밋상점 오픈!</Text>
+                  </SpaceView>
 
-          <View style={{ flexDirection: 'column', alignItems: 'flex-end'}}>
-
-            {route.name === ROUTES.Mileage_Shop && (
-              <View>
-                <TouchableOpacity
-                  style={female.lmtShopPayButton}
-                  onPress={onPressMileageOrder}
-                  hitSlop={commonStyle.hipSlop20}>
-
-                  <Text style={female.lmtButtonText3}>구매내역</Text>
-                </TouchableOpacity>
-                
-                {/*
-                <TouchableOpacity onPress={onPressMileageHistory}>
-                  <Image
-                    style={female.mileageHistoryButton}
-                    source={ICON.mileageHistory}
-                  />
-                </TouchableOpacity>
-              
-                <TouchableOpacity onPress={onPressMileageOrder}>
-                  <Image
-                    style={female.mileageOrderButton}
-                    source={ICON.mileageOrder}
-                  />
-                </TouchableOpacity>
-                */}
-              </View>
-            )}
-            
-            <View style={{ flexDirection: 'column' }}>
-              <SpaceView viewStyle={female.myBox}>
-                <TouchableOpacity onPress={onPressLimitInfo}>
-                  <View style={female.myBox}>
-                    <Text style={female.infoText}>리밋 획득방법 안내</Text>
-                    <Image source={ICON.currencyTooltip} style={{ width: 14, height: 12, bottom:3}} />
-                  </View>
-
-                  <View style={{ marginTop: 10 }}>
-                    <Text style={female.rate}>
-                      {CommaFormat(me?.mileage_point)}
+                  <SpaceView mt={17}>
+                    <Text style={female.femaleTxt01}>보유 리밋</Text>
+                    <Text style={female.femaleTxt02}>
+                      그 동안 리밋을 열심히 모으셨네요!{'\n'}
+                      쏠쏠한 기프티콘 선물을 기대해 보세요!
                     </Text>
-                    <Image style={female.crown} source={ICON.crown} />
+                  </SpaceView>
+                </View>
+
+                <View style={{ flexDirection: 'column', paddingRight: 5}}>
+                  <View style={{ flexDirection: 'column' }}>
+                    <SpaceView viewStyle={female.myBox02}>
+                      <TouchableOpacity onPress={onPressLimitInfo}>
+                        <View style={female.myBox}>
+                          <Text style={female.infoText02}>리밋획득방법안내</Text>
+                          <Image source={ICON.currencyTooltip} style={{ width: 14, height: 12, bottom:3}} />
+                        </View>
+                        <SpaceView mt={40}>
+                          <Text style={female.rate(route.name)}>{CommaFormat(me?.mileage_point)}</Text>
+                          <Image style={female.crown} source={ICON.crown} />
+                        </SpaceView>
+                      </TouchableOpacity>
+                    </SpaceView>
                   </View>
-                </TouchableOpacity>
+                </View>
               </SpaceView>
 
+              <SpaceView pt={8} pr={15} viewStyle={female.btnArea}>
+                <TouchableOpacity onPress={onPressLimitShop} hitSlop={commonStyle.hipSlop20} style={{flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center'}}>
+                  <Text style={female.joinBtnTxt}>리밋샵 입장하기</Text>
+                  <Image source={ICON.playIcon} style={{width: 20, height: 20}} />
+                </TouchableOpacity>
+              </SpaceView>
+            </View>
+          </LinearGradient>
+
+        ) : (
+
+          <View style={female.floatContainer(route.name)}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              
+              <View style={{ flexDirection: 'column'}}>
+                <SpaceView mb={20} mt={route.name === ROUTES.Mileage_Shop ? 10 : 0}>
+                  <Text style={female.pointText}>
+                    {me?.nickname} <Text>✨</Text>
+                  </Text>
+                </SpaceView>
+              </View>
+
+              <View style={{ flexDirection: 'column', alignItems: 'flex-end'}}>
+                <View>
+                  <TouchableOpacity
+                    style={female.lmtShopPayButton}
+                    onPress={onPressMileageOrder}
+                    hitSlop={commonStyle.hipSlop20}>
+
+                    <Text style={female.lmtButtonText3}>구매내역</Text>
+                  </TouchableOpacity>
+                  
+                  {/*
+                  <TouchableOpacity onPress={onPressMileageHistory}>
+                    <Image
+                      style={female.mileageHistoryButton}
+                      source={ICON.mileageHistory}
+                    />
+                  </TouchableOpacity>
+                
+                  <TouchableOpacity onPress={onPressMileageOrder}>
+                    <Image
+                      style={female.mileageOrderButton}
+                      source={ICON.mileageOrder}
+                    />
+                  </TouchableOpacity>
+                  */}
+                </View>
+                
+                <View style={{ flexDirection: 'column' }}>
+                  <SpaceView viewStyle={female.myBox}>
+                    <TouchableOpacity onPress={onPressLimitInfo}>
+                      <View style={female.myBox}>
+                        <Text style={female.infoText}>리밋 획득방법 안내</Text>
+                        <Image source={ICON.currencyTooltip} style={{ width: 14, height: 12, bottom:3}} />
+                      </View>
+
+                      <View style={{ marginTop: 10 }}>
+                        <Text style={female.rate(route.name)}>
+                          {CommaFormat(me?.mileage_point)}
+                        </Text>
+                        <Image style={female.crown} source={ICON.crown} />
+                      </View>
+                    </TouchableOpacity>
+                  </SpaceView>
+                </View>
+
+              </View>
             </View>
           </View>
-        </View>
+        )}
+
       </View>
-    </View>
+
+        
+    </>
   );
 }
 
@@ -363,26 +398,30 @@ const male = StyleSheet.create({
 });
 
 const female = StyleSheet.create({
-  floatWrapper: {
-    width: `100%`,
-    marginTop: -70,
+  floatWrapper: (type:string) => {
+    return {
+      width: `100%`,
+      marginTop: type == 'Cashshop' ? -105 : -70,
+    };
   },
-  floatContainer: {
-    position: 'relative',
-    padding: 25,
-    backgroundColor: 'white',
-    width: '100%',
-    height: 120,
-    borderRadius: 5,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    justifyContent: 'space-around',
+  floatContainer: (type:string) => {
+    return {
+      position: 'relative',
+      padding: type == 'Cashshop' ? 0 : 25,
+      backgroundColor: 'white',
+      width: '100%',
+      height: type == 'Cashshop' ? 170 : 120,
+      borderRadius: 5,
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
+      justifyContent: 'space-around',
+    };
   },
   pointText: {
     fontFamily: 'AppleSDGothicNeoEB00',
@@ -412,6 +451,14 @@ const female = StyleSheet.create({
     textAlign: 'right',
     color: '#b1b1b1',
     textAlignVertical: 'bottom',
+  },
+  infoText02: {
+    opacity: 0.83,
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 10,
+    textAlign: 'right',
+    color: '#FFFFFF',
+    marginRight: 4,
   },
   row: {
     flexDirection: `row`,
@@ -470,14 +517,16 @@ const female = StyleSheet.create({
     justifyContent: 'flex-end',
     marginTop: 8,
   },
-  rate: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 29,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0,
-    textAlign: 'right',
-    color: '#8657d4',
+  myBox02: {
+    marginTop: -10
+  },
+  rate: (type:string) => {
+    return {
+      fontFamily: 'AppleSDGothicNeoEB00',
+      fontSize: 29,
+      textAlign: 'right',
+      color: type == 'Cashshop' ? '#CAAAFF' : '#8657d4',
+    };
   },
   crown: {
     width: 12.7,
@@ -485,5 +534,35 @@ const female = StyleSheet.create({
     position: 'absolute',
     right: 3,
     top: 0,
+  },
+  btnArea: {
+    borderTopWidth: 1,
+    borderTopColor: '#5D2CAE',
+  },
+  openText: {
+    backgroundColor: '#7986EE',
+    color: '#fff',
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 10,
+    textAlign: 'center',
+    borderRadius: 11,
+    paddingVertical: 3,
+    width: 90,
+  },
+  femaleTxt01: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 19,
+    color: '#CAAAFF',
+  },
+  femaleTxt02: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 10,
+    color: '#FFFFFF',
+  },
+  joinBtnTxt: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 18,
+    color: '#CAAAFF',
+    marginRight: 10,
   },
 });
