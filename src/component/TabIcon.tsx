@@ -16,7 +16,7 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
       Animated.timing(fadeAnim, {
         toValue: 0,
         duration: 1000, // 깜빡임이 서서히 사라지는 데 걸리는 시간 (1초)
-        delay: 1000,
+        delay: 2500,
         useNativeDriver: true,
       }),
       Animated.timing(fadeAnim, {

@@ -495,7 +495,7 @@ export const StorageProfile = (props: Props) => {
 
       const timer = setTimeout(() => {
         setIsCopyHpState(true);
-      }, 2500);
+      }, 3500);
     } catch(e) {
       console.log('e ::::::: ' , e);
     };
@@ -646,7 +646,7 @@ export const StorageProfile = (props: Props) => {
                         type={'h5'}
                         fontWeight={'200'}
                         color={'#fff'}
-                        textStyle={[layoutStyle.textCenter, {backgroundColor: '#FE0456', paddingHorizontal: 15, paddingVertical: 5, borderRadius: 5}]}>
+                        textStyle={[layoutStyle.textCenter, {backgroundColor: '#FE0456', paddingHorizontal: 15, paddingVertical: 5, borderRadius: 5, overflow: 'hidden'}]}>
                         {data.match_member_info.phone_number}
                       </CommonText>
                     </TouchableOpacity>

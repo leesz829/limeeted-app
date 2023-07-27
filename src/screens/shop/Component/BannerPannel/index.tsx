@@ -548,6 +548,7 @@ const female = StyleSheet.create({
     borderRadius: 11,
     paddingVertical: 3,
     width: 90,
+    overflow: 'hidden',
   },
   femaleTxt01: {
     fontFamily: 'AppleSDGothicNeoEB00',
