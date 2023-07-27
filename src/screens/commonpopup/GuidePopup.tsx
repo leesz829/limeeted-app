@@ -1,4 +1,3 @@
-import { ColorType } from '@types';
 import { Color } from 'assets/styles/Color';
 import { commonStyle, layoutStyle, modalStyle } from 'assets/styles/Styles';
 import { CommonText } from 'component/CommonText';
@@ -9,6 +8,7 @@ import Carousel, { getInputRangeFromIndexes } from 'react-native-snap-carousel';
 import { GUIDE_IMAGE } from 'utils/imageUtils';
 import { useUserInfo } from 'hooks/useUserInfo';
 import LinearGradient from 'react-native-linear-gradient';
+import { ICON } from 'utils/imageUtils';
 
 
 /* ################################################################################################################
@@ -107,20 +107,27 @@ export const GuidePopup = (props: Props) => {
 
                             {props.guideType == 'LIVE' && 
                               <>
-                                <SpaceView viewStyle={[layoutStyle.alignCenter, {backgroundColor: '#fff', paddingTop: 10, paddingBottom: 10}]}>
-                                  {index == 0 && <Image source={GUIDE_IMAGE.live01Thumnail} style={{width: 230, height: 366}} resizeMode={'cover'} /> }
-                                  {index == 1 && <Image source={GUIDE_IMAGE.live02Thumnail} style={{width: 230, height: 366}} resizeMode={'cover'} /> }
-                                  {index == 2 && <Image source={GUIDE_IMAGE.live03Thumnail} style={{width: 230, height: 366}} resizeMode={'cover'} /> }
-                                </SpaceView>
-                                <SpaceView mt={15}>
-                                  <SpaceView mb={10} ml={15}><Text style={_styles.liveTxt01}>"LIVE" 인상 투표</Text></SpaceView>
-                                  <SpaceView ml={15}><Text style={_styles.liveTxt02}>패스가 필요하신가요?{'\n'}인상 투표에 참여하시면 패스를 드려요!</Text></SpaceView>
-                                  <SpaceView mt={20} viewStyle={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                                    {index == 0 && <Text style={_styles.liveTxt03}>"상대방에게 가장 어울리는 인상을 선택해주세요."</Text> }
-                                    {index == 1 && <Text style={_styles.liveTxt03}>"상대방이 받을 별점을 선택 후 <Text style={{color: '#697AE6'}}>확인</Text>을 눌러주세요."</Text> }
-                                    {index == 2 && <Text style={_styles.liveTxt03}>"인상 투표가 완료되며 <Text style={{color: '#697AE6'}}>패스 1개</Text>가 지급돼요!"</Text> }
+                                <LinearGradient 
+                                  colors={['#DBEEEE', '#FFF']}
+                                  start={{ x: 0.5, y: 0 }}
+                                  end={{ x: 0.5, y: 1 }}
+                                  style={[layoutStyle.flex1]}>
+                                  
+                                  <SpaceView viewStyle={[layoutStyle.alignCenter, {paddingTop: 10, paddingBottom: 10}]}>
+                                    {index == 0 && <Image source={GUIDE_IMAGE.live01Thumnail} style={{width: 205, height: 340}} resizeMode={'cover'} /> }
+                                    {index == 1 && <Image source={GUIDE_IMAGE.live02Thumnail} style={{width: 205, height: 340}} resizeMode={'cover'} /> }
+                                    {index == 2 && <Image source={GUIDE_IMAGE.live03Thumnail} style={{width: 205, height: 340}} resizeMode={'cover'} /> }
                                   </SpaceView>
-                                </SpaceView>
+                                  <SpaceView mt={15}>
+                                    <SpaceView mb={10} ml={15}><Text style={_styles.liveTxt01}>"LIVE" 인상 투표</Text></SpaceView>
+                                    <SpaceView ml={15}><Text style={_styles.liveTxt02}>패스가 필요하신가요?{'\n'}인상 투표에 참여하시면 패스를 드려요!</Text></SpaceView>
+                                    <SpaceView mt={20} viewStyle={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                                      {index == 0 && <Text style={_styles.liveTxt03}>"상대방이 받을 별을 선택 후 <Text style={{color: '#697AE6'}}>확인</Text>을 눌러주세요."</Text> }
+                                      {index == 1 && <Text style={_styles.liveTxt03}>"상대방에게 가장 어울리는 인상을 선택해주세요."</Text> }
+                                      {index == 2 && <Text style={[_styles.liveTxt03, {marginTop: -10}]}>"투표를 마칠 때 마다 <Image source={ICON.passCircle} style={{width: 23, height: 23}} />1개가 지급됩니다."</Text> }
+                                    </SpaceView>
+                                  </SpaceView>
+                                </LinearGradient>
                               </>
                             }
 
@@ -201,7 +208,7 @@ export const GuidePopup = (props: Props) => {
                                       <>
                                         <Text style={_styles.liveTxt02}>#리밋샵! 여성 회원만의 특권</Text>
                                         <Text style={_styles.liveTxt03}>
-                                          리밋샵은  여성 회원 전용의 마일리지 상점이에요.{'\n'}
+                                          리밋샵은 여성 회원 전용의 마일리지 상점이에요.{'\n'}
                                           그동안 모아둔 리밋으로 원하는 상품으로 교환해보세요!
                                         </Text>
                                         <Text style={[_styles.liveTxt03, {color: '#697AE6'}]}>TIP 모바일쿠폰은 KT 비즈콘을 통해 SMS 전송됩니다.</Text>
