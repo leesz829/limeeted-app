@@ -66,6 +66,7 @@ import InterviewRender from 'component/match/InterviewRender';
 import MemberIntro from 'component/match/MemberIntro';
 import { formatNowDate} from 'utils/functions';
 import SincerePopup from 'screens/commonpopup/sincerePopup';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 
 
@@ -137,6 +138,9 @@ export const StorageProfile = (props: Props) => {
   // 본인 보유 아이템 정보
   const [freeContactYN, setFreeContactYN] = useState('N');
 
+  // 전화번호 복사 여부
+  const [isCopyHpState, setIsCopyHpState] = useState(true);
+
   // ################################################################ 찐심 모달 관련
 
   // 찐심 보내기 모달 visible
@@ -151,7 +155,7 @@ export const StorageProfile = (props: Props) => {
   const sincereSend = (level:number) => {
     insertMatchInfo('sincere', level);
     setSincereModalVisible(false);
-  }
+  };
 
 
   // ################################################################ 초기 실행 함수
@@ -478,6 +482,25 @@ export const StorageProfile = (props: Props) => {
     }
   };
 
+  // ############################################################ 매칭 회원 정보 조회
+  const onCopyPress = async (value: string) => {
+    try {
+      await Clipboard.setString(value);
+      show({
+        type: 'RESPONSIVE',
+        content: '클립보드에 복사되었습니다.',
+      });
+
+      setIsCopyHpState(false);
+
+      const timer = setTimeout(() => {
+        setIsCopyHpState(true);
+      }, 2500);
+    } catch(e) {
+      console.log('e ::::::: ' , e);
+    };
+  };
+
 
   // 이미지 스크롤 처리
   const handleScroll = (event) => {
@@ -485,6 +508,8 @@ export const StorageProfile = (props: Props) => {
     let index = Math.floor(contentOffset.x / (width-10));
     setCurrentIndex(index);
   };
+
+
 
 
   // ############################################################ 팝업 관련
@@ -612,7 +637,11 @@ export const StorageProfile = (props: Props) => {
                 {(data.match_base.res_member_seq == memberBase.member_seq && data.match_base.res_phone_open_yn == 'Y') ||
                 (data.match_base.req_member_seq == memberBase.member_seq && data.match_base.req_phone_open_yn == 'Y') ? (
                   <>
-                    <SpaceView viewStyle={{marginBottom: 15}}>
+                    <TouchableOpacity
+                      disabled={!isCopyHpState}
+                      style={{marginBottom: 5}}
+                      onPress={() => { onCopyPress(data.match_member_info.phone_number); }}>
+
                       <CommonText
                         type={'h5'}
                         fontWeight={'200'}
@@ -620,11 +649,13 @@ export const StorageProfile = (props: Props) => {
                         textStyle={[layoutStyle.textCenter, {backgroundColor: '#FE0456', paddingHorizontal: 15, paddingVertical: 5, borderRadius: 5}]}>
                         {data.match_member_info.phone_number}
                       </CommonText>
-                    </SpaceView>
+                    </TouchableOpacity>
+
+                    <Text style={_styles.clipboardCopyDesc}>연락처를 터치하면 클립보드에 복사되요.</Text>
                   </>
                 ) : (
                   <>
-                    <SpaceView viewStyle={{marginBottom: 15}}>
+                    <SpaceView mb={15}>
                       <CommonBtn
                         value={'연락처 확인하기'}
                         type={'red'}
@@ -885,8 +916,6 @@ const _styles = StyleSheet.create({
   freePassText: {
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 11,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     letterSpacing: 0,
     textAlign: 'left',
     color: '#ed4771',
@@ -912,5 +941,11 @@ const _styles = StyleSheet.create({
     fontSize: 10,
     color: '#C3C3C8',
     textAlign: 'center',
+  },
+  clipboardCopyDesc: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 10,
+    color: '#707070',
+    marginBottom: 7,
   },
 });
