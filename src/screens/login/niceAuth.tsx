@@ -39,12 +39,6 @@ export const NiceAuth = (props: Props) => {
 
 	const [niceWebViewBody, setNiceWebViewBody] = React.useState(String);
 
-	/* const tt = () => {
-		navigation.navigate('Main', { 
-			screen: 'Storage'
-		});
-	} */
-
 	/* web -> native */
 	const webToNative = (data: any) => {
 		//console.log('webToNative data :::: ', data);
@@ -69,14 +63,11 @@ export const NiceAuth = (props: Props) => {
 								CommonActions.reset({
 									index: 1,
 									routes: [
-										{ name: 'Login01' }
-										, {
-											name: ROUTES.APPROVAL
-											, params: {
+										{ name: 'Login01' },
+										{
+											name: ROUTES.APPROVAL,
+											params: {
 												memberSeq: memberSeq,
-												gender: gender,
-												mstImgPath : mstImgPath,
-												accessType: 'LOGIN',
 											}
 										}
 									],
@@ -89,10 +80,22 @@ export const NiceAuth = (props: Props) => {
 										CommonActions.reset({
 											index: 1,
 											routes: [
-												{ name: 'Login01' }
-												, {
-													name: ROUTES.SIGNUP01
-													, params: {
+												{ name: 'Login01' },
+												{
+													name: ROUTES.SIGNUP00,
+													params: {
+														ci: dataJson.ci,
+													  	name: dataJson.name,
+														gender: gender,
+														mobile: dataJson.mobile,
+														birthday: dataJson.birthday,
+													  	memberSeq: memberSeq,
+													  	emailId: dataJson.email_id
+													}
+												  },
+												{
+													name: ROUTES.SIGNUP01,
+													params: {
 														memberSeq: memberSeq,
 														gender: gender,
 													}
@@ -105,8 +108,27 @@ export const NiceAuth = (props: Props) => {
 										CommonActions.reset({
 											index: 1,
 											routes: [
-												{ name: 'Login01' }
-												, {
+												{ name: 'Login01' },
+												{
+													name: ROUTES.SIGNUP00,
+													params: {
+														ci: dataJson.ci,
+													  	name: dataJson.name,
+														gender: gender,
+														mobile: dataJson.mobile,
+														birthday: dataJson.birthday,
+													  	memberSeq: memberSeq,
+													  	emailId: dataJson.email_id
+													}
+												  },
+												{
+													name: ROUTES.SIGNUP01,
+													params: {
+														memberSeq: memberSeq,
+														gender: gender,
+													}
+												},
+												{
 													name: ROUTES.SIGNUP02
 													, params: {
 														memberSeq: memberSeq,
@@ -116,36 +138,44 @@ export const NiceAuth = (props: Props) => {
 											],
 										})
 									);
-								} else if (joinStatus == '03') {
+								} else if (joinStatus == '03' || joinStatus == '04') {
 									navigation.dispatch(
 										CommonActions.reset({
 											index: 1,
 											routes: [
-												{ name: 'Login01' }
-												, {
+												{ name: 'Login01' },
+												{
+													name: ROUTES.SIGNUP00,
+													params: {
+														ci: dataJson.ci,
+													  	name: dataJson.name,
+														gender: gender,
+														mobile: dataJson.mobile,
+														birthday: dataJson.birthday,
+													  	memberSeq: memberSeq,
+													  	emailId: dataJson.email_id
+													}
+												  },
+												{
+													name: ROUTES.SIGNUP01,
+													params: {
+														memberSeq: memberSeq,
+														gender: gender,
+													}
+												},
+												{
+													name: ROUTES.SIGNUP02
+													, params: {
+														memberSeq: memberSeq,
+														gender: gender,
+													}
+												},
+												{
 													name: ROUTES.SIGNUP03
 													, params: {
 														memberSeq: memberSeq,
 														gender: gender,
 														mstImgPath: mstImgPath,
-													}
-												}
-											],
-										})
-									);
-								} else if (joinStatus == '04') {
-									navigation.dispatch(
-										CommonActions.reset({
-											index: 1,
-											routes: [
-												{ name: 'Login01' }
-												, {
-													name: ROUTES.APPROVAL
-													, params: {
-														memberSeq: memberSeq,
-														gender: gender,
-														mstImgPath: mstImgPath,
-														accessType: 'LOGIN',
 													}
 												}
 											],

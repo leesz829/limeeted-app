@@ -5,11 +5,13 @@ import SpaceView from 'component/SpaceView';
 import * as React from 'react';
 import { View, Image, StyleSheet, ScrollView } from 'react-native';
 import { IMAGE, PROFILE_IMAGE, ICON } from 'utils/imageUtils';
-import { RouteProp, useNavigation, } from '@react-navigation/native';
+import { RouteProp, useNavigation, useIsFocused, CommonActions } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
 import { findSourcePath } from 'utils/imageUtils';
 import { ROUTES } from 'constants/routes';
+import { get_member_approval } from 'api/models';
+import { usePopup } from 'Context';
 
 
 interface Props {
@@ -19,21 +21,60 @@ interface Props {
 
 export const Approval = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
+  const { show } = usePopup();
+  const isFocus = useIsFocused();
   
   const memberSeq = props.route.params.memberSeq;         // 회원 번호
-  const gender = props.route.params.gender;               // 회원 성별
-  const accessType = props.route.params.accessType;       // 접근 유형
-  const refuseImgCnt = props.route.params.refuseImgCnt;   // 반려 이미지 갯수
-  const refuseAuthCnt = props.route.params.refuseAuthCnt; // 반려 인증 갯수
-  const mstImgPath = props.route.params.mstImgPath; // 대표이미지
 
-  const authList = props.route.params.authList;
+  // 심사 데이터
+  const [apprData, setApprData] = React.useState({
+    result_code: '',
+    refuseImgCnt: 0,
+    refuseAuthCnt: 0,
+    authList: [],
+    gender: '',
+    mstImgPath: '',
+    ci: '',
+    name: '',
+    mobile: '',
+    birthday: '',
+    emailId: '',
+  });
+
+  // ############################################################ 가입심사 정보 조회
+  const getApprovalInfo = async () => {
+    const body = {
+      member_seq : memberSeq
+    };
+    const { success, data } = await get_member_approval(body);
+      if(success) {
+        if(typeof data.mbr_base != 'undefined') {
+          setApprData({
+            ...apprData,
+            result_code: data.result_code,
+            refuseImgCnt: data.refuse_img_cnt,
+            refuseAuthCnt: data.refuse_auth_cnt,
+            authList: data.mbr_second_auth_list,
+            gender: data.mbr_base.gender,
+            mstImgPath: data.mbr_base.mst_img_path,
+            ci: data.mbr_base.ci,
+            name: data.mbr_base.name,
+            mobile: data.mbr_base.phone_number,
+            birthday: data.mbr_base.birthday,
+            emailId: data.mbr_base.email_id,
+          });
+        };
+      } else {
+        show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+      }
+  };
+
 
   // 반려 사유 데이터
   const getRefuseData = function() {
     let code = 'IMAGE';
     let text = '';
-    if(accessType === 'REFUSE') {
+    /* if(accessType === 'REFUSE') {
       if(refuseImgCnt > 0 && refuseAuthCnt > 0) {
         code = 'ALL';
         text += '프로필 사진, 프로필 인증';
@@ -44,18 +85,133 @@ export const Approval = (props: Props) => {
         code = 'AUTH';
         text += '프로필 인증';
       }
-    }
-    return {code : code, text: text};
-  }
+    } */
 
-  return (    
+    if(apprData.refuseImgCnt > 0 && apprData.refuseAuthCnt > 0) {
+      code = 'ALL';
+      text += '프로필 사진, 프로필 인증';
+    } else if(apprData.refuseImgCnt > 0) {
+      code = 'IMAGE';
+      text += '프로필 사진';
+    } else if(apprData.refuseAuthCnt > 0) {
+      code = 'AUTH';
+      text += '프로필 인증';
+    }
+
+    return {code : code, text: text};
+  };
+
+  // ########################################################################## 수정하기 버튼
+  const modifyBtn = async () => {
+    console.log('apprData :::::::: ' , apprData);
+
+    if(apprData.result_code == '0003') {
+      if(apprData.refuseAuthCnt > 0) {
+        goJoin('01');
+      } else if(apprData.refuseImgCnt > 0) {
+        goJoin('02');
+      }
+    } else {
+      goJoin('01');
+    };
+  };
+
+  // ########################################################################## 회원가입 이동
+  const goJoin = async (status:string) => {
+    if(status == '01') {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 1,
+          routes: [
+            { name: 'Login01' },
+            { 
+              name: ROUTES.APPROVAL ,
+              params: {
+                memberSeq: memberSeq,
+              }
+            },
+            {
+              name: ROUTES.SIGNUP00,
+              params: {
+                ci: apprData.ci,
+                name: apprData.name,
+                gender: apprData.gender,
+                mobile: apprData.mobile,
+                birthday: apprData.birthday,
+                memberSeq: memberSeq,
+                emailId: apprData.emailId
+              }
+            },
+            {
+              name: ROUTES.SIGNUP01,
+              params: {
+                memberSeq: memberSeq,
+                gender: apprData.gender,
+              }
+            },
+          ],
+        })
+      );
+    } else if(status == '02') {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 1,
+          routes: [
+            { name: 'Login01' },
+            { 
+              name: ROUTES.APPROVAL ,
+              params: {
+                memberSeq: memberSeq,
+              }
+            },
+            {
+              name: ROUTES.SIGNUP00,
+              params: {
+                ci: apprData.ci,
+                name: apprData.name,
+                gender: apprData.gender,
+                mobile: apprData.mobile,
+                birthday: apprData.birthday,
+                memberSeq: memberSeq,
+                emailId: apprData.emailId
+              }
+            },
+            {
+              name: ROUTES.SIGNUP01,
+              params: {
+                memberSeq: memberSeq,
+                gender: apprData.gender,
+              }
+            },
+            {
+              name: ROUTES.SIGNUP02,
+              params: {
+                memberSeq: memberSeq,
+                gender: apprData.gender,
+              }
+            },
+          ],
+        })
+      );
+    }
+  };
+
+  // ########################################################################## 초기 실행
+  React.useEffect(() => {
+    if(isFocus) {
+      getApprovalInfo();
+    };
+
+  }, [isFocus]);
+
+  return (
     <View style={[styles.container, layoutStyle.justifyCenter]}>
 
-      <ScrollView style={[styles.scrollContainerAll, {marginBottom: 80}]}>
+      <ScrollView style={[styles.scrollContainerAll, { marginBottom: 80 }]}>
         <View style={layoutStyle.alignCenter}>
           <SpaceView mb={40} viewStyle={{position: 'relative'}}>
             <Image
-              source={findSourcePath(mstImgPath)}
+              source={findSourcePath(apprData.mstImgPath)}
               style={styles.tmpImg} />
             <View style={{position: 'absolute', top: 35, left: -30}}>
               <Image
@@ -69,7 +225,7 @@ export const Approval = (props: Props) => {
             </View>
           </SpaceView>
 
-          <SpaceView mb={refuseImgCnt > 0 || refuseAuthCnt > 0 ? 30 : 150}>
+          <SpaceView mb={apprData.refuseImgCnt > 0 || apprData.refuseAuthCnt > 0 ? 30 : 150}>
             <View style={commonStyle.mb15}>
               <CommonText textStyle={layoutStyle.textCenter} type={'h3'} fontWeight={'700'} color={'#697AE6'}>
                 가입 심사 진행중
@@ -125,10 +281,10 @@ export const Approval = (props: Props) => {
           </SpaceView>
         </View>
 
-        {(refuseImgCnt > 0 || (refuseAuthCnt > 0)) && (
+        {(apprData.refuseImgCnt > 0 || (apprData.refuseAuthCnt > 0)) && (
           <>
             <SpaceView mb={30}>
-              <View horizontal style={_styles.refuseTextArea}>
+              <View style={_styles.refuseTextArea}>
                 <CommonText textStyle={_styles.refuseText01}>심사 반려 안내</CommonText>
                 <CommonText textStyle={_styles.refuseText02}>
                   가입 기준에 맞지 않거나 증빙 자료가 불충분한 대상이 있어요.{'\n'}
@@ -136,16 +292,16 @@ export const Approval = (props: Props) => {
                 </CommonText>
 
                 <ScrollView horizontal style={_styles.refuseIconArea}>
-                  {refuseImgCnt > 0 &&
+                  {apprData.refuseImgCnt > 0 &&
                     <>
                       <View style={_styles.refuseIconItem}>
-                        <Image source={gender == 'W' ? ICON.refuseFemaleIcon : ICON.refuseMaleIcon} style={_styles.refuseIcon} />
+                        <Image source={apprData.gender == 'W' ? ICON.refuseFemaleIcon : ICON.refuseMaleIcon} style={_styles.refuseIcon} />
                         <CommonText textStyle={_styles.refuseIconText}>사진</CommonText>
                       </View>
                     </>
                   }
 
-                  {authList.map((item:any, index) => {
+                  {apprData.authList.map((item:any, index) => {
                     if(item.auth_status == 'REFUSE') {
                       return (
                         <View key={index} style={_styles.refuseIconItem}>
@@ -166,35 +322,14 @@ export const Approval = (props: Props) => {
           </>
         )}
 
-
       </ScrollView>
-
-      
-      
 
       <SpaceView viewStyle={styles.bottomBtnContainer} mb={5}>
         <CommonBtn
           value={'프로필 수정하기'}
           type={'blue2'}
           onPress={() => {
-            if(accessType == 'REFUSE') {
-              if(getRefuseData().code == 'ALL' || getRefuseData().code == 'AUTH') {
-                navigation.navigate(ROUTES.SIGNUP01, {
-                  memberSeq: memberSeq,
-                  gender: gender,
-                });
-              } else if(getRefuseData().code == 'IMAGE') {
-                navigation.navigate(ROUTES.SIGNUP02, {
-                  memberSeq: memberSeq,
-                  gender: gender,
-                });
-              }
-            } else {
-              navigation.navigate(ROUTES.SIGNUP01, {
-                memberSeq: memberSeq,
-                gender: gender,
-              });
-            }
+            modifyBtn();
           }}
         />
       </SpaceView>

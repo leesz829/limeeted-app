@@ -46,6 +46,8 @@ export type StackParamList = {
     sns_type: string;
     sns_token: string;
     marketing_agree_yn: string;
+    memberSeq: Number;
+    emailId: string;
   };
   Signup01: {
     memberSeq: Number;
@@ -62,11 +64,6 @@ export type StackParamList = {
   };
   Approval: {
     memberSeq: Number;
-    gender: string;
-    accessType: string;
-    refuseImgCnt: Number;
-    refuseAuthCnt: Number;
-    mstImgPath: string;
   };
   SecondAuthPopup: undefined; // 2차 인증 팝업
   SignupPopUp2: undefined;
@@ -74,17 +71,7 @@ export type StackParamList = {
   ReportPopup: undefined;
   LivePopup: undefined;
   Introduce: undefined;
-  Board0: {
-    boardList: [
-      {
-        board_seq: Number;
-        board_code: String;
-        title: String;
-        contents: String;
-      }
-    ];
-  };
-  Board1: undefined;
+  Board0: undefined;
   Preference: undefined;
   PreferencePopup: undefined;
   Profile: undefined;

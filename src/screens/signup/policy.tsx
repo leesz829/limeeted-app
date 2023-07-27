@@ -265,11 +265,11 @@ export const Policy = (props: Props) => {
         </SpaceView>
 
         {/* Admob 배너 광고 */}
-        {/* <SpaceView mb={60} viewStyle={{alignItems:'center', justifyContent:'center'}}>
+        <SpaceView mb={50} viewStyle={{alignItems:'center', justifyContent:'center'}}>
           <SpaceView viewStyle={{alignItems:'center', justifyContent:'center'}}>
-            <BannerAd size={BannerAdSize.BANNER} unitId={TestIds.BANNER} />
+            <BannerAd size={BannerAdSize.BANNER} unitId={'ca-app-pub-7259908680706846/4686426563'} />
           </SpaceView>
-        </SpaceView> */}
+        </SpaceView>
 
         <SpaceView>
           <CommonBtn

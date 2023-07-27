@@ -17,6 +17,7 @@ import { usePopup } from 'Context';
 import { SUCCESS, MEMBER_EMAIL_DUP } from 'constants/reusltcode';
 import { regist_member_base_info } from 'api/models';
 import { ROUTES } from 'constants/routes';
+import { isEmptyData } from 'utils/functions';
 
 
 interface Props {
@@ -29,8 +30,12 @@ export const Signup00 = (props: Props) => {
 
   const { show } = usePopup();  // 공통 팝업
 
-  const [ci, setCi] = React.useState(props.route.params?.ci);
-  const [id, setId] = React.useState('');
+  const memberSeq = props.route.params?.memberSeq;
+  const orgEmailId = props.route.params?.emailId;
+  const birthday = props.route.params?.birthday;
+  const ci = props.route.params?.ci;
+
+  const [id, setId] = React.useState(props.route.params?.emailId);
   const [password, setPassword] = React.useState('');
   const [passwordChk, setPasswordChk] = React.useState('');
   const [name, setName] = React.useState(props.route.params?.name);
@@ -48,7 +53,7 @@ export const Signup00 = (props: Props) => {
       .replace(/[^0-9]/g, '')
       .replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`)
   );
-  const [birthday, setBirthday] = React.useState(props.route.params?.birthday);
+
   const [snsType, setSnsType] = React.useState(props.route.params?.sns_type);
   const [snsToken, setSnsToken] = React.useState(props.route.params?.sns_token);
   const [mrktAgreeYn, setMrktAgreeYn] = React.useState(props.route.params?.marketing_agree_yn);
@@ -63,46 +68,123 @@ export const Signup00 = (props: Props) => {
     setGender(value);
   };
 
-  // ########################################## 회원가입
-  const register = async () => {
+  // ########################################################### 이메일 유효성 체크
+  const emailValidChk = async () => {
+    let isResult = true;
 
-    if(typeof ci == 'undefined') {
-      show({ content: '본인인증을 다시 진행해 주세요.' });
-      return;
-    }
-
-    if (id == '') {
+    if(id == '') {
       show({ content: '아이디를 입력해 주세요.' });
-      return;
+      isResult = false;
     }
 
-    let regEmail =
-      /^([0-9a-zA-Z_\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;
-    if (!regEmail.test(id)) {
+    let regEmail = /^([0-9a-zA-Z_\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;
+    if(!regEmail.test(id)) {
       show({ content: '이메일 형식의 아이디가 아닙니다.' });
-      return;
+      isResult = false;
     }
 
-    if (password == '') {
+    return isResult;
+  };
+
+  // ########################################################### 패스워드 유효성 체크
+  const passwordValidChk = async () => {
+    let isResult = true;
+
+    if(password == '') {
       show({ content: '비밀번호를 입력해 주세요.' });
-      return;
+      isResult = false;
     }
 
     let regPass = /^(?=.*[a-zA-Z])(?=.*[0-9]).{8,25}$/;
-    if (!regPass.test(password)) {
+    if(!regPass.test(password)) {
       show({ content: '영문, 숫자 조합으로 8-20자리 입력해주세요.' });
-      return;
+      isResult = false;
     }
 
-    if (passwordChk == '') {
+    if(passwordChk == '') {
       show({ content: '비밀번호 확인을 입력해 주세요.' });
-      return;
+      isResult = false;
     }
-    if (password != passwordChk) {
+    if(password != passwordChk) {
       show({ content: '비밀번호 확인이 맞지 않습니다.' });
-      return;
+      isResult = false;
     }
 
+    return isResult;
+  };
+
+
+  // ########################################################### 회원가입
+  const register = async () => {
+
+    // 기존 저장되어 있는 회원 유무 구분 처리
+    if(isEmptyData(memberSeq)) {
+
+      if(orgEmailId != id || isEmptyData(password)) {
+        if(orgEmailId != id) {
+          if(!emailValidChk()) {
+            return;
+          }
+        };
+  
+        if(isEmptyData(password)) {
+          if(!passwordValidChk()) {
+            return;
+          };
+        };
+
+        saveRegistMember();
+
+      } else {
+        navigation.reset({
+          routes: [
+            {
+              name : ROUTES.LOGIN01
+            },
+            {
+              name: ROUTES.SIGNUP00,
+              params: {
+                ci: ci,
+                name: name,
+                gender: gender,
+                mobile: mobile,
+                birthday: birthday,
+                memberSeq: memberSeq,
+                emailId: orgEmailId
+              }
+            },
+            {
+              name: ROUTES.SIGNUP01,
+              params: {
+                memberSeq: memberSeq,
+                gender: gender,
+              }
+            }
+          ]
+        });
+      }
+
+    } else {
+
+      if(!isEmptyData(ci)) {
+        show({ content: '본인인증을 다시 진행해 주세요.' });
+        return;
+      };
+  
+      if(!emailValidChk()) {
+        return;
+      };
+
+      if(!passwordValidChk()) {
+        return;
+      };
+  
+      saveRegistMember();
+    }
+  };
+
+  // ########################################################### 회원가입
+  const saveRegistMember = async () => {
     const body = {
       email_id: id,
       password: password,
@@ -119,29 +201,35 @@ export const Signup00 = (props: Props) => {
 
     try {
       const { success, data } = await regist_member_base_info(body);
-      console.log('data ::: ' , data);
       if(success) {
         switch (data.result_code) {
-          case SUCCESS:
-            /* navigation.navigate('Signup01', {
-              memberSeq: data.member_seq,
-              gender: gender
-            }); */
-
+          case SUCCESS:  
             navigation.reset({
-							routes: [
-								{
-									name : ROUTES.LOGIN01
-								}
-								, {
-									name: ROUTES.SIGNUP01
-									, params: {
-										memberSeq: data.member_seq,
+              routes: [
+                {
+                  name : ROUTES.LOGIN01
+                },
+                {
+                  name: ROUTES.SIGNUP00,
+                  params: {
+                    ci: ci,
+                    name: name,
                     gender: gender,
-									}
-								}
-							]
-						});
+                    mobile: mobile,
+                    birthday: birthday,
+                    memberSeq: data.member_seq,
+                    emailId: id
+                  }
+                },
+                {
+                  name: ROUTES.SIGNUP01,
+                  params: {
+                    memberSeq: data.member_seq,
+                    gender: gender,
+                  }
+                }
+              ]
+            });
 
             break;
           case MEMBER_EMAIL_DUP:
@@ -225,6 +313,7 @@ export const Signup00 = (props: Props) => {
               isMasking={true}
               maxLength={20}
               placeholderTextColor={'#c6ccd3'}
+              placeholder={'영문 대소문자, 숫자, 특수기호 허용 8글자 이상'}
               borderBottomType={'black'}
             />
           </SpaceView>

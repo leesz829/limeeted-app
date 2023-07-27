@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { useNavigation, useIsFocused } from '@react-navigation/native';
+import { useNavigation, useIsFocused, CommonActions } from '@react-navigation/native';
 import { ColorType } from '@types';
 import { signin, get_app_version, get_member_chk } from 'api/models';
 import { layoutStyle, modalStyle, styles, commonStyle } from 'assets/styles/Styles';
@@ -110,57 +110,12 @@ export const Login01 = () => {
             break;
 
           case LOGIN_WAIT:
-            let memberStatus = data.mbr_base.status;
-            let joinStatus = data.mbr_base.join_status;
-
-            if (memberStatus == 'PROCEED' || memberStatus == 'APPROVAL') {
-              if (memberStatus == 'APPROVAL') {
-                navigation.navigate(ROUTES.APPROVAL, {
-                  memberSeq: data.mbr_base.member_seq,
-                  gender: data.mbr_base.gender,
-                  mstImgPath : data.mbr_base.mst_img_path,
-                  accessType: 'LOGIN',
-                });
-              } else {
-                if (null != joinStatus) {
-                  if (joinStatus == '01') {
-                    navigation.navigate(ROUTES.SIGNUP01, {
-                      memberSeq: data.mbr_base.member_seq,
-                      gender: data.mbr_base.gender,
-                    });
-                  } else if (joinStatus == '02') {
-                    navigation.navigate(ROUTES.SIGNUP02, {
-                      memberSeq: data.mbr_base.member_seq,
-                      gender: data.mbr_base.gender,
-                    });
-                  } else if (joinStatus == '03') {
-                    navigation.navigate(ROUTES.SIGNUP03, {
-                      memberSeq: data.mbr_base.member_seq,
-                      gender: data.mbr_base.gender,
-                      mstImgPath: data.mbr_base.mst_img_path,
-                    });
-                  } else if (joinStatus == '04') {
-                    navigation.navigate(ROUTES.APPROVAL, {
-                      memberSeq: data.mbr_base.member_seq,
-                      gender: data.mbr_base.gender,
-                      mstImgPath: data.mbr_base.mst_img_path,
-                      accessType: 'LOGIN',
-                    });
-                  }
-                }
-              }
-            }
+            goJoinPage(data.mbr_base);
             break;
 
           case LOGIN_REFUSE:
             navigation.navigate(ROUTES.APPROVAL, {
               memberSeq: data.mbr_base.member_seq,
-              gender: data.mbr_base.gender,
-              mstImgPath: data.mbr_base.mst_img_path,
-              accessType: 'REFUSE',
-              refuseImgCnt: data.refuse_img_cnt,
-              refuseAuthCnt: data.refuse_auth_cnt,
-              authList: data.mbr_second_auth_list,
             });
             break;
 
@@ -198,12 +153,10 @@ export const Login01 = () => {
     } finally {
       
     }
-
   };
 
   // ########################################################################## 회원가입 실행
   const joinProc = async () => {
-
     const push_token = await AsyncStorage.getItem(FCM_TOKEN);
     const body = {
       push_token : push_token
@@ -212,47 +165,11 @@ export const Login01 = () => {
     if(isEmptyData(push_token)) {
       const { success, data } = await get_member_chk(body);
       if(success) {
-
         if(typeof data.mbr_base != 'undefined') {
           const memberStatus = data.mbr_base.status;
-          const joinStatus = data.mbr_base.join_status;
 
           if (memberStatus == 'PROCEED' || memberStatus == 'APPROVAL') {
-            if (memberStatus == 'APPROVAL') {
-              navigation.navigate(ROUTES.APPROVAL, {
-                memberSeq: data.mbr_base.member_seq,
-                gender: data.mbr_base.gender,
-                mstImgPath : data.mbr_base.mst_img_path,
-                accessType: 'LOGIN',
-              });
-            } else {
-              if (null != joinStatus) {
-                if (joinStatus == '01') {
-                  navigation.navigate(ROUTES.SIGNUP01, {
-                    memberSeq: data.mbr_base.member_seq,
-                    gender: data.mbr_base.gender,
-                  });
-                } else if (joinStatus == '02') {
-                  navigation.navigate(ROUTES.SIGNUP02, {
-                    memberSeq: data.mbr_base.member_seq,
-                    gender: data.mbr_base.gender,
-                  });
-                } else if (joinStatus == '03') {
-                  navigation.navigate(ROUTES.SIGNUP03, {
-                    memberSeq: data.mbr_base.member_seq,
-                    gender: data.mbr_base.gender,
-                    mstImgPath: data.mbr_base.mst_img_path,
-                  });
-                } else if (joinStatus == '04') {
-                  navigation.navigate(ROUTES.APPROVAL, {
-                    memberSeq: data.mbr_base.member_seq,
-                    gender: data.mbr_base.gender,
-                    mstImgPath: data.mbr_base.mst_img_path,
-                    accessType: 'LOGIN',
-                  });
-                }
-              }
-            }
+            goJoinPage(data.mbr_base);
           } else {
             show({ content: '이미 등록된 회원 입니다.\n로그인을 진행해 주세요.' });
           };
@@ -260,15 +177,142 @@ export const Login01 = () => {
         } else {
           navigation.navigate('Policy');
         };
-        
       } else {
         show({ content: '오류입니다. 관리자에게 문의해주세요.' });
       }
     } else {
       navigation.navigate('Policy');
     }
-
   };
+
+  // ########################################################################## 회원가입 페이지 이동
+  const goJoinPage = async (mbr_base:any) => {
+    const memberStatus = mbr_base.status;
+    const joinStatus = mbr_base.join_status;
+    const memberSeq = mbr_base.member_seq;
+    const gender = mbr_base.gender;
+    const mstImgPath = mbr_base.mst_img_path;
+
+    if(memberStatus == 'PROCEED' || memberStatus == 'APPROVAL') {
+      if(memberStatus == 'APPROVAL') {
+        navigation.navigate(ROUTES.APPROVAL, {
+          memberSeq: memberSeq
+        });
+      } else {
+        if (null != joinStatus) {
+          if (joinStatus == '01') {
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 1,
+                routes: [
+                  { name: 'Login01' },
+                  {
+                    name: ROUTES.SIGNUP00,
+                    params: {
+                      ci: mbr_base.ci,
+                      name: mbr_base.name,
+										  gender: mbr_base.gender,
+										  mobile: mbr_base.phone_number,
+										  birthday: mbr_base.birthday,
+                      memberSeq: memberSeq,
+                      emailId: mbr_base.email_id
+                    }
+                  },
+                  {
+                    name: ROUTES.SIGNUP01,
+                    params: {
+                      memberSeq: memberSeq,
+                      gender: gender,
+                    }
+                  },
+                ],
+              })
+            );
+
+          } else if (joinStatus == '02') {
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 1,
+                routes: [
+                  { name: 'Login01' },
+                  {
+                    name: ROUTES.SIGNUP00,
+                    params: {
+                      ci: mbr_base.ci,
+                      name: mbr_base.name,
+										  gender: mbr_base.gender,
+										  mobile: mbr_base.phone_number,
+										  birthday: mbr_base.birthday,
+                      memberSeq: memberSeq,
+                      emailId: mbr_base.email_id
+                    }
+                  },
+                  {
+                    name: ROUTES.SIGNUP01,
+                    params: {
+                      memberSeq: memberSeq,
+                      gender: gender,
+                    }
+                  },
+                  {
+                    name: ROUTES.SIGNUP02,
+                    params: {
+                      memberSeq: memberSeq,
+                      gender: gender,
+                    }
+                  },
+                ],
+              })
+            );
+          } else if (joinStatus == '03' || joinStatus == '04') {
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 1,
+                routes: [
+                  { name: 'Login01' },
+                  {
+                    name: ROUTES.SIGNUP00,
+                    params: {
+                      ci: mbr_base.ci,
+                      name: mbr_base.name,
+										  gender: mbr_base.gender,
+										  mobile: mbr_base.phone_number,
+										  birthday: mbr_base.birthday,
+                      memberSeq: memberSeq,
+                      emailId: mbr_base.email_id
+                    }
+                  },
+                  {
+                    name: ROUTES.SIGNUP01,
+                    params: {
+                      memberSeq: memberSeq,
+                      gender: gender,
+                    }
+                  },
+                  {
+                    name: ROUTES.SIGNUP02,
+                    params: {
+                      memberSeq: memberSeq,
+                      gender: gender,
+                    }
+                  },
+                  {
+                    name: ROUTES.SIGNUP03,
+                    params: {
+                      memberSeq: memberSeq,
+                      gender: gender,
+                      mstImgPath: mstImgPath,
+                    }
+                  }
+                ],
+              })
+            );
+          }
+        }
+      }
+    }
+
+  }
 
 
   // ########################################################################## 사용자 위치 확인
