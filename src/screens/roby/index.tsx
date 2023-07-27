@@ -2,25 +2,15 @@ import { Slider } from '@miblanchard/react-native-slider';
 import { RouteProp, useIsFocused, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { BottomParamList, ColorType, ScreenNavigationProp } from '@types';
-import { 
-  request_reexamination, 
-  peek_member, 
-  get_board_list, 
-  update_setting, 
-  set_member_phone_book,
-  update_additional 
-} from 'api/models';
-import { Color } from 'assets/styles/Color';
-import { layoutStyle, modalStyle, styles } from 'assets/styles/Styles';
-import axios from 'axios';
+import {  request_reexamination, peek_member, update_setting, set_member_phone_book, update_additional } from 'api/models';
+import { commonStyle, layoutStyle, modalStyle, styles } from 'assets/styles/Styles';
 import { CommonBtn } from 'component/CommonBtn';
 import { CommonSwich } from 'component/CommonSwich';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import { ToolTip } from 'component/Tooltip';
 import TopNavigation from 'component/TopNavigation';
-import { STACK } from 'constants/routes';
-import * as hooksMember from 'hooks/member';
+import { ROUTES, STACK } from 'constants/routes';
 import { useLikeList } from 'hooks/useLikeList';
 import { useMatches } from 'hooks/useMatches';
 import { useUserInfo } from 'hooks/useUserInfo';
@@ -40,7 +30,6 @@ import {
 } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import { useDispatch } from 'react-redux';
-import { myProfile } from 'redux/reducers/authReducer';
 import { Privacy } from 'screens/commonpopup/privacy';
 import { Terms } from 'screens/commonpopup/terms';
 import { findSourcePath, ICON, IMAGE } from 'utils/imageUtils';
@@ -52,6 +41,7 @@ import Contacts from 'react-native-contacts';
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
 import { isEmptyData } from 'utils/functions';
 import { CommonLoading } from 'component/CommonLoading';
+import { CommaFormat } from 'utils/functions';
 
 
 
@@ -353,33 +343,9 @@ export const Roby = (props: Props) => {
 
   // 최근 소식 이동
   const onPressRecent = async () => {
-    try {
-      const { success, data } = await get_board_list();
-      if (success) {
-        if (data.result_code == '0000') {
-          navigation.navigate(STACK.COMMON, {
-            screen: 'Board0',
-            params: {
-              boardList: data.boardList,
-            },
-          });
-          // 게시판 목록 셋팅
-          let boardList = new Array();
-        } else {
-          show({
-            content: '오류입니다. 관리자에게 문의해주세요.',
-            confirmCallback: function () {},
-          });
-        }
-      }
-    } catch (error) {
-      show({
-        content: '오류입니다. 관리자에게 문의해주세요.',
-        confirmCallback: function () {},
-      });
-      console.log(error);
-    } finally {
-    }
+    navigation.navigate(STACK.COMMON, {
+      screen: 'Board0',
+    });
   };
 
   // 가이드 팝업 활성화
@@ -502,27 +468,180 @@ export const Roby = (props: Props) => {
 
           {/* ################################################################################ 프로필 관리 영역 */}
           <View>
-            {memberBase?.reex_yn == 'N' && memberBase?.best_face != null && (
-              <>
-                <View
-                  style={{
-                    width: '100%',
-                    height: 95,
-                    borderRadius: 20,
-                    backgroundColor: memberBase.gender == 'M' ? '#ECEFFE' : '#FEEFF2',
-                    overflow: 'hidden',
-                    position: 'relative',
-                  }}>
-                    <SpaceView>
-                      <Image source={memberBase.gender == 'M' ? IMAGE.robyMaleImg : IMAGE.robyFemaleImg} style={{width: '100%', height: 100}} />
-                      <SpaceView viewStyle={{position: 'absolute', top: 10, left: 15}}>
-                        <CommonText type={'h5'} fontWeight={'700'} textStyle={{marginTop: 3, marginBottom: 5, lineHeight: 18}}>{memberBase?.nickname}님의{'\n'}리미티드 대표 인상</CommonText>
-                        <CommonText type={'h5'} fontWeight={'200'} color={memberBase.gender == 'M' ? '#7986EE' : '#FE0456'} textStyle={{marginTop: 0}}>"{memberBase.best_face}"</CommonText>
+
+            {memberBase.gender == 'W' &&
+              <SpaceView mb={12}>
+
+                <LinearGradient
+                  colors={['rgba(62, 173, 162, 0.65)', 'rgba(62, 173, 162, 0.65)', 'rgba(230, 107, 161, 0.65)']}
+                  start={{ x: 0, y: 3 }}
+                  end={{ x: 1, y: 0 }}
+                  style={{borderRadius: 15}}>
+
+                  <TouchableOpacity
+                    onPress={() => navigation.navigate(STACK.COMMON, { screen: ROUTES.Mileage_Shop }) }
+                    style={{
+                      width: '100%',
+                      height: 125,
+                      borderRadius: 20,
+                      position: 'relative',
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      paddingHorizontal: 30,
+                    }}>
+                    <View>
+                      <SpaceView mb={20}>
+                        <Text style={_styles.openEventTxt01}><Text style={{color: '#FE0456'}}>리밋샵</Text>이 열렸습니다.</Text>
+                        <Text style={_styles.openEventTxt02}>교환 가능한 상품을 보러 오세요.</Text>
                       </SpaceView>
+                      <SpaceView>
+                        <Text style={_styles.openEventLimitTit}>보유 리밋</Text>
+                        <Text style={_styles.openEventLimitText}>{CommaFormat(memberBase.mileage_point)}</Text>
+                      </SpaceView>
+                    </View>
+                    <View style={{position: 'absolute', bottom: 10, right: 10}}>
+                      <Image source={IMAGE.clothesImg} style={styles.iconSquareSize(60)} />
+                    </View>
+                  </TouchableOpacity>
+                  
+                </LinearGradient>
+              </SpaceView>
+            }
+
+            {(memberBase?.reex_yn == 'N' && memberBase?.best_face != null) && (
+              <View
+                style={{
+                  width: '100%',
+                  height: 95,
+                  borderRadius: 20,
+                  backgroundColor: memberBase.gender == 'M' ? '#ECEFFE' : '#FEEFF2',
+                  overflow: 'hidden',
+                  position: 'relative',
+                }}>
+                  <SpaceView>
+                    <Image source={memberBase.gender == 'M' ? IMAGE.robyMaleImg : IMAGE.robyFemaleImg} style={{width: '100%', height: 100}} />
+                    <SpaceView viewStyle={{position: 'absolute', top: 10, left: 15}}>
+                      <CommonText type={'h5'} fontWeight={'700'} textStyle={{marginTop: 3, marginBottom: 5, lineHeight: 18}}>{memberBase?.nickname}님의{'\n'}리미티드 대표 인상</CommonText>
+                      <CommonText type={'h5'} fontWeight={'200'} color={memberBase.gender == 'M' ? '#7986EE' : '#FE0456'} textStyle={{marginTop: 0}}>"{memberBase.best_face}"</CommonText>
                     </SpaceView>
-                </View>
-              </>
+                  </SpaceView>
+              </View>
             )}
+
+
+
+            {/* {memberBase.gender == 'M' ? (
+              <>
+                {(memberBase?.reex_yn == 'N' && memberBase?.best_face != null) && (
+                  <View
+                    style={{
+                      width: '100%',
+                      height: 95,
+                      borderRadius: 20,
+                      backgroundColor: memberBase.gender == 'M' ? '#ECEFFE' : '#FEEFF2',
+                      overflow: 'hidden',
+                      position: 'relative',
+                    }}>
+                      <SpaceView>
+                        <Image source={memberBase.gender == 'M' ? IMAGE.robyMaleImg : IMAGE.robyFemaleImg} style={{width: '100%', height: 100}} />
+                        <SpaceView viewStyle={{position: 'absolute', top: 10, left: 15}}>
+                          <CommonText type={'h5'} fontWeight={'700'} textStyle={{marginTop: 3, marginBottom: 5, lineHeight: 18}}>{memberBase?.nickname}님의{'\n'}리미티드 대표 인상</CommonText>
+                          <CommonText type={'h5'} fontWeight={'200'} color={memberBase.gender == 'M' ? '#7986EE' : '#FE0456'} textStyle={{marginTop: 0}}>"{memberBase.best_face}"</CommonText>
+                        </SpaceView>
+                      </SpaceView>
+                  </View>
+                )}
+              </>
+            ) : (
+              <>
+                {(memberBase?.reex_yn == 'N' && memberBase?.best_face != null) ? (
+                  <>
+                    <Carousel
+                      data={[0,1]}
+                      //layout={'default'}
+                      sliderWidth={Math.round(width- 33)} 
+                      itemWidth={Math.round(width - 33)}
+                      horizontal={true}
+                      useScrollView={true}
+                      inactiveSlideScale={1}
+                      inactiveSlideOpacity={0.5}
+                      inactiveSlideShift={15}
+                      firstItem={2}
+                      loop={true}
+                      loopClonesPerSide={2}
+                      autoplay={true}
+                      autoplayDelay={2000}
+                      autoplayInterval={3000}
+                      pagingEnabled
+                      renderItem={({ item, index }) => {
+                        return (
+                          <>
+                            {item == 0 ? (
+                              <View
+                                style={{
+                                  width: '100%',
+                                  height: 95,
+                                  borderRadius: 20,
+                                  backgroundColor: memberBase.gender == 'M' ? '#ECEFFE' : '#FEEFF2',
+                                  overflow: 'hidden',
+                                  position: 'relative',
+                                }}>
+                                  <SpaceView>
+                                    <Image source={memberBase.gender == 'M' ? IMAGE.robyMaleImg : IMAGE.robyFemaleImg} style={{width: '100%', height: 100}} />
+                                    <SpaceView viewStyle={{position: 'absolute', top: 10, left: 15}}>
+                                      <CommonText type={'h5'} fontWeight={'700'} textStyle={{marginTop: 3, marginBottom: 5, lineHeight: 18}}>{memberBase?.nickname}님의{'\n'}리미티드 대표 인상</CommonText>
+                                      <CommonText type={'h5'} fontWeight={'200'} color={memberBase.gender == 'M' ? '#7986EE' : '#FE0456'} textStyle={{marginTop: 0}}>"{memberBase.best_face}"</CommonText>
+                                    </SpaceView>
+                                  </SpaceView>
+                              </View>
+                            ) : (
+                              <TouchableOpacity
+                                onPress={() => navigation.navigate(STACK.COMMON, { screen: ROUTES.Mileage_Shop }) }
+                                style={{
+                                  width: '100%',
+                                  height: 95,
+                                  borderRadius: 20,
+                                  backgroundColor: '#FEEFF2',
+                                  overflow: 'hidden',
+                                  position: 'relative',
+                                  flexDirection: 'row',
+                                  justifyContent: 'space-between',
+                                  alignItems: 'center',
+                                  paddingHorizontal: 25,
+                                }}
+                                >
+                                <Text style={_styles.openEventTxt}>리밋샵 오픈 중!{'\n'}닫히기 전에 이용하기 : ){'\n'}30,000 리밋 보유중</Text>
+                                <Image source={IMAGE.clothesImg} style={styles.iconSquareSize(70)} />
+                              </TouchableOpacity>
+                            )}
+                          </>
+                        )
+                      }}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <View
+                      style={{
+                        width: '100%',
+                        height: 95,
+                        borderRadius: 20,
+                        backgroundColor: '#FEEFF2',
+                        overflow: 'hidden',
+                        position: 'relative',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        paddingHorizontal: 25,
+                      }}>
+                      <Text style={_styles.openEventTxt}>리밋샵 오픈 중!{'\n'}닫히기 전에 이용하기 : ){'\n'}30,000 리밋 보유중</Text>
+                      <Image source={IMAGE.clothesImg} style={styles.iconSquareSize(70)} />
+                    </View>
+                  </>
+                )}
+              </>
+            )} */}
 
             <TouchableOpacity
               style={_styles.manageProfile}
@@ -596,7 +715,7 @@ export const Roby = (props: Props) => {
             </View>
           ) : (
             <TouchableOpacity
-            onPress={() => profileReexPopupOpen()}
+              onPress={() => profileReexPopupOpen()}
               style={_styles.submitBtn}>
               <Text style={_styles.submitText}>내 프로필 재심사</Text>
             </TouchableOpacity>
@@ -729,10 +848,16 @@ export const Roby = (props: Props) => {
 
             <TouchableOpacity
               style={_styles.manageProfile}
-              onPress={onPressRecent}
-            >
+              onPress={onPressRecent}>
+
               <Text style={_styles.profileText}>최근 소식</Text>
               <View style={_styles.row}>
+
+                {isEmptyData(memberBase.new_board_cnt) && memberBase.new_board_cnt > 0 && (
+                  <View style={_styles.badge}>
+                    <Text style={_styles.badgeText}>{memberBase.new_board_cnt}</Text>
+                  </View>
+                )}
                 <Image source={ICON.arrow_right} style={styles.iconSize} />
               </View>
             </TouchableOpacity>
@@ -950,6 +1075,97 @@ export const Roby = (props: Props) => {
   );
 };
 
+
+{/* #######################################################################################################
+##################### RatingCard 영역
+####################################################################################################### */}
+
+function RatingCard({ title, desc, value, preScore, isPennding, guideOnPress }) {
+
+  return (
+    <View style={ratingCard.cardStyle}>
+      <TouchableOpacity style={{flexDirection: 'row'}} onPress={guideOnPress}>
+        <Text style={ratingCard.cardTitle}>{title}</Text>
+        <Image source={ICON.question} style={[styles.iconSize16, {marginTop: 4, marginLeft: 6}]} />
+      </TouchableOpacity>
+
+      <View style={ratingCard.middleBox}>
+        {/* {typeof preScore != 'undefined' && preScore != null && preScore != 0.0 &&
+          <View style={ratingCard.preScoreArea}><Text style={ratingCard.preScoreText}>지난 평점 {preScore}</Text></View>
+        } */}
+
+        <SpaceView mb={15}>
+          <Text style={isPennding ? ratingCard.pendingText : ratingCard.ratingText}>
+            {isPennding ? preScore : value}
+          </Text>
+        </SpaceView>
+        {isPennding ? (
+          <>
+              <View style={[ratingCard.scoreContainer, { left: value == 0 ? -10 : value * 10 - 15 + '%' }]}>
+                <Text style={ratingCard.scoreText}>{value}</Text>
+                <View style={ratingCard.triangle}></View>
+              </View>
+              <Slider
+                value={value / 10}
+                animateTransitions={false}
+                renderThumbComponent={() => null}
+                maximumTrackTintColor={'#8854d2'}
+                minimumTrackTintColor={'#8854d2'}
+                containerStyle={ratingCard.sliderContainer}
+                trackStyle={ratingCard.sliderTrack}
+                trackClickable={false}
+                disabled
+              />
+              <View style={ratingCard.gageContainer}>
+                <Text style={ratingCard.gageText}>0</Text>
+                <Text style={ratingCard.gageText}>5</Text>
+                <Text style={ratingCard.gageText}>10</Text>
+              </View>
+          </>
+        ) : (
+          <Rating
+            readonly
+            imageSize={20.7}
+            style={{ marginTop: 10 }}
+            ratingCount={5}
+            jumpValue={0}
+            startingValue={Math.floor(value) / 2}
+          />
+        )}
+      </View>
+      <View>
+        <Text style={ratingCard.desc}>{desc}</Text>
+        <RedDot />
+      </View>
+    </View>
+  );
+};
+
+function RedDot() {
+  return (
+    <View
+      style={{
+        width: 4,
+        height: 4,
+        backgroundColor: '#ff7979',
+        borderRadius: 2,
+        position: 'absolute',
+        top: 0,
+        left: -5,
+      }}
+    />
+  );
+}
+
+
+
+
+{/* #######################################################################################################
+###########################################################################################################
+##################### Style 영역
+###########################################################################################################
+####################################################################################################### */}
+
 const _styles = StyleSheet.create({
   profileImageWrap: {
     width: 160,
@@ -1014,7 +1230,6 @@ const _styles = StyleSheet.create({
     height: 62,
     borderRadius: 15,
     backgroundColor: '#ffffff',
-    borderStyle: 'solid',
     borderWidth: 1,
     borderColor: '#ebe9ef',
     flexDirection: `row`,
@@ -1042,17 +1257,15 @@ const _styles = StyleSheet.create({
     backgroundColor: '#ff7e8c',
     paddingHorizontal: 10,
     paddingVertical: 4,
-    marginRight: 4,
+    marginRight: 12,
     textAlign: 'center',
   },
   badgeText: {
+    width: 15,
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 11,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0,
-    textAlign: 'left',
     color: '#ffffff',
+    textAlign: 'center',
   },
   cardContainer: {
     flexDirection: `row`,
@@ -1110,83 +1323,31 @@ const _styles = StyleSheet.create({
     width: '60%',
     paddingVertical: 5,
   },
+
+  openEventTxt01: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 16,
+    color: '#000000',
+  },
+  openEventTxt02: {
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 12,
+    color: '#000000',
+  },
+  openEventLimitTit: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 12,
+    color: '#FE0456',
+  },
+  openEventLimitText: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 24,
+    color: '#FE0456',
+    lineHeight: 28,
+  },
+
 });
-function RedDot() {
-  return (
-    <View
-      style={{
-        width: 4,
-        height: 4,
-        backgroundColor: '#ff7979',
-        borderRadius: 2,
-        position: 'absolute',
-        top: 0,
-        left: -5,
-      }}
-    />
-  );
-}
 
-function RatingCard({ title, desc, value, preScore, isPennding, guideOnPress }) {
-
-  return (
-    <View style={ratingCard.cardStyle}>
-      <TouchableOpacity style={{flexDirection: 'row'}} onPress={guideOnPress}>
-        <Text style={ratingCard.cardTitle}>{title}</Text>
-        <Image source={ICON.question} style={[styles.iconSize16, {marginTop: 4, marginLeft: 6}]} />
-      </TouchableOpacity>
-
-      <View style={ratingCard.middleBox}>
-        {/* {typeof preScore != 'undefined' && preScore != null && preScore != 0.0 &&
-          <View style={ratingCard.preScoreArea}><Text style={ratingCard.preScoreText}>지난 평점 {preScore}</Text></View>
-        } */}
-
-        <SpaceView mb={15}>
-          <Text style={isPennding ? ratingCard.pendingText : ratingCard.ratingText}>
-            {isPennding ? preScore : value}
-          </Text>
-        </SpaceView>
-        {isPennding ? (
-          <>
-              <View style={[ratingCard.scoreContainer, { left: value == 0 ? -10 : value * 10 - 15 + '%' }]}>
-                <Text style={ratingCard.scoreText}>{value}</Text>
-                <View style={ratingCard.triangle}></View>
-              </View>
-              <Slider
-                value={value / 10}
-                animateTransitions={false}
-                renderThumbComponent={() => null}
-                maximumTrackTintColor={'#8854d2'}
-                minimumTrackTintColor={'#8854d2'}
-                containerStyle={ratingCard.sliderContainer}
-                trackStyle={ratingCard.sliderTrack}
-                trackClickable={false}
-                disabled
-              />
-              <View style={ratingCard.gageContainer}>
-                <Text style={ratingCard.gageText}>0</Text>
-                <Text style={ratingCard.gageText}>5</Text>
-                <Text style={ratingCard.gageText}>10</Text>
-              </View>
-          </>
-        ) : (
-          <Rating
-            readonly
-            imageSize={20.7}
-            style={{ marginTop: 10 }}
-            ratingCount={5}
-            jumpValue={0}
-            startingValue={Math.floor(value) / 2}
-          />
-        )}
-      </View>
-      <View>
-        <Text style={ratingCard.desc}>{desc}</Text>
-        <RedDot />
-      </View>
-    </View>
-  );
-}
 const ratingCard = StyleSheet.create({
   cardStyle: {
     width: (width - 40) / 2,
@@ -1329,5 +1490,5 @@ const ratingCard = StyleSheet.create({
     borderRightColor: 'transparent',
     borderBottomColor: '#151515',
     transform: [{ rotate: '180deg' }],
-  }
+  },
 });
