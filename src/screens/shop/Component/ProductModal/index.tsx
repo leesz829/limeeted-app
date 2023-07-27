@@ -120,59 +120,38 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
         , buy_price : item.buy_price
         , mobile_os : Platform.OS
       });
-      
+
+      let msg = '';
+
       if (success) {
         if(data.result_code != '0000') {
-          show({
-            content: data.result_msg
-            , confirmCallback: function () {
-              closeModal(true)
-              setComfirmModalVisible(false);
-            },
-          });
-          return false;
-        }else{
-          if(Platform.OS == 'android') {
-            show({
-              title: '알림',
-              content: '구매에 성공하였습니다.',
-              confirmCallback: function () {
-                setComfirmModalVisible(false);
-                closeModal(true);
-              },
-            });
-          } else {
-            Alert.alert('알림', '구매에 성공하였습니다.',
-            [{ 
-              text: '확인',
-              onPress: () => {
-                setComfirmModalVisible(false);
-                closeModal(true);
-              }
-            }]);
-          }
-        }
-      }else{
-        if(Platform.OS == 'android') {
-          show({
-            title: '알림',
-            content: '기프티콘 발급 통신 오류입니다. 잠시 후 다시 시도해주세요.',
-            confirmCallback: function () {
-              setComfirmModalVisible(false);
-              closeModal(true);
-            },
-          });
+          msg = data.result_msg;
         } else {
-          Alert.alert('알림', '기프티콘 발급 통신 오류입니다. 잠시 후 다시 시도해주세요.',
-          [{ 
-            text: '확인',
-            onPress: () => {
-              setComfirmModalVisible(false);
-              closeModal(true);
-            }
-          }]);
+          msg = '구매에 성공하였습니다.';
         }
+      } else {
+        msg = '기프티콘 발급 통신 오류입니다. 잠시 후 다시 시도해주세요.';
       }
+
+      if(Platform.OS == 'android') {
+        show({
+          content: msg,
+          confirmCallback: function () {
+            setComfirmModalVisible(false);
+            closeModal(true);
+          },
+        });
+      } else {
+        Alert.alert('알림', msg,
+        [{ 
+          text: '확인',
+          onPress: () => {
+            setComfirmModalVisible(false);
+            closeModal(true);
+          }
+        }]);
+      }
+
     } catch (error) {
       console.log(error);
     } finally {
@@ -187,6 +166,8 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
       const result = await requestPurchase({
         skus: [item_code]
       });
+
+      console.log('result ::::: ' ,result);
 
       const receiptDataJson = JSON.parse(result[0].transactionReceipt);
 
