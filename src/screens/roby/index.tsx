@@ -469,12 +469,13 @@ export const Roby = (props: Props) => {
           {/* ################################################################################ 프로필 관리 영역 */}
           <View>
 
+            {/* 리밋샵 유입 노출 배너 영역 */}
             {memberBase.gender == 'W' &&
               <SpaceView mb={12}>
 
                 <LinearGradient
-                  colors={['rgba(62, 173, 162, 0.65)', 'rgba(62, 173, 162, 0.65)', 'rgba(230, 107, 161, 0.65)']}
-                  start={{ x: 0, y: 3 }}
+                  colors={['#306FD9', '#306FD9', '#7D1BD2']}
+                  start={{ x: 0, y: 5 }}
                   end={{ x: 1, y: 0 }}
                   style={{borderRadius: 15}}>
 
@@ -492,7 +493,7 @@ export const Roby = (props: Props) => {
                     }}>
                     <View>
                       <SpaceView mb={20}>
-                        <Text style={_styles.openEventTxt01}><Text style={{color: '#FE0456'}}>리밋샵</Text>이 열렸습니다.</Text>
+                        <Text style={_styles.openEventTxt01}><Text style={{color: '#CAAAFF'}}>리밋샵</Text>이 열렸습니다.</Text>
                         <Text style={_styles.openEventTxt02}>교환 가능한 상품을 보러 오세요.</Text>
                       </SpaceView>
                       <SpaceView>
@@ -509,6 +510,7 @@ export const Roby = (props: Props) => {
               </SpaceView>
             }
 
+            {/* 대표인상 노출 영역 */}
             {(memberBase?.reex_yn == 'N' && memberBase?.best_face != null) && (
               <View
                 style={{
@@ -528,120 +530,6 @@ export const Roby = (props: Props) => {
                   </SpaceView>
               </View>
             )}
-
-
-
-            {/* {memberBase.gender == 'M' ? (
-              <>
-                {(memberBase?.reex_yn == 'N' && memberBase?.best_face != null) && (
-                  <View
-                    style={{
-                      width: '100%',
-                      height: 95,
-                      borderRadius: 20,
-                      backgroundColor: memberBase.gender == 'M' ? '#ECEFFE' : '#FEEFF2',
-                      overflow: 'hidden',
-                      position: 'relative',
-                    }}>
-                      <SpaceView>
-                        <Image source={memberBase.gender == 'M' ? IMAGE.robyMaleImg : IMAGE.robyFemaleImg} style={{width: '100%', height: 100}} />
-                        <SpaceView viewStyle={{position: 'absolute', top: 10, left: 15}}>
-                          <CommonText type={'h5'} fontWeight={'700'} textStyle={{marginTop: 3, marginBottom: 5, lineHeight: 18}}>{memberBase?.nickname}님의{'\n'}리미티드 대표 인상</CommonText>
-                          <CommonText type={'h5'} fontWeight={'200'} color={memberBase.gender == 'M' ? '#7986EE' : '#FE0456'} textStyle={{marginTop: 0}}>"{memberBase.best_face}"</CommonText>
-                        </SpaceView>
-                      </SpaceView>
-                  </View>
-                )}
-              </>
-            ) : (
-              <>
-                {(memberBase?.reex_yn == 'N' && memberBase?.best_face != null) ? (
-                  <>
-                    <Carousel
-                      data={[0,1]}
-                      //layout={'default'}
-                      sliderWidth={Math.round(width- 33)} 
-                      itemWidth={Math.round(width - 33)}
-                      horizontal={true}
-                      useScrollView={true}
-                      inactiveSlideScale={1}
-                      inactiveSlideOpacity={0.5}
-                      inactiveSlideShift={15}
-                      firstItem={2}
-                      loop={true}
-                      loopClonesPerSide={2}
-                      autoplay={true}
-                      autoplayDelay={2000}
-                      autoplayInterval={3000}
-                      pagingEnabled
-                      renderItem={({ item, index }) => {
-                        return (
-                          <>
-                            {item == 0 ? (
-                              <View
-                                style={{
-                                  width: '100%',
-                                  height: 95,
-                                  borderRadius: 20,
-                                  backgroundColor: memberBase.gender == 'M' ? '#ECEFFE' : '#FEEFF2',
-                                  overflow: 'hidden',
-                                  position: 'relative',
-                                }}>
-                                  <SpaceView>
-                                    <Image source={memberBase.gender == 'M' ? IMAGE.robyMaleImg : IMAGE.robyFemaleImg} style={{width: '100%', height: 100}} />
-                                    <SpaceView viewStyle={{position: 'absolute', top: 10, left: 15}}>
-                                      <CommonText type={'h5'} fontWeight={'700'} textStyle={{marginTop: 3, marginBottom: 5, lineHeight: 18}}>{memberBase?.nickname}님의{'\n'}리미티드 대표 인상</CommonText>
-                                      <CommonText type={'h5'} fontWeight={'200'} color={memberBase.gender == 'M' ? '#7986EE' : '#FE0456'} textStyle={{marginTop: 0}}>"{memberBase.best_face}"</CommonText>
-                                    </SpaceView>
-                                  </SpaceView>
-                              </View>
-                            ) : (
-                              <TouchableOpacity
-                                onPress={() => navigation.navigate(STACK.COMMON, { screen: ROUTES.Mileage_Shop }) }
-                                style={{
-                                  width: '100%',
-                                  height: 95,
-                                  borderRadius: 20,
-                                  backgroundColor: '#FEEFF2',
-                                  overflow: 'hidden',
-                                  position: 'relative',
-                                  flexDirection: 'row',
-                                  justifyContent: 'space-between',
-                                  alignItems: 'center',
-                                  paddingHorizontal: 25,
-                                }}
-                                >
-                                <Text style={_styles.openEventTxt}>리밋샵 오픈 중!{'\n'}닫히기 전에 이용하기 : ){'\n'}30,000 리밋 보유중</Text>
-                                <Image source={IMAGE.clothesImg} style={styles.iconSquareSize(70)} />
-                              </TouchableOpacity>
-                            )}
-                          </>
-                        )
-                      }}
-                    />
-                  </>
-                ) : (
-                  <>
-                    <View
-                      style={{
-                        width: '100%',
-                        height: 95,
-                        borderRadius: 20,
-                        backgroundColor: '#FEEFF2',
-                        overflow: 'hidden',
-                        position: 'relative',
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        paddingHorizontal: 25,
-                      }}>
-                      <Text style={_styles.openEventTxt}>리밋샵 오픈 중!{'\n'}닫히기 전에 이용하기 : ){'\n'}30,000 리밋 보유중</Text>
-                      <Image source={IMAGE.clothesImg} style={styles.iconSquareSize(70)} />
-                    </View>
-                  </>
-                )}
-              </>
-            )} */}
 
             <TouchableOpacity
               style={_styles.manageProfile}
@@ -1327,22 +1215,22 @@ const _styles = StyleSheet.create({
   openEventTxt01: {
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 16,
-    color: '#000000',
+    color: '#fff',
   },
   openEventTxt02: {
     fontFamily: 'AppleSDGothicNeoM00',
     fontSize: 12,
-    color: '#000000',
+    color: '#fff',
   },
   openEventLimitTit: {
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 12,
-    color: '#FE0456',
+    color: '#CAAAFF',
   },
   openEventLimitText: {
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 24,
-    color: '#FE0456',
+    color: '#CAAAFF',
     lineHeight: 28,
   },
 

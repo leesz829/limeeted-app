@@ -15,13 +15,15 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
     Animated.sequence([
       Animated.timing(fadeAnim, {
         toValue: 0,
-        duration: 1000, // 깜빡임이 서서히 사라지는 데 걸리는 시간 (1초)
+        duration: 700, // 깜빡임이 서서히 사라지는 데 걸리는 시간 (1초)
         delay: 2500,
+        //easing: '',
+
         useNativeDriver: true,
       }),
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 1000, // 깜빡임이 서서히 나타나는 데 걸리는 시간 (1초)
+        duration: 700, // 깜빡임이 서서히 나타나는 데 걸리는 시간 (1초)
         delay: 2000,
         useNativeDriver: true,
       }),
@@ -66,6 +68,7 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
           {isFocused ? <Image style={_style.iconSize} source={ICON.mailboxOn} /> : 
             <Image style={_style.iconSize} source={ICON.mailbox} />
           }
+
           {memberBase?.msg_cnt != null && typeof memberBase?.msg_cnt != 'undefined' && memberBase?.msg_cnt > 0 &&
             <View style={_style.iconArea}><Text style={_style.countText}>{memberBase?.msg_cnt}</Text></View>
           }
@@ -75,20 +78,23 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
     case 'Cashshop': {
       return (
         <>
-          {isFocused ? <Image style={_style.iconSize} source={ICON.cashshopOn} /> :
-            <Image style={_style.iconSize} source={ICON.cashshop} />
-          }
-          {(memberBase.gender == 'M' && memberBase?.new_item_cnt != null && typeof memberBase?.new_item_cnt != 'undefined' && memberBase?.new_item_cnt > 0) &&
-            <View style={_style.shopIconArea}><Text style={_style.newText}>NEW</Text></View>
-          }
-          {memberBase.gender == 'W' && (
-            <>
-              <Animated.View style={[_style.shopLimitArea, { opacity: fadeAnim }]}>
-                <Text style={_style.limitText}>{CommaFormat(memberBase.mileage_point)}리밋 보유 중!{'\n'}리밋샵에 획득 가능한 상품이 있어요</Text>
-                <View style={_style.triangle}></View>
-              </Animated.View>
-            </>
-          )}
+          <View style={{width:28}}>
+            {isFocused ? <Image style={_style.iconSize} source={ICON.cashshopOn} /> :
+              <Image style={_style.iconSize} source={ICON.cashshop} />
+            }
+
+            {(memberBase.gender == 'M' && memberBase?.new_item_cnt != null && typeof memberBase?.new_item_cnt != 'undefined' && memberBase?.new_item_cnt > 0) &&
+              <View style={_style.shopIconArea}><Text style={_style.newText}>NEW</Text></View>
+            }
+            {memberBase.gender == 'W' && (
+              <>
+                <Animated.View style={[_style.shopLimitArea, { opacity: fadeAnim }]}>
+                  <Text style={_style.limitText}><Image style={{width: 10, height: 7, position: 'absolute', top: 5, left: 7, zIndex: 1}} source={ICON.crown} /> {CommaFormat(memberBase.mileage_point)}리밋 보유 중!{'\n'}리밋샵 바로가기</Text>
+                  <View style={_style.triangle}></View>
+                </Animated.View>
+              </>
+            )}
+          </View>
         </>
       )
     }
@@ -133,13 +139,13 @@ const _style = StyleSheet.create({
   },
   shopIconArea: {
     position: 'absolute',
-    top: -3,
-    right: 16,
+    top: -2,
+    right: -21,
   },
   shopLimitArea: {
     position: 'absolute',
-    top: -33,
-    right: 7,
+    top: -38,
+    right: -32,
     alignItems: 'flex-end',
   },
   newText: {
@@ -148,24 +154,26 @@ const _style = StyleSheet.create({
     fontSize: 10,
     color: '#fff',
     borderRadius: 9,
-    paddingHorizontal: 6,
+    //paddingHorizontal: 6,
     paddingVertical: 1,
     overflow: 'hidden',
+    width: 34,
+    textAlign: 'center',
   },
   limitText: {
     fontFamily: 'AppleSDGothicNeoM00',
-    fontSize: 8,
+    fontSize: 10,
     color: '#FFF',
     backgroundColor: '#7F67FF',
     borderRadius: 3,
     textAlign: 'center',
-    width: 120,
+    width: 110,
     paddingVertical: 2,
     overflow: 'hidden',
   },
   triangle: {
     marginTop: -1,
-    marginRight: 36,
+    marginRight: 40,
     width: 0,
     height: 0,
     backgroundColor: 'transparent',

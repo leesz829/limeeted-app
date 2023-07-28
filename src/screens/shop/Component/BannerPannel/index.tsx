@@ -47,9 +47,9 @@ function FemalePannel() {
         {route.name !== ROUTES.Mileage_Shop ? (
 
           <LinearGradient
-            colors={['#882173', '#18315B']}
-            start={{ x: 1, y: 0 }}
-            end={{ x: 0, y: 2 }}
+            colors={['#7D1BD2', '#306FD9', '#306FD9']}
+            start={{ x: 1, y: 1 }}
+            end={{ x: 0, y: 3 }}
             style={female.floatContainer(route.name)}>
 
             <View style={{ flexDirection: 'column', justifyContent: 'space-between' }}>
@@ -62,7 +62,7 @@ function FemalePannel() {
                   <SpaceView mt={17}>
                     <Text style={female.femaleTxt01}>보유 리밋</Text>
                     <Text style={female.femaleTxt02}>
-                      그 동안 리밋을 열심히 모으셨네요!{'\n'}
+                      그동안 리밋을 열심히 모으셨네요!{'\n'}
                       쏠쏠한 기프티콘 선물을 기대해 보세요!
                     </Text>
                   </SpaceView>
@@ -411,7 +411,7 @@ const female = StyleSheet.create({
       backgroundColor: 'white',
       width: '100%',
       height: type == 'Cashshop' ? 170 : 120,
-      borderRadius: 5,
+      borderRadius: 15,
       shadowColor: '#000',
       shadowOffset: {
         width: 0,
@@ -536,8 +536,9 @@ const female = StyleSheet.create({
     top: 0,
   },
   btnArea: {
-    borderTopWidth: 1,
+    borderTopWidth: 2,
     borderTopColor: '#5D2CAE',
+    borderStyle: 'dotted',
   },
   openText: {
     backgroundColor: '#7986EE',
