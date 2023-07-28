@@ -88,8 +88,15 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
             }
             {memberBase.gender == 'W' && (
               <>
-                <Animated.View style={[_style.shopLimitArea, { opacity: fadeAnim }]}>
+                {/* <Animated.View style={[_style.shopLimitArea, { opacity: fadeAnim }]}>
                   <Text style={_style.limitText}><Image style={{width: 10, height: 7, position: 'absolute', top: 5, left: 7, zIndex: 1}} source={ICON.crown} /> {CommaFormat(memberBase.mileage_point)}리밋 보유 중!{'\n'}리밋샵 바로가기</Text>
+                  <View style={_style.triangle}></View>
+                </Animated.View> */}
+
+                <Animated.View style={[_style.shopLimitArea, { opacity: fadeAnim }]}>
+                  <View style={_style.shopLimitTextArea}>
+                    <Text style={_style.limitText}><Image style={{width: 10, height: 7}} source={ICON.crown} /> {CommaFormat(memberBase.mileage_point)}리밋 보유 중!{'\n'}리밋샵 바로가기</Text>
+                  </View>
                   <View style={_style.triangle}></View>
                 </Animated.View>
               </>
@@ -144,9 +151,16 @@ const _style = StyleSheet.create({
   },
   shopLimitArea: {
     position: 'absolute',
-    top: -38,
+    top: -39,
     right: -32,
     alignItems: 'flex-end',
+  },
+  shopLimitTextArea: {
+    backgroundColor: '#7F67FF',
+    borderRadius: 3,
+    overflow: 'hidden',
+    width: 103,
+    paddingVertical: 3,
   },
   newText: {
     backgroundColor: '#FF7E8C',
@@ -164,12 +178,7 @@ const _style = StyleSheet.create({
     fontFamily: 'AppleSDGothicNeoM00',
     fontSize: 10,
     color: '#FFF',
-    backgroundColor: '#7F67FF',
-    borderRadius: 3,
     textAlign: 'center',
-    width: 110,
-    paddingVertical: 2,
-    overflow: 'hidden',
   },
   triangle: {
     marginTop: -1,
