@@ -158,6 +158,7 @@ export const GIF_IMG = {
   loading: require('assets/img/gif/loading.gif'),
   soon: require('assets/img/gif/loading_icon.gif'),
   loadingIcon: require('assets/img/gif/loading_icon_2.gif'),
+  loadingNewIcon: require('assets/img/gif/loading_new.gif'),
 };
 
 export const IMAGE = {

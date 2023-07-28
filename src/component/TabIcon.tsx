@@ -1,4 +1,4 @@
-import { View, Image, StyleSheet, Text, Animated } from 'react-native';
+import { View, Image, StyleSheet, Text, Animated, Platform } from 'react-native';
 import { findSourcePath, ICON } from 'utils/imageUtils';
 import * as React from 'react';
 import { useProfileImg } from 'hooks/useProfileImg';
@@ -161,6 +161,7 @@ const _style = StyleSheet.create({
     overflow: 'hidden',
     width: 103,
     paddingVertical: 3,
+    paddingLeft: Platform.OS == 'android' ?  0 : 5,
   },
   newText: {
     backgroundColor: '#FF7E8C',

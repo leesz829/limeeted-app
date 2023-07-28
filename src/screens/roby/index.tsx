@@ -542,7 +542,53 @@ export const Roby = (props: Props) => {
               style={_styles.manageProfile}
               onPress={onPressMangeProfile}>
               <Text style={_styles.profileText}>프로필 관리</Text>
-              <Image source={ICON.arrow_right} style={styles.iconSize} />
+
+              <View style={_styles.row}>
+                <SpaceView mr={8}>
+                  {memberBase?.auth_acct_cnt > 0 && memberBase?.auth_acct_cnt < 10 &&
+                    <LinearGradient colors={['#7986EE', '#7986EE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
+                      <Text style={_styles.whiteText}>LV.{memberBase.auth_acct_cnt}</Text>
+                    </LinearGradient>
+                  }
+
+                  {memberBase?.auth_acct_cnt >= 10 && memberBase?.auth_acct_cnt < 15 &&
+                    <LinearGradient colors={['#E0A9A9', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
+                      <Image source={ICON.level10Icon} style={[_styles.authBadgeImg, {width: 23, height: 23}]} />
+                      <Text style={_styles.whiteText}>LV.{memberBase?.auth_acct_cnt}</Text>
+                    </LinearGradient>
+                  }
+
+                  {memberBase?.auth_acct_cnt >= 15 && memberBase?.auth_acct_cnt < 20 &&
+                    <LinearGradient colors={['#A9BBE0', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
+                      <Image source={ICON.level15Icon} style={[_styles.authBadgeImg, {width: 23, height: 23}]} />
+                      <Text style={_styles.whiteText}>LV.{memberBase?.auth_acct_cnt}</Text>
+                    </LinearGradient>
+                  }
+
+                  {memberBase?.auth_acct_cnt >= 20 && memberBase?.auth_acct_cnt < 25 &&
+                    <LinearGradient colors={['#FEB961', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
+                      <Image source={ICON.level20Icon} style={[_styles.authBadgeImg02, {width: 30, height: 30}]} />
+                      <Text style={_styles.whiteText}>LV.{memberBase?.auth_acct_cnt}</Text>
+                    </LinearGradient>
+                  }
+
+                  {memberBase?.auth_acct_cnt >= 25 && memberBase?.auth_acct_cnt < 30 &&
+                    <LinearGradient colors={['#9BFFB5', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
+                      <Image source={ICON.level25Icon} style={[_styles.authBadgeImg02, {width: 30, height: 30}]} />
+                      <Text style={_styles.whiteText}>LV.{memberBase?.auth_acct_cnt}</Text>
+                    </LinearGradient>
+                  }
+
+                  {memberBase?.auth_acct_cnt >= 30 &&
+                    <LinearGradient colors={['#E84CEE', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
+                      <Image source={ICON.level30Icon} style={[_styles.authBadgeImg02, {width: 30, height: 30}]} />
+                      <Text style={_styles.whiteText}>LV.{memberBase?.auth_acct_cnt}</Text>
+                    </LinearGradient>
+                  }
+
+                </SpaceView>
+                <Image source={ICON.arrow_right} style={styles.iconSize} />
+              </View>
             </TouchableOpacity>
 
             {/* <TouchableOpacity
@@ -1230,8 +1276,35 @@ const _styles = StyleSheet.create({
   openEventLimitText: {
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 24,
-    color: '#CAAAFF',
+    color: '#D5DF4B',
     lineHeight: 28,
+  },
+
+  authBadge: {
+    width: 48,
+    height: 21,
+    borderRadius: 5,
+    flexDirection: `row`,
+    alignItems: `center`,
+    justifyContent: `center`,
+    marginRight: 5,
+  },
+  authBadgeImg: {
+    marginLeft: -5,
+    marginRight: -2,
+    marginTop: -2
+  },
+  authBadgeImg02: {
+    marginLeft: -9,
+    marginRight: -4,
+    marginTop: -3
+  },
+  whiteText: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 10,
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#ffffff',
   },
 
 });

@@ -7,10 +7,13 @@ export const CommonLoading  = () => {
   return (
     <View style={_styles.loadingArea}>
       <View style={_styles.loadingDim} />
-      <Image source={GIF_IMG.loadingIcon} style={_styles.loadingIcon} />
+      {/* <Image source={GIF_IMG.loadingIcon} style={_styles.loadingIcon} /> */}
+      <Image source={GIF_IMG.loadingNewIcon} style={_styles.loadingIcon} />
     </View>
   );
 };
+
+
 
 
 const _styles = StyleSheet.create({
