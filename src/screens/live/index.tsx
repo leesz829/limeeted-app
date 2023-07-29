@@ -588,14 +588,14 @@ export const Live = () => {
                       }),
                     ]}
                   </View>
-                </Animated.View>
 
-                {/* 뒤로가기 */}
-                <SpaceView mt={15} viewStyle={{width: '100%', flexDirection: 'row'}}>
-                  <TouchableOpacity onPress={() => { prevBtn(); }} style={{width: '100%'}}>
-                    <Text style={_styles.backBtnText}>뒤로가기</Text>
-                  </TouchableOpacity>
-                </SpaceView>
+                  {/* 뒤로가기 */}
+                  <SpaceView mt={15} viewStyle={{width: '100%', flexDirection: 'row'}}>
+                    <TouchableOpacity onPress={() => { prevBtn(); }} style={{width: '100%'}}>
+                      <Text style={_styles.backBtnText}>뒤로가기</Text>
+                    </TouchableOpacity>
+                  </SpaceView>
+                </Animated.View>
 
               </View>
             </>

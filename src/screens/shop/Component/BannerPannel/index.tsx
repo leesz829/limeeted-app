@@ -86,6 +86,8 @@ function FemalePannel() {
                 </View>
               </SpaceView>
 
+              <View style={female.limeDotted} />
+
               <SpaceView pt={8} pr={15} viewStyle={female.btnArea}>
                 <TouchableOpacity onPress={onPressLimitShop} hitSlop={commonStyle.hipSlop20} style={{flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center'}}>
                   <Text style={female.joinBtnTxt}>리밋샵 입장하기</Text>
@@ -535,10 +537,17 @@ const female = StyleSheet.create({
     right: 3,
     top: 0,
   },
-  btnArea: {
-    borderTopWidth: 2,
-    borderTopColor: '#5D2CAE',
+  limeDotted: {
+    width: '100%',
+    height: 1,
+    borderWidth: 1,
+    borderColor: '#5D2CAE',
     borderStyle: 'dotted',
+  },
+  btnArea: {
+    /* borderTopWidth: 2,
+    borderTopColor: '#5D2CAE',
+    borderStyle: 'dotted', */
   },
   openText: {
     backgroundColor: '#7986EE',

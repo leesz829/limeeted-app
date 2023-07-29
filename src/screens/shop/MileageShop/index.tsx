@@ -547,7 +547,7 @@ const categories = [
     value: 'gifticon',
   },
   {
-    label: '부띠끄',
+    label: '부티크',
     value: 'boutique',
   },
 ];

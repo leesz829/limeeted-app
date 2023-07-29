@@ -3,7 +3,7 @@ import { findSourcePath, ICON } from 'utils/imageUtils';
 import * as React from 'react';
 import { useProfileImg } from 'hooks/useProfileImg';
 import { useUserInfo } from 'hooks/useUserInfo';
-import { CommaFormat } from 'utils/functions';
+import { CommaFormat, isEmptyData } from 'utils/functions';
 
 
 const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
@@ -42,11 +42,17 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
       const masterProfileImg = mbrProfileImgList.filter((e, i) => i == 0);
 
       if(masterProfileImg.length > 0) {
-        if (isFocused) {
-          return <Image style={_style.imgSize(true)} source={findSourcePath(masterProfileImg[0].img_file_path)} />;
-        } else {
-          return <Image style={_style.imgSize(false)} source={findSourcePath(masterProfileImg[0].img_file_path)} />;
-        }
+        return (
+          <>
+            <View>
+              <Image style={_style.imgSize(isFocused)} source={findSourcePath(masterProfileImg[0].img_file_path)} />
+
+              {isEmptyData(memberBase.new_board_cnt) && memberBase.new_board_cnt > 0 && (
+                <View style={_style.newIcon} />
+              )}
+            </View>
+          </>
+        )
       } else {
         if (isFocused) {
           return <Image style={style.iconSize} source={ICON.robyOn} />;
@@ -195,4 +201,13 @@ const _style = StyleSheet.create({
     borderBottomColor: '#7F67FF',
     transform: [{ rotate: '180deg' }],
   },
+  newIcon: {
+		position: 'absolute',
+		top: -3,
+		right: -5,
+		width: 8,
+		height: 8,
+		backgroundColor: '#FF7E8C',
+		borderRadius: 30,
+	},
 });
