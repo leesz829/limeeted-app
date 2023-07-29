@@ -151,6 +151,7 @@ export const ICON = {
   zzimIcon: require('assets/icon/zzim_icon.png'),
   loveLetterIcon: require('assets/icon/icon-love-letter.png'),
   playIcon: require('assets/icon/play_icon.png'),
+  dottedIcon: require('assets/icon/dotted_icon.png'),
 };
 
 export const GIF_IMG = {

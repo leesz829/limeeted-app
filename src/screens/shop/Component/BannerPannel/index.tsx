@@ -86,7 +86,9 @@ function FemalePannel() {
                 </View>
               </SpaceView>
 
-              <View style={female.limeDotted} />
+              <View style={female.limeDotted}>
+                <Image source={ICON.dottedIcon} style={{width: '100%', height: 1}} />
+              </View>
 
               <SpaceView pt={8} pr={15} viewStyle={female.btnArea}>
                 <TouchableOpacity onPress={onPressLimitShop} hitSlop={commonStyle.hipSlop20} style={{flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center'}}>
@@ -540,9 +542,9 @@ const female = StyleSheet.create({
   limeDotted: {
     width: '100%',
     height: 1,
-    borderWidth: 1,
+    /* borderWidth: 1,
     borderColor: '#5D2CAE',
-    borderStyle: 'dotted',
+    borderStyle: 'dotted', */
   },
   btnArea: {
     /* borderTopWidth: 2,
