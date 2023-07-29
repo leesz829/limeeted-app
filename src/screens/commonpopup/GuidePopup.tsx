@@ -124,7 +124,15 @@ export const GuidePopup = (props: Props) => {
                                     <SpaceView mt={20} viewStyle={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
                                       {index == 0 && <Text style={_styles.liveTxt03}>"상대방이 받을 별을 선택 후 <Text style={{color: '#697AE6'}}>확인</Text>을 눌러주세요."</Text> }
                                       {index == 1 && <Text style={_styles.liveTxt03}>"상대방에게 가장 어울리는 인상을 선택해주세요."</Text> }
-                                      {index == 2 && <Text style={[_styles.liveTxt03, {marginTop: -10}]}>"투표를 마칠 때 마다 <Image source={ICON.passCircle} style={{width: 23, height: 23}} />1개가 지급됩니다."</Text> }
+                                      {index == 2 && (
+                                        <>
+                                          <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                                            <Text style={[_styles.liveTxt03]}>"투표를 마칠 때 마다</Text>
+                                            <Image source={ICON.passCircle} style={{width: 23, height: 23, marginLeft: 3, marginTop: 2}} />
+                                            <Text style={[_styles.liveTxt03]}>1개가 지급됩니다."</Text> 
+                                          </View>
+                                        </>
+                                      )}
                                     </SpaceView>
                                   </SpaceView>
                                 </LinearGradient>
