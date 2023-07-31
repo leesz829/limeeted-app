@@ -36,6 +36,7 @@ const DATA = [
   },
 ];
 
+
 export default function MileageShop() {
   const [tab, setTab] = useState(categories[0]);
   const [data, setData] = useState(DATA);
@@ -43,6 +44,64 @@ export default function MileageShop() {
   const [isLoading, setIsLoading] = useState(false);
 
   const dispatch = useDispatch();
+  
+  let timer:any;
+  
+  let tmpLeftSecondsArr: { left_seconds: number; prod_seq: number }[] = [];
+
+  const [leftSecondsArr, setLeftSecondsArr] = useState<any>({
+    left_seconds: 0
+    , prod_seq: 0
+  });
+  
+  const fnAuctTimeCount = async () => {
+    tmpLeftSecondsArr.filter((e, i) => {
+      e.left_seconds = e.left_seconds - 1;
+    })
+    
+    
+    setLeftSecondsArr(tmpLeftSecondsArr);
+
+    /*
+    
+
+    console.log('leftSecondsArr ::: ' , leftSecondsArr);
+    */
+    /*
+    data.filter((e, i) => {
+      e.data.filter((o, j) => {
+        o.left_seconds = o.left_seconds - 1;
+      })
+    })
+    */
+    
+    // console.log('data :::: ', data[1].data[0].left_seconds);
+
+    // setDeleteList((prev) => prev.filter((i) => i !== item));
+    /*
+    setData((prev) => 
+      prev.filter((e, i) => {
+        e.data.filter((o, j) => {
+          console.log('o :::::::: ' , o)
+          o.left_seconds = o.left_seconds - countSecond++;
+        })
+      })
+    );
+    */
+    
+    // console.log('fnAuctTimeCount data ::: ' , data.data);
+
+    // console.log(countSecond++, data);
+/*
+    setData((prev) => data.filter((e, i) => {
+      console.log('e :::::::: ' , e)
+        
+    }));
+*/
+
+
+  }
+  
 
   async function fetch() {
     setIsLoading(true);
@@ -55,6 +114,10 @@ export default function MileageShop() {
         if (sa) {
           if(ad?.prod_list.length > 0) {
             setData(ad?.prod_list);
+
+            ad?.prod_list.forEach(e => {
+              tmpLeftSecondsArr.push({'left_seconds': e.data[0].left_seconds, 'prod_seq':e.data[0].prod_seq });
+            });
           };
         };
   
@@ -81,6 +144,9 @@ export default function MileageShop() {
 
   useEffect(() => { 
     fetch();
+
+    // timer = setInterval(fnAuctTimeCount, 1000);
+    // return () => clearInterval(timer);
   }, [tab]);
 
   const onPressTab = (value) => {
@@ -253,9 +319,13 @@ const RenderItem = ({ item, type, callFn }) => {
 
   return (
     <>
+      {/* boutique : 경매 상품 목록,  gifticon : 기프티콘 재고 상품 목록 */}
       {type == 'boutique' ? (
         <View style={_styles.renderItem02}>
-          <TouchableOpacity activeOpacity={0.8} onPress={() => onPressItem(item)}>
+          <TouchableOpacity activeOpacity={0.8} onPress={() => 
+                                                                console.log('item ::: ' , item)
+                                                               // onPressItem(item)
+                                                              }>
             <View style={{ flexDirection: 'row' }}>
               
               <SpaceView viewStyle={_styles.thumbArea}>
@@ -265,6 +335,7 @@ const RenderItem = ({ item, type, callFn }) => {
               <SpaceView viewStyle={_styles.textArea}>
                 <SpaceView mt={17}>
                   <Text style={_styles.boutiqueStatus('')}>낙찰</Text>
+                  
                   <Text style={_styles.brandName}>{item?.brand_name}</Text>
                   <Text style={_styles.productName(type)}>{item?.prod_name}</Text>
                 </SpaceView>
@@ -513,16 +584,24 @@ const _styles = StyleSheet.create({
     marginLeft: 4,
   },
   boutiqueStatus: (type:string) => {
-    return {
-      fontFamily: 'AppleSDGothicNeoM00',
-      fontSize: 10,
-      color: '#fff',
-      backgroundColor: '#69C9E6',
-      borderRadius: 7,
-      width: 45,
-      textAlign: 'center',
-      paddingVertical: 1,
-    };
+    /*
+      낙찰 : SOLD
+      , 60분 후 낙찰 (일, 시간) : MIN
+      , 60초후낙찰 : SCND
+    */
+   let backgroundColor = (type=='SOLD'?'#69C9E6':'#000000');
+   let fontColor = (type=='SCND'?'#FFC100':'#fff');
+   
+   return {
+     fontFamily: 'AppleSDGothicNeoM00',
+     fontSize: 10,
+     color: fontColor,
+     backgroundColor: backgroundColor,
+     borderRadius: 7,
+     width: 45,
+     textAlign: 'center',
+     paddingVertical: 1,
+   };
   },
   bidText: (color:string) => {
     return {

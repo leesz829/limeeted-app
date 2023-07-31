@@ -4,7 +4,7 @@ import { Color } from 'assets/styles/Color';
 import CommonHeader from 'component/CommonHeader';
 import { useUserInfo } from 'hooks/useUserInfo';
 import React, { useEffect, useState } from 'react';
-import { Dimensions, FlatList, Image, StyleSheet, Text, TouchableOpacity, View, Platform } from 'react-native';
+import { BackHandler, Dimensions, FlatList, Image, StyleSheet, Text, TouchableOpacity, View, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CommaFormat, getRemainTime } from 'utils/functions';
 import { ICON, findSourcePath } from 'utils/imageUtils';
@@ -18,41 +18,86 @@ import SpaceView from 'component/SpaceView';
 
 
 
-function indextToText(index) {
-  switch (index) {
-    case 0:
-      return '현재 입찰가';
-
-    case 1:
-      return '희망 입찰가';
-
-    default:
-      return '';
-  }
-}
 export default function AuctionDetail() {
   const navigation = useNavigation();
   const { show } = usePopup();  // 공통 팝업
+  const [auctIndex, setAuctIndex] = useState(1);
 
   const { prod_seq, modify_seq } = useRoute().params;
 
   const [data, setData] = useState(null);
+  const [nowBidPrice, setNowBidPrice] = useState(0);
+  const [hasMileage, setHasMileage] = useState(0);
+  const [biddingBtnFlag, setBiddingBtnFlag] = useState(true);
+  const [auctTimeText, setAuctTimeText] = useState('');
+  const [auctTimeType, setAuctTimeType] = useState('');
+  let buyEndDt = '';
+  let countSecond = 0;
+  
   const me = useUserInfo();
-
-  /* const images = data?.images?.filter((e) => e.represent_yn == 'Y')?.map((img) => {
-    const imagePath =  findSourcePath(img?.file_path + img?.file_name);
-    return imagePath;
-  }); */
+  let timer:any;
 
   const images = data?.images?.map((img) => {
     const imagePath =  findSourcePath(img?.file_path + img?.file_name);
     return imagePath;
   });
 
+
+  const fnAuctTimeCount = async () => {
+    console.log('buyEndDt ::: ' , buyEndDt);
+
+    // 2023-07-31 18:00:00
+    let date = new Date(buyEndDt);
+    let now = new Date();
+    date.setSeconds(date.getSeconds() - countSecond++);
+    
+    let diff = (date.getTime() - now.getTime()) / (1000*60*60*24);
+    let timeTypeName = '일';
+    let auctTimeTypeCode = 'D';
+
+    if(diff < 1){
+      auctTimeTypeCode = 'H'
+      diff = diff * 24;
+      timeTypeName = '시';
+      if(diff < 1){
+        auctTimeTypeCode = 'M'
+        diff = diff * 60;
+        timeTypeName = '분';
+        if(diff < 1){
+          auctTimeTypeCode = 'S'
+          diff = diff * 60;
+          timeTypeName = '초';
+        }
+      }
+    }
+
+    if(Math.floor(diff) < 0){
+      clearInterval(timer);
+
+      show({
+        title: '상품 낙찰',
+        content: '아쉽게도 보고 계신 상품이 지금 낙찰되었습니다.\n부티크 상점으로 이동합니다.',
+        confirmCallback: function () {
+          navigation.navigate(STACK.COMMON, 
+            { screen: ROUTES.Mileage_Shop }
+          );
+        },
+      });
+
+      return false;
+    }
+    setAuctTimeType(auctTimeTypeCode);
+    setAuctTimeText(auctTimeText => Math.round(diff) + timeTypeName)
+  }
+
+  
   const fetch = async () => {
     const body = { prod_seq, modify_seq };
     const { success, data } = await get_auct_detail(body);
 
+    buyEndDt = data.prod_detail.buy_end_dt;
+
+    // setNowBidPrice
     if (success) {
       setData({
         images: data?.prod_img_list,
@@ -60,19 +105,33 @@ export default function AuctionDetail() {
         auct_list: data?.auct_list,
       });
     }
+
+    // 현재 입찰 가능 금액
+    setNowBidPrice(data.prod_detail.now_bid_price);
+    setHasMileage(data.has_mileage);
   }
 
   useEffect(() => {
     fetch();
+
+    timer = setInterval(fnAuctTimeCount, 1000);
+    return () => clearInterval(timer);
   }, []);
 
 
+  const setBidding = (item:any, index:number) =>{
+    setAuctIndex(index);
+    setNowBidPrice(item?.bid_price);
+
+    setBiddingBtnFlag(item.bid_price > hasMileage?false:true);
+  }
+  
   // ######################################## 경매상품 구매하기 함수
   const productPurchase = async (nowBuyYn:string) => {
 
     let modalTitle = nowBuyYn == 'Y' ? '즉시 구매하기' : '입찰하기';
     let modalContent = nowBuyYn == 'Y' ? '표기 된 리밋 수량을 소모하고\n 즉시구매 하시겠습니까?' : '표기 된 호가로 입찰 신청하시겠습니까?';
-    let req_bid_price = nowBuyYn == 'Y' ? data?.now_buy_price : data?.now_bid_price;
+    let req_bid_price = nowBuyYn == 'Y' ? data?.now_buy_price : nowBidPrice;
 
     try {
       show({
@@ -143,34 +202,20 @@ export default function AuctionDetail() {
               <Text style={_styles.brandText}>{data?.brand_name}</Text>
               <Text style={_styles.giftName}>{data?.prod_name}</Text>
               <View style={_styles.rowBetween}>
-                <Text style={_styles.inventory}></Text>
-                <View style={_styles.rowCenter}>
-                  <Text style={_styles.price}>{data?.now_bid_price}</Text>
-                  <Image source={ICON.crown} style={_styles.crown} />
-                </View>
+                <Text style={_styles.inventory}>{data?.prod_content}</Text>                
               </View>
               <View style={_styles.spacer} />
               <View style={_styles.currency}>
-                <View>
-                  <Text style={_styles.currencyText}>현재 나의 보유 리밋</Text>
-                </View>
                 <View style={{ flexDirection: 'row' }}>
                   <Image style={_styles.roundCrown} source={ICON.roundCrown} />
+                  <Text style={_styles.currencyText}>보유 리밋</Text>
+                </View>
+                <View>
                   <Text style={_styles.currenyAmount}>
                     {CommaFormat(me?.mileage_point)}
                   </Text>
                 </View>
               </View>
-
-              <SpaceView mt={15} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                <Text style={_styles.duration}>
-                  경매기간 : {dayjs(data?.buy_start_dt).format('MM/DD')} ~{' '}
-                  {dayjs(data?.buy_end_dt).format('MM/DD')}
-                </Text>
-                <Text style={_styles.durationSub}>
-                  ({getRemainTime(data?.buy_end_dt, true)})
-                </Text>
-              </SpaceView>
 
               <View style={_styles.dashline} />
 
@@ -187,24 +232,41 @@ export default function AuctionDetail() {
             </View>
           </>
         }
+
         renderItem={({ item, index }) => (
-          <View style={_styles.itemStyle}>
-            <Text
-              style={
-                index === 0
-                  ? _styles.ItemRowTextLeftPurple
-                  : _styles.ItemRowTextLeft
+          <TouchableOpacity onPress={() => index != 0 && setBidding(item, index) }>
+            <View style={_styles.itemStyle}>
+              <Text style={index === 0?_styles.ItemRowTextLeft:_styles.ItemRowTextLeftPurple}>
+                {index === 0 && '현재 입찰가'}
+                {(index != 0 && index === auctIndex) && '희망 입찰가'}
+              </Text>
+              <View style={{flexDirection:'row', alignItems: 'center', justifyContent: 'center'}}>
+                <Text style={ item.bid_price > hasMileage?_styles.ItemRowTextCenterRed:
+                              index != auctIndex?_styles.ItemRowTextCenter:_styles.ItemRowTextCenterPurple}>
+                  {CommaFormat(item?.bid_price)}
+                </Text>
+                <Image style={_styles.smallCrown} source={ICON.crown} />
+              </View>
+              
+              {index === 0 ?
+                    <View style={{width: '30%'}}>
+                      <Text>
+                        
+                        <Text style={auctTimeType == 'D'?null:auctTimeType == 'H' || auctTimeType == 'M' ? {color: '#8657D4'} : {color: '#FFC100'} }>
+                          {auctTimeText}
+                        </Text>
+                          {'후 낙찰'}
+                      </Text>
+                        
+                    </View>:
+                    <Text style={ item.bid_price > hasMileage?_styles.ItemRowTextRightRed:_styles.ItemRowTextRightPurple}>
+                      {(index != 0 && index === auctIndex && item.bid_price < hasMileage) && '입찰가능'}
+                      {(index != 0 && item.bid_price > hasMileage ) && '보유리밋 부족'}
+                    </Text>
               }
-            >
-              {indextToText(index)}
-            </Text>
-            <Text style={_styles.ItemRowTextCenter}>
-              {CommaFormat(item?.bid_price)}원
-            </Text>
-            <Text style={_styles.ItemRowTextRight}>
-              {index === 0 && '20분 후 낙찰'}
-            </Text>
-          </View>
+
+            </View>
+          </TouchableOpacity>
         )}
       />
       <View
@@ -216,26 +278,67 @@ export default function AuctionDetail() {
         ]}
       >
         <View style={_styles.rowAround}>
-          <TouchableOpacity style={_styles.puchageButton} onPress={() => productPurchase('Y')}>
-            <Text style={_styles.puchageText}>구매</Text>
+          <TouchableOpacity style={_styles.puchageButton} onPress={() => productPurchase('N')}>
+            <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start'}}>
+              <Text style={_styles.puchageText}>즉시구매</Text>
+            </View>
             <Seperator />
-            <View>
+            <View style={{flex: 1, justifyContent: 'flex-end', alignItems: 'flex-end'}}>
               <Text style={_styles.priceText}>
                 {CommaFormat(data?.now_buy_price)}
               </Text>
-              <Text style={_styles.additionalText}>즉시구매가</Text>
+              <Image style={_styles.topCrown} source={ICON.crown} />
             </View>
           </TouchableOpacity>
+          
+        {biddingBtnFlag?
           <TouchableOpacity style={_styles.bidButton} onPress={() => productPurchase('N')}>
+          <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start'}}>
             <Text style={_styles.puchageText}>입찰</Text>
+          </View>
+          <Seperator />
+          <View style={{flex: 1, justifyContent: 'flex-end', alignItems: 'flex-end'}}>
+            <Text style={_styles.priceText}>
+              {CommaFormat(nowBidPrice)}
+            </Text>
+            <Image style={_styles.topCrown} source={ICON.crown} />
+          </View>
+        </TouchableOpacity>
+        :<TouchableOpacity style={_styles.bidNoButton}>
+          <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start'}}>
+            <Text style={_styles.puchageText}>입찰</Text>
+          </View>
+          <Seperator />
+          <View style={{flex: 1, justifyContent: 'flex-end', alignItems: 'flex-end'}}>
+            <Text style={_styles.priceRedText}>
+              {CommaFormat(nowBidPrice)}
+            </Text>
+            <Text style={_styles.priceRedNoText}>
+              {'보유리밋 부족'}
+            </Text>
+            <Image style={_styles.topCrown} source={ICON.crown} />
+          </View>
+        </TouchableOpacity>
+        }
+          
+        
+        {/*
+          <TouchableOpacity style={_styles.bidNoButton} onPress={() => productPurchase('N')}>
+            <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start'}}>
+              <Text style={_styles.puchageText}>입찰</Text>
+            </View>
             <Seperator />
-            <View>
-              <Text style={_styles.priceText}>
-                {CommaFormat(data?.now_bid_price)}
+            <View style={{flex: 1, justifyContent: 'flex-end', alignItems: 'flex-end'}}>
+              <Text style={_styles.priceRedText}>
+                {CommaFormat(nowBidPrice)}
               </Text>
-              <Text style={_styles.additionalText}>입찰대기10분</Text>
+              <Text style={_styles.priceRedNoText}>
+                {'보유리밋 부족'}
+              </Text>
+              <Image style={_styles.topCrown} source={ICON.crown} />
             </View>
           </TouchableOpacity>
+      */}
         </View>
       </View>
     </View>
@@ -349,6 +452,10 @@ const _styles = StyleSheet.create({
     letterSpacing: 0,
     textAlign: 'left',
     color: '#212121',
+  },
+  smallCrown: {
+    width: 15,
+    height: 10,
   },
   crown: {
     width: 17.67,
@@ -465,7 +572,7 @@ const _styles = StyleSheet.create({
     letterSpacing: 0,
     textAlign: 'center',
     color: '#7b7b7b',
-    width: '33%',
+    width: '30%',
   },
   rowTextRight: {
     fontFamily: 'AppleSDGothicNeoSB00',
@@ -487,7 +594,7 @@ const _styles = StyleSheet.create({
     letterSpacing: 0,
     textAlign: 'left',
     color: '#7b7b7b',
-    width: '33%',
+    width: '30%',
   },
   ItemRowTextLeftPurple: {
     fontFamily: 'AppleSDGothicNeoB00',
@@ -498,21 +605,21 @@ const _styles = StyleSheet.create({
     letterSpacing: 0,
     textAlign: 'left',
     color: '#8657d4',
-    width: '33%',
+    width: '30%',
   },
-  ItemRowTextCenter: {
-    fontFamily: 'AppleSDGothicNeoM00',
-    fontSize: 14,
+  ItemRowTextCenterPurple: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 16,
     fontWeight: 'normal',
     fontStyle: 'normal',
-    lineHeight: 28,
+    lineHeight: 27,
     letterSpacing: 0,
     textAlign: 'center',
-    color: '#7b7b7b',
-    width: '33%',
+    color: '#8657d4',
+    width: '40%',
   },
-  ItemRowTextRight: {
-    opacity: 0.37,
+  ItemRowTextRightPurple: {
+    opacity: 0.8,
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 14,
     fontWeight: 'normal',
@@ -520,8 +627,44 @@ const _styles = StyleSheet.create({
     lineHeight: 30,
     letterSpacing: 0,
     textAlign: 'right',
+    color: '#8657d4',
+    width: '30%',
+  },
+
+  ItemRowTextCenterRed: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 16,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    lineHeight: 27,
+    letterSpacing: 0,
+    textAlign: 'center',
+    color: '#FF5858',
+    width: '40%',
+  },
+  ItemRowTextRightRed: {
+    opacity: 0.8,
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 14,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    lineHeight: 30,
+    letterSpacing: 0,
+    textAlign: 'right',
+    color: '#FF5858',
+    width: '30%',
+  },
+
+  ItemRowTextCenter: {
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 16,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    lineHeight: 28,
+    letterSpacing: 0,
+    textAlign: 'center',
     color: '#7b7b7b',
-    width: '33%',
+    width: '40%',
   },
   itemStyle: {
     width: '100%',
@@ -557,26 +700,65 @@ const _styles = StyleSheet.create({
     justifyContent: `center`,
   },
 
+  bidNoButton: {
+    width: (Dimensions.get('window').width - 16) * 0.5,
+    height: 56,
+    borderRadius: 10,
+    backgroundColor: '#D1D1D1',
+    borderStyle: 'solid',
+    flexDirection: `row`,
+    alignItems: `center`,
+    justifyContent: `center`,
+  },
+
   puchageButton: {
     width: (Dimensions.get('window').width - 16) * 0.5,
     height: 56,
     borderRadius: 10,
     backgroundColor: '#262626',
-    borderColor: '#262626',
+    borderStyle: 'solid',
     flexDirection: `row`,
     alignItems: `center`,
-    justifyContent: 'center',
-    paddingHorizontal: 10,
+    justifyContent: `center`,
   },
   puchageText: {
     fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 19,
+    fontSize: 15,
     fontWeight: 'normal',
     fontStyle: 'normal',
     letterSpacing: 0,
+    color: '#ffffff',
+    marginLeft: 15,
+    textAlign: 'left',
+  },
+  priceText: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 18,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
     textAlign: 'left',
     color: '#ffffff',
+    marginRight: 20
   },
+  priceRedText: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 18,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    textAlign: 'left',
+    color: '#FF5858',
+    marginRight: 20
+  },
+  priceRedNoText: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 10,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    textAlign: 'left',
+    color: '#FF5858',
+    marginRight: 20
+  },
+  /*
   priceText: {
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 14,
@@ -586,6 +768,7 @@ const _styles = StyleSheet.create({
     textAlign: 'left',
     color: '#ffffff',
   },
+  */
   additionalText: {
     opacity: 0.23,
     fontFamily: 'AppleSDGothicNeoM00',
@@ -595,5 +778,12 @@ const _styles = StyleSheet.create({
     letterSpacing: 0,
     textAlign: 'left',
     color: '#ffffff',
+  },
+  topCrown: {
+    width: 12.7,
+    height: 8.43,
+    position: 'absolute',
+    right: 18,
+    top: -6,
   },
 });
