@@ -164,7 +164,7 @@ export default function MileageShop() {
         <ListHeaderComponent onPressTab={onPressTab} tab={tab} />
 
         <SectionGrid
-          itemDimension={(Dimensions.get('window').width -75) / 3}
+          itemDimension={tab.value == 'gifticon' ? (Dimensions.get('window').width -75) / 3 : Dimensions.get('window').width - 37}
           sections={data}
           fixed={true}
           /* ListHeaderComponent={
@@ -495,7 +495,7 @@ const _styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    marginBottom: 5
+    marginBottom: 15
   },
   thumbArea: {
     
