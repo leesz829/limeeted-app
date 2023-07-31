@@ -334,7 +334,7 @@ const RenderItem = ({ item, type, callFn }) => {
 
               <SpaceView viewStyle={_styles.textArea}>
                 <SpaceView mt={17}>
-                  <Text style={_styles.boutiqueStatus('')}>낙찰</Text>
+                  <Text style={_styles.boutiqueStatus('')}>준비중</Text>
                   
                   <Text style={_styles.brandName}>{item?.brand_name}</Text>
                   <Text style={_styles.productName(type)}>{item?.prod_name}</Text>
@@ -596,7 +596,8 @@ const _styles = StyleSheet.create({
      fontFamily: 'AppleSDGothicNeoM00',
      fontSize: 10,
      color: fontColor,
-     backgroundColor: backgroundColor,
+     //backgroundColor: backgroundColor,
+     backgroundColor: '#69C9E6',
      borderRadius: 7,
      width: 45,
      textAlign: 'center',
