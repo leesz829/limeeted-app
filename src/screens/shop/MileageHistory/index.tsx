@@ -1,7 +1,7 @@
 import { Color } from 'assets/styles/Color';
 import { styles } from 'assets/styles/Styles';
 import CommonHeader from 'component/CommonHeader';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -27,13 +27,16 @@ const DATA = [
     data: ['Water', 'Coke', 'Beer'],
   },
   {
-    title: '01/08 ~ 01/15 (7일 후 열림)',
+    title: '01/08 ~ 01/15 (7일 후 열림)', 
     data: ['Cheese Cake', 'Ice Cream'],
   },
 ];
 
 export default function MileageHistory() {
   const [data, setData] = useState(DATA);
+  
+  
+  
   const ListHeaderComponent = () => (
     <View>
       <View style={listHeader.limitBox}>
@@ -94,6 +97,15 @@ export default function MileageHistory() {
   const ItemSeparatorComponent = () => (
     <View style={{ height: 1, opacity: 0.1, backgroundColor: '#707070' }} />
   );
+
+ // ################################################################ 초기 실행 함수
+  useEffect(() => {
+    // 데일리 매칭 정보 조회
+    getDailyMatchInfo(isPopupShow);
+  
+  }, []);
+
+
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
       <CommonHeader />

@@ -21,7 +21,9 @@ import { TextInput } from 'react-native-gesture-handler';
 import { CommaFormat } from 'utils/functions';
 import { CommonLoading } from 'component/CommonLoading';
 import SpaceView from 'component/SpaceView';
-
+import { useNavigation } from '@react-navigation/native';
+import { ScreenNavigationProp } from '@types';
+import { ROUTES, STACK } from 'constants/routes';
 
 const DATA = [
   {
@@ -32,7 +34,7 @@ const DATA = [
 
 export default function MileageOrder() {
   const me = useUserInfo();
-
+  
   const [memberAddr, setMemberAddr] = useState('');
   const [orderList, setOrderList] = useState([]);
   const [orderStatus, setOrderStatus] = useState({
@@ -122,26 +124,26 @@ export default function MileageOrder() {
           </View>
           <View style={styles.line} />
         </LinearGradient>
-        { /*
-          <View style={styles.backMargin}>
-            <TouchableOpacity activeOpacity={1} style={styles.purpleBg}>
-              <Text style={styles.textLeft}>입찰완료</Text>
-              <Text style={styles.textRight}>{orderStatus.bid_success}건</Text>
-            </TouchableOpacity>
-            <TouchableOpacity activeOpacity={1} style={styles.whiteBg}>
-              <Text style={[styles.textLeft, { color: '#9d9d9d' }]}>입찰실패</Text>
-              <Text style={[styles.textRight, { color: '#9d9d9d' }]}>{orderStatus.bid_fail}건</Text>
-            </TouchableOpacity>
-            <TouchableOpacity activeOpacity={1} style={styles.whiteBg}>
-              <Text style={[styles.textLeft, { color: '#706afa' }]}>배송준비</Text>
-              <Text style={[styles.textRight, { color: '#706afa' }]}>{orderStatus.dlvr}건</Text>
-            </TouchableOpacity>
-            <TouchableOpacity activeOpacity={1} style={styles.whiteBg}>
-              <Text style={[styles.textLeft, { color: '#742dfa' }]}>주문완료</Text>
-              <Text style={[styles.textRight, { color: '#742dfa' }]}>{orderStatus.order_complet}건</Text>
-            </TouchableOpacity>
-          </View>
-        */ }
+        { /* 주문내역 상태창 노출 */ }
+        <View style={styles.backMargin}>
+          <TouchableOpacity activeOpacity={1} style={styles.purpleBg}>
+            <Text style={styles.textLeft}>입찰완료</Text>
+            <Text style={styles.textRight}>{orderStatus.bid_success}건</Text>
+          </TouchableOpacity>
+          <TouchableOpacity activeOpacity={1} style={styles.whiteBg}>
+            <Text style={[styles.textLeft, { color: '#9d9d9d' }]}>입찰실패</Text>
+            <Text style={[styles.textRight, { color: '#9d9d9d' }]}>{orderStatus.bid_fail}건</Text>
+          </TouchableOpacity>
+          <TouchableOpacity activeOpacity={1} style={styles.whiteBg}>
+            <Text style={[styles.textLeft, { color: '#706afa' }]}>배송준비</Text>
+            <Text style={[styles.textRight, { color: '#706afa' }]}>{orderStatus.dlvr}건</Text>
+          </TouchableOpacity>
+          <TouchableOpacity activeOpacity={1} style={styles.whiteBg}>
+            <Text style={[styles.textLeft, { color: '#742dfa' }]}>주문완료</Text>
+            <Text style={[styles.textRight, { color: '#742dfa' }]}>{orderStatus.order_complet}건</Text>
+          </TouchableOpacity>
+        </View>
+        
         
 
         <View style={styles.orderHistory}>
@@ -175,8 +177,14 @@ export default function MileageOrder() {
 }
 
 const RenderItem = ({ data }) => {
+  const navigation = useNavigation<ScreenNavigationProp>();
+
   const dateStr = data.item.title;
   const prodList = data.item.data;
+
+  const onPressMileageOrder = () => {
+    navigation.navigate(STACK.COMMON, { screen: ROUTES.Mileage_History });
+  };
 
   return (
     <>
@@ -185,7 +193,13 @@ const RenderItem = ({ data }) => {
       </View>
 
       {prodList.map((item, idx) => (
-        <>
+        <TouchableOpacity
+          onPress={() => {
+            if(item.order_type == 'AUCT'){
+              onPressMileageOrder();
+            }
+          }}
+        >
           <View style={styles.itemBox} key={'order_item_' + idx}>
             <ImageBackground source={findSourcePath(item?.file_path + item?.file_name)} style={styles.thumb}>
               {/* 분기 */}
@@ -196,6 +210,7 @@ const RenderItem = ({ data }) => {
                 </View>
               ) : null}
 
+              {/* 주문목록 상태 노출 */}
               {/* <View style={styles.bidCompleteMark}>
                 <Text style={styles.bidCompleteText}>입찰완료</Text>
               </View>
@@ -205,7 +220,7 @@ const RenderItem = ({ data }) => {
               <View style={styles.completeMark}>
                 <Text style={styles.completeText}>배송완료</Text>
               </View> */}
-              {/* 분기 */}
+              
             </ImageBackground>
 
             <View style={styles.itemInfoBox}>
@@ -227,7 +242,7 @@ const RenderItem = ({ data }) => {
               </View>
             </View>
           </View>
-        </>
+        </TouchableOpacity>
       ))}
     </>
   );
