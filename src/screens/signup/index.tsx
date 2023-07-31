@@ -122,13 +122,15 @@ export const Signup00 = (props: Props) => {
 
       if(orgEmailId != id || isEmptyData(password)) {
         if(orgEmailId != id) {
-          if(!emailValidChk()) {
+          const emailChkResult = await emailValidChk();
+          if(!emailChkResult) {
             return;
-          }
+          };
         };
   
         if(isEmptyData(password)) {
-          if(!passwordValidChk()) {
+          const passwordChkResult = await passwordValidChk();
+          if(!passwordChkResult) {
             return;
           };
         };
@@ -170,12 +172,14 @@ export const Signup00 = (props: Props) => {
         show({ content: '본인인증을 다시 진행해 주세요.' });
         return;
       };
-  
-      if(!emailValidChk()) {
+
+      const emailChkResult = await emailValidChk();
+      if(!emailChkResult) {
         return;
       };
 
-      if(!passwordValidChk()) {
+      const passwordChkResult = await passwordValidChk();
+      if(!passwordChkResult) {
         return;
       };
   
