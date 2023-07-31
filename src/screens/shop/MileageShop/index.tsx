@@ -602,6 +602,7 @@ const _styles = StyleSheet.create({
      width: 45,
      textAlign: 'center',
      paddingVertical: 1,
+     overflow: 'hidden',
    };
   },
   bidText: (color:string) => {
