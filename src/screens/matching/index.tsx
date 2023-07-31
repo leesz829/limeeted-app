@@ -36,7 +36,7 @@ import { usePopup } from 'Context';
 import { useUserInfo } from 'hooks/useUserInfo';
 import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
-import { modalStyle, layoutStyle, commonStyle } from 'assets/styles/Styles';
+import { styles, modalStyle, layoutStyle, commonStyle } from 'assets/styles/Styles';
 import {
   Dimensions,
   FlatList,
@@ -787,7 +787,8 @@ export default function Matching(props: Props) {
               {backgroundColor: 'white', paddingBottom: 90},
             ]}>
             <SpaceView mb={20} viewStyle={layoutStyle.alignCenter}>
-              <Image source={GIF_IMG.faceScan} style={{width: 48, height: 48}} />
+              {/* <Image source={GIF_IMG.faceScan} style={{width: 48, height: 48}} /> */}
+              <Image source={GIF_IMG.loadingNewIcon} style={styles.iconSquareSize(48)} />
             </SpaceView>
             <View style={layoutStyle.alignCenter}>
               <CommonText type={'h4'}>다음 매칭 회원을 찾고 있어요.</CommonText>

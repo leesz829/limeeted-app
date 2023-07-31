@@ -712,7 +712,8 @@ export const Live = () => {
           ]}
         >
           <SpaceView mb={20} viewStyle={layoutStyle.alignCenter}>
-            <Image source={GIF_IMG.faceScan} style={styles.iconSize48} />
+            {/* <Image source={GIF_IMG.faceScan} style={styles.iconSize48} /> */}
+            <Image source={GIF_IMG.loadingNewIcon} style={styles.iconSquareSize(48)} />
           </SpaceView>
 
           <View style={layoutStyle.alignCenter}>
