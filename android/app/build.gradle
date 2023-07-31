@@ -140,11 +140,12 @@ android {
         applicationId "com.appsquad.limeeted"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 87
-        versionName "1.7.11"
+        versionCode 89
+        versionName "1.7.13"
         missingDimensionStrategy 'store', 'play'
         resValue 'string', "CODE_PUSH_APK_BUILD_TIME", String.format("\"%d\"", System.currentTimeMillis())
         vectorDrawables.useSupportLibrary true
+        multiDexEnabled true
     }   
     splits {
         abi {
@@ -254,8 +255,8 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:28.0.0'
 
     // firebase
-    //implementation platform('com.google.firebase:firebase-bom:29.1.0')
-    //implementation "com.google.firebase:firebase-analytics"
+    implementation platform('com.google.firebase:firebase-bom:31.1.0')
+    implementation "com.google.firebase:firebase-analytics"
 
     implementation 'com.google.android.gms:play-services-ads:22.2.0'
 }
