@@ -125,6 +125,7 @@ export default function MileageOrder() {
           <View style={styles.line} />
         </LinearGradient>
         { /* 주문내역 상태창 노출 */ }
+        { /*
         <View style={styles.backMargin}>
           <TouchableOpacity activeOpacity={1} style={styles.purpleBg}>
             <Text style={styles.textLeft}>입찰완료</Text>
@@ -143,6 +144,7 @@ export default function MileageOrder() {
             <Text style={[styles.textRight, { color: '#742dfa' }]}>{orderStatus.order_complet}건</Text>
           </TouchableOpacity>
         </View>
+        */ }
         
         
 
