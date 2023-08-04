@@ -33,7 +33,7 @@ export default function EventDetail(element) {
 
   // 클릭 여부
   const [isClickable, setIsClickable] = useState(true);
-  
+
   const [eventList, setEventList] = useState([]);
   
   const [index, setIndex] = useState(element.route.params.index);
@@ -125,7 +125,7 @@ export default function EventDetail(element) {
                     <View style={{position: 'absolute', bottom: '6%', width: '100%', alignItems: 'center'}}>
 
                       {item.mileage_rewarded_yn == 'Y' ? (
-                        <Text style={_styles.eventBaseBtn('#484744')}>보상 지급 완료</Text>
+                        <Text style={_styles.eventBaseBtn('#484744')}>내일 다시 열림</Text>
                       ) : (
                         <TouchableOpacity onPress={() => { rewardProc(item.event_seq); }}>
                           <Text style={_styles.eventBaseBtn('#FCAB35')}>100리밋 받기</Text>
@@ -138,7 +138,7 @@ export default function EventDetail(element) {
                     <View style={{position: 'absolute', bottom: '3%', width: '100%', alignItems: 'center'}}>
 
                       {item.mileage_rewarded_yn == 'Y' ? (
-                        <Text style={_styles.eventBaseBtn('#484744')}>내일 다시 열림</Text>
+                        <Text style={_styles.eventBaseBtn('#484744')}>보상 지급 완료</Text>
                       ) : (
                         <TouchableOpacity onPress={() => { rewardProc(item.event_seq); }}>
                           <LinearGradient
