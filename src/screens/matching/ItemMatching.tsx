@@ -1,15 +1,6 @@
-import {
-  RouteProp,
-  useIsFocused,
-  useNavigation,
-  useFocusEffect,
-} from '@react-navigation/native';
+import { RouteProp, useIsFocused, useNavigation, useFocusEffect } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import {
-  StackParamList,
-  ColorType,
-  ScreenNavigationProp,
-} from '@types';
+import { StackParamList, ColorType, ScreenNavigationProp } from '@types';
 import {
   get_item_matched_info,
   regist_match_status,
@@ -17,8 +8,6 @@ import {
   report_check_user,
   report_check_user_confirm,
 } from 'api/models';
-import { ROUTES, STACK } from 'constants/routes';
-
 import CommonHeader from 'component/CommonHeader';
 import { CommonBtn } from 'component/CommonBtn';
 import { RadioCheckBox_3 } from 'component/RadioCheckBox_3';
@@ -28,9 +17,8 @@ import TopNavigation from 'component/TopNavigation';
 import { usePopup } from 'Context';
 import { useUserInfo } from 'hooks/useUserInfo';
 import * as React from 'react';
-
 import { useEffect, useRef, useState } from 'react';
-import { modalStyle, layoutStyle, commonStyle } from 'assets/styles/Styles';
+import { styles, modalStyle, layoutStyle, commonStyle } from 'assets/styles/Styles';
 import {
   Dimensions,
   FlatList,
@@ -611,7 +599,8 @@ export default function ItemMatching(props: Props) {
               {backgroundColor: 'white', paddingBottom: 90},
             ]}>
             <SpaceView mb={20} viewStyle={layoutStyle.alignCenter}>
-              <Image source={GIF_IMG.faceScan} style={{width: 48, height: 48}} />
+              {/* <Image source={GIF_IMG.faceScan} style={{width: 48, height: 48}} /> */}
+              <Image source={GIF_IMG.loadingNewIcon} style={styles.iconSquareSize(48)} />
             </SpaceView>
             <View style={layoutStyle.alignCenter}>
               <CommonText type={'h4'}>매칭 회원을 찾고 있어요.</CommonText>
