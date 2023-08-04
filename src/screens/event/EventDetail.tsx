@@ -34,8 +34,6 @@ export default function EventDetail(element) {
   // 클릭 여부
   const [isClickable, setIsClickable] = useState(true);
   
-  const [subImgPath, setSubImgPath] = useState(element.route.params.sub_img_path);
-
   const [eventList, setEventList] = useState([]);
   
   const [index, setIndex] = useState(element.route.params.index);

@@ -196,8 +196,6 @@ export const Shop = () => {
             navigation.navigate(STACK.COMMON, { 
               screen: 'EventDetail',
               params: {
-                pop_bas_seq: pop_bas_seq,
-                sub_img_path: sub_img_path,
                 index: index,
                 view_type: 'BM_SHOP',
               }
