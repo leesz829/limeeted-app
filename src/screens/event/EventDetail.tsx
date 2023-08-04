@@ -121,7 +121,7 @@ export default function EventDetail(element) {
                     resizeMode="contain"
                   />
 
-                  {item.pop_bas_seq == 90014 &&
+                  {item.pop_bas_seq == 90010 &&
                     <View style={{position: 'absolute', bottom: '6%', width: '100%', alignItems: 'center'}}>
 
                       {item.mileage_rewarded_yn == 'Y' ? (
@@ -134,7 +134,7 @@ export default function EventDetail(element) {
                     </View>
                   }
 
-                  {item.pop_bas_seq == 90016 &&
+                  {item.pop_bas_seq == 90009 &&
                     <View style={{position: 'absolute', bottom: '3%', width: '100%', alignItems: 'center'}}>
 
                       {item.mileage_rewarded_yn == 'Y' ? (

@@ -289,6 +289,7 @@ export const Storage = (props: Props) => {
             });
           };
 
+          navigation.setParams({ loadPage: 'RES' });
         }
       }
     } catch (error) {
@@ -344,6 +345,8 @@ export const Storage = (props: Props) => {
         type: type,
         matchType: match_type,
       } });
+
+      navigation.setParams({ loadPage: type });
     }
   };
 
@@ -369,16 +372,17 @@ export const Storage = (props: Props) => {
       if(success) {
         if (data.result_code == '0000') {
           dispatch(myProfile());
-          navigation.navigate(STACK.COMMON,
-            {
-              screen: 'StorageProfile', 
-              params: {
-                matchSeq: match_seq,
-                tgtMemberSeq: tgt_member_seq,
-                type: type,
-                matchType: match_type
-              }
-            });
+          navigation.navigate(STACK.COMMON, {
+            screen: 'StorageProfile', 
+            params: {
+              matchSeq: match_seq,
+              tgtMemberSeq: tgt_member_seq,
+              type: type,
+              matchType: match_type
+            }
+          });
+
+          navigation.setParams({ loadPage: type });
 
         } else if (data.result_code == '6010') {
           show({ content: '보유 패스가 부족합니다.' });
@@ -413,9 +417,10 @@ export const Storage = (props: Props) => {
 
   useFocusEffect(
     React.useCallback(() => {
+
       return () => {
         if(isEmptyData(props.route.params?.loadPage)) {
-          navigation.setParams({ headerType: '', loadPage: 'RES' });
+          //navigation.setParams({ headerType: '', loadPage: 'RES' });
           //setCurrentIndex(0);
         };
       };

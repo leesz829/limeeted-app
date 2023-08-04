@@ -77,9 +77,9 @@ export const EventPopup = (props: Props) => {
               ######################################################################################################### */}
               <View style={_styles.popupContainer()}>
 
-                <SpaceView viewStyle={[layoutStyle.alignCenter, modalStyle.modalHeader]}>
+                {/* <SpaceView viewStyle={[layoutStyle.alignCenter, modalStyle.modalHeader]}>
                   <Image source={IMAGE.popupLogo} style={{width: 94, height: 19}} />
-                </SpaceView>
+                </SpaceView> */}
 
                 <Carousel
                   ref={ref}
@@ -220,8 +220,8 @@ const _styles = StyleSheet.create({
     marginTop: 15,
   },
   dot: {
-    width: 9,
-    height: 9,
+    width: 8,
+    height: 8,
     backgroundColor: '#707070',
     borderRadius: 5,
     marginHorizontal: 2,
