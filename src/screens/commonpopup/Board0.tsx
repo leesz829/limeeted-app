@@ -13,6 +13,8 @@ import { Color } from 'assets/styles/Color';
 import { get_board_list, board_detail_view } from 'api/models';
 import { usePopup } from 'Context';
 import { CommonLoading } from 'component/CommonLoading';
+import { CommonBtn } from 'component/CommonBtn';
+import { STACK } from 'constants/routes';
 
 
 /* ################################################################################################################
@@ -27,6 +29,7 @@ interface Props {
 }
 
 export const Board0 = (props: Props) => {
+	const navigation = useNavigation<ScreenNavigationProp>();
 
 	const { show } = usePopup();
 	const [isLoading, setIsLoading] = useState(false);
@@ -99,6 +102,18 @@ export const Board0 = (props: Props) => {
 		}
 	};
 
+	// ############################################# 바로가기 이동 함수
+	const goLink = async (type:any) => {
+		if(type == 'EVENT') {
+			navigation.navigate(STACK.COMMON, { 
+				screen: 'EventDetail',
+				params: {
+					index: 0
+				}
+			});
+		};
+	};
+
 	// ######################################################################################## 초기 실행 함수
 	React.useEffect(() => {
 		if(isFocus) {
@@ -166,6 +181,21 @@ export const Board0 = (props: Props) => {
 							<View style={_styles.descContainer}>
 								<CommonText textStyle={_styles.descText} type={'h5'}>{item.content}</CommonText>
 								<CommonText textStyle={_styles.dateText} type={'h5'}>{item.reg_dt}</CommonText>
+								
+								{item.board_type == 'EVENT' &&
+									<SpaceView mt={10}>
+										<CommonBtn 
+											value={'바로가기'} 
+											type={'gray2'}
+											width={'100%'}
+											height={35}
+											fontSize={13}
+											borderRadius={5}
+											onPress={() => {
+												goLink('EVENT');
+											}} />
+									</SpaceView>
+								}
 							</View>
 						)}
 					</SpaceView>
