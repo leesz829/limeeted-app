@@ -49,6 +49,7 @@
     "react": "17.0.2",
     "react-native": "0.66.4",
     "react-native-animated-pagination-dots": "^0.1.73",
+    "react-native-auto-height-image": "^3.2.4",
     "react-native-code-push": "7.0.5",
     "react-native-contacts": "^7.0.5",
     "react-native-custom-billing": "2.1.0",

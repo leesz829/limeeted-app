@@ -115,6 +115,8 @@ export const BANNER_LIST = '/banner/selectBannerList';
 export const EVENT_CASHBACK_PAY = '/event/selectEventIndex';
 export const EVENT_CASHBACK_DETAIL = '/event/selectEventDetail';
 export const EVENT_CASHBACK_RECEIVE = '/event/receiveItem';
+export const EVENT_RECEIVE = '/event/eventReceive';
+export const POPUP_EVENT_LIST = '/event/selectPopupEventList';
 
 /**
  * COMMON

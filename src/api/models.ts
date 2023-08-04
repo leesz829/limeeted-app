@@ -66,6 +66,7 @@ import {
   EVENT_CASHBACK_PAY,
   EVENT_CASHBACK_DETAIL,
   EVENT_CASHBACK_RECEIVE,
+  EVENT_RECEIVE,
   CHECK_REPORT,
   CHECK_REPORT_CONFIRM,
   GET_SECOND_AUTH,
@@ -78,6 +79,7 @@ import {
   DAILY_MATCH_ADD_OPEN,
   GET_MEMBER_CHK,
   GET_MEMBER_APPROVAL,
+  POPUP_EVENT_LIST,
 } from './route';
 
 /* ========================================================================================================
@@ -714,10 +716,26 @@ export async function get_cashback_detail_info() {
 
 // 캐시백 이벤트 아이템 수령
 export async function cashback_item_receive(body: {
-  event_tmplt_seq: string
+  event_tmplt_seq: string;
 }) {
   return send(EVENT_CASHBACK_RECEIVE, 'POST', body, true, false);
 }
+
+// 이벤트 보상을 처리한다.
+export async function event_receive(body: {
+  event_seq: number;
+  reward_dup_yn: string;
+}) {
+  return send(EVENT_RECEIVE, 'POST', body, true, false);
+}
+
+// 팝업 이벤트 목록을 조회한다.
+export async function get_popup_event_list(body: {
+  view_type: string;
+}) {
+  return send(POPUP_EVENT_LIST, 'POST', body, true, false);
+}
+
 
 /* ========================================================================================================
 ==================================================== 공통

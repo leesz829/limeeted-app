@@ -230,12 +230,14 @@ export default function Matching(props: Props) {
               isPopup = false;
             }
           },
-          etcCallback: async function(pop_bas_seq, sub_img_path) {
+          etcCallback: async function(pop_bas_seq, sub_img_path, index) {
             navigation.navigate(STACK.COMMON, { 
               screen: 'EventDetail',
               params: {
                 pop_bas_seq: pop_bas_seq,
-                sub_img_path: sub_img_path
+                sub_img_path: sub_img_path,
+                index: index,
+                view_type: 'MATCH',
               }
             });
           },
