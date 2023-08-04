@@ -78,8 +78,6 @@ export const Storage = (props: Props) => {
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  console.log('props.route.params :::::::: ' , props.route.params);
-
   const [btnStatus, setBtnStatus] = useState(true);
   const [btnStatus1, setBtnStatus1] = useState(true);
   const [btnStatus2, setBtnStatus2] = useState(true);
