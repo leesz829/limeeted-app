@@ -269,7 +269,7 @@ const _styles = StyleSheet.create({
       justifyContent: 'flex-start',
       zIndex: 1,
       width: '100%',
-      paddingBottom: isOn ? 75 : 35,
+      paddingBottom: isOn ? 63 : 25,
     };
   },
   thumnailArea: {
