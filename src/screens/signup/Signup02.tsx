@@ -606,6 +606,7 @@ export const Signup02 = (props: Props) => {
           <CommonText textStyle={_styles.textDesc} color={'#989898'} type={'h6'}>
             • 프로필 사진은 최소 3장 이상 올려야 합니다.{'\n'}
             • 얼굴이 선명히 나오는 사진은 최소 1장 필수 입니다.{'\n'}
+            • 얼굴이 식별되지 않는 사진은 가입이 반려될 수 있습니다.{'\n'}
             • 멋진 무드 속에 담긴 모습을 올려보세요!{'\n'}
             • 전신이 나오는 사진은 본인을 어필하는데 도움이 됩니다.
           </CommonText>
