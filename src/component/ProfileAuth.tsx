@@ -11,6 +11,7 @@ import { STACK } from 'constants/routes';
 import LinearGradient from 'react-native-linear-gradient';
 import Carousel from 'react-native-snap-carousel';
 import { commonStyle } from 'assets/styles/Styles';
+import { isEmptyData } from 'utils/functions';
 
 
 const { width } = Dimensions.get('window');
@@ -278,7 +279,7 @@ function RenderAuthInfoNew({ item, isButton, onPressSecondAuthFunc, onPressSecon
             <>
               <TouchableOpacity onPress={() => { onPressSecondCommentFunc(item?.member_auth_seq, code, item?.code_name, item?.auth_comment); }}>
                 <SpaceView mt={10} viewStyle={_styles.authIntroArea}>
-                  {item?.auth_comment != null && typeof item?.auth_comment != 'undefined' ? (
+                  {isEmptyData(item?.auth_comment) ? (
                     <Text style={_styles.authIntroText}>{item?.auth_comment}</Text>
                   ) : (
                     <Text style={_styles.authIntroTextInput}>여기를 터치하고 내 이야기를 남겨 주세요.</Text>
@@ -288,7 +289,7 @@ function RenderAuthInfoNew({ item, isButton, onPressSecondAuthFunc, onPressSecon
             </>
           ) : (
             <>
-              {item?.auth_comment != null && typeof item?.auth_comment != 'undefined' ? (
+              {isEmptyData(item?.auth_comment) ? (
                 <SpaceView mt={10} viewStyle={_styles.authIntroArea}>
                   <Text style={_styles.authIntroText}>{item?.auth_comment}</Text>
                 </SpaceView>
