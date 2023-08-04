@@ -55,9 +55,9 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
         )
       } else {
         if (isFocused) {
-          return <Image style={style.iconSize} source={ICON.robyOn} />;
+          return <Image style={_style.iconSize} source={ICON.robyOn} />;
         } else {
-          return <Image style={style.iconSize} source={ICON.roby} />;
+          return <Image style={_style.iconSize} source={ICON.roby} />;
         }
       }
     }
