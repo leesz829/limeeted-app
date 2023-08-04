@@ -249,8 +249,13 @@ export const StorageProfile = (props: Props) => {
           if(success) {
             if(data.result_code == '0000') {
               dispatch(myProfile());
+
               navigation.navigate(STACK.TAB, {
                 screen: 'Storage',
+                params: {
+                  headerType: '',
+                  loadPage: 'MATCH',
+                },
               });
             } else {
               show({ content: '오류입니다. 관리자에게 문의해주세요.' });

@@ -70,6 +70,16 @@ export const Storage = (props: Props) => {
 
   const tabScrollRef = useRef();
 
+  const { route } = props;
+  const params = route.params;
+  const pageIndex = 0;
+  const loadPage = params?.loadPage || 'RES';
+  const dataRef = useRef(null);
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  console.log('props.route.params :::::::: ' , props.route.params);
+
   const [btnStatus, setBtnStatus] = useState(true);
   const [btnStatus1, setBtnStatus1] = useState(true);
   const [btnStatus2, setBtnStatus2] = useState(true);
@@ -102,19 +112,31 @@ export const Storage = (props: Props) => {
       type: 'RES',
       title: '받은 관심',
       color: '#FF7E8C',
-      data: []
+      data: [],
     },
     {
       type: 'REQ',
       title: '보낸 관심',
       color: '#697AE6',
-      data: []
+      data: [],
     },
     {
       type: 'MATCH',
       title: '성공 매칭',
       color: '#8669E6',
-      data: []
+      data: [],
+    },
+    {
+      type: 'ZZIM',
+      title: '찜 목록',
+      color: '#69C9E6',
+      data: [],
+    },
+    {
+      type: 'LIVE',
+      title: 'LIVE',
+      color: '#FFC100',
+      data: [],
     },
   ]);
 
@@ -129,16 +151,6 @@ export const Storage = (props: Props) => {
           console.log(data.result_msg);
           return false;
         } else {
-          if(tabs[currentIndex]?.type == 'ZZIM') {
-            if(data.zzim_trgt_list.length == 0) {
-              onPressDot(0);
-            }
-          } else if(tabs[currentIndex]?.type == 'LIVE') {
-            if(data.live_high_list.length == 0) {
-              onPressDot(0);
-            }
-          }
-
           let tabsData = [];
 
           let resLikeListData = [];
@@ -176,19 +188,19 @@ export const Storage = (props: Props) => {
               type: 'RES',
               title: '받은 관심',
               color: '#FF7E8C',
-              data: resLikeListData
+              data: resLikeListData,
             },
             {
               type: 'REQ',
               title: '보낸 관심',
               color: '#697AE6',
-              data: reqLikeListData
+              data: reqLikeListData,
             },
             {
               type: 'MATCH',
               title: '성공 매칭',
               color: '#8669E6',
-              data: matchTrgtListData
+              data: matchTrgtListData,
             },
           ];
 
@@ -197,7 +209,7 @@ export const Storage = (props: Props) => {
               type: 'ZZIM',
               title: '찜 목록',
               color: '#69C9E6',
-              data: zzimTrgtListData
+              data: zzimTrgtListData,
             });
           };
 
@@ -206,7 +218,7 @@ export const Storage = (props: Props) => {
               type: 'LIVE',
               title: 'LIVE',
               color: '#FFC100',
-              data: liveHighListData
+              data: liveHighListData,
             });
           };
 
@@ -256,6 +268,29 @@ export const Storage = (props: Props) => {
           });
 
           setTabs(tabsData);
+
+          if(loadPage == 'ZZIM' || loadPage == 'LIVE') {
+            if((loadPage == 'ZZIM' && data.zzim_trgt_list.length == 0) || (loadPage == 'LIVE' && data.live_high_list.length == 0)) {
+              onPressDot(0);
+            } else {
+              if(loadPage == 'ZZIM') {
+                onPressDot(3);
+              } else if(loadPage == 'LIVE') {
+                if(data.zzim_trgt_list.length == 0) {
+                  onPressDot(3);
+                } else {
+                  onPressDot(4);
+                }
+              }
+            }
+          } else {
+            tabs.map((item: any, index) => {
+              if(item.type == loadPage) {
+                onPressDot(index);
+              }
+            });
+          };
+
         }
       }
     } catch (error) {
@@ -378,24 +413,33 @@ export const Storage = (props: Props) => {
     }
   }, [isFocusStorage]);
 
+  useFocusEffect(
+    React.useCallback(() => {
+      return () => {
+        if(isEmptyData(props.route.params?.loadPage)) {
+          navigation.setParams({ headerType: '', loadPage: 'RES' });
+          //setCurrentIndex(0);
+        };
+      };
+    }, []),
+  );
 
   // #######################################################################################################
-  const { route } = props;
-  const params = route.params;
-  const pageIndex = params?.pageIndex || 0;
-  const ref = useRef();
-  const [currentIndex, setCurrentIndex] = useState(pageIndex);
+  const onPressDot = async (index:any) => {
+    console.log('index ::::: ' , index);
 
-  const onPressDot = (index) => {
-    ref?.current?.snapToItem(index);
+    if(null != dataRef?.current) {
+      setCurrentIndex(index);
+      dataRef?.current?.snapToItem(index);
+    }
   };
 
   // 이미지 스크롤 처리
-  const handleScroll = (event) => {
+  /* const handleScroll = (event) => {
     let contentOffset = event.nativeEvent.contentOffset;
     let index = Math.floor(contentOffset.x / (width-10));
     setCurrentIndex(index);
-  };
+  }; */
 
   React.useEffect(() => {
     if(currentIndex == 0 || currentIndex == 1) {
@@ -403,6 +447,7 @@ export const Storage = (props: Props) => {
     } else if(currentIndex > 2) {
       tabScrollRef.current.scrollToEnd({animated: true});
     }
+
   }, [currentIndex]);
 
   return (
@@ -469,10 +514,49 @@ export const Storage = (props: Props) => {
           </View>
         </SpaceView>
 
-        {!isLoading &&
+        <SpaceView>
+          <Carousel
+            ref={dataRef}
+            data={tabs}
+            firstItem={currentIndex}
+            onSnapToItem={setCurrentIndex}
+            sliderWidth={width}
+            itemWidth={width}
+            pagingEnabled
+            renderItem={({item, index}) => {
+              return (
+                <>
+                  {!isLoading &&
+                    <View key={'storage_' + index}>
+                      {item.data.length == 0 ? (
+                        <SpaceView viewStyle={_styles.noData}>
+                          <Text style={_styles.noDataText}>{item.title}이 없습니다.</Text>
+                        </SpaceView>
+                      ) : (
+                        <ScrollView showsVerticalScrollIndicator={false} style={{width: '100%', height: height-250}}>
+                          <View style={_styles.imageWarpper}>
+                            {item.data.map((i, n) => (
+                              <View key={n}>
+                                <RenderItem item={i} index={n} type={item.type} />
+                              </View>
+                            ))}
+                          </View>
+
+                          <View style={{ height: 50 }} />
+                        </ScrollView>
+                      )}
+                    </View>
+                  }
+                </>
+              )
+            }}
+          />
+        </SpaceView>
+
+        {/* {!isLoading &&
           <SpaceView>
             <Carousel
-              ref={ref}
+              ref={dataRef}
               data={tabs}
               firstItem={pageIndex}
               onSnapToItem={setCurrentIndex}
@@ -506,7 +590,7 @@ export const Storage = (props: Props) => {
               }}
             />
           </SpaceView>
-        }
+        } */}
         
       </View>
     </>

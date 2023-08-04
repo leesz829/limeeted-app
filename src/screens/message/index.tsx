@@ -80,7 +80,7 @@ export const Message = (props: Props) => {
 
 	// ############################################# 바로가기 이동 함수
 	const goLink = async (type:any) => {
-		if(type == 'MSG_TP_10' || type == 'MSG_TP_14') {
+		if(type == 'MSG_TP_14') {
 			navigation.navigate(STACK.TAB, { screen: 'Roby' });
 		} else if(type == 'MSG_TP_04' || type == 'MSG_TP_05') {
 			navigation.navigate(STACK.COMMON, { screen: 'SecondAuth' });
@@ -91,7 +91,15 @@ export const Message = (props: Props) => {
 				screen: 'Storage',
 				params: {
 				  headerType: 'common',
-				  pageIndex: 0,
+				  pageIndex: 'RES',
+				},
+			});
+		} else if(type == 'MSG_TP_10') {
+			navigation.navigate(STACK.COMMON, {
+				screen: 'Storage',
+				params: {
+				  headerType: 'common',
+				  loadPage: 'LIVE',
 				},
 			});
 		}
