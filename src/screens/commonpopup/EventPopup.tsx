@@ -77,6 +77,10 @@ export const EventPopup = (props: Props) => {
               ######################################################################################################### */}
               <View style={_styles.popupContainer()}>
 
+                <SpaceView viewStyle={[layoutStyle.alignCenter, modalStyle.modalHeader]}>
+                  <Image source={IMAGE.popupLogo} style={{width: 94, height: 19}} />
+                </SpaceView>
+
                 <Carousel
                   ref={ref}
                   data={props.eventPopupList}
@@ -92,16 +96,12 @@ export const EventPopup = (props: Props) => {
                     return (
                       <>
                         <View key={index}>
-                          <SpaceView viewStyle={[layoutStyle.alignCenter, modalStyle.modalHeader]}>
-                            <Text style={_styles.eventTitText}>{item.title}</Text>
-                          </SpaceView>
-
                           <SpaceView viewStyle={_styles.eventContent}>
 
                             {/* 로고 영역 */}
-                            <SpaceView viewStyle={_styles.logoArea}>
+                            {/* <SpaceView viewStyle={_styles.logoArea}>
                               <Image source={IMAGE.popupLogo} style={{width: 94, height: 19}} />
-                            </SpaceView>
+                            </SpaceView> */}
 
                             {/* 상세보기 버튼 영역 */}
                             <TouchableOpacity 
@@ -128,6 +128,7 @@ export const EventPopup = (props: Props) => {
                                 start={{ x: 0, y: 0 }}
                                 end={{ x: 0, y: 1 }}
                                 style={_styles.eventThumnailArea} />
+
                             </SpaceView>
                           
                           </SpaceView>
@@ -297,10 +298,10 @@ const _styles = StyleSheet.create({
   },
   detailBtn: {
     position: 'absolute',
-    top: 7,
+    bottom: 10,
     right: 7,
     backgroundColor: '#9F71B2',
-    zIndex: 1,
+    zIndex: 2,
     height: 20,
     justifyContent: 'center',
     alignItems: 'center',
@@ -373,7 +374,5 @@ const _styles = StyleSheet.create({
     opacity: 0.8,
     height: 70,
   },
-
-
 
 });

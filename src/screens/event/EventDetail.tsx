@@ -15,9 +15,11 @@ import { Dimensions, FlatList, Image, ScrollView, StyleSheet, TouchableOpacity, 
 import { useDispatch } from 'react-redux'; 
 import { IMAGE, PROFILE_IMAGE, findSourcePath } from 'utils/imageUtils';
 import { event_receive } from 'api/models';
-import { isEmptyData } from 'utils/functions';
+import { isEmptyData, CommaFormat } from 'utils/functions';
 import AutoHeightImage from 'react-native-auto-height-image';
 import * as properties from 'utils/properties';
+import LinearGradient from 'react-native-linear-gradient';
+import { CommonLoading } from 'component/CommonLoading';
 
 
 
@@ -27,9 +29,10 @@ export default function EventDetail(element) {
   const [isLoading, setIsLoading] = useState(false);
   const isFocus = useIsFocused();
 
-  console.log('element.route.params :::::: ' , element.route.params);
-
   const view_type = element.route.params.view_type;
+
+  // 클릭 여부
+  const [isClickable, setIsClickable] = useState(true);
   
   const [subImgPath, setSubImgPath] = useState(element.route.params.sub_img_path);
 
@@ -51,45 +54,50 @@ export default function EventDetail(element) {
       view_type: view_type,
     };
 
-    //console.log('body ::::: ' , body);
-
     try {
       const { success, data } = await get_popup_event_list(body);
       if(success) {
-        //console.log('data :::::: ' , data);
-
-        setEventList(data.event_list);
+        if(data.event_list.length > 0) {
+          setEventList(data.event_list);
+        }
       }
     } catch {
 
     } finally {
-
+      setIsClickable(true);
     }
   };
 
   // 보상 처리
   const rewardProc = async (event_seq:number) => {
-    const body = {
-      event_seq: event_seq,
-      reward_dup_yn: 'Y',
-    };
 
-    try {
-      const { success, data } = await event_receive(body);
-      console.log('data ::::: ' , data);
-    
-      if(success) {
-        if(data.result_code == '0000') {
-          getPopupEventList();
-          show({ content: '이벤트 보상을 받았습니다.' });
-        } else if(data.result_code == '4001') {
-          show({ content: '이미 받은 이벤트 보상입니다.' });
+    // 중복 클릭 방지 설정
+    if(isClickable) {
+      setIsClickable(false);
+      setIsLoading(true);
+
+      const body = {
+        event_seq: event_seq,
+        reward_dup_yn: 'Y',
+      };
+  
+      try {
+        const { success, data } = await event_receive(body);
+        console.log('data ::::: ' , data);
+      
+        if(success) {
+          if(data.result_code == '0000') {
+            show({ content: '이벤트 보상을 받았습니다.' });
+          } else if(data.result_code == '4001') {
+            show({ content: '이미 받은 이벤트 보상입니다.' });
+          }
         }
+      } catch {
+        show({ content: '일시적인 오류가 발생했습니다.' });
+      } finally {
+        getPopupEventList();
+        setIsLoading(false);
       }
-    } catch {
-      show({ content: '일시적인 오류가 발생했습니다.' });
-    } finally {
-
     }
   };
 
@@ -119,7 +127,7 @@ export default function EventDetail(element) {
                     <View style={{position: 'absolute', bottom: '6%', width: '100%', alignItems: 'center'}}>
 
                       {item.mileage_rewarded_yn == 'Y' ? (
-                        <Text style={_styles.eventBaseBtn('#FCAB35')}>이미 받은 보상</Text>
+                        <Text style={_styles.eventBaseBtn('#484744')}>보상 지급 완료</Text>
                       ) : (
                         <TouchableOpacity onPress={() => { rewardProc(item.event_seq); }}>
                           <Text style={_styles.eventBaseBtn('#FCAB35')}>100리밋 받기</Text>
@@ -132,10 +140,17 @@ export default function EventDetail(element) {
                     <View style={{position: 'absolute', bottom: '3%', width: '100%', alignItems: 'center'}}>
 
                       {item.mileage_rewarded_yn == 'Y' ? (
-                        <Text style={_styles.eventBaseBtn('#992EC1')}>이미 받은 보상</Text>
+                        <Text style={_styles.eventBaseBtn('#484744')}>내일 다시 열림</Text>
                       ) : (
                         <TouchableOpacity onPress={() => { rewardProc(item.event_seq); }}>
-                          <Text style={_styles.eventBaseBtn('#992EC1')}>리밋 받기</Text>
+                          <LinearGradient
+                            colors={['#992EC1', '#7310D5']}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 1 }}
+                            style={_styles.gradBtn}>
+
+                            <Text style={_styles.eventBaseBtn('transparent')}>{CommaFormat(item.event_mileage)} 리밋 받기</Text>
+                          </LinearGradient>
                         </TouchableOpacity>
                       )}
                     </View>
@@ -145,18 +160,7 @@ export default function EventDetail(element) {
             ))}
           </>
         }
-
-        {/* <View onLayout={index === 0 ? imgLayout : null}><Image source={findSourcePath(subImgPath)} style={{width: width, height: height}} resizeMode={'cover'} /></View>
-        <View onLayout={index === 1 ? imgLayout : null}><Image source={findSourcePath(subImgPath)} style={{width: width, height: height-340}} resizeMode={'cover'} /></View>
-        <View onLayout={index === 2 ? imgLayout : null}><Image source={findSourcePath(subImgPath)} style={{width: width, height: height-460}} resizeMode={'cover'} /></View> 
-        <View onLayout={index === 3 ? imgLayout : null}><Image source={findSourcePath(subImgPath)} style={{width: width, height: height+280}} resizeMode={'cover'} /></View>  */}
       </ScrollView>
-
-      {/* <SpaceView>
-        <TouchableOpacity onPress={() => { rewardProc(); }}>
-          <Text style={_styles.exBtn}>보상 지급</Text>
-        </TouchableOpacity>
-      </SpaceView> */}
     </>
   );
 }
@@ -183,7 +187,7 @@ const _styles = StyleSheet.create({
     let vertical = 12;
 
     return {
-      fontFamily: 'AppleSDGothicNeoB00',
+      fontFamily: 'AppleSDGothicNeoEB00',
       fontSize: fSize,
       backgroundColor: bgColor,
       color: '#fff',
@@ -193,5 +197,9 @@ const _styles = StyleSheet.create({
       borderRadius: 28,
       overflow: 'hidden',
     };
+  },
+  gradBtn: {
+    borderRadius: 28,
+    overflow: 'hidden',
   },
 });

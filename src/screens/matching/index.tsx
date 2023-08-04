@@ -163,7 +163,10 @@ export default function Matching(props: Props) {
     let ordMemberSeq = matchData?.match_member_info?.member_seq;
 
     try {
-      const { success, data } = await get_daily_matched_info();
+      const body = {
+        gender: memberBase.gender
+      }
+      const { success, data } = await get_daily_matched_info(body);
       //console.log('get_daily_matched_info data :::: ', data.use_item.FREE_LIKE);
       
       if (success) {

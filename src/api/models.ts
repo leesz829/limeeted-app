@@ -462,8 +462,10 @@ export async function save_profile_auth_comment(body: {
 ==================================================== MATCH
 ======================================================================================================== */
 // 데일리 매칭 정보를 조회한다.
-export async function get_daily_matched_info() {
-  return send(DAILY_MATCHED_INFO, 'POST', undefined, true, false);
+export async function get_daily_matched_info(body: {
+  gender: string;
+}) {
+  return send(DAILY_MATCHED_INFO, 'POST', body, true, false);
 }
 
 // 데일리 매칭 정보를 조회한다.
