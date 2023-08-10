@@ -45,6 +45,7 @@ export const SAVE_PROFILE_AUTH = '/member/saveProfileSecondAuth';
 export const MEMBER_AUTH_DETAIL = '/member/selectMemberSecondAuthDetailList';
 export const UPDATE_PHONE_NUMBER = '/member/modfyMemberPhoneNumber';
 export const MEMBER_EXIT = '/member/deleteMyAccount';
+export const MEMBER_SLEEP = '/member/updateMemberSleep';
 export const UPDATE_PASSWORD = '/changePassword/updateNewPassword';
 export const MEMBER_MSG_LIST = '/msg/selectMemberMessageList'
 export const INSERT_MEMBER_INQUIRY = '/customerInquiry/insertCustomerInquiry'
@@ -53,6 +54,7 @@ export const CHECK_REPORT_CONFIRM = '/member/updateCheckReportConfirm';
 export const INSERT_MEMBER_PHONE_BOOK = '/member/insertMemberPhoneBook';
 export const MEMBER_APPLY_ITEM_INFO = '/item/selectMemberApplyItemList';
 export const SAVE_MEMBER_INTRODUCE = '/member/saveMemberIntroduce'
+export const UPDATE_MEMBER_MASTER_IMAGE = '/member/updateMemberMasterImage'
 
 /**
  * PROFILE
@@ -76,6 +78,7 @@ export const UPDATE_MATCH_STATUS = '/match/updateMatchStatus';
 export const RESOLVE_MATCH = '/match/procMatchMemberHpOpen';
 export const FIRST_MATCH_PASS_ADD = '/match/firstMatchPassAddProc';
 export const DAILY_MATCH_ADD_OPEN = '/match/profileCardAddOpen';
+export const MATCH_CHECK_ALL = '/match/matchCheckAllProc';
 
 /**
  * ORDER

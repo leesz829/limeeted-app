@@ -46,6 +46,7 @@ import {
   UPDATE_PHONE_NUMBER,
   UPDATE_PASSWORD,
   MEMBER_EXIT,
+  MEMBER_SLEEP,
   SEARCH_EMAIL_ID,
   SEARCH_PASSWORD,
   CREATE_TEMP_PASSWORD,
@@ -80,13 +81,19 @@ import {
   GET_MEMBER_CHK,
   GET_MEMBER_APPROVAL,
   POPUP_EVENT_LIST,
+  UPDATE_MEMBER_MASTER_IMAGE,
+  MATCH_CHECK_ALL,
 } from './route';
 
 /* ========================================================================================================
 ==================================================== AUTH
 ======================================================================================================== */
 //로그인 체크 및 회원정보를 제공한다.
-export async function signin(body: { email_id: string; password: string }) {
+export async function signin(body: { 
+  email_id: string;
+  password: string;
+  sleepPassYn: string;
+}) {
   const push_token = await AsyncStorage.getItem(FCM_TOKEN);
   const inventory_connect_dt = await AsyncStorage.getItem('INVENTORY_CONNECT_DT');
   return send(LOGIN, 'POST', { ...body, push_token, inventory_connect_dt }, true, false);
@@ -377,6 +384,11 @@ export async function update_member_exit() {
   return send(MEMBER_EXIT, 'POST', undefined, true, false);
 }
 
+// 회원 휴면 전환 한다.
+export async function update_member_sleep() {
+  return send(MEMBER_SLEEP, 'POST', undefined, true, false);
+}
+
 // 회원의 메시지 목록을 조회한다.
 export async function get_member_message_list() {
   return send(MEMBER_MSG_LIST, 'POST', undefined, true, false);
@@ -417,6 +429,13 @@ export async function save_member_introduce(body: {
   interest_list: any;
 }) {
   return send(SAVE_MEMBER_INTRODUCE, 'POST', body, true, false);
+}
+
+// 회원의 대표 사진을 변경한다.
+export async function update_member_master_image(body: {
+  member_img_seq: number;
+}) {
+  return send(UPDATE_MEMBER_MASTER_IMAGE, 'POST', body, true, false);
 }
 
 
@@ -542,6 +561,13 @@ export async function daily_match_add_open(body: {
   trgt_member_seq: number;
 }) {
   return send(DAILY_MATCH_ADD_OPEN, 'POST', body, true, false);
+}
+
+// 매칭을 전체 확인 처리한다.
+export async function match_check_all(body: {
+  type: string;
+}) {
+  return send(MATCH_CHECK_ALL, 'POST', body, true, false);
 }
 
 
