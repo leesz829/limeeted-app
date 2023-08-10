@@ -1,7 +1,7 @@
 import { styles } from 'assets/styles/Styles';
 import React from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { Image, TouchableOpacity, StyleSheet, View } from 'react-native';
+import { Image, TouchableOpacity, StyleSheet, View, Text } from 'react-native';
 import {
   launchImageLibrary,
   ImageLibraryOptions,
@@ -110,7 +110,7 @@ export const CommonImagePicker: FC<Props> = (props) => {
             />
 
             <View style={styles.disabled}>
-              <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
+            <Text style={[_styles.profileImageDimText('PROGRESS')]}>심사중</Text>
             </View>
           </>
         ) : props.uriParam != null && props.uriParam != '' ? (
@@ -125,11 +125,7 @@ export const CommonImagePicker: FC<Props> = (props) => {
 
             {props.isAuth && 
               <View style={styles.disabled}>
-                {props.auth_status == 'PROGRESS' ? (
-                  <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
-                ) : props.auth_status == 'REFUSE' && (
-                  <CommonText fontWeight={'700'} type={'h5'} color={ColorType.redF20456} textStyle={[styles.imageDimText]}>반려</CommonText>
-                )}
+                <Text style={[_styles.profileImageDimText(props.auth_status)]}>{props.auth_status == 'PROGRESS' ? '심사중' : '반려'}</Text>
               </View>
             }
           </>
@@ -145,5 +141,15 @@ export const CommonImagePicker: FC<Props> = (props) => {
 
 
 const _styles = StyleSheet.create({
-
+  profileImageDimText: (status: string) => {
+    return {
+      width: '100%',
+      backgroundColor: '#000',
+      textAlign: 'center',
+      paddingVertical: 3,
+      fontFamily: 'AppleSDGothicNeoEB00',
+      fontSize: 12,
+      color: status == 'REFUSE' ? ColorType.redF20456 : '#fff',
+    };
+  },
 })

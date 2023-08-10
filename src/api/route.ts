@@ -22,6 +22,7 @@ export const SEARCH_PASSWORD = '/login/searchPassword';
 export const CREATE_TEMP_PASSWORD = '/login/createTempPassword';
 export const GET_SECOND_AUTH = '/join/getMemberSecondAuth';
 export const DELETE_MEMBER_PROFILE_IMAGE = '/join/deleteMemberProfileImage';
+export const UPDATE_JOIN_MASTER_IMAGE = '/join/updateMemberMasterImage'
 
 
 /**

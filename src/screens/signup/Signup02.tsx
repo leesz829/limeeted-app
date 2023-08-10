@@ -6,7 +6,7 @@ import { CommonText } from 'component/CommonText';
 import { ImagePicker } from 'component/ImagePicker';
 import SpaceView from 'component/SpaceView';
 import React, { useRef } from 'react';
-import { View, ScrollView, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { View, ScrollView, Image, TouchableOpacity, StyleSheet, Dimensions, Text } from 'react-native';
 import {
   RouteProp,
   useNavigation,
@@ -16,11 +16,13 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { ICON, PROFILE_IMAGE, findSourcePath } from 'utils/imageUtils';
 import { Modalize } from 'react-native-modalize';
 import { usePopup } from 'Context';
-import { get_profile_imgage_guide, regist_profile_image, delete_profile_image } from 'api/models';
+import { get_profile_imgage_guide, regist_profile_image, delete_profile_image, update_join_master_image } from 'api/models';
 import { SUCCESS } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
 import { CommonLoading } from 'component/CommonLoading';
 import { CommonImagePicker } from 'component/CommonImagePicker';
+import { isEmptyData } from 'utils/functions';
+
 
 
 /* ################################################################################################################
@@ -319,6 +321,7 @@ export const Signup02 = (props: Props) => {
     } catch (error) {
       console.log(error);
     } finally {
+      setIsLoading(false);
     }
   };
 
@@ -382,6 +385,43 @@ export const Signup02 = (props: Props) => {
     }
   };
 
+  // ############################################################  대표 사진 설정
+  const updateMasterImage = async () => {
+    const body = {
+      member_seq: props.route.params.memberSeq,
+      member_img_seq: isDelImgData.img_seq
+    };
+
+    setIsLoading(true);
+
+    try {
+      const { success, data } = await update_join_master_image(body);
+      if(success) {
+        switch (data.result_code) {
+          case SUCCESS:
+            imgDel_onClose();
+            getProfileImage();
+
+            show({
+              type: 'RESPONSIVE',
+              content: '대표사진이 변경되었어요.',
+            });
+
+            break;
+          default:
+            show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+            break;
+        }
+      } else {
+        show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // ############################################################################# 최초 실행
   React.useEffect(() => {
     setProfileImageList([]);
@@ -403,198 +443,18 @@ export const Signup02 = (props: Props) => {
         </SpaceView>
 
         <SpaceView viewStyle={[_styles.wrapper, commonStyle.paddingHorizontal15]}>
-          <View style={_styles.container}>
-            {imgData.orgImgUrl01.url != '' &&
-            imgData.orgImgUrl01.delYn == 'N' ? (
-              <TouchableOpacity
-                onPress={() => {
-                  imgDel_onOpen(imgData.orgImgUrl01, 1);
-                }}>
-                <Image
-                  resizeMode="cover"
-                  resizeMethod="scale"
-                  style={_styles.imageStyle}
-                  key={imgData.orgImgUrl01.url}
-                  source={imgData.orgImgUrl01.url}
-                />
-                {imgData.orgImgUrl01.url != '' && (imgData.orgImgUrl01.status == 'PROGRESS' || imgData.orgImgUrl01.status == 'REFUSE') && (
-                  <View style={_styles.disabled}>
-                    {imgData.orgImgUrl01.status == 'PROGRESS' ? (
-                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
-                    ) : imgData.orgImgUrl01.status == 'REFUSE' && (
-                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.redF20456} textStyle={[styles.imageDimText]}>반려</CommonText>
-                    )}
-                  </View>
-                )}
-              </TouchableOpacity>
-            ) : (
-              <CommonImagePicker
-                isAuth={false}
-                callbackFn={fileCallBack1}
-                uriParam={''}
-              />
-            )}
-          </View>
-          <View style={_styles.container}>
-            {imgData.orgImgUrl02.url != '' &&
-            imgData.orgImgUrl02.delYn == 'N' ? (
-              <TouchableOpacity
-                onPress={() => {
-                  imgDel_onOpen(imgData.orgImgUrl02, 2);
-                }}>
-                <Image
-                  resizeMode="cover"
-                  resizeMethod="scale"
-                  style={_styles.imageStyle}
-                  key={imgData.orgImgUrl02.url}
-                  source={imgData.orgImgUrl02.url}
-                />
-                {imgData.orgImgUrl02.url != '' && (imgData.orgImgUrl02.status == 'PROGRESS' || imgData.orgImgUrl02.status == 'REFUSE') && (
-                  <View style={_styles.disabled}>
-                    {imgData.orgImgUrl02.status == 'PROGRESS' ? (
-                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
-                    ) : imgData.orgImgUrl02.status == 'REFUSE' && (
-                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.redF20456} textStyle={[styles.imageDimText]}>반려</CommonText>
-                    )}
-                  </View>
-                )}
-              </TouchableOpacity>
-            ) : (
-              <CommonImagePicker
-                isAuth={false}
-                callbackFn={fileCallBack2}
-                uriParam={''}
-              />
-            )}
-          </View>
-          <View style={_styles.container}>
-            {imgData.orgImgUrl03.url != '' &&
-            imgData.orgImgUrl03.delYn == 'N' ? (
-              <TouchableOpacity
-                onPress={() => {
-                  imgDel_onOpen(imgData.orgImgUrl03, 3);
-                }}>
-                <Image
-                  resizeMode="cover"
-                  resizeMethod="scale"
-                  style={_styles.imageStyle}
-                  key={imgData.orgImgUrl03.url}
-                  source={imgData.orgImgUrl03.url}
-                />
-                {imgData.orgImgUrl03.url != '' && (imgData.orgImgUrl03.status == 'PROGRESS' || imgData.orgImgUrl03.status == 'REFUSE') && (
-                  <View style={_styles.disabled}>
-                    {imgData.orgImgUrl03.status == 'PROGRESS' ? (
-                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
-                    ) : imgData.orgImgUrl03.status == 'REFUSE' && (
-                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.redF20456} textStyle={[styles.imageDimText]}>반려</CommonText>
-                    )}
-                  </View>
-                )}
-              </TouchableOpacity>
-            ) : (
-              <CommonImagePicker
-                isAuth={false}
-                callbackFn={fileCallBack3}
-                uriParam={''}
-              />
-            )}
-          </View>
-          <View style={_styles.container}>
-            {imgData.orgImgUrl04.url != '' &&
-            imgData.orgImgUrl04.delYn == 'N' ? (
-              <TouchableOpacity
-                onPress={() => {
-                  imgDel_onOpen(imgData.orgImgUrl04, 4);
-                }}>
-                <Image
-                  resizeMode="cover"
-                  resizeMethod="scale"
-                  style={_styles.imageStyle}
-                  key={imgData.orgImgUrl04.url}
-                  source={imgData.orgImgUrl04.url}
-                />
-                {imgData.orgImgUrl04.url != '' && (imgData.orgImgUrl04.status == 'PROGRESS' || imgData.orgImgUrl04.status == 'REFUSE') && (
-                  <View style={_styles.disabled}>
-                    {imgData.orgImgUrl04.status == 'PROGRESS' ? (
-                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
-                    ) : imgData.orgImgUrl04.status == 'REFUSE' && (
-                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.redF20456} textStyle={[styles.imageDimText]}>반려</CommonText>
-                    )}
-                  </View>
-                )}
-              </TouchableOpacity>
-            ) : (
-              <CommonImagePicker
-                isAuth={false}
-                callbackFn={fileCallBack4}
-                uriParam={''}
-              />
-            )}
-          </View>
-          <View style={_styles.container}>
-            {imgData.orgImgUrl05.url != '' &&
-            imgData.orgImgUrl05.delYn == 'N' ? (
-              <TouchableOpacity
-                onPress={() => {
-                  imgDel_onOpen(imgData.orgImgUrl05, 5);
-                }}>
-                <Image
-                  resizeMode="cover"
-                  resizeMethod="scale"
-                  style={_styles.imageStyle}
-                  key={imgData.orgImgUrl05.url}
-                  source={imgData.orgImgUrl05.url}
-                />
-                {imgData.orgImgUrl05.url != '' && (imgData.orgImgUrl05.status == 'PROGRESS' || imgData.orgImgUrl05.status == 'REFUSE') && (
-                  <View style={_styles.disabled}>
-                    {imgData.orgImgUrl05.status == 'PROGRESS' ? (
-                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
-                    ) : imgData.orgImgUrl05.status == 'REFUSE' && (
-                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.redF20456} textStyle={[styles.imageDimText]}>반려</CommonText>
-                    )}
-                  </View>
-                )}
-              </TouchableOpacity>
-            ) : (
-              <CommonImagePicker
-                isAuth={false}
-                callbackFn={fileCallBack5}
-                uriParam={''}
-              />
-            )}
-          </View>
-          <View style={_styles.container}>
-            {imgData.orgImgUrl06.url != '' &&
-            imgData.orgImgUrl06.delYn == 'N' ? (
-              <TouchableOpacity
-                onPress={() => {
-                  imgDel_onOpen(imgData.orgImgUrl06, 6);
-                }}>
-                <Image
-                  resizeMode="cover"
-                  resizeMethod="scale"
-                  style={_styles.imageStyle}
-                  key={imgData.orgImgUrl06.url}
-                  source={imgData.orgImgUrl06.url}
-                />
-                {imgData.orgImgUrl06.url != '' && (imgData.orgImgUrl06.status == 'PROGRESS' || imgData.orgImgUrl06.status == 'REFUSE') && (
-                  <View style={_styles.disabled}>
-                    {imgData.orgImgUrl06.status == 'PROGRESS' ? (
-                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.white} textStyle={[styles.imageDimText]}>심사중</CommonText>
-                    ) : imgData.orgImgUrl06.status == 'REFUSE' && (
-                      <CommonText fontWeight={'700'} type={'h5'} color={ColorType.redF20456} textStyle={[styles.imageDimText]}>반려</CommonText>
-                    )}
-                  </View>
-                )}
-              </TouchableOpacity>
-            ) : (
-              <CommonImagePicker
-                isAuth={false}
-                callbackFn={fileCallBack6}
-                uriParam={''}
-              />
-            )}
-          </View>
+          {[0,1,2,3,4,5].map((i, index) => {
+            return (
+              <>
+                {index == 0 && <ProfileImageItem index={index} imgData={imgData.orgImgUrl01} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack1}  /> }
+                {index == 1 && <ProfileImageItem index={index} imgData={imgData.orgImgUrl02} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack2}  /> }
+                {index == 2 && <ProfileImageItem index={index} imgData={imgData.orgImgUrl03} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack3}  /> }
+                {index == 3 && <ProfileImageItem index={index} imgData={imgData.orgImgUrl04} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack4}  /> }
+                {index == 4 && <ProfileImageItem index={index} imgData={imgData.orgImgUrl05} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack5}  /> }
+                {index == 5 && <ProfileImageItem index={index} imgData={imgData.orgImgUrl06} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack6}  /> }
+              </>
+            )
+          })}
         </SpaceView>
 
         <SpaceView mt={20} mb={10} viewStyle={commonStyle.paddingHorizontal20}>
@@ -617,79 +477,43 @@ export const Signup02 = (props: Props) => {
           {props.route.params.gender == 'M' ? (
             <>
               <SpaceView viewStyle={_styles.tmpContainer}>
-                <Image
-                  source={PROFILE_IMAGE.manTmp1}
-                  style={_styles.tmpImageStyle}
-                />
+                <Image source={PROFILE_IMAGE.manTmp1} style={_styles.tmpImageStyle} />
               </SpaceView>
               <SpaceView viewStyle={_styles.tmpContainer}>
-                <Image
-                  source={PROFILE_IMAGE.manTmp2}
-                  style={_styles.tmpImageStyle}
-                />
+                <Image source={PROFILE_IMAGE.manTmp2} style={_styles.tmpImageStyle} />
               </SpaceView>
               <SpaceView viewStyle={_styles.tmpContainer}>
-                <Image
-                  source={PROFILE_IMAGE.manTmp3}
-                  style={_styles.tmpImageStyle}
-                />
+                <Image source={PROFILE_IMAGE.manTmp3} style={_styles.tmpImageStyle} />
               </SpaceView>
               <SpaceView viewStyle={_styles.tmpContainer}>
-                <Image
-                  source={PROFILE_IMAGE.manTmp4}
-                  style={_styles.tmpImageStyle}
-                />
+                <Image source={PROFILE_IMAGE.manTmp4} style={_styles.tmpImageStyle} />
               </SpaceView>
               <SpaceView viewStyle={_styles.tmpContainer}>
-                <Image
-                  source={PROFILE_IMAGE.manTmp5}
-                  style={_styles.tmpImageStyle}
-                />
+                <Image source={PROFILE_IMAGE.manTmp5} style={_styles.tmpImageStyle} />
               </SpaceView>
               <SpaceView viewStyle={_styles.tmpContainer}>
-                <Image
-                  source={PROFILE_IMAGE.manTmp6}
-                  style={_styles.tmpImageStyle}
-                />
+                <Image source={PROFILE_IMAGE.manTmp6} style={_styles.tmpImageStyle} />
               </SpaceView>
             </>
           ) : (
             <>
               <SpaceView viewStyle={_styles.tmpContainer}>
-                <Image
-                  source={PROFILE_IMAGE.womanTmp1}
-                  style={_styles.tmpImageStyle}
-                />
+                <Image source={PROFILE_IMAGE.womanTmp1} style={_styles.tmpImageStyle} />
               </SpaceView>
               <SpaceView viewStyle={_styles.tmpContainer}>
-                <Image
-                  source={PROFILE_IMAGE.womanTmp2}
-                  style={_styles.tmpImageStyle}
-                />
+                <Image source={PROFILE_IMAGE.womanTmp2} style={_styles.tmpImageStyle} />
               </SpaceView>
               <SpaceView viewStyle={_styles.tmpContainer}>
-                <Image
-                  source={PROFILE_IMAGE.womanTmp3}
-                  style={_styles.tmpImageStyle}
-                />
+                <Image source={PROFILE_IMAGE.womanTmp3} style={_styles.tmpImageStyle} />
               </SpaceView>
               <SpaceView viewStyle={_styles.tmpContainer}>
-                <Image
-                  source={PROFILE_IMAGE.womanTmp4}
-                  style={_styles.tmpImageStyle}
-                />
+                <Image source={PROFILE_IMAGE.womanTmp4} style={_styles.tmpImageStyle} />
               </SpaceView>
               <SpaceView viewStyle={_styles.tmpContainer}>
-                <Image
-                  source={PROFILE_IMAGE.womanTmp5}
-                  style={_styles.tmpImageStyle}
-                />
+                <Image source={PROFILE_IMAGE.womanTmp5} style={_styles.tmpImageStyle} />
               </SpaceView>
               <SpaceView viewStyle={_styles.tmpContainer}>
-                <Image
-                  source={PROFILE_IMAGE.womanTmp6}
-                  style={_styles.tmpImageStyle}
-                />
+                <Image source={PROFILE_IMAGE.womanTmp6} style={_styles.tmpImageStyle} />
               </SpaceView>
             </>
           )}
@@ -727,7 +551,7 @@ export const Signup02 = (props: Props) => {
           </TouchableOpacity>
         </View>
 
-        <View style={[modalStyle.modalBody, layoutStyle.flex1, layoutStyle.mb20]}>
+        <View style={[modalStyle.modalBody, layoutStyle.flex1]}>
           {isDelImgData.status == 'REFUSE' && isDelImgData.return_reason != null && 
             <SpaceView mb={15}>
               <SpaceView mb={16} viewStyle={layoutStyle.row}>
@@ -749,24 +573,64 @@ export const Signup02 = (props: Props) => {
             </SpaceView>
           }
 
+          {(isDelImgData.status == 'ACCEPT' && isDelImgData.order_seq > 1) &&
+            <SpaceView mb={10}>
+              <CommonBtn value={'대표사진 설정'} type={'primary'} borderRadius={12} onPress={updateMasterImage} />
+            </SpaceView>
+          }
+
           <SpaceView mb={10}>
-            <CommonBtn
-              value={'사진 삭제'}
-              type={'primary'}
-              onPress={imgDelProc}
-            />
+            <CommonBtn value={'삭제'} type={'primary2'} borderRadius={12} onPress={imgDelProc} />
           </SpaceView>
 
-          <SpaceView>
+          {/* <SpaceView>
             <CommonBtn
               value={'취소'}
               type={'primary2'}
               onPress={imgDel_onClose}
             />
-          </SpaceView>          
+          </SpaceView> */}
         </View>
       </Modalize>
     </>
+  );
+};
+
+
+{/* #######################################################################################################
+###################### 프로필 이미지 렌더링
+####################################################################################################### */}
+
+function ProfileImageItem({ index, imgData, delFn, fileCallBackFn }) {
+  const imgUrl = imgData.url;
+  const imgDelYn = imgData.delYn;
+  const imgStatus = imgData.status;
+
+  return (
+    <View style={_styles.container}>
+      {isEmptyData(imgUrl) && imgDelYn == 'N' ? (
+        <TouchableOpacity onPress={() => { delFn(imgData, index+1); }}>
+          <Image
+            resizeMode="cover"
+            resizeMethod="scale"
+            style={_styles.imageStyle}
+            key={imgUrl}
+            source={imgUrl}
+          />
+          {(imgStatus == 'PROGRESS' || imgStatus == 'REFUSE') ? (
+            <View style={_styles.disabled}>
+              <Text style={[_styles.profileImageDimText(imgStatus)]}>{imgStatus == 'PROGRESS' ? '심사중' : '반려'}</Text>
+            </View>
+          ) : (imgStatus == 'ACCEPT' && index == 0) && (
+            <View style={_styles.materDisabled}>
+              <Text style={[_styles.masterImageDimText]}>대표 사진</Text>
+            </View>
+          )}
+        </TouchableOpacity>
+      ) : (
+        <CommonImagePicker isAuth={false} callbackFn={fileCallBackFn} uriParam={''} />
+      )}
+    </View>
   );
 };
 
@@ -901,6 +765,38 @@ const _styles = StyleSheet.create({
     paddingHorizontal: 15,
     borderRadius: 8,
     minHeight: 100,
+  },
+  materDisabled: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    overflow: 'hidden',
+  },
+  masterImageDimText: {
+    width: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    textAlign: 'center',
+    paddingVertical: 3,
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 13,
+    color: '#fff',
+  },
+  profileImageDimText: (status: string) => {
+    return {
+      width: '100%',
+      backgroundColor: '#000',
+      textAlign: 'center',
+      paddingVertical: 3,
+      fontFamily: 'AppleSDGothicNeoEB00',
+      fontSize: 12,
+      color: status == 'REFUSE' ? ColorType.redF20456 : '#fff',
+    };
   },
 
 });

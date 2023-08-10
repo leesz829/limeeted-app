@@ -83,6 +83,7 @@ import {
   POPUP_EVENT_LIST,
   UPDATE_MEMBER_MASTER_IMAGE,
   MATCH_CHECK_ALL,
+  UPDATE_JOIN_MASTER_IMAGE,
 } from './route';
 
 /* ========================================================================================================
@@ -209,6 +210,14 @@ export async function delete_profile_image(body: {
   img_del_seq_str: string;
 }) {
   return send(DELETE_MEMBER_PROFILE_IMAGE, 'POST', body, false, false);
+}
+
+// 회원의 대표 사진을 변경한다.
+export async function update_join_master_image(body: {
+  member_seq: number;
+  member_img_seq: number;
+}) {
+  return send(UPDATE_JOIN_MASTER_IMAGE, 'POST', body, false, false);
 }
 
 
