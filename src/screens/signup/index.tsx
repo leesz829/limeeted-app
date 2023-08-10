@@ -93,22 +93,23 @@ export const Signup00 = (props: Props) => {
     if(password == '') {
       show({ content: '비밀번호를 입력해 주세요.' });
       isResult = false;
-    }
+    };
 
-    let regPass = /^(?=.*[a-zA-Z])(?=.*[0-9]).{8,25}$/;
+    let regPass = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/;
     if(!regPass.test(password)) {
-      show({ content: '영문, 숫자 조합으로 8-20자리 입력해주세요.' });
+      show({ content: '영문, 숫자, 특수기호(!@#$%^*+=-) 조합으로\n8-25자리 입력해주세요.' });
       isResult = false;
-    }
+    };
 
     if(passwordChk == '') {
       show({ content: '비밀번호 확인을 입력해 주세요.' });
       isResult = false;
-    }
+    };
+
     if(password != passwordChk) {
       show({ content: '비밀번호 확인이 맞지 않습니다.' });
       isResult = false;
-    }
+    };
 
     return isResult;
   };
@@ -304,8 +305,9 @@ export const Signup00 = (props: Props) => {
               isMasking={true}
               maxLength={20}
               placeholderTextColor={'#c6ccd3'}
-              placeholder={'영문 대소문자, 숫자, 특수기호 허용 8글자 이상'}
+              placeholder={'영문, 숫자, 특수기호(!@#$%^*+=-) 포함 8글자 이상'}
               borderBottomType={'black'}
+              fontSize={15}
             />
           </SpaceView>
 
@@ -317,8 +319,9 @@ export const Signup00 = (props: Props) => {
               isMasking={true}
               maxLength={20}
               placeholderTextColor={'#c6ccd3'}
-              placeholder={'영문 대소문자, 숫자, 특수기호 허용 8글자 이상'}
+              placeholder={'영문, 숫자, 특수기호(!@#$%^*+=-) 포함 8글자 이상'}
               borderBottomType={'black'}
+              fontSize={15}
             />
           </SpaceView>
 
