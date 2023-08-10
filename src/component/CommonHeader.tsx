@@ -7,6 +7,9 @@ import { ICON, IMAGE } from 'utils/imageUtils';
 import { Color } from 'assets/styles/Color';
 import { Wallet } from './TopNavigation';
 import { commonStyle } from 'assets/styles/Styles';
+import { usePopup } from 'Context';
+import { isEmptyData } from 'utils/functions';
+
 
 export type NavigationHeaderProps = {
   title?: string;
@@ -29,8 +32,34 @@ function CommonHeader({
   walletTextStyle,
   isLogoType,
 }: NavigationHeaderProps) {
+
   const navigation = useNavigation<StackScreenProp>();
+  const { show } = usePopup();  // 공통 팝업
+
   const goHome = useCallback(() => {
+    const screen = navigation.getState().routes[navigation.getState().routes.length-1].name;
+    const params = navigation.getState().routes[navigation.getState().routes.length-1].params;
+
+    if(screen == 'ItemMatching') {
+      if(isEmptyData(params) && params.type == 'PROFILE_CARD_ITEM') {
+        show({ 
+          content: '선택을 안하시는 경우 아이템이 소멸됩니다.\n그래도 나가시겠습니까?',
+          cancelCallback: function() {},
+          confirmCallback: function() {
+            goMove();
+          }
+        });
+      } else {
+        goMove();
+      }
+    } else {
+      goMove();
+    }
+
+    //return;
+  }, [navigation]);
+
+  const goMove = async () => {
     navigation.canGoBack()
       ? navigation.goBack()
       : navigation.dispatch(
@@ -39,7 +68,9 @@ function CommonHeader({
             routes: [{ name: 'Login01' }],
           })
         );
-  }, [navigation]);
+  }
+
+  
 
   return (
     <>
