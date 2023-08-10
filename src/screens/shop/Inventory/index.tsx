@@ -178,12 +178,25 @@ export default function Inventory() {
         <View style={{ flexDirection: 'row' }}>
           <View style={_styles.thumb}>
             <Image source={findSourcePath(item?.file_path + item?.file_name)} style={{width: '100%', height: '100%'}} resizeMode='cover' />
-            {item?.item_qty > 0 && (
+            {/* {item?.item_qty > 0 && (
               <View style={_styles.qtyArea}>
                 <Text style={_styles.qtyText}>{item.item_qty}개 보유</Text>
                 <View style={{backgroundColor: '#000000', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, opacity: 0.7}} />
               </View>
-            )}
+            )} */}
+
+            <View style={_styles.qtyArea}>
+              {item?.use_yn == 'N' && (
+                <>
+                  {item?.period == 99000 ? (
+                    <Text style={_styles.qtyText}>영구보관</Text>
+                  ) : (
+                    <Text style={_styles.qtyText}>{item?.end_day}일남음</Text>
+                  )}
+                </>
+              )}
+              <View style={{backgroundColor: '#000000', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, opacity: 0.7}} />
+            </View>
 
             {isNew &&
               <View style={_styles.iconArea}>

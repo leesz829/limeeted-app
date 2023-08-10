@@ -101,7 +101,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
             }
           
           // 재화 유형 구분 : 패스상품(임시처리::추후수정)
-          } else if(money_type_code == 'PASS') {
+          } else if(money_type_code == 'PASS' || money_type_code == 'ROYAL_PASS') {
             passPurchase();
           }
         } else {
@@ -417,15 +417,20 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
               </Text>
               <View style={modalStyleProduct.rowCenter}>
                <Text style={modalStyleProduct.price}>
-                  {
-                    CommaFormat(item?.shop_buy_price != null ? item?.shop_buy_price : item?.buy_price)
-                  }
+                  {CommaFormat(item?.shop_buy_price != null ? item?.shop_buy_price : item?.buy_price)}
 
-                  { 
-                    type != 'bm'? <Image source={ICON.crown} style={modalStyleProduct.crown} /> : item?.money_type_code == 'PASS' ? '패스' : '원' 
-                  }
+                  {type != 'bm'? <Image source={ICON.crown} style={modalStyleProduct.crown} /> : item?.money_type_code == 'INAPP' ? '원' : ''}
                 </Text>
                 {/*<Image source={ICON.crown} style={modalStyleProduct.crown} />*/}
+
+                {item?.money_type_code == 'PASS' && 
+                  <SpaceView pt={4}><Image style={styles.iconSquareSize(25)} source={ICON.passCircle} resizeMode={'contain'} /></SpaceView> 
+                }
+
+                {item?.money_type_code == 'ROYAL_PASS' && 
+                  <SpaceView pt={4}><Image style={styles.iconSquareSize(25)} source={ICON.royalPassCircle} resizeMode={'contain'} /></SpaceView> 
+                }
+                
               </View>  
             </View>
 

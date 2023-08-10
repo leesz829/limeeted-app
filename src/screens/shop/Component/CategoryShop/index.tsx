@@ -36,6 +36,8 @@ import { setPartialPrincipal } from 'redux/reducers/authReducer';
 import { useDispatch } from 'react-redux';
 import { useUserInfo } from 'hooks/useUserInfo';
 import { isEmptyData } from 'utils/functions';
+import { commonStyle, styles } from 'assets/styles/Styles';
+import SpaceView from 'component/SpaceView';
 
 
 interface Props {
@@ -391,15 +393,33 @@ function RenderItem({ item, openModal }) {
           <Text style={{ fontSize: 13, fontWeight: 'bold', color:'#363636' }}>
             {item?.item_name}
           </Text>
-          <View style={{ flexDirection: 'row' }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
             <Text style={_styles.discountRate}>
               {item?.discount_rate && item.discount_rate != 0 ? item.discount_rate + '%':''}
             </Text>
-            <Text style={_styles.price}>
-              {CommaFormat(item?.shop_buy_price) + (item.money_type_code == 'PASS' ? '패스' : '원')}
-            </Text>
+
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Text style={_styles.price}>
+                {CommaFormat(item?.shop_buy_price) + (item.money_type_code == 'INAPP' ? '원' : '')}
+              </Text>
+
+              {item.money_type_code == 'PASS' && (
+                <SpaceView pt={3}><Image style={styles.iconSquareSize(20)} source={ICON.passCircle} resizeMode={'contain'} /></SpaceView>
+              )}
+
+              {item.money_type_code == 'ROYAL_PASS' && (
+                <SpaceView pt={3}><Image style={styles.iconSquareSize(20)} source={ICON.royalPassCircle} resizeMode={'contain'} /></SpaceView>
+              )}
+            </View>
+            
             <Text style={_styles.originPrice}>
-              {item?.discount_rate && item.discount_rate != 0 ? CommaFormat(item?.original_price) + (item.money_type_code == 'PASS' ? '패스' : '원') : ''}
+              {(isEmptyData(item.discount_rate) && item.discount_rate != 0) && (
+                <>
+                  {CommaFormat(item?.original_price) + (item.money_type_code == 'INAPP' ? '원' : '')}  
+                  {item.money_type_code == 'PASS' && ( '패스' )}
+                  {item.money_type_code == 'ROYAL_PASS' && ( ' 로얄패스' )}
+                </>
+              )}
             </Text>
           </View>
           <View style={_styles.boxWrapper}>
