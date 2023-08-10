@@ -11,10 +11,11 @@ import { StackParamList, ScreenNavigationProp, ColorType } from '@types';
 import { RouteProp, useNavigation } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
 import { usePopup } from 'Context';
-import { update_member_password } from 'api/models';
+import { update_member_password, update_member_exit } from 'api/models';
 import { SUCCESS } from 'constants/reusltcode';
 import { STACK } from 'constants/routes';
 import { myProfile } from 'redux/reducers/authReducer';
+import { clearPrincipal } from 'redux/reducers/authReducer';
 
 
 /* ################################################################################################################
@@ -79,7 +80,7 @@ export const ChangePassword = (props : Props) => {
 			return;
 		}
 
-		let regPass = /^(?=.*[a-zA-Z])(?=.*[0-9]).{8,25}$/;
+		let regPass = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/;
 		if((!regPass.test(newPassword))){
 			setIsNewPassword(true);
 			setNewPasswordConfirmMessage("새 비밀번호를 올바르게 입력해주세요.");
@@ -174,7 +175,37 @@ export const ChangePassword = (props : Props) => {
 		} finally {
 		
 		}
-	}
+	};
+
+	// ###################################################################### 탈퇴 버튼
+	const btnDeleteMyAccount = async () => {
+		show({
+			title: '회원 탈퇴',
+			content: '회원 탈퇴는 24시간 뒤 완료 처리되며, 암호화된\n모든 개인정보 및 보유한 아이템은 자동으로 폐기됩니다.\n단, 24시간 이내에 로그인 시 회원 탈퇴는 자동 철회 됩니다.',
+			cancelCallback: function() {},
+			confirmCallback: function() {
+				exitProc();
+			}
+		});
+	};
+	
+	// ###################################################################### 탈퇴 처리
+	const exitProc = async () => {
+		const { success, data } = await update_member_exit();
+		if(success) {
+			switch (data.result_code) {
+				case SUCCESS:
+					dispatch(clearPrincipal());
+				break;
+				default:
+					show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+				break;
+			}
+		
+		} else {
+			show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+		}
+	};
 
 	// ####################################################### 최초 실행
 	React.useEffect(() => {
@@ -218,6 +249,9 @@ export const ChangePassword = (props : Props) => {
 							onChangeText={(newPassword) => setNewPassword(newPassword)}
 							isMasking={true}
 							maxLength={20}
+							placeholderTextColor={'#c6ccd3'}
+							placeholder={'영문, 숫자, 특수기호(!@#$%^*+=-) 포함 8글자 이상'}
+							fontSize={15}
 						/>
 						{isNewPassword && (<Text style={{color: newPasswordConfirmMessageColor, marginTop: 10}}>{newPasswordConfirmMessage}</Text>)}
 					</SpaceView>
@@ -229,18 +263,32 @@ export const ChangePassword = (props : Props) => {
 							onChangeText={(newPasswordChk) => setNewPasswordChk(newPasswordChk)}
 							isMasking={true}
 							maxLength={20}
+							placeholderTextColor={'#c6ccd3'}
+							placeholder={'영문, 숫자, 특수기호(!@#$%^*+=-) 포함 8글자 이상'}
+							fontSize={15}
 						/>
 						{isNewPasswordChk && (<Text style={{color: newPasswordChkConfirmMessageColor, marginTop: 10}}>{newPasswordChkConfirmMessage}</Text>)}
 					</SpaceView>
 
 					<SpaceView mb={24}>
-						<CommonBtn
-							value={'비밀번호 변경'}
-							type={'primary'}
-							onPress={() => { 
-								validatePassword();
-							}}
-						/>
+						<SpaceView>
+							<CommonBtn
+								value={'비밀번호 변경'}
+								type={'primary'}
+								onPress={() => { 
+									validatePassword();
+								}}
+							/>
+						</SpaceView>
+						<SpaceView mt={5}>
+							<CommonBtn
+								value={'탈퇴하기'}
+								type={'primary'}
+								onPress={() => { 
+									btnDeleteMyAccount();
+								}}
+							/>
+						</SpaceView>
 					</SpaceView>
 				</View>
 			</ScrollView>

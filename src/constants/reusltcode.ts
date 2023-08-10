@@ -9,6 +9,7 @@ export const LOGIN_REFUSE = "0003";   // 반려회원
 export const LOGIN_EXIT = "0004";     // 탈퇴회원
 export const SANCTIONS = "0005";     // 제재회원
 export const LOGIN_BLOCK = "0006";     // 신고회원
+export const LOGIN_SLEEP = "0007";     // 휴면회원
 export const PASSWORD_ERROR = "0010";     // 패스워드 틀림
 
 export const MEMBER_NICKNAME_DUP = "8006";  // 닉네임 중복
@@ -25,6 +26,7 @@ export default {
   LOGIN_WAIT,
   LOGIN_REFUSE,
   LOGIN_EXIT,
+  LOGIN_SLEEP,
   SANCTIONS,
   PASSWORD_ERROR,
   MEMBER_NICKNAME_DUP,

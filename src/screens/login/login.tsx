@@ -17,6 +17,7 @@ import {
   SANCTIONS,
   PASSWORD_ERROR,
   LOGIN_BLOCK,
+  LOGIN_SLEEP,
 } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
 import storeKey, { JWT_TOKEN } from 'constants/storeKey';
@@ -77,12 +78,13 @@ export const Login01 = () => {
   const [granted, setGranted] = React.useState('');
 
   // ########################################################################## 로그인 실행
-  const loginProc = async () => {
+  const loginProc = async (isSleepPass:boolean) => {
     const body = {
       email_id: id,
       password,
       latitude: latitude,
       longitude: longitude,
+      sleepPassYn: isSleepPass ? 'Y' : 'N',
     };
 
     try {
@@ -132,11 +134,22 @@ export const Login01 = () => {
             break;
 
           case SANCTIONS:
-            show({ titem: '제재 알림', content: '<이용 약관>에 근거하여 회원 제재 상태로 전환되었습니다. \n' + data?.sanctions?.sanctions_msg});
+            show({ title: '제재 알림', content: '<이용 약관>에 근거하여 회원 제재 상태로 전환되었습니다. \n' + data?.sanctions?.sanctions_msg});
             break;
 
           case LOGIN_BLOCK:
-            show({ titem: '제재 알림', content: '<이용 약관>에 근거하여 회원 영구 제재 상태로 전환되었습니다.' });
+            show({ title: '제재 알림', content: '<이용 약관>에 근거하여 회원 영구 제재 상태로 전환되었습니다.' });
+            break;
+
+          case LOGIN_SLEEP:
+            show({ 
+              title: '휴면회원',
+              content: '현재 휴면회원 상태입니다.\n휴면상태를 해제 하시겠습니까?',
+              cancelCallback: function() {},
+              confirmCallback: function() {
+                loginProc(true);
+              }
+            });
             break;
 
           default:
@@ -146,10 +159,7 @@ export const Login01 = () => {
 
     } catch (error) {
       console.log(error);
-      show({ 
-        title: '알림',
-        content: '일치하는 회원이 없습니다.' 
-      });
+      show({ content: '일치하는 회원이 없습니다.' });
     } finally {
       
     }
@@ -436,7 +446,7 @@ export const Login01 = () => {
                       return show({ content: '비밀번호를 입력해 주세요.' });
                     }
 
-                    loginProc();
+                    loginProc(false);
                     //dispatch(loginReduce(id, password));
                   }}
                 />

@@ -8,19 +8,13 @@ import * as React from 'react';
 import { CommonBtn } from 'component/CommonBtn';
 import { StackParamList, ScreenNavigationProp, ColorType } from '@types';
 import { StackNavigationProp } from '@react-navigation/stack';
-import {
-  RouteProp,
-  useNavigation,
-  CommonActions,
-} from '@react-navigation/native';
-import * as hooksMember from 'hooks/member';
+import { RouteProp, useNavigation } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
 import { ROUTES, STACK } from 'constants/routes';
 import { clearPrincipal } from 'redux/reducers/authReducer';
 import { useUserInfo } from 'hooks/useUserInfo';
-import { update_setting, member_logout, update_member_exit } from 'api/models';
+import { update_setting, member_logout, update_member_exit, update_member_sleep } from 'api/models';
 import { usePopup } from 'Context';
-import { myProfile } from 'redux/reducers/authReducer';
 import { SUCCESS } from 'constants/reusltcode';
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
 import { isEmptyData } from 'utils/functions';
@@ -140,50 +134,6 @@ export const Profile = (props: Props) => {
     }
   }
 
-  // ###################################################################### 탈퇴 처리
-  const exitProc = async () => {
-    const { success, data } = await update_member_exit();
-    if(success) {
-      switch (data.result_code) {
-        case SUCCESS:
-          dispatch(clearPrincipal());
-          break;
-        default:
-          show({
-            content: '오류입니다. 관리자에게 문의해주세요.' ,
-            confirmCallback: function() {}
-          });
-          break;
-      }
-    
-    } else {
-      show({
-        content: '오류입니다. 관리자에게 문의해주세요.' ,
-        confirmCallback: function() {}
-      });
-    }
-  };
-
-
-	// ###################################################################### 탈퇴 버튼
-	const btnDeleteMyAccount = async () => {
-
-    try {
-      show({
-        title: '탈퇴'
-        , content: '탈퇴는 24시간 뒤 완료처리 됩니다.\n단, 24시간 이내에 로그인 시 탈퇴는 취소됩니다.'
-        , cancelCallback: function() {}
-        , confirmCallback: function() {
-          exitProc();
-        }
-      });
-    } catch (error) {
-      console.log(error);
-    } finally {
-      
-    }
-  };
-
 	// ###################################################################### 비밀번호 변경 버튼
 	const btnChangePassword = async () => {
 		navigation.navigate('ChangePassword', {});
@@ -237,6 +187,36 @@ export const Profile = (props: Props) => {
     } finally {
     }
   };
+
+  // ###################################################################### 휴면계정 전환하기
+  const btnMemberSleep = async () => {
+    show({
+			title: '휴면회원 전환',
+			content: '휴면회원 전환을 진행하시겠습니까?\n휴면회원 전환 시 보유하고 있는 아이템은 그대로 유지되며,\n상대방에게 회원님에 정보는 노출되지 않습니다.',
+			cancelCallback: function() {},
+			confirmCallback: function() {
+				sleepProc();
+			}
+		});
+  };
+
+  // ###################################################################### 휴면계정 전환하기
+  const sleepProc = async () => {
+    const { success, data } = await update_member_sleep();
+      if(success) {
+        switch (data.result_code) {
+          case SUCCESS:
+            dispatch(clearPrincipal());
+          break;
+          default:
+            show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+          break;
+        }
+      
+      } else {
+        show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+      }
+  }
 
   // ################### 팝업 관련 #####################
   const [nickNameUpdatePopup, setNicknameUpdatePopup] = React.useState(false); // 닉네임 변경 팝업
@@ -407,32 +387,26 @@ export const Profile = (props: Props) => {
             <Text style={_styles.recomDesc}>TIP.혜택 내용은 "최근소식"의 이벤트 안내를 확인해주세요.</Text>
           </SpaceView>
 
-          {/* <SpaceView mb={24}>
-					<CommonInput 
-						label={'회사명'} 
-						placeholder="" />
-				</SpaceView> */}
+            {/* <SpaceView mb={24}>
+                  <CommonInput 
+                    label={'회사명'} 
+                    placeholder="" />
+            </SpaceView> */}
 
-          {/* <SpaceView mb={24}>
-					<CommonInput label={'계정 ID'} placeholder="heighten@kakao.com" rightPen={true} />
-				</SpaceView> */}
+            {/* <SpaceView mb={24}>
+                  <CommonInput label={'계정 ID'} placeholder="heighten@kakao.com" rightPen={true} />
+            </SpaceView> */}
 
         </View>
 
-        <SpaceView viewStyle={commonStyle.paddingHorizontal20} mb={40} mt={20}>
-          <View style={{marginBottom: 10}}>
-            <CommonBtn 
-              value={'비밀번호 변경'} 
-              type={'blackW'}
-              borderRadius={12}
-              onPress={btnChangePassword} />
-          </View>
+        <SpaceView mb={40} mt={20} viewStyle={commonStyle.paddingHorizontal20}>
+          <SpaceView mb={10}>
+            <CommonBtn value={'개인정보 변경 및 관리'} type={'blackW'} borderRadius={12} onPress={btnChangePassword} />
+          </SpaceView>
 
-          <CommonBtn 
-            value={'탈퇴하기'} 
-            type={'blackW'}
-            borderRadius={12}
-            onPress={btnDeleteMyAccount} />
+          <SpaceView>
+            <CommonBtn value={'휴면회원 전환하기'} type={'blackW'} borderRadius={12} onPress={btnMemberSleep} />
+          </SpaceView>
         </SpaceView>
 
         <SpaceView viewStyle={layoutStyle.rowBetween}>
