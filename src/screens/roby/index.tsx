@@ -64,7 +64,7 @@ export const Roby = (props: Props) => {
   // 공통 팝업
   const { show } = usePopup();
 
-  // 
+  // 로딩 여부
   const [isLoading, setIsLoading] = useState(false);
 
   // 클릭 여부

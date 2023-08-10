@@ -5,10 +5,7 @@ import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
 import { Modal, TouchableOpacity, View, Image, Text, ScrollView, Dimensions, Animated, StyleSheet } from 'react-native';
-import Carousel, { getInputRangeFromIndexes } from 'react-native-snap-carousel';
-import { useUserInfo } from 'hooks/useUserInfo';
-import LinearGradient from 'react-native-linear-gradient';
-import { IMAGE, PROFILE_IMAGE, findSourcePath } from 'utils/imageUtils';
+import { isEmptyData } from 'utils/functions';
 
 
 /* ################################################################################################################
@@ -22,6 +19,7 @@ interface Props {
   setPopupVIsible?: any; // popup setState
   text?: string; // 팝업 문구
   subText?: string;
+  duration?: any;
 }
 
 const { width, height } = Dimensions.get('window');
@@ -96,7 +94,7 @@ export const ResponsivePopup = (props: Props) => {
 		  		transYAnimation.setValue(-50); */
 
 				props.setPopupVIsible(false);
-			}, 1500);
+			}, isEmptyData(props.duration) ? props.duration : 1500);
 
 			// 컴포넌트가 언마운트될 때 타이머를 정리하여 메모리 누수 방지
 			return () => clearTimeout(timer);

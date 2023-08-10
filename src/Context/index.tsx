@@ -20,6 +20,7 @@ interface PopupContextProps {
   eventType: string | undefined; // 이벤트 팝업 유형
   eventPopupList: any | undefined; // 이벤트 목록
   etcCallback: Function | undefined; // 기타 콜백 함수
+  popupDuration: any | undefined; // 팝업 지속 시간
 }
 
 export const PopupProvider = ({ children }: any) => {
@@ -39,6 +40,7 @@ export const PopupProvider = ({ children }: any) => {
     eventType: '',
     eventPopupList: [],
     etcCallback: undefined,
+    popupDuration: undefined,
   });
 
   function show(content: PopupContextProps) {
@@ -66,6 +68,7 @@ export const PopupProvider = ({ children }: any) => {
       eventType: '',
       eventPopupList: [],
       etcCallback: undefined,
+      popupDuration: undefined,
     });
   }
 
@@ -97,6 +100,7 @@ export const PopupProvider = ({ children }: any) => {
           setPopupVIsible={setVisibleResponsive}
           text={contents.content}
           subText={contents.subContent}
+          duration={contents.popupDuration}
         />
       ) : (
         <BasePopup
