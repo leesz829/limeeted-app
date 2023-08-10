@@ -152,6 +152,8 @@ export const ICON = {
   loveLetterIcon: require('assets/icon/icon-love-letter.png'),
   playIcon: require('assets/icon/play_icon.png'),
   dottedIcon: require('assets/icon/dotted_icon.png'),
+  checkOnIcon: require('assets/icon/check_on.png'),
+  checkOffIcon: require('assets/icon/check_off.png'),
 };
 
 export const GIF_IMG = {

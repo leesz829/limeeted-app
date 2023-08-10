@@ -59,14 +59,20 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
         } else {
           return <Image style={_style.iconSize} source={ICON.roby} />;
         }
-      }
+      };
     }
     case 'Storage': {
-      if (isFocused) {
-        return <Image style={_style.iconSize} source={ICON.storageOn} />;
-      } else {
-        return <Image style={_style.iconSize} source={ICON.storage} />;
-      }
+      return (
+        <>
+          <View>
+            <Image style={_style.iconSize} source={isFocused ? ICON.storageOn : ICON.storage} />
+
+            {isEmptyData(memberBase.new_match_cnt) && memberBase.new_match_cnt > 0 && (
+              <View style={_style.newIcon} />
+            )}
+          </View>
+        </>
+      );
     }
     case 'Message': {
       return (

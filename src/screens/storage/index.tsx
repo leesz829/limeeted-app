@@ -31,7 +31,7 @@ import {
 } from '@react-navigation/native';
 import * as dataUtils from 'utils/data';
 import { useDispatch } from 'react-redux';
-import { get_member_storage, update_match } from 'api/models';
+import { get_member_storage, update_match, match_check_all } from 'api/models';
 import { useMemberseq } from 'hooks/useMemberseq';
 import { usePopup } from 'Context';
 import { STACK } from 'constants/routes';
@@ -43,6 +43,7 @@ import { Color } from 'assets/styles/Color';
 import { isEmptyData } from 'utils/functions';
 import { CommonLoading } from 'component/CommonLoading';
 import { BlurView } from "@react-native-community/blur";
+import { setPartialPrincipal } from 'redux/reducers/authReducer';
 
 
 
@@ -63,6 +64,8 @@ export const Storage = (props: Props) => {
   const isFocusStorage = useIsFocused();
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+
+  const [isClickable, setIsClickable] = useState(true); // 클릭 여부
 
   const { show } = usePopup();  // 공통 팝업
 
@@ -111,35 +114,40 @@ export const Storage = (props: Props) => {
       title: '받은 관심',
       color: '#FF7E8C',
       data: [],
+      isNew: false,
     },
     {
       type: 'REQ',
       title: '보낸 관심',
       color: '#697AE6',
       data: [],
+      isNew: false,
     },
     {
       type: 'MATCH',
       title: '성공 매칭',
       color: '#8669E6',
       data: [],
+      isNew: false,
     },
     {
       type: 'ZZIM',
       title: '찜 목록',
       color: '#69C9E6',
       data: [],
+      isNew: false,
     },
     {
       type: 'LIVE',
       title: 'LIVE',
       color: '#FFC100',
       data: [],
+      isNew: false,
     },
   ]);
 
   // ################################################################################# 보관함 정보 조회
-  const getStorageData = async () => {
+  const getStorageData = async (isReal:boolean) => {
     setIsLoading(true);
 
     try {
@@ -149,6 +157,11 @@ export const Storage = (props: Props) => {
           console.log(data.result_msg);
           return false;
         } else {
+
+          // ##### 회원 기본 정보 갱신
+          dispatch(setPartialPrincipal({ mbr_base : data.mbr_base }));
+
+          // ##### 보관함 데이터 구성
           let tabsData = [];
 
           let resLikeListData = [];
@@ -156,7 +169,7 @@ export const Storage = (props: Props) => {
           let matchTrgtListData = [];
           let zzimTrgtListData = [];
           let liveHighListData = [];
-          let zzimItemUseYn = data.zzimItemUseYn;
+          let zzimItemUseYn = data.zzim_item_use_yn;
 
           resLikeListData = dataUtils.getStorageListData(
             data.res_like_list
@@ -187,18 +200,21 @@ export const Storage = (props: Props) => {
               title: '받은 관심',
               color: '#FF7E8C',
               data: resLikeListData,
+              isNew: data.res_new_yn == 'Y' ? true : false,
             },
             {
               type: 'REQ',
               title: '보낸 관심',
               color: '#697AE6',
               data: reqLikeListData,
+              isNew: false,
             },
             {
               type: 'MATCH',
               title: '성공 매칭',
               color: '#8669E6',
               data: matchTrgtListData,
+              isNew: data.succes_new_yn == 'Y' ? true : false,
             },
           ];
 
@@ -208,6 +224,7 @@ export const Storage = (props: Props) => {
               title: '찜 목록',
               color: '#69C9E6',
               data: zzimTrgtListData,
+              isNew: false,
             });
           };
 
@@ -217,6 +234,7 @@ export const Storage = (props: Props) => {
               title: 'LIVE',
               color: '#FFC100',
               data: liveHighListData,
+              isNew: data.live_res_new_yn == 'Y' ? true : false,
             });
           };
 
@@ -267,29 +285,34 @@ export const Storage = (props: Props) => {
 
           setTabs(tabsData);
 
-          if(loadPage == 'ZZIM' || loadPage == 'LIVE') {
-            if((loadPage == 'ZZIM' && data.zzim_trgt_list.length == 0) || (loadPage == 'LIVE' && data.live_high_list.length == 0)) {
-              onPressDot(0);
-            } else {
-              if(loadPage == 'ZZIM') {
-                onPressDot(3);
-              } else if(loadPage == 'LIVE') {
-                if(data.zzim_trgt_list.length == 0) {
+          if(!isReal) {
+            if(loadPage == 'ZZIM' || loadPage == 'LIVE') {
+              if((loadPage == 'ZZIM' && data.zzim_trgt_list.length == 0) || (loadPage == 'LIVE' && data.live_high_list.length == 0)) {
+                onPressDot(0);
+              } else {
+                if(loadPage == 'ZZIM') {
                   onPressDot(3);
-                } else {
-                  onPressDot(4);
+                } else if(loadPage == 'LIVE') {
+                  if(data.zzim_trgt_list.length == 0) {
+                    onPressDot(3);
+                  } else {
+                    onPressDot(4);
+                  }
                 }
               }
-            }
-          } else {
-            tabs.map((item: any, index) => {
-              if(item.type == loadPage) {
-                onPressDot(index);
-              }
-            });
-          };
-
-          navigation.setParams({ loadPage: 'RES' });
+            } else if(loadPage == 'REQ') {
+              console.log('req!!');
+              onPressDot(1);
+            } else {
+              tabs.map((item: any, index) => {
+                if(item.type == loadPage) {
+                  onPressDot(index);
+                }
+              });
+            };
+  
+            navigation.setParams({ loadPage: 'RES' });
+          }
         }
       }
     } catch (error) {
@@ -408,10 +431,40 @@ export const Storage = (props: Props) => {
     }
   };
 
+  // ######################################################################################## 모두 확인 처리
+  const allCheck = async (type:string) => {
+    const body = {
+      type: type
+    };
+
+    // 중복 클릭 방지 설정
+    if(isClickable) {
+      setIsClickable(false);
+      setIsLoading(true);
+
+      try {
+        const { success, data } = await match_check_all(body);
+        if(success) {
+          if (data.result_code == '0000') {
+            getStorageData(true);
+          } else {
+            console.log(data.result_msg);
+            show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsClickable(true);
+        //setIsLoading(false);
+      }
+    }
+  };
+
   // ######################################################################################## 초기 실행 함수
   React.useEffect(() => {
     if(isFocusStorage) {
-      getStorageData();
+      getStorageData(false);
     }
   }, [isFocusStorage]);
 
@@ -466,7 +519,7 @@ export const Storage = (props: Props) => {
           <TopNavigation currentPath={''} />
         )}
 
-        <SpaceView mt={10} mb={6}>
+        <SpaceView mb={6}>
           <ScrollView 
             horizontal 
             ref={tabScrollRef}
@@ -476,13 +529,14 @@ export const Storage = (props: Props) => {
             <View style={_styles.dotContainer}>
               {tabs.map((item, index) => (
                 <>
-                  <View key={index}>
+                  <SpaceView key={index} pt={10}>
                     <TouchableOpacity onPress={() => { onPressDot(index); }}>
                       <View style={[_styles.tabItem(index === currentIndex, item.color)]}>
                         <Text style={_styles.tabItemText}>{item.title} | {item.data.length}</Text>
                       </View>
                     </TouchableOpacity>
-                  </View>
+                    {item.isNew && ( <View style={_styles.newIcon(item.color)} /> )}
+                  </SpaceView>
                 </>
               ))}
             </View>
@@ -493,14 +547,16 @@ export const Storage = (props: Props) => {
           <View style={[_styles.row, {minHeight: 30}]}>
             {currentIndex < 3 &&
               <>
-                <Text style={_styles.showText}>찐심만 보기</Text>
-                <ToggleSwitch
-                  isOn={isSpecialVisible}
-                  onColor={Color.primary}
-                  offColor={Color.grayDDDD}
-                  size="small"
-                  onToggle={(isOn) => setIsSpecialVisible(isOn) }
-                />
+                <View style={{flexDirection: 'row'}}>
+                  <Text style={_styles.showText}>찐심만 보기</Text>
+                  <ToggleSwitch
+                    isOn={isSpecialVisible}
+                    onColor={Color.primary}
+                    offColor={Color.grayDDDD}
+                    size="small"
+                    onToggle={(isOn) => setIsSpecialVisible(isOn) }
+                  />
+                </View>
               </>
             }
 
@@ -514,6 +570,23 @@ export const Storage = (props: Props) => {
                 </TouchableOpacity>
               </View>
             }
+
+            {((tabs[currentIndex].type == 'RES' || tabs[currentIndex].type == 'MATCH' || tabs[currentIndex].type == 'LIVE') && tabs[currentIndex].data.length > 0) && (
+              <>
+                {tabs[currentIndex]?.isNew ? (
+                  <TouchableOpacity onPress={() => { allCheck(tabs[currentIndex].type); }} style={_styles.checkArea}>
+                    <Image source={ICON.checkOffIcon} style={styles.iconSquareSize(17)} />
+                    <Text style={_styles.checkAreaText('#D5D5D5')}>{tabs[currentIndex].type == 'MATCH' ? '성공 매칭을' : '새 관심들을'} 모두 확인했어요.</Text>
+                  </TouchableOpacity>
+                ) : (
+                  <View style={_styles.checkArea}>
+                    <Image source={ICON.checkOnIcon} style={styles.iconSquareSize(17)} />
+                    <Text style={_styles.checkAreaText('#333333')}>{tabs[currentIndex].type == 'MATCH' ? '성공 매칭을' : '새 관심들을'} 모두 확인했어요.</Text>
+                  </View>
+                )}
+              </>
+            )}
+            
           </View>
         </SpaceView>
 
@@ -847,7 +920,7 @@ const _styles = StyleSheet.create({
   row: { 
     flexDirection: 'row', 
     alignItems: 'center', 
-    justifyContent: 'flex-end'
+    justifyContent: 'space-between',
   },
   showText: {
     fontFamily: 'AppleSDGothicNeoEB00',
@@ -958,7 +1031,6 @@ const _styles = StyleSheet.create({
     }
   },
   tabItemText: {
-    //flexDirection: `row`,
     fontSize: 14,
     fontFamily: 'AppleSDGothicNeoEB00',
     color: ColorType.white,
@@ -1059,7 +1131,7 @@ const _styles = StyleSheet.create({
       borderWidth: 1,
       borderColor: type == 'RES' ? '#FE0456' : '#7986EE',
       borderRadius: 8,
-      width: 70,
+      width: 65,
       height: 22,
       alignItems: `center`,
       justifyContent: `center`,
@@ -1093,6 +1165,33 @@ const _styles = StyleSheet.create({
       fontFamily: 'AppleSDGothicNeoB00',
       fontSize: 12,
       color: type == 'LIVE_RES' ? '#FE0456' : '#7986EE',
+    };
+  },
+  newIcon: (itemColor: string) => {
+    return {
+      position: 'absolute',
+      top: 3,
+      right: 5,
+      width: 8,
+      height: 8,
+      backgroundColor: itemColor,
+      borderRadius: 30,
+    };
+  },
+  checkArea: {
+    flexDirection: 'row',
+    backgroundColor: '#EFF3FE',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 30,
+    overflow: 'hidden',
+  },
+  checkAreaText: (itemColor: string) => {
+    return {
+      fontFamily: 'AppleSDGothicNeoM00',
+      fontSize: 12,
+      color: itemColor,
+      marginLeft: 5,
     };
   },
   

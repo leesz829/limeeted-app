@@ -248,8 +248,6 @@ export const StorageProfile = (props: Props) => {
           const { success, data } = await update_match_status(body);
           if(success) {
             if(data.result_code == '0000') {
-              dispatch(myProfile());
-
               navigation.navigate(STACK.TAB, {
                 screen: 'Storage',
                 params: {
@@ -297,14 +295,16 @@ export const StorageProfile = (props: Props) => {
         if (data.result_code != '0000') {
           console.log(data.result_msg);
           return false;
-        }
+        };
 
-        show({ content: '차단 및 신고 처리가 완료 되었습니다.' });
         report_onClose();
 
-        navigation.navigate(STACK.TAB, {
-          screen: 'Storage',
+        show({
+          type: 'RESPONSIVE',
+          content: '차단 및 신고 처리가 완료 되었습니다.',
         });
+
+        navigation.goBack();
       }
     } catch (error) {
       console.log(error);
@@ -352,9 +352,7 @@ export const StorageProfile = (props: Props) => {
             title: '연락처 열람 알림',
             content: '이미 열람된 연락처 입니다.\n보관함 이동 후 다시 조회 해주세요.',
             confirmCallback: function () {
-              navigation.navigate(STACK.TAB, {
-                screen: 'Storage',
-              });
+              navigation.goBack();
             },
           });
         } else {
@@ -454,7 +452,7 @@ export const StorageProfile = (props: Props) => {
 
     if(props.route.params.type == 'ZZIM') {
       body.match_seq = matchSeq;
-    }
+    };
 
     console.log('body :::::: ' , body);
 
@@ -464,16 +462,14 @@ export const StorageProfile = (props: Props) => {
       if(success) {
         if(data.result_code == '0000') {
           setIsLoad(false);
-          dispatch(myProfile());
 
           navigation.navigate(STACK.TAB, {
             screen: 'Storage',
             params: {
               pageIndex: 0,
+              loadPage: 'REQ',
             },
           });
-
-          //navigation.navigate(STACK.TAB, { screen: 'Roby' });
         } else if (data.result_code == '6010') {
           show({ content: '보유 패스가 부족합니다.' });
           return false;
