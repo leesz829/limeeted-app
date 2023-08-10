@@ -39,6 +39,7 @@ import { CommonLoading } from 'component/CommonLoading';
 import { purchase_product, order_goods } from 'api/models';
 import { ROUTES, STACK } from 'constants/routes';
 import { ScrollView } from 'react-native-gesture-handler';
+import { useUserInfo } from 'hooks/useUserInfo';
 
 
 interface Props {
@@ -55,6 +56,9 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
   const { bottom } = useSafeAreaInsets();
   const [isPayLoading, setIsPayLoading] = useState(false);
   const [comfirmModalVisible, setComfirmModalVisible] = useState(false);
+
+  // 회원 기본 정보
+  const memberBase = useUserInfo();
 
   //추후 데이터 배열로 변환시 변경필요
   const images = [findSourcePath(item?.file_path + item?.file_name)];
@@ -98,9 +102,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
           
           // 재화 유형 구분 : 패스상품(임시처리::추후수정)
           } else if(money_type_code == 'PASS') {
-            closeModal(false);
-            setIsPayLoading(false);
-            setComfirmModalVisible(false);
+            passPurchase();
           }
         } else {
           buyProdsProc();
@@ -157,7 +159,39 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
     } finally {
       setIsPayLoading(false);
     }
-  }
+  };
+
+  // ######################################################### 패스 구매 결제
+  const passPurchase = async () => {
+    if(money_type_code == 'PASS') {
+      if(memberBase.pass_has_amt < buy_price) {
+        closeModal(false);
+        setIsPayLoading(false);
+        setComfirmModalVisible(false);
+        show({ content: '패스가 부족합니다.' });
+        return;
+      };
+    } else if(money_type_code == 'ROYAL_PASS') {
+      if(memberBase.royal_pass_has_amt < buy_price) {
+        closeModal(false);
+        setIsPayLoading(false);
+        setComfirmModalVisible(false);
+        show({ content: '로얄패스가 부족합니다.' });
+        return;
+      };
+    };
+
+    const dataParam = {
+      device_gubun: Platform.OS,
+      buy_price: buy_price,
+      item_name: prod_name,
+      item_code: item_code,
+      result_msg: '성공',
+      result_code: '0000',
+    };
+
+    purchaseResultSend(dataParam);
+  };
 
   // ######################################################### AOS 결제 처리
   const purchaseAosProc = async () => {
@@ -288,10 +322,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
         //navigation.navigate(STACK.TAB, { screen: 'Shop' });
 
         if(Platform.OS == 'android') {
-          show({
-            content: '구매에 성공하였습니다.' ,
-            confirmCallback: function() { }
-          });
+          show({ content: '구매에 성공하였습니다.' });
         } else {
           Alert.alert('알림', '구매에 성공하였습니다.', [{ text: '확인' }]);
         }
@@ -301,11 +332,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
         setComfirmModalVisible(false);
 
         if(Platform.OS == 'android') {
-          show({
-            title: '알림',
-            content: '구매에 실패하였습니다.',
-            confirmCallback: function() { }
-          });
+          show({ content: '구매에 실패하였습니다.' });
         } else {
           Alert.alert('알림', '구매에 실패하였습니다.', [{ text: '확인' }]);
         }
@@ -316,10 +343,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
       setComfirmModalVisible(false);
 
       if(Platform.OS == 'android') {
-        show({
-          content: '오류입니다. 관리자에게 문의해주세요.' ,
-          confirmCallback: function() { }
-        });
+        show({ content: '오류입니다. 관리자에게 문의해주세요.' });
       } else {
         Alert.alert('알림', '오류입니다. 관리자에게 문의해주세요.', [{ text: '확인' }]);
       }

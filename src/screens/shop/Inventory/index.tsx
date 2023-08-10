@@ -96,8 +96,6 @@ export default function Inventory() {
                     memberSeqList.push(item.member_seq);
                   });
 
-                  console.log('memberSeqList :::::::: ', memberSeqList);
-
                   navigation.navigate(STACK.COMMON, {
                     screen: 'ItemMatching',
                     params : {
