@@ -393,7 +393,7 @@ function RenderItem({ item, openModal }) {
           <Text style={{ fontSize: 13, fontWeight: 'bold', color:'#363636' }}>
             {item?.item_name}
           </Text>
-          <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginTop: 3 }}>
             <Text style={_styles.discountRate}>
               {item?.discount_rate && item.discount_rate != 0 ? item.discount_rate + '%':''}
             </Text>
@@ -411,16 +411,18 @@ function RenderItem({ item, openModal }) {
                 <SpaceView pt={3}><Image style={styles.iconSquareSize(20)} source={ICON.royalPassCircle} resizeMode={'contain'} /></SpaceView>
               )}
             </View>
-            
-            <Text style={_styles.originPrice}>
-              {(isEmptyData(item.discount_rate) && item.discount_rate != 0) && (
-                <>
-                  {CommaFormat(item?.original_price) + (item.money_type_code == 'INAPP' ? '원' : '')}  
-                  {item.money_type_code == 'PASS' && ( '패스' )}
-                  {item.money_type_code == 'ROYAL_PASS' && ( ' 로얄패스' )}
-                </>
-              )}
-            </Text>
+
+            <SpaceView mt={-10}>
+              <Text style={_styles.originPrice}>
+                {(isEmptyData(item.discount_rate) && item.discount_rate != 0) && (
+                  <>
+                    {CommaFormat(item?.original_price) + (item.money_type_code == 'INAPP' ? '원' : '')}  
+                    {item.money_type_code == 'PASS' && ( '패스' )}
+                    {item.money_type_code == 'ROYAL_PASS' && ( ' 로얄패스' )}
+                  </>
+                )}
+              </Text>
+            </SpaceView>
           </View>
           <View style={_styles.boxWrapper}>
             {(item?.discount_rate && item.discount_rate != 0 ? true : false) && 
