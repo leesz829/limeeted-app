@@ -240,8 +240,6 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc }) {
   const openModal = (item) => {
     setTargetItem(item);
     setModalVisible(true);
-
-
     //loadingFunc(true);
   };
 
@@ -250,6 +248,7 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc }) {
     setModalVisible(false);
 
     if(isPayConfirm && typeof itemUpdateFunc != 'undefined') {
+      onPressCategory(selectedCategory);
       itemUpdateFunc(isPayConfirm);
     }
   };
