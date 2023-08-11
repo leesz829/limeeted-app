@@ -1,4 +1,3 @@
-import { get_my_items } from 'api/models';
 import { ColorType, ScreenNavigationProp } from '@types';
 import { Color } from 'assets/styles/Color';
 import CommonHeader from 'component/CommonHeader';
@@ -13,7 +12,7 @@ import {
   View,
 } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
-import { use_item } from 'api/models';
+import { get_my_items, use_item, use_pass_item_all } from 'api/models';
 import { SUCCESS } from 'constants/reusltcode';
 import { usePopup } from 'Context';
 import { useDispatch } from 'react-redux';
@@ -23,7 +22,8 @@ import { ROUTES, STACK } from 'constants/routes';
 import { findSourcePath } from 'utils/imageUtils';
 import { CommonLoading } from 'component/CommonLoading';
 import AsyncStorage from '@react-native-community/async-storage';
-import { CommaFormat, formatNowDate } from 'utils/functions';
+import { CommaFormat, formatNowDate, isEmptyData } from 'utils/functions';
+import SpaceView from 'component/SpaceView';
 
 
 
@@ -34,6 +34,7 @@ export default function Inventory() {
 
   const [tab, setTab] = useState(categories[0]);
   const [data, setData] = useState(dummy);
+  const [isPassHold, setIsPassHold] = useState(false);
 
   const { show } = usePopup();  // 공통 팝업
   const dispatch = useDispatch();
@@ -53,6 +54,11 @@ export default function Inventory() {
       });
 
       setData(data?.inventory_list);
+
+      if(isEmptyData(data?.pass_hold_yn)) {
+        setIsPassHold(data?.pass_hold_yn == 'Y' ? true : false);
+      };
+
       setIsLoading(false);
     }
 
@@ -135,6 +141,38 @@ export default function Inventory() {
         }
       }
     });
+  };
+
+  // ########################################################################################## 패스 모두 받기
+  const usePassItemAll = async () => {
+    try {
+      setIsLoading(true);
+
+      const { success, data } = await use_pass_item_all();
+      if(success) {
+        switch (data.result_code) {
+          case SUCCESS:
+            dispatch(myProfile());
+            fetchData(tab);
+
+            show({
+              type: 'RESPONSIVE',
+              content: '패스 아이템을 모두 사용하였어요.',
+            });
+            break;
+          
+          default:
+            show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+            break;
+        }
+      } else {
+        show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+      }
+    } catch (error) {
+      console.warn(error);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   // ########################################################################################## 포커스 실행 함수
@@ -188,10 +226,15 @@ export default function Inventory() {
             <View style={_styles.qtyArea}>
               {item?.use_yn == 'N' && (
                 <>
-                  {item?.period == 99000 ? (
-                    <Text style={_styles.qtyText}>영구보관</Text>
+                  {item?.period > 90000 ? (
+                    <Text style={_styles.qtyText('KEEP')}>영구보관</Text>
                   ) : (
-                    <Text style={_styles.qtyText}>{item?.end_day}일남음</Text>
+                    <Text style={_styles.qtyText(item?.keep_end_type)}>
+                      {item?.keep_end_num}
+                      {item?.keep_end_type == 'KEEP_DAY' && '일남음'}
+                      {item?.keep_end_type == 'KEEP_HOUR' && '시간남음'}
+                      {item?.keep_end_type == 'KEEP_MINUTE' && '분남음'}
+                    </Text>
                   )}
                 </>
               )}
@@ -243,6 +286,14 @@ export default function Inventory() {
         ListEmptyComponent={renderItemEmpty}
         renderItem={renderItem}
       />
+
+      {isPassHold &&
+        <SpaceView mb={15} pt={15} viewStyle={_styles.passAllBtnArea}>
+          <TouchableOpacity onPress={() => usePassItemAll()}>
+            <Text style={_styles.passAllBtnText}>패스 모두 받기</Text>
+          </TouchableOpacity>
+        </SpaceView>
+      }
     </>
   );
 }
@@ -325,14 +376,16 @@ const _styles = StyleSheet.create({
     borderRadius: 7,
     overflow: 'hidden',
   },
-  qtyText: {
-    fontFamily: 'AppleSDGothicNeoM00',
-    fontSize: 12,
-    textAlign: 'left',
-    color: '#fff',
-    paddingHorizontal: 6,
-    paddingVertical: 1,
-    zIndex: 1,
+  qtyText: (type:string) => {
+    return {
+      fontFamily: 'AppleSDGothicNeoM00',
+      fontSize: 12,
+      textAlign: 'left',
+      color: type == 'KEEP_MINUTE' ? '#FFC100' : '#FFF',
+      paddingHorizontal: 6,
+      paddingVertical: 1,
+      zIndex: 1,
+    };
   },
   buttonWrapper: {
     width: '100%',
@@ -375,7 +428,23 @@ const _styles = StyleSheet.create({
     paddingHorizontal: 6,
     paddingVertical: 2,
     overflow: 'hidden',
-  }
+  },
+  passAllBtnArea: {
+    backgroundColor: '#fff',
+    paddingHorizontal: 20,
+  },
+  passAllBtnText: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 14,
+    color: '#7986EE',
+    textAlign: 'center',
+    paddingVertical: 7,
+    backgroundColor: '#fff',
+    borderColor: '#7986EE',
+    borderWidth: 1,
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
 });
 
 const categories = [

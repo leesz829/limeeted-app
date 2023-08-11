@@ -56,6 +56,7 @@ import {
   ORDER_HISTORY,
   ITEM_LIST,
   USE_ITEM,
+  USE_PASS_ITEM_ALL,
   POINT_HISTORY,
   PRODUCT_LIST,
   PRODUCT_AUCT,
@@ -687,6 +688,11 @@ export async function use_item(body: {
   cate_common_code: string;
 }) {
   return send(USE_ITEM, 'POST', body, true, false);
+}
+
+// 패스 아이템 전체 사용
+export async function use_pass_item_all() {
+  return send(USE_PASS_ITEM_ALL, 'POST', undefined, true, false);
 }
 
 /* ========================================================================================================

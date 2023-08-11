@@ -94,6 +94,7 @@ export const ORDER_HISTORY = '/order/prod/selectOrderHistory';
  */
 export const ITEM_LIST = '/item/selectinventoryList';
 export const USE_ITEM = '/item/useItem';
+export const USE_PASS_ITEM_ALL = '/item/usePassItemAll';
 
 /**
  * POINT
