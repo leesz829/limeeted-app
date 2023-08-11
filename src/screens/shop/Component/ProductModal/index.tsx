@@ -168,7 +168,13 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
         closeModal(false);
         setIsPayLoading(false);
         setComfirmModalVisible(false);
-        show({ content: '패스가 부족합니다.' });
+
+        if(Platform.OS == 'android') {
+          show({ content: '패스가 부족합니다.' });
+        } else {
+          Alert.alert('알림', '패스가 부족합니다.', [{ text: '확인' }]);
+        }
+        
         return;
       };
     } else if(money_type_code == 'ROYAL_PASS') {
@@ -176,7 +182,13 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
         closeModal(false);
         setIsPayLoading(false);
         setComfirmModalVisible(false);
-        show({ content: '로얄패스가 부족합니다.' });
+
+        if(Platform.OS == 'android') {
+          show({ content: '로얄패스가 부족합니다.' });
+        } else {
+          Alert.alert('알림', '로얄패스가 부족합니다.', [{ text: '확인' }]);
+        }
+        
         return;
       };
     };
