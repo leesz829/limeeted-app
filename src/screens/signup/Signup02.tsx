@@ -618,11 +618,11 @@ function ProfileImageItem({ index, imgData, delFn, fileCallBackFn }) {
             source={imgUrl}
           />
           {(imgStatus == 'PROGRESS' || imgStatus == 'REFUSE') ? (
-            <View style={_styles.disabled}>
+            <View style={_styles.imageDisabled(false)}>
               <Text style={[_styles.profileImageDimText(imgStatus)]}>{imgStatus == 'PROGRESS' ? '심사중' : '반려'}</Text>
             </View>
           ) : (imgStatus == 'ACCEPT' && index == 0) && (
-            <View style={_styles.materDisabled}>
+            <View style={_styles.imageDisabled(true)}>
               <Text style={[_styles.masterImageDimText]}>대표 사진</Text>
             </View>
           )}
@@ -671,17 +671,6 @@ const _styles = StyleSheet.create({
     height: (width - 60) / 3,
     margin: 0,
     borderRadius: 20,
-  },
-  disabled: {
-    position: 'absolute',
-    width: (width - 60) / 3,
-    height: (width - 57) / 3,
-    borderRadius: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    overflow: 'hidden',
   },
   dim: {
     position: 'absolute',
@@ -766,17 +755,20 @@ const _styles = StyleSheet.create({
     borderRadius: 8,
     minHeight: 100,
   },
-  materDisabled: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    overflow: 'hidden',
+  imageDisabled: (isMaster: boolean) => {
+    return {
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      bottom: 0,
+      borderBottomLeftRadius: 20,
+      borderBottomRightRadius: 20,
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'flex-end',
+      overflow: 'hidden',
+      backgroundColor: !isMaster ? 'rgba(0, 0, 0, 0.5)' : 'transparent',
+    };
   },
   masterImageDimText: {
     width: '100%',
