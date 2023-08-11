@@ -85,7 +85,8 @@ export default function Inventory() {
         const body = {
           item_category_code: item.item_category_code,
           cate_group_code: item.cate_group_code,
-          cate_common_code: item.cate_common_code
+          cate_common_code: item.cate_common_code,
+          inventory_seq: item.inventory_seq,
         };
 
         try {
@@ -109,11 +110,19 @@ export default function Inventory() {
                       memberSeqList: memberSeqList,
                     }
                   });
-                }
+                };
 
                 dispatch(myProfile());
                 // navigation.navigate(STACK.TAB, { screen: 'Shop' });
                 fetchData(tab);
+
+                if(item.cate_common_code == 'WISH') {
+                  show({
+                    type: 'RESPONSIVE',
+                    content: '찜하기 이용권 사용을 시작하였어요!',
+                  });
+                }
+
                 break;
               case '3001':
                 show({

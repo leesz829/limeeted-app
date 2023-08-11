@@ -150,8 +150,6 @@ export default function ItemMatching(props: Props) {
         if (data.result_code == '0000') {
           //setData(data);
 
-          console.log('data?.match_member_info :::: ' ,data?.match_member_info);
-
           const auth_list = data?.second_auth_list.filter(item => item.auth_status == 'ACCEPT');
           setData({
             match_member_info: data?.match_member_info,
@@ -256,8 +254,6 @@ export default function ItemMatching(props: Props) {
       body.match_seq = matchSeq;
     }
 
-    console.log('body ::::: ' , body);
-
     try {
       const { success, data } = await regist_match_status(body);
 
@@ -271,6 +267,13 @@ export default function ItemMatching(props: Props) {
           } else {
             getItemMatchedInfo();
           }
+
+          if(activeType == 'interest' || activeType == 'sincere') {
+            show({
+              type: 'RESPONSIVE',
+              content: '프로필을 보관함에 담아드렸어요.',
+            });
+          };
           
         } else if (data.result_code == '6010') {
           show({ content: '보유 패스가 부족합니다.' });

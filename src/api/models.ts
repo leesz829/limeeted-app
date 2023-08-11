@@ -268,7 +268,8 @@ export async function update_additional(body: {
 
 //회원의 보관함 정보를 조회한다.
 export async function get_member_storage() {
-  return send(STORAGE, 'POST', undefined, true, false);
+  const inventory_connect_dt = await AsyncStorage.getItem('INVENTORY_CONNECT_DT');
+  return send(STORAGE, 'POST', { inventory_connect_dt }, true, false);
 }
 //회원의 선호이성 정보를 저장한다.
 export async function update_prefference(body: {
@@ -686,6 +687,7 @@ export async function use_item(body: {
   item_category_code: string;
   cate_group_code: string;
   cate_common_code: string;
+  inventory_seq: any;
 }) {
   return send(USE_ITEM, 'POST', body, true, false);
 }

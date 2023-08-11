@@ -301,7 +301,6 @@ export const Storage = (props: Props) => {
                 }
               }
             } else if(loadPage == 'REQ') {
-              console.log('req!!');
               onPressDot(1);
             } else {
               tabs.map((item: any, index) => {
@@ -482,12 +481,10 @@ export const Storage = (props: Props) => {
 
   // #######################################################################################################
   const onPressDot = async (index:any) => {
-    console.log('index ::::: ' , index);
-
     if(null != dataRef?.current) {
       setCurrentIndex(index);
       dataRef?.current?.snapToItem(index);
-    }
+    };
   };
 
   // 이미지 스크롤 처리

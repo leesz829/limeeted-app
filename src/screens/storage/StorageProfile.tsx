@@ -242,19 +242,24 @@ export const StorageProfile = (props: Props) => {
       confirmCallback: async function() {
         const body = {
           match_seq: matchSeq,
-          match_status: status
+          match_status: status,
         };
         try {
           const { success, data } = await update_match_status(body);
           if(success) {
             if(data.result_code == '0000') {
-              navigation.navigate(STACK.TAB, {
-                screen: 'Storage',
-                params: {
-                  headerType: '',
-                  loadPage: 'MATCH',
-                },
-              });
+
+              if(status == 'ACCEPT') {
+                navigation.navigate(STACK.TAB, {
+                  screen: 'Storage',
+                  params: {
+                    headerType: '',
+                    loadPage: 'MATCH',
+                  },
+                });
+              } else {
+                navigation.goBack();
+              }
             } else {
               show({ content: '오류입니다. 관리자에게 문의해주세요.' });
             }
