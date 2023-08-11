@@ -1,61 +1,37 @@
 {
   "project_info": {
-    "project_number": "535563482959",
-    "project_id": "limeeted-ea344",
-    "storage_bucket": "limeeted-ea344.appspot.com"
+    "project_number": "930114789674",
+    "project_id": "limeeted-eca26",
+    "storage_bucket": "limeeted-eca26.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:535563482959:android:d21b373a4e414cdf07b73a",
+        "mobilesdk_app_id": "1:930114789674:android:5a6f8795efa8193d7afe53",
         "android_client_info": {
           "package_name": "com.appsquad.limeeted"
         }
       },
       "oauth_client": [
         {
-          "client_id": "535563482959-05umt613oevcdc9akk5oro2heja2r7qm.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.appsquad.limeeted",
-            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
-          }
-        },
-        {
-          "client_id": "535563482959-0qcf0e3deau726912ohs03egnfomm670.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.appsquad.limeeted",
-            "certificate_hash": "555c479c01fe4d8463427061429ed462044699a6"
-          }
-        },
-        {
-          "client_id": "535563482959-hlu074kn6iun9rd39l3uotfo1ch98scd.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.appsquad.limeeted",
-            "certificate_hash": "bae10067e47c8af0f9ce34962e63acf9633efd3e"
-          }
-        },
-        {
-          "client_id": "535563482959-01e4bap45pcsvvafnis6sqndk1vokr0g.apps.googleusercontent.com",
+          "client_id": "930114789674-u4134q02omdl6mermh2kouq6u7a8c33i.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAZUNI6SD-BBPp_3ep7LRSxUzlgjicSByA"
+          "current_key": "AIzaSyA8ZlGdBwflrxadldvjVgGILSM-DBuoTLk"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "535563482959-01e4bap45pcsvvafnis6sqndk1vokr0g.apps.googleusercontent.com",
+              "client_id": "930114789674-u4134q02omdl6mermh2kouq6u7a8c33i.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "535563482959-fngnvuv1o4ab1b5tjfnk6g7onnaem3bg.apps.googleusercontent.com",
+              "client_id": "930114789674-8jjkosq9ep7kkov3ppjlv33ddqrq8kch.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
                 "bundle_id": "com.appsquad.limeeted"
@@ -63,7 +39,8 @@
             }
           ]
         }
-      }
+      },
+      "admob_app_id": "ca-app-pub-7259908680706846~5492241778"
     }
   ],
   "configuration_version": "1"
