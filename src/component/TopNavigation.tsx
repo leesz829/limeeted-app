@@ -114,7 +114,7 @@ export function Wallet({ theme }) {
             flexDirection: 'row',
           }} >
 
-          <View style={[_styles.itemContainer, { marginRight: 8 }]}>
+          <View style={[_styles.itemContainer, { marginRight: 10 }]}>
             <Tooltip
               actionType='press'
               withPointer={false}
@@ -207,7 +207,7 @@ const _styles = StyleSheet.create({
   itemStyle: {
     width: 25,
     height: 25,
-    marginRight: 0,
+    marginRight: 2,
   },
   itemStyle2: {
     width: 25,

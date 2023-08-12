@@ -402,7 +402,7 @@ export default function ItemMatching(props: Props) {
           {/* ####################################################################################
           ####################### 상단 영역
           #################################################################################### */}
-          <View>
+          <SpaceView mb={10}>
 
             {/* ############################################################## 상단 이미지 영역 */}
             <VisualImage imgList={data?.profile_img_list} memberData={data?.match_member_info} />
@@ -442,7 +442,7 @@ export default function ItemMatching(props: Props) {
               </View>
             </View>
 
-          </View>
+          </SpaceView>
 
           <View style={_styles.padding}>
 
@@ -629,7 +629,7 @@ const _styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    bottom: -width * 0.15,
+    bottom: -width * 0.16,
     flexDirection: 'column',
     justifyContent: 'flex-end',
     paddingHorizontal: '8%',
@@ -657,6 +657,7 @@ const _styles = StyleSheet.create({
   largeButton: {
     width: width * 0.3,
     height: width * 0.3,
+    marginHorizontal: 10,
   },
   freePassContainer: {
     flexDirection: 'column',

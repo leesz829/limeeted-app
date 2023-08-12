@@ -681,7 +681,7 @@ export const StorageProfile = (props: Props) => {
 
         </SpaceView>
 
-        <View style={_styles.padding}>
+        <SpaceView mt={40} viewStyle={_styles.padding}>
 
           {/* ############################################################## 프로필 인증 영역 */}
           {data.second_auth_list.length > 0 ? (
@@ -732,7 +732,7 @@ export const StorageProfile = (props: Props) => {
             </View>
           </TouchableOpacity>
 
-        </View>
+        </SpaceView>
 
         <View style={{ height: 30 }} />
       </ScrollView>

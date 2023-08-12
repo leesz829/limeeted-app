@@ -560,7 +560,7 @@ export default function Matching(props: Props) {
           {/* ####################################################################################
           ####################### 상단 영역
           #################################################################################### */}
-          <View>
+          <SpaceView mb={10}>
 
             {/* ############################################################## 상단 이미지 영역 */}
             <VisualImage imgList={matchData?.profile_img_list} memberData={matchData?.match_member_info} isButton={true} />
@@ -602,7 +602,7 @@ export default function Matching(props: Props) {
 
             {/* 퍼블 화면 */}
             {/* <AbsoluteView member={data.match_member_info}  /> */}
-          </View>
+          </SpaceView>
 
           <View style={_styles.padding}>
 
@@ -884,7 +884,7 @@ const _styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    bottom: -width * 0.15,
+    bottom: -width * 0.16,
     flexDirection: 'column',
     justifyContent: 'flex-end',
     paddingHorizontal: '8%',
@@ -997,6 +997,7 @@ const _styles = StyleSheet.create({
   largeButton: {
     width: width * 0.3,
     height: width * 0.3,
+    marginHorizontal: 10,
   },
   freePassContainer: {
     flexDirection: 'column',

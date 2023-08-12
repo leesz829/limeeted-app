@@ -253,7 +253,7 @@ const _styles = StyleSheet.create({
   passIcon: {
     width: 90,
     height: 90,
-    marginBottom: -15
+    marginBottom: -5
   },
   arrowIcon: {
     width: 20,

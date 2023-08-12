@@ -610,7 +610,7 @@ export const Storage = (props: Props) => {
                           <View style={_styles.imageWarpper}>
                             {item.data.map((i, n) => (
                               <View key={n}>
-                                <RenderItem item={i} index={n} type={item.type} />
+                                <RenderItem item={i} index={n} type={item.type} tabColor={item.color} />
                               </View>
                             ))}
                           </View>
@@ -624,53 +624,14 @@ export const Storage = (props: Props) => {
               )
             }}
           />
-        </SpaceView>
-
-        {/* {!isLoading &&
-          <SpaceView>
-            <Carousel
-              ref={dataRef}
-              data={tabs}
-              firstItem={pageIndex}
-              onSnapToItem={setCurrentIndex}
-              sliderWidth={width}
-              itemWidth={width}
-              pagingEnabled
-              renderItem={({item, index}) => {
-                return (
-                  <>
-                    <View key={index}>
-                      {item.data.length == 0 ? (
-                        <SpaceView viewStyle={_styles.noData}>
-                          <Text style={_styles.noDataText}>{item.title}이 없습니다.</Text>
-                        </SpaceView>
-                      ) : (
-                        <ScrollView showsVerticalScrollIndicator={false} style={{width: '100%', height: height-250}}>
-                          <View style={_styles.imageWarpper}>
-                            {item.data.map((i, n) => (
-                              <View key={n}>
-                                <RenderItem item={i} index={n} type={item.type} />
-                              </View>
-                            ))}
-                          </View>
-
-                          <View style={{ height: 50 }} />
-                        </ScrollView>
-                      )}
-                    </View>
-                  </>
-                )
-              }}
-            />
-          </SpaceView>
-        } */}
-        
+        </SpaceView>        
       </View>
     </>
   );
 
-  function RenderItem({ item, index, type }) {
 
+  /* ################################################################################ 보관함 아이템 렌더링 */
+  function RenderItem({ item, index, type, tabColor }) {
     let matchType = item.match_type;  // 매칭 유형
 
     let isShow = true;  // 노출 여부
@@ -731,21 +692,15 @@ export const Storage = (props: Props) => {
 
               {/* 상단 영역 */}
               <View style={_styles.renderItemTopContainer}>
-                {type == 'ZZIM' ? (
-                  <>
-                    <Image style={_styles.renderItemTopZzimIcon} source={ICON.zzimCircle} />
-                    <Text style={[_styles.renderItemTopText, {marginTop: 5}]}>
-                      {item.dday > 0 ? item.dday + '일 남음' : '오늘까지'}
-                    </Text>
-                  </>
-                ) : (
-                  <>
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <View style={{flexDirection: 'row', alignItems: 'center', height: 25}}>
+                  {type == 'ZZIM' ? (
+                    <Image style={_styles.renderItemTopIcon} source={ICON.zzimCircle} />
+                  ) : (
+                    <>
                       {type == 'LIVE' ? (
                         <>
                           {item.req_profile_score != null &&
                             <View style={_styles.liveScoreArea(item.match_type)}>
-                              {/* <Text>★</Text> */}
                               <Text style={_styles.liveScoreText(item.match_type)}>★ {item.req_profile_score}</Text>
                             </View>
                           }
@@ -756,12 +711,21 @@ export const Storage = (props: Props) => {
                           {isEmptyData(item?.special_level) && <Text style={_styles.levelText(isBlur)}>Lv.{item.special_level}</Text>}
                         </>
                       )}
-                    </View>
-                    <Text style={[_styles.renderItemTopText]}>
-                      {item.dday > 0 ? item.dday + '일 남음' : '오늘까지'}
-                    </Text>
-                  </>
-                )}
+                    </>
+                  )}
+                </View>
+
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+
+                  {(((type == 'RES' || matchType == 'LIVE_RES') && item.res_check_yn == 'N') || (matchType == 'MATCH_REQ' && item.req_success_check_yn == 'N')) && (
+
+                    <View style={_styles.newDotted(tabColor)} />
+                  )}
+                  <Text style={[_styles.renderItemTopText]}>
+                    {item.dday > 0 ? item.dday + '일 남음' : '오늘까지'}
+                  </Text>
+                </View>
+
               </View>
 
               {/* 하단 영역 */}
@@ -951,26 +915,23 @@ const _styles = StyleSheet.create({
   renderItemTopContainer: {
     position: 'absolute',
     flexDirection: `row`,
-    alignItems: `center`,
+    alignItems: 'center',
     justifyContent: 'space-between',
     left: 0,
     right: 0,
-    top: 3,
+    top: 5,
     zIndex: 1,
-    paddingHorizontal: 5,
+    paddingHorizontal: 4,
   },
   renderItemTopIcon: {
     width: 25,
     height: 25,
     marginRight: 1,
-    marginTop: 5,
-    borderRadius: 10,
   },
   renderItemTopZzimIcon: {
     width: 20,
     height: 20,
-    marginRight: 3,
-    marginTop: 5,
+    marginRight: 1,
   },
   renderItemTopText: {
     fontFamily: 'AppleSDGothicNeoB00',
@@ -1189,6 +1150,15 @@ const _styles = StyleSheet.create({
       fontSize: 12,
       color: itemColor,
       marginLeft: 5,
+    };
+  },
+  newDotted: (itemColor: string) => {
+    return {
+      width: 8,
+      height: 8,
+      backgroundColor: itemColor,
+      borderRadius: 30,
+      marginRight: 5,
     };
   },
   
