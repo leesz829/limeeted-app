@@ -38,7 +38,6 @@ import LinearGradient from 'react-native-linear-gradient';
 import Modal from 'react-native-modal';
 import { ColorType } from '@types';
 import { isEmptyData } from 'utils/functions';
-import { BannerAd, BannerAdSize, useInterstitialAd, TestIds, RewardedAd } from '@react-native-admob/admob';
 
 
 /* ################################################################################################################
@@ -691,15 +690,6 @@ export const Live = () => {
 
             </View>
           </View>
-
-          {Platform.OS == 'android' &&
-            <SpaceView viewStyle={{position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: '#fff', alignItems:'center', justifyContent:'center'}}>
-              <SpaceView viewStyle={{alignItems:'center', justifyContent:'center'}}>
-                <BannerAd size={BannerAdSize.BANNER} unitId={'ca-app-pub-7259908680706846~5492241778'} />
-              </SpaceView>
-            </SpaceView>
-          }
-
         </>
       ) : (
         <View

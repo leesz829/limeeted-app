@@ -18,7 +18,6 @@ import { Terms } from 'screens/commonpopup/terms';
 import { Privacy } from 'screens/commonpopup/privacy';
 import { LocationService } from 'screens/commonpopup/locationService';
 import ToggleSwitch from 'toggle-switch-react-native';
-import { BannerAd, BannerAdSize, useInterstitialAd, TestIds, RewardedAd } from '@react-native-admob/admob';
 
 
 
@@ -263,16 +262,6 @@ export const Policy = (props: Props) => {
             </View>
           </SpaceView>
         </SpaceView>
-
-        {/* Admob 배너 광고 */}
-        {Platform.OS == 'android' &&
-          <SpaceView mb={50} viewStyle={{alignItems:'center', justifyContent:'center'}}>
-            <SpaceView viewStyle={{alignItems:'center', justifyContent:'center'}}>
-              <BannerAd size={BannerAdSize.BANNER} unitId={'ca-app-pub-7259908680706846/4686426563'} />
-              {/* <BannerAd size={BannerAdSize.BANNER} unitId={TestIds.BANNER} /> */}
-            </SpaceView>
-          </SpaceView>
-        }
 
         <SpaceView>
           <CommonBtn
