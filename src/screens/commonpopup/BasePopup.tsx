@@ -74,7 +74,7 @@ export const BasePopup = (props: Props) => {
                 {props.isConfirm ? (
                   <>
                     <TouchableOpacity
-                      style={[modalStyle.modalBtn, {backgroundColor: Color.grayD6D3D3, borderBottomLeftRadius: 5}]}
+                      style={[modalStyle.modalBtn, {backgroundColor: Color.grayD6D3D3, borderBottomLeftRadius: 20}]}
                       onPress={onPressCancel}>
                       <CommonText type={'h5'} fontWeight={'500'} color={ColorType.white}>
                         {typeof props.cancelBtnText != 'undefined' ? props.cancelBtnText : '닫기'}
@@ -84,7 +84,7 @@ export const BasePopup = (props: Props) => {
                     <View style={modalStyle.modalBtnline} />
 
                     <TouchableOpacity
-                      style={[modalStyle.modalBtn, {backgroundColor: Color.blue02, borderBottomRightRadius: 5}]}
+                      style={[modalStyle.modalBtn, {backgroundColor: Color.blue02, borderBottomRightRadius: 20}]}
                       onPress={onPressConfirm}>
                       <CommonText type={'h5'} fontWeight={'500'} color={ColorType.white}>
                         {typeof props.cancelConfirmText != 'undefined' ? props.cancelConfirmText : '확인하기'}
@@ -94,7 +94,7 @@ export const BasePopup = (props: Props) => {
                 ) : (
                   <>
                     <TouchableOpacity
-                      style={[modalStyle.modalBtn, {backgroundColor: Color.blue02, borderBottomLeftRadius: 5, borderBottomRightRadius: 5}]}
+                      style={[modalStyle.modalBtn, {backgroundColor: Color.blue02, borderBottomLeftRadius: 20, borderBottomRightRadius: 20}]}
                       onPress={onPressConfirm}>
                       <CommonText type={'h5'} fontWeight={'500'} color={Color.white}>
                         {typeof props.cancelConfirmText != 'undefined' ? props.cancelConfirmText : '확인'}

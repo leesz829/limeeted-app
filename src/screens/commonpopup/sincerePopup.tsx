@@ -77,10 +77,7 @@ export default function SincerePopup({ isVisible, closeModal, confirmFunc }: Pro
   };
 
   return (
-    <Modal isVisible={isVisible}
-            onRequestClose={() => {
-              closeModal();
-            }}>
+    <Modal isVisible={isVisible} onRequestClose={() => { closeModal(); }}>
       <SafeAreaView style={_styles.container}>
         <View style={_styles.container}>
           <View style={_styles.titleBox}>
@@ -157,7 +154,7 @@ const _styles = StyleSheet.create({
   container: {
     width: '100%',
     height: 248,
-    borderRadius: 5,
+    borderRadius: 20,
     backgroundColor: '#ffffff',
     // borderStyle: 'solid',
     // borderWidth: 1,
@@ -205,7 +202,7 @@ const _styles = StyleSheet.create({
   leftButton: {
     width: '50%',
     height: 49,
-    borderBottomLeftRadius: 5,
+    borderBottomLeftRadius: 20,
     backgroundColor: '#d6d3d3',
     flexDirection: `row`,
     alignItems: `center`,
@@ -223,7 +220,7 @@ const _styles = StyleSheet.create({
   rightButton: {
     width: '50%',
     height: 49,
-    borderBottomEndRadius: 5,
+    borderBottomEndRadius: 20,
     backgroundColor: '#697ae6',
     flexDirection: `row`,
     alignItems: `center`,
