@@ -606,7 +606,7 @@ export const modalStyle = StyleSheet.create({
   modalStyle1: {
     width: width - 32,
     backgroundColor: 'white',
-    borderRadius: 5,
+    borderRadius: 20,
     paddingHorizontal: 0,
   },
   modalStyle2: {
