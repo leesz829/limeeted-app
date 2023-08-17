@@ -254,7 +254,7 @@ export const Shop = () => {
 
       {isLoading && <CommonLoading />}
 
-      <ScrollView>
+      <ScrollView style={{backgroundColor: '#fff'}}>
         <View style={{minHeight: memberBase.gender == 'M' ? 300 : 330, zIndex: 1, backgroundColor: '#ffffff'}}>
 
           {/* ############################################### 상단 배너 */}
