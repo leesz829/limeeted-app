@@ -18,6 +18,7 @@ import { CommonBtn } from 'component/CommonBtn';
 import { STACK } from 'constants/routes';
 import { useDispatch } from 'react-redux';
 import { myProfile } from 'redux/reducers/authReducer';
+import { CommonLoading } from 'component/CommonLoading';
 
 
 /* ################################################################################################################
@@ -37,6 +38,8 @@ export const Message = (props: Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 	const dispatch = useDispatch();
 
+	const [isLoading, setIsLoading] = React.useState(false);
+
 	const [messageList, setMessageList] = React.useState<any>([]);
 	const [activeIndex, setActiveIndex] = React.useState(-1);
 
@@ -49,6 +52,8 @@ export const Message = (props: Props) => {
 
 	// ############################################################  메시지 목록 조회
 	const getMessageList = async () => {
+		setIsLoading(true);
+
 		try {
 		  const { success, data } = await get_member_message_list();
 		  if(success) {
@@ -74,7 +79,7 @@ export const Message = (props: Props) => {
 		} catch (error) {
 		  console.log(error);
 		} finally {
-		  
+			setIsLoading(false);
 		}
 	};
 
@@ -105,7 +110,6 @@ export const Message = (props: Props) => {
 		}
 	};
 
-
 	// ############################################################################# 최초 실행
 	React.useEffect(() => {
 		if(isFocus) {
@@ -115,6 +119,8 @@ export const Message = (props: Props) => {
 
 	return (
 		<>
+			{isLoading && <CommonLoading />}
+
 			<TopNavigation currentPath={''} />
 			<ScrollView contentContainerStyle={styles.scrollContainer} style={{backgroundColor: '#fff'}}>
 				{messageList.map(
