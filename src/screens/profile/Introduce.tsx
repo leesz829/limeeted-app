@@ -400,7 +400,7 @@ export const Introduce = (props: Props) => {
       <ScrollView style={styles.scrollContainerAll}>
         <View style={commonStyle.paddingHorizontal20}>
           <SpaceView mb={24}>
-            <SpaceView mb={20}>
+            <SpaceView mb={10}>
               <CommonText textStyle={_styles.labelStyle2}>한줄 소개</CommonText>
             </SpaceView>
 
@@ -412,7 +412,7 @@ export const Introduce = (props: Props) => {
 								placeholderTextColor={'#c6ccd3'}
 								maxLength={50}
                 height={80}
-                borderRadius={5}
+                borderRadius={10}
                 fontSize={13}
                 fontColor={'#333333'}
                 lineCount={3}
@@ -437,14 +437,13 @@ export const Introduce = (props: Props) => {
 								label={''}
 								value={introduceComment}
 								onChangeText={(introduceComment) => setIntroduceComment(introduceComment)}
-								placeholder={'프로필 소개글을 자유롭게 입력해 주세요.'}
+                placeholder={'자유롭게 나 자신을 소개해 주세요!\n구체적으로 작성할수록 이성에게\n좋은 매력 포인트가 될 수 있어요 😊'}
 								placeholderTextColor={'#c6ccd3'}
-								//maxLength={50}
+                maxLength={5000}
                 height={150}
                 borderRadius={10}
                 fontSize={12}
                 fontColor={'#333333'}
-                //lineCount={3}
 						/>
           </SpaceView>
 

@@ -600,7 +600,7 @@ export const StorageProfile = (props: Props) => {
 
                         <TouchableOpacity onPress={() => updateMatchStatus('ACCEPT') } style={_styles.specialAcceptBtn}>
                           <Text style={_styles.specialAcceptText}>수락</Text>
-                          <Text style={_styles.specialAcceptDesc}>관심보다 많은 보너스 리밋이 제공됩니다.</Text>
+                          <Text style={_styles.specialAcceptDesc}>보너스 리밋이 제공됩니다.</Text>
                         </TouchableOpacity>
                       </LinearGradient>
                     </View>
