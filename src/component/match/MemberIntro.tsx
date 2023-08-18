@@ -130,11 +130,22 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                 }
               </SpaceView>
 
+              {/* ############################################################################################### 프로필 소개 영역 */}
+              {isEmptyData(memberData?.introduce_comment) && (
+                <SpaceView mt={20} mb={10} viewStyle={_styles.introduceArea}>
+                  <Text style={_styles.introduceText}>{memberData?.introduce_comment}</Text>
+                </SpaceView>
+              )}
+
               {/* ############################################################################################### 추가 정보 영역 */}
               {(isEmptyData(memberData?.height) || isEmptyData(memberData?.form_body) || isEmptyData(memberData?.job_name) || isEmptyData(memberData?.religion) ||
                 isEmptyData(memberData?.drinking) || isEmptyData(memberData?.smoking)) ? (
 
                   <SpaceView mt={20}>
+                    <SpaceView mb={5}>
+                      <Text style={_styles.interestTitle}>{memberData?.nickname}님이 더 궁금한가요? : )</Text>
+                    </SpaceView>
+
                     <Text style={_styles.addText}>
     
                       {(isEmptyData(memberData?.height) || isEmptyData(memberData?.form_body) || isEmptyData(memberData?.job_name)) && (
@@ -629,6 +640,20 @@ const _styles = StyleSheet.create({
     borderRadius: 7,
     textAlign: 'center',
     paddingVertical: 8,
+  },
+  introduceArea: {
+    backgroundColor: '#6E6E6E',
+    width: '100%',
+    paddingVertical: 15,
+    paddingHorizontal: 10,
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  introduceText: {
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 13,
+    color: '#FFFCEE',
+    textAlign: 'center',
   }
 
 });

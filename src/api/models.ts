@@ -438,6 +438,7 @@ export async function save_member_introduce(body: {
   drinking: string;
   smoking: string;
   interest_list: any;
+  introduce_comment: string;
 }) {
   return send(SAVE_MEMBER_INTRODUCE, 'POST', body, true, false);
 }

@@ -58,6 +58,7 @@ export const Introduce = (props: Props) => {
   const memberBase = useUserInfo(); // 회원 기본정보
 
   const [comment, setComment] = React.useState<any>(memberBase.comment);
+  const [introduceComment, setIntroduceComment] = React.useState<any>('');
   const [business, setBusiness] = React.useState<any>(memberBase.business);
   const [job, setJob] = React.useState<any>(memberBase.job);
   const [job_name, setJob_name] = React.useState<any>(memberBase.job_name);
@@ -250,9 +251,8 @@ export const Introduce = (props: Props) => {
               dataList.push(dataMap);
             }
           );
-          setJobCdList(dataList);       // 직업 코드 목록
-          setIntList(data.int_list);   // 관심사 목록
-
+          setJobCdList(dataList); // 직업 코드 목록
+          setIntList(data.int_list); // 관심사 목록
 
           let setList = new Array();
 					data.int_list.map((item, index) => {
@@ -264,6 +264,7 @@ export const Introduce = (props: Props) => {
 					})
 		
 					setCheckIntList(setList);
+          setIntroduceComment(data.member_add?.introduce_comment);
 					
 					break;
 				default:
@@ -317,7 +318,8 @@ export const Introduce = (props: Props) => {
           religion: religion,
           drinking: drinking,
           smoking: smoking,
-          interest_list : checkIntList
+          interest_list : checkIntList,
+          introduce_comment: introduceComment,
         };
 
         const { success, data } = await save_member_introduce(body);
@@ -424,6 +426,26 @@ export const Introduce = (props: Props) => {
               placeholderTextColor={'#c6ccd3'}
               borderBottomType={'black'}
             /> */}
+          </SpaceView>
+
+          <SpaceView mb={24}>
+            <SpaceView mb={10}>
+              <CommonText textStyle={_styles.labelStyle2}>프로필 소개</CommonText>
+            </SpaceView>
+
+            <CommonTextarea
+								label={''}
+								value={introduceComment}
+								onChangeText={(introduceComment) => setIntroduceComment(introduceComment)}
+								placeholder={'프로필 소개글을 자유롭게 입력해 주세요.'}
+								placeholderTextColor={'#c6ccd3'}
+								//maxLength={50}
+                height={150}
+                borderRadius={10}
+                fontSize={12}
+                fontColor={'#333333'}
+                //lineCount={3}
+						/>
           </SpaceView>
 
           <SpaceView mb={24}>
