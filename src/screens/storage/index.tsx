@@ -115,6 +115,7 @@ export const Storage = (props: Props) => {
       color: '#FF7E8C',
       data: [],
       isNew: false,
+      isSpecialExists: false,
     },
     {
       type: 'REQ',
@@ -122,6 +123,7 @@ export const Storage = (props: Props) => {
       color: '#697AE6',
       data: [],
       isNew: false,
+      isSpecialExists: false,
     },
     {
       type: 'MATCH',
@@ -129,6 +131,7 @@ export const Storage = (props: Props) => {
       color: '#8669E6',
       data: [],
       isNew: false,
+      isSpecialExists: false,
     },
     {
       type: 'ZZIM',
@@ -136,6 +139,7 @@ export const Storage = (props: Props) => {
       color: '#69C9E6',
       data: [],
       isNew: false,
+      isSpecialExists: false,
     },
     {
       type: 'LIVE',
@@ -143,6 +147,7 @@ export const Storage = (props: Props) => {
       color: '#FFC100',
       data: [],
       isNew: false,
+      isSpecialExists: false,
     },
   ]);
 
@@ -171,6 +176,10 @@ export const Storage = (props: Props) => {
           let liveHighListData = [];
           let zzimItemUseYn = data.zzim_item_use_yn;
 
+          let resSpecialCnt = 0;
+          let reqSpecialCnt = 0;
+          let matchSpecialCnt = 0;
+
           resLikeListData = dataUtils.getStorageListData(
             data.res_like_list
           );
@@ -187,11 +196,24 @@ export const Storage = (props: Props) => {
             zzimTrgtListData = dataUtils.getStorageListData(
               data.zzim_trgt_list
             );
-          }
+          };
 
           liveHighListData = dataUtils.getStorageListData(
             data.live_high_list
           );
+
+          resLikeListData.map(({ special_interest_yn }: { special_interest_yn: any }) => {
+            if(special_interest_yn == 'Y') { resSpecialCnt = resSpecialCnt+1; }
+          });
+
+          reqLikeListData.map(({ special_interest_yn }: { special_interest_yn: any }) => {
+            if(special_interest_yn == 'Y') { reqSpecialCnt = reqSpecialCnt+1; }
+          });
+
+          matchTrgtListData.map(({ special_interest_yn }: { special_interest_yn: any }) => {
+            if(special_interest_yn == 'Y') { matchSpecialCnt = matchSpecialCnt+1; }
+          });
+
 
           // tabs 데이터 구성
           tabsData = [
@@ -201,6 +223,7 @@ export const Storage = (props: Props) => {
               color: '#FF7E8C',
               data: resLikeListData,
               isNew: data.res_new_yn == 'Y' ? true : false,
+              isSpecialExists: resSpecialCnt > 0 ? true : false,
             },
             {
               type: 'REQ',
@@ -208,6 +231,7 @@ export const Storage = (props: Props) => {
               color: '#697AE6',
               data: reqLikeListData,
               isNew: false,
+              isSpecialExists: reqSpecialCnt > 0 ? true : false,
             },
             {
               type: 'MATCH',
@@ -215,6 +239,7 @@ export const Storage = (props: Props) => {
               color: '#8669E6',
               data: matchTrgtListData,
               isNew: data.succes_new_yn == 'Y' ? true : false,
+              isSpecialExists: matchSpecialCnt > 0 ? true : false,
             },
           ];
 
@@ -539,10 +564,23 @@ export const Storage = (props: Props) => {
             </View>
           </ScrollView>
         </SpaceView>
+        
+        <SpaceView mt={5} mb={6} viewStyle={_styles.bannerArea}>
+          <View>
+            <Text style={_styles.bannerText01}>관심과 찐심은 직진이에요.</Text>
+            <Text style={_styles.bannerText02}>
+              관심을 수락하면 상대방이 <Text style={{color: '#FFC100'}}>내 연락처를 열람</Text>할 수 있어요.{'\n'}
+              호감 가는 사람의 관심과 찐심을 받아 주세요.
+            </Text>
+          </View>
+          <View style={{position: 'absolute', right: 10, bottom: 8}}>
+            <Image source={ICON.loveIcon} style={styles.iconSquareSize(35)} />
+          </View>
+        </SpaceView>
 
         <SpaceView mt={7} mb={13} viewStyle={commonStyle.paddingHorizontal25}>
           <View style={[_styles.row, {minHeight: 30}]}>
-            {currentIndex < 3 &&
+            {(currentIndex < 3 && tabs[currentIndex].data.length > 0) &&
               <>
                 <View style={{flexDirection: 'row'}}>
                   <Text style={_styles.showText}>찐심만 보기</Text>
@@ -572,13 +610,13 @@ export const Storage = (props: Props) => {
               <>
                 {tabs[currentIndex]?.isNew ? (
                   <TouchableOpacity onPress={() => { allCheck(tabs[currentIndex].type); }} style={_styles.checkArea}>
-                    <Image source={ICON.checkOffIcon} style={styles.iconSquareSize(17)} />
-                    <Text style={_styles.checkAreaText('#D5D5D5')}>{tabs[currentIndex].type == 'MATCH' ? '성공 매칭을' : '새 관심들을'} 모두 확인했어요.</Text>
+                    <Image source={ICON.checkOnIcon} style={styles.iconSquareSize(17)} />
+                    <Text style={_styles.checkAreaText('#333333')}>{tabs[currentIndex].type == 'MATCH' ? '성공 매칭을' : '새 관심들을'} 모두 확인했어요.</Text>
                   </TouchableOpacity>
                 ) : (
                   <View style={_styles.checkArea}>
-                    <Image source={ICON.checkOnIcon} style={styles.iconSquareSize(17)} />
-                    <Text style={_styles.checkAreaText('#333333')}>{tabs[currentIndex].type == 'MATCH' ? '성공 매칭을' : '새 관심들을'} 모두 확인했어요.</Text>
+                    <Image source={ICON.checkOffIcon} style={styles.iconSquareSize(17)} />
+                    <Text style={_styles.checkAreaText('#D5D5D5')}>{tabs[currentIndex].type == 'MATCH' ? '성공 매칭을' : '새 관심들을'} 모두 확인했어요.</Text>
                   </View>
                 )}
               </>
@@ -606,17 +644,25 @@ export const Storage = (props: Props) => {
                           <Text style={_styles.noDataText}>{item.title}이 없습니다.</Text>
                         </SpaceView>
                       ) : (
-                        <ScrollView showsVerticalScrollIndicator={false} style={{width: '100%', height: height-250}}>
-                          <View style={_styles.imageWarpper}>
-                            {item.data.map((i, n) => (
-                              <View key={n}>
-                                <RenderItem item={i} index={n} type={item.type} tabColor={item.color} />
+                        <>
+                          {(isSpecialVisible && !item.isSpecialExists && item.type != 'ZZIM' && item.type != 'LIVE') ? (
+                            <SpaceView viewStyle={_styles.noData}>
+                              <Text style={_styles.noDataText}>찐심이 없습니다.</Text>
+                            </SpaceView>
+                          ) : (
+                            <ScrollView showsVerticalScrollIndicator={false} style={{width: '100%', height: height-250}}>
+                              <View style={_styles.imageWarpper}>
+                                {item.data.map((i, n) => (
+                                  <View key={n}>
+                                    <RenderItem item={i} index={n} type={item.type} tabColor={item.color} />
+                                  </View>
+                                ))}
                               </View>
-                            ))}
-                          </View>
 
-                          <View style={{ height: 50 }} />
-                        </ScrollView>
+                              <View style={{ height: 50 }} />
+                            </ScrollView>
+                          )}
+                        </>
                       )}
                     </View>
                   }
@@ -718,7 +764,6 @@ export const Storage = (props: Props) => {
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
 
                   {(((type == 'RES' || matchType == 'LIVE_RES') && item.res_check_yn == 'N') || (matchType == 'MATCH_REQ' && item.req_success_check_yn == 'N')) && (
-
                     <View style={_styles.newDotted(tabColor)} />
                   )}
                   <Text style={[_styles.renderItemTopText]}>
@@ -1160,6 +1205,27 @@ const _styles = StyleSheet.create({
       borderRadius: 30,
       marginRight: 5,
     };
+  },
+  bannerArea: {
+    height: 65,
+    backgroundColor: '#1E67D4',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginHorizontal: 23,
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  bannerText01: {
+    color: '#85FFEE',
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 16,
+  },
+  bannerText02: {
+    color: '#ffffff',
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 10,
   },
   
 });

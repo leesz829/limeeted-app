@@ -154,6 +154,7 @@ export const ICON = {
   dottedIcon: require('assets/icon/dotted_icon.png'),
   checkOnIcon: require('assets/icon/check_on.png'),
   checkOffIcon: require('assets/icon/check_off.png'),
+  loveIcon: require('assets/icon/love_icon.png'),
 };
 
 export const GIF_IMG = {
