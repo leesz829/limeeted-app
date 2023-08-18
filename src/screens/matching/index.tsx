@@ -107,6 +107,7 @@ export default function Matching(props: Props) {
     use_item: {},
     refuse_list: [],
     add_list: [],
+    intro_second_yn: '',
   });
 
   // 신고목록
@@ -184,6 +185,7 @@ export default function Matching(props: Props) {
             use_item: data?.use_item,
             refuse_list: data?.refuse_list,
             add_list: data?.profile_add_list,
+            intro_second_yn: data?.intro_second_yn,
           });
 
           if(data?.match_member_info == null) {
@@ -736,8 +738,17 @@ export default function Matching(props: Props) {
             <View style={[layoutStyle.justifyCenter, layoutStyle.flex1, {backgroundColor: 'white'} ]}>
               <SpaceView mb={50} viewStyle={[layoutStyle.alignCenter]}>
                 <CommonText type={'h4'} textStyle={_styles.emptyText}>
-                  오늘 소개하여 드린 <Text style={{color: '#7986EE'}}>데일리 뷰</Text>가 마감되었어요.{"\n"}
-                  <Text style={{color: '#7986EE'}}>데일리 뷰</Text>에서 제공해드릴 프로필 카드는 {"\n"}운영 정책에 따라 다양하게 늘려나갈 예정입니다.
+                  {matchData.intro_second_yn == 'Y' ? (
+                    <>
+                      오늘 소개하여 드린 <Text style={{color: '#7986EE'}}>데일리 뷰</Text>가 마감되었어요.{"\n"}
+                      <Text style={{color: '#7986EE'}}>데일리 뷰</Text>에서 제공해드릴 프로필 카드는 {"\n"}운영 정책에 따라 다양하게 늘려나갈 예정입니다.
+                    </>
+                  ) : (
+                    <>
+                      오후 3시에 한번 더 제공해드리는{"\n"}
+                      새로운 <Text style={{color: '#7986EE'}}>데일리 뷰</Text>를 확인해 보세요!
+                    </>
+                  )}                  
                 </CommonText>
 
                 <View style={{position: 'absolute', top: 0, left: 0, bottom: 0, right: 0, justifyContent: 'center', alignItems: 'center'}}>
