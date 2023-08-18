@@ -459,8 +459,6 @@ export const StorageProfile = (props: Props) => {
       body.match_seq = matchSeq;
     };
 
-    console.log('body :::::: ' , body);
-
     try {
       const { success, data } = await regist_match_status(body);
 
@@ -583,30 +581,51 @@ export const StorageProfile = (props: Props) => {
           {/* ############################################## 받은 관심 */}
           {props.route.params.type == 'RES' ? (
             <>
-              <SpaceView viewStyle={[styles.rowStyle]}>
-                <View style={{marginRight: 3, flex: 1}}>
-                  <CommonBtn
-                    value={'거절'}
-                    width={'100%'}
-                    height={45}
-                    borderRadius={13}
-                    onPress={() => {
-                      updateMatchStatus('REFUSE');
-                    }}
-                  />
-                </View>
-                <View style={{flex: 1}}>
-                  <CommonBtn
-                    value={'수락'}
-                    type={'primary'}
-                    width={'100%'}
-                    height={45}
-                    borderRadius={13}
-                    onPress={() => {
-                      updateMatchStatus('ACCEPT');
-                    }}
-                  />
-                </View>
+              <SpaceView mb={-30} viewStyle={[styles.rowStyle]}>
+
+                {data.match_base.special_interest_yn == 'Y' ? (
+                  <>
+                    <View style={{marginRight: 3, flex: 0.6}}>
+                      <TouchableOpacity onPress={() => updateMatchStatus('REFUSE') } style={_styles.specialRefuseBtn}>
+                        <Text style={_styles.specialRefuseText}>거절</Text>
+                        <Text style={_styles.specialAcceptDesc}>다음주 소셜 평점에 약간의{'\n'}페널티가 발생합니다.</Text>
+                      </TouchableOpacity>
+                    </View>
+                    <View style={{flex: 1}}>
+                      <LinearGradient
+                        colors={['#F5138C', '#F97FF1']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 0, y: 1 }}
+                        style={{borderRadius: 10, overflow: 'hidden'}}>
+
+                        <TouchableOpacity onPress={() => updateMatchStatus('ACCEPT') } style={_styles.specialAcceptBtn}>
+                          <Text style={_styles.specialAcceptText}>수락</Text>
+                          <Text style={_styles.specialAcceptDesc}>관심보다 많은 보너스 리밋이 제공됩니다.</Text>
+                        </TouchableOpacity>
+                      </LinearGradient>
+                    </View>
+                  </>
+                ) : (
+                  <>
+                    <View style={{marginRight: 3, flex: 1}}>
+                      <TouchableOpacity onPress={() => updateMatchStatus('REFUSE') } style={_styles.refuseBtn}>
+                        <Text style={_styles.acceptBtnText}>거절</Text>
+                      </TouchableOpacity>
+                    </View>
+                    <View style={{flex: 1}}>
+                      <LinearGradient
+                        colors={['#8AACF8', '#7986EE']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 0, y: 1 }}
+                        style={{borderRadius: 10, overflow: 'hidden'}}>
+
+                        <TouchableOpacity onPress={() => updateMatchStatus('ACCEPT') } style={_styles.acceptBtn}>
+                          <Text style={_styles.acceptBtnText}>수락</Text>
+                        </TouchableOpacity>
+                      </LinearGradient>
+                    </View>
+                  </>
+                )}
               </SpaceView>
             </>
           ) : null}
@@ -614,7 +633,7 @@ export const StorageProfile = (props: Props) => {
           {/* ############################################## 보낸 관심 */}
           {props.route.params.type == 'REQ' ? (
             <>
-              <SpaceView viewStyle={{padding: 24, alignItems: 'center', borderRadius: 10, backgroundColor: '#F6F7FE'}}>
+              <SpaceView mb={-20} viewStyle={{padding: 24, alignItems: 'center', borderRadius: 10, backgroundColor: '#F6F7FE'}}>
                 <SpaceView>
                   <Image source={ICON.loveLetterIcon} style={styles.iconSquareSize(64)} />
                 </SpaceView>
@@ -629,7 +648,7 @@ export const StorageProfile = (props: Props) => {
           {/* ############################################## 성공 매칭 */}
           {props.route.params.type == 'MATCH' ? (
             <>
-              <SpaceView viewStyle={_styles.matchSuccArea}>
+              <SpaceView mb={-20} viewStyle={_styles.matchSuccArea}>
                 <SpaceView mb={8} viewStyle={{alignItems: 'center'}}>
                   <Image source={ICON.match_succ_icon} style={{width: 30, height: 30}} />
                 </SpaceView>
@@ -953,5 +972,57 @@ const _styles = StyleSheet.create({
     fontSize: 10,
     color: '#707070',
     marginBottom: 7,
+  },
+  specialAcceptBtn: {
+    height: 65,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: 8,
+  },
+  specialAcceptText: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 20,
+    color: '#ffffff',
+  },
+  specialAcceptDesc: {
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 10,
+    color: '#ffffff',
+    textAlign: 'center',
+  },
+  specialRefuseBtn: {
+    height: 65,
+    borderRadius: 10,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#000000',
+    overflow: 'hidden',
+  },
+  specialRefuseText: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 14,
+    color: '#ffffff',
+  },
+  acceptBtn: {
+    height: 45,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  acceptBtnText: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 14,
+    color: '#ffffff',
+  },
+  refuseBtn: {
+    height: 45,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#E4E4E4',
+    borderRadius: 10,
+    overflow: 'hidden',
   },
 });
