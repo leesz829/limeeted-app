@@ -60,7 +60,7 @@
     "react-native-gesture-handler": "^2.12.1",
     "react-native-iap": "12.4.4",
     "react-native-image-crop-picker": "^0.38.1",
-    "react-native-image-picker": "5.4.2",
+    "react-native-image-picker": "4.9.0",
     "react-native-image-resizer": "1.1.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-linear-gradient": "2.5.6",
