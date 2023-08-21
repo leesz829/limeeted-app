@@ -209,6 +209,11 @@
   resolved "https://registry.yarnpkg.com/@babel/helper-plugin-utils/-/helper-plugin-utils-7.20.2.tgz#d1b9000752b18d0877cff85a5c376ce5c3121629"
   integrity sha512-8RvlJG2mj4huQ4pZ+rU9lqKi9ZKiRmuvGuM2HlWmkmgOhbs6zEAw6IEiJ5cQqGbDzGZOhwuOQNtZMi/ENLjZoQ==
 
+"@babel/helper-plugin-utils@^7.22.5":
+  version "7.22.5"
+  resolved "https://registry.yarnpkg.com/@babel/helper-plugin-utils/-/helper-plugin-utils-7.22.5.tgz#dd7ee3735e8a313b9f7b05a773d892e88e6d7295"
+  integrity sha512-uLls06UVKgFG9QD4OeFYLEGteMIAa5kpTPcFL28yuCIIzsf6ZyKZMllKVOCZFhiZ5ptnwX4mtKdWCBE/uT4amg==
+
 "@babel/helper-remap-async-to-generator@^7.18.9":
   version "7.18.9"
   resolved "https://registry.yarnpkg.com/@babel/helper-remap-async-to-generator/-/helper-remap-async-to-generator-7.18.9.tgz#997458a0e3357080e54e1d79ec347f8a8cd28519"
@@ -602,12 +607,19 @@
     "@babel/helper-plugin-utils" "^7.20.2"
     "@babel/helper-simple-access" "^7.20.2"
 
-"@babel/plugin-transform-object-assign@^7.0.0", "@babel/plugin-transform-object-assign@^7.10.4":
+"@babel/plugin-transform-object-assign@^7.0.0":
   version "7.18.6"
   resolved "https://registry.yarnpkg.com/@babel/plugin-transform-object-assign/-/plugin-transform-object-assign-7.18.6.tgz#7830b4b6f83e1374a5afb9f6111bcfaea872cdd2"
   integrity sha512-mQisZ3JfqWh2gVXvfqYCAAyRs6+7oev+myBsTwW5RnPhYXOTuCEw2oe3YgxlXMViXUS53lG8koulI7mJ+8JE+A==
   dependencies:
     "@babel/helper-plugin-utils" "^7.18.6"
+
+"@babel/plugin-transform-object-assign@^7.10.4":
+  version "7.22.5"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-object-assign/-/plugin-transform-object-assign-7.22.5.tgz#290c1b9555dcea48bb2c29ad94237777600d04f9"
+  integrity sha512-iDhx9ARkXq4vhZ2CYOSnQXkmxkDgosLi3J8Z17mKz7LyzthtkdVchLD7WZ3aXeCuvJDOW3+1I5TpJmwIbF9MKQ==
+  dependencies:
+    "@babel/helper-plugin-utils" "^7.22.5"
 
 "@babel/plugin-transform-object-super@^7.0.0":
   version "7.18.6"
@@ -786,13 +798,6 @@
   version "7.21.0"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.21.0.tgz#5b55c9d394e5fcf304909a8b00c07dc217b56673"
   integrity sha512-xwII0//EObnq89Ji5AKYQaRYiW/nZ3llSv29d49IuxPhKbtJoLP+9QUUZ4nVragQVtaVGeZrpB+ZtG/Pdy/POw==
-  dependencies:
-    regenerator-runtime "^0.13.11"
-
-"@babel/runtime@^7.12.5":
-  version "7.22.6"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.22.6.tgz#57d64b9ae3cff1d67eb067ae117dac087f5bd438"
-  integrity sha512-wDb5pWm4WDdF6LFUde3Jl8WzPA+3ZbxYqkC6xAXuD3irdEHN1k0NfTRrJD8ZD378SJ61miMLCqIOXYhd8x+AJQ==
   dependencies:
     regenerator-runtime "^0.13.11"
 
@@ -1216,13 +1221,6 @@
   dependencies:
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
-
-"@react-native-admob/admob@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@react-native-admob/admob/-/admob-2.0.1.tgz#c42e14b48ab2ccacdc91c6635739c960b9e0aa4c"
-  integrity sha512-IHDzwC9n+15w3Cg03oWB4rHXyUpkTFyoP3gPEzVbZEnPDyUdl1eacmM66MovNoVc5m6h7pXNa0AXzgL+yIEW7A==
-  dependencies:
-    use-deep-compare-effect "^1.8.1"
 
 "@react-native-clipboard/clipboard@^1.11.2":
   version "1.11.2"
@@ -3176,11 +3174,6 @@ deprecated-react-native-prop-types@^2.3.0:
     "@react-native/normalize-color" "*"
     invariant "*"
     prop-types "*"
-
-dequal@^2.0.2:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/dequal/-/dequal-2.0.3.tgz#2644214f1997d39ed0ee0ece72335490a7ac67be"
-  integrity sha512-0je+qPKHEMohvfRTCEo3CrPG6cAzAYgmzKyxRiYSSDkS6eGJdyVJm7WaYA5ECaAD9wLB2T4EEeymA5aFVcYXCA==
 
 destroy@1.2.0:
   version "1.2.0"
@@ -7117,10 +7110,10 @@ react-native-geolocation-service@^5.3.1:
   resolved "https://registry.yarnpkg.com/react-native-geolocation-service/-/react-native-geolocation-service-5.3.1.tgz#4ce1017789da6fdfcf7576eb6f59435622af4289"
   integrity sha512-LTXPtPNmrdhx+yeWG47sAaCgQc3nG1z+HLLHlhK/5YfOgfLcAb9HAkhREPjQKPZOUx8pKZMIpdGFUGfJYtimXQ==
 
-react-native-gesture-handler@2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.1.1.tgz#1d417bc7b551ec76129ce09861b3a01622b4ef99"
-  integrity sha512-1+qMhsXKKWTPAFi2ZY8rEhP/4xIevWNb1zLU9MzJkr7tRIEW4G+ipxjLyCw+7hQeqeeIbyZ8kkTyHAUuwTrHDA==
+react-native-gesture-handler@^2.12.1:
+  version "2.12.1"
+  resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.12.1.tgz#f11a99fb95169810c6886fad5efa01a17fd81660"
+  integrity sha512-deqh36bw82CFUV9EC4tTo2PP1i9HfCOORGS3Zmv71UYhEZEHkzZv18IZNPB+2Awzj45vLIidZxGYGFxHlDSQ5A==
   dependencies:
     "@egjs/hammerjs" "^2.0.17"
     hoist-non-react-statics "^3.3.0"
@@ -7138,10 +7131,10 @@ react-native-image-crop-picker@^0.38.1:
   resolved "https://registry.yarnpkg.com/react-native-image-crop-picker/-/react-native-image-crop-picker-0.38.1.tgz#5973b4a8b55835b987e6be2064de411e849ac005"
   integrity sha512-cF5UQnWplzHCeiCO+aiGS/0VomWaLmFf3nSsgTMPfY+8+99h8N/eHQvVdSF7RsGw50B8394wGeGyqHjjp8YRWw==
 
-react-native-image-picker@4.7.1:
-  version "4.7.1"
-  resolved "https://registry.yarnpkg.com/react-native-image-picker/-/react-native-image-picker-4.7.1.tgz#6a34be34edf37835021129d99fca48c19637dc5b"
-  integrity sha512-8jOHvSX2UMX+76Ixjt2fCOuTLfBx55WGlmn4HK7ZTWfZWXGilpEDDXGnchwBAJkw4Xv953/8tsvSNFEoyvNjFg==
+react-native-image-picker@5.4.2:
+  version "5.4.2"
+  resolved "https://registry.yarnpkg.com/react-native-image-picker/-/react-native-image-picker-5.4.2.tgz#017d6b379cddf706acd7feb8222c2eb58e57eb8d"
+  integrity sha512-C/k3cYAh8fBImoGEwmiChNwHx9fJGqAIu2E4BUJdI1XlL17tSYjfTDx/bsuF4amZwa7hxZdQnZmpk0EnwIEUaw==
 
 react-native-image-resizer@1.1.0:
   version "1.1.0"
@@ -7248,9 +7241,9 @@ react-native-screens@3.10.1:
     warn-once "^0.1.0"
 
 react-native-screens@^3.4.0:
-  version "3.20.0"
-  resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-3.20.0.tgz#4d154177395e5541387d9a05bc2e12e54d2fb5b1"
-  integrity sha512-joWUKWAVHxymP3mL9gYApFHAsbd9L6ZcmpoZa6Sl3W/82bvvNVMqcfP7MeNqVCg73qZ8yL4fW+J/syusHleUgg==
+  version "3.24.0"
+  resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-3.24.0.tgz#3d40199f9e2594c8d6e9f065772ebb842ecf53f4"
+  integrity sha512-ncAxY6Fja1eDwxMWsWG1S2lDWbE45f8XtdpKkY+Ovwg52iEov7uWx302PsvBkPpK9dGV4u6f2ZRoZGZYBvSbbA==
   dependencies:
     react-freeze "^1.0.0"
     warn-once "^0.1.0"
@@ -7293,10 +7286,10 @@ react-native-version-check@^3.4.7:
     lodash.pick "^4.4.0"
     semver "^6.1.1"
 
-react-native-webview@11.22.2:
-  version "11.22.2"
-  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-11.22.2.tgz#0a57893b637c2825c83395f22b686cc6ac88e465"
-  integrity sha512-bkstn3Vkf3JMrSE2R8xgIzgWu0c2+HAdiYJTo3xWcXN+LIAZFnn198s1QHcOFO7bfPObP4nSnIqzeQTiYjZYDA==
+react-native-webview@11.22.7:
+  version "11.22.7"
+  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-11.22.7.tgz#bf0d1755473af6e1af8486e862668fc7530149b4"
+  integrity sha512-IYMElB4fFS6S8LbhivAQfAlW95HorqCK4T3mFKmWsV24iPVTfYoaiA1TNzkRnjw2mMgXDk/QnMeH9IbjBVs1Ag==
   dependencies:
     escape-string-regexp "2.0.0"
     invariant "2.2.4"
@@ -8813,14 +8806,6 @@ url-parse@^1.4.7, url-parse@^1.5.3:
   dependencies:
     querystringify "^2.1.1"
     requires-port "^1.0.0"
-
-use-deep-compare-effect@^1.8.1:
-  version "1.8.1"
-  resolved "https://registry.yarnpkg.com/use-deep-compare-effect/-/use-deep-compare-effect-1.8.1.tgz#ef0ce3b3271edb801da1ec23bf0754ef4189d0c6"
-  integrity sha512-kbeNVZ9Zkc0RFGpfMN3MNfaKNvcLNyxOAAd9O4CBZ+kCBXXscn9s/4I+8ytUER4RDpEYs5+O6Rs4PqiZ+rHr5Q==
-  dependencies:
-    "@babel/runtime" "^7.12.5"
-    dequal "^2.0.2"
 
 use-latest-callback@^0.1.5:
   version "0.1.6"
