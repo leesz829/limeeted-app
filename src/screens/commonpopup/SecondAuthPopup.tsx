@@ -377,7 +377,7 @@ export const SecondAuthPopup = (props: Props) => {
                   label={''} 
                   value={authComment}
                   onChangeText={(authComment) => setAuthComment(authComment)}
-                  placeholder={'인증 코멘트를 작성해 주세요.\n※ 심사 후에는 인증 레벨과 인증 코멘트만 공개 됩니다.'}
+                  placeholder={'상대방에게 보여지는 나의 인증 코멘트를 작성해 주세요!\n※ 심사 후에는 인증 레벨과 인증 코멘트만 공개 됩니다.'}
                   placeholderTextColor={'#989898'}
                   maxLength={50}
                   height={90}
