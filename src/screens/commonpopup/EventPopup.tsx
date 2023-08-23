@@ -98,39 +98,41 @@ export const EventPopup = (props: Props) => {
                         <View key={index}>
                           <SpaceView viewStyle={_styles.eventContent}>
 
-                            {/* 로고 영역 */}
-                            {/* <SpaceView viewStyle={_styles.logoArea}>
-                              <Image source={IMAGE.popupLogo} style={{width: 94, height: 19}} />
-                            </SpaceView> */}
-
-                            {/* 상세보기 버튼 영역 */}
                             <TouchableOpacity 
-                              style={_styles.detailBtn} 
+                              activeOpacity={0.8} 
                               onPress={() => onPressEtc(item?.pop_bas_seq, item?.sub_img_path, index)}>
 
-                              <Text style={_styles.detailBtnText}>상세보기</Text>
-                            </TouchableOpacity>
+                              {/* 로고 영역 */}
+                              {/* <SpaceView viewStyle={_styles.logoArea}>
+                                <Image source={IMAGE.popupLogo} style={{width: 94, height: 19}} />
+                              </SpaceView> */}
 
-                            {/* 이미지 영역 */}
-                            <View style={{minHeight: 200, overflow: 'hidden'}}>
-                              <Image source={findSourcePath(item?.main_img_path)} style={{width: width - 45, height: 200}} resizeMode={'cover'} />
-                            </View>
-
-                            {/* 텍스트 영역 */}
-                            <SpaceView viewStyle={_styles.eventTextArea}>
-                              <View style={{paddingHorizontal: 10, paddingVertical: 10, zIndex: 1}}>
-                                <Text style={_styles.eventSubText}>{item?.sub_title}</Text>
-                                <Text style={_styles.eventDescText}>{item?.contents}</Text>
+                              {/* 상세보기 버튼 영역 */}
+                              <View style={_styles.detailBtn}>
+                                <Text style={_styles.detailBtnText}>상세보기</Text>
                               </View>
 
-                              <LinearGradient
-                                colors={['transparent', '#000000']}
-                                start={{ x: 0, y: 0 }}
-                                end={{ x: 0, y: 1 }}
-                                style={_styles.eventThumnailArea} />
+                              {/* 이미지 영역 */}
+                              <View style={{minHeight: 200, overflow: 'hidden'}}>
+                                <Image source={findSourcePath(item?.main_img_path)} style={{width: width - 45, height: 200}} resizeMode={'cover'} />
+                              </View>
 
-                            </SpaceView>
-                          
+                              {/* 텍스트 영역 */}
+                              <SpaceView viewStyle={_styles.eventTextArea}>
+                                <View style={{paddingHorizontal: 10, paddingVertical: 10, zIndex: 1}}>
+                                  <Text style={_styles.eventSubText}>{item?.sub_title}</Text>
+                                  <Text style={_styles.eventDescText}>{item?.contents}</Text>
+                                </View>
+
+                                <LinearGradient
+                                  colors={['transparent', '#000000']}
+                                  start={{ x: 0, y: 0 }}
+                                  end={{ x: 0, y: 1 }}
+                                  style={_styles.eventThumnailArea} />
+
+                              </SpaceView>
+
+                            </TouchableOpacity>
                           </SpaceView>
                         </View>
                       </>
