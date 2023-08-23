@@ -354,6 +354,7 @@ export const Storage = (props: Props) => {
     profile_open_yn: any,
     member_status: any,
     match_type: any,
+    special_interest_yn: any,
   ) => {
     
     if(member_status != 'ACTIVE') {
@@ -373,7 +374,8 @@ export const Storage = (props: Props) => {
       return;
     }
     
-    if (profile_open_yn == 'N') {
+    // 찐심인 경우 열람통과
+    if (special_interest_yn == 'N' && profile_open_yn == 'N') {
       show({
         title: '프로필 열람',
         content: '패스를 소모하여 프로필을 열람하시겠습니까?\n패스 x15',
@@ -578,54 +580,56 @@ export const Storage = (props: Props) => {
           </View>
         </SpaceView>
 
-        <SpaceView mt={7} mb={13} viewStyle={commonStyle.paddingHorizontal25}>
-          <View style={[_styles.row, {minHeight: 30}]}>
-            {(currentIndex < 3 && tabs[currentIndex].data.length > 0) &&
-              <>
-                <View style={{flexDirection: 'row'}}>
-                  <Text style={_styles.showText}>찐심만 보기</Text>
-                  <ToggleSwitch
-                    isOn={isSpecialVisible}
-                    onColor={Color.primary}
-                    offColor={Color.grayDDDD}
-                    size="small"
-                    onToggle={(isOn) => setIsSpecialVisible(isOn) }
-                  />
-                </View>
-              </>
-            }
-
-            {tabs[currentIndex]?.type == 'LIVE' &&
-              <View style={_styles.liveTabArea}>
-                <TouchableOpacity onPress={() => { onLiveTab('RES'); }} style={_styles.liveTabItem(isLiveResVisible, 'RES')}>
-                  <Text style={_styles.liveTabText(isLiveResVisible, 'RES')}>받은 LIVE</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => { onLiveTab('REQ'); }} style={_styles.liveTabItem(isLiveReqVisible, 'REQ')}>
-                  <Text style={_styles.liveTabText(isLiveReqVisible, 'REQ')}>보낸 LIVE</Text>
-                </TouchableOpacity>
-              </View>
-            }
-
-            {((tabs[currentIndex].type == 'RES' || tabs[currentIndex].type == 'MATCH' || tabs[currentIndex].type == 'LIVE') && tabs[currentIndex].data.length > 0) && (
-              <>
-                {tabs[currentIndex]?.isNew ? (
-                  <TouchableOpacity onPress={() => { allCheck(tabs[currentIndex].type); }} style={_styles.checkArea}>
-                    <Image source={ICON.checkOnIcon} style={styles.iconSquareSize(17)} />
-                    <Text style={_styles.checkAreaText('#333333')}>{tabs[currentIndex].type == 'MATCH' ? '성공 매칭을' : '새 관심들을'} 모두 확인했어요.</Text>
-                  </TouchableOpacity>
-                ) : (
-                  <View style={_styles.checkArea}>
-                    <Image source={ICON.checkOffIcon} style={styles.iconSquareSize(17)} />
-                    <Text style={_styles.checkAreaText('#D5D5D5')}>{tabs[currentIndex].type == 'MATCH' ? '성공 매칭을' : '새 관심들을'} 모두 확인했어요.</Text>
+        {tabs[currentIndex]?.type != 'ZZIM' &&
+          <SpaceView mt={7} mb={3} pl={22} pr={22}>
+            <View style={[_styles.row, {minHeight: 30}]}>
+              {(currentIndex < 3 && tabs[currentIndex]?.data.length > 0) &&
+                <>
+                  <View style={{flexDirection: 'row'}}>
+                    <Text style={_styles.showText}>찐심만 보기</Text>
+                    <ToggleSwitch
+                      isOn={isSpecialVisible}
+                      onColor={Color.primary}
+                      offColor={Color.grayDDDD}
+                      size="small"
+                      onToggle={(isOn) => setIsSpecialVisible(isOn) }
+                    />
                   </View>
-                )}
-              </>
-            )}
-            
-          </View>
-        </SpaceView>
+                </>
+              }
 
-        <SpaceView>
+              {tabs[currentIndex]?.type == 'LIVE' &&
+                <View style={_styles.liveTabArea}>
+                  <TouchableOpacity onPress={() => { onLiveTab('RES'); }} style={_styles.liveTabItem(isLiveResVisible, 'RES')}>
+                    <Text style={_styles.liveTabText(isLiveResVisible, 'RES')}>받은 LIVE</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => { onLiveTab('REQ'); }} style={_styles.liveTabItem(isLiveReqVisible, 'REQ')}>
+                    <Text style={_styles.liveTabText(isLiveReqVisible, 'REQ')}>보낸 LIVE</Text>
+                  </TouchableOpacity>
+                </View>
+              }
+
+              {((tabs[currentIndex]?.type == 'RES' || tabs[currentIndex]?.type == 'MATCH' || tabs[currentIndex]?.type == 'LIVE') && tabs[currentIndex]?.data.length > 0) && (
+                <>
+                  {tabs[currentIndex]?.isNew ? (
+                    <TouchableOpacity onPress={() => { allCheck(tabs[currentIndex]?.type); }} style={_styles.checkArea}>
+                      <Image source={ICON.checkOnIcon} style={styles.iconSquareSize(17)} />
+                      <Text style={_styles.checkAreaText('#333333')}>{tabs[currentIndex]?.type == 'MATCH' ? '성공 매칭을' : '새 관심들을'} 모두 확인했어요.</Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <View style={_styles.checkArea}>
+                      <Image source={ICON.checkOffIcon} style={styles.iconSquareSize(17)} />
+                      <Text style={_styles.checkAreaText('#D5D5D5')}>{tabs[currentIndex]?.type == 'MATCH' ? '성공 매칭을' : '새 관심들을'} 모두 확인했어요.</Text>
+                    </View>
+                  )}
+                </>
+              )}
+              
+            </View>
+          </SpaceView>
+        }
+
+        <SpaceView mt={10}>
           <Carousel
             ref={dataRef}
             data={tabs}
@@ -656,10 +660,10 @@ export const Storage = (props: Props) => {
                                   <View key={n}>
                                     <RenderItem item={i} index={n} type={item.type} tabColor={item.color} />
                                   </View>
-                                ))}
+                                ))}  
                               </View>
 
-                              <View style={{ height: 50 }} />
+                              <View style={{ height: 130 }} />
                             </ScrollView>
                           )}
                         </>
@@ -670,7 +674,7 @@ export const Storage = (props: Props) => {
               )
             }}
           />
-        </SpaceView>        
+        </SpaceView>
       </View>
     </>
   );
@@ -730,7 +734,8 @@ export const Storage = (props: Props) => {
                 type,
                 profile_open_yn,
                 item.member_status,
-                matchType
+                matchType,
+                item.special_interest_yn,
               );
             }}>
 
@@ -873,7 +878,7 @@ export const Storage = (props: Props) => {
                 } */}
               </View>
 
-              {isBlur && (
+              {(item.special_interest_yn == 'N' && isBlur) && (
                 <>
                   <View style={_styles.reqRenderItem}>
                     <Text style={_styles.reqRenderItemText}>터치하고 열어보기</Text>
@@ -1015,10 +1020,11 @@ const _styles = StyleSheet.create({
       fontSize: 13,
       color: '#fff',
       backgroundColor: isBlur ? 'rgba(0, 0, 0, 0.4)' : 'transparent',
-      paddingHorizontal: isBlur ? 9 : 0,
-      paddingVertical: isBlur ? 2 : 0,
+      paddingHorizontal: isBlur ? 8 : 0,
+      paddingVertical: isBlur ? 1 : 0,
       borderRadius: isBlur ? 20 : 0,
       overflow: 'hidden',
+      textAlign: 'center',
     }
   },
   tabItem: (isOn: boolean, itemColor: string) => {
@@ -1138,7 +1144,7 @@ const _styles = StyleSheet.create({
       height: 22,
       alignItems: `center`,
       justifyContent: `center`,
-      marginLeft: 4,
+      marginRight: 4,
     }
   },
   liveTabText: (isOn: boolean, type: string) => {
@@ -1158,7 +1164,7 @@ const _styles = StyleSheet.create({
       borderRadius: 5,
       paddingHorizontal: 5,
       height: 19,
-      backgroundColor: '#fff',
+      backgroundColor: type == 'LIVE_RES' ? '#FE0456' : '#7986EE',
       marginTop: 2,
       marginLeft: 3,
     };
@@ -1167,7 +1173,7 @@ const _styles = StyleSheet.create({
     return {
       fontFamily: 'AppleSDGothicNeoB00',
       fontSize: 12,
-      color: type == 'LIVE_RES' ? '#FE0456' : '#7986EE',
+      color: '#fff',
     };
   },
   newIcon: (itemColor: string) => {
@@ -1211,6 +1217,7 @@ const _styles = StyleSheet.create({
     backgroundColor: '#1E67D4',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: 10,
     paddingVertical: 5,
     marginHorizontal: 23,
@@ -1221,6 +1228,7 @@ const _styles = StyleSheet.create({
     color: '#85FFEE',
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 16,
+    marginTop: -4,
   },
   bannerText02: {
     color: '#ffffff',
