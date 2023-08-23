@@ -38,6 +38,8 @@ import { useUserInfo } from 'hooks/useUserInfo';
 import Carousel from 'react-native-snap-carousel';
 import useInterval from 'utils/useInterval';
 import { isEmptyData, formatNowDate } from 'utils/functions';
+import { styles } from 'assets/styles/Styles';
+import Animated, { useAnimatedStyle, withTiming, useSharedValue, withSpring, withSequence, withDelay, Easing, withRepeat, interpolate, Value, multiply, useDerivedValue, Extrapolate } from 'react-native-reanimated';
 
 
 
@@ -89,6 +91,84 @@ export const Shop = () => {
   // 팝업 목록
   let popupList = [];
   let isPopup = true;
+
+  // 선물함 애니메이션 관련 함수
+  const giftOpacityValue = useSharedValue(0);
+  const giftRotateValue = useSharedValue(0);
+
+  const [isRotated, setIsRotated] = useState(false);
+
+  const giftStyle = useAnimatedStyle(() => {
+    const interpolatedRotation = interpolate(giftRotateValue.value, [0, 1], [0, -20], Extrapolate.CLAMP);
+
+    return {
+      opacity: giftOpacityValue.value,
+      transform: [{ rotate: `${interpolatedRotation}deg` }],
+    };
+  });
+
+  const animateSequence = async (animations:any) => {
+    for (const animation of animations) {
+      await animation();
+    }
+  };
+
+  const resIntroAnimate = async () => {
+    const endValue = isRotated ? 0 : 1;
+
+    giftOpacityValue.value = withDelay(500, withTiming(1, { duration: 500 }, () => {
+      giftRotateValue.value = withTiming(1, { duration: 1000 }, () => {
+        giftRotateValue.value = withTiming(0, { duration: 1000 }, () => {
+          giftRotateValue.value = withTiming(1, { duration: 1000 }, () => {
+            giftRotateValue.value = withTiming(0, { duration: 1000 }, () => {
+              giftRotateValue.value = withDelay(500, withTiming(1, { duration: 1000 }, () => {
+                giftRotateValue.value = withTiming(0, { duration: 1000 }, () => {
+                  giftRotateValue.value = withTiming(1, { duration: 1000 }, () => {
+                    giftRotateValue.value = withTiming(0, { duration: 1000 }, () => {
+                      giftOpacityValue.value = withDelay(500, withTiming(0, { duration: 500 }, () => {
+
+                      }));
+                    });
+                  });
+                });
+              }));
+            });
+          });
+        });
+      });
+    }));
+
+
+    /* const animations = [
+      () => giftOpacityValue.value = withDelay(500, withTiming(1, { duration: 500 })),
+
+      () => giftRotateValue.value = withSequence(
+        withTiming(0, { duration: 1000 }),
+        withTiming(1, { duration: 1000 }),
+        withTiming(0, { duration: 1000 }),
+        withTiming(1, { duration: 1000 }),
+        withTiming(0, { duration: 1000 }),
+      ),
+
+      () => giftOpacityValue.value = withDelay(6000, withTiming(0, { duration: 500 })),
+    ];
+
+    await animateSequence(animations); */
+
+
+    /* giftRotateValue.value = withRepeat(
+      withSequence(
+        withTiming(1, { duration: 1000 }),
+        withTiming(0, { duration: 1000 }),
+      ),
+      -1,
+      true
+    ); */
+
+
+    setIsRotated(!isRotated);
+  };
+
 
   /* const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
@@ -219,6 +299,8 @@ export const Shop = () => {
 
   useEffect(() => {
     if(isFocus) {
+      resIntroAnimate();
+
       let isPopupShow = true;
 
       // 튜토리얼 팝업 노출
@@ -328,6 +410,10 @@ export const Shop = () => {
       <TouchableOpacity
         onPress={onPressInventory}
         style={_styles.floatingButtonWrapper}>
+
+        <Animated.View style={[_styles.giftIconArea, giftStyle]}>
+          <Image source={ICON.giftIcon} style={styles.iconSquareSize(85)} />
+        </Animated.View>
 
         <Image source={ICON.inventoryIcon} style={_styles.floatingButton} />
         {newItemCnt > 0 &&
@@ -521,18 +607,25 @@ const _styles = StyleSheet.create({
   },
   iconArea: {
     position: 'absolute',
-    top: 4,
-    right: -5,
+    top: 10,
+    right: -8,
   },
   newText: {
     backgroundColor: '#FF7E8C',
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 10,
     color: ColorType.white,
-    borderRadius: 8,
+    borderRadius: 20,
     paddingHorizontal: 6,
     paddingVertical: 2,
     overflow: 'hidden',
-  }
+  },
+  giftIconArea: {
+    position: 'absolute',
+    top: -42,
+    left: 3,
+    zIndex: 1,
+    overflow: 'hidden',
+  },
 
 });
