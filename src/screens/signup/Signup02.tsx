@@ -340,12 +340,10 @@ export const Signup02 = (props: Props) => {
       tmpCnt++;
     }
 
-    console.log('tmpCnt :::::: ' , tmpCnt);
-
     if (tmpCnt < 3) {
-      show({ content: '프로필 사진은 반려된 사진을 제외한\n최소3장이 등록되어야 합니다.' });
+      show({ content: '프로필 사진은 얼굴이 선명하게 나온 사진을\n포함하여 최소3장이 등록 되어야 합니다.' });
       return;
-    }
+    };
 
     setIsLoading(true);
 
