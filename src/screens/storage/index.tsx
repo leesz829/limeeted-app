@@ -1022,7 +1022,7 @@ const _styles = StyleSheet.create({
       backgroundColor: isBlur ? 'rgba(0, 0, 0, 0.4)' : 'transparent',
       paddingHorizontal: isBlur ? 8 : 0,
       paddingVertical: isBlur ? 1 : 0,
-      borderRadius: isBlur ? 20 : 0,
+      borderRadius: isBlur ? 10 : 0,
       overflow: 'hidden',
       textAlign: 'center',
     }
