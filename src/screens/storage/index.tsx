@@ -580,7 +580,7 @@ export const Storage = (props: Props) => {
           </View>
         </SpaceView>
 
-        {tabs[currentIndex]?.type != 'ZZIM' &&
+        {(tabs[currentIndex]?.type != 'ZZIM' && tabs[currentIndex]?.data.length > 0) &&
           <SpaceView mt={7} mb={3} pl={22} pr={22}>
             <View style={[_styles.row, {minHeight: 30}]}>
               {(currentIndex < 3 && tabs[currentIndex]?.data.length > 0) &&
