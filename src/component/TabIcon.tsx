@@ -1,9 +1,10 @@
-import { View, Image, StyleSheet, Text, Animated, Platform } from 'react-native';
+import { View, Image, StyleSheet, Text, Platform } from 'react-native';
 import { findSourcePath, ICON } from 'utils/imageUtils';
 import * as React from 'react';
 import { useProfileImg } from 'hooks/useProfileImg';
 import { useUserInfo } from 'hooks/useUserInfo';
 import { CommaFormat, isEmptyData } from 'utils/functions';
+import Animated, { useAnimatedStyle, withTiming, useSharedValue, withSpring, withDelay, Easing, withRepeat, withSequence } from 'react-native-reanimated';
 
 
 const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
@@ -11,7 +12,9 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
 
   const fadeAnim = new Animated.Value(1);
 
-  const fadeInOut = () => {
+  //const [isAnimating, setIsAnimating] = React.useState(false);
+
+  /* const fadeInOut = () => {
     Animated.sequence([
       Animated.timing(fadeAnim, {
         toValue: 0,
@@ -28,13 +31,30 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
         useNativeDriver: true,
       }),
     ]).start(() => fadeInOut());
+  }; */
+
+  const shopDescOpacity = useSharedValue(0);
+  const shopDescAnimate = () => {
+    shopDescOpacity.value = withRepeat(
+      withSequence(
+        withDelay(2000, withTiming(1, { duration: 700 })),
+        withDelay(2500, withTiming(0, { duration: 700 })),
+      ),
+      -1,
+      true
+    );
   };
 
-  /* React.useEffect(() => {
-    fadeInOut();
-  }, []); */
+  const shopDescStyle = useAnimatedStyle(() => {
+    return {
+      opacity: shopDescOpacity.value
+    };
+  });
 
-  fadeInOut();
+  if(name == 'Cashshop') {
+    //fadeInOut();
+    shopDescAnimate();
+  }
 
   switch (name) {
     case 'Roby': {
@@ -105,7 +125,7 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
                   <View style={_style.triangle}></View>
                 </Animated.View> */}
 
-                <Animated.View style={[_style.shopLimitArea, { opacity: fadeAnim }]}>
+                <Animated.View style={[_style.shopLimitArea, shopDescStyle]}>
                   <View style={_style.shopLimitTextArea}>
                     <Text style={_style.limitText}><Image style={{width: 10, height: 7}} source={ICON.crown} /> {CommaFormat(memberBase.mileage_point)}리밋 보유 중!{'\n'}리밋샵 바로가기</Text>
                   </View>
@@ -166,6 +186,7 @@ const _style = StyleSheet.create({
     top: -39,
     right: -32,
     alignItems: 'flex-end',
+    opacity: 0,
   },
   shopLimitTextArea: {
     backgroundColor: '#7F67FF',
