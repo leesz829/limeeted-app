@@ -6,11 +6,14 @@ import { findSourcePath, ICON, IMAGE, GUIDE_IMAGE } from 'utils/imageUtils';
 import { Watermark } from 'component/Watermark';
 import LinearGradient from 'react-native-linear-gradient';
 import { useUserInfo } from 'hooks/useUserInfo';
+import SpaceView from 'component/SpaceView';
+import Animated, { useAnimatedStyle, withTiming, useSharedValue, withSpring, withSequence, withDelay, Easing, withRepeat } from 'react-native-reanimated';
+import { styles } from 'assets/styles/Styles';
 
 
 const { width, height } = Dimensions.get('window');
 
-export default function VisualImage({ imgList, memberData, isButton }) {
+export default function VisualImage({ imgList, memberData, isButton, isAnimation }) {
   const navigation = useNavigation<ScreenNavigationProp>();
 
   const memberBase = useUserInfo(); //hooksMember.getBase();
@@ -27,8 +30,58 @@ export default function VisualImage({ imgList, memberData, isButton }) {
     setCurrentIndex(index);
   };
 
+  // ############################################################################################################# 애니메이션 관련
+  const [isExpanded, setIsExpanded] = React.useState(false);
+  const boxOpacity = useSharedValue(0);
+  const boxWidth = useSharedValue(45);
+  const textOpacity = useSharedValue(0);
+
+  const resIntroAnimate = async () => {
+    /* animateWith.value = withSpring(isExpanded ? 100 : 200, {
+      duration: 3551,
+      damping: 0.5,
+      stiffness: 14,
+      overshootClamping: false,
+      restDisplacementThreshold: 0.01,
+      restSpeedThreshold: 2,
+    }); */
+
+    boxOpacity.value = withDelay(500, withTiming(1, { duration: 300 }, () => {
+      boxWidth.value = withTiming(315, { duration: 1000, easing: Easing.inOut(Easing.exp) }, () => {
+        textOpacity.value = withTiming(1, { duration: 500 }, () => {
+          textOpacity.value = withDelay(1500, withTiming(0, { duration: 400 }, () => {
+            boxWidth.value = withTiming(45, { duration: 500 }, () => {
+              boxOpacity.value = withDelay(500, withTiming(0, { duration: 300 }, () => {
+
+              }));
+            });
+          }));
+        });
+      });
+    }));
+
+    setIsExpanded(!isExpanded);
+  };
+
+  const boxStyle = useAnimatedStyle(() => {
+    return {
+      opacity: boxOpacity.value,
+      width: boxWidth.value,
+    };
+  });
+
+  const textStyle = useAnimatedStyle(() => {
+    return {
+      opacity: textOpacity.value,
+    };
+  });
+
   useFocusEffect(
     React.useCallback(() => {
+      if(isAnimation) {
+        resIntroAnimate();
+      };
+
       return () => {
         imgRef?.current?.scrollToIndex({ index: 0, animated: false });
       };
@@ -66,6 +119,18 @@ export default function VisualImage({ imgList, memberData, isButton }) {
         />
 
         <View style={_styles.absoluteView(isButton)}>
+
+          <SpaceView ml={25} mr={25} mb={20}>
+            <Animated.View
+              style={[_styles.checkDocAnimateArea, boxStyle]}>
+
+              <Image source={ICON.boxTipsIcon} style={styles.iconSquareSize(30)} />
+
+              <Animated.View style={[textStyle]}>
+                <Text style={[_styles.checkDocAnimateText]}>관심을 수락하면 서로의 연락처를 열람할 수 있어요.</Text>
+              </Animated.View>
+            </Animated.View>
+          </SpaceView>
           
           <LinearGradient
             colors={['transparent', '#000000']}
@@ -357,6 +422,30 @@ const _styles = StyleSheet.create({
     letterSpacing: 0,
     textAlign: 'left',
     color: '#ffffff',
+  },
+
+
+
+
+
+
+
+
+  checkDocAnimateArea: {
+    height: 45,
+    overflow: 'hidden',
+    borderRadius: 21,
+    backgroundColor: '#FFFFFF',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingHorizontal: 7,
+  },
+  checkDocAnimateText: {
+    color: '#686868',
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 13,
+    marginLeft: 5,
   },
 
 });

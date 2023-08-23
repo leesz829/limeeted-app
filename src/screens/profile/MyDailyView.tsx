@@ -115,7 +115,11 @@ export default function MyDailyView(props: Props) {
 
           {data?.profile_img_list.length > 0 ? (
             <View>
-              <VisualImage imgList={data?.profile_img_list} memberData={data?.match_member_info} isButton={false} />
+              <VisualImage 
+                imgList={data?.profile_img_list} 
+                memberData={data?.match_member_info} 
+                isButton={false}
+                isAnimation={false} />
             </View>
           ) : (
             <View style={{minHeight: height * 0.7, backgroundColor: '#D6D3D3', justifyContent: 'center', alignItems: 'center'}}>

@@ -455,7 +455,7 @@ export const StorageProfile = (props: Props) => {
       special_level: special_level,
     };
 
-    if(props.route.params.type == 'ZZIM') {
+    if(props.route.params.type == 'ZZIM' || props.route.params.type == 'LIVE') {
       body.match_seq = matchSeq;
     };
 
@@ -540,7 +540,11 @@ export const StorageProfile = (props: Props) => {
         <SpaceView viewStyle={{zIndex: 1}}>
 
           {/* ############################################################## 상단 이미지 영역 */}
-          <VisualImage imgList={data?.profile_img_list} memberData={data?.match_member_info} isButton={props.route.params.type == 'ZZIM' || props.route.params.type == 'LIVE' ? true : false} />
+          <VisualImage 
+            imgList={data?.profile_img_list} 
+            memberData={data?.match_member_info} 
+            isButton={props.route.params.type == 'ZZIM' || props.route.params.type == 'LIVE' ? true : false} 
+            isAnimation={props.route.params.type == 'RES'} />
 
           {/* ######################### 버튼 영역(찜 상태인 경우 활성화) */}
           {(props.route.params.type == 'ZZIM' || props.route.params.type == 'LIVE') &&

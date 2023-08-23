@@ -565,7 +565,11 @@ export default function Matching(props: Props) {
           <SpaceView mb={10}>
 
             {/* ############################################################## 상단 이미지 영역 */}
-            <VisualImage imgList={matchData?.profile_img_list} memberData={matchData?.match_member_info} isButton={true} />
+            <VisualImage
+              imgList={matchData?.profile_img_list} 
+              memberData={matchData?.match_member_info} 
+              isButton={true}
+              isAnimation={false} />
 
             {/* ######################### 버튼 영역 */}
             <View style={_styles.absoluteView}>
@@ -705,7 +709,7 @@ export default function Matching(props: Props) {
           </View>
 
           <View style={[modalStyle.modalBody, {paddingBottom: 0, paddingHorizontal: 30}]}>
-            <SpaceView mb={13} viewStyle={{borderBottomWidth: 1, borderColor: '#e0e0e0', paddingBottom: 20}}>
+            <SpaceView mb={13} pb={20} viewStyle={{borderBottomWidth: 1, borderColor: '#e0e0e0'}}>
               <CommonText 
                 textStyle={[_styles.reportText, {color: ColorType.black0000}]}
                 type={'h5'}>
@@ -741,7 +745,7 @@ export default function Matching(props: Props) {
                   {matchData.intro_second_yn == 'Y' ? (
                     <>
                       오늘 소개하여 드린 <Text style={{color: '#7986EE'}}>데일리 뷰</Text>가 마감되었어요.{"\n"}
-                      <Text style={{color: '#7986EE'}}>데일리 뷰</Text>에서 제공해드릴 프로필 카드는 {"\n"}운영 정책에 따라 다양하게 늘려나갈 예정입니다.
+                      <Text style={{color: '#7986EE'}}>데일리 뷰</Text>에서 제공해드리는 프로필 카드는 {"\n"}매일 오후3시와 자정에 확인 가능합니다. 🎁
                     </>
                   ) : (
                     <>

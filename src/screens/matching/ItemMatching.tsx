@@ -405,7 +405,10 @@ export default function ItemMatching(props: Props) {
           <SpaceView mb={10}>
 
             {/* ############################################################## 상단 이미지 영역 */}
-            <VisualImage imgList={data?.profile_img_list} memberData={data?.match_member_info} />
+            <VisualImage 
+              imgList={data?.profile_img_list} 
+              memberData={data?.match_member_info}
+              isAnimation={false} />
 
             {/* ######################### 버튼 영역 */}
             <View style={_styles.absoluteView}>

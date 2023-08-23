@@ -155,6 +155,8 @@ export const ICON = {
   checkOnIcon: require('assets/icon/check_on.png'),
   checkOffIcon: require('assets/icon/check_off.png'),
   loveIcon: require('assets/icon/love_icon.png'),
+  boxTipsIcon: require('assets/icon/box_tips_icon.png'),
+  giftIcon: require('assets/icon/gift_icon.png'),
 };
 
 export const GIF_IMG = {
