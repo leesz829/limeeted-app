@@ -63,18 +63,12 @@ export const Message = (props: Props) => {
 				dispatch(myProfile());
 				break;
 			  default:
-				show({
-				  content: '오류입니다. 관리자에게 문의해주세요.' ,
-				  confirmCallback: function() {}
-				});
+				show({ content: '오류입니다. 관리자에게 문의해주세요.' });
 				break;
 			}
 		   
 		  } else {
-			show({
-			  content: '오류입니다. 관리자에게 문의해주세요.' ,
-			  confirmCallback: function() {}
-			});
+			show({ content: '오류입니다. 관리자에게 문의해주세요.' });
 		  }
 		} catch (error) {
 		  console.log(error);
@@ -84,29 +78,37 @@ export const Message = (props: Props) => {
 	};
 
 	// ############################################# 바로가기 이동 함수
-	const goLink = async (type:any) => {
-		if(type == 'MSG_TP_14') {
-			navigation.navigate(STACK.TAB, { screen: 'Roby' });
-		} else if(type == 'MSG_TP_04' || type == 'MSG_TP_05') {
-			navigation.navigate(STACK.COMMON, { screen: 'SecondAuth' });
-		} else if(type == 'MSG_TP_02' || type == 'MSG_TP_03' || type == 'MSG_TP_06' || type == 'MSG_TP_07') {
-			navigation.navigate(STACK.COMMON, { screen: 'Profile1' });
-		} else if(type == 'MSG_TP_08' || type == 'MSG_TP_09') {
-			navigation.navigate(STACK.COMMON, {
-				screen: 'Storage',
-				params: {
-				  headerType: 'common',
-				  pageIndex: 'RES',
-				},
-			});
-		} else if(type == 'MSG_TP_10') {
-			navigation.navigate(STACK.COMMON, {
-				screen: 'Storage',
-				params: {
-				  headerType: 'common',
-				  loadPage: 'LIVE',
-				},
-			});
+	const goLink = async (item:any) => {
+		const type = item.msg_type;
+		const link_end_yn = item.link_end_yn;
+
+		if(link_end_yn == 'Y') {
+			show({ content: '보관함 보관 기간이 만료 되었습니다.' });
+		} else {
+			if(type == 'MSG_TP_14') {
+				navigation.navigate(STACK.TAB, { screen: 'Roby' });
+			} else if(type == 'MSG_TP_04' || type == 'MSG_TP_05') {
+				navigation.navigate(STACK.COMMON, { screen: 'SecondAuth' });
+			} else if(type == 'MSG_TP_02' || type == 'MSG_TP_03' || type == 'MSG_TP_06' || type == 'MSG_TP_07') {
+				navigation.navigate(STACK.COMMON, { screen: 'Profile1' });
+			} else if(type == 'MSG_TP_08' || type == 'MSG_TP_09') {
+				navigation.navigate(STACK.COMMON, {
+					screen: 'Storage',
+					params: {
+					  headerType: 'common',
+					  pageIndex: 'RES',
+					},
+				});
+			} else if(type == 'MSG_TP_10') {
+				console.log('MSG10!!!!!!!!!!!!!!!!!!!!!');
+				navigation.navigate(STACK.COMMON, {
+					screen: 'Storage',
+					params: {
+					  headerType: 'common',
+					  loadPage: 'LIVE',
+					},
+				});
+			}
 		}
 	};
 
@@ -123,78 +125,58 @@ export const Message = (props: Props) => {
 
 			<TopNavigation currentPath={''} />
 			<ScrollView contentContainerStyle={styles.scrollContainer} style={{backgroundColor: '#fff'}}>
-				{messageList.map(
-					({
-						msg_send_seq,
-						msg_type_name,
-						title,
-						contents,
-						template_type,
-						reg_dt,
-						msg_type,
-					}: {
-						msg_send_seq: any;
-						msg_type_name: string;
-						title: string;
-						contents: string;
-						template_type: string;
-						reg_dt: string;
-						msg_type: string;
-					}) => (
-
-						<View key={msg_send_seq} style={{marginBottom: 10}}>
-							<View style={_styles.rowContainer}>
-								<TouchableOpacity
-									style={_styles.inner}
-									onPress={() => { 
-										toggleAccordion(msg_send_seq);
-									}}
-									activeOpacity={0.3} >
-									
-									<View style={[_styles.titleContainer, activeIndex === msg_send_seq && _styles.active]}>
-										<CommonText textStyle={_styles.titleText} fontWeight={'500'} type={'h5'}>{title}</CommonText>
-									</View>
-
-									<View style={[_styles.iconContainer, activeIndex === msg_send_seq && _styles.activeIcon]}>
-										<Image source={ICON.arrBottom} style={_styles.iconStyle} />
-									</View>
-								</TouchableOpacity>
-							</View>
-
-							{activeIndex === msg_send_seq && (
-								<View style={_styles.descContainer}>
-									<View style={_styles.descText}>
-										<CommonText type={'h5'}>{contents}</CommonText>
-
-										<View style={_styles.dateArea}>
-											<CommonText textStyle={_styles.dateText} type={'h5'}>{reg_dt}</CommonText>
-										</View>
-									</View>
-
-									{(
-										msg_type == 'MSG_TP_02' || msg_type == 'MSG_TP_03' || msg_type == 'MSG_TP_04' || msg_type == 'MSG_TP_05' 
-										|| msg_type == 'MSG_TP_06' || msg_type == 'MSG_TP_07' || msg_type == 'MSG_TP_08' || msg_type == 'MSG_TP_09'
-										|| msg_type == 'MSG_TP_10' || msg_type == 'MSG_TP_14'
-									) &&
-										<SpaceView mt={10}>
-											<CommonBtn 
-												value={'바로가기'} 
-												type={'gray2'}
-												width={'100%'}
-												height={35}
-												fontSize={13}
-												borderRadius={5}
-												onPress={() => {
-													goLink(msg_type);
-												}} />
-										</SpaceView>
-									}
+				{messageList.map((item : any, index) => (
+					<SpaceView mb={10} key={item.msg_send_seq}>
+						<View style={_styles.rowContainer}>
+							<TouchableOpacity
+								style={_styles.inner}
+								onPress={() => { 
+									toggleAccordion(item.msg_send_seq);
+								}}
+								activeOpacity={0.3}>
+								
+								<View style={[_styles.titleContainer, activeIndex === item.msg_send_seq && _styles.active]}>
+									<CommonText textStyle={_styles.titleText} fontWeight={'500'} type={'h5'}>{item.title}</CommonText>
 								</View>
-							)}
+
+								<View style={[_styles.iconContainer, activeIndex === item.msg_send_seq && _styles.activeIcon]}>
+									<Image source={ICON.arrBottom} style={_styles.iconStyle} />
+								</View>
+							</TouchableOpacity>
 						</View>
 
-					),
-				)}
+						{activeIndex === item.msg_send_seq && (
+							<View style={_styles.descContainer}>
+								<View style={_styles.descText}>
+									<CommonText type={'h5'}>{item.contents}</CommonText>
+
+									<View style={_styles.dateArea}>
+										<CommonText textStyle={_styles.dateText} type={'h5'}>{item.reg_dt}</CommonText>
+									</View>
+								</View>
+
+								{(
+									item.msg_type == 'MSG_TP_02' || item.msg_type == 'MSG_TP_03' || item.msg_type == 'MSG_TP_04' || item.msg_type == 'MSG_TP_05' 
+									|| item.msg_type == 'MSG_TP_06' || item.msg_type == 'MSG_TP_07' || item.msg_type == 'MSG_TP_08' || item.msg_type == 'MSG_TP_09'
+									|| item.msg_type == 'MSG_TP_10' || item.msg_type == 'MSG_TP_14'
+								) &&
+									<SpaceView mt={10}>
+										<CommonBtn 
+											value={'바로가기'} 
+											type={'gray2'}
+											width={'100%'}
+											height={35}
+											fontSize={13}
+											borderRadius={5}
+											onPress={() => {
+												goLink(item);
+											}} />
+									</SpaceView>
+								}
+							</View>
+						)}
+					</SpaceView>
+				))}
 			</ScrollView>
 		</>
 	);
