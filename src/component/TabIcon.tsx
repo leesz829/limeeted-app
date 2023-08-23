@@ -10,7 +10,7 @@ import Animated, { useAnimatedStyle, withTiming, useSharedValue, withSpring, wit
 const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
   const memberBase = useUserInfo();
 
-  const fadeAnim = new Animated.Value(1);
+  //const fadeAnim = new Animated.Value(1);
 
   //const [isAnimating, setIsAnimating] = React.useState(false);
 
