@@ -84,7 +84,7 @@ export default function ProfileActive({ memberData }) {
             <View style={_styles.sliderContainer}>
               <Text style={_styles.sliderText}>프로필 평점 {memberData.profile_score}</Text>
 
-              {isEmptyData(memberData?.profile_score) && memberData?.profile_score > 0 &&
+              {(isEmptyData(memberData?.profile_score) && memberData?.profile_score > 3) &&
                 <View style={[_styles.scoreContainer, { left: memberData?.profile_score == 0 ? 0 : memberData?.profile_score * 10 - 5 + '%' }]}>
                   <Text style={_styles.scoreText}>{memberData?.profile_score}</Text>
                   <View style={_styles.triangle}></View>
@@ -165,7 +165,7 @@ export default function ProfileActive({ memberData }) {
           <View style={_styles.sliderContainer}>
             <Text style={_styles.sliderText}>소셜 평점 {memberData?.social_grade.toFixed(1)}</Text>
 
-            {isEmptyData(memberData?.social_grade) && memberData?.social_grade > 0 &&
+            {(isEmptyData(memberData?.social_grade) && memberData?.social_grade > 3) &&
               <View style={[_styles.scoreContainer, { left: memberData?.social_grade == 0 ? 0 : memberData?.social_grade * 10 - 5 + '%' }]}>
                 <Text style={_styles.scoreText}>{memberData?.social_grade}</Text>
                 <View style={_styles.triangle}></View>
