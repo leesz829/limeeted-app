@@ -948,7 +948,7 @@ export const Profile1 = (props: Props) => {
                 onChangeText={(text) => setPopupAuthComment({...popupAuthComment, comment: text})}
                 style={[_styles.authCommentInput]}
                 multiline={true}
-                placeholder={'소개글을 자유롭게 입력해 주세요.'}
+                placeholder={'상대방에게 보여지는 해당 인증 항목에 대한\n소개글을 자유롭게 작성해 주세요.'}
                 placeholderTextColor={'#C7C7C7'}
                 numberOfLines={4}
                 maxLength={200}

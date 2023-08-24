@@ -282,7 +282,7 @@ function RenderAuthInfoNew({ item, isButton, onPressSecondAuthFunc, onPressSecon
                   {isEmptyData(item?.auth_comment) ? (
                     <Text style={_styles.authIntroText}>{item?.auth_comment}</Text>
                   ) : (
-                    <Text style={_styles.authIntroTextInput}>여기를 터치하고 내 이야기를 남겨 주세요.</Text>
+                    <Text style={_styles.authIntroTextInput}>터치하여 내 인증 코멘트 작성하기</Text>
                   )}
                 </SpaceView>
               </TouchableOpacity>
@@ -295,7 +295,7 @@ function RenderAuthInfoNew({ item, isButton, onPressSecondAuthFunc, onPressSecon
                 </SpaceView>
               ) : (
                 <SpaceView mt={10} viewStyle={_styles.authIntroArea}>
-                  <Text style={_styles.authIntroText}>코멘트가 등록되어 있지 않아요.</Text>
+                  <Text style={_styles.authIntroText}>작성된 인증 코멘트가 없습니다.</Text>
                 </SpaceView>
               )}
             </>
@@ -514,7 +514,7 @@ const _styles = StyleSheet.create({
     fontSize: 11,
     color: '#A3A3A3',
     textAlign: 'center',
-    paddingHorizontal: 40,
+    paddingHorizontal: 35,
     paddingVertical: 8,
   },
   authIndicatorItem: (isOn: boolean) => {
