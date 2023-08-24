@@ -768,7 +768,7 @@ export const StorageProfile = (props: Props) => {
           adjustToContentHeight={false}
           handleStyle={modalStyle.modalHandleStyle}
           modalStyle={[modalStyle.modalContainer, {borderRadius: 0, borderTopLeftRadius: 50, borderTopRightRadius: 50}]}
-          modalHeight={500}
+          modalHeight={550}
           FooterComponent={
             <>
               <SpaceView>
