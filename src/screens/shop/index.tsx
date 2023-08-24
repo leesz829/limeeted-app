@@ -615,7 +615,7 @@ const _styles = StyleSheet.create({
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 10,
     color: ColorType.white,
-    borderRadius: 20,
+    borderRadius: 10,
     paddingHorizontal: 6,
     paddingVertical: 2,
     overflow: 'hidden',
