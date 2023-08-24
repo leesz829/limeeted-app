@@ -334,9 +334,9 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
         //navigation.navigate(STACK.TAB, { screen: 'Shop' });
 
         if(Platform.OS == 'android') {
-          show({ content: '구매에 성공하였습니다.' });
+          show({ content: '구매에 성공하였습니다.\n구매한 상품은 선물함에서 획득 가능합니다.' });
         } else {
-          Alert.alert('알림', '구매에 성공하였습니다.', [{ text: '확인' }]);
+          Alert.alert('알림', '구매에 성공하였습니다.\n구매한 상품은 선물함에서 획득 가능합니다.', [{ text: '확인' }]);
         }
       } else {
         closeModal(false);
