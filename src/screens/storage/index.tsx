@@ -16,6 +16,7 @@ import {
   Dimensions,
   Text,
   ImageBackground,
+  FlatList
 } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import LinearGradient from 'react-native-linear-gradient';
@@ -515,7 +516,8 @@ export const Storage = (props: Props) => {
   };
 
   // 이미지 스크롤 처리
-  /* const handleScroll = (event) => {
+  /* const handleScroll = async (event) => {
+    const scrollX = event.nativeEvent.contentOffset.x;
     let contentOffset = event.nativeEvent.contentOffset;
     let index = Math.floor(contentOffset.x / (width-10));
     setCurrentIndex(index);
@@ -523,165 +525,16 @@ export const Storage = (props: Props) => {
 
   React.useEffect(() => {
     if(currentIndex == 0 || currentIndex == 1) {
-      tabScrollRef.current.scrollTo({x:0, animated:true});
+      tabScrollRef?.current?.scrollTo({x:0, animated:true});
     } else if(currentIndex > 2) {
-      tabScrollRef.current.scrollToEnd({animated: true});
+      tabScrollRef?.current?.scrollToEnd({animated: true});
     }
-
   }, [currentIndex]);
 
-  return (
-    <>
-      {isLoading && <CommonLoading />}
-
-      <View style={_styles.root}>
-        {/* <CommonHeader title={tabs[currentIndex].title} right={<Wallet theme />} /> */}
-
-        {props.route.params?.headerType == 'common' ? (
-          <CommonHeader title={'보관함'} />
-        ) : (
-          <TopNavigation currentPath={''} />
-        )}
-
-        <SpaceView mb={6}>
-          <ScrollView 
-            horizontal 
-            ref={tabScrollRef}
-            showsHorizontalScrollIndicator={false} 
-            style={_styles.topContainer}>
-
-            <View style={_styles.dotContainer}>
-              {tabs.map((item, index) => (
-                <>
-                  <SpaceView key={index} pt={10}>
-                    <TouchableOpacity onPress={() => { onPressDot(index); }}>
-                      <View style={[_styles.tabItem(index === currentIndex, item.color)]}>
-                        <Text style={_styles.tabItemText}>{item.title} | {item.data.length}</Text>
-                      </View>
-                    </TouchableOpacity>
-                    {item.isNew && ( <View style={_styles.newIcon(item.color)} /> )}
-                  </SpaceView>
-                </>
-              ))}
-            </View>
-          </ScrollView>
-        </SpaceView>
-        
-        <SpaceView mt={5} mb={6} viewStyle={_styles.bannerArea}>
-          <View>
-            <Text style={_styles.bannerText01}>관심과 찐심은 직진이에요.</Text>
-            <Text style={_styles.bannerText02}>
-              관심을 수락하면 상대방이 <Text style={{color: '#FFC100'}}>내 연락처를 열람</Text>할 수 있어요.{'\n'}
-              호감 가는 사람의 관심과 찐심을 받아 주세요.
-            </Text>
-          </View>
-          <View style={{position: 'absolute', right: 10, bottom: 8}}>
-            <Image source={ICON.loveIcon} style={styles.iconSquareSize(35)} />
-          </View>
-        </SpaceView>
-
-        {(tabs[currentIndex]?.type != 'ZZIM' && tabs[currentIndex]?.data.length > 0) &&
-          <SpaceView mt={7} mb={3} pl={22} pr={22}>
-            <View style={[_styles.row, {minHeight: 30}]}>
-              {(currentIndex < 3 && tabs[currentIndex]?.data.length > 0) &&
-                <>
-                  <View style={{flexDirection: 'row'}}>
-                    <Text style={_styles.showText}>찐심만 보기</Text>
-                    <ToggleSwitch
-                      isOn={isSpecialVisible}
-                      onColor={Color.primary}
-                      offColor={Color.grayDDDD}
-                      size="small"
-                      onToggle={(isOn) => setIsSpecialVisible(isOn) }
-                    />
-                  </View>
-                </>
-              }
-
-              {tabs[currentIndex]?.type == 'LIVE' &&
-                <View style={_styles.liveTabArea}>
-                  <TouchableOpacity onPress={() => { onLiveTab('RES'); }} style={_styles.liveTabItem(isLiveResVisible, 'RES')}>
-                    <Text style={_styles.liveTabText(isLiveResVisible, 'RES')}>받은 LIVE</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => { onLiveTab('REQ'); }} style={_styles.liveTabItem(isLiveReqVisible, 'REQ')}>
-                    <Text style={_styles.liveTabText(isLiveReqVisible, 'REQ')}>보낸 LIVE</Text>
-                  </TouchableOpacity>
-                </View>
-              }
-
-              {((tabs[currentIndex]?.type == 'RES' || tabs[currentIndex]?.type == 'MATCH' || tabs[currentIndex]?.type == 'LIVE') && tabs[currentIndex]?.data.length > 0) && (
-                <>
-                  {tabs[currentIndex]?.isNew ? (
-                    <TouchableOpacity onPress={() => { allCheck(tabs[currentIndex]?.type); }} style={_styles.checkArea}>
-                      <Image source={ICON.checkOnIcon} style={styles.iconSquareSize(17)} />
-                      <Text style={_styles.checkAreaText('#333333')}>{tabs[currentIndex]?.type == 'MATCH' ? '성공 매칭을' : '새 관심들을'} 모두 확인했어요.</Text>
-                    </TouchableOpacity>
-                  ) : (
-                    <View style={_styles.checkArea}>
-                      <Image source={ICON.checkOffIcon} style={styles.iconSquareSize(17)} />
-                      <Text style={_styles.checkAreaText('#D5D5D5')}>{tabs[currentIndex]?.type == 'MATCH' ? '성공 매칭을' : '새 관심들을'} 모두 확인했어요.</Text>
-                    </View>
-                  )}
-                </>
-              )}
-              
-            </View>
-          </SpaceView>
-        }
-
-        <SpaceView mt={10}>
-          <Carousel
-            ref={dataRef}
-            data={tabs}
-            firstItem={currentIndex}
-            onSnapToItem={setCurrentIndex}
-            sliderWidth={width}
-            itemWidth={width}
-            pagingEnabled
-            renderItem={({item, index}) => {
-              return (
-                <>
-                  {!isLoading &&
-                    <View key={'storage_' + index}>
-                      {item.data.length == 0 ? (
-                        <SpaceView viewStyle={_styles.noData}>
-                          <Text style={_styles.noDataText}>{item.title}이 없습니다.</Text>
-                        </SpaceView>
-                      ) : (
-                        <>
-                          {(isSpecialVisible && !item.isSpecialExists && item.type != 'ZZIM' && item.type != 'LIVE') ? (
-                            <SpaceView viewStyle={_styles.noData}>
-                              <Text style={_styles.noDataText}>찐심이 없습니다.</Text>
-                            </SpaceView>
-                          ) : (
-                            <ScrollView showsVerticalScrollIndicator={false} style={{width: '100%', height: height-250}}>
-                              <View style={_styles.imageWarpper}>
-                                {item.data.map((i, n) => (
-                                  <View key={n}>
-                                    <RenderItem item={i} index={n} type={item.type} tabColor={item.color} />
-                                  </View>
-                                ))}  
-                              </View>
-
-                              <View style={{ height: 130 }} />
-                            </ScrollView>
-                          )}
-                        </>
-                      )}
-                    </View>
-                  }
-                </>
-              )
-            }}
-          />
-        </SpaceView>
-      </View>
-    </>
-  );
-
-
   /* ################################################################################ 보관함 아이템 렌더링 */
-  function RenderItem({ item, index, type, tabColor }) {
+  const RenderItem = React.memo(({ item, index, type, tabColor }) => {
+  //function RenderItem({ item, index, type, tabColor }) {
+    //console.log('index :::::::: ', index);
     let matchType = item.match_type;  // 매칭 유형
 
     let isShow = true;  // 노출 여부
@@ -896,7 +749,190 @@ export const Storage = (props: Props) => {
         }
       </>
     );
-  }
+  });
+
+  return (
+    <>
+      {isLoading && <CommonLoading />}
+
+      <View style={_styles.root}>
+        {/* <CommonHeader title={tabs[currentIndex].title} right={<Wallet theme />} /> */}
+
+        {props.route.params?.headerType == 'common' ? (
+          <CommonHeader title={'보관함'} />
+        ) : (
+          <TopNavigation currentPath={''} />
+        )}
+
+        {/* ####################################################################################################
+        ##################################### 탭 Indicator
+        #################################################################################################### */}
+        <SpaceView mb={6}>
+          <ScrollView 
+            horizontal 
+            ref={tabScrollRef}
+            showsHorizontalScrollIndicator={false} 
+            style={_styles.topContainer}>
+
+            <View style={_styles.dotContainer}>
+              {tabs.map((item, index) => (
+                <>
+                  <SpaceView key={index} pt={10}>
+                    <TouchableOpacity onPress={() => { onPressDot(index); }}>
+                      <View style={[_styles.tabItem(index === currentIndex, item.color)]}>
+                        <Text style={_styles.tabItemText}>{item.title} | {item.data.length}</Text>
+                      </View>
+                    </TouchableOpacity>
+                    {item.isNew && ( <View style={_styles.newIcon(item.color)} /> )}
+                  </SpaceView>
+                </>
+              ))}
+            </View>
+          </ScrollView>
+        </SpaceView>
+        
+        {/* ####################################################################################################
+        ##################################### 배너 영역
+        #################################################################################################### */}
+        <SpaceView mt={5} mb={6} viewStyle={_styles.bannerArea}>
+          <View>
+            <Text style={_styles.bannerText01}>관심과 찐심은 직진이에요.</Text>
+            <Text style={_styles.bannerText02}>
+              관심을 수락하면 상대방이 <Text style={{color: '#FFC100'}}>내 연락처를 열람</Text>할 수 있어요.{'\n'}
+              호감 가는 사람의 관심과 찐심을 받아 주세요.
+            </Text>
+          </View>
+          <View style={{position: 'absolute', right: 10, bottom: 8}}>
+            <Image source={ICON.loveIcon} style={styles.iconSquareSize(35)} />
+          </View>
+        </SpaceView>
+
+        {/* ####################################################################################################
+        ##################################### 설정 영역
+        #################################################################################################### */}
+        {(tabs[currentIndex]?.type != 'ZZIM' && tabs[currentIndex]?.data.length > 0) &&
+          <SpaceView mt={7} mb={3} pl={22} pr={22}>
+            <View style={[_styles.row, {minHeight: 30}]}>
+              {(currentIndex < 3 && tabs[currentIndex]?.data.length > 0) &&
+                <>
+                  <View style={{flexDirection: 'row'}}>
+                    <Text style={_styles.showText}>찐심만 보기</Text>
+                    <ToggleSwitch
+                      isOn={isSpecialVisible}
+                      onColor={Color.primary}
+                      offColor={Color.grayDDDD}
+                      size="small"
+                      onToggle={(isOn) => setIsSpecialVisible(isOn) }
+                    />
+                  </View>
+                </>
+              }
+
+              {tabs[currentIndex]?.type == 'LIVE' &&
+                <View style={_styles.liveTabArea}>
+                  <TouchableOpacity onPress={() => { onLiveTab('RES'); }} style={_styles.liveTabItem(isLiveResVisible, 'RES')}>
+                    <Text style={_styles.liveTabText(isLiveResVisible, 'RES')}>받은 LIVE</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => { onLiveTab('REQ'); }} style={_styles.liveTabItem(isLiveReqVisible, 'REQ')}>
+                    <Text style={_styles.liveTabText(isLiveReqVisible, 'REQ')}>보낸 LIVE</Text>
+                  </TouchableOpacity>
+                </View>
+              }
+
+              {((tabs[currentIndex]?.type == 'RES' || tabs[currentIndex]?.type == 'MATCH' || tabs[currentIndex]?.type == 'LIVE') && tabs[currentIndex]?.data.length > 0) && (
+                <>
+                  {tabs[currentIndex]?.isNew ? (
+                    <TouchableOpacity onPress={() => { allCheck(tabs[currentIndex]?.type); }} style={_styles.checkArea}>
+                      <Image source={ICON.checkOnIcon} style={styles.iconSquareSize(17)} />
+                      <Text style={_styles.checkAreaText('#333333')}>{tabs[currentIndex]?.type == 'MATCH' ? '성공 매칭을' : '새 관심들을'} 모두 확인했어요.</Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <View style={_styles.checkArea}>
+                      <Image source={ICON.checkOffIcon} style={styles.iconSquareSize(17)} />
+                      <Text style={_styles.checkAreaText('#D5D5D5')}>{tabs[currentIndex]?.type == 'MATCH' ? '성공 매칭을' : '새 관심들을'} 모두 확인했어요.</Text>
+                    </View>
+                  )}
+                </>
+              )}
+              
+            </View>
+          </SpaceView>
+        }
+
+        {/* ####################################################################################################
+        ##################################### 아이템 슬라이드 영역
+        #################################################################################################### */}
+        <SpaceView mt={10}>
+          <Carousel
+            ref={dataRef}
+            data={tabs}
+            firstItem={currentIndex}
+            //onSnapToItem={setCurrentIndex}
+            onBeforeSnapToItem={setCurrentIndex}
+            //activeAnimationType={'spring'}
+            sliderWidth={width}
+            itemWidth={width}
+            pagingEnabled
+            renderItem={({item, index}) => {
+              const type = item.type;
+              const color = item.color;
+
+              return (
+                <>
+                  {(tabs[currentIndex]?.type == type && !isLoading) &&
+                    <View key={'storage_' + index}>
+                      {item.data.length == 0 ? (
+                        <SpaceView viewStyle={_styles.noData}>
+                          <Text style={_styles.noDataText}>{item.title}이 없습니다.</Text>
+                        </SpaceView>
+                      ) : (
+                        <>
+                          {(isSpecialVisible && !item.isSpecialExists && item.type != 'ZZIM' && item.type != 'LIVE') ? (
+                            <SpaceView viewStyle={_styles.noData}>
+                              <Text style={_styles.noDataText}>찐심이 없습니다.</Text>
+                            </SpaceView>
+                          ) : (
+                            <>
+                              <ScrollView showsVerticalScrollIndicator={false} style={{width: '100%', height: height-250}}>
+                                <View style={_styles.imageWarpper}>
+                                  <FlatList
+                                    style={_styles.itemWrap}
+                                    data={item.data}
+                                    keyExtractor={(item, index) => index.toString()}
+                                    horizontal
+                                    initialNumToRender={200}
+                                    //maxToRenderPerBatch={200}
+                                    //windowSize={100}
+                                    removeClippedSubviews={true}
+                                    getItemLayout={(data, index) => (
+                                      {length: (width - 54) / 2, offset: (width - 54) / 2 * index, index}
+                                    )}
+                                    renderItem={({ item: innerItem, index: innerIndex }) => {
+                                      return (
+                                        <View key={index}>
+                                          <RenderItem item={innerItem} index={innerIndex} type={type} tabColor={color} />
+                                        </View>
+                                      )
+                                    }}
+                                  />
+                                </View>
+
+                                <View style={{ height: 130 }} />
+                              </ScrollView>
+                            </>
+                          )}
+                        </>
+                      )}
+                    </View>
+                  }
+                </>
+              )
+            }}
+          />
+        </SpaceView>
+      </View>
+    </>
+  );
 };
 
 
@@ -914,6 +950,12 @@ const _styles = StyleSheet.create({
     backgroundColor: 'white',
     height: height,
     width: width,
+  },
+  itemWrap: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    width: '100%',
+    justifyContent: 'space-between',
   },
   topContainer: {
     marginHorizontal: 24,
