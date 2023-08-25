@@ -161,16 +161,11 @@ export const Message = (props: Props) => {
 									|| item.msg_type == 'MSG_TP_10' || item.msg_type == 'MSG_TP_14'
 								) &&
 									<SpaceView mt={10}>
-										<CommonBtn 
-											value={'바로가기'} 
-											type={'gray2'}
-											width={'100%'}
-											height={35}
-											fontSize={13}
-											borderRadius={5}
-											onPress={() => {
-												goLink(item);
-											}} />
+										<TouchableOpacity 
+											disabled={item.link_end_yn == 'Y' ? true : false}
+											onPress={() => { goLink(item); }}>
+											<Text style={_styles.linkText(item.link_end_yn == 'Y' ? true : false)}>바로가기</Text>
+										</TouchableOpacity>
 									</SpaceView>
 								}
 							</View>
@@ -225,7 +220,7 @@ const _styles = StyleSheet.create({
 	descContainer: {
 		//padding: 16,
 		paddingHorizontal: 10,
-		paddingBottom: 20,
+		paddingBottom: 10,
 		borderWidth: 1,
 		borderTopWidth: 0,
 		borderColor: Color.grayEBE,
@@ -243,4 +238,16 @@ const _styles = StyleSheet.create({
 	dateText: {
 		textAlign: 'right',
 	},
+	linkText: (isDisabled: boolean) => {
+		return {
+		  fontFamily: 'AppleSDGothicNeoEB00',
+		  fontSize: 11,
+		  color: isDisabled ? '#C7C7C7' : '#7986EE',
+		  textAlign: 'center',
+		  borderColor: isDisabled ? '#C7C7C7' : '#7986EE',
+		  borderWidth: 1,
+		  borderRadius: 5,
+		  paddingVertical: 5,
+		};
+	  },
   });
