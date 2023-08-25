@@ -85,6 +85,7 @@ import {
   UPDATE_MEMBER_MASTER_IMAGE,
   MATCH_CHECK_ALL,
   UPDATE_JOIN_MASTER_IMAGE,
+  JOIN_CANCEL,
 } from './route';
 
 /* ========================================================================================================
@@ -219,6 +220,13 @@ export async function update_join_master_image(body: {
   member_img_seq: number;
 }) {
   return send(UPDATE_JOIN_MASTER_IMAGE, 'POST', body, false, false);
+}
+
+// 회원 가입을 철회한다.
+export async function join_cancel(body: {
+  member_seq: number;
+}) {
+  return send(JOIN_CANCEL, 'POST', body, false, false);
 }
 
 
