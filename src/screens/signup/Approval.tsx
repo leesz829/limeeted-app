@@ -3,14 +3,14 @@ import { CommonBtn } from 'component/CommonBtn';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
-import { View, Image, StyleSheet, ScrollView } from 'react-native';
+import { View, Image, StyleSheet, ScrollView, TouchableOpacity, Text } from 'react-native';
 import { IMAGE, PROFILE_IMAGE, ICON } from 'utils/imageUtils';
 import { RouteProp, useNavigation, useIsFocused, CommonActions } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
 import { findSourcePath } from 'utils/imageUtils';
 import { ROUTES } from 'constants/routes';
-import { get_member_approval } from 'api/models';
+import { get_member_approval, join_cancel } from 'api/models';
 import { usePopup } from 'Context';
 
 
@@ -103,8 +103,6 @@ export const Approval = (props: Props) => {
 
   // ########################################################################## 수정하기 버튼
   const modifyBtn = async () => {
-    console.log('apprData :::::::: ' , apprData);
-
     if(apprData.result_code == '0003') {
       if(apprData.refuseAuthCnt > 0) {
         goJoin('01');
@@ -114,6 +112,18 @@ export const Approval = (props: Props) => {
     } else {
       goJoin('01');
     };
+  };
+
+  // ########################################################################## 탈퇴하기 버튼
+  const exitBtn = async () => {
+    show({
+			title: '회원 탈퇴',
+			content: '회원 탈퇴는 24시간 뒤 완료 처리되며, 암호화된\n모든 개인정보 및 보유한 아이템은 자동으로 폐기됩니다.\n단, 24시간 이내에 로그인 시 회원 탈퇴는 자동 철회 됩니다.',
+			cancelCallback: function() {},
+			confirmCallback: function() {
+				exitProc();
+			}
+		});
   };
 
   // ########################################################################## 회원가입 이동
@@ -193,6 +203,26 @@ export const Approval = (props: Props) => {
           ],
         })
       );
+    }
+  };
+
+  // ########################################################################## 탈퇴 처리
+  const exitProc = async () => {
+    const body = {
+      member_seq : memberSeq
+    };
+    const { success, data } = await join_cancel(body);
+    if(success) {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 1,
+          routes: [
+            { name: 'Login01' },
+          ],
+        })
+      );
+    } else {
+      show({ content: '오류입니다. 관리자에게 문의해주세요.' });
     }
   };
 
@@ -317,21 +347,26 @@ export const Approval = (props: Props) => {
                     }
                   })}
                 </ScrollView>
-              </View>          
+              </View>
             </SpaceView>
           </>
         )}
-
       </ScrollView>
 
-      <SpaceView viewStyle={styles.bottomBtnContainer} mb={5}>
-        <CommonBtn
-          value={'프로필 수정하기'}
-          type={'blue2'}
-          onPress={() => {
-            modifyBtn();
-          }}
-        />
+      <SpaceView pl={16} pr={16} viewStyle={styles.bottomBtnContainer}>
+        <SpaceView mb={5}>
+          <TouchableOpacity onPress={() => { modifyBtn(); }}>
+            <Text style={_styles.btnText('MOD')}>프로필 수정하기</Text>
+          </TouchableOpacity>
+        </SpaceView>
+        {/* <SpaceView>
+          <TouchableOpacity onPress={() => { exitBtn(); }}>
+            <Text style={_styles.btnText('EXIT')}>
+              탈퇴하기{'\n'}
+              <Text style={_styles.exitDescText}>가입 시 작성한 회원 정보 삭제 및 탈퇴 처리</Text>
+            </Text>
+          </TouchableOpacity>
+        </SpaceView> */}
       </SpaceView>
     </View>
   );
@@ -392,5 +427,22 @@ const _styles = StyleSheet.create({
     overflow: 'hidden',
     borderRadius: 10,
     lineHeight: 20,
+  },
+  btnText: (type: string) => {
+    return {
+      fontFamily: 'AppleSDGothicNeoB00',
+      fontSize: 15,
+      color: type == 'MOD' ? '#697AE6' : '#707070',
+      textAlign: 'center',
+      borderColor: type == 'MOD' ? '#697AE6' : '#707070',
+      borderWidth: 1,
+      borderRadius: 50,
+      paddingVertical: type == 'MOD' ? 11 : 5,
+    };
+  },
+  exitDescText: {
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 10,
+    color: '#B5B5B5',
   },
 });
