@@ -27,6 +27,7 @@ export const getStorageListData = (
          req_profile_score: any;
          res_check_yn: any;
 			req_success_check_yn: any;
+         keep_end_day: any;
       },
    ],
 ) => {
@@ -56,6 +57,7 @@ export const getStorageListData = (
          req_profile_score,
          res_check_yn,
 			req_success_check_yn,
+         keep_end_day,
       }: {
          match_seq: any;
          match_status: any;
@@ -78,6 +80,7 @@ export const getStorageListData = (
          req_profile_score: any;
          res_check_yn: any;
 			req_success_check_yn: any;
+         keep_end_day: any;
       }) => {
          const img_path = findSourcePath(img_file_path);
 
@@ -103,6 +106,7 @@ export const getStorageListData = (
             req_profile_score: '',
             res_check_yn: '',
 			   req_success_check_yn: '',
+            keep_end_day: 0,
          };
          let dday_mod = 7 - Number(int_after_day);
 
@@ -131,6 +135,7 @@ export const getStorageListData = (
          dataJson.req_profile_score = req_profile_score;
          dataJson.res_check_yn = res_check_yn;
          dataJson.req_success_check_yn = req_success_check_yn;
+         dataJson.keep_end_day = keep_end_day;
 
          dataList.push(dataJson);
          hNum++;

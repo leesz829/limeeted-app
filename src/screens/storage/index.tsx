@@ -509,9 +509,10 @@ export const Storage = (props: Props) => {
 
   // #######################################################################################################
   const onPressDot = async (index:any) => {
-    if(null != dataRef?.current) {
+    if(isEmptyData(dataRef?.current)) {
       setCurrentIndex(index);
-      dataRef?.current?.snapToItem(index);
+      //dataRef?.current?.snapToItem(index);
+      //dataRef?.current?.scrollToIndex({index:2});
     };
   };
 
@@ -535,7 +536,8 @@ export const Storage = (props: Props) => {
   const RenderItem = React.memo(({ item, index, type, tabColor }) => {
   //function RenderItem({ item, index, type, tabColor }) {
     //console.log('index :::::::: ', index);
-    let matchType = item.match_type;  // 매칭 유형
+    const matchType = item.match_type; // 매칭 유형
+    const matchStatus = item.match_status; // 매칭 상태
 
     let isShow = true;  // 노출 여부
     let tgt_member_seq = '';
@@ -603,7 +605,7 @@ export const Storage = (props: Props) => {
                     <>
                       {type == 'LIVE' ? (
                         <>
-                          {item.req_profile_score != null &&
+                          {isEmptyData(item.req_profile_score) &&
                             <View style={_styles.liveScoreArea(item.match_type)}>
                               <Text style={_styles.liveScoreText(item.match_type)}>★ {item.req_profile_score}</Text>
                             </View>
@@ -625,7 +627,7 @@ export const Storage = (props: Props) => {
                     <View style={_styles.newDotted(tabColor)} />
                   )}
                   <Text style={[_styles.renderItemTopText]}>
-                    {item.dday > 0 ? item.dday + '일 남음' : '오늘까지'}
+                    {item.keep_end_day > 0 ? item.keep_end_day + '일 남음' : '오늘까지'}
                   </Text>
                 </View>
 
@@ -743,6 +745,15 @@ export const Storage = (props: Props) => {
                     blurAmount={5} />
                 </>
               )}
+
+              {/* 매칭 거절 표시 */}
+              {matchStatus == 'REFUSE' &&
+                <View style={_styles.refuseArea}>
+                  <View style={_styles.refuseAreaTextArea}>
+                    <Text style={_styles.refuseAreaText}>매칭실패</Text>
+                  </View>
+                </View>
+              }
 
             </ImageBackground>
           </TouchableOpacity>
@@ -1090,7 +1101,7 @@ const _styles = StyleSheet.create({
   },
   noData: {
     paddingHorizontal: 20,
-    height: height - 300,
+    height: height - 350,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -1276,6 +1287,28 @@ const _styles = StyleSheet.create({
     color: '#ffffff',
     fontFamily: 'AppleSDGothicNeoM00',
     fontSize: 10,
+  },
+  refuseArea: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+  },
+  refuseAreaTextArea: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+  },
+  refuseAreaText: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 14,
+    color: '#ffffff',
+    textAlign: 'center',
+    paddingVertical: 5,
   },
   
 });
