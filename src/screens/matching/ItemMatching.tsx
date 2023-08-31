@@ -19,31 +19,21 @@ import { useUserInfo } from 'hooks/useUserInfo';
 import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { styles, modalStyle, layoutStyle, commonStyle } from 'assets/styles/Styles';
-import {
-  Dimensions,
-  FlatList,
-  Image,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  Text,
-  BackHandler,
-} from 'react-native';
+import { Dimensions, Image, ScrollView, StyleSheet, TouchableOpacity, View, Text } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import { useDispatch } from 'react-redux'; 
 import { myProfile } from 'redux/reducers/authReducer';
 import { findSourcePath, ICON, IMAGE, GIF_IMG } from 'utils/imageUtils';
-import { Slider } from '@miblanchard/react-native-slider';
 import ProfileAuth from 'component/ProfileAuth';
 import { formatNowDate} from 'utils/functions';
-import { Watermark } from 'component/Watermark';
 import VisualImage from 'component/match/VisualImage';
-import AddInfo from 'component/match/AddInfo';
 import ProfileActive from 'component/match/ProfileActive';
 import InterviewRender from 'component/match/InterviewRender';
-import SincerePopup from 'screens/commonpopup/sincerePopup';
+import InterestSendPopup from 'screens/commonpopup/InterestSendPopup';
+import SincereSendPopup from 'screens/commonpopup/SincereSendPopup';
+import SincerePopup from 'screens/commonpopup/SincerePopup';
 import MemberIntro from 'component/match/MemberIntro';
+
 
 
 const { width, height } = Dimensions.get('window');
@@ -104,21 +94,50 @@ export default function ItemMatching(props: Props) {
     setCheckReportType('');
   };
 
-  // ################################################################ 찐심 모달 관련
+  // ################################################################ 관심 및 찐심 보내기 관련
+  const [message, setMessage] = useState('');
 
-  // 찐심 보내기 모달 visible
-  const [sincereModalVisible, setSincereModalVisible] = useState(false);
+  const [interestSendModalVisible, setInterestSendModalVisible] = useState(false); // 관심 보내기 모달 visible
+  const [sincereSendModalVisible, setSincereSendModalVisible] = useState(false); // 찐심 보내기 모달 visible
+  const [sincereModalVisible, setSincereModalVisible] = useState(false); // 찐심 레벨 선택 모달 visible
 
-  // 찐심 닫기 함수
+  // 관심 보내기 모달 닫기
+  const interestSendCloseModal = () => {
+    setInterestSendModalVisible(false);
+  };
+
+  // 관심 보내기
+  const interestSend = (message:string) => {
+    insertMatchInfo('interest', 0, message);
+    setInterestSendModalVisible(false);
+    setMessage('');
+  };
+
+  // 찐심 보내기 모달 닫기
+  const sincereSendCloseModal = () => {
+    setSincereSendModalVisible(false);
+  };
+
+  // 찐심 레벨 선택
+  const sincereLevelSelect = (message:string) => {
+    setMessage(message);
+    setSincereModalVisible(true);
+    setSincereSendModalVisible(false);
+  };
+
+  // 찐심 보내기 모달 닫기
   const sincereCloseModal = () => {
     setSincereModalVisible(false);
   };
 
-  // 찐심 보내기 함수
-  const sincereSend = (level:number) => {
-    insertMatchInfo('sincere', level);
+  // 찐심 보내기
+  const sincereSend = (level:number, message:string) => {
+    insertMatchInfo('sincere', level, message);
     setSincereModalVisible(false);
+    setMessage('');
   };
+
+
 
   // ############################################################ 데일리 매칭 정보 조회
   const getItemMatchedInfo = async () => {
@@ -185,7 +204,9 @@ export default function ItemMatching(props: Props) {
 	############################################# */
   const popupActive = (activeType: string) => {
     if (activeType == 'interest') {
-      let title = '관심 보내기';
+      setInterestSendModalVisible(true);
+
+      /* let title = '관심 보내기';
       let content = '패스를 소모하여 관심을 보내시겠습니까?\n패스 x15';
 
       // 관심 자유이용권 사용시
@@ -209,9 +230,11 @@ export default function ItemMatching(props: Props) {
 				confirmCallback: function() {
           insertMatchInfo(activeType, 0);
 				}
-			});
+			}); */
+
     } else if (activeType == 'sincere') {
-      setSincereModalVisible(true);
+      setSincereSendModalVisible(true);
+      //setSincereModalVisible(true);
       
     } else if (activeType == 'pass') {
       show({
@@ -243,11 +266,12 @@ export default function ItemMatching(props: Props) {
   };
 
   // ############################################################ 찐심/관심/거부 저장
-  const insertMatchInfo = async (activeType: string, special_level: number) => {
+  const insertMatchInfo = async (activeType: string, special_level: number, message: string) => {
     let body = {
       active_type: activeType,
       res_member_seq: data.match_member_info.member_seq,
       special_level: special_level,
+      message: message,
     };
 
     if(type == 'DAILY_REPLAY' || type == 'PROFILE_CARD_ADD') {
@@ -562,13 +586,30 @@ export default function ItemMatching(props: Props) {
           </View>
         </Modalize>
 
+
+        {/* ##################################################################################
+                    관심 보내기 팝업
+        ################################################################################## */}
+        <InterestSendPopup
+          isVisible={interestSendModalVisible}
+          closeModal={interestSendCloseModal}
+          confirmFunc={interestSend}
+        />
+
         {/* ##################################################################################
                     찐심 보내기 팝업
         ################################################################################## */}
+        <SincereSendPopup
+          isVisible={sincereSendModalVisible}
+          closeModal={sincereSendCloseModal}
+          confirmFunc={sincereLevelSelect}
+        />
+
         <SincerePopup
           isVisible={sincereModalVisible}
           closeModal={sincereCloseModal}
           confirmFunc={sincereSend}
+          message={message}
         />
 
       </>

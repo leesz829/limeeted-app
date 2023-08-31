@@ -157,6 +157,9 @@ export const ICON = {
   loveIcon: require('assets/icon/love_icon.png'),
   boxTipsIcon: require('assets/icon/box_tips_icon.png'),
   giftIcon: require('assets/icon/gift_icon.png'),
+  logoTransIcon: require('assets/icon/logo_trans_icon.png'),
+  xBlueIcon: require('assets/icon/x_blue_icon.png'),
+  xRedIcon: require('assets/icon/x_red_icon.png'),
 };
 
 export const GIF_IMG = {

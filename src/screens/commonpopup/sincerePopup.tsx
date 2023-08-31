@@ -1,29 +1,25 @@
 import React, { useRef } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  FlatList,
-  Dimensions,
-} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, TextInput } from 'react-native';
 import Modal from 'react-native-modal';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Image from 'react-native-fast-image';
 import { ICON } from 'utils/imageUtils';
 import Carousel from 'react-native-snap-carousel';
 import { useUserInfo } from 'hooks/useUserInfo';
+import SpaceView from 'component/SpaceView';
+import { styles } from 'assets/styles/Styles';
+
 
 const { width } = Dimensions.get('window');
-
 
 interface Props {
   isVisible: boolean;
   closeModal: () => void;
   confirmFunc: (level:number) => void;
+  message: string;
 }
 
-export default function SincerePopup({ isVisible, closeModal, confirmFunc }: Props) {
+export default function SincerePopup({ isVisible, closeModal, confirmFunc, message }: Props) {
   const memberBase = useUserInfo(); // 회원 기본정보
 
   const ref = useRef(null);
@@ -79,71 +75,90 @@ export default function SincerePopup({ isVisible, closeModal, confirmFunc }: Pro
   return (
     <Modal isVisible={isVisible} onRequestClose={() => { closeModal(); }}>
       <SafeAreaView style={_styles.container}>
-        <View style={_styles.container}>
-          <View style={_styles.titleBox}>
-            <Text style={_styles.titleText}>레벨 선택</Text>
-          </View>
-          <View style={_styles.body}>
+        <View style={_styles.titleBox}>
+          <Text style={_styles.titleText}>레벨 선택</Text>
+        </View>
+
+        <View style={_styles.contentBody}>
+
+          <SpaceView mt={15} mb={15} viewStyle={_styles.infoArea}>
             <Text style={_styles.infoText}>찐심을 보내는데 사용할 로얄패스를 선택해주세요.</Text>
+          </SpaceView>
 
-            <View
-              style={{
-                width: '90%',
-                flexDirection: `row`,
-                alignItems: `center`,
-                justifyContent: 'space-between',
-              }}>
+          <View
+            style={{
+              width: '90%',
+              flexDirection: `row`,
+              alignItems: `center`,
+              justifyContent: 'space-between',
+              marginBottom: 20,
+            }}>
 
-              <TouchableOpacity onPress={onPressPrev}>
-                <Image source={ICON.arrLeft02} style={_styles.arrowIcon} />
-              </TouchableOpacity>
+            <TouchableOpacity onPress={onPressPrev}>
+              <Image source={ICON.arrLeft02} style={_styles.arrowIcon} />
+            </TouchableOpacity>
 
-              <View style={_styles.swiperWrapper}>
-                <Carousel
-                  ref={ref}
-                  data={datas}
-                  onSnapToItem={setCurrentIndex}
-                  sliderWidth={width * 0.6}
-                  itemWidth={width * 0.6}
-                  pagingEnabled
-                  renderItem={({item, index}) => {
-                    return (
-                      <View style={_styles.passStyle}>
-                        <Image source={ICON.royalPassCircle} style={_styles.passIcon} resizeMode="contain" />
-                        <Text style={_styles.passStyleText}>{item.title}</Text>
-                      </View>
-                    )
-                  }}
-                />
-              </View>
-
-              <TouchableOpacity onPress={onPressNext}>
-                <Image source={ICON.arrRight02} style={_styles.arrowIcon} />
-              </TouchableOpacity>
-
+            <View style={_styles.swiperWrapper}>
+              <Carousel
+                ref={ref}
+                data={datas}
+                onSnapToItem={setCurrentIndex}
+                sliderWidth={width * 0.6}
+                itemWidth={width * 0.6}
+                pagingEnabled
+                renderItem={({item, index}) => {
+                  return (
+                    <View style={_styles.passStyle}>
+                      <Image source={ICON.royalPassCircle} style={_styles.passIcon} resizeMode="contain" />
+                      <Text style={_styles.passStyleText}>{item.title}</Text>
+                    </View>
+                  )
+                }}
+              />
             </View>
 
-            <View style={_styles.bottomBox}>
-              <TouchableOpacity style={_styles.leftButton} onPress={() => closeModal()}>
-                <Text style={_styles.leftButtonText}>취소 할래요!</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity 
-                style={_styles.rightButton} 
-                onPress={() => {
-                  if(royalPassChk()) {
-                    confirmFunc(currentIndex+1);
-                  }
-                }}>
-
-                {!royalPassChk() &&
-                  <View style={_styles.alertArea}><Text style={_styles.alertText}>로얄패스가 부족해요.</Text></View>
-                }
-                <Text style={_styles.rightButtonText}>찐심 보내기</Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity onPress={onPressNext}>
+              <Image source={ICON.arrRight02} style={_styles.arrowIcon} />
+            </TouchableOpacity>
 
           </View>
+          
+          {/* <SpaceView viewStyle={_styles.messageArea}>
+            <TextInput
+              value={message}
+              onChangeText={(message) => setMessage(message)}
+              multiline={true}
+              autoCapitalize="none"
+              style={_styles.inputStyle}
+              placeholder={'상대에게 전할 정성스러운 메시지를 작성해 보세요!'}
+              placeholderTextColor={'#c7c7c7'}
+              editable={true}
+              secureTextEntry={false}
+              maxLength={200}
+              numberOfLines={3}
+            />
+          </SpaceView> */}
+
+        </View>
+
+        <View style={_styles.bottomBox}>
+          <TouchableOpacity style={_styles.leftButton} onPress={() => closeModal()}>
+            <Text style={_styles.leftButtonText}>취소 할래요!</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={_styles.rightButton} 
+            onPress={() => {
+              if(royalPassChk()) {
+                confirmFunc(currentIndex+1, message);
+              }
+            }}>
+
+            {!royalPassChk() &&
+              <View style={_styles.alertArea}><Text style={_styles.alertText}>로얄패스가 부족해요.</Text></View>
+            }
+            <Text style={_styles.rightButtonText}>찐심 보내기</Text>
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
     </Modal>
@@ -153,11 +168,9 @@ export default function SincerePopup({ isVisible, closeModal, confirmFunc }: Pro
 const _styles = StyleSheet.create({
   container: {
     width: '100%',
-    height: 248,
+    //height: 248,
     borderRadius: 20,
     backgroundColor: '#ffffff',
-    // borderStyle: 'solid',
-    // borderWidth: 1,
     borderColor: '#ededed',
   },
   titleBox: {
@@ -166,32 +179,34 @@ const _styles = StyleSheet.create({
     flexDirection: `row`,
     alignItems: `center`,
     justifyContent: `center`,
-    height: 35,
+    paddingVertical: 10,
   },
   titleText: {
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 14,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     letterSpacing: 0,
     textAlign: 'left',
     color: '#676767',
   },
-  body: {
+  contentBody: {
     flexDirection: 'column',
     alignItems: `center`,
-    justifyContent: 'space-between',
-    height: 213,
+  },
+  infoArea: {
+    flexDirection: 'column',
   },
   infoText: {
     fontFamily: 'AppleSDGothicNeoSB00',
     fontSize: 11,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     letterSpacing: 0,
     textAlign: 'left',
     color: '#646464',
-    marginTop: 25,
+  },
+  messageArea: {
+    width: '100%',
+    backgroundColor: '#ededed',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
   },
   bottomBox: {
     width: '100%',
@@ -211,8 +226,6 @@ const _styles = StyleSheet.create({
   leftButtonText: {
     fontFamily: 'AppleSDGothicNeoSB00',
     fontSize: 12,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     letterSpacing: 0,
     textAlign: 'left',
     color: '#ffffff',
@@ -229,8 +242,6 @@ const _styles = StyleSheet.create({
   rightButtonText: {
     fontFamily: 'AppleSDGothicNeoSB00',
     fontSize: 12,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     letterSpacing: 0,
     textAlign: 'left',
     color: '#ffffff',
@@ -281,5 +292,19 @@ const _styles = StyleSheet.create({
     paddingVertical: 3,
     borderRadius: 5,
     textAlign: 'center',
+  },
+  inputStyle: {
+    width: '100%',
+    height: 80,
+    maxHeight: 80,
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 10,
+    textAlignVertical: 'top',
+    backgroundColor: '#ffffff',
+    color: '#333333',
+    borderColor: "#ebe9ef",
+    borderStyle: "solid",
+    fontSize: 12,
   },
 });
