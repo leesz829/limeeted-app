@@ -83,6 +83,11 @@ export default function SincereSendPopup({ isVisible, closeModal, confirmFunc }:
     setIsLevelVisible(true);
   };
 
+  // 뒤로가기
+  const prevBtn = async () => {
+    setIsLevelVisible(false);
+  };
+
   React.useEffect(() => {
     if(isFocus) {
       setIsLevelVisible(false);
@@ -144,6 +149,10 @@ export default function SincereSendPopup({ isVisible, closeModal, confirmFunc }:
         </SafeAreaView>
       ) : (
         <SafeAreaView style={_styles.container}>
+          <TouchableOpacity style={_styles.closeBtnArea} onPress={() => { closeModal(); }} hitSlop={commonStyle.hipSlop20}>
+            <Image style={styles.iconSquareSize(25)} source={ICON.xRedIcon} resizeMode={'contain'} />
+          </TouchableOpacity>
+
           <View style={_styles.titleBox}>
             <Text style={_styles.titleText}>레벨 선택</Text>
           </View>
@@ -194,8 +203,8 @@ export default function SincereSendPopup({ isVisible, closeModal, confirmFunc }:
           </View>
 
           <View style={_styles.bottomBox}>
-            <TouchableOpacity style={_styles.leftButton} onPress={() => closeModal()}>
-              <Text style={_styles.leftButtonText}>취소 할래요!</Text>
+            <TouchableOpacity style={_styles.leftButton} onPress={() => prevBtn()}>
+              <Text style={_styles.leftButtonText}>뒤로가기</Text>
             </TouchableOpacity>
 
             <TouchableOpacity 
@@ -249,6 +258,7 @@ const _styles = StyleSheet.create({
     textAlign: 'left',
     color: '#ffffff',
     marginLeft: 5,
+    marginTop: -1,
   },
   contentBody: {
     flexDirection: 'column',

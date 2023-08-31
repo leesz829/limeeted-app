@@ -706,23 +706,23 @@ export const SecondAuthPopup = (props: Props) => {
                 <>
                   <View style={_styles.rowStyle}>
                     <Text style={_styles.rowTextHalfLeft('20%')}>LV 1</Text>
-                    <Text style={_styles.rowTextHalfRight('80%')}>출고가 기준 2,000만원 이상의 자동차</Text>
+                    <Text style={_styles.rowTextHalfRight('80%')}>출고가 기준 2,000만원 이상의 차량</Text>
                   </View>
                   <View style={_styles.rowStyle}>
                     <Text style={_styles.rowTextHalfLeft('20%')}>LV 2</Text>
-                    <Text style={_styles.rowTextHalfRight('80%')}>출고가 기준 4,000만원 이상의 자동차</Text>
+                    <Text style={_styles.rowTextHalfRight('80%')}>출고가 기준 4,000만원 이상의 차량</Text>
                   </View>
                   <View style={_styles.rowStyle}>
                     <Text style={_styles.rowTextHalfLeft('20%')}>LV 3</Text>
-                    <Text style={_styles.rowTextHalfRight('80%')}>출고가 기준 7,000만원 이상의 최고급차</Text>
+                    <Text style={_styles.rowTextHalfRight('80%')}>출고가 기준 7,000만원 이상의 고급 차량</Text>
                   </View>
                   <View style={_styles.rowStyle}>
                     <Text style={_styles.rowTextHalfLeft('20%')}>LV 4</Text>
-                    <Text style={_styles.rowTextHalfRight('80%')}>출고가 기준 1억~3억원의 럭셔리카</Text>
+                    <Text style={_styles.rowTextHalfRight('80%')}>출고가 기준 1억~2억원의 최고급 차량</Text>
                   </View>
                   <View style={_styles.rowStyle}>
                     <Text style={_styles.rowTextHalfLeft('20%')}>LV 5</Text>
-                    <Text style={_styles.rowTextHalfRight('80%')}>출고가 기준 3억 이상의 브랜드 및 슈퍼카 성능을 지닌 자동차</Text>
+                    <Text style={_styles.rowTextHalfRight('80%')}>슈퍼카 및 하이엔드급 럭셔리 차량</Text>
                   </View>
                 </>
               )}

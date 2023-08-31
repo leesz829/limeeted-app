@@ -112,6 +112,7 @@ const _styles = StyleSheet.create({
     textAlign: 'left',
     color: '#ffffff',
     marginLeft: 5,
+    marginTop: -1,
   },
   contentBody: {
     flexDirection: 'column',

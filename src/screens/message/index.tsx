@@ -163,7 +163,7 @@ export const Message = (props: Props) => {
 										<TouchableOpacity 
 											disabled={item.link_end_yn == 'Y' ? true : false}
 											onPress={() => { goLink(item); }}>
-											<Text style={_styles.linkText(item.link_end_yn == 'Y' ? true : false)}>바로가기</Text>
+											<Text style={_styles.linkText(item.link_end_yn == 'Y' ? true : false)}>{item.link_end_yn == 'Y' ? '기간만료' : '바로가기'}</Text>
 										</TouchableOpacity>
 									</SpaceView>
 								}

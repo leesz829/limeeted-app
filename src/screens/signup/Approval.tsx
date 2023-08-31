@@ -118,7 +118,7 @@ export const Approval = (props: Props) => {
   const exitBtn = async () => {
     show({
 			title: '회원 탈퇴',
-			content: '회원 탈퇴는 24시간 뒤 완료 처리되며, 암호화된\n모든 개인정보 및 보유한 아이템은 자동으로 폐기됩니다.\n단, 24시간 이내에 로그인 시 회원 탈퇴는 자동 철회 됩니다.',
+			content: '회원 탈퇴는 24시간 뒤 완료 처리되며, 암호화된\n모든 개인정보는 자동으로 폐기됩니다.\n단, 24시간 이내에 로그인 시 회원 탈퇴는 자동 철회됩니다.',
 			cancelCallback: function() {},
 			confirmCallback: function() {
 				exitProc();

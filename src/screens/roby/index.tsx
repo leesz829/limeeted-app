@@ -388,8 +388,8 @@ export const Roby = (props: Props) => {
     if(isFocus) {
       if(memberBase?.status == 'BLOCK') {
         show({
-          title: '제제 알림',
-          content: '<이용 약관>에 근거하여 회원 영구 제제 상태로 전환되었습니다.',
+          title: '서비스 이용 제한 알림',
+          content: '서비스 운영정책 위반으로 회원님의 계정상태가\n이용제한 상태로 전환되었습니다.\n문의사항 : cs@limeeted.com',
           confirmCallback: function() {
             dispatch(clearPrincipal());
           }

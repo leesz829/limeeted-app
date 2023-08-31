@@ -986,11 +986,13 @@ export const Storage = (props: Props) => {
             </SpaceView>
 
             <SpaceView viewStyle={[modalStyle.modalBody]}>
-              <SpaceView mt={-5} mb={5} viewStyle={_styles.openPopupMessageArea}>
-                <Text style={_styles.openPopupMessageTit}>{profileOpenData.nickname}님의 메시지</Text>
-                <Text style={_styles.openPopupMessageText}>{profileOpenData.message}</Text>
-              </SpaceView>
-              <SpaceView mt={15} viewStyle={_styles.openPopupDescArea}>
+              {isEmptyData(profileOpenData.message) && (
+                <SpaceView mt={-5} mb={10} viewStyle={_styles.openPopupMessageArea}>
+                  <Text style={_styles.openPopupMessageTit}>{profileOpenData.nickname}님의 메시지</Text>
+                  <Text style={_styles.openPopupMessageText}>"{profileOpenData.message}"</Text>
+                </SpaceView>
+              )}
+              <SpaceView mt={7} viewStyle={_styles.openPopupDescArea}>
                 <Text style={_styles.openPopupDescText}>패스를 소모하여 관심을 보내시겠습니까?</Text>
                 <SpaceView mt={5} viewStyle={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
                   <Image style={styles.iconSquareSize(25)} source={ICON.passCircle} resizeMode={'contain'} />
