@@ -359,14 +359,14 @@ export const Approval = (props: Props) => {
             <Text style={_styles.btnText('MOD')}>프로필 수정하기</Text>
           </TouchableOpacity>
         </SpaceView>
-        {/* <SpaceView>
+        <SpaceView>
           <TouchableOpacity onPress={() => { exitBtn(); }}>
             <Text style={_styles.btnText('EXIT')}>
               탈퇴하기{'\n'}
               <Text style={_styles.exitDescText}>가입 시 작성한 회원 정보 삭제 및 탈퇴 처리</Text>
             </Text>
           </TouchableOpacity>
-        </SpaceView> */}
+        </SpaceView>
       </SpaceView>
     </View>
   );
