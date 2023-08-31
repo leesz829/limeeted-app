@@ -19,6 +19,7 @@ import { regist_introduce, get_member_introduce_guide } from 'api/models';
 import { SUCCESS, MEMBER_NICKNAME_DUP } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
 import { CommonLoading } from 'component/CommonLoading';
+import { CommonTextarea } from 'component/CommonTextarea';
 
 
 
@@ -43,8 +44,9 @@ export const Signup03 = (props : Props) => {
 	const isFocus = useIsFocused();
 	const [isLoading, setIsLoading] = React.useState(false);
 
-	const [nickname, setNickname] = React.useState('');
-	const [comment, setComment] = React.useState('');
+	const [nickname, setNickname] = React.useState('');	// 닉네임
+	const [comment, setComment] = React.useState(''); // 한줄 소개
+	const [introduceComment, setIntroduceComment] = React.useState<any>(''); // 프로필 소개
 
 	const int_modalizeRef = useRef<Modalize>(null);
 	const int_onOpen = () => { int_modalizeRef.current?.open(); };
@@ -85,10 +87,11 @@ export const Signup03 = (props : Props) => {
 		}
 
 		const body = {
-			member_seq : props.route.params.memberSeq,
-			nickname : nickname,
+			member_seq: props.route.params.memberSeq,
+			nickname: nickname,
 			comment: comment,
-			interest_list : checkIntList
+			interest_list: checkIntList,
+			introduce_comment: introduceComment,
 		};
 
 		setIsLoading(true);
@@ -151,6 +154,7 @@ export const Signup03 = (props : Props) => {
 					if(null != data.member) {
 						setNickname(data.member.nickname);
 						setComment(data.member.comment);
+						setIntroduceComment(data.member.introduce_comment);
 					}
 		
 					setIntList(data.int_list);
@@ -214,22 +218,40 @@ export const Signup03 = (props : Props) => {
 					</SpaceView>
 
 					<SpaceView mb={24}>
-						<CommonInput label="닉네임" 
-										placeholder={'한글, 영문, 숫자 12글자까지 입력할 수 있어요.'}
-										placeholderTextColor={'#c6ccd3'}
-										value={nickname}
-										maxLength={20}
-										onChangeText={nickname => setNickname(nickname)}  />
+						<CommonInput 
+							label="닉네임" 
+							placeholder={'한글, 영문, 숫자 12글자까지 입력할 수 있어요.'}
+							placeholderTextColor={'#c6ccd3'}
+							value={nickname}
+							maxLength={20}
+							onChangeText={nickname => setNickname(nickname)}  />
 					</SpaceView>
 
-					<SpaceView mb={90}>
-						<CommonInput label="한줄 소개" 
-										placeholder={'한줄 소개를 입력해 주세요.'}
-										placeholderTextColor={'#c6ccd3'}
-										value={comment}
-										maxLength={50}
-										onChangeText={comment => setComment(comment)}
-										/>
+					<SpaceView mb={24}>
+						<CommonInput 
+							label="한줄 소개" 
+							placeholder={'한줄 소개를 입력해 주세요.'}
+							placeholderTextColor={'#c6ccd3'}
+							value={comment}
+							maxLength={50}
+							onChangeText={comment => setComment(comment)} />
+					</SpaceView>
+
+					<SpaceView mb={24}>
+						<SpaceView mb={10}>
+							<CommonText textStyle={_styles.labelStyle2}>프로필 소개</CommonText>
+						</SpaceView>
+						<CommonTextarea
+							label={''}
+							value={introduceComment}
+							onChangeText={(introduceComment) => setIntroduceComment(introduceComment)}
+							placeholder={'자유롭게 나 자신을 소개해 주세요!\n구체적으로 작성할수록 이성에게\n좋은 매력 포인트가 될 수 있어요 😊'}
+							placeholderTextColor={'#c6ccd3'}
+							maxLength={5000}
+							height={100}
+							borderRadius={10}
+							fontSize={12}
+							fontColor={'#333333'} />
 					</SpaceView>
 
 					<SpaceView mb={15}>
@@ -427,5 +449,11 @@ const _styles = StyleSheet.create({
 		borderStyle: 'dotted',
 		borderColor: '#C7C7C7',
 		flexDirection: 'row',
+	  },
+	  labelStyle2: {
+		fontSize: 17,
+		lineHeight: 23,
+		fontFamily: 'AppleSDGothicNeoEB00',
+		color: '#333333',
 	  },
   });

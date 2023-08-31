@@ -57,17 +57,17 @@ export const Introduce = (props: Props) => {
 
   const memberBase = useUserInfo(); // 회원 기본정보
 
-  const [comment, setComment] = React.useState<any>(memberBase.comment);
+  const [comment, setComment] = React.useState<any>(memberBase?.comment);
   const [introduceComment, setIntroduceComment] = React.useState<any>('');
-  const [business, setBusiness] = React.useState<any>(memberBase.business);
-  const [job, setJob] = React.useState<any>(memberBase.job);
-  const [job_name, setJob_name] = React.useState<any>(memberBase.job_name);
+  const [business, setBusiness] = React.useState<any>(memberBase?.business);
+  const [job, setJob] = React.useState<any>(memberBase?.job);
+  const [job_name, setJob_name] = React.useState<any>(memberBase?.job_name);
   //const [birthLocal, setBirthLocal] = React.useState(props.route.params.birth_local);
   //const [activeLocal, setActiveLocal] = React.useState(props.route.params.active_local);
-  const [mbrHeight, setMbrHeight] = React.useState<any>(memberBase.height);
-  const [form_body, setForm_body] = React.useState<any>(memberBase.form_body);
-  const [religion, setReligion] = React.useState<any>(memberBase.religion);
-  const [drinking, setDrinking] = React.useState<any>(memberBase.drinking);
+  const [mbrHeight, setMbrHeight] = React.useState<any>(memberBase?.height);
+  const [form_body, setForm_body] = React.useState<any>(memberBase?.form_body);
+  const [religion, setReligion] = React.useState<any>(memberBase?.religion);
+  const [drinking, setDrinking] = React.useState<any>(memberBase?.drinking);
   const [smoking, setSmoking] = React.useState<any>(isEmptyData(memberBase?.smoking) ? memberBase?.smoking : '');
 
   const int_modalizeRef = useRef<Modalize>(null);
@@ -380,7 +380,6 @@ export const Introduce = (props: Props) => {
 
   // 첫 렌더링 때 실행
   React.useEffect(() => {
-
     if(isFocus) {
       getMemberIntroduce(memberBase.business);
 
@@ -550,7 +549,7 @@ export const Introduce = (props: Props) => {
             <CommonSelect
               label={'체형'}
               items={
-                memberBase.gender == 'M' ? manBodyItemList : womanBodyItemList
+                memberBase?.gender == 'M' ? manBodyItemList : womanBodyItemList
               }
               selectValue={form_body}
               callbackFn={bodyCdCallbackFn}
