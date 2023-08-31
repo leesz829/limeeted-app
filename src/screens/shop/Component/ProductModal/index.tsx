@@ -17,7 +17,7 @@ import Modal from 'react-native-modal';
 import { findSourcePath, ICON } from 'utils/imageUtils';
 import ViewPager from '../ViewPager';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { CommaFormat } from 'utils/functions';
+import { CommaFormat, isEmptyData } from 'utils/functions';
 import {
   initConnection,
   getProducts,
@@ -213,25 +213,39 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
         skus: [item_code]
       });
 
-      console.log('result ::::: ' ,result);
+      let dataParam = {};
 
-      const receiptDataJson = JSON.parse(result[0].transactionReceipt);
+      console.log('result ::::: ', result);
 
-      const dataParam = {
-        device_gubun: Platform.OS,
-        buy_price: buy_price,
-        item_name: prod_name,
-        item_code: item_code,
-        result_msg: '성공',
-        result_code: '0000',
-        acknowledged: receiptDataJson.acknowledged,
-        package_name: receiptDataJson.packageName,
-        product_id: receiptDataJson.productId,
-        purchase_state: receiptDataJson.purchaseState,
-        purchase_time: receiptDataJson.purchaseTime,
-        purchase_token: receiptDataJson.purchaseToken,
-        quantity: receiptDataJson.quantity,
-        transaction_id: '',
+      if(isEmptyData(result) && result.length > 0 && isEmptyData(result[0].transactionReceipt)) {
+        const receiptDataJson = JSON.parse(result[0].transactionReceipt);
+
+        dataParam = {
+          device_gubun: Platform.OS,
+          buy_price: buy_price,
+          item_name: prod_name,
+          item_code: item_code,
+          result_msg: '성공',
+          result_code: '0000',
+          acknowledged: receiptDataJson?.acknowledged,
+          package_name: receiptDataJson?.packageName,
+          product_id: receiptDataJson?.productId,
+          purchase_state: receiptDataJson?.purchaseState,
+          purchase_time: receiptDataJson?.purchaseTime,
+          purchase_token: receiptDataJson?.purchaseToken,
+          quantity: receiptDataJson?.quantity,
+          transaction_id: '',
+        };
+      } else {
+        dataParam = {
+          device_gubun: Platform.OS,
+          buy_price: buy_price,
+          item_name: prod_name,
+          item_code: item_code,
+          result_msg: '성공',
+          result_code: '0000',
+          transaction_id: '',
+        };
       };
 
       purchaseResultSend(dataParam);

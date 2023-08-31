@@ -24,10 +24,11 @@ import {
   validateReceiptIos,
   clearProductsIOS,
   flushFailedPurchasesCachedAsPendingAndroid,
+  finishTransaction,
 } from 'react-native-iap';
 import { findSourcePath, ICON } from 'utils/imageUtils';
 import { usePopup } from 'Context';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useNavigation, useFocusEffect, useIsFocused } from '@react-navigation/native';
 import { ROUTES, STACK } from 'constants/routes';
 import { CommonLoading } from 'component/CommonLoading';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -65,6 +66,7 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc }) {
   const navigation = useNavigation();
   const { show } = usePopup();  // 공통 팝업
   const dispatch = useDispatch();
+  const isFocus = useIsFocused();
 
   const [modalVisible, setModalVisible] = useState(false);
   const [targetItem, setTargetItem] = useState(null);
@@ -190,14 +192,30 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc }) {
   // ################################################################ 초기 실행 함수
   useEffect(() => {
     // 스토어 커넥션
-    async function fetch() {  
+    async function fetch() {
+
+      // 연결 초기화
       const isConnected = await initConnection();
+      const availablePurchases  = await getAvailablePurchases();
+      //await flushFailedPurchasesCachedAsPendingAndroid();
+
+      availablePurchases.forEach((purchase) => {
+        finishTransaction({
+          purchase: purchase
+          , isConsumable: true
+          , developerPayloadAndroid: undefined
+        });
+      });
+
       if (isConnected) {
         await getProducts({ skus:passProduct });
       }
     };
-    fetch();
-  }, []);
+
+    if(isFocus) {
+      fetch();
+    }
+  }, [isFocus]);
 
   // ########################################################### 카테고리 상품 페이지 로드 실행 함수
   useFocusEffect(
