@@ -42,6 +42,7 @@ import { setPartialPrincipal } from 'redux/reducers/authReducer';
 import { isEmptyData } from 'utils/functions';
 import { CommonLoading } from 'component/CommonLoading';
 import { CommaFormat } from 'utils/functions';
+import { clearPrincipal } from 'redux/reducers/authReducer';
 
 
 
@@ -85,8 +86,8 @@ export const Roby = (props: Props) => {
   // ###### 실시간성 회원 데이터 조회
   const getPeekMemberInfo = async () => {
     const body = {
-      img_acct_cnt: memberBase.img_acct_cnt,
-      auth_acct_cnt: memberBase.auth_acct_cnt,
+      img_acct_cnt: memberBase?.img_acct_cnt,
+      auth_acct_cnt: memberBase?.auth_acct_cnt,
     };
     try {
       const { success, data } = await peek_member(body);
@@ -380,30 +381,38 @@ export const Roby = (props: Props) => {
         }));
       }
     }
-  }
+  };
 
   // ######################################################################################## 초기 실행 함수
   useEffect(() => {
     if(isFocus) {
-      getPeekMemberInfo();
-      setFriendMatchYn(memberBase?.friend_match_yn == 'N' ? true : false);
-
-      console.log('memberBase?.tutorial_roby_yn ::::::: ' , memberBase?.tutorial_roby_yn);
-
-      // 튜토리얼 팝업 노출
-      if(!isEmptyData(memberBase?.tutorial_roby_yn) || memberBase?.tutorial_roby_yn == 'Y') {
+      if(memberBase?.status == 'BLOCK') {
         show({
-          type: 'GUIDE',
-          guideType: 'ROBY',
-          guideSlideYn: 'Y',
-          guideNexBtnExpoYn: 'Y',
-          confirmCallback: function(isNextChk) {
-            if(isNextChk) {
-              saveMemberTutorialInfo();
-            }
+          title: '제제 알림',
+          content: '<이용 약관>에 근거하여 회원 영구 제제 상태로 전환되었습니다.',
+          confirmCallback: function() {
+            dispatch(clearPrincipal());
           }
         });
-      };
+      } else {
+        getPeekMemberInfo();
+        setFriendMatchYn(memberBase?.friend_match_yn == 'N' ? true : false);
+
+        // 튜토리얼 팝업 노출
+        if(!isEmptyData(memberBase?.tutorial_roby_yn) || memberBase?.tutorial_roby_yn == 'Y') {
+          show({
+            type: 'GUIDE',
+            guideType: 'ROBY',
+            guideSlideYn: 'Y',
+            guideNexBtnExpoYn: 'Y',
+            confirmCallback: function(isNextChk) {
+              if(isNextChk) {
+                saveMemberTutorialInfo();
+              }
+            }
+          });
+        };
+      }
     };
   }, [isFocus]);
 
@@ -470,7 +479,7 @@ export const Roby = (props: Props) => {
           <View>
 
             {/* 리밋샵 유입 노출 배너 영역 */}
-            {memberBase.gender == 'W' &&
+            {memberBase?.gender == 'W' &&
               <SpaceView mb={12}>
 
                 <LinearGradient
@@ -517,15 +526,15 @@ export const Roby = (props: Props) => {
                   width: '100%',
                   height: 95,
                   borderRadius: 20,
-                  backgroundColor: memberBase.gender == 'M' ? '#ECEFFE' : '#FEEFF2',
+                  backgroundColor: memberBase?.gender == 'M' ? '#ECEFFE' : '#FEEFF2',
                   overflow: 'hidden',
                   position: 'relative',
                 }}>
                   <SpaceView>
-                    <Image source={memberBase.gender == 'M' ? IMAGE.robyMaleImg : IMAGE.robyFemaleImg} style={{width: '100%', height: 100}} />
+                    <Image source={memberBase?.gender == 'M' ? IMAGE.robyMaleImg : IMAGE.robyFemaleImg} style={{width: '100%', height: 100}} />
                     <SpaceView viewStyle={{position: 'absolute', top: 10, left: 15}}>
                       <CommonText type={'h5'} fontWeight={'700'} textStyle={{marginTop: 3, marginBottom: 5, lineHeight: 18}}>{memberBase?.nickname}님의{'\n'}리미티드 대표 인상</CommonText>
-                      <CommonText type={'h5'} fontWeight={'200'} color={memberBase.gender == 'M' ? '#7986EE' : '#FE0456'} textStyle={{marginTop: 0}}>"{memberBase.best_face}"</CommonText>
+                      <CommonText type={'h5'} fontWeight={'200'} color={memberBase?.gender == 'M' ? '#7986EE' : '#FE0456'} textStyle={{marginTop: 0}}>"{memberBase?.best_face}"</CommonText>
                     </SpaceView>
                   </SpaceView>
               </View>
@@ -547,7 +556,7 @@ export const Roby = (props: Props) => {
                 <SpaceView mr={8}>
                   {memberBase?.auth_acct_cnt > 0 && memberBase?.auth_acct_cnt < 10 &&
                     <LinearGradient colors={['#7986EE', '#7986EE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
-                      <Text style={_styles.whiteText}>LV.{memberBase.auth_acct_cnt}</Text>
+                      <Text style={_styles.whiteText}>LV.{memberBase?.auth_acct_cnt}</Text>
                     </LinearGradient>
                   }
 
@@ -787,9 +796,9 @@ export const Roby = (props: Props) => {
               <Text style={_styles.profileText}>최근 소식</Text>
               <View style={_styles.row}>
 
-                {isEmptyData(memberBase.new_board_cnt) && memberBase.new_board_cnt > 0 && (
+                {isEmptyData(memberBase?.new_board_cnt) && memberBase?.new_board_cnt > 0 && (
                   <View style={_styles.badge}>
-                    <Text style={_styles.badgeText}>{memberBase.new_board_cnt}</Text>
+                    <Text style={_styles.badgeText}>{memberBase?.new_board_cnt}</Text>
                   </View>
                 )}
                 <Image source={ICON.arrow_right} style={styles.iconSize} />
@@ -1057,14 +1066,18 @@ function RatingCard({ title, desc, value, preScore, isPennding, guideOnPress }) 
               </View>
           </>
         ) : (
-          <Rating
-            readonly
-            imageSize={20.7}
-            style={{ marginTop: 10 }}
-            ratingCount={5}
-            jumpValue={0}
-            startingValue={Math.floor(value) / 2}
-          />
+          <>
+            {isEmptyData(value) && (
+              <Rating
+                readonly
+                imageSize={20.7}
+                style={{ marginTop: 10 }}
+                ratingCount={5}
+                jumpValue={0}
+                startingValue={Math.floor(value) / 2}
+              />
+            )}
+          </>
         )}
       </View>
       <View>
