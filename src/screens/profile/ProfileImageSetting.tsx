@@ -35,7 +35,7 @@ import SortableGridview from 'react-native-sortable-gridview';
 
 
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 interface Props {
   navigation: StackNavigationProp<StackParamList, 'ProfileImageSetting'>;
   route: RouteProp<StackParamList, 'ProfileImageSetting'>;
@@ -221,7 +221,7 @@ export const ProfileImageSetting = (props: Props) => {
         } */
       />
 
-      <ScrollView ref={scrollViewRef} contentContainerStyle ={{ backgroundColor: 'white', flexGrow: 1 }}>
+      <View style={{ backgroundColor: 'white' }}>
 
         {/* ####################################################################################
 					####################### 프로필 이미지 영역
@@ -240,6 +240,7 @@ export const ProfileImageSetting = (props: Props) => {
           })} */}
 
           <SortableGridview
+            style={{width: width}}
             data={imgList}
             onDragStart={() => {
               console.log('Default onDragStart');
@@ -281,7 +282,7 @@ export const ProfileImageSetting = (props: Props) => {
         </View>
 
         <View style={{ height: 10 }} />
-      </ScrollView>
+      </View>
     </>
   );
 };
@@ -344,17 +345,18 @@ const _styles = StyleSheet.create({
     color: '#7986ee',
   },
   wrapper: {
-    width: '100%',
-    //padding: 10,
+    width: width,
+    height: height,
     flexDirection: 'row',
     flexWrap: 'wrap',
+    justifyContent: 'space-between',
   },
   container: {
-    width: (width - 46) / 3,
-    height: (width - 46) / 3,
+    width: (width - 60) / 3,
+    height: (width - 60) / 3,
     backgroundColor: 'rgba(155, 165, 242, 0.12)',
     //backgroundColor: '#000',
-    marginHorizontal: 4,
+    //marginHorizontal: 4,
     marginVertical: 5,
     borderRadius: 20,
     flexDirection: `row`,
@@ -362,8 +364,8 @@ const _styles = StyleSheet.create({
     justifyContent: `center`,
   },
   imageStyle: {
-    width: (width - 46) / 3,
-    height: (width - 46) / 3,
+    width: (width - 60) / 3,
+    height: (width - 60) / 3,
     margin: 0,
     borderRadius: 20,
   },
