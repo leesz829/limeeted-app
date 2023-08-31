@@ -11,12 +11,12 @@ import {
   ScrollView,
   View,
   TouchableOpacity,
-  Modal,
   StyleSheet,
   Dimensions,
   Text,
   ImageBackground,
-  FlatList
+  FlatList,
+  Modal
 } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import LinearGradient from 'react-native-linear-gradient';
@@ -45,6 +45,7 @@ import { isEmptyData } from 'utils/functions';
 import { CommonLoading } from 'component/CommonLoading';
 import { BlurView } from "@react-native-community/blur";
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
+//import Modal from 'react-native-modal';
 
 
 
@@ -89,6 +90,20 @@ export const Storage = (props: Props) => {
   const [isSpecialVisible, setIsSpecialVisible] = React.useState(false);
   const [isLiveResVisible, setIsLiveResVisible] = React.useState(true);
   const [isLiveReqVisible, setIsLiveReqVisible] = React.useState(true);
+
+  const [isProfileOpenVisible, setIsProfileOpenVisible] = React.useState(false);
+  const [profileOpenMessage, setProfileOpenMessage] = React.useState('');
+
+  // 프로필 열기 데이터
+  const [profileOpenData, setProfileOpenData] = React.useState({
+    match_seq: 0,
+    nickname: '',
+    message: '',
+    tgt_member_seq: 0,
+    type: '',
+    match_type: '',
+  });
+
 
   /* ################################################
    ######## Storage Data 구성
@@ -356,6 +371,8 @@ export const Storage = (props: Props) => {
     member_status: any,
     match_type: any,
     special_interest_yn: any,
+    message: any,
+    nickname: any,
   ) => {
     
     if(member_status != 'ACTIVE') {
@@ -373,11 +390,24 @@ export const Storage = (props: Props) => {
       });
 
       return;
-    }
+    };
     
     // 찐심인 경우 열람통과
     if (special_interest_yn == 'N' && profile_open_yn == 'N') {
-      show({
+      setProfileOpenMessage(message);
+      setIsProfileOpenVisible(true);
+
+      setProfileOpenData({
+        ...profileOpenData,
+        match_seq: match_seq,
+        nickname: nickname,
+        message: message,
+        tgt_member_seq: tgt_member_seq,
+        type: type,
+        match_type: match_type,
+      });
+
+      /* show({
         title: '프로필 열람',
         content: '패스를 소모하여 프로필을 열람하시겠습니까?\n패스 x15',
         cancelCallback: function() {
@@ -386,7 +416,7 @@ export const Storage = (props: Props) => {
         confirmCallback: function() {
           goProfileOpen(match_seq, tgt_member_seq, type, match_type);
         },
-      });
+      }); */
 
     } else {
       navigation.navigate(STACK.COMMON, { screen: 'StorageProfile', params: {
@@ -591,6 +621,8 @@ export const Storage = (props: Props) => {
                 item.member_status,
                 matchType,
                 item.special_interest_yn,
+                item.message,
+                item.nickname,
               );
             }}>
 
@@ -942,6 +974,49 @@ export const Storage = (props: Props) => {
           />
         </SpaceView>
       </View>
+
+      {/* ####################################################################################################
+      ##################################### 프로필 열람 팝업
+      #################################################################################################### */}
+      <Modal visible={isProfileOpenVisible} transparent={true}>
+        <View style={modalStyle.modalBackground}>
+          <View style={modalStyle.modalStyle1}>
+            <SpaceView viewStyle={[layoutStyle.alignCenter, modalStyle.modalHeader]}>
+              <CommonText fontWeight={'700'} type={'h5'} color={'#676767'}>프로필 열람</CommonText>
+            </SpaceView>
+
+            <SpaceView viewStyle={[modalStyle.modalBody]}>
+              <SpaceView mt={-5} mb={5} viewStyle={_styles.openPopupMessageArea}>
+                <Text style={_styles.openPopupMessageTit}>{profileOpenData.nickname}님의 메시지</Text>
+                <Text style={_styles.openPopupMessageText}>{profileOpenData.message}</Text>
+              </SpaceView>
+              <SpaceView mt={15} viewStyle={_styles.openPopupDescArea}>
+                <Text style={_styles.openPopupDescText}>패스를 소모하여 관심을 보내시겠습니까?</Text>
+                <SpaceView mt={5} viewStyle={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                  <Image style={styles.iconSquareSize(25)} source={ICON.passCircle} resizeMode={'contain'} />
+                  <Text style={_styles.openPopupDescIcon}>X 15</Text>
+                </SpaceView>
+              </SpaceView>
+            </SpaceView>
+
+            <View style={modalStyle.modalBtnContainer}>
+              <TouchableOpacity
+                style={[modalStyle.modalBtn, {backgroundColor: Color.grayD6D3D3, borderBottomLeftRadius: 20}]}
+                onPress={() => { setIsProfileOpenVisible(false); }}>
+                <CommonText type={'h5'} fontWeight={'500'} color={ColorType.white}>취소하기</CommonText>
+              </TouchableOpacity>
+
+              <View style={modalStyle.modalBtnline} />
+
+              <TouchableOpacity
+                style={[modalStyle.modalBtn, {backgroundColor: Color.blue02, borderBottomRightRadius: 20}]}
+                onPress={() => { goProfileOpen(profileOpenData.match_seq, profileOpenData.tgt_member_seq, profileOpenData.type, profileOpenData.match_type); }}>
+                <CommonText type={'h5'} fontWeight={'500'} color={ColorType.white}>확인하기</CommonText>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </>
   );
 };
@@ -1309,6 +1384,39 @@ const _styles = StyleSheet.create({
     color: '#ffffff',
     textAlign: 'center',
     paddingVertical: 5,
+  },
+  openPopupMessageArea: {
+    width: '100%',
+    backgroundColor: '#F6F7FE',
+    alignItems: 'center',
+    paddingVertical: 15,
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  openPopupMessageTit: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 14,
+    color: '#646464',
+    marginBottom: 10,
+  },
+  openPopupMessageText: {
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 12,
+    color: '#646464',
+  },
+  openPopupDescArea: {
+    alignItems: 'center',
+  },
+  openPopupDescText: {
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 14,
+    color: '#646464',
+  },
+  openPopupDescIcon: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 16,
+    color: '#697AE6',
+    marginLeft: 3,
   },
   
 });
