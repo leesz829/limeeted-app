@@ -100,7 +100,6 @@ export const Message = (props: Props) => {
 					},
 				});
 			} else if(type == 'MSG_TP_10') {
-				console.log('MSG10!!!!!!!!!!!!!!!!!!!!!');
 				navigation.navigate(STACK.COMMON, {
 					screen: 'Storage',
 					params: {
