@@ -37,6 +37,7 @@ import ItemMatching from 'screens/matching/ItemMatching';
 import MyDailyView from 'screens/profile/MyDailyView';
 
 import EventDetail from 'screens/event/EventDetail';
+import { ProfileImageSetting } from 'screens/profile/ProfileImageSetting';
 
 const CommonStack = createStackNavigator<StackParamList>();
 
@@ -76,6 +77,7 @@ const CommonNavigation = () => {
       <CommonStack.Screen name="ImagePreview" component={ImagePreview} />
       <CommonStack.Screen name="MyDailyView" component={MyDailyView} />
       <CommonStack.Screen name="EventDetail" component={EventDetail} />
+      <CommonStack.Screen name="ProfileImageSetting" component={ProfileImageSetting} />
     </CommonStack.Navigator>
   );
 };

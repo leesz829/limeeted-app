@@ -695,9 +695,6 @@ export const Profile1 = (props: Props) => {
     };
   }, [isFocus]);
 
-
-
-
   return (
     <>
       {isLoading && <CommonLoading />}
@@ -908,6 +905,18 @@ export const Profile1 = (props: Props) => {
             </SpaceView>
           }
 
+          {/* <SpaceView mb={10}>
+            <CommonBtn 
+              value={'순서 변경'} 
+              type={'primary2'} 
+              borderRadius={12} 
+              onPress={() => { 
+                navigation.navigate(STACK.COMMON, {
+                  screen: 'ProfileImageSetting',
+                });
+              }} />
+          </SpaceView> */}
+
           <SpaceView>
             <CommonBtn value={'삭제'} type={'primary2'} borderRadius={12} onPress={imgDelProc} />
           </SpaceView>
@@ -915,6 +924,7 @@ export const Profile1 = (props: Props) => {
           {/* <SpaceView>
             <CommonBtn value={'취소'} type={'primary2'} borderRadius={12} onPress={imgDel_onClose} />
           </SpaceView> */}
+
         </View>
       </Modalize>
 

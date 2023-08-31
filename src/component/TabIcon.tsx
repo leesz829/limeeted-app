@@ -67,7 +67,7 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
             <View>
               <Image style={_style.imgSize(isFocused)} source={findSourcePath(masterProfileImg[0].img_file_path)} />
 
-              {isEmptyData(memberBase.new_board_cnt) && memberBase.new_board_cnt > 0 && (
+              {isEmptyData(memberBase?.new_board_cnt) && memberBase?.new_board_cnt > 0 && (
                 <View style={_style.newIcon} />
               )}
             </View>
@@ -87,7 +87,7 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
           <View>
             <Image style={_style.iconSize} source={isFocused ? ICON.storageOn : ICON.storage} />
 
-            {isEmptyData(memberBase.new_match_cnt) && memberBase.new_match_cnt > 0 && (
+            {isEmptyData(memberBase?.new_match_cnt) && memberBase?.new_match_cnt > 0 && (
               <View style={_style.newIcon} />
             )}
           </View>
@@ -115,10 +115,10 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
               <Image style={_style.iconSize} source={ICON.cashshop} />
             }
 
-            {(memberBase.gender == 'M' && memberBase?.new_item_cnt != null && typeof memberBase?.new_item_cnt != 'undefined' && memberBase?.new_item_cnt > 0) &&
+            {(memberBase?.gender == 'M' && memberBase?.new_item_cnt != null && typeof memberBase?.new_item_cnt != 'undefined' && memberBase?.new_item_cnt > 0) &&
               <View style={_style.shopIconArea}><Text style={_style.newText}>NEW</Text></View>
             }
-            {memberBase.gender == 'W' && (
+            {memberBase?.gender == 'W' && (
               <>
                 {/* <Animated.View style={[_style.shopLimitArea, { opacity: fadeAnim }]}>
                   <Text style={_style.limitText}><Image style={{width: 10, height: 7, position: 'absolute', top: 5, left: 7, zIndex: 1}} source={ICON.crown} /> {CommaFormat(memberBase.mileage_point)}리밋 보유 중!{'\n'}리밋샵 바로가기</Text>
@@ -127,7 +127,7 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
 
                 <Animated.View style={[_style.shopLimitArea, shopDescStyle]}>
                   <View style={_style.shopLimitTextArea}>
-                    <Text style={_style.limitText}><Image style={{width: 10, height: 7}} source={ICON.crown} /> {CommaFormat(memberBase.mileage_point)}리밋 보유 중!{'\n'}리밋샵 바로가기</Text>
+                    <Text style={_style.limitText}><Image style={{width: 10, height: 7}} source={ICON.crown} /> {CommaFormat(memberBase?.mileage_point)}리밋 보유 중!{'\n'}리밋샵 바로가기</Text>
                   </View>
                   <View style={_style.triangle}></View>
                 </Animated.View>

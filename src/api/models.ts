@@ -149,6 +149,7 @@ export async function regist_introduce(body: {
   nickname: string;
   comment: string;
   interest_list: any;
+  introduce_comment: string;
 }) {
   return send(REGIST_MEMBER_INTEREST, 'POST', body, false, false);
 }
@@ -520,6 +521,7 @@ export async function regist_match_status(body: {
   res_member_seq: number;
   special_level: number;
   match_seq: number;
+  //message: string;
 }) {
   return send(REGIST_MATCHING_INFO, 'POST', body, true, false);
 }

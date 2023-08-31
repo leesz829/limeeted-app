@@ -96,6 +96,8 @@ export type StackParamList = {
   };
   TutorialSetting: undefined;
   MyDailyView: undefined;
+
+  ProfileImageSetting: undefined;
 };
 
 export type BottomParamList = {
