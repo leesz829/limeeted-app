@@ -42,7 +42,6 @@ import MemberIntro from 'component/match/MemberIntro';
 import { formatNowDate, isEmptyData} from 'utils/functions';
 import InterestSendPopup from 'screens/commonpopup/InterestSendPopup';
 import SincereSendPopup from 'screens/commonpopup/SincereSendPopup';
-import SincerePopup from 'screens/commonpopup/SincerePopup';
 import Clipboard from '@react-native-clipboard/clipboard';
 
 
@@ -142,25 +141,13 @@ export const StorageProfile = (props: Props) => {
     setSincereSendModalVisible(false);
   };
 
-  // 찐심 레벨 선택
-  const sincereLevelSelect = (message:string) => {
-    setMessage(message);
-    setSincereModalVisible(true);
-    setSincereSendModalVisible(false);
-  };
-
-  // 찐심 보내기 모달 닫기
-  const sincereCloseModal = () => {
-    setSincereModalVisible(false);
-  };
-
   // 찐심 보내기
   const sincereSend = (level:number, message:string) => {
     insertMatchInfo('sincere', level, message);
-    setSincereModalVisible(false);
+    setSincereSendModalVisible(false);
     setMessage('');
   };
-
+  
 
   // ################################################################ 초기 실행 함수
   // ##### 첫 렌더링
@@ -839,14 +826,7 @@ export const StorageProfile = (props: Props) => {
         <SincereSendPopup
           isVisible={sincereSendModalVisible}
           closeModal={sincereSendCloseModal}
-          confirmFunc={sincereLevelSelect}
-        />
-
-        <SincerePopup
-          isVisible={sincereModalVisible}
-          closeModal={sincereCloseModal}
           confirmFunc={sincereSend}
-          message={message}
         />
 
     </>

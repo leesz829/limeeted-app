@@ -122,23 +122,6 @@ export default function SincerePopup({ isVisible, closeModal, confirmFunc, messa
             </TouchableOpacity>
 
           </View>
-          
-          {/* <SpaceView viewStyle={_styles.messageArea}>
-            <TextInput
-              value={message}
-              onChangeText={(message) => setMessage(message)}
-              multiline={true}
-              autoCapitalize="none"
-              style={_styles.inputStyle}
-              placeholder={'상대에게 전할 정성스러운 메시지를 작성해 보세요!'}
-              placeholderTextColor={'#c7c7c7'}
-              editable={true}
-              secureTextEntry={false}
-              maxLength={200}
-              numberOfLines={3}
-            />
-          </SpaceView> */}
-
         </View>
 
         <View style={_styles.bottomBox}>

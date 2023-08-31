@@ -31,7 +31,6 @@ import ProfileActive from 'component/match/ProfileActive';
 import InterviewRender from 'component/match/InterviewRender';
 import InterestSendPopup from 'screens/commonpopup/InterestSendPopup';
 import SincereSendPopup from 'screens/commonpopup/SincereSendPopup';
-import SincerePopup from 'screens/commonpopup/SincerePopup';
 import MemberIntro from 'component/match/MemberIntro';
 
 
@@ -99,7 +98,6 @@ export default function ItemMatching(props: Props) {
 
   const [interestSendModalVisible, setInterestSendModalVisible] = useState(false); // 관심 보내기 모달 visible
   const [sincereSendModalVisible, setSincereSendModalVisible] = useState(false); // 찐심 보내기 모달 visible
-  const [sincereModalVisible, setSincereModalVisible] = useState(false); // 찐심 레벨 선택 모달 visible
 
   // 관심 보내기 모달 닫기
   const interestSendCloseModal = () => {
@@ -118,22 +116,10 @@ export default function ItemMatching(props: Props) {
     setSincereSendModalVisible(false);
   };
 
-  // 찐심 레벨 선택
-  const sincereLevelSelect = (message:string) => {
-    setMessage(message);
-    setSincereModalVisible(true);
-    setSincereSendModalVisible(false);
-  };
-
-  // 찐심 보내기 모달 닫기
-  const sincereCloseModal = () => {
-    setSincereModalVisible(false);
-  };
-
   // 찐심 보내기
   const sincereSend = (level:number, message:string) => {
     insertMatchInfo('sincere', level, message);
-    setSincereModalVisible(false);
+    setSincereSendModalVisible(false);
     setMessage('');
   };
 
@@ -602,14 +588,7 @@ export default function ItemMatching(props: Props) {
         <SincereSendPopup
           isVisible={sincereSendModalVisible}
           closeModal={sincereSendCloseModal}
-          confirmFunc={sincereLevelSelect}
-        />
-
-        <SincerePopup
-          isVisible={sincereModalVisible}
-          closeModal={sincereCloseModal}
           confirmFunc={sincereSend}
-          message={message}
         />
 
       </>
