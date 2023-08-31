@@ -443,16 +443,16 @@ export const SecondAuthPopup = (props: Props) => {
                     </View>
                   </SpaceView>
                   <View style={_styles.rowStyle}>
-                    <Text style={_styles.rowTextHalfLeft}>사기업</Text>
-                    <Text style={_styles.rowTextHalfRight}>중소기업, 중견기업, 대기업</Text>
+                    <Text style={_styles.rowTextHalfLeft('40%')}>사기업</Text>
+                    <Text style={_styles.rowTextHalfRight('60%')}>중소기업, 중견기업, 대기업</Text>
                   </View>
                   <View style={_styles.rowStyle}>
-                    <Text style={_styles.rowTextHalfLeft}>공무원</Text>
-                    <Text style={_styles.rowTextHalfRight}>국내 모든 공무 직종</Text>
+                    <Text style={_styles.rowTextHalfLeft('40%')}>공무원</Text>
+                    <Text style={_styles.rowTextHalfRight('60%')}>국내 모든 공무 직종</Text>
                   </View>
                   <View style={_styles.rowStyle}>
-                    <Text style={_styles.rowTextHalfLeft}>전문직</Text>
-                    <Text style={_styles.rowTextHalfRight}>의료인, 법조인, 약사, 수의사, 회계, 세무, 무역, 부동산, 각종 기술사 등</Text>
+                    <Text style={_styles.rowTextHalfLeft('40%')}>전문직</Text>
+                    <Text style={_styles.rowTextHalfRight('60%')}>의료인, 법조인, 약사, 수의사, 회계, 세무, 무역, 부동산, 각종 기술사 등</Text>
                   </View>
                   <SpaceView mb={12} mt={20}>
                     <View style={styles.dotTextContainer}>
@@ -466,16 +466,16 @@ export const SecondAuthPopup = (props: Props) => {
                     </View>
                   </SpaceView>
                   <View style={_styles.rowStyle}>
-                    <Text style={_styles.rowTextHalfLeft}>사기업</Text>
-                    <Text style={_styles.rowTextHalfRight}>사원급, 과장급, 임원급, 대표</Text>
+                    <Text style={_styles.rowTextHalfLeft('40%')}>사기업</Text>
+                    <Text style={_styles.rowTextHalfRight('60%')}>사원급, 과장급, 임원급, 대표</Text>
                   </View>
                   <View style={_styles.rowStyle}>
-                    <Text style={_styles.rowTextHalfLeft}>공무원</Text>
-                    <Text style={_styles.rowTextHalfRight}>공무원 급수에 따라 차등하여 레벨 부여</Text>
+                    <Text style={_styles.rowTextHalfLeft('40%')}>공무원</Text>
+                    <Text style={_styles.rowTextHalfRight('60%')}>공무원 급수에 따라 차등하여 레벨 부여</Text>
                   </View>
                   <View style={_styles.rowStyle}>
-                    <Text style={_styles.rowTextHalfLeft}>전문직</Text>
-                    <Text style={_styles.rowTextHalfRight}>운영 내규에 따라 차등하여 레벨 부여</Text>
+                    <Text style={_styles.rowTextHalfLeft('40%')}>전문직</Text>
+                    <Text style={_styles.rowTextHalfRight('60%')}>운영 내규에 따라 차등하여 레벨 부여</Text>
                   </View>
 
                   <SpaceView mb={12} mt={13}>
@@ -505,24 +505,24 @@ export const SecondAuthPopup = (props: Props) => {
                     </View>
                   </SpaceView>
                   <View style={_styles.rowStyle}>
-                    <Text style={_styles.rowTextHalfLeft}>LV 5</Text>
-                    <Text style={_styles.rowTextHalfRight}>THE 스코어 기준 80점 이상</Text>
+                    <Text style={_styles.rowTextHalfLeft('40%')}>LV 5</Text>
+                    <Text style={_styles.rowTextHalfRight('60%')}>THE 스코어 기준 80점 이상</Text>
                   </View>
                   <View style={_styles.rowStyle}>
-                    <Text style={_styles.rowTextHalfLeft}>LV 4</Text>
-                    <Text style={_styles.rowTextHalfRight}>THE 스코어 기준 70점 이상</Text>
+                    <Text style={_styles.rowTextHalfLeft('40%')}>LV 4</Text>
+                    <Text style={_styles.rowTextHalfRight('60%')}>THE 스코어 기준 70점 이상</Text>
                   </View>
                   <View style={_styles.rowStyle}>
-                    <Text style={_styles.rowTextHalfLeft}>LV 3</Text>
-                    <Text style={_styles.rowTextHalfRight}>THE 스코어 기준 50~70점</Text>
+                    <Text style={_styles.rowTextHalfLeft('40%')}>LV 3</Text>
+                    <Text style={_styles.rowTextHalfRight('60%')}>THE 스코어 기준 50~70점</Text>
                   </View>
                   <View style={_styles.rowStyle}>
-                    <Text style={_styles.rowTextHalfLeft}>LV 2</Text>
-                    <Text style={_styles.rowTextHalfRight}>THE 스코어 기준 30~50점</Text>
+                    <Text style={_styles.rowTextHalfLeft('40%')}>LV 2</Text>
+                    <Text style={_styles.rowTextHalfRight('60%')}>THE 스코어 기준 30~50점</Text>
                   </View>
                   <View style={_styles.rowStyle}>
-                    <Text style={_styles.rowTextHalfLeft}>LV 1</Text>
-                    <Text style={_styles.rowTextHalfRight}>THE 스코어 기준 30점 미만</Text>
+                    <Text style={_styles.rowTextHalfLeft('40%')}>LV 1</Text>
+                    <Text style={_styles.rowTextHalfRight('60%')}>THE 스코어 기준 30점 미만</Text>
                   </View>
                   <SpaceView mb={12} mt={20}>
                     <View style={styles.dotTextContainer}>
@@ -536,12 +536,12 @@ export const SecondAuthPopup = (props: Props) => {
                     </View>
                   </SpaceView>
                   <View style={_styles.rowStyle}>
-                    <Text style={_styles.rowTextHalfLeft}>일반</Text>
-                    <Text style={_styles.rowTextHalfRight}>학사 -  석사 - 박사에 따라 차등하여 레벨 가산</Text>
+                    <Text style={_styles.rowTextHalfLeft('40%')}>일반</Text>
+                    <Text style={_styles.rowTextHalfRight('60%')}>학사 -  석사 - 박사에 따라 차등하여 레벨 가산</Text>
                   </View>
                   <View style={_styles.rowStyle}>
-                    <Text style={_styles.rowTextHalfLeft}>특수</Text>
-                    <Text style={_styles.rowTextHalfRight}>의대, 법대, 약대, 교대, 사범대, 예체능 등 별도 레벨 가산</Text>
+                    <Text style={_styles.rowTextHalfLeft('40%')}>특수</Text>
+                    <Text style={_styles.rowTextHalfRight('60%')}>의대, 법대, 약대, 교대, 사범대, 예체능 등 별도 레벨 가산</Text>
                   </View>
 
                   <SpaceView mb={12} mt={13}>
@@ -676,20 +676,28 @@ export const SecondAuthPopup = (props: Props) => {
               {type == 'SNS' && (
                 <>
                   <View style={_styles.rowStyle}>
-                    <Text style={_styles.rowTextHalfLeft}>LV 1</Text>
-                    <Text style={_styles.rowTextHalfRight}>1,000명 이상</Text>
+                    <Text style={_styles.rowTextHalfLeft('40%')}>LV 1</Text>
+                    <Text style={_styles.rowTextHalfRight('60%')}>500명 이상</Text>
                   </View>
                   <View style={_styles.rowStyle}>
-                    <Text style={_styles.rowTextHalfLeft}>LV 2</Text>
-                    <Text style={_styles.rowTextHalfRight}>5,000명 이상</Text>
+                    <Text style={_styles.rowTextHalfLeft('40%')}>LV 2</Text>
+                    <Text style={_styles.rowTextHalfRight('60%')}>1,000명 이상</Text>
                   </View>
                   <View style={_styles.rowStyle}>
-                    <Text style={_styles.rowTextHalfLeft}>LV 3</Text>
-                    <Text style={_styles.rowTextHalfRight}>1만명 이상</Text>
+                    <Text style={_styles.rowTextHalfLeft('40%')}>LV 3</Text>
+                    <Text style={_styles.rowTextHalfRight('60%')}>2.500명 이상</Text>
                   </View>
                   <View style={_styles.rowStyle}>
-                    <Text style={_styles.rowTextHalfLeft}>LV 4</Text>
-                    <Text style={_styles.rowTextHalfRight}>5만명 이상</Text>
+                    <Text style={_styles.rowTextHalfLeft('40%')}>LV 4</Text>
+                    <Text style={_styles.rowTextHalfRight('60%')}>5,000명 이상</Text>
+                  </View>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextHalfLeft('40%')}>LV 5</Text>
+                    <Text style={_styles.rowTextHalfRight('60%')}>1만명 이상</Text>
+                  </View>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextHalfLeft('40%')}>LV 6</Text>
+                    <Text style={_styles.rowTextHalfRight('60%')}>5만명 이상</Text>
                   </View>
                 </>
               )}
@@ -697,20 +705,24 @@ export const SecondAuthPopup = (props: Props) => {
               {type == 'VEHICLE' && (
                 <>
                   <View style={_styles.rowStyle}>
-                    <Text style={_styles.rowTextHalfLeft}>고급</Text>
-                    <Text style={_styles.rowTextHalfRight}>출고가 기준 4,000만원 이상</Text>
+                    <Text style={_styles.rowTextHalfLeft('20%')}>LV 1</Text>
+                    <Text style={_styles.rowTextHalfRight('80%')}>출고가 기준 2,000만원 이상의 자동차</Text>
                   </View>
                   <View style={_styles.rowStyle}>
-                    <Text style={_styles.rowTextHalfLeft}>최고급</Text>
-                    <Text style={_styles.rowTextHalfRight}>출고가 기준 7,000만원 이상</Text>
+                    <Text style={_styles.rowTextHalfLeft('20%')}>LV 2</Text>
+                    <Text style={_styles.rowTextHalfRight('80%')}>출고가 기준 4,000만원 이상의 자동차</Text>
                   </View>
                   <View style={_styles.rowStyle}>
-                    <Text style={_styles.rowTextHalfLeft}>최고급+</Text>
-                    <Text style={_styles.rowTextHalfRight}>출고가 기준 1억 이상</Text>
+                    <Text style={_styles.rowTextHalfLeft('20%')}>LV 3</Text>
+                    <Text style={_styles.rowTextHalfRight('80%')}>출고가 기준 7,000만원 이상의 최고급차</Text>
                   </View>
                   <View style={_styles.rowStyle}>
-                    <Text style={_styles.rowTextHalfLeft}>슈퍼카</Text>
-                    <Text style={_styles.rowTextHalfRight}>브랜드 및 성능 기준이 슈퍼카 조건에 충족하는 자동차</Text>
+                    <Text style={_styles.rowTextHalfLeft('20%')}>LV 4</Text>
+                    <Text style={_styles.rowTextHalfRight('80%')}>출고가 기준 1억~3억원의 럭셔리카</Text>
+                  </View>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextHalfLeft('20%')}>LV 5</Text>
+                    <Text style={_styles.rowTextHalfRight('80%')}>출고가 기준 3억 이상의 브랜드 및 슈퍼카 성능을 지닌 자동차</Text>
                   </View>
                 </>
               )}
@@ -800,26 +812,31 @@ const _styles = StyleSheet.create({
     color: '#7b7b7b',
     width: '33%',
   },
-  rowTextHalfLeft: {
-    fontFamily: 'AppleSDGothicNeoM00',
-    fontSize: 15,
-    lineHeight: 20,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#4B4B4B',
-    width: '40%',
-    paddingVertical: 5,
+  rowTextHalfLeft: (width:string) => {
+    return {
+      fontFamily: 'AppleSDGothicNeoM00',
+      fontSize: 15,
+      lineHeight: 20,
+      letterSpacing: 0,
+      textAlign: 'left',
+      color: '#4B4B4B',
+      width: width,
+      paddingVertical: 5,
+    };
   },
-  rowTextHalfRight: {
-    fontFamily: 'AppleSDGothicNeoM00',
-    fontSize: 15,
-    lineHeight: 20,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#4B4B4B',
-    width: '60%',
-    paddingVertical: 5,
+  rowTextHalfRight: (width:string) => {
+    return {
+      fontFamily: 'AppleSDGothicNeoM00',
+      fontSize: 15,
+      lineHeight: 20,
+      letterSpacing: 0,
+      textAlign: 'left',
+      color: '#4B4B4B',
+      width: width,
+      paddingVertical: 5,
+    };
   },
+
   refuseArea: {
     backgroundColor: '#F4F4F4',
     paddingVertical: 10,
