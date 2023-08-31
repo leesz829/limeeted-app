@@ -24,18 +24,7 @@ import storeKey, { JWT_TOKEN } from 'constants/storeKey';
 import { usePopup } from 'Context';
 import { useUserInfo } from 'hooks/useUserInfo';
 import React, { useEffect, useState } from 'react';
-import {
-  Dimensions,
-  Image,
-  ScrollView,
-  TouchableOpacity,
-  View,
-  Platform,
-  PermissionsAndroid,
-  StyleSheet,
-  Alert,
-  Linking,
-} from 'react-native';
+import { Dimensions, Image, ScrollView, TouchableOpacity, View, Platform, PermissionsAndroid, StyleSheet, Alert, Linking } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { setPrincipal } from 'redux/reducers/authReducer';
 import * as mbrReducer from 'redux/reducers/mbrReducer';
@@ -324,7 +313,6 @@ export const Login01 = () => {
 
   }
 
-
   // ########################################################################## 사용자 위치 확인
   async function requestPermissions() {
     try {
@@ -336,13 +324,29 @@ export const Login01 = () => {
       // AOS 위치 정보 수집 권한 요청
       if (Platform.OS === 'android') {
         return await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         );
       }
     } catch (e) {
       console.log(e);
     }
-  }
+  };
+
+  async function requestNotificationPermission() {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
+      );
+
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('Post notifications permission granted.');
+      } else {
+        console.log('Post notifications permission denied.');
+      }
+    } catch (error) {
+      console.warn('Error while requesting notification policy permission:', error);
+    }
+  };
 
   // ########################################################################## 초기 실행
   useEffect(() => {
@@ -359,6 +363,10 @@ export const Login01 = () => {
           },
           { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
         );
+
+        if(Platform.OS == 'android') {
+          //requestNotificationPermission();
+        };
       });
     };
   }, [isFocus]);
@@ -465,7 +473,7 @@ export const Login01 = () => {
               </SpaceView>
 
               <SpaceView viewStyle={_styles.joinText}>
-                <CommonText type={"h5"}>계정이 없으신가요?</CommonText>
+                <CommonText type={"h5"}>리미티드 계정이 없으신가요?</CommonText>
                 <View style={_styles.joinTextLine} />
                 <TouchableOpacity onPress={() => { joinProc(); }} hitSlop={commonStyle.hipSlop10}>
                   <CommonText type={"h5"} color={Color.blue01} fontWeight={'700'}>회원가입</CommonText>
