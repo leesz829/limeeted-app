@@ -10,30 +10,9 @@ import Animated, { useAnimatedStyle, withTiming, useSharedValue, withSpring, wit
 const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
   const memberBase = useUserInfo();
 
-  //const fadeAnim = new Animated.Value(1);
-
-  //const [isAnimating, setIsAnimating] = React.useState(false);
-
-  /* const fadeInOut = () => {
-    Animated.sequence([
-      Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: 700, // 깜빡임이 서서히 사라지는 데 걸리는 시간 (1초)
-        delay: 2500,
-        //easing: '',
-
-        useNativeDriver: true,
-      }),
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 700, // 깜빡임이 서서히 나타나는 데 걸리는 시간 (1초)
-        delay: 2000,
-        useNativeDriver: true,
-      }),
-    ]).start(() => fadeInOut());
-  }; */
-
   const shopDescOpacity = useSharedValue(0);
+  const storageDescOpacity = useSharedValue(0);
+
   const shopDescAnimate = () => {
     shopDescOpacity.value = withRepeat(
       withSequence(
@@ -45,16 +24,34 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
     );
   };
 
+  const storageDescAnimate = () => {
+    storageDescOpacity.value = withSequence(
+        withDelay(500, withTiming(1, { duration: 500 })),
+        withDelay(1000, withTiming(0, { duration: 500 })),
+        withDelay(500, withTiming(1, { duration: 500 })),
+        withDelay(1000, withTiming(0, { duration: 500 })),
+        withDelay(500, withTiming(1, { duration: 500 })),
+        withDelay(1000, withTiming(0, { duration: 500 })),
+    );
+  };
+
   const shopDescStyle = useAnimatedStyle(() => {
     return {
       opacity: shopDescOpacity.value
     };
   });
 
+  const storageDescStyle = useAnimatedStyle(() => {
+    return {
+      opacity: storageDescOpacity.value
+    };
+  });
+
   if(name == 'Cashshop') {
-    //fadeInOut();
     shopDescAnimate();
-  }
+  } else if(name == 'Storage') {
+    //storageDescAnimate();
+  };
 
   switch (name) {
     case 'Roby': {
@@ -87,9 +84,27 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
           <View>
             <Image style={_style.iconSize} source={isFocused ? ICON.storageOn : ICON.storage} />
 
-            {isEmptyData(memberBase?.new_match_cnt) && memberBase?.new_match_cnt > 0 && (
+            {/* {isEmptyData(memberBase?.new_match_cnt) && memberBase?.new_match_cnt > 0 && (
               <View style={_style.newIcon} />
-            )}
+            )} */}
+
+            <Animated.View style={[_style.storageLimitArea, storageDescStyle]}>
+              {/* <View style={_style.storageLimitTextArea(195)}><Text style={_style.storageText}>리미티드가 드리는 절대 추천! 꼭 확인해 보세요 😍</Text></View> */}
+              {/* <View style={_style.storageLimitTextArea(130)}><Text style={_style.storageText}>인증 레벨 30의 그 분이 등장 🤩</Text></View> */}
+              {/* <View style={_style.storageLimitTextArea(160)}><Text style={_style.storageText}>럭셔리차 소유자분이 관심을 보내셨어요.</Text></View> */}
+              {/* <View style={_style.storageLimitTextArea(160)}><Text style={_style.storageText}>인기 많은 SNS 셀럽이 관심을 보내셨어요.</Text></View> */}
+              {/* <View style={_style.storageLimitTextArea(170)}><Text style={_style.storageText}>억대 자산가님이 황금빛 관심을 보내셨어요.</Text></View> */}
+              {/* <View style={_style.storageLimitTextArea(160)}><Text style={_style.storageText}>억대연봉 능력자님이 관심을 보내셨어요.</Text></View> */}
+              {/* <View style={_style.storageLimitTextArea(160)}><Text style={_style.storageText}>뇌가 섹시한 분이 보낸 관심은 어떠세요?</Text></View> */}
+              {/* <View style={_style.storageLimitTextArea(190)}><Text style={_style.storageText}>전문성이 남다른 분에게 온 관심을 확인해 보세요.</Text></View> */}
+              {/* <View style={_style.storageLimitTextArea(175)}><Text style={_style.storageText}>훈내 가득한 찐심! 이 분은 꼭 보고 가세요 💕</Text></View> */}
+              {/* <View style={_style.storageLimitTextArea(155)}><Text style={_style.storageText}>지금 온 관심은 훈훈함이 가득하단 소식!</Text></View> */}
+              {/* <View style={_style.storageLimitTextArea(170)}><Text style={_style.storageText}>프로필에 고평점을 남기고 간 사람이 있어요.</Text></View> */}
+              {/* <View style={_style.storageLimitTextArea(130)}><Text style={_style.storageText}>새 찐심 도착! 과연 누구일까요?</Text></View> */}
+              <View style={_style.storageLimitTextArea(140)}><Text style={_style.limitText}>누군가 내 프로필을 보고 있어요.</Text></View>
+              {/* <View style={_style.storageLimitTextArea(205)}><Text style={_style.storageText}>아직 열어보지 못 한 관심 5 / 10 / 15 / 30개가 있어요.</Text></View> */}
+              <View style={_style.storageTriangle}></View>
+            </Animated.View>
           </View>
         </>
       );
@@ -213,6 +228,7 @@ const _style = StyleSheet.create({
     fontSize: 10,
     color: '#FFF',
     textAlign: 'center',
+    paddingHorizontal: 5,
   },
   triangle: {
     marginTop: -1,
@@ -237,4 +253,42 @@ const _style = StyleSheet.create({
 		backgroundColor: '#FF7E8C',
 		borderRadius: 30,
 	},
+  storageLimitArea: {
+    position: 'absolute',
+    top: -38,
+    left: -50,
+    alignItems: 'flex-start',
+    opacity: 0,
+  },
+  storageLimitTextArea: (width: number) => {
+    return {
+      backgroundColor: '#7F67FF',
+      borderRadius: 3,
+      overflow: 'hidden',
+      width: width,
+      paddingVertical: 8,
+    };
+  },
+  storageTriangle: {
+    marginTop: -1,
+    marginLeft: 58,
+    width: 0,
+    height: 0,
+    backgroundColor: 'transparent',
+    borderLeftWidth: 6,
+    borderRightWidth: 6,
+    borderBottomWidth: 6,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderBottomColor: '#7F67FF',
+    transform: [{ rotate: '180deg' }],
+  },
+  storageText: {
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 9,
+    color: '#FFF',
+    textAlign: 'center',
+  },
+
+
 });

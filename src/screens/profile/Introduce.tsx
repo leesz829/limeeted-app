@@ -2,7 +2,7 @@ import { styles, layoutStyle, modalStyle, commonStyle } from 'assets/styles/Styl
 import CommonHeader from 'component/CommonHeader';
 import { CommonInput } from 'component/CommonInput';
 import SpaceView from 'component/SpaceView';
-import { ScrollView, View, StyleSheet, TouchableOpacity, Image, Dimensions, KeyboardAvoidingView, Platform } from 'react-native';
+import { ScrollView, View, StyleSheet, TouchableOpacity, Image, Dimensions, KeyboardAvoidingView, Platform, Text } from 'react-native';
 import * as React from 'react';
 import { FC, useState, useEffect, useRef } from 'react';
 import { CommonSelect } from 'component/CommonSelect';
@@ -399,8 +399,9 @@ export const Introduce = (props: Props) => {
       <ScrollView style={styles.scrollContainerAll}>
         <View style={commonStyle.paddingHorizontal20}>
           <SpaceView mb={24}>
-            <SpaceView mb={10}>
+            <SpaceView mb={10} viewStyle={{flexDirection: 'row', alignItems: 'flex-end'}}>
               <CommonText textStyle={_styles.labelStyle2}>한줄 소개</CommonText>
+              <Text style={_styles.countText}>({comment.length}/50)</Text>
             </SpaceView>
 
             <CommonTextarea
@@ -410,9 +411,9 @@ export const Introduce = (props: Props) => {
 								placeholder={'한줄 소개를 입력 하세요.'}
 								placeholderTextColor={'#c6ccd3'}
 								maxLength={50}
-                height={80}
+                height={70}
                 borderRadius={10}
-                fontSize={13}
+                fontSize={12}
                 fontColor={'#333333'}
                 lineCount={3}
 						/>
@@ -428,8 +429,9 @@ export const Introduce = (props: Props) => {
           </SpaceView>
 
           <SpaceView mb={24}>
-            <SpaceView mb={10}>
+            <SpaceView mb={10} viewStyle={{flexDirection: 'row', alignItems: 'flex-end'}}>
               <CommonText textStyle={_styles.labelStyle2}>프로필 소개</CommonText>
+              <Text style={_styles.countText}>({introduceComment.length}/3000)</Text>
             </SpaceView>
 
             <CommonTextarea
@@ -438,7 +440,7 @@ export const Introduce = (props: Props) => {
 								onChangeText={(introduceComment) => setIntroduceComment(introduceComment)}
                 placeholder={'자유롭게 나 자신을 소개해 주세요!\n구체적으로 작성할수록 이성에게\n좋은 매력 포인트가 될 수 있어요 😊'}
 								placeholderTextColor={'#c6ccd3'}
-                maxLength={5000}
+                maxLength={3000}
                 height={150}
                 borderRadius={10}
                 fontSize={12}
@@ -726,4 +728,11 @@ const _styles = StyleSheet.create({
 		borderColor: '#C7C7C7',
 		flexDirection: 'row',
   },
+  countText: {
+    marginLeft: 3,
+    fontFamily: 'AppleSDGothicNeoR00',
+    fontSize: 13,
+    color: '#363636',
+  },
+
 });

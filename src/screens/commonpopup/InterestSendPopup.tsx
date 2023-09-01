@@ -37,6 +37,7 @@ export default function InterestSendPopup({ isVisible, closeModal, confirmFunc }
         <View style={_styles.titleBox}>
           <Image style={styles.iconSquareSize(20)} source={ICON.logoTransIcon} resizeMode={'contain'} />
           <Text style={_styles.titleText}>메시지 작성</Text>
+          <Text style={_styles.countText}>({message.length}/150)</Text>
         </View>
         
         <View style={_styles.contentBody}>
@@ -60,7 +61,7 @@ export default function InterestSendPopup({ isVisible, closeModal, confirmFunc }
               placeholderTextColor={'#c7c7c7'}
               editable={true}
               secureTextEntry={false}
-              maxLength={200}
+              maxLength={150}
               numberOfLines={3}
             />
           </SpaceView>
@@ -108,11 +109,15 @@ const _styles = StyleSheet.create({
   titleText: {
     fontFamily: 'AppleSDGothicNeoR00',
     fontSize: 14,
-    letterSpacing: 0,
-    textAlign: 'left',
     color: '#ffffff',
     marginLeft: 5,
     marginTop: -1,
+  },
+  countText: {
+    fontFamily: 'AppleSDGothicNeoR00',
+    fontSize: 12,
+    color: '#ffffff',
+    marginLeft: 3,
   },
   contentBody: {
     flexDirection: 'column',

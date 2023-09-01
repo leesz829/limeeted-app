@@ -619,7 +619,7 @@ const AuthItemRender = (dataObj: any) => {
     authDesc = '은행에서 발급해주는 잔고 증명서를 올려주세요.';
   } else if(data.common_code == 'SNS') { 
     imgSrc = ICON.snsNew;
-    authDesc = '내 인스타 ID가 보이는 스크린샷을 올려주세요.';
+    authDesc = '팔로워 수가 충족되는 경우 스크린샷을 올려주세요.';
   } else if(data.common_code == 'VEHICLE') {
     imgSrc = ICON.vehicleNew;
     authDesc = '차량 등록등 또는 자동차보험가입 증빙 자료를 올려주세요.';

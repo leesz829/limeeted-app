@@ -200,7 +200,7 @@ export const Signup03 = (props : Props) => {
 		let contentOffset = event.nativeEvent.contentOffset;
 		let index = Math.floor(contentOffset.x / 300);
 		setCurrentIndex(index);
-	  };
+	};
 
 	return (
 		<>
@@ -212,7 +212,7 @@ export const Signup03 = (props : Props) => {
 							{ justifyContent: 'space-between' },
 						]}>
 				<View style={commonStyle.paddingHorizontal20}>
-					<SpaceView mb={60}>
+					<SpaceView mb={40}>
 						<CommonText>리미티드에서 사용할</CommonText>
 						<CommonText fontWeight={'700'}>닉네임과 한줄소개를 입력해주세요.</CommonText>
 					</SpaceView>
@@ -228,18 +228,37 @@ export const Signup03 = (props : Props) => {
 					</SpaceView>
 
 					<SpaceView mb={24}>
-						<CommonInput 
+						<SpaceView mb={10} viewStyle={{flexDirection: 'row', alignItems: 'flex-end'}}>
+							<CommonText textStyle={_styles.labelStyle2}>한줄 소개</CommonText>
+							<Text style={_styles.countText}>({comment.length}/50)</Text>
+						</SpaceView>
+						<CommonTextarea
+							label={''} 
+							value={comment}
+							onChangeText={(comment) => setComment(comment)}
+							placeholder={'한줄 소개를 입력 하세요.'}
+							placeholderTextColor={'#c6ccd3'}
+							maxLength={50}
+							height={70}
+							borderRadius={10}
+							fontSize={12}
+							fontColor={'#333333'}
+							lineCount={3}
+						/>
+
+						{/* <CommonInput 
 							label="한줄 소개" 
 							placeholder={'한줄 소개를 입력해 주세요.'}
 							placeholderTextColor={'#c6ccd3'}
 							value={comment}
 							maxLength={50}
-							onChangeText={comment => setComment(comment)} />
+							onChangeText={comment => setComment(comment)} /> */}
 					</SpaceView>
 
 					<SpaceView mb={24}>
-						<SpaceView mb={10}>
+						<SpaceView mb={10} viewStyle={{flexDirection: 'row', alignItems: 'flex-end'}}>
 							<CommonText textStyle={_styles.labelStyle2}>프로필 소개</CommonText>
+							<Text style={_styles.countText}>({introduceComment.length}/3000)</Text>
 						</SpaceView>
 						<CommonTextarea
 							label={''}
@@ -247,8 +266,8 @@ export const Signup03 = (props : Props) => {
 							onChangeText={(introduceComment) => setIntroduceComment(introduceComment)}
 							placeholder={'자유롭게 나 자신을 소개해 주세요!\n구체적으로 작성할수록 이성에게\n좋은 매력 포인트가 될 수 있어요 😊'}
 							placeholderTextColor={'#c6ccd3'}
-							maxLength={5000}
-							height={100}
+							maxLength={3000}
+							height={130}
 							borderRadius={10}
 							fontSize={12}
 							fontColor={'#333333'} />
@@ -456,4 +475,12 @@ const _styles = StyleSheet.create({
 		fontFamily: 'AppleSDGothicNeoEB00',
 		color: '#333333',
 	  },
+	  countText: {
+		marginLeft: 3,
+		fontFamily: 'AppleSDGothicNeoR00',
+		fontSize: 13,
+		color: '#363636',
+	  },
+
+
   });
