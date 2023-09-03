@@ -612,6 +612,7 @@ export const Storage = (props: Props) => {
         {isShow && 
 
           <TouchableOpacity
+            disabled={matchStatus == 'REFUSE'}
             onPress={() => {
               popupProfileOpen(
                 item.match_seq,
