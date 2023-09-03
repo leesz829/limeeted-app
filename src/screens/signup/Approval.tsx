@@ -436,7 +436,7 @@ const _styles = StyleSheet.create({
       textAlign: 'center',
       borderColor: type == 'MOD' ? '#697AE6' : '#707070',
       borderWidth: 1,
-      borderRadius: 50,
+      borderRadius: 20,
       paddingVertical: type == 'MOD' ? 11 : 5,
     };
   },

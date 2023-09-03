@@ -136,6 +136,10 @@ export default function SincereSendPopup({ isVisible, closeModal, confirmFunc }:
             </SpaceView>
           </View>
 
+          <SpaceView mb={15}>
+            <Text style={_styles.descText}>상대에게 내 프로필의 흐림효과가 적용되지 않고 바로 공개됩니다.</Text>
+          </SpaceView>
+
           <View style={_styles.bottomBox}>
             <TouchableOpacity 
               style={_styles.allButton} 
@@ -407,7 +411,12 @@ const _styles = StyleSheet.create({
     borderRadius: 5,
     textAlign: 'center',
   },
-
+  descText: {
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 10,
+    color: '#646464',
+    textAlign: 'center',
+  },
 
 
 

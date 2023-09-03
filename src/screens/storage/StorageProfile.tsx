@@ -1058,6 +1058,8 @@ const _styles = StyleSheet.create({
       backgroundColor: !isSpecial ? '#7986EE' : '#FE0456',
       borderRadius: 50,
       overflow: 'hidden',
+      width: 55,
+      textAlign: 'center',
       paddingHorizontal: 12,
       paddingVertical: 1,
       marginBottom: 15,

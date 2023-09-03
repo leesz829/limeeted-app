@@ -718,7 +718,7 @@ export const SecondAuthPopup = (props: Props) => {
                   </View>
                   <View style={_styles.rowStyle}>
                     <Text style={_styles.rowTextHalfLeft('20%')}>LV 4</Text>
-                    <Text style={_styles.rowTextHalfRight('80%')}>출고가 기준 1억~2억원의 최고급 차량</Text>
+                    <Text style={_styles.rowTextHalfRight('80%')}>출고가 기준 1억~2억원의 상당의 럭셔리카</Text>
                   </View>
                   <View style={_styles.rowStyle}>
                     <Text style={_styles.rowTextHalfLeft('20%')}>LV 5</Text>
