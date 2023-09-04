@@ -87,6 +87,8 @@ export const Message = (props: Props) => {
 		} else {
 			if(type == 'MSG_TP_14') {
 				navigation.navigate(STACK.COMMON, { screen: ROUTES.SHOP_INVENTORY });
+			} else if(type == 'MSG_TP_16') {
+				navigation.navigate(STACK.TAB, { screen: 'Roby' });
 			} else if(type == 'MSG_TP_04' || type == 'MSG_TP_05') {
 				navigation.navigate(STACK.COMMON, { screen: 'SecondAuth' });
 			} else if(type == 'MSG_TP_02' || type == 'MSG_TP_03' || type == 'MSG_TP_06' || type == 'MSG_TP_07') {
@@ -105,6 +107,14 @@ export const Message = (props: Props) => {
 					params: {
 					  headerType: 'common',
 					  loadPage: 'LIVE',
+					},
+				});
+			} else if(type == 'MSG_TP_28') {
+				navigation.navigate(STACK.COMMON, {
+					screen: 'Storage',
+					params: {
+					  headerType: 'common',
+					  loadPage: 'MATCH',
 					},
 				});
 			}
@@ -157,7 +167,7 @@ export const Message = (props: Props) => {
 								{(
 									item.msg_type == 'MSG_TP_02' || item.msg_type == 'MSG_TP_03' || item.msg_type == 'MSG_TP_04' || item.msg_type == 'MSG_TP_05' 
 									|| item.msg_type == 'MSG_TP_06' || item.msg_type == 'MSG_TP_07' || item.msg_type == 'MSG_TP_08' || item.msg_type == 'MSG_TP_09'
-									|| item.msg_type == 'MSG_TP_10' || item.msg_type == 'MSG_TP_14'
+									|| item.msg_type == 'MSG_TP_10' || item.msg_type == 'MSG_TP_14' || item.msg_type == 'MSG_TP_16' || item.msg_type == 'MSG_TP_28'
 								) &&
 									<SpaceView mt={10}>
 										<TouchableOpacity 
