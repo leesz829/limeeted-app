@@ -226,7 +226,7 @@ export const StorageProfile = (props: Props) => {
   // ############################################################ 매칭 상태 변경(수락, 거절)
   const updateMatchStatus = async (status: any) => {
     show({ 
-      content: status == 'ACCEPT' ? '매칭을 수락하시나요?' : '다음 기회로 미룰까요?' ,
+      content: status == 'ACCEPT' ? '상대방과의 매칭을 수락합니다. ' : '다음 기회로 미룰까요?' ,
       cancelCallback: function() {
         
       },

@@ -24,8 +24,8 @@ interface Props {
   subText?: string;
   confirmCallbackFunc?: Function | undefined; // 확인 Callback 함수
   cancelCallbackFunc?: Function | undefined;
+  confirmBtnText?: string;
   cancelBtnText?: string;
-  cancelConfirmText?: string;
   btnExpYn?: string;
 }
 
@@ -87,7 +87,7 @@ export const BasePopup = (props: Props) => {
                       style={[modalStyle.modalBtn, {backgroundColor: Color.blue02, borderBottomRightRadius: 20}]}
                       onPress={onPressConfirm}>
                       <CommonText type={'h5'} fontWeight={'500'} color={ColorType.white}>
-                        {typeof props.cancelConfirmText != 'undefined' ? props.cancelConfirmText : '확인하기'}
+                        {typeof props.confirmBtnText != 'undefined' ? props.confirmBtnText : '확인하기'}
                       </CommonText>
                     </TouchableOpacity>
                   </>
@@ -97,7 +97,7 @@ export const BasePopup = (props: Props) => {
                       style={[modalStyle.modalBtn, {backgroundColor: Color.blue02, borderBottomLeftRadius: 20, borderBottomRightRadius: 20}]}
                       onPress={onPressConfirm}>
                       <CommonText type={'h5'} fontWeight={'500'} color={Color.white}>
-                        {typeof props.cancelConfirmText != 'undefined' ? props.cancelConfirmText : '확인'}
+                        {typeof props.confirmBtnText != 'undefined' ? props.confirmBtnText : '확인'}
                       </CommonText>
                     </TouchableOpacity>
                   </>

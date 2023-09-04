@@ -990,9 +990,13 @@ export const Storage = (props: Props) => {
               {isEmptyData(profileOpenData.message) && (
                 <SpaceView mt={-5} mb={10} viewStyle={_styles.openPopupMessageArea}>
                   <Text style={_styles.openPopupMessageTit}>{profileOpenData.nickname}님의 메시지</Text>
-                  <Text style={_styles.openPopupMessageText}>"{profileOpenData.message}"</Text>
+
+                  <ScrollView style={{maxHeight: 100}} showsVerticalScrollIndicator={false}>
+                    <Text style={_styles.openPopupMessageText}>"{profileOpenData.message}"</Text>
+                  </ScrollView>                  
                 </SpaceView>
               )}
+
               <SpaceView mt={7} viewStyle={_styles.openPopupDescArea}>
                 <Text style={_styles.openPopupDescText}>패스를 소모하여 관심을 보내시겠습니까?</Text>
                 <SpaceView mt={5} viewStyle={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>

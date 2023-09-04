@@ -12,6 +12,8 @@ interface PopupContextProps {
   subContent: string | undefined; // 부가 내용
   confirmCallback: Function | undefined; // 확인 콜백 함수
   cancelCallback: Function | undefined; // 취소 콜백 함수
+  confirmBtnText: string | undefined; // 확인 버튼 텍스트
+  cancelBtnText: string | undefined; // 취소 버튼 텍스트
   type: string | undefined; // 팝업 유형
   guideType: string | undefined; // 가이드 팝업 유형
   guideSlideYn: string | undefined; // 가이드 팝업 슬라이드 여부
@@ -32,6 +34,8 @@ export const PopupProvider = ({ children }: any) => {
     subContent: '',
     confirmCallback: undefined,
     cancelCallback: undefined,
+    confirmBtnText: '',
+    cancelBtnText: '',
     type: '',
     guideType: '',
     guideSlideYn: '',
@@ -60,6 +64,8 @@ export const PopupProvider = ({ children }: any) => {
       subContent: '',
       confirmCallback: undefined,
       cancelCallback: undefined,
+      confirmBtnText: '',
+      cancelBtnText: '',
       type: '',
       guideType: '',
       guideSlideYn: '',
@@ -115,6 +121,8 @@ export const PopupProvider = ({ children }: any) => {
           }
           confirmCallbackFunc={contents.confirmCallback}
           cancelCallbackFunc={contents.cancelCallback}
+          confirmBtnText={contents.confirmBtnText}
+          cancelBtnText={contents.cancelBtnText}
           btnExpYn={contents.btnExpYn}
         />
       )}

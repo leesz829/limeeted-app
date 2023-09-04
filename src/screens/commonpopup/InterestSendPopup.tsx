@@ -62,7 +62,7 @@ export default function InterestSendPopup({ isVisible, closeModal, confirmFunc }
               editable={true}
               secureTextEntry={false}
               maxLength={150}
-              numberOfLines={3}
+              numberOfLines={4}
             />
           </SpaceView>
         </View>

@@ -131,7 +131,7 @@ export default function SincereSendPopup({ isVisible, closeModal, confirmFunc }:
                 editable={true}
                 secureTextEntry={false}
                 maxLength={200}
-                numberOfLines={3}
+                numberOfLines={4}
               />
             </SpaceView>
           </View>
@@ -140,7 +140,7 @@ export default function SincereSendPopup({ isVisible, closeModal, confirmFunc }:
             <Text style={_styles.descText}>상대에게 내 프로필의 흐림효과가 적용되지 않고 바로 공개됩니다.</Text>
           </SpaceView>
 
-          <View style={_styles.bottomBox}>
+          <View style={_styles.meesageBottomBox}>
             <TouchableOpacity 
               style={_styles.allButton} 
               onPress={() => {
@@ -215,9 +215,11 @@ export default function SincereSendPopup({ isVisible, closeModal, confirmFunc }:
             <TouchableOpacity 
               style={_styles.rightButton} 
               onPress={() => {
-                if(royalPassChk()) {
+                /* if(royalPassChk()) {
                   confirmFunc(currentIndex+1, message);
-                }
+                } */
+
+                confirmFunc(currentIndex+1, message);
               }}>
 
               {!royalPassChk() &&
@@ -295,7 +297,7 @@ const _styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 15,
   },
-  bottomBox: {
+  meesageBottomBox: {
     width: '100%',
     flexDirection: `row`,
     alignItems: `center`,
@@ -303,6 +305,14 @@ const _styles = StyleSheet.create({
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
     overflow: 'hidden',
+  },
+  bottomBox: {
+    width: '100%',
+    flexDirection: `row`,
+    alignItems: `center`,
+    justifyContent: 'space-between',
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
   },
   allButton: {
     width: '100%',
@@ -375,7 +385,6 @@ const _styles = StyleSheet.create({
   leftButtonText: {
     fontFamily: 'AppleSDGothicNeoSB00',
     fontSize: 12,
-    letterSpacing: 0,
     textAlign: 'left',
     color: '#ffffff',
   },
@@ -383,7 +392,7 @@ const _styles = StyleSheet.create({
     width: '50%',
     height: 49,
     borderBottomEndRadius: 20,
-    backgroundColor: '#697ae6',
+    backgroundColor: '#FE0456',
     flexDirection: `row`,
     alignItems: `center`,
     justifyContent: `center`,
@@ -391,7 +400,6 @@ const _styles = StyleSheet.create({
   rightButtonText: {
     fontFamily: 'AppleSDGothicNeoSB00',
     fontSize: 12,
-    letterSpacing: 0,
     textAlign: 'left',
     color: '#ffffff',
   },
@@ -410,6 +418,7 @@ const _styles = StyleSheet.create({
     paddingVertical: 3,
     borderRadius: 5,
     textAlign: 'center',
+    overflow: 'hidden',
   },
   descText: {
     fontFamily: 'AppleSDGothicNeoM00',

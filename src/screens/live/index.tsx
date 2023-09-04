@@ -103,7 +103,7 @@ export const Live = () => {
     // 2.5 보다 아래 체크
     if(score == 0) {
       show({ content: '프로필 평점을 다시 선택해 주세요!' , });
-    } else if(score < 3.0) {
+    } else if(score <= 3.0) {
       insertProfileAssessment(score);
     } else {
       setSelectedScore(score);
