@@ -20,6 +20,7 @@ import { SUCCESS, MEMBER_NICKNAME_DUP } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
 import { CommonLoading } from 'component/CommonLoading';
 import { CommonTextarea } from 'component/CommonTextarea';
+import { isEmptyData } from 'utils/functions';
 
 
 
@@ -230,7 +231,7 @@ export const Signup03 = (props : Props) => {
 					<SpaceView mb={24}>
 						<SpaceView mb={10} viewStyle={{flexDirection: 'row', alignItems: 'flex-end'}}>
 							<CommonText textStyle={_styles.labelStyle2}>한줄 소개</CommonText>
-							<Text style={_styles.countText}>({comment.length}/50)</Text>
+							<Text style={_styles.countText}>({isEmptyData(comment) ? comment.length : 0}/50)</Text>
 						</SpaceView>
 						<CommonTextarea
 							label={''} 
@@ -258,7 +259,7 @@ export const Signup03 = (props : Props) => {
 					<SpaceView mb={24}>
 						<SpaceView mb={10} viewStyle={{flexDirection: 'row', alignItems: 'flex-end'}}>
 							<CommonText textStyle={_styles.labelStyle2}>프로필 소개</CommonText>
-							<Text style={_styles.countText}>({introduceComment.length}/3000)</Text>
+							<Text style={_styles.countText}>({isEmptyData(introduceComment) ? introduceComment.length : 0}/3000)</Text>
 						</SpaceView>
 						<CommonTextarea
 							label={''}

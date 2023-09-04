@@ -50,7 +50,7 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
   if(name == 'Cashshop') {
     shopDescAnimate();
   } else if(name == 'Storage') {
-    //storageDescAnimate();
+    storageDescAnimate();
   };
 
   switch (name) {
@@ -84,27 +84,58 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
           <View>
             <Image style={_style.iconSize} source={isFocused ? ICON.storageOn : ICON.storage} />
 
-            {/* {isEmptyData(memberBase?.new_match_cnt) && memberBase?.new_match_cnt > 0 && (
+            {isEmptyData(memberBase?.new_match_cnt) && memberBase?.new_match_cnt > 0 && (
               <View style={_style.newIcon} />
-            )} */}
+            )}
 
-            <Animated.View style={[_style.storageLimitArea, storageDescStyle]}>
-              {/* <View style={_style.storageLimitTextArea(195)}><Text style={_style.storageText}>리미티드가 드리는 절대 추천! 꼭 확인해 보세요 😍</Text></View> */}
-              {/* <View style={_style.storageLimitTextArea(130)}><Text style={_style.storageText}>인증 레벨 30의 그 분이 등장 🤩</Text></View> */}
-              {/* <View style={_style.storageLimitTextArea(160)}><Text style={_style.storageText}>럭셔리차 소유자분이 관심을 보내셨어요.</Text></View> */}
-              {/* <View style={_style.storageLimitTextArea(160)}><Text style={_style.storageText}>인기 많은 SNS 셀럽이 관심을 보내셨어요.</Text></View> */}
-              {/* <View style={_style.storageLimitTextArea(170)}><Text style={_style.storageText}>억대 자산가님이 황금빛 관심을 보내셨어요.</Text></View> */}
-              {/* <View style={_style.storageLimitTextArea(160)}><Text style={_style.storageText}>억대연봉 능력자님이 관심을 보내셨어요.</Text></View> */}
-              {/* <View style={_style.storageLimitTextArea(160)}><Text style={_style.storageText}>뇌가 섹시한 분이 보낸 관심은 어떠세요?</Text></View> */}
-              {/* <View style={_style.storageLimitTextArea(190)}><Text style={_style.storageText}>전문성이 남다른 분에게 온 관심을 확인해 보세요.</Text></View> */}
-              {/* <View style={_style.storageLimitTextArea(175)}><Text style={_style.storageText}>훈내 가득한 찐심! 이 분은 꼭 보고 가세요 💕</Text></View> */}
-              {/* <View style={_style.storageLimitTextArea(155)}><Text style={_style.storageText}>지금 온 관심은 훈훈함이 가득하단 소식!</Text></View> */}
-              {/* <View style={_style.storageLimitTextArea(170)}><Text style={_style.storageText}>프로필에 고평점을 남기고 간 사람이 있어요.</Text></View> */}
-              {/* <View style={_style.storageLimitTextArea(130)}><Text style={_style.storageText}>새 찐심 도착! 과연 누구일까요?</Text></View> */}
-              <View style={_style.storageLimitTextArea(140)}><Text style={_style.limitText}>누군가 내 프로필을 보고 있어요.</Text></View>
-              {/* <View style={_style.storageLimitTextArea(205)}><Text style={_style.storageText}>아직 열어보지 못 한 관심 5 / 10 / 15 / 30개가 있어요.</Text></View> */}
-              <View style={_style.storageTriangle}></View>
-            </Animated.View>
+            {isEmptyData(memberBase?.storageRecMsgCd) && (
+              <Animated.View style={[_style.storageLimitArea, storageDescStyle]}>
+
+                {memberBase?.storageRecMsgCd == 'STR_REC_01' && (  
+                  <View style={_style.storageLimitTextArea(130)}><Text style={_style.storageText}>인증 레벨 30의 그 분이 등장 🤩</Text></View>
+                )}
+                {memberBase?.storageRecMsgCd == 'STR_REC_02' && (
+                  <View style={_style.storageLimitTextArea(195)}><Text style={_style.storageText}>리미티드가 드리는 절대 추천! 꼭 확인해 보세요 😍</Text></View>
+                )}
+                {memberBase?.storageRecMsgCd == 'STR_REC_03' && (
+                  <View style={_style.storageLimitTextArea(160)}><Text style={_style.storageText}>럭셔리차 소유자분이 관심을 보내셨어요.</Text></View>
+                )}
+                {memberBase?.storageRecMsgCd == 'STR_REC_04' && (
+                  <View style={_style.storageLimitTextArea(160)}><Text style={_style.storageText}>인기 많은 SNS 셀럽이 관심을 보내셨어요.</Text></View>
+                )}
+                {memberBase?.storageRecMsgCd == 'STR_REC_05' && (
+                  <View style={_style.storageLimitTextArea(170)}><Text style={_style.storageText}>억대 자산가님이 황금빛 관심을 보내셨어요.</Text></View>
+                )}
+                {memberBase?.storageRecMsgCd == 'STR_REC_06' && (
+                  <View style={_style.storageLimitTextArea(160)}><Text style={_style.storageText}>억대연봉 능력자님이 관심을 보내셨어요.</Text></View>
+                )}
+                {memberBase?.storageRecMsgCd == 'STR_REC_07' && (
+                  <View style={_style.storageLimitTextArea(160)}><Text style={_style.storageText}>뇌가 섹시한 분이 보낸 관심은 어떠세요?</Text></View>
+                )}
+                {memberBase?.storageRecMsgCd == 'STR_REC_08' && (
+                  <View style={_style.storageLimitTextArea(190)}><Text style={_style.storageText}>전문성이 남다른 분에게 온 관심을 확인해 보세요.</Text></View>
+                )}
+                {memberBase?.storageRecMsgCd == 'STR_REC_09' && (
+                  <View style={_style.storageLimitTextArea(175)}><Text style={_style.storageText}>훈내 가득한 찐심! 이 분은 꼭 보고 가세요 💕</Text></View>
+                )}
+                {memberBase?.storageRecMsgCd == 'STR_REC_10' && (
+                  <View style={_style.storageLimitTextArea(155)}><Text style={_style.storageText}>지금 온 관심은 훈훈함이 가득하단 소식!</Text></View>
+                )}
+                {memberBase?.storageRecMsgCd == 'STR_REC_11' && (
+                  <View style={_style.storageLimitTextArea(170)}><Text style={_style.storageText}>프로필에 고평점을 남기고 간 사람이 있어요.</Text></View>
+                )}
+                {memberBase?.storageRecMsgCd == 'STR_REC_12' && (
+                  <View style={_style.storageLimitTextArea(130)}><Text style={_style.storageText}>새 찐심 도착! 과연 누구일까요?</Text></View>
+                )}
+                {memberBase?.storageRecMsgCd == 'STR_REC_13' && (
+                  <View style={_style.storageLimitTextArea(140)}><Text style={_style.storageText}>누군가 내 프로필을 보고 있어요.</Text></View>
+                )}
+
+                {/* <View style={_style.storageLimitTextArea(205)}><Text style={_style.storageText}>아직 열어보지 못 한 관심 5 / 10 / 15 / 30개가 있어요.</Text></View> */}
+
+                <View style={_style.storageTriangle}></View>
+              </Animated.View>
+            )}
           </View>
         </>
       );
@@ -135,11 +166,6 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
             }
             {memberBase?.gender == 'W' && (
               <>
-                {/* <Animated.View style={[_style.shopLimitArea, { opacity: fadeAnim }]}>
-                  <Text style={_style.limitText}><Image style={{width: 10, height: 7, position: 'absolute', top: 5, left: 7, zIndex: 1}} source={ICON.crown} /> {CommaFormat(memberBase.mileage_point)}리밋 보유 중!{'\n'}리밋샵 바로가기</Text>
-                  <View style={_style.triangle}></View>
-                </Animated.View> */}
-
                 <Animated.View style={[_style.shopLimitArea, shopDescStyle]}>
                   <View style={_style.shopLimitTextArea}>
                     <Text style={_style.limitText}><Image style={{width: 10, height: 7}} source={ICON.crown} /> {CommaFormat(memberBase?.mileage_point)}리밋 보유 중!{'\n'}리밋샵 바로가기</Text>
@@ -207,7 +233,7 @@ const _style = StyleSheet.create({
     backgroundColor: '#7F67FF',
     borderRadius: 3,
     overflow: 'hidden',
-    width: 103,
+    width: 100,
     paddingVertical: 3,
     paddingLeft: Platform.OS == 'android' ?  0 : 5,
   },
@@ -225,7 +251,7 @@ const _style = StyleSheet.create({
   },
   limitText: {
     fontFamily: 'AppleSDGothicNeoM00',
-    fontSize: 10,
+    fontSize: 9,
     color: '#FFF',
     textAlign: 'center',
     paddingHorizontal: 5,

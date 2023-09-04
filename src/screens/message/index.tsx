@@ -15,7 +15,7 @@ import { ICON } from 'utils/imageUtils';
 import { Color } from 'assets/styles/Color';
 import SpaceView from 'component/SpaceView';
 import { CommonBtn } from 'component/CommonBtn';
-import { STACK } from 'constants/routes';
+import { ROUTES, STACK } from 'constants/routes';
 import { useDispatch } from 'react-redux';
 import { myProfile } from 'redux/reducers/authReducer';
 import { CommonLoading } from 'component/CommonLoading';
@@ -86,7 +86,7 @@ export const Message = (props: Props) => {
 			show({ content: '보관함 보관 기간이 만료 되었습니다.' });
 		} else {
 			if(type == 'MSG_TP_14') {
-				navigation.navigate(STACK.TAB, { screen: 'Roby' });
+				navigation.navigate(STACK.COMMON, { screen: ROUTES.SHOP_INVENTORY });
 			} else if(type == 'MSG_TP_04' || type == 'MSG_TP_05') {
 				navigation.navigate(STACK.COMMON, { screen: 'SecondAuth' });
 			} else if(type == 'MSG_TP_02' || type == 'MSG_TP_03' || type == 'MSG_TP_06' || type == 'MSG_TP_07') {
