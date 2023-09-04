@@ -375,7 +375,7 @@ export const Signup01 = (props: Props) => {
       {isLoading && <CommonLoading />}
 
       <CommonHeader title={'프로필 2차 인증'} />
-      <ScrollView contentContainerStyle={[styles.scrollContainerAll]}>
+      <ScrollView style={[styles.scrollContainerAll]}>
         <SpaceView mb={35} viewStyle={[commonStyle.paddingHorizontal20]}>
           <SpaceView mb={15}>
             <Image source={IMAGE.signImg} style={styles.signImg} resizeMode="contain" />

@@ -432,7 +432,7 @@ export const Signup02 = (props: Props) => {
       {isLoading && <CommonLoading />}
 
       <CommonHeader title={'프로필 만들기'} />
-      <ScrollView contentContainerStyle={[styles.scrollContainerAll]}>
+      <ScrollView style={[styles.scrollContainerAll]}>
         <SpaceView mb={10} viewStyle={[commonStyle.paddingHorizontal20, layoutStyle.row]}>
           <CommonText fontWeight={'700'} type={'h3'}>
             다양한 분위기의 내 모습이 담긴{'\n'}사진을 등록해보세요

@@ -261,7 +261,7 @@ export const Signup00 = (props: Props) => {
   return (
     <>
       <CommonHeader title={'가입정보'} />
-      <ScrollView contentContainerStyle={[styles.scrollContainerAll]}>
+      <ScrollView style={[styles.scrollContainerAll]}>
         <SpaceView mb={45} viewStyle={[commonStyle.paddingHorizontal20]}>
           <SpaceView mb={15}>
             <Image source={IMAGE.signImg} style={styles.signImg} resizeMode="contain" />

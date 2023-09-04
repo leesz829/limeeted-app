@@ -208,10 +208,7 @@ export const Signup03 = (props : Props) => {
 			{isLoading && <CommonLoading />}
 
 			<CommonHeader title={'닉네임과 한줄소개'} />
-			<ScrollView contentContainerStyle={[
-							styles.scrollContainerAll,
-							{ justifyContent: 'space-between' },
-						]}>
+			<ScrollView style={[ styles.scrollContainerAll ]}>
 				<View style={commonStyle.paddingHorizontal20}>
 					<SpaceView mb={40}>
 						<CommonText>리미티드에서 사용할</CommonText>
