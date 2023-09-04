@@ -431,7 +431,7 @@ export const Introduce = (props: Props) => {
           <SpaceView mb={24}>
             <SpaceView mb={10} viewStyle={{flexDirection: 'row', alignItems: 'flex-end'}}>
               <CommonText textStyle={_styles.labelStyle2}>프로필 소개</CommonText>
-              <Text style={_styles.countText}>({introduceComment.length}/3000)</Text>
+              <Text style={_styles.countText}>({isEmptyData(introduceComment) ? introduceComment.length : 0}/3000)</Text>
             </SpaceView>
 
             <CommonTextarea
