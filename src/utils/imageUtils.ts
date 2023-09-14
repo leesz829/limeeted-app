@@ -160,6 +160,10 @@ export const ICON = {
   logoTransIcon: require('assets/icon/logo_trans_icon.png'),
   xBlueIcon: require('assets/icon/x_blue_icon.png'),
   xRedIcon: require('assets/icon/x_red_icon.png'),
+  saleIcon: require('assets/icon/sale_icon.png'),
+  speakerIcon: require('assets/icon/speaker_icon.png'),
+  bellIcon: require('assets/icon/bell_icon.png'),
+  nextArrowIcon: require('assets/icon/next_arrow_icon.png'),
 };
 
 export const GIF_IMG = {
