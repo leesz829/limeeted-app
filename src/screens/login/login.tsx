@@ -365,7 +365,7 @@ export const Login01 = () => {
         );
 
         if(Platform.OS == 'android') {
-          //requestNotificationPermission();
+          requestNotificationPermission();
         };
       });
     };
