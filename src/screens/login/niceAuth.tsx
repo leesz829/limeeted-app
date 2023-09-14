@@ -224,30 +224,20 @@ export const NiceAuth = (props: Props) => {
 			}
 			
 		// ########## 전화번호 수정
-		} else if(type == 'MODFY') {
-
-			if (dataJson.dupYn == 'Y') {
+		} else if(type == 'HP_MODFY') {
+			if(memberBase?.ci != dataJson.ci) {
 				show({ 
-					content: '이미 등록된 회원 입니다.' ,
+					content: '본인인증이 일치하지 않아 수정이 불가능합니다.' ,
 					confirmCallback: async function() {
 						navigation.navigate(STACK.TAB, { screen: 'Roby' });
 					}
 				});
 			} else {
-				if(memberBase.name != dataJson.name) {
-					show({ 
-						content: '본인인증이 일치하지 않아 수정이 불가능합니다.' ,
-						confirmCallback: async function() {
-							navigation.navigate(STACK.TAB, { screen: 'Roby' });
-						}
-					});
-				} else {
-					updatePhoneNumber(dataJson);
-				}
+				updatePhoneNumber(dataJson);
 			}
 
 		// ########### 비밀번호 찾기
-		} else if(type == 'SEARCH') {
+		} else if(type == 'PW_SEARCH') {
 			let phoneNumberFmt = phoneNumber.replace(/-/g, "");
 			console.log('phoneNumberFmt ::::: ', phoneNumberFmt);
 
@@ -348,7 +338,10 @@ export const NiceAuth = (props: Props) => {
 	// ######################################################### 나이스 웹뷰 화면 생성
 	const createNiceWebViewBody = async () => {
 		try {
-			const { success, data } = await nice_auth();
+			const body = {
+				auth_type : type
+			};
+			const { success, data } = await nice_auth(body);
 			if(success) {
 			  switch (data.result_code) {
 				case SUCCESS:				
@@ -356,19 +349,13 @@ export const NiceAuth = (props: Props) => {
 
 					let webViewBody =
 						'<form id="frm" name="frm"  method="post" action="https://nice.checkplus.co.kr/CheckPlusSafeModel/service.cb" accept-charset="euc-kr">' +
-						'<input type="hidden" id="m" name="m" value="service" />' +
-						'<input type="hidden" id="token_version_id" name="token_version_id" value="' +
-						data.token_version_id +
-						'" />' +
-						'<input type="hidden" id="enc_data" name="enc_data" value="' +
-						data.enc_data +
-						'" />' +
-						'<input type="hidden" id="integrity_value" name="integrity_value" value="' +
-						data.integrity_value +
-						'" />' +
+							'<input type="hidden" id="m" name="m" value="service" />' +
+							'<input type="hidden" id="token_version_id" name="token_version_id" value="' + data.token_version_id + '" />' +
+							'<input type="hidden" id="enc_data" name="enc_data" value="' + data.enc_data + '" />' +
+							'<input type="hidden" id="integrity_value" name="integrity_value" value="' + data.integrity_value + '" />' +
 						'</form>' +
 						'<script>' +
-						'document.getElementById("frm").submit()' +
+							'document.getElementById("frm").submit()' +
 						'</script>';
 
 					setNiceWebViewBody(webViewBody);

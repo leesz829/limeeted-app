@@ -282,7 +282,7 @@ export const Profile = (props: Props) => {
                   navigation.navigate({
                     name : 'NiceAuth',
                     params : {
-                      type : 'MODFY'
+                      type : 'HP_MODFY'
                     }
                   });
                 }} />

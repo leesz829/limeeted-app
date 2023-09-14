@@ -166,7 +166,7 @@ export const SearchIdAndPwd = (props : Props) => {
 				navigation.navigate({
 					name : 'NiceAuth',
 					params : {
-						type : 'SEARCH'
+						type : 'PW_SEARCH'
 						, phoneNumber : data.phone_number
 						, emailId : emailId
 					}
