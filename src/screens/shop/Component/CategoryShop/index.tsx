@@ -1,18 +1,7 @@
 import { get_bm_product, purchase_product, update_additional } from 'api/models';
 import { Color } from 'assets/styles/Color';
 import React, { memo, useEffect, useState } from 'react';
-import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Platform,
-  Alert,
-  ActivityIndicator,
-} from 'react-native';
-import ProductModal from '../ProductModal';
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, Platform, Alert, ActivityIndicator } from 'react-native';
 import { CommaFormat, formatNowDate } from 'utils/functions';
 import {
   initConnection,
@@ -30,8 +19,6 @@ import { findSourcePath, ICON } from 'utils/imageUtils';
 import { usePopup } from 'Context';
 import { useNavigation, useFocusEffect, useIsFocused } from '@react-navigation/native';
 import { ROUTES, STACK } from 'constants/routes';
-import { CommonLoading } from 'component/CommonLoading';
-import AsyncStorage from '@react-native-community/async-storage';
 import { ColorType } from '@types';
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
 import { useDispatch } from 'react-redux';
@@ -44,6 +31,11 @@ import SpaceView from 'component/SpaceView';
 interface Props {
   loadingFunc: (isStatus: boolean) => void;
   itemUpdateFunc: (isStatus: boolean) => void;
+  onPressCategoryFunc: (isStatus: boolean) => void;
+  openProductModalFunc: (isStatus: boolean) => void;
+  categoryList: [];
+  productList: [];
+  selectedCategoryData: {};
 }
 
 /* interface Products {
@@ -62,18 +54,11 @@ interface Product {
   productId: string;
 } */
 
-export default function CategoryShop({ loadingFunc, itemUpdateFunc }) {
+export default function CategoryShop({ loadingFunc, itemUpdateFunc, onPressCategoryFunc, openProductModalFunc, categoryList, productList, selectedCategoryData }) {
   const navigation = useNavigation();
   const { show } = usePopup();  // 공통 팝업
   const dispatch = useDispatch();
   const isFocus = useIsFocused();
-
-  const [modalVisible, setModalVisible] = useState(false);
-  const [targetItem, setTargetItem] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState(categories[0]);
-  const [items, setItems] = useState([]);
-
-  const [isPayLoading, setIsPayLoading] = useState(false);
 
   // 회원 기본 데이터
   const memberBase = useUserInfo();
@@ -186,9 +171,6 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc }) {
     console.log('error ::::::: ', error);
   }); */
 
-
-  const [productsPass, setProductsPass] = useState<Products>([]); // 패스 상품
-
   // ################################################################ 초기 실행 함수
   useEffect(() => {
     // 스토어 커넥션
@@ -221,55 +203,14 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc }) {
   useFocusEffect(
     React.useCallback(() => {
       async function fetch() {
-        onPressCategory(categories[0]);
-        await AsyncStorage.setItem('SHOP_CONNECT_DT', formatNowDate());
+        //onPressCategory(categories[0]);
+        //await AsyncStorage.setItem('SHOP_CONNECT_DT', formatNowDate());
       };
       fetch();
       return async() => {
       };
     }, []),
   );
-
-  // ######################################################### 카테고리 선택 함수
-  const onPressCategory = async(category:any) => {
-    setSelectedCategory(category);
-    loadingFunc(true);
-
-    const body = { item_type_code: category.value };
-    const { success, data } = await get_bm_product(body);
-    if (success) {
-      let _products = data?.item_list;
-
-      const connectDate = await AsyncStorage.getItem('SHOP_CONNECT_DT');
-
-      _products.map((item: any) => {
-        item.connect_date = connectDate;
-      });
-
-      setProductsPass(_products);
-
-      loadingFunc(false);
-    } else {
-      loadingFunc(false);
-    }
-  };
-
-  // ######################################################### 상품상세 팝업 활성화 함수
-  const openModal = (item) => {
-    setTargetItem(item);
-    setModalVisible(true);
-    //loadingFunc(true);
-  };
-
-  // ######################################################### 상품상세 팝업 닫기 함수
-  const closeModal = (isPayConfirm: boolean) => {
-    setModalVisible(false);
-
-    if(isPayConfirm && typeof itemUpdateFunc != 'undefined') {
-      onPressCategory(selectedCategory);
-      itemUpdateFunc(isPayConfirm);
-    }
-  };
 
   // ############################################################################# 회원 튜토리얼 노출 정보 저장
   const saveMemberTutorialInfo = async (value:string) => {
@@ -294,19 +235,19 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc }) {
   };
 
   useEffect(() => {
-    if(selectedCategory?.value == 'SUBSCRIPTION' || selectedCategory?.value == 'PACKAGE' || selectedCategory?.value == 'PASS') {
+    if(selectedCategoryData?.value == 'SUBSCRIPTION' || selectedCategoryData?.value == 'PACKAGE' || selectedCategoryData?.value == 'PASS') {
 
       // 튜토리얼 팝업 노출
-      if((selectedCategory?.value == 'SUBSCRIPTION' && (!isEmptyData(memberBase?.tutorial_subscription_item_yn) || memberBase?.tutorial_subscription_item_yn == 'Y')) ||
-        (selectedCategory?.value == 'PACKAGE' && (!isEmptyData(memberBase?.tutorial_package_item_yn) || memberBase?.tutorial_package_item_yn == 'Y')) ||
-        (selectedCategory?.value == 'PASS' && (!isEmptyData(memberBase?.tutorial_shop_yn) || memberBase?.tutorial_shop_yn == 'Y'))) {
+      if((selectedCategoryData?.value == 'SUBSCRIPTION' && (!isEmptyData(memberBase?.tutorial_subscription_item_yn) || memberBase?.tutorial_subscription_item_yn == 'Y')) ||
+        (selectedCategoryData?.value == 'PACKAGE' && (!isEmptyData(memberBase?.tutorial_package_item_yn) || memberBase?.tutorial_package_item_yn == 'Y')) ||
+        (selectedCategoryData?.value == 'PASS' && (!isEmptyData(memberBase?.tutorial_shop_yn) || memberBase?.tutorial_shop_yn == 'Y'))) {
 
         let guideType = '';
-        if(selectedCategory?.value == 'SUBSCRIPTION') {
+        if(selectedCategoryData?.value == 'SUBSCRIPTION') {
           guideType = 'SHOP_SUBSCRIPTION';
-        } else if(selectedCategory?.value == 'PACKAGE') {
+        } else if(selectedCategoryData?.value == 'PACKAGE') {
           guideType = 'SHOP_PACKAGE';
-        } else if(selectedCategory?.value == 'PASS') {
+        } else if(selectedCategoryData?.value == 'PASS') {
           guideType = 'SHOP_BASIC';
         }
 
@@ -317,53 +258,48 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc }) {
           guideNexBtnExpoYn: 'Y',
           confirmCallback: function(isNextChk) {
             if(isNextChk) {
-              saveMemberTutorialInfo(selectedCategory?.value);
+              saveMemberTutorialInfo(selectedCategoryData?.value);
             }
           }
         });
       };
     }
-  }, [selectedCategory]);
+  }, [selectedCategoryData]);
 
   return (
     <>
       <ScrollView style={_styles.container}>
         <View style={_styles.categoriesContainer}>
-          {categories?.map((item, index) => (
+
+          {categoryList?.map((item, index) => (
             <TouchableOpacity
               key={`category-${item.value}-${index}`}
               activeOpacity={0.8}
-              style={_styles.categoryBorder(item.value === selectedCategory.value)}
-              onPress={() => onPressCategory(item)}>
+              style={_styles.categoryBorder(item.value === selectedCategoryData.value)}
+              onPress={() => onPressCategoryFunc(item)}>
 
-              <Text style={_styles.categoryText(item.value === selectedCategory.value)}>
+              <Text style={_styles.categoryText(item.value === selectedCategoryData.value)}>
                 {item?.label}
               </Text>
             </TouchableOpacity>
           ))}
         </View>
 
-        {productsPass?.map((item, index) => (
+        {productList?.map((item, index) => (
           <RenderItem
             key={`product-${item?.item_code}-${index}`}
             item={item}
-            openModal={openModal}
+            openModal={openProductModalFunc}
           />
         ))}
-
-        {/* ##################### 상품 상세 팝업 */}
-        <ProductModal
-          isVisible={modalVisible}
-          type={'bm'}
-          item={targetItem}
-          closeModal={closeModal}
-        />
       </ScrollView>
     </>
   );
 }
 
-// ######################################################### 상품 RenderItem
+{/* ################################################################################################################
+############### 상품 RenderItem
+################################################################################################################ */}
 function RenderItem({ item, openModal }) {
   const imagePath = findSourcePath(item?.file_path + item?.file_name);
   const isNew = (item.connect_date == null || item.connect_date < item.reg_dt) ? true : false;
@@ -375,11 +311,17 @@ function RenderItem({ item, openModal }) {
   const onPressItem = () => {
     let isChk = true;
 
-    if(buyCountCycle != 'NONE') {
+    if(buyCountMax < 999999) {
       if(buyCount >= buyCountMax) {
         isChk = false;
       }
     }
+
+    /* if(buyCountCycle != 'NONE') {
+      if(buyCount >= buyCountMax) {
+        isChk = false;
+      }
+    } */
 
     if(isChk) {
       openModal(item);
@@ -397,12 +339,19 @@ function RenderItem({ item, openModal }) {
             </View>
           }
 
-          {item?.buy_count_cycle != 'NONE' && (
+          {buyCountMax < 999999 && (
+            <View style={_styles.imgBottomArea}>
+              <Text style={_styles.imgBottomText}>{buyCount}/{buyCountMax}구매</Text>
+              <View style={{backgroundColor: '#000000', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, opacity: 0.7}} />
+            </View>
+          )}
+
+          {/* {item?.buy_count_cycle != 'NONE' && (
             <View style={_styles.imgBottomArea}>
               <Text style={_styles.imgBottomText}>{item?.buy_count}/{item?.buy_count_max}구매</Text>
               <View style={{backgroundColor: '#000000', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, opacity: 0.7}} />
             </View>
-          )}
+          )} */}
         </View>
 
         <View style={_styles.textContainer}>
