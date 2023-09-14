@@ -26,14 +26,12 @@ import { CommaFormat, formatNowDate, isEmptyData } from 'utils/functions';
 import SpaceView from 'component/SpaceView';
 
 
-
-const dummy = ['', '', '', ''];
 export default function Inventory() {
   const navigation = useNavigation<ScreenNavigationProp>();
   const [isLoading, setIsLoading] = useState(true);
 
   const [tab, setTab] = useState(categories[0]);
-  const [data, setData] = useState(dummy);
+  const [data, setData] = useState([]);
   const [isPassHold, setIsPassHold] = useState(false);
 
   const { show } = usePopup();  // 공통 팝업
@@ -166,7 +164,7 @@ export default function Inventory() {
 
             show({
               type: 'RESPONSIVE',
-              content: '패스 아이템을 모두 사용하였어요.',
+              content: '패스 아이템을 모두 획득하였습니다.',
             });
             break;
           
