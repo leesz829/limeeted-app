@@ -5,6 +5,7 @@ import { useProfileImg } from 'hooks/useProfileImg';
 import { useUserInfo } from 'hooks/useUserInfo';
 import { CommaFormat, isEmptyData } from 'utils/functions';
 import Animated, { useAnimatedStyle, withTiming, useSharedValue, withSpring, withDelay, Easing, withRepeat, withSequence } from 'react-native-reanimated';
+import SpaceView from './SpaceView';
 
 
 const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
@@ -168,7 +169,8 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
               <>
                 <Animated.View style={[_style.shopLimitArea, shopDescStyle]}>
                   <View style={_style.shopLimitTextArea}>
-                    <Text style={_style.limitText}><Image style={{width: 10, height: 7}} source={ICON.crown} /> {CommaFormat(memberBase?.mileage_point)}리밋 보유 중!{'\n'}리밋샵 바로가기</Text>
+                    <SpaceView><Text style={_style.limitText}><Image style={{width: 10, height: 7}} source={ICON.crown} /> {CommaFormat(memberBase?.mileage_point)}리밋 보유 중!</Text></SpaceView>
+                    <SpaceView mb={1}><Text style={_style.limitText}>리밋샵 바로가기</Text></SpaceView>
                   </View>
                   <View style={_style.triangle}></View>
                 </Animated.View>
@@ -228,14 +230,16 @@ const _style = StyleSheet.create({
     right: -32,
     alignItems: 'flex-end',
     opacity: 0,
+    flex: 1,
   },
   shopLimitTextArea: {
     backgroundColor: '#7F67FF',
     borderRadius: 3,
-    overflow: 'hidden',
-    width: 100,
+    //overflow: 'hidden',
+    minWidth: 99,
     paddingVertical: 3,
     paddingLeft: Platform.OS == 'android' ?  0 : 5,
+    
   },
   newText: {
     backgroundColor: '#FF7E8C',
@@ -254,7 +258,7 @@ const _style = StyleSheet.create({
     fontSize: 9,
     color: '#FFF',
     textAlign: 'center',
-    paddingHorizontal: 5,
+    paddingHorizontal: 2,
   },
   triangle: {
     marginTop: -1,
