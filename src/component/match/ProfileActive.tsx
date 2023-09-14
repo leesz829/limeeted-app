@@ -7,6 +7,7 @@ import SpaceView from 'component/SpaceView';
 import { Slider } from '@miblanchard/react-native-slider';
 import LinearGradient from 'react-native-linear-gradient';
 import { isEmptyData } from 'utils/functions';
+import ProfileGrade from 'component/common/ProfileGrade';
 
 
 const { width, height } = Dimensions.get('window');
@@ -23,49 +24,9 @@ export default function ProfileActive({ memberData }) {
           <View style={[_styles.levelBadge, {marginRight: 0, marginTop: 1}]}>
 
             {/* ####################################################################################################
-              ##################################### 프로필 평점 노출 영역
-              #################################################################################################### */}
-              {memberData?.profile_score < 6.0 &&
-                <LinearGradient colors={['#FF7EA6', '#FF7EA6']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
-                  <Image source={ICON.score5Icon} style={[{width: 12, height: 12}]} />
-                  <Text style={_styles.yellowText}>{memberData?.profile_score}</Text>
-                </LinearGradient>
-              }
-
-              {memberData?.profile_score >= 6.0 && memberData?.profile_score < 7.0 &&
-                <LinearGradient colors={['#FF4381', '#FF4381']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
-                  <Image source={ICON.score6Icon} style={[{width: 16, height: 16}]} />
-                  <Text style={_styles.yellowText}>{memberData?.profile_score}</Text>
-                </LinearGradient>
-              }
-
-              {memberData?.profile_score >= 7.0 && memberData?.profile_score < 8.0 &&
-                <LinearGradient colors={['#FF4381', '#FF4381']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
-                  <Image source={ICON.score7Icon} style={[{width: 16, height: 16}]} />
-                  <Text style={_styles.yellowText}>{memberData?.profile_score}</Text>
-                </LinearGradient>
-              }
-
-              {memberData?.profile_score >= 8.0 && memberData?.profile_score < 9.0 &&
-                <LinearGradient colors={['#FE0456', '#FF82AB']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
-                  <Image source={ICON.scoreKingIcon} style={[{width: 16, height: 16}]} />
-                  <Text style={_styles.yellowText}>{memberData?.profile_score}</Text>
-                </LinearGradient>
-              }
-
-              {memberData?.profile_score >= 9.0 && memberData?.profile_score < 10.0 &&
-                <LinearGradient colors={['#FE0456', '#9E6DF5']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
-                  <Image source={ICON.scoreDiamondIcon} style={[{width: 16, height: 16}]} />
-                  <Text style={_styles.yellowText}>{memberData?.profile_score}</Text>
-                </LinearGradient>
-              }
-
-              {memberData?.profile_score >= 10.0 &&
-                <LinearGradient colors={['#FE0456', '#9E41E5']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
-                  <Image source={ICON.score10Icon} style={[{width: 16, height: 16}]} />
-                  <Text style={_styles.yellowText}>{memberData?.profile_score}</Text>
-                </LinearGradient>
-              }
+            ##################################### 프로필 평점 노출 영역
+            #################################################################################################### */}
+            <ProfileGrade profileScore={memberData?.profile_score} type={'BASE'} />
           </View>
 
         </SpaceView>

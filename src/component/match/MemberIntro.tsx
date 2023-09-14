@@ -8,6 +8,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import { STACK } from 'constants/routes';
 import { modalStyle, layoutStyle, commonStyle } from 'assets/styles/Styles';
 import { isEmptyData } from 'utils/functions';
+import AuthLevel from 'component/common/AuthLevel';
+import ProfileGrade from 'component/common/ProfileGrade';
 
 
 
@@ -43,91 +45,12 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                 {/* ####################################################################################################
                 ##################################### 인증 레벨 노출 영역
                 #################################################################################################### */}
-                {memberData?.auth_acct_cnt > 0 && memberData?.auth_acct_cnt < 10 &&
-                  <LinearGradient colors={['#7986EE', '#7986EE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
-                    <Text style={_styles.whiteText}>LV.{memberData.auth_acct_cnt}</Text>
-                  </LinearGradient>
-                }
-
-                {memberData?.auth_acct_cnt >= 10 && memberData?.auth_acct_cnt < 15 &&
-                  <LinearGradient colors={['#E0A9A9', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
-                    <Image source={ICON.level10Icon} style={[_styles.authBadgeImg, {width: 23, height: 23}]} />
-                    <Text style={_styles.whiteText}>LV.{memberData?.auth_acct_cnt}</Text>
-                  </LinearGradient>
-                }
-
-                {memberData?.auth_acct_cnt >= 15 && memberData?.auth_acct_cnt < 20 &&
-                  <LinearGradient colors={['#A9BBE0', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
-                    <Image source={ICON.level15Icon} style={[_styles.authBadgeImg, {width: 23, height: 23}]} />
-                    <Text style={_styles.whiteText}>LV.{memberData?.auth_acct_cnt}</Text>
-                  </LinearGradient>
-                }
-
-                {memberData?.auth_acct_cnt >= 20 && memberData?.auth_acct_cnt < 25 &&
-                  <LinearGradient colors={['#FEB961', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
-                    <Image source={ICON.level20Icon} style={[_styles.authBadgeImg02, {width: 30, height: 30}]} />
-                    <Text style={_styles.whiteText}>LV.{memberData?.auth_acct_cnt}</Text>
-                  </LinearGradient>
-                }
-
-                {memberData?.auth_acct_cnt >= 25 && memberData?.auth_acct_cnt < 30 &&
-                  <LinearGradient colors={['#9BFFB5', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
-                    <Image source={ICON.level25Icon} style={[_styles.authBadgeImg02, {width: 30, height: 30}]} />
-                    <Text style={_styles.whiteText}>LV.{memberData?.auth_acct_cnt}</Text>
-                  </LinearGradient>
-                }
-
-                {memberData?.auth_acct_cnt >= 30 &&
-                  <LinearGradient colors={['#E84CEE', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
-                    <Image source={ICON.level30Icon} style={[_styles.authBadgeImg02, {width: 30, height: 30}]} />
-                    <Text style={_styles.whiteText}>LV.{memberData?.auth_acct_cnt}</Text>
-                  </LinearGradient>
-                }
+                <AuthLevel authAcctCnt={memberData?.auth_acct_cnt} type={'BASE'} />
 
                 {/* ####################################################################################################
                 ##################################### 프로필 평점 노출 영역
                 #################################################################################################### */}
-                {memberData?.profile_score < 6.0 &&
-                  <LinearGradient colors={['#FF7EA6', '#FF7EA6']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
-                    <Image source={ICON.score5Icon} style={[{width: 12, height: 12}]} />
-                    <Text style={_styles.yellowText}>{memberData?.profile_score}</Text>
-                  </LinearGradient>
-                }
-
-                {memberData?.profile_score >= 6.0 && memberData?.profile_score < 7.0 &&
-                  <LinearGradient colors={['#FF4381', '#FF4381']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
-                    <Image source={ICON.score6Icon} style={[{width: 16, height: 16}]} />
-                    <Text style={_styles.yellowText}>{memberData?.profile_score}</Text>
-                  </LinearGradient>
-                }
-
-                {memberData?.profile_score >= 7.0 && memberData?.profile_score < 8.0 &&
-                  <LinearGradient colors={['#FF4381', '#FF4381']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
-                    <Image source={ICON.scoreKingIcon} style={[{width: 16, height: 16}]} />
-                    <Text style={_styles.yellowText}>{memberData?.profile_score}</Text>
-                  </LinearGradient>
-                }
-
-                {memberData?.profile_score >= 8.0 && memberData?.profile_score < 9.0 &&
-                  <LinearGradient colors={['#FE0456', '#FF82AB']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
-                    <Image source={ICON.scoreKingIcon} style={[{width: 16, height: 16}]} />
-                    <Text style={_styles.yellowText}>{memberData?.profile_score}</Text>
-                  </LinearGradient>
-                }
-
-                {memberData?.profile_score >= 9.0 && memberData?.profile_score < 10.0 &&
-                  <LinearGradient colors={['#FE0456', '#9E6DF5']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
-                    <Image source={ICON.scoreKingIcon} style={[{width: 16, height: 16}]} />
-                    <Text style={_styles.yellowText}>{memberData?.profile_score}</Text>
-                  </LinearGradient>
-                }
-
-                {memberData?.profile_score >= 10.0 &&
-                  <LinearGradient colors={['#FE0456', '#9E41E5']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
-                    <Image source={ICON.scoreDiamondIcon} style={[{width: 16, height: 16}]} />
-                    <Text style={_styles.yellowText}>{memberData?.profile_score}</Text>
-                  </LinearGradient>
-                }
+                <ProfileGrade profileScore={memberData?.profile_score} type={'BASE'} />
               </SpaceView>
 
               {/* ############################################################################################### 프로필 소개 영역 */}
@@ -155,9 +78,9 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                             <>
                               <Text style={_styles.addActiveText}>{memberData?.height}cm</Text>
                               {(isEmptyData(memberData?.form_body) || isEmptyData(memberData?.job_name)) ? (
-                                <>이고,{' '}</>
+                                <>이고, </>
                               ) : (
-                                <>{' '}입니다.</>
+                                <> 입니다.{'\n'}</>
                               )}
                             </>
                           )}
@@ -168,18 +91,22 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                                   {(memberData?.form_body == 'NORMAL' || memberData?.form_body == 'SKINNY') && (
                                     <>
                                       <Text style={_styles.addActiveText}>{memberData?.form_body == 'NORMAL' ? '보통 체형' : memberData?.form_body_type}</Text>
-                                      {memberData?.job_name != null ? '의' : ' 입니다.'}
-                                    </> 
+                                      {isEmptyData(memberData?.job_name) ? (
+                                        <>의 </>
+                                      ) : (
+                                        <>입니다.{'\n'}</>
+                                      )}
+                                    </>
                                   )}
                                   {memberData?.form_body == 'FIT' && (
                                     <>
                                       {memberData?.job_name != null ? (
                                         <>
-                                          <Text style={_styles.addActiveText}>헬스를 즐기는</Text>
+                                          <Text style={_styles.addActiveText}>헬스를 즐기는</Text>{' '}
                                         </>
                                       ) : (
                                         <>
-                                          평소에 <Text style={_styles.addActiveText}>헬스를 즐기는</Text> 편이에요.
+                                          평소에 <Text style={_styles.addActiveText}>헬스를 즐기는</Text> 편이에요.{'\n'}
                                         </>
                                       )} 
                                     </> 
@@ -188,11 +115,11 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                                     <>
                                       {memberData?.job_name != null ? ( 
                                         <>
-                                          <Text style={_styles.addActiveText}>건장한 피지컬</Text>의
+                                          <Text style={_styles.addActiveText}>건장한 피지컬</Text>의{' '}
                                         </>
                                       ) : ( 
                                         <>
-                                          <Text style={_styles.addActiveText}>건장한 피지컬</Text>의 소유자 입니다.
+                                          <Text style={_styles.addActiveText}>건장한 피지컬</Text>의 소유자 입니다.{'\n'}
                                         </>
                                       )}
                                     </> 
@@ -201,11 +128,11 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                                     <>
                                       {memberData?.job_name != null ? ( 
                                         <>
-                                          <Text style={_styles.addActiveText}>운동을 즐기는</Text>
+                                          <Text style={_styles.addActiveText}>운동을 즐기는</Text>{' '}
                                         </>
                                       ) : ( 
                                         <>
-                                          <Text style={_styles.addActiveText}>운동으로 단련된 몸</Text>을 갖고 있어요.
+                                          <Text style={_styles.addActiveText}>운동으로 단련된 몸</Text>을 갖고 있어요.{'\n'}
                                         </>
                                       )}
                                     </> 
@@ -214,11 +141,11 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                                     <>
                                       {memberData?.job_name != null ? ( 
                                         <>
-                                          <Text style={_styles.addActiveText}>통통한</Text> 체형의
+                                          <Text style={_styles.addActiveText}>통통한</Text> 체형의{' '}
                                         </>
                                       ) : ( 
                                         <>
-                                          <Text style={_styles.addActiveText}>통통한</Text> 체형 입니다.
+                                          <Text style={_styles.addActiveText}>통통한</Text> 체형 입니다.{'\n'}
                                         </>
                                       )}
                                     </> 
@@ -230,11 +157,11 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                                     <>
                                       {isEmptyData(memberData?.job_name) ? ( 
                                         <>
-                                          <Text style={_styles.addActiveText}>{memberData?.form_body_type}</Text> 체형의
+                                          <Text style={_styles.addActiveText}>{memberData?.form_body_type}</Text> 체형의{' '}
                                         </>
                                       ) : (
                                         <>
-                                          <Text style={_styles.addActiveText}>{memberData?.form_body_type}</Text> 체형 입니다.
+                                          <Text style={_styles.addActiveText}>{memberData?.form_body_type}</Text> 체형 입니다.{'\n'}
                                         </>
                                       )}
                                     </> 
@@ -243,11 +170,11 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                                     <>
                                       {isEmptyData(memberData?.job_name) ? ( 
                                         <>
-                                          <Text style={_styles.addActiveText}>날씬한</Text> 체형의
+                                          <Text style={_styles.addActiveText}>날씬한</Text> 체형의{' '}
                                         </>
                                       ) : (
                                         <>
-                                          매끄럽고 <Text style={_styles.addActiveText}>날씬한</Text> 체형 이에요.
+                                          매끄럽고 <Text style={_styles.addActiveText}>날씬한</Text> 체형 이에요.{'\n'}
                                         </>
                                       )}
                                     </> 
@@ -255,10 +182,10 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                                   {memberData?.form_body == 'GLAMOUR' && (
                                     <>
                                       {isEmptyData(memberData?.job_name) ? ( 
-                                        <Text style={_styles.addActiveText}>글래머러스한</Text>
+                                        <Text style={_styles.addActiveText}>글래머러스한{' '}</Text>
                                       ) : (
                                         <>
-                                          <Text style={_styles.addActiveText}>글래머러스{' '}</Text>합니다.
+                                          <Text style={_styles.addActiveText}>글래머러스{' '}</Text>합니다.{'\n'}
                                         </>
                                       )}
                                     </> 
@@ -267,11 +194,11 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                                     <>
                                       {isEmptyData(memberData?.job_name) ? ( 
                                         <>
-                                          <Text style={_styles.addActiveText}>아담한 </Text>체형의
+                                          <Text style={_styles.addActiveText}>아담한 </Text>체형의{' '}
                                         </>
                                       ) : (
                                         <>
-                                          <Text style={_styles.addActiveText}>아담하고 귀여운{' '}</Text>편이에요.
+                                          <Text style={_styles.addActiveText}>아담하고 귀여운{' '}</Text>편이에요.{'\n'}
                                         </>
                                       )}
                                     </> 
@@ -280,11 +207,11 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                                     <>
                                       {isEmptyData(memberData?.job_name) ? ( 
                                         <>
-                                          <Text style={_styles.addActiveText}>비율이 좋은</Text>
+                                          <Text style={_styles.addActiveText}>비율이 좋은</Text>{' '}
                                         </>
                                       ) : (
                                         <>
-                                          <Text style={_styles.addActiveText}>비율이 좋은{' '}</Text>편입니다.
+                                          <Text style={_styles.addActiveText}>비율이 좋은{' '}</Text>편입니다.{'\n'}
                                         </>
                                       )}
                                     </> 
@@ -293,10 +220,10 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                               )}
                             </>
                           )}
-                          {' '}
+
                           {isEmptyData(memberData?.job_name) && (
                             <>
-                              <Text style={_styles.addActiveText}>{memberData?.job_name}</Text> 입니다.{' '}
+                              <Text style={_styles.addActiveText}>{memberData?.job_name}</Text> 입니다.{'\n'}
                             </>
                           )}
                         </>
@@ -316,7 +243,7 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                                     </>
                                   ) : (
                                     <>
-                                      <Text style={_styles.addActiveText}>무신론자{' '}</Text>입니다.
+                                      <Text style={_styles.addActiveText}>무신론자{' '}</Text>입니다.{'\n'}
                                     </>
                                   )}
                                 </> 
@@ -329,7 +256,7 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                                     </>
                                   ) : (
                                     <>
-                                      <Text style={_styles.addActiveText}>무교이지만 신앙은 존중{' '}</Text>입니다.
+                                      <Text style={_styles.addActiveText}>무교이지만 신앙은 존중{' '}</Text>입니다.{'\n'}
                                     </>
                                   )}
                                 </> 
@@ -342,7 +269,7 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                                     </>
                                   ) : (
                                     <>
-                                      신앙이 있으며{' '}<Text style={_styles.addActiveText}>기독교{' '}</Text>입니다.
+                                      신앙이 있으며{' '}<Text style={_styles.addActiveText}>기독교{' '}</Text>입니다.{'\n'}
                                     </>
                                   )}
                                 </>
@@ -355,7 +282,7 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                                     </>
                                   ) : (
                                     <>
-                                      신앙이 있으며{' '}<Text style={_styles.addActiveText}>불교{' '}</Text>입니다.
+                                      신앙이 있으며{' '}<Text style={_styles.addActiveText}>불교{' '}</Text>입니다.{'\n'}
                                     </>
                                   )}
                                 </>
@@ -368,7 +295,7 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                                     </>
                                   ) : (
                                     <>
-                                      신앙이 있으며{' '}<Text style={_styles.addActiveText}>이슬람교{' '}</Text>입니다.
+                                      신앙이 있으며{' '}<Text style={_styles.addActiveText}>이슬람교{' '}</Text>입니다.{'\n'}
                                     </>
                                   )}
                                 </>
@@ -381,7 +308,7 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                                     </>
                                   ) : (
                                     <>
-                                      신앙이 있으며{' '}<Text style={_styles.addActiveText}>천주교{' '}</Text>입니다.
+                                      신앙이 있으며{' '}<Text style={_styles.addActiveText}>천주교{' '}</Text>입니다.{'\n'}
                                     </>
                                   )}
                                 </>
@@ -393,22 +320,21 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                             <>
                               {memberData?.drinking == 'NONE' &&
                                 <>
-                                  술은 <Text style={_styles.addActiveText}>멀리하며</Text> 마시지 않습니다.
+                                  술은 <Text style={_styles.addActiveText}>멀리하며</Text> 마시지 않습니다.{'\n'}
                                 </>
                               }
                               {memberData?.drinking == 'LIGHT' &&
                                 <>
-                                  술은 <Text style={_styles.addActiveText}>가볍게 즐기는</Text> 편이에요.
+                                  술은 <Text style={_styles.addActiveText}>가볍게 즐기는</Text> 편이에요.{'\n'}
                                 </>
                               }
                               {memberData?.drinking == 'HARD' &&
                                 <>
-                                  술은 <Text style={_styles.addActiveText}>자주 즐기는</Text> 편이에요.
+                                  술은 <Text style={_styles.addActiveText}>자주 즐기는</Text> 편이에요.{'\n'}
                                 </>
                               }
                             </>
                           )}
-                          {' '}
                         </>
                       )}
     
@@ -524,49 +450,6 @@ const _styles = StyleSheet.create({
     height: 128,
     borderRadius: 80,
   },
-  authBadge: {
-    width: 48,
-    height: 21,
-    borderRadius: 5,
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: `center`,
-    marginRight: 5,
-  },
-  authBadgeImg: {
-    marginLeft: -5,
-    marginRight: -2,
-    marginTop: -2
-  },
-  authBadgeImg02: {
-    marginLeft: -9,
-    marginRight: -4,
-    marginTop: -3
-  },
-  whiteText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 10,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#ffffff',
-  },
-  yellowText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 11,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#FDFFD8',
-  },
-  scoreBadge: {
-    width: 48,
-    height: 21,
-    borderRadius: 5,
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: `space-between`,
-    marginRight: 5,
-    paddingHorizontal: 5,
-  },
   introWrap: {
     backgroundColor: '#FFFCEE',
     borderRadius: 20,
@@ -576,17 +459,18 @@ const _styles = StyleSheet.create({
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 14,
     color: '#5A5A5A',
-    textAlign: 'center',
+    textAlign: 'left',
   },
   addText: {
     fontFamily: 'AppleSDGothicNeoR00',
     fontSize: 14,
     color: '#5A5A5A',
-    textAlign: 'center',
+    textAlign: 'left',
     lineHeight: 20,
   },
   addActiveText: {
     color: '#7986EE',
+    textAlign: 'left',
   },
   interestTitle: {
     fontFamily: 'AppleSDGothicNeoEB00',
@@ -653,7 +537,7 @@ const _styles = StyleSheet.create({
     fontFamily: 'AppleSDGothicNeoM00',
     fontSize: 13,
     color: '#FFFCEE',
-    textAlign: 'center',
-  }
+    textAlign: 'left',
+  },
 
 });

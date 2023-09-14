@@ -9,6 +9,8 @@ import { useUserInfo } from 'hooks/useUserInfo';
 import SpaceView from 'component/SpaceView';
 import Animated, { useAnimatedStyle, withTiming, useSharedValue, withSpring, withSequence, withDelay, Easing, withRepeat } from 'react-native-reanimated';
 import { styles } from 'assets/styles/Styles';
+import AuthLevel from 'component/common/AuthLevel';
+import ProfileGrade from 'component/common/ProfileGrade';
 
 
 const { width, height } = Dimensions.get('window');
@@ -144,91 +146,12 @@ export default function VisualImage({ imgList, memberData, isButton, isAnimation
               {/* ####################################################################################################
               ##################################### 인증 레벨 노출 영역
               #################################################################################################### */}
-              {memberData?.auth_acct_cnt > 0 && memberData?.auth_acct_cnt < 10 &&
-                <LinearGradient colors={['#7986EE', '#7986EE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
-                  <Text style={_styles.whiteText}>LV.{memberData.auth_acct_cnt}</Text>
-                </LinearGradient>
-              }
-
-              {memberData?.auth_acct_cnt >= 10 && memberData?.auth_acct_cnt < 15 &&
-                <LinearGradient colors={['#E0A9A9', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
-                  <Image source={ICON.level10Icon} style={[_styles.authBadgeImg, {width: 23, height: 23}]} />
-                  <Text style={_styles.whiteText}>LV.{memberData?.auth_acct_cnt}</Text>
-                </LinearGradient>
-              }
-
-              {memberData?.auth_acct_cnt >= 15 && memberData?.auth_acct_cnt < 20 &&
-                <LinearGradient colors={['#A9BBE0', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
-                  <Image source={ICON.level15Icon} style={[_styles.authBadgeImg, {width: 23, height: 23}]} />
-                  <Text style={_styles.whiteText}>LV.{memberData?.auth_acct_cnt}</Text>
-                </LinearGradient>
-              }
-
-              {memberData?.auth_acct_cnt >= 20 && memberData?.auth_acct_cnt < 25 &&
-                <LinearGradient colors={['#FEB961', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
-                  <Image source={ICON.level20Icon} style={[_styles.authBadgeImg02, {width: 30, height: 30}]} />
-                  <Text style={_styles.whiteText}>LV.{memberData?.auth_acct_cnt}</Text>
-                </LinearGradient>
-              }
-
-              {memberData?.auth_acct_cnt >= 25 && memberData?.auth_acct_cnt < 30 &&
-                <LinearGradient colors={['#9BFFB5', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
-                  <Image source={ICON.level25Icon} style={[_styles.authBadgeImg02, {width: 30, height: 30}]} />
-                  <Text style={_styles.whiteText}>LV.{memberData?.auth_acct_cnt}</Text>
-                </LinearGradient>
-              }
-
-              {memberData?.auth_acct_cnt >= 30 &&
-                <LinearGradient colors={['#E84CEE', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
-                  <Image source={ICON.level30Icon} style={[_styles.authBadgeImg02, {width: 30, height: 30}]} />
-                  <Text style={_styles.whiteText}>LV.{memberData?.auth_acct_cnt}</Text>
-                </LinearGradient>
-              }
+              <AuthLevel authAcctCnt={memberData?.auth_acct_cnt} type={'BASE'} />
 
               {/* ####################################################################################################
               ##################################### 프로필 평점 노출 영역
               #################################################################################################### */}
-              {memberData?.profile_score < 6.0 &&
-                <LinearGradient colors={['#FF7EA6', '#FF7EA6']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
-                  <Image source={ICON.score5Icon} style={[{width: 12, height: 12}]} />
-                  <Text style={_styles.yellowText}>{memberData?.profile_score}</Text>
-                </LinearGradient>
-              }
-
-              {memberData?.profile_score >= 6.0 && memberData?.profile_score < 7.0 &&
-                <LinearGradient colors={['#FF4381', '#FF4381']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
-                  <Image source={ICON.score6Icon} style={[{width: 16, height: 16}]} />
-                  <Text style={_styles.yellowText}>{memberData?.profile_score}</Text>
-                </LinearGradient>
-              }
-
-              {memberData?.profile_score >= 7.0 && memberData?.profile_score < 8.0 &&
-                <LinearGradient colors={['#FF4381', '#FF4381']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
-                  <Image source={ICON.score7Icon} style={[{width: 16, height: 16}]} />
-                  <Text style={_styles.yellowText}>{memberData?.profile_score}</Text>
-                </LinearGradient>
-              }
-
-              {memberData?.profile_score >= 8.0 && memberData?.profile_score < 9.0 &&
-                <LinearGradient colors={['#FE0456', '#FF82AB']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
-                  <Image source={ICON.scoreKingIcon} style={[{width: 16, height: 16}]} />
-                  <Text style={_styles.yellowText}>{memberData?.profile_score}</Text>
-                </LinearGradient>
-              }
-
-              {memberData?.profile_score >= 9.0 && memberData?.profile_score < 10.0 &&
-                <LinearGradient colors={['#FE0456', '#9E6DF5']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
-                  <Image source={ICON.scoreDiamondIcon} style={[{width: 16, height: 16}]} />
-                  <Text style={_styles.yellowText}>{memberData?.profile_score}</Text>
-                </LinearGradient>
-              }
-
-              {memberData?.profile_score >= 10.0 &&
-                <LinearGradient colors={['#FE0456', '#9E41E5']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
-                  <Image source={ICON.score10Icon} style={[{width: 16, height: 16}]} />
-                  <Text style={_styles.yellowText}>{memberData?.profile_score}</Text>
-                </LinearGradient>
-              }
+              <ProfileGrade profileScore={memberData?.profile_score} type={'BASE'} />
 
               {/* 고평점 이성 소개받기 구독 아이템 표시 */}
               {/* <View style={styles.redBadge}>

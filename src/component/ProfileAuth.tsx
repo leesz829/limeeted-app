@@ -12,6 +12,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import Carousel from 'react-native-snap-carousel';
 import { commonStyle } from 'assets/styles/Styles';
 import { isEmptyData } from 'utils/functions';
+import AuthLevel from 'component/common/AuthLevel';
 
 
 const { width } = Dimensions.get('window');
@@ -39,50 +40,7 @@ export default function ProfileAuth({ level, data, isButton, callbackAuthComment
             <SpaceView viewStyle={{flexDirection: `row`, alignItems: `center`, justifyContent: `center`,}}>
               <Text style={_styles.title}>프로필 인증</Text>
               <View style={[_styles.levelBadge, {marginRight: 0, marginTop: 1}]}>
-
-                {/* ############# 인증 레벨 노출 */}
-                {level > 0 && level < 10 &&
-                  <LinearGradient colors={['#7986EE', '#7986EE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.levelBadge}>
-                    <Text style={_styles.whiteText}>LV.{level}</Text>
-                  </LinearGradient>
-                }
-
-                {level >= 10 && level < 15 &&
-                  <LinearGradient colors={['#E0A9A9', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.levelBadge}>
-                    <Image source={ICON.level10Icon} style={[_styles.levelBadgeImg, {width: 23, height: 23}]} />
-                    <Text style={_styles.whiteText}>LV.{level}</Text>
-                  </LinearGradient>
-                }
-
-                {level >= 15 && level < 20 &&
-                  <LinearGradient colors={['#A9BBE0', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.levelBadge}>
-                    <Image source={ICON.level15Icon} style={[_styles.levelBadgeImg, {width: 23, height: 23}]} />
-                    <Text style={_styles.whiteText}>LV.{level}</Text>
-                  </LinearGradient>
-                }
-
-                {level >= 20 && level < 25 &&
-                  <LinearGradient colors={['#FEB961', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.levelBadge}>
-                    <Image source={ICON.level20Icon} style={[_styles.levelBadgeImg02, {width: 30, height: 30}]} />
-                    <Text style={_styles.whiteText}>LV.{level}</Text>
-                  </LinearGradient>
-                }
-
-                {level >= 25 && level < 30 &&
-                  <LinearGradient colors={['#9BFFB5', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.levelBadge}>
-                    <Image source={ICON.level25Icon} style={[_styles.levelBadgeImg02, {width: 30, height: 30}]} />
-                    <Text style={_styles.whiteText}>LV.{level}</Text>
-                  </LinearGradient>
-                }
-
-                {level >= 30 &&
-                  <LinearGradient colors={['#E84CEE', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.levelBadge}>
-                    <Image source={ICON.level30Icon} style={[_styles.levelBadgeImg02, {width: 30, height: 30}]} />
-                    <Text style={_styles.whiteText}>LV.{level}</Text>
-                  </LinearGradient>
-                }
-
-                {/* <Text style={[styles.levelText, { color: 'white' }]}>LV.{level}</Text> */}
+                <AuthLevel authAcctCnt={level} type={'BASE'} />
               </View>
             </SpaceView>
             
