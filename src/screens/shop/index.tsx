@@ -21,7 +21,7 @@ import {
   requestPurchase,
   getAvailablePurchases,
 } from 'react-native-iap';
-import { get_banner_list, purchase_product, update_additional } from 'api/models';
+import { get_banner_list, purchase_product, update_additional, get_shop_main, get_bm_product } from 'api/models';
 import { useIsFocused, useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Color } from 'assets/styles/Color';
 import { Slider } from '@miblanchard/react-native-slider';
@@ -39,7 +39,9 @@ import Carousel from 'react-native-snap-carousel';
 import useInterval from 'utils/useInterval';
 import { isEmptyData, formatNowDate } from 'utils/functions';
 import { styles } from 'assets/styles/Styles';
-import Animated, { useAnimatedStyle, withTiming, useSharedValue, withSpring, withSequence, withDelay, Easing, withRepeat, interpolate, Value, multiply, useDerivedValue, Extrapolate } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, withTiming, useSharedValue, withSpring, withSequence, withDelay, Easing, withRepeat, interpolate, Value, multiply, useDerivedValue, Extrapolate, cancelAnimation } from 'react-native-reanimated';
+import InventoryButton from 'component/shop/InventoryButton';
+import ProductModal from './Component/ProductModal';
 
 
 
@@ -69,6 +71,11 @@ export const Shop = () => {
 
   const { width, height } = Dimensions.get('window');
 
+  const [productModalVisible, setProductModalVisible] = useState(false); // 상품 모달 VIsible
+  const [targetItem, setTargetItem] = useState(null); // 타겟 아이템
+  const [selectedCategoryData, setSelectedCategoryData] = useState(categoryList[0]); // 선택된 카테고리
+  const [productList, setProductList] = useState<Products>([]); // 상품 목록
+
   const [isLoading, setIsLoading] = useState(false);
   const [banner, setBanner] = useState([]);
   const [payInfo, setPayInfo] = useState({});
@@ -78,12 +85,6 @@ export const Shop = () => {
   // 회원 기본 데이터
   const memberBase = useUserInfo();
 
-  // 인벤토리 이동 함수
-  const onPressInventory = () => {
-    navigation.navigate(STACK.COMMON, { screen: ROUTES.SHOP_INVENTORY });
-    //navigation.navigate(STACK.COMMON, { screen: ROUTES.Gifticon_Detail });
-  };
-
   const loadingFunc = (isStatus: boolean) => {
     setIsLoading(isStatus);
   };
@@ -91,84 +92,6 @@ export const Shop = () => {
   // 팝업 목록
   let popupList = [];
   let isPopup = true;
-
-  // 선물함 애니메이션 관련 함수
-  const giftOpacityValue = useSharedValue(0);
-  const giftRotateValue = useSharedValue(0);
-
-  const [isRotated, setIsRotated] = useState(false);
-
-  const giftStyle = useAnimatedStyle(() => {
-    const interpolatedRotation = interpolate(giftRotateValue.value, [0, 1], [0, -20], Extrapolate.CLAMP);
-
-    return {
-      opacity: giftOpacityValue.value,
-      transform: [{ rotate: `${interpolatedRotation}deg` }],
-    };
-  });
-
-  const animateSequence = async (animations:any) => {
-    for (const animation of animations) {
-      await animation();
-    }
-  };
-
-  const resIntroAnimate = async () => {
-    const endValue = isRotated ? 0 : 1;
-
-    giftOpacityValue.value = withDelay(500, withTiming(1, { duration: 500 }, () => {
-      giftRotateValue.value = withTiming(1, { duration: 1000 }, () => {
-        giftRotateValue.value = withTiming(0, { duration: 1000 }, () => {
-          giftRotateValue.value = withTiming(1, { duration: 1000 }, () => {
-            giftRotateValue.value = withTiming(0, { duration: 1000 }, () => {
-              giftRotateValue.value = withDelay(500, withTiming(1, { duration: 1000 }, () => {
-                giftRotateValue.value = withTiming(0, { duration: 1000 }, () => {
-                  giftRotateValue.value = withTiming(1, { duration: 1000 }, () => {
-                    giftRotateValue.value = withTiming(0, { duration: 1000 }, () => {
-                      giftOpacityValue.value = withDelay(500, withTiming(0, { duration: 500 }, () => {
-
-                      }));
-                    });
-                  });
-                });
-              }));
-            });
-          });
-        });
-      });
-    }));
-
-
-    /* const animations = [
-      () => giftOpacityValue.value = withDelay(500, withTiming(1, { duration: 500 })),
-
-      () => giftRotateValue.value = withSequence(
-        withTiming(0, { duration: 1000 }),
-        withTiming(1, { duration: 1000 }),
-        withTiming(0, { duration: 1000 }),
-        withTiming(1, { duration: 1000 }),
-        withTiming(0, { duration: 1000 }),
-      ),
-
-      () => giftOpacityValue.value = withDelay(6000, withTiming(0, { duration: 500 })),
-    ];
-
-    await animateSequence(animations); */
-
-
-    /* giftRotateValue.value = withRepeat(
-      withSequence(
-        withTiming(1, { duration: 1000 }),
-        withTiming(0, { duration: 1000 }),
-      ),
-      -1,
-      true
-    ); */
-
-
-    setIsRotated(!isRotated);
-  };
-
 
   /* const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
@@ -191,21 +114,45 @@ export const Shop = () => {
   }, isFocus ? 5000 : null); */
 
   // ############################################################################# 배너 목록 조회
-  const getBanner = async (isPopupShow:boolean) => {
+  const getShopMain = async (isPopupShow:boolean) => {
+    
     //const invenConnectDate = await AsyncStorage.getItem('INVENTORY_CONNECT_DT') || '20230524000000';
-    const { success, data } = await get_banner_list({ banner_type: 'PROD' });
+    //const { success, data } = await get_banner_list({ banner_type: 'PROD' });
+    const { success, data } = await get_shop_main({ banner_type: 'PROD' });
 
     if (success) {
 
+      // 프로모션 팝업 노출
+      /* if(isPopupShow) {
+        if(data.popup_bas_list?.length > 0 && isEmptyData(data.popup_bas_list[0]?.popup_detail) && data.popup_bas_list[0]?.popup_detail.length > 0) {
+          let nowDt = formatNowDate().substring(0, 8);
+          show({
+            type: 'PROMOTION',
+            prodList: data.popup_bas_list[0]?.popup_detail,
+            confirmCallback: async function(isNextChk) {
+              if(isNextChk) {
+                // 팝업 종료 일시 Storage 저장
+                await AsyncStorage.setItem('POPUP_ENDDT_' + 'PROMOTION', nowDt);
+                isPopup = false;
+              }
+            },
+            etcCallback: async function(item) {
+              openProductModal(item);
+              console.log('item :::::::: ' , item);
+            },
+          });
+        };
+      } */
+
       // 이벤트 팝업 노출
-      if(data.popup_list?.length > 0) {
+      /* if(data.popup_list?.length > 0) {
         popupList = data.popup_list;
 
         // 튜토리얼 팝업 닫혀있는 경우 호출
         if(isPopupShow) {
           popupShow();
         }
-      };
+      }; */
 
       setBanner(data?.banner_list);
       setNewItemCnt(data?.mbr_base?.new_item_cnt);
@@ -245,7 +192,7 @@ export const Shop = () => {
     };
     const { success, data } = await update_additional(body);
     if(success) {
-      if(null != data.mbr_base && typeof data.mbr_base != 'undefined') {
+      if(isEmptyData(data.mbr_base)) {
         dispatch(setPartialPrincipal({
           mbr_base : data.mbr_base
         }));
@@ -286,21 +233,62 @@ export const Shop = () => {
     }
   };
 
+  // ######################################################### 카테고리 선택
+  const onPressCategory = async(category:any) => {
+    setSelectedCategoryData(category);
+    loadingFunc(true);
+
+    const body = { item_type_code: category.value };
+    const { success, data } = await get_bm_product(body);
+    if (success) {
+      let _products = data?.item_list;
+
+      const connectDate = await AsyncStorage.getItem('SHOP_CONNECT_DT');
+
+      _products.map((item: any) => {
+        item.connect_date = connectDate;
+      });
+
+      setProductList(_products);
+
+      loadingFunc(false);
+    } else {
+      loadingFunc(false);
+    }
+  };
+
+  // ######################################################### 상품상세 팝업 열기
+  const openProductModal = (item) => {
+    setTargetItem(item);
+    setProductModalVisible(true);
+  };
+
+  // ######################################################### 상품상세 팝업 닫기
+  const closeProductModal = (isPayConfirm: boolean) => {
+    setProductModalVisible(false);
+
+    if(isPayConfirm) {
+      onPressCategory(selectedCategoryData);
+      getShopMain(false);
+    }
+  };
+
   // ############################################################################# 초기 실행 실행
-  /* useFocusEffect(
+  useFocusEffect(
     React.useCallback(() => {
-      getBanner();
-      
+      async function fetch() {
+        onPressCategory(categoryList[0]);
+        await AsyncStorage.setItem('SHOP_CONNECT_DT', formatNowDate());
+      };
+      fetch();
+
       return async() => {
-        
       };
     }, []),
-  ); */
+  );
 
   useEffect(() => {
     if(isFocus) {
-      resIntroAnimate();
-
       let isPopupShow = true;
 
       // 튜토리얼 팝업 노출
@@ -321,7 +309,7 @@ export const Shop = () => {
         });
       };
 
-      getBanner(isPopupShow);
+      getShopMain(isPopupShow);
     }
   }, [isFocus]);
 
@@ -350,9 +338,9 @@ export const Shop = () => {
             inactiveSlideScale={1}
             inactiveSlideOpacity={0.5}
             inactiveSlideShift={15}
-            firstItem={banner.length}
+            firstItem={banner?.length}
             loop={true}
-            loopClonesPerSide={banner.length}
+            loopClonesPerSide={banner?.length}
             autoplay={true}
             autoplayDelay={2000}
             autoplayInterval={5000}
@@ -404,27 +392,62 @@ export const Shop = () => {
         </TouchableOpacity> */}
 
         {/* ############################################### 카테고리별 */}
-        <CategoryShop loadingFunc={loadingFunc} itemUpdateFunc={getBanner} />
+        <CategoryShop 
+          loadingFunc={loadingFunc} 
+          itemUpdateFunc={getShopMain}
+          onPressCategoryFunc={onPressCategory}
+          openProductModalFunc={openProductModal}
+          categoryList={categoryList}
+          productList={productList}
+          selectedCategoryData={selectedCategoryData}
+        />
       </ScrollView>
 
-      <TouchableOpacity
-        onPress={onPressInventory}
-        style={_styles.floatingButtonWrapper}>
+      {/* 인벤토리 버튼 */}
+      <InventoryButton newItemCnt={newItemCnt} />
 
-        <Animated.View style={[_styles.giftIconArea, giftStyle]}>
-          <Image source={ICON.giftIcon} style={styles.iconSquareSize(85)} />
-        </Animated.View>
-
-        <Image source={ICON.inventoryIcon} style={_styles.floatingButton} />
-        {newItemCnt > 0 &&
-          <View style={_styles.iconArea}>
-            <Text style={_styles.newText}>NEW</Text>
-          </View>
-        }
-      </TouchableOpacity>
+      {/* 상품 상세 팝업 */}
+      <ProductModal
+        isVisible={productModalVisible}
+        type={'bm'}
+        item={targetItem}
+        closeModal={closeProductModal}
+      />
     </>
   );
 };
+
+// 카테고리 목록
+const categoryList = [
+  {
+    label: '패스상품',
+    value: 'PASS',
+  },
+  {
+    label: '부스팅상품',
+    value: 'SUBSCRIPTION',
+  },
+  {
+    label: '패키지상품',
+    value: 'PACKAGE',
+  },
+];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
