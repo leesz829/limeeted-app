@@ -105,6 +105,7 @@ export const POINT_HISTORY = '/prod/selectMobileProdList';
 /**
  * PRODUCT
  */
+export const SHOP_MAIN = '/prod/shopMain';
 export const PRODUCT_LIST = '/prod/selectMobileProdList';
 export const PRODUCT_AUCT = '/prod/selectAuctProdList';
 export const PRODUCT_AUCT_DETAIL = '/prod/selectAuctProdDetail';
@@ -132,3 +133,8 @@ export const BOARD_LIST = '/board/selectBoardList';
 export const BOARD_DETAIL_VIEW = '/board/boardDetailView';
 export const NICE_AUTH = '/nice/authToken';
 export const GET_APP_VERSION = '/login/getAppVersion';
+
+/**
+ * 팝업
+ */
+export const POPUP_LIST = '/popup/selectPopList';

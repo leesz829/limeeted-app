@@ -86,6 +86,8 @@ import {
   MATCH_CHECK_ALL,
   UPDATE_JOIN_MASTER_IMAGE,
   JOIN_CANCEL,
+  POPUP_LIST,
+  SHOP_MAIN,
 } from './route';
 
 /* ========================================================================================================
@@ -721,17 +723,25 @@ export async function get_point_history() {
 ==================================================== PRODUCT
 ======================================================================================================== */
 
-//티아라샵 재고형 상품목록 조회
+// 상점 메인 정보를 조회한다.
+export async function get_shop_main(body: {
+  banner_type: string;
+}) {
+  const inventory_connect_dt = await AsyncStorage.getItem('INVENTORY_CONNECT_DT');
+  return send(SHOP_MAIN, 'POST', { ...body, inventory_connect_dt}, true, false);
+}
+
+// 티아라샵 재고형 상품목록 조회
 export async function get_product_list() {
   return send(PRODUCT_LIST, 'POST', undefined, true, false);
 }
 
-//경매 상품 목록 조회
+// 경매 상품 목록 조회
 export async function get_auct_product() {
   return send(PRODUCT_AUCT, 'POST', undefined, true, false);
 }
 
-//경매 상품 상세 조회
+// 경매 상품 상세 조회
 export async function get_auct_detail(body: {
   prod_seq: string;
   modify_seq: string;
@@ -739,7 +749,7 @@ export async function get_auct_detail(body: {
   return send(PRODUCT_AUCT_DETAIL, 'POST', body, true, false);
 }
 
-//BM 상품 조회
+// BM 상품 조회
 export async function get_bm_product(body: { item_type_code: string }) {
   return send(PRODUCT_BM, 'POST', body, true, false);
 }
@@ -815,8 +825,10 @@ export async function board_detail_view(body: {
 }
 
 // #### 나이스 인증 모듈을 실행한다.
-export async function nice_auth() {
-  return send(NICE_AUTH, 'POST', undefined, false, false);
+export async function nice_auth(body: {
+  auth_type: string;
+}) {
+  return send(NICE_AUTH, 'POST', body, false, false);
 }
 
 //회원의 실시간성 정보를 조회한다.
@@ -833,3 +845,15 @@ export async function get_app_version(body: {
 }) {
   return send(GET_APP_VERSION, 'POST', body, true, false);
 }
+
+
+/* ========================================================================================================
+==================================================== 팝업
+======================================================================================================== */
+
+// 팝업 목록을 조회한다.
+export async function get_popup_list(body: { 
+  pop_type: string;
+}) {
+  return send(POPUP_LIST, 'POST', body, true, false);
+};
