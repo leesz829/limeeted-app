@@ -7,7 +7,7 @@ import TopNavigation from 'component/TopNavigation';
 import { Wallet } from 'component/TopNavigation';
 import * as React from 'react';
 import {
-  Image,
+  //Image,
   ScrollView,
   View,
   TouchableOpacity,
@@ -16,7 +16,9 @@ import {
   Text,
   ImageBackground,
   FlatList,
-  Modal
+  Modal,
+  RefreshControl,
+  ActivityIndicator,
 } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import LinearGradient from 'react-native-linear-gradient';
@@ -46,6 +48,9 @@ import { CommonLoading } from 'component/CommonLoading';
 import { BlurView } from "@react-native-community/blur";
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
 //import Modal from 'react-native-modal';
+import Image from 'react-native-fast-image';
+import AuthLevel from 'component/common/AuthLevel';
+import ProfileGrade from 'component/common/ProfileGrade';
 
 
 
@@ -407,17 +412,6 @@ export const Storage = (props: Props) => {
         match_type: match_type,
       });
 
-      /* show({
-        title: '프로필 열람',
-        content: '패스를 소모하여 프로필을 열람하시겠습니까?\n패스 x15',
-        cancelCallback: function() {
-
-        },
-        confirmCallback: function() {
-          goProfileOpen(match_seq, tgt_member_seq, type, match_type);
-        },
-      }); */
-
     } else {
       navigation.navigate(STACK.COMMON, { screen: 'StorageProfile', params: {
         matchSeq: match_seq,
@@ -435,47 +429,54 @@ export const Storage = (props: Props) => {
     let req_profile_open_yn = '';
     let res_profile_open_yn = '';
 
-    if (type == 'REQ' || match_type == 'LIVE_REQ') {
-      req_profile_open_yn = 'Y';
-    } else if (type == 'RES' || match_type == 'LIVE_RES') {
-      res_profile_open_yn = 'Y';
-    }
+    // 중복 클릭 방지 설정
+    if(isClickable) {
+      setIsClickable(false);
+      setIsLoading(true);
 
-    const body = {
-      match_seq: match_seq,
-      req_profile_open_yn: req_profile_open_yn,
-      res_profile_open_yn: res_profile_open_yn,
-    };
-
-    try {
-      const { success, data } = await update_match(body);
-      if(success) {
-        if (data.result_code == '0000') {
-          dispatch(myProfile());
-          navigation.navigate(STACK.COMMON, {
-            screen: 'StorageProfile', 
-            params: {
-              matchSeq: match_seq,
-              tgtMemberSeq: tgt_member_seq,
-              type: type,
-              matchType: match_type
-            }
-          });
-
-          navigation.setParams({ loadPage: type });
-
-        } else if (data.result_code == '6010') {
-          show({ content: '보유 패스가 부족합니다.' });
-          return false;
-        } else {
-          console.log(data.result_msg);
-          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-        }
+      if (type == 'REQ' || match_type == 'LIVE_REQ') {
+        req_profile_open_yn = 'Y';
+      } else if (type == 'RES' || match_type == 'LIVE_RES') {
+        res_profile_open_yn = 'Y';
       }
-    } catch (error) {
-      console.log(error);
-    } finally {
-
+  
+      const body = {
+        match_seq: match_seq,
+        req_profile_open_yn: req_profile_open_yn,
+        res_profile_open_yn: res_profile_open_yn,
+      };
+  
+      try {
+        const { success, data } = await update_match(body);
+        if(success) {
+          if (data.result_code == '0000') {
+            dispatch(myProfile());
+            navigation.navigate(STACK.COMMON, {
+              screen: 'StorageProfile', 
+              params: {
+                matchSeq: match_seq,
+                tgtMemberSeq: tgt_member_seq,
+                type: type,
+                matchType: match_type
+              }
+            });
+  
+            navigation.setParams({ loadPage: type });
+  
+          } else if (data.result_code == '6010') {
+            show({ content: '보유 패스가 부족합니다.' });
+            return false;
+          } else {
+            console.log(data.result_msg);
+            show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsClickable(true);
+        setIsLoading(false);
+      }
     }
   };
 
@@ -562,10 +563,9 @@ export const Storage = (props: Props) => {
     }
   }, [currentIndex]);
 
+
   /* ################################################################################ 보관함 아이템 렌더링 */
-  const RenderItem = React.memo(({ item, index, type, tabColor }) => {
-  //function RenderItem({ item, index, type, tabColor }) {
-    //console.log('index :::::::: ', index);
+  const StorageRenderItem = React.memo(({ item, index, type, tabColor }) => {
     const matchType = item.match_type; // 매칭 유형
     const matchStatus = item.match_status; // 매칭 상태
 
@@ -612,6 +612,7 @@ export const Storage = (props: Props) => {
         {isShow && 
 
           <TouchableOpacity
+            style={[{borderRadius: 15, overflow: 'hidden', marginBottom: 12, marginRight: 13}/* , index%2 == 0 && {marginRight: 14} */]}
             disabled={matchStatus == 'REFUSE'}
             onPress={() => {
               popupProfileOpen(
@@ -627,173 +628,112 @@ export const Storage = (props: Props) => {
               );
             }}>
 
-            <ImageBackground source={item.img_path} style={_styles.renderItemContainer}>
+            {/* 이미지 영역 */}
+            <View>
+              <Image source={item.img_path} style={_styles.renderItemContainer} />
+            </View>
 
-              {/* 상단 영역 */}
-              <View style={_styles.renderItemTopContainer}>
-                <View style={{flexDirection: 'row', alignItems: 'center', height: 25}}>
-                  {type == 'ZZIM' ? (
-                    <Image style={_styles.renderItemTopIcon} source={ICON.zzimCircle} />
-                  ) : (
-                    <>
-                      {type == 'LIVE' ? (
-                        <>
-                          {isEmptyData(item.req_profile_score) &&
-                            <View style={_styles.liveScoreArea(item.match_type)}>
-                              <Text style={_styles.liveScoreText(item.match_type)}>★ {item.req_profile_score}</Text>
-                            </View>
-                          }
-                        </>
-                      ) : (
-                        <>
-                          <Image style={_styles.renderItemTopIcon} source={item.special_interest_yn == 'N' ? ICON.passCircle : ICON.royalPassCircle} />
-                          {isEmptyData(item?.special_level) && <Text style={_styles.levelText(isBlur)}>Lv.{item.special_level}</Text>}
-                        </>
-                      )}
-                    </>
-                  )}
-                </View>
+            {/* 상단 영역 */}
+            <View style={_styles.renderItemTopContainer}>
+              <View style={{flexDirection: 'row', alignItems: 'center', height: 25}}>
+                {type == 'ZZIM' ? (
+                  <Image style={_styles.renderItemTopIcon} source={ICON.zzimCircle} />
+                ) : (
+                  <>
+                    {type == 'LIVE' ? (
+                      <>
+                        {isEmptyData(item.req_profile_score) &&
+                          <View style={_styles.liveScoreArea(item.match_type)}>
+                            <Text style={_styles.liveScoreText(item.match_type)}>★ {item.req_profile_score}</Text>
+                          </View>
+                        }
+                      </>
+                    ) : (
+                      <>
+                        <Image style={_styles.renderItemTopIcon} source={item.special_interest_yn == 'N' ? ICON.passCircle : ICON.royalPassCircle} />
+                        {isEmptyData(item?.special_level) && <Text style={_styles.levelText(isBlur)}>Lv.{item.special_level}</Text>}
+                      </>
+                    )}
+                  </>
+                )}
+              </View>
 
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
 
-                  {(((type == 'RES' || matchType == 'LIVE_RES') && item.res_check_yn == 'N') || (matchType == 'MATCH_REQ' && item.req_success_check_yn == 'N')) && (
-                    <View style={_styles.newDotted(tabColor)} />
-                  )}
-                  <Text style={[_styles.renderItemTopText]}>
-                    {item.keep_end_day > 0 ? item.keep_end_day + '일 남음' : '오늘까지'}
-                  </Text>
-                </View>
+                {(((type == 'RES' || matchType == 'LIVE_RES') && item.res_check_yn == 'N') || (matchType == 'MATCH_REQ' && item.req_success_check_yn == 'N')) && (
+                  <View style={_styles.newDotted(tabColor)} />
+                )}
+                <Text style={[_styles.renderItemTopText]}>
+                  {item.keep_end_day > 0 ? item.keep_end_day + '일 남음' : '오늘까지'}
+                </Text>
+              </View>
+
+            </View>
+
+            {/* 하단 영역 */}
+            <View style={[_styles.renderItemBottomContainer]}>
+              <View style={{flexDirection: 'row', marginBottom: -2, justifyContent: 'space-between'}}>
+
+                {/* ############# 인증 레벨 노출 */}
+                <AuthLevel authAcctCnt={item.auth_acct_cnt} type={'SMALL'} />
+
+                {/* ############# 프로필 평점 노출 */}
+                <ProfileGrade profileScore={item.profile_score} type={'SMALL'} />
 
               </View>
 
-              {/* 하단 영역 */}
-              <View style={[_styles.renderItemBottomContainer]}>
-                <View style={{flexDirection: 'row', marginBottom: -2, justifyContent: 'space-between'}}>
-                  {/* ############# 인증 레벨 노출 */}
-
-                  {item.auth_acct_cnt > 0 && item.auth_acct_cnt < 10 &&
-                    <LinearGradient colors={['#7986EE', '#7986EE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
-                      <Text style={_styles.whiteText}>LV.{item.auth_acct_cnt}</Text>
-                    </LinearGradient>
-                  }
-
-                  {item.auth_acct_cnt >= 10 && item.auth_acct_cnt < 15 &&
-                    <LinearGradient colors={['#E0A9A9', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
-                      <Image source={ICON.level10Icon} style={[_styles.authBadgeImg, {width: 18, height: 18}]} />
-                      <Text style={_styles.whiteText}>LV.{item.auth_acct_cnt}</Text>
-                    </LinearGradient>
-                  }
-
-                  {item.auth_acct_cnt >= 15 && item.auth_acct_cnt < 20 &&
-                    <LinearGradient colors={['#A9BBE0', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
-                      <Image source={ICON.level15Icon} style={[_styles.authBadgeImg, {width: 18, height: 18}]} />
-                      <Text style={_styles.whiteText}>LV.{item.auth_acct_cnt}</Text>
-                    </LinearGradient>
-                  }
-
-                  {item.auth_acct_cnt >= 20 && item.auth_acct_cnt < 25 &&
-                    <LinearGradient colors={['#FEB961', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
-                      <Image source={ICON.level20Icon} style={[_styles.authBadgeImg02, {width: 18, height: 18}]} />
-                      <Text style={_styles.whiteText}>LV.{item.auth_acct_cnt}</Text>
-                    </LinearGradient>
-                  }
-
-                  {item.auth_acct_cnt >= 25 && item.auth_acct_cnt < 30 &&
-                    <LinearGradient colors={['#9BFFB5', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
-                      <Image source={ICON.level25Icon} style={[_styles.authBadgeImg02, {width: 20, height: 20}]} />
-                      <Text style={_styles.whiteText}>LV.{item.auth_acct_cnt}</Text>
-                    </LinearGradient>
-                  }
-
-                  {item.auth_acct_cnt >= 30 &&
-                    <LinearGradient colors={['#E84CEE', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.authBadge}>
-                      <Image source={ICON.level30Icon} style={[_styles.authBadgeImg02, {width: 20, height: 20}]} />
-                      <Text style={_styles.whiteText}>LV.{item.auth_acct_cnt}</Text>
-                    </LinearGradient>
-                  }
-
-                  {/* ############# 프로필 평점 노출 */}
-                  {item.profile_score < 6.0 &&
-                    <LinearGradient colors={['#FF7EA6', '#FF7EA6']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
-                      <Image source={ICON.score5Icon} style={[{width: 8, height: 8}]} />
-                      <Text style={_styles.yellowText}>{item.profile_score}</Text>
-                    </LinearGradient>
-                  }
-
-                  {item.profile_score >= 6.0 && item.profile_score < 7.0 &&
-                    <LinearGradient colors={['#FF4381', '#FF4381']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
-                      <Image source={ICON.score6Icon} style={[{width: 10, height: 10}]} />
-                      <Text style={_styles.yellowText}>{item.profile_score}</Text>
-                    </LinearGradient>
-                  }
-
-                  {item.profile_score >= 7.0 && item.profile_score < 8.0 &&
-                    <LinearGradient colors={['#FF4381', '#FF4381']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
-                      <Image source={ICON.score7Icon} style={[{width: 10, height: 10}]} />
-                      <Text style={_styles.yellowText}>{item.profile_score}</Text>
-                    </LinearGradient>
-                  }
-
-                  {item.profile_score >= 8.0 && item.profile_score < 9.0 &&
-                    <LinearGradient colors={['#FE0456', '#FF82AB']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
-                      <Image source={ICON.scoreKingIcon} style={[{width: 10, height: 10}]} />
-                      <Text style={_styles.yellowText}>{item.profile_score}</Text>
-                    </LinearGradient>
-                  }
-
-                  {item.profile_score >= 9.0 && item.profile_score < 10.0 &&
-                    <LinearGradient colors={['#FE0456', '#9E6DF5']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
-                      <Image source={ICON.scoreDiamondIcon} style={[{width: 10, height: 10}]} />
-                      <Text style={_styles.yellowText}>{item.profile_score}</Text>
-                    </LinearGradient>
-                  }
-
-                  {item.profile_score >= 10.0 &&
-                    <LinearGradient colors={['#FE0456', '#9E41E5']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.scoreBadge}>
-                      <Image source={ICON.score10Icon} style={[{width: 10, height: 10}]} />
-                      <Text style={_styles.yellowText}>{item.profile_score}</Text>
-                    </LinearGradient>
-                  }
-
-                </View>
-
-                <Text style={_styles.renderItemBottomTextName}>{item.nickname}, {item.age}</Text>
+              <Text style={_styles.renderItemBottomTextName}>{item.nickname}, {item.age}</Text>
 
                 {/* {isEmptyData(item.job_name) && isEmptyData(item.height) && 
                   <Text style={_styles.renderItemBottomTextSpec}>
                     {item.job_name} {isEmptyData(item.height) && item.height + 'cm'}
                   </Text>
                 } */}
-              </View>
+            </View>
 
-              {(item.special_interest_yn == 'N' && isBlur) && (
-                <>
-                  <View style={_styles.reqRenderItem}>
-                    <Text style={_styles.reqRenderItemText}>터치하고 열어보기</Text>
-                  </View>
-
-                  <BlurView 
-                    style={{position: 'absolute', top: 0, bottom: 0, left: 0, right: 0}}
-                    blurType='dark'
-                    blurAmount={5} />
-                </>
-              )}
-
-              {/* 매칭 거절 표시 */}
-              {matchStatus == 'REFUSE' &&
-                <View style={_styles.refuseArea}>
-                  <View style={_styles.refuseAreaTextArea}>
-                    <Text style={_styles.refuseAreaText}>매칭실패</Text>
-                  </View>
+            {(item.special_interest_yn == 'N' && isBlur) && (
+              <>
+                <View style={_styles.reqRenderItem}>
+                  <Text style={_styles.reqRenderItemText}>터치하고 열어보기</Text>
                 </View>
-              }
 
-            </ImageBackground>
+                <BlurView 
+                  style={{position: 'absolute', top: 0, bottom: 0, left: 0, right: 0}}
+                  blurType='dark'
+                  blurAmount={5} />
+              </>
+            )}
+
+            {/* 매칭 거절 표시 */}
+            {matchStatus == 'REFUSE' &&
+              <View style={_styles.refuseArea}>
+                <View style={_styles.refuseAreaTextArea}>
+                  <Text style={_styles.refuseAreaText}>매칭실패</Text>
+                </View>
+              </View>
+            }
+
           </TouchableOpacity>
         }
       </>
     );
+
   });
+
+
+
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const handleRefresh = () => {
+    // 새로고침을 시작할 때 호출되는 함수
+    //setIsRefreshing(true);
+
+    // 여기에서 데이터를 새로고침하거나 API 호출을 수행하세요.
+    // 새로운 데이터를 가져온 후 setData로 업데이트합니다.
+
+    // 데이터를 업데이트한 후 새로고침 상태를 false로 설정합니다.
+    //setIsRefreshing(false);
+  };
 
   return (
     <>
@@ -937,24 +877,47 @@ export const Storage = (props: Props) => {
                             </SpaceView>
                           ) : (
                             <>
-                              <ScrollView showsVerticalScrollIndicator={false} style={{width: '100%', height: height-250}}>
+                              <ScrollView 
+                                showsVerticalScrollIndicator={false} 
+                                style={{width: '100%', height: height-250}}
+                                /*refreshControl={
+                                  <RefreshControl
+                                    refreshing={isRefreshing}
+                                    onRefresh={handleRefresh}
+                                    // progressViewOffset={} // 이 속성을 사용하여 새로고침 진행 표시기 위치를 조정할 수 있습니다.
+                                    // size={} // 새로고침 진행 표시기의 크기를 조정할 수 있습니다.
+                                    // tintColor={} // 새로고침 진행 표시기의 색상을 변경할 수 있습니다.
+                                    title={'새로고침'} // 새로고침 진행 표시기 아래에 표시될 텍스트를 설정할 수 있습니다.
+                                  >
+                                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', zIndex: 10, position: 'absolute', top: 0, }}>
+                                      {isRefreshing && <ActivityIndicator size="large" color="#0000ff" />}
+                                      {isRefreshing && <Text>새로고침 중...</Text>}
+                                    </View>
+                                  </RefreshControl>
+                                }*/>
+
                                 <View style={_styles.imageWarpper}>
                                   <FlatList
-                                    style={_styles.itemWrap}
+                                    //style={_styles.itemWrap}
+                                    contentContainerStyle={_styles.itemWrap}
                                     data={item.data}
                                     keyExtractor={(item, index) => index.toString()}
-                                    horizontal
-                                    initialNumToRender={200}
-                                    //maxToRenderPerBatch={200}
-                                    //windowSize={100}
+                                    //numColumns={2} // 2열로 표시하도록 설정
+                                    //initialNumToRender={6}
+                                    //maxToRenderPerBatch={6}
+                                    //windowSize={10}
                                     removeClippedSubviews={true}
                                     getItemLayout={(data, index) => (
-                                      {length: (width - 54) / 2, offset: (width - 54) / 2 * index, index}
+                                      {
+                                          length: (width - 54) / 2,
+                                          offset: ((width - 54) / 2) * index,
+                                          index
+                                      }
                                     )}
                                     renderItem={({ item: innerItem, index: innerIndex }) => {
                                       return (
                                         <View key={index}>
-                                          <RenderItem item={innerItem} index={innerIndex} type={type} tabColor={color} />
+                                          <StorageRenderItem item={innerItem} index={innerIndex} type={type} tabColor={color} />
                                         </View>
                                       )
                                     }}
@@ -993,12 +956,12 @@ export const Storage = (props: Props) => {
 
                   <ScrollView style={{maxHeight: 100}} showsVerticalScrollIndicator={false}>
                     <Text style={_styles.openPopupMessageText}>"{profileOpenData.message}"</Text>
-                  </ScrollView>                  
+                  </ScrollView>
                 </SpaceView>
               )}
 
               <SpaceView mt={7} viewStyle={_styles.openPopupDescArea}>
-                <Text style={_styles.openPopupDescText}>패스를 소모하여 관심을 보내시겠습니까?</Text>
+                <Text style={_styles.openPopupDescText}>상대방의 프로필을 열람 하시겠습니까?</Text>
                 <SpaceView mt={5} viewStyle={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
                   <Image style={styles.iconSquareSize(25)} source={ICON.passCircle} resizeMode={'contain'} />
                   <Text style={_styles.openPopupDescIcon}>X 15</Text>
@@ -1036,10 +999,6 @@ export const Storage = (props: Props) => {
 
 const _styles = StyleSheet.create({
   root: {
-    //flex: 1,
-    /* flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start', */
     backgroundColor: 'white',
     height: height,
     width: width,
@@ -1048,7 +1007,7 @@ const _styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     width: '100%',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
   },
   topContainer: {
     marginHorizontal: 24,
@@ -1084,13 +1043,13 @@ const _styles = StyleSheet.create({
     alignItems: `center`,
     justifyContent: 'space-between',
     flexWrap: 'wrap',
-    paddingHorizontal: 21,
+    width: '100%',
+    //paddingHorizontal: 21,
+    paddingLeft: 21,
   },
-
   renderItemContainer: {
     width: (width - 54) / 2,
     height: (width - 54) / 2,
-    marginBottom: 12,
     borderRadius: 15,
     backgroundColor: '#000000',
     borderWidth: 1,
@@ -1219,52 +1178,6 @@ const _styles = StyleSheet.create({
     paddingVertical: 2,
     borderRadius: 15,
     overflow: 'hidden',
-  },
-  whiteText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 8,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#ffffff',
-  },
-  yellowText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 8,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#FDFFD8',
-  },
-  authBadgeImg: {
-    marginLeft: -5,
-    marginRight: -2,
-    marginTop: -2
-  },
-  authBadgeImg02: {
-    marginLeft: -9,
-    marginRight: 0,
-    marginTop: -3
-  },
-  scoreBadge: {
-    width: 36,
-    height: 14,
-    borderRadius: 5,
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: `space-between`,
-    paddingHorizontal: 3,
-  },
-  authBadge: {
-    width: 40,
-    height: 14,
-    borderRadius: 5,
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: `center`,
-    marginRight: 5,
   },
   liveTabArea: {
     flexDirection: 'row',
