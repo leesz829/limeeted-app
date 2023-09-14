@@ -91,6 +91,7 @@ export const StorageProfile = (props: Props) => {
     interview_list: [],
     report_code_list: [],
     interest_list: [],
+    use_item: {},
   });
 
   // 신고목록
@@ -200,6 +201,7 @@ export const StorageProfile = (props: Props) => {
             interview_list: data?.interview_list,
             interest_list: data?.interest_list,
             report_code_list: data?.report_code_list,
+            use_item: data?.use_item,
           });
 
           // 튜토리얼 팝업 노출
@@ -394,35 +396,8 @@ export const StorageProfile = (props: Props) => {
     if (activeType == 'interest') {
       setInterestSendModalVisible(true);
 
-      /* let title = '관심 보내기';
-      let content = '패스를 소모하여 관심을 보내시겠습니까?\n패스 x15';
-
-      // 관심 자유이용권 사용시
-      if(typeof data.use_item != 'undefined' && typeof data.use_item.FREE_LIKE != 'undefined') {
-        let endDt = data?.use_item?.FREE_LIKE?.end_dt;
-        if(endDt > formatNowDate()) {
-          title = '관심 보내기';
-          content = '관심 보내기 자유이용권 사용중\n패스 소모없이 관심을 보냅니다.';
-        } else {
-          title = '부스팅 만료';
-          content = '관심 보내기 자유이용권(1일) 아이템의 구독기간이 만료된 상태입니다.\n패스 15개가 소모됩니다.';
-        }
-      }
-
-      show({
-				title: title,
-				content: content,
-        cancelCallback: function() {
-
-        },
-				confirmCallback: function() {
-          insertMatchInfo(activeType, 0);
-				}
-			}); */
-
     } else if (activeType == 'sincere') {
       setSincereSendModalVisible(true);
-      //setSincereModalVisible(true);
 
     } else if (activeType == 'pass') {
       //navigation.goBack();
@@ -434,7 +409,7 @@ export const StorageProfile = (props: Props) => {
 
         },
 				confirmCallback: function() {
-          insertMatchInfo(activeType, 0);
+          insertMatchInfo(activeType, 0, '');
 				}
 			});
     }
@@ -558,7 +533,7 @@ export const StorageProfile = (props: Props) => {
                   <Image source={ICON.passCircle} style={_styles.largeButton} />
 
                   {/* 부스터 아이템  */}
-                  {data?.use_item != null && data?.use_item?.FREE_LIKE && data?.use_item?.FREE_LIKE?.use_yn == 'Y' &&
+                  {isEmptyData(data?.use_item) && isEmptyData(data?.use_item?.FREE_LIKE) && data?.use_item?.FREE_LIKE?.use_yn == 'Y' &&
                     <View style={_styles.freePassBage}>
                       <Text style={_styles.freePassText}>자유이용권 ON</Text>
                     </View>
@@ -818,6 +793,7 @@ export const StorageProfile = (props: Props) => {
           isVisible={interestSendModalVisible}
           closeModal={interestSendCloseModal}
           confirmFunc={interestSend}
+          useItem={data?.use_item}
         />
 
         {/* ##################################################################################
@@ -945,12 +921,11 @@ const _styles = StyleSheet.create({
   },
   freePassBage: {
     position: 'absolute',
-    bottom: 20,
+    bottom: 10,
     borderRadius: 11,
     backgroundColor: '#ffffff',
-    borderStyle: 'solid',
     borderWidth: 1,
-    borderColor: '#ef486d',
+    borderColor: '#7986EE',
     paddingHorizontal: 6,
     paddingVertical: 2,
   },
@@ -959,7 +934,7 @@ const _styles = StyleSheet.create({
     fontSize: 11,
     letterSpacing: 0,
     textAlign: 'left',
-    color: '#ed4771',
+    color: '#7986EE',
   },
   authNoDataArea: {
     width: '100%',

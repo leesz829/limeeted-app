@@ -25,7 +25,7 @@ import { useDispatch } from 'react-redux';
 import { myProfile } from 'redux/reducers/authReducer';
 import { findSourcePath, ICON, IMAGE, GIF_IMG } from 'utils/imageUtils';
 import ProfileAuth from 'component/ProfileAuth';
-import { formatNowDate} from 'utils/functions';
+import { formatNowDate, isEmptyData} from 'utils/functions';
 import VisualImage from 'component/match/VisualImage';
 import ProfileActive from 'component/match/ProfileActive';
 import InterviewRender from 'component/match/InterviewRender';
@@ -192,36 +192,9 @@ export default function ItemMatching(props: Props) {
     if (activeType == 'interest') {
       setInterestSendModalVisible(true);
 
-      /* let title = '관심 보내기';
-      let content = '패스를 소모하여 관심을 보내시겠습니까?\n패스 x15';
-
-      // 관심 자유이용권 사용시
-      if(typeof data.use_item != 'undefined' && typeof data.use_item.FREE_LIKE != 'undefined') {
-        let endDt = data?.use_item?.FREE_LIKE?.end_dt;
-        if(endDt > formatNowDate()) {
-          title = '관심 보내기';
-          content = '관심 보내기 자유이용권 사용중\n패스 소모없이 관심을 보냅니다.';
-        } else {
-          title = '부스팅 만료';
-          content = '관심 보내기 자유이용권(1일) 아이템의 구독기간이 만료된 상태입니다.\n패스 15개가 소모됩니다.';
-        }
-      }
-
-      show({
-				title: title,
-				content: content,
-        cancelCallback: function() {
-
-        },
-				confirmCallback: function() {
-          insertMatchInfo(activeType, 0);
-				}
-			}); */
-
     } else if (activeType == 'sincere') {
       setSincereSendModalVisible(true);
-      //setSincereModalVisible(true);
-      
+
     } else if (activeType == 'pass') {
       show({
 				title: '매칭 취소',
@@ -230,7 +203,7 @@ export default function ItemMatching(props: Props) {
 
         },
 				confirmCallback: function() {
-          insertMatchInfo(activeType, 0);
+          insertMatchInfo(activeType, 0, '');
 				}
 			});
     
@@ -245,7 +218,7 @@ export default function ItemMatching(props: Props) {
             content: '찜하기 이용권 아이템의 구독기간이 만료된 상태입니다.',
           });
         } else {
-          insertMatchInfo(activeType, 0);
+          insertMatchInfo(activeType, 0, '');
         }
       }
     }
@@ -434,7 +407,7 @@ export default function ItemMatching(props: Props) {
                   <Image source={ICON.passCircle} style={_styles.largeButton} />
 
                   {/* ############ 부스터 아이템  */}
-                  {data?.use_item != null && data?.use_item?.FREE_LIKE && data?.use_item?.FREE_LIKE?.use_yn == 'Y' &&
+                  {isEmptyData(data?.use_item) && isEmptyData(data?.use_item?.FREE_LIKE) && data?.use_item?.FREE_LIKE?.use_yn == 'Y' &&
                     <View style={_styles.freePassBage}>
                       <Text style={_styles.freePassText}>자유이용권 ON</Text>
                     </View>
@@ -580,6 +553,7 @@ export default function ItemMatching(props: Props) {
           isVisible={interestSendModalVisible}
           closeModal={interestSendCloseModal}
           confirmFunc={interestSend}
+          useItem={data?.use_item}
         />
 
         {/* ##################################################################################
@@ -689,23 +663,20 @@ const _styles = StyleSheet.create({
   },
   freePassBage: {
     position: 'absolute',
-    bottom: 20,
+    bottom: 10,
     borderRadius: 11,
     backgroundColor: '#ffffff',
-    borderStyle: 'solid',
     borderWidth: 1,
-    borderColor: '#ef486d',
+    borderColor: '#7986EE',
     paddingHorizontal: 6,
     paddingVertical: 2,
   },
   freePassText: {
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 11,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     letterSpacing: 0,
     textAlign: 'left',
-    color: '#ed4771',
+    color: '#7986EE',
   },
   padding: {
     paddingHorizontal: 20,

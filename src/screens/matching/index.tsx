@@ -35,7 +35,7 @@ import { MatchSearch } from 'screens/matching/MatchSearch';
 import { findSourcePath, ICON, IMAGE, GUIDE_IMAGE, GIF_IMG } from 'utils/imageUtils';
 import { Slider } from '@miblanchard/react-native-slider';
 import ProfileAuth from 'component/ProfileAuth';
-import { formatNowDate} from 'utils/functions';
+import { formatNowDate, isEmptyData } from 'utils/functions';
 import { Watermark } from 'component/Watermark';
 import InterestSendPopup from 'screens/commonpopup/InterestSendPopup';
 import SincereSendPopup from 'screens/commonpopup/SincereSendPopup';
@@ -46,7 +46,6 @@ import AddInfo from 'component/match/AddInfo';
 import ProfileActive from 'component/match/ProfileActive';
 import InterviewRender from 'component/match/InterviewRender';
 import MemberIntro from 'component/match/MemberIntro';
-import { isEmptyData } from 'utils/functions';
 import { ROUTES, STACK } from 'constants/routes';
 import AsyncStorage from '@react-native-community/async-storage';
 import { clearPrincipal } from 'redux/reducers/authReducer';
@@ -280,9 +279,7 @@ export default function Matching(props: Props) {
 				}
 			}); */
     } else if (activeType == 'sincere') {
-
       setSincereSendModalVisible(true);
-      //setSincereModalVisible(true);
 
     } else if (activeType == 'pass') {
       show({
@@ -597,7 +594,7 @@ export default function Matching(props: Props) {
                   <Image source={ICON.passCircle} style={_styles.largeButton} />
 
                   {/* 부스터 아이템  */}
-                  {matchData?.use_item != null && matchData?.use_item?.FREE_LIKE && matchData?.use_item?.FREE_LIKE?.use_yn == 'Y' &&
+                  {isEmptyData(matchData?.use_item) && isEmptyData(matchData?.use_item?.FREE_LIKE) && matchData?.use_item?.FREE_LIKE?.use_yn == 'Y' &&
                     <View style={_styles.freePassBage}>
                       <Text style={_styles.freePassText}>자유이용권 ON</Text>
                     </View>
@@ -744,6 +741,7 @@ export default function Matching(props: Props) {
           isVisible={interestSendModalVisible}
           closeModal={interestSendCloseModal}
           confirmFunc={interestSend}
+          useItem={matchData?.use_item}
         />
 
         {/* ##################################################################################
@@ -1043,23 +1041,20 @@ const _styles = StyleSheet.create({
   },
   freePassBage: {
     position: 'absolute',
-    bottom: 20,
+    bottom: 10,
     borderRadius: 11,
     backgroundColor: '#ffffff',
-    borderStyle: 'solid',
     borderWidth: 1,
-    borderColor: '#ef486d',
+    borderColor: '#7986EE',
     paddingHorizontal: 6,
     paddingVertical: 2,
   },
   freePassText: {
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 11,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     letterSpacing: 0,
     textAlign: 'left',
-    color: '#ed4771',
+    color: '#7986EE',
   },
   padding: {
     paddingHorizontal: 20,

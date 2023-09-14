@@ -9,6 +9,7 @@ import { useUserInfo } from 'hooks/useUserInfo';
 import { CommonTextarea } from 'component/CommonTextarea';
 import SpaceView from 'component/SpaceView';
 import { commonStyle, styles } from 'assets/styles/Styles';
+import { isEmptyData, formatNowDate } from 'utils/functions';
 
 
 const { width } = Dimensions.get('window');
@@ -17,14 +18,25 @@ interface Props {
   isVisible: boolean;
   closeModal: () => void;
   confirmFunc: (level:number) => void;
+  useItem: undefined;
 }
 
-export default function InterestSendPopup({ isVisible, closeModal, confirmFunc }: Props) {
+export default function InterestSendPopup({ isVisible, closeModal, confirmFunc, useItem }: Props) {
   const memberBase = useUserInfo(); // 회원 기본정보
-
   const [message, setMessage] = React.useState(''); // 메시지
-
   const [currentIndex, setCurrentIndex] = React.useState(0);
+
+  // 자유이용권 아이템 사용 여부
+  const [isFreeItemUse, setIsFreeItemUse] = React.useState(function() {
+    let result = false;
+    if(isEmptyData(useItem) && isEmptyData(useItem?.FREE_LIKE)) {
+      let endDt = useItem?.FREE_LIKE?.end_dt;
+      if(endDt > formatNowDate()) {
+        result = true;
+      }
+    };
+    return result;
+  });
 
   return (
     <Modal isVisible={isVisible} onRequestClose={() => { closeModal(); }}>
@@ -41,15 +53,6 @@ export default function InterestSendPopup({ isVisible, closeModal, confirmFunc }
         </View>
         
         <View style={_styles.contentBody}>
-
-          {/* <SpaceView mt={15} mb={15} viewStyle={_styles.infoArea}>
-            <Text style={_styles.infoText}>패스를 소모하여 관심을 보내시겠습니까?</Text>
-            <SpaceView mt={5} viewStyle={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-              <Image style={styles.iconSquareSize(25)} source={ICON.passCircle} resizeMode={'contain'} />
-              <Text style={_styles.infoSubText}>패스 15</Text>
-            </SpaceView>
-          </SpaceView> */}
-
           <SpaceView viewStyle={_styles.messageArea}>
             <TextInput
               value={message}
@@ -74,7 +77,9 @@ export default function InterestSendPopup({ isVisible, closeModal, confirmFunc }
               confirmFunc(message);
             }}>
 
-            <Text style={_styles.allButtonText}>패스 15개로 관심 보내기</Text>
+            <Text style={_styles.allButtonText}>
+              {!isFreeItemUse ? '패스 15개로 ' : ''}관심 보내기
+            </Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
