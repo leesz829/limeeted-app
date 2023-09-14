@@ -39,10 +39,12 @@ import LinearGradient from 'react-native-linear-gradient';
 import { Rating, AirbnbRating } from 'react-native-ratings';
 import Contacts from 'react-native-contacts';
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
-import { isEmptyData } from 'utils/functions';
+import { isEmptyData, formatNowDate } from 'utils/functions';
 import { CommonLoading } from 'component/CommonLoading';
 import { CommaFormat } from 'utils/functions';
 import { clearPrincipal } from 'redux/reducers/authReducer';
+import { NoticePopup } from 'screens/commonpopup/NoticePopup';
+import AsyncStorage from '@react-native-community/async-storage';
 
 
 
@@ -71,6 +73,10 @@ export const Roby = (props: Props) => {
   // 클릭 여부
   const [isClickable, setIsClickable] = useState(true);
 
+  // 공지사항 팝업
+  const [noticePopupVisible, setNoticePopupVisible] = useState(false);
+  const [noticeList, setNoticeList] = useState([]);
+
   // 회원 기본 정보
   const memberBase = useUserInfo(); //hooksMember.getBase();
   const mbrProfileImgList = useProfileImg();
@@ -98,6 +104,18 @@ export const Roby = (props: Props) => {
           }));
           setResLikeList(data.res_like_list);
           setMatchTrgtList(data.match_trgt_list);
+
+          // 공지사항 팝업 노출
+          /* let nowDt = formatNowDate().substring(0, 8);
+          let endDt = await AsyncStorage.getItem('POPUP_ENDDT_NOTICE');
+
+          if(null == endDt || endDt < nowDt) {
+            if(data.popup_bas_list?.length > 0 && isEmptyData(data.popup_bas_list[0]?.popup_detail) && data.popup_bas_list[0]?.popup_detail.length > 0) {
+              setNoticeList(data.popup_bas_list[0]?.popup_detail);
+              setNoticePopupVisible(true);
+            }
+          }; */
+
         } else {
           show({
             content: '오류입니다. 관리자에게 문의해주세요.',
@@ -1014,6 +1032,17 @@ export const Roby = (props: Props) => {
           </SpaceView>
         </View>
       </Modalize>
+
+
+      {/* ###############################################
+                     공지사항 팝업
+      ############################################### */}
+      <NoticePopup
+        popupVisible={noticePopupVisible}
+        setPopupVIsible={setNoticePopupVisible}
+        noticeList={noticeList}
+        //etcCallbackFunc={contents.etcCallback}
+      />
     </>
   );
 };

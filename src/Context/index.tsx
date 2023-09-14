@@ -3,6 +3,7 @@ import { BasePopup } from 'screens/commonpopup/BasePopup';
 import { GuidePopup } from 'screens/commonpopup/GuidePopup';
 import { EventPopup } from 'screens/commonpopup/EventPopup';
 import { ResponsivePopup } from 'screens/commonpopup/ResponsivePopup';
+import { PromotionPopup } from 'screens/commonpopup/PromotionPopup';
 
 export const PopupContext = createContext({} as any);
 
@@ -23,6 +24,7 @@ interface PopupContextProps {
   eventPopupList: any | undefined; // 이벤트 목록
   etcCallback: Function | undefined; // 기타 콜백 함수
   popupDuration: any | undefined; // 팝업 지속 시간
+  prodList: any | undefined; // 상품 목록
 }
 
 export const PopupProvider = ({ children }: any) => {
@@ -45,6 +47,7 @@ export const PopupProvider = ({ children }: any) => {
     eventPopupList: [],
     etcCallback: undefined,
     popupDuration: undefined,
+    prodList: [],
   });
 
   function show(content: PopupContextProps) {
@@ -75,6 +78,7 @@ export const PopupProvider = ({ children }: any) => {
       eventPopupList: [],
       etcCallback: undefined,
       popupDuration: undefined,
+      prodList: [],
     });
   }
 
@@ -107,6 +111,14 @@ export const PopupProvider = ({ children }: any) => {
           text={contents.content}
           subText={contents.subContent}
           duration={contents.popupDuration}
+        />
+      ) : contents.type == 'PROMOTION' ? (
+        <PromotionPopup
+          popupVisible={visible}
+          setPopupVIsible={setVisible}
+          confirmCallbackFunc={contents.confirmCallback}
+          prodList={contents.prodList}
+          etcCallbackFunc={contents.etcCallback}
         />
       ) : (
         <BasePopup
