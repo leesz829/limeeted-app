@@ -32,7 +32,7 @@ import InterviewRender from 'component/match/InterviewRender';
 import InterestSendPopup from 'screens/commonpopup/InterestSendPopup';
 import SincereSendPopup from 'screens/commonpopup/SincereSendPopup';
 import MemberIntro from 'component/match/MemberIntro';
-import AuthPick from 'component/match/AuthPick';
+import AuthPickRender from 'component/match/AuthPickRender';
 
 
 
@@ -590,7 +590,7 @@ export default function ItemMatching(props: Props) {
                     인증 Pick
         ################################################################################## */}
         {data?.match_member_info?.auth_acct_cnt >= 5 && (
-          <AuthPick _authLevel={data?.match_member_info?.auth_acct_cnt} _authList={data?.second_auth_list}  />
+          <AuthPickRender _authLevel={data?.match_member_info?.auth_acct_cnt} _authList={data?.second_auth_list}  />
         )}
 
       </>
