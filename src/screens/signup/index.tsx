@@ -29,6 +29,7 @@ export const Signup00 = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
 
   const { show } = usePopup();  // 공통 팝업
+  const [isClickable, setIsClickable] = React.useState(true); // 클릭 여부
 
   const memberSeq = props.route.params?.memberSeq;
   const orgEmailId = props.route.params?.emailId;
@@ -190,71 +191,77 @@ export const Signup00 = (props: Props) => {
 
   // ########################################################### 회원가입
   const saveRegistMember = async () => {
-    const body = {
-      email_id: id,
-      password: password,
-      name: name,
-      gender: gender,
-      phone_number: mobile,
-      ci: ci,
-      birthday: birthday,
-      snsType: snsType,
-      snsToken: snsToken,
-      device_gubun: Platform.OS,
-      marketing_agree_yn: mrktAgreeYn,
-    };
 
-    try {
-      const { success, data } = await regist_member_base_info(body);
-      if(success) {
-        switch (data.result_code) {
-          case SUCCESS:  
-            navigation.reset({
-              routes: [
-                {
-                  name : ROUTES.LOGIN01
-                },
-                {
-                  name: ROUTES.SIGNUP00,
-                  params: {
-                    ci: ci,
-                    name: name,
-                    gender: gender,
-                    mobile: mobile,
-                    birthday: birthday,
-                    memberSeq: data.member_seq,
-                    emailId: id
-                  }
-                },
-                {
-                  name: ROUTES.SIGNUP01,
-                  params: {
-                    memberSeq: data.member_seq,
-                    gender: gender,
-                  }
-                }
-              ]
-            });
+    // 중복 클릭 방지 설정
+    if(isClickable) {
+      setIsClickable(false);
 
-            break;
-          case MEMBER_EMAIL_DUP:
-            show({ content: '이미 사용하고 있는 이메일 입니다.' });
-            break;
-          default:
-            show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-            break;
+      const body = {
+        email_id: id,
+        password: password,
+        name: name,
+        gender: gender,
+        phone_number: mobile,
+        ci: ci,
+        birthday: birthday,
+        snsType: snsType,
+        snsToken: snsToken,
+        device_gubun: Platform.OS,
+        marketing_agree_yn: mrktAgreeYn,
+      };
+  
+      try {
+        const { success, data } = await regist_member_base_info(body);
+        if(success) {
+          switch (data.result_code) {
+            case SUCCESS:  
+              navigation.reset({
+                routes: [
+                  {
+                    name : ROUTES.LOGIN01
+                  },
+                  {
+                    name: ROUTES.SIGNUP00,
+                    params: {
+                      ci: ci,
+                      name: name,
+                      gender: gender,
+                      mobile: mobile,
+                      birthday: birthday,
+                      memberSeq: data.member_seq,
+                      emailId: id
+                    }
+                  },
+                  {
+                    name: ROUTES.SIGNUP01,
+                    params: {
+                      memberSeq: data.member_seq,
+                      gender: gender,
+                    }
+                  }
+                ]
+              });
+  
+              break;
+            case MEMBER_EMAIL_DUP:
+              show({ content: '이미 사용하고 있는 이메일 입니다.' });
+              break;
+            default:
+              show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+              break;
+          }
+         
+        } else {
+          show({
+            content: '오류입니다. 관리자에게 문의해주세요.' ,
+            confirmCallback: function() {}
+          });
         }
-       
-      } else {
-        show({
-          content: '오류입니다. 관리자에게 문의해주세요.' ,
-          confirmCallback: function() {}
-        });
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsClickable(true);
       }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      
     }
   }
 

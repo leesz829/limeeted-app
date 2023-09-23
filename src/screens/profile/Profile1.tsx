@@ -492,15 +492,18 @@ export const Profile1 = (props: Props) => {
           member_img_seq,
           img_file_path,
           order_seq,
+          org_order_seq,
           status,
           return_reason,
         }: {
           member_img_seq: any;
           img_file_path: any;
           order_seq: any;
+          org_order_seq: any;
           status: any;
           return_reason: any;
         }) => {
+
           let data = {
             member_img_seq: member_img_seq,
             url: findSourcePath(img_file_path),
@@ -664,6 +667,40 @@ export const Profile1 = (props: Props) => {
     }
   };
 
+  // ############################################################################# 프로필 이미지 렌더링 아이템
+  const ProfileImageRenderItem = ({ index, _imgData, delFn, fileCallBackFn }) => {
+    const imgUrl = _imgData?.url;
+    const imgDelYn = _imgData?.delYn;
+    const imgStatus = _imgData?.status;
+  
+    return (
+      <View style={_styles.container}>
+        {isEmptyData(imgUrl) && imgDelYn == 'N' ? (
+          <TouchableOpacity onPress={() => { delFn(_imgData, index+1); }}>
+            <Image
+              resizeMode="cover"
+              resizeMethod="scale"
+              style={_styles.imageStyle}
+              key={imgUrl}
+              source={imgUrl}
+            />
+            {(imgStatus == 'PROGRESS' || imgStatus == 'REFUSE') ? (
+              <View style={_styles.imageDisabled(false)}>
+                <Text style={[_styles.profileImageDimText(imgStatus)]}>{imgStatus == 'PROGRESS' ? '심사중' : '반려'}</Text>
+              </View>
+            ) : (imgStatus == 'ACCEPT' && index == 0) && (
+              <View style={_styles.imageDisabled(true)}>
+                <Text style={[_styles.masterImageDimText]}>대표 사진</Text>
+              </View>
+            )}
+          </TouchableOpacity>
+        ) : (
+          <CommonImagePicker isAuth={false} callbackFn={fileCallBackFn} uriParam={''} />
+        )}
+      </View>
+    );
+  };
+
   // ############################################################################# 초기 실행 실행
   useFocusEffect(
     React.useCallback(() => {
@@ -718,12 +755,12 @@ export const Profile1 = (props: Props) => {
           {[0,1,2,3,4,5].map((i, index) => {
             return (
               <>
-                {index == 0 && <ProfileImageItem index={index} imgData={imgData.orgImgUrl01} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack1}  /> }
-                {index == 1 && <ProfileImageItem index={index} imgData={imgData.orgImgUrl02} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack2}  /> }
-                {index == 2 && <ProfileImageItem index={index} imgData={imgData.orgImgUrl03} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack3}  /> }
-                {index == 3 && <ProfileImageItem index={index} imgData={imgData.orgImgUrl04} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack4}  /> }
-                {index == 4 && <ProfileImageItem index={index} imgData={imgData.orgImgUrl05} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack5}  /> }
-                {index == 5 && <ProfileImageItem index={index} imgData={imgData.orgImgUrl06} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack6}  /> }
+                {index == 0 && <ProfileImageRenderItem index={index} _imgData={imgData.orgImgUrl01} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack1}  /> }
+                {index == 1 && <ProfileImageRenderItem index={index} _imgData={imgData.orgImgUrl02} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack2}  /> }
+                {index == 2 && <ProfileImageRenderItem index={index} _imgData={imgData.orgImgUrl03} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack3}  /> }
+                {index == 3 && <ProfileImageRenderItem index={index} _imgData={imgData.orgImgUrl04} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack4}  /> }
+                {index == 4 && <ProfileImageRenderItem index={index} _imgData={imgData.orgImgUrl05} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack5}  /> }
+                {index == 5 && <ProfileImageRenderItem index={index} _imgData={imgData.orgImgUrl06} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack6}  /> }
               </>
             )
           })}
@@ -992,45 +1029,6 @@ export const Profile1 = (props: Props) => {
 
 
 {/* #######################################################################################################
-###################### 프로필 이미지 렌더링
-####################################################################################################### */}
-
-function ProfileImageItem({ index, imgData, delFn, fileCallBackFn }) {
-  const imgUrl = imgData.url;
-  const imgDelYn = imgData.delYn;
-  const imgStatus = imgData.status;
-
-  return (
-    <View style={_styles.container}>
-      {isEmptyData(imgUrl) && imgDelYn == 'N' ? (
-        <TouchableOpacity onPress={() => { delFn(imgData, index+1); }}>
-          <Image
-            resizeMode="cover"
-            resizeMethod="scale"
-            style={_styles.imageStyle}
-            key={imgUrl}
-            source={imgUrl}
-          />
-          {(imgStatus == 'PROGRESS' || imgStatus == 'REFUSE') ? (
-            <View style={_styles.imageDisabled(false)}>
-              <Text style={[_styles.profileImageDimText(imgStatus)]}>{imgStatus == 'PROGRESS' ? '심사중' : '반려'}</Text>
-            </View>
-          ) : (imgStatus == 'ACCEPT' && index == 0) && (
-            <View style={_styles.imageDisabled(true)}>
-              <Text style={[_styles.masterImageDimText]}>대표 사진</Text>
-            </View>
-          )}
-        </TouchableOpacity>
-      ) : (
-        <CommonImagePicker isAuth={false} callbackFn={fileCallBackFn} uriParam={''} />
-      )}
-    </View>
-  );
-};
-
-
-
-{/* #######################################################################################################
 ###########################################################################################################
 ##################### Style 영역
 ###########################################################################################################
@@ -1040,9 +1038,6 @@ const _styles = StyleSheet.create({
   saveText: {
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 16,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0,
     textAlign: 'left',
     color: '#7986ee',
   },
@@ -1118,8 +1113,6 @@ const _styles = StyleSheet.create({
   title: {
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 19,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     lineHeight: 26,
     letterSpacing: 0,
     textAlign: 'left',
@@ -1167,8 +1160,6 @@ const _styles = StyleSheet.create({
     marginLeft: 10,
     fontFamily: 'AppleSDGothicNeoM00',
     fontSize: 16,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     lineHeight: 18,
     letterSpacing: 0,
     textAlign: 'left',

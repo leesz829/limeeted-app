@@ -39,6 +39,11 @@ import MyDailyView from 'screens/profile/MyDailyView';
 import EventDetail from 'screens/event/EventDetail';
 import { ProfileImageSetting } from 'screens/profile/ProfileImageSetting';
 
+import StoryRegi from 'screens/story/StoryRegi';
+import StoryEdit from 'screens/story/StoryEdit';
+import StoryDetail from 'screens/story/StoryDetail';
+import StoryActive from 'screens/story/StoryActive';
+
 const CommonStack = createStackNavigator<StackParamList>();
 
 const CommonNavigation = () => {
@@ -78,6 +83,10 @@ const CommonNavigation = () => {
       <CommonStack.Screen name="MyDailyView" component={MyDailyView} />
       <CommonStack.Screen name="EventDetail" component={EventDetail} />
       <CommonStack.Screen name="ProfileImageSetting" component={ProfileImageSetting} />
+      <CommonStack.Screen name="StoryRegi" component={StoryRegi} />
+      <CommonStack.Screen name="StoryEdit" component={StoryEdit} />
+      <CommonStack.Screen name="StoryDetail" component={StoryDetail} />
+      <CommonStack.Screen name="StoryActive" component={StoryActive} />
     </CommonStack.Navigator>
   );
 };

@@ -43,6 +43,7 @@ import { formatNowDate, isEmptyData} from 'utils/functions';
 import InterestSendPopup from 'screens/commonpopup/InterestSendPopup';
 import SincereSendPopup from 'screens/commonpopup/SincereSendPopup';
 import Clipboard from '@react-native-clipboard/clipboard';
+import AuthPick from 'component/match/AuthPick';
 
 
 
@@ -804,6 +805,14 @@ export const StorageProfile = (props: Props) => {
           closeModal={sincereSendCloseModal}
           confirmFunc={sincereSend}
         />
+
+        {/* ##################################################################################
+                    인증 Pick
+        ################################################################################## */}
+
+        {data?.match_member_info?.auth_acct_cnt >= 5 && (
+          <AuthPick _authLevel={data?.match_member_info?.auth_acct_cnt} _authList={data?.second_auth_list}  />
+        )}
 
     </>
   ) : null;
