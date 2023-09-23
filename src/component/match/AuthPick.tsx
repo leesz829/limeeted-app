@@ -92,7 +92,7 @@ export default function AuthPick({ _authLevel, _authList }) {
   });
 
 
-  // 애니메이션 실행 함수
+  // 애니메이션 실행 함수 적용
   const authPickAnimate = async () => {
     authPickAnimateCancel();
 
