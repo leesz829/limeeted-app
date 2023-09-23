@@ -164,6 +164,12 @@ export const ICON = {
   speakerIcon: require('assets/icon/speaker_icon.png'),
   bellIcon: require('assets/icon/bell_icon.png'),
   nextArrowIcon: require('assets/icon/next_arrow_icon.png'),
+  celebrityIcon01: require('assets/icon/celebrity_icon01.png'),
+  celebrityIcon02: require('assets/icon/celebrity_icon02.png'),
+  celebrityIcon03: require('assets/icon/celebrity_icon03.png'),
+  celebrityIcon04: require('assets/icon/celebrity_icon04.png'),
+  celebrityIcon05: require('assets/icon/celebrity_icon05.png'),
+  celebrityIcon06: require('assets/icon/celebrity_icon06.png'),
 };
 
 export const GIF_IMG = {
