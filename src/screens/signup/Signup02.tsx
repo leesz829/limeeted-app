@@ -44,6 +44,7 @@ export const Signup02 = (props: Props) => {
   const isFocus = useIsFocused();
   const { show } = usePopup(); // 공통 팝업
   const [isLoading, setIsLoading] = React.useState(false);
+  const [isClickable, setIsClickable] = React.useState(true); // 클릭 여부
 
   const [profileImageList, setProfileImageList] = React.useState([]); // 프로필 이미지 목록
 
@@ -345,41 +346,46 @@ export const Signup02 = (props: Props) => {
       return;
     };
 
-    setIsLoading(true);
+    // 중복 클릭 방지 설정
+    if(isClickable) {
+      setIsClickable(false);
+      setIsLoading(true);
 
-    const body = {
-      member_seq: props.route.params.memberSeq,
-      file_list: profileImageList,
-      img_del_seq_str: imgDelSeqStr,
-    };
-    try {
-      const { success, data } = await regist_profile_image(body);
-      if (success) {
-        switch (data.result_code) {
-          case SUCCESS:
-            navigation.navigate(ROUTES.SIGNUP03, {
-              memberSeq: props.route.params.memberSeq,
-              gender: props.route.params.gender,
-              mstImgPath: data.mst_img_path,
-            });
-            break;
-          default:
-            show({
-              content: '오류입니다. 관리자에게 문의해주세요.',
-              confirmCallback: function () {},
-            });
-            break;
+      const body = {
+        member_seq: props.route.params.memberSeq,
+        file_list: profileImageList,
+        img_del_seq_str: imgDelSeqStr,
+      };
+      try {
+        const { success, data } = await regist_profile_image(body);
+        if (success) {
+          switch (data.result_code) {
+            case SUCCESS:
+              navigation.navigate(ROUTES.SIGNUP03, {
+                memberSeq: props.route.params.memberSeq,
+                gender: props.route.params.gender,
+                mstImgPath: data.mst_img_path,
+              });
+              break;
+            default:
+              show({
+                content: '오류입니다. 관리자에게 문의해주세요.',
+                confirmCallback: function () {},
+              });
+              break;
+          }
+        } else {
+          show({
+            content: '오류입니다. 관리자에게 문의해주세요.',
+            confirmCallback: function () {},
+          });
         }
-      } else {
-        show({
-          content: '오류입니다. 관리자에게 문의해주세요.',
-          confirmCallback: function () {},
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsClickable(true);
+        setIsLoading(false);
+      };
     }
   };
 

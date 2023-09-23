@@ -44,6 +44,7 @@ export const Signup03 = (props : Props) => {
 	const { show } = usePopup();  // 공통 팝업
 	const isFocus = useIsFocused();
 	const [isLoading, setIsLoading] = React.useState(false);
+	const [isClickable, setIsClickable] = React.useState(true); // 클릭 여부
 
 	const [nickname, setNickname] = React.useState('');	// 닉네임
 	const [comment, setComment] = React.useState(''); // 한줄 소개
@@ -87,58 +88,63 @@ export const Signup03 = (props : Props) => {
 			return;
 		}
 
-		const body = {
-			member_seq: props.route.params.memberSeq,
-			nickname: nickname,
-			comment: comment,
-			interest_list: checkIntList,
-			introduce_comment: introduceComment,
-		};
+		// 중복 클릭 방지 설정
+		if(isClickable) {
+			setIsClickable(false);
+			setIsLoading(true);
 
-		setIsLoading(true);
-
-		try {
-			const { success, data } = await regist_introduce(body);
-			if(success) {
-				switch (data.result_code) {
-					case SUCCESS:
-						navigation.reset({
-							routes: [
-								{
-									name : ROUTES.LOGIN01
-								}
-								, {
-									name: ROUTES.APPROVAL
-									, params: {
-										memberSeq: props.route.params.memberSeq,
+			const body = {
+				member_seq: props.route.params.memberSeq,
+				nickname: nickname,
+				comment: comment,
+				interest_list: checkIntList,
+				introduce_comment: introduceComment,
+			};
+	
+			try {
+				const { success, data } = await regist_introduce(body);
+				if(success) {
+					switch (data.result_code) {
+						case SUCCESS:
+							navigation.reset({
+								routes: [
+									{
+										name : ROUTES.LOGIN01
 									}
-								}
-							]
-						});
-						break;
-					case MEMBER_NICKNAME_DUP: 
-						show({
-							content: '이미 사용하고 있는 닉네임 입니다.' ,
-						});
-						break;
-
-					default:
-						show({
-							content: '오류입니다. 관리자에게 문의해주세요.' ,
-							confirmCallback: function() {}
-						});
-						break;
-					}
-			} else {
-				show({
-					content: '오류입니다. 관리자에게 문의해주세요.' ,
-					confirmCallback: function() {}
-				});
+									, {
+										name: ROUTES.APPROVAL
+										, params: {
+											memberSeq: props.route.params.memberSeq,
+										}
+									}
+								]
+							});
+							break;
+						case MEMBER_NICKNAME_DUP: 
+							show({
+								content: '이미 사용하고 있는 닉네임 입니다.' ,
+							});
+							break;
+	
+						default:
+							show({
+								content: '오류입니다. 관리자에게 문의해주세요.' ,
+								confirmCallback: function() {}
+							});
+							break;
+						}
+				} else {
+					show({
+						content: '오류입니다. 관리자에게 문의해주세요.' ,
+						confirmCallback: function() {}
+					});
+				}
+			} catch (error) {
+				console.log(error);
+			} finally {
+				setIsClickable(true);
+				setIsLoading(false);
 			}
-		} catch (error) {
-			console.log(error);
-		} finally {
-			setIsLoading(false);
 		}
 	}
 
