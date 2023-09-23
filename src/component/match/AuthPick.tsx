@@ -102,7 +102,7 @@ export default function AuthPick({ _authLevel, _authList }) {
     wrapOpacityValue.value = withDelay(500, withTiming(1, { duration: 300 }));
 
     //wrapTopValue.value = withDelay(500, withSpring(100, { damping: 15, stiffness: 180 }));
-    //wrapOpacityValue.value = withDelay(500, withTiming(1, { duration: 300 })); 
+    //wrapOpacityValue.value = withDelay(500, withTiming(1, { duration: 300 }));  
 
     wrapTopValue.value = withSequence(
       withDelay(500, withSpring(100, { damping: 15, stiffness: 180 })),
