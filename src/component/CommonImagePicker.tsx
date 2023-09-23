@@ -91,7 +91,7 @@ export const CommonImagePicker: FC<Props> = (props) => {
         setImgPath('');
       };
     }, []),
-  );
+  ); 
 
 
   return (
