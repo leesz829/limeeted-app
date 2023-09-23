@@ -106,7 +106,7 @@ export const Roby = (props: Props) => {
           setMatchTrgtList(data.match_trgt_list);
 
           // 공지사항 팝업 노출
-          /* let nowDt = formatNowDate().substring(0, 8);
+          let nowDt = formatNowDate().substring(0, 8);
           let endDt = await AsyncStorage.getItem('POPUP_ENDDT_NOTICE');
 
           if(null == endDt || endDt < nowDt) {
@@ -114,7 +114,7 @@ export const Roby = (props: Props) => {
               setNoticeList(data.popup_bas_list[0]?.popup_detail);
               setNoticePopupVisible(true);
             }
-          }; */
+          };
 
         } else {
           show({
