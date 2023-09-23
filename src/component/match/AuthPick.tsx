@@ -97,16 +97,26 @@ export default function AuthPick({ _authLevel, _authList }) {
     authPickAnimateCancel();
 
     //wrapTopValue.value = withDelay(500, withTiming(100, { duration: 800 }));
-    wrapTopValue.value = withDelay(500, withSpring(100, { damping: 15, stiffness: 180 }));
-    wrapOpacityValue.value = withDelay(500, withTiming(1, { duration: 300 }));
+    //wrapTopValue.value = withDelay(500, withSpring(100, { damping: 15, stiffness: 180 }));
+    //wrapOpacityValue.value = withDelay(500, withTiming(1, { duration: 300 }));
+
+    wrapTopValue.value = withSequence(
+      withDelay(500, withSpring(100, { damping: 15, stiffness: 180 })),
+      withDelay(4500, withTiming(-100, { duration: 300 })),
+    );
+
+    wrapOpacityValue.value = withSequence(
+      withDelay(500, withTiming(1, { duration: 300 })),
+      withDelay(4500, withTiming(1, { duration: 800 })),
+    );
 
     topBaseOpacityValue.value = withDelay(1300, withTiming(0, { duration: 300 }));
     topMainOpacityValue.value = withDelay(1300, withTiming(1, { duration: 300 }));
 
     bottomAuthOpacityValue.value = withDelay(1800, withTiming(1, { duration: 800 }));
 
-    wrapOpacityValue.value = withDelay(4500, withTiming(0, { duration: 800 }));
-    wrapTopValue.value = withDelay(4500, withTiming(-100, { duration: 300 }));
+    //wrapOpacityValue.value = withDelay(4500, withTiming(0, { duration: 800 }));
+    //wrapTopValue.value = withDelay(4500, withTiming(-100, { duration: 300 }));
 
     /* wrapTopValue.value = withSequence(
       withDelay(1000, withTiming(100, { duration: 500 })),
@@ -334,9 +344,9 @@ const _styles = StyleSheet.create({
     fontSize: 10,
     color: '#fff',
     backgroundColor: '#7986EE',
-    width: 45,
+    width: 48,
     textAlign: 'center',
-    borderRadius: 15,
+    borderRadius: 8,
     overflow: 'hidden',
     marginTop: 5,
   },
