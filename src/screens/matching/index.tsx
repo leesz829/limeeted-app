@@ -50,6 +50,7 @@ import { ROUTES, STACK } from 'constants/routes';
 import AsyncStorage from '@react-native-community/async-storage';
 import { clearPrincipal } from 'redux/reducers/authReducer';
 import { JWT_TOKEN } from 'constants/storeKey';
+import AuthPick from 'component/match/AuthPick';
 
 
 
@@ -753,6 +754,13 @@ export default function Matching(props: Props) {
           confirmFunc={sincereSend}
         />
 
+        {/* ##################################################################################
+                    인증 Pick
+        ################################################################################## */}
+
+        {matchData?.match_member_info?.auth_acct_cnt >= 5 && (
+          <AuthPick _authLevel={matchData?.match_member_info?.auth_acct_cnt} _authList={matchData?.second_auth_list}  />
+        )}
       </>
     ) : (
       <>

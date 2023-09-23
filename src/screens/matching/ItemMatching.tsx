@@ -32,6 +32,7 @@ import InterviewRender from 'component/match/InterviewRender';
 import InterestSendPopup from 'screens/commonpopup/InterestSendPopup';
 import SincereSendPopup from 'screens/commonpopup/SincereSendPopup';
 import MemberIntro from 'component/match/MemberIntro';
+import AuthPick from 'component/match/AuthPick';
 
 
 
@@ -185,9 +186,9 @@ export default function ItemMatching(props: Props) {
   };
 
   /* #############################################
-	##### 거부/찐심/관심 팝업 함수
-	##### - activeType : pass(거부), sincere(찐심), interest(관심)
-	############################################# */
+  ##### 거부/찐심/관심 팝업 함수
+  ##### - activeType : pass(거부), sincere(찐심), interest(관심)
+  ############################################# */
   const popupActive = (activeType: string) => {
     if (activeType == 'interest') {
       setInterestSendModalVisible(true);
@@ -197,15 +198,15 @@ export default function ItemMatching(props: Props) {
 
     } else if (activeType == 'pass') {
       show({
-				title: '매칭 취소',
-				content: '매칭을 취소 하시겠습니까?' ,
+        title: '매칭 취소',
+        content: '매칭을 취소 하시겠습니까?' ,
         cancelCallback: function() {
 
         },
-				confirmCallback: function() {
+        confirmCallback: function() {
           insertMatchInfo(activeType, 0, '');
-				}
-			});
+        }
+      });
     
     } else if(activeType == 'zzim') {
 
@@ -365,11 +366,31 @@ export default function ItemMatching(props: Props) {
 
   useFocusEffect(
     React.useCallback(() => {
-      return () => {
-
-      };
-    }, []),
+      navigation.addListener('beforeRemove', (e) => {
+        if(e.data.action.type == 'POP') {
+          show({ 
+            content: '선택을 안하시는 경우 아이템이 소멸됩니다.\n그래도 나가시겠습니까?',
+            cancelCallback: function() {},
+            confirmCallback: function() {
+              goMove();
+            }
+          });
+          e.preventDefault();
+        }
+      });
+    }, [navigation])
   );
+
+  const goMove = async () => {
+    navigation.canGoBack()
+      ? navigation.goBack()
+      : navigation.dispatch(
+          CommonActions.reset({
+            index: 1,
+            routes: [{ name: 'Login01' }],
+          })
+        );
+  }
 
   return (
     data.profile_img_list.length > 0 && isLoad ? (
@@ -564,6 +585,13 @@ export default function ItemMatching(props: Props) {
           closeModal={sincereSendCloseModal}
           confirmFunc={sincereSend}
         />
+
+        {/* ##################################################################################
+                    인증 Pick
+        ################################################################################## */}
+        {data?.match_member_info?.auth_acct_cnt >= 5 && (
+          <AuthPick _authLevel={data?.match_member_info?.auth_acct_cnt} _authList={data?.second_auth_list}  />
+        )}
 
       </>
     ) : (
