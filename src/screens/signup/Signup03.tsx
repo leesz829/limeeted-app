@@ -195,7 +195,13 @@ export const Signup03 = (props : Props) => {
 		} finally {
 			
 		}
-	}
+	};
+
+	const handleTextChange = (text: String) => {
+		if (text.split('\n').length <= 3) {
+		  setComment(text);
+		}
+	  };
 
 	// ############################################################ 최초 실행
 	React.useEffect(() => {
@@ -247,7 +253,7 @@ export const Signup03 = (props : Props) => {
 							borderRadius={10}
 							fontSize={12}
 							fontColor={'#333333'}
-							lineCount={3}
+							onChangeText={ handleTextChange }
 						/>
 
 						{/* <CommonInput 
