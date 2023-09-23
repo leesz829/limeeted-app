@@ -121,9 +121,9 @@ export const Shop = () => {
     const { success, data } = await get_shop_main({ banner_type: 'PROD' });
 
     if (success) {
-
+      
       // 프로모션 팝업 노출
-      /* if(isPopupShow) {
+      if(isPopupShow) {
         if(data.popup_bas_list?.length > 0 && isEmptyData(data.popup_bas_list[0]?.popup_detail) && data.popup_bas_list[0]?.popup_detail.length > 0) {
           let nowDt = formatNowDate().substring(0, 8);
           show({
@@ -142,7 +142,7 @@ export const Shop = () => {
             },
           });
         };
-      } */
+      }
 
       // 이벤트 팝업 노출
       /* if(data.popup_list?.length > 0) {

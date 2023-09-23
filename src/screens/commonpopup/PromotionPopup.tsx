@@ -75,6 +75,12 @@ export const PromotionPopup = (props: Props) => {
             </SpaceView>
 
             <SpaceView viewStyle={_styles.popupContent}>
+              {(isEmptyData(prodList[currentIndex]?.discount_rate) && prodList[currentIndex]?.discount_rate != 0) && (
+                <View style={_styles.saleIconArea}>
+                  <Image source={ICON.saleIcon} style={styles.iconSquareSize(65)} />
+                </View>
+              )}
+
               <SpaceView mb={30} viewStyle={_styles.masterItemArea}>
                 <SpaceView mb={10} viewStyle={{borderRadius: 10, overflow: 'hidden'}}>
                   <Image source={findSourcePath(prodList[currentIndex]?.img_path)} style={{width: width - 190, height: 150}} resizeMode={'cover'} />
@@ -108,7 +114,7 @@ export const PromotionPopup = (props: Props) => {
 
               <TouchableOpacity 
                 disabled={prodList[currentIndex]?.buy_count_max < 999999 && prodList[currentIndex]?.buy_count >= prodList[currentIndex]?.buy_count_max}
-                style={_styles.masterPriceArea} 
+                style={_styles.masterPriceArea(isEmptyData(prodList[currentIndex]?.discount_rate) && prodList[currentIndex]?.discount_rate != 0)} 
                 onPress={() => { onPressEtc(prodList[currentIndex]) }}>
 
                 <Text style={_styles.masterPercent}>
@@ -209,19 +215,21 @@ const _styles = StyleSheet.create({
     overflow: 'hidden',
     marginRight: 15,
   },
-  masterPriceArea: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginHorizontal: 18,
-    marginBottom: 10,
-    //paddingVertical: 2,
-    paddingHorizontal: 10,
-    backgroundColor: '#FE0456',
-    borderRadius: 10,
-    overflow: 'hidden',
-    height: 60,
+  masterPriceArea: (isDiscount:boolean) => {
+    return {
+      flexDirection: 'row',
+      justifyContent: isDiscount ? 'space-between' : 'center',
+      alignItems: 'center',
+      marginHorizontal: 18,
+      marginBottom: 10,
+      paddingHorizontal: 10,
+      backgroundColor: '#FE0456',
+      borderRadius: 10,
+      overflow: 'hidden',
+      height: 60,
+    };
   },
+
   masterPercent: {
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 30,
@@ -274,6 +282,12 @@ const _styles = StyleSheet.create({
       overflow: 'hidden',
       marginRight: 10,
     };
+  },
+  saleIconArea: {
+    position: 'absolute',
+    top: 5,
+    left: 8,
+    zIndex: 1,
   },
 
 });
