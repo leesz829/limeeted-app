@@ -71,22 +71,22 @@ export const Introduce = (props: Props) => {
   const [smoking, setSmoking] = React.useState<any>(isEmptyData(memberBase?.smoking) ? memberBase?.smoking : '');
 
   const int_modalizeRef = useRef<Modalize>(null);
-	const int_onOpen = () => { int_modalizeRef.current?.open(); };
-	const int_onClose = () => {	int_modalizeRef.current?.close(); };
+  const int_onOpen = () => { int_modalizeRef.current?.open(); };
+  const int_onClose = () => { int_modalizeRef.current?.close(); };
 
   // 클릭 여부
   const [isClickable, setIsClickable] = useState(true);
 
   // 관심사 목록
-	const [intList, setIntList] = React.useState([]);
+  const [intList, setIntList] = React.useState([]);
 
-	// 관심사 체크 목록
-	const [checkIntList, setCheckIntList] = React.useState([{code_name: "", common_code: "", interest_seq: ""}]);
+  // 관심사 체크 목록
+  const [checkIntList, setCheckIntList] = React.useState([{code_name: "", common_code: "", interest_seq: ""}]);
 
-	// 관심사 등록 확인 함수
-	const int_confirm = () => {
-		int_modalizeRef.current?.close();
-	};
+  // 관심사 등록 확인 함수
+  const int_confirm = () => {
+    int_modalizeRef.current?.close();
+  };
 
   // ############################################################ 업종 그룹 코드 목록
   const busiGrpCdList = [
@@ -183,11 +183,11 @@ export const Introduce = (props: Props) => {
     };
     try {
       setIsLoading(true);
-			const { success, data } = await get_common_code(body);
-			if(success) {
-				switch (data.result_code) {
-				case SUCCESS:
-					let dataList = new Array();
+      const { success, data } = await get_common_code(body);
+      if(success) {
+        switch (data.result_code) {
+        case SUCCESS:
+          let dataList = new Array();
           data.code_list?.map(
             ({
               group_code,
@@ -203,25 +203,25 @@ export const Introduce = (props: Props) => {
             }
           );
           setJobCdList(dataList);
-					break;
-				default:
-					show({
-						content: '오류입니다. 관리자에게 문의해주세요.' ,
-						confirmCallback: function() {}
-					});
-					break;
-				}
-			} else {
-				show({
-					content: '오류입니다. 관리자에게 문의해주세요.' ,
-					confirmCallback: function() {}
-				});
-			}
-		} catch (error) {
-			console.log(error);
-		} finally {
-			setIsLoading(false);
-		}
+          break;
+        default:
+          show({
+            content: '오류입니다. 관리자에게 문의해주세요.' ,
+            confirmCallback: function() {}
+          });
+          break;
+        }
+      } else {
+        show({
+          content: '오류입니다. 관리자에게 문의해주세요.' ,
+          confirmCallback: function() {}
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
 
   };
 
@@ -232,10 +232,10 @@ export const Introduce = (props: Props) => {
     };
     try {
       setIsLoading(true);
-			const { success, data } = await get_member_introduce(body);
-			if(success) {
-				switch (data.result_code) {
-				case SUCCESS:
+      const { success, data } = await get_member_introduce(body);
+      if(success) {
+        switch (data.result_code) {
+        case SUCCESS:
           let dataList = new Array();
           data?.code_list?.map(
             ({
@@ -255,36 +255,36 @@ export const Introduce = (props: Props) => {
           setIntList(data.int_list); // 관심사 목록
 
           let setList = new Array();
-					data.int_list.map((item, index) => {
-						item.list.map((obj, idx) => {
-							if(obj.interest_seq != null) {
-								setList.push(obj);
-							}
-						})
-					})
-		
-					setCheckIntList(setList);
+          data.int_list.map((item, index) => {
+            item.list.map((obj, idx) => {
+              if(obj.interest_seq != null) {
+                setList.push(obj);
+              }
+            })
+          })
+    
+          setCheckIntList(setList);
           setIntroduceComment(data.member_add?.introduce_comment);
-					
-					break;
-				default:
-					show({
-						content: '오류입니다. 관리자에게 문의해주세요.' ,
-						confirmCallback: function() {}
-					});
-					break;
-				}
-			} else {
-				show({
-					content: '오류입니다. 관리자에게 문의해주세요.' ,
-					confirmCallback: function() {}
-				});
-			}
-		} catch (error) {
-			console.log(error);
-		} finally {
-			setIsLoading(false);
-		}
+          
+          break;
+        default:
+          show({
+            content: '오류입니다. 관리자에게 문의해주세요.' ,
+            confirmCallback: function() {}
+          });
+          break;
+        }
+      } else {
+        show({
+          content: '오류입니다. 관리자에게 문의해주세요.' ,
+          confirmCallback: function() {}
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // ############################################################ 내 소개하기 저장
@@ -378,6 +378,12 @@ export const Introduce = (props: Props) => {
     setSmoking(value);
   };
 
+  const handleTextChange = (text: String) => {
+    if (text.split('\n').length <= 3) {
+      setComment(text);
+    }
+  };
+
   // 첫 렌더링 때 실행
   React.useEffect(() => {
     if(isFocus) {
@@ -405,18 +411,18 @@ export const Introduce = (props: Props) => {
             </SpaceView>
 
             <CommonTextarea
-								label={''} 
-								value={comment}
-								onChangeText={(comment) => setComment(comment)}
-								placeholder={'한줄 소개를 입력 하세요.'}
-								placeholderTextColor={'#c6ccd3'}
-								maxLength={50}
+                label={''} 
+                value={comment}
+                onChangeText={(comment) => setComment(comment)}
+                placeholder={'한줄 소개를 입력 하세요.'}
+                placeholderTextColor={'#c6ccd3'}
+                maxLength={50}
                 height={70}
                 borderRadius={10}
                 fontSize={12}
                 fontColor={'#333333'}
-                lineCount={3}
-						/>
+                onChangeText={ handleTextChange }
+            />
 
             {/* <CommonInput
               label={'한줄 소개'}
@@ -435,17 +441,17 @@ export const Introduce = (props: Props) => {
             </SpaceView>
 
             <CommonTextarea
-								label={''}
-								value={introduceComment}
-								onChangeText={(introduceComment) => setIntroduceComment(introduceComment)}
+                label={''}
+                value={introduceComment}
+                onChangeText={(introduceComment) => setIntroduceComment(introduceComment)}
                 placeholder={'자유롭게 나 자신을 소개해 주세요!\n구체적으로 작성할수록 이성에게\n좋은 매력 포인트가 될 수 있어요 😊'}
-								placeholderTextColor={'#c6ccd3'}
+                placeholderTextColor={'#c6ccd3'}
                 maxLength={3000}
                 height={150}
                 borderRadius={10}
                 fontSize={12}
                 fontColor={'#333333'}
-						/>
+            />
           </SpaceView>
 
           <SpaceView mb={24}>
@@ -604,63 +610,63 @@ export const Introduce = (props: Props) => {
 
 
       {/* #############################################################################
-											관심사 설정 팝업
-			############################################################################# */}
+                      관심사 설정 팝업
+      ############################################################################# */}
 
-			<Modalize
-				ref={int_modalizeRef}
-				adjustToContentHeight = {false}
-				handleStyle={modalStyle.modalHandleStyle}
-				modalStyle={modalStyle.modalContainer}
+      <Modalize
+        ref={int_modalizeRef}
+        adjustToContentHeight = {false}
+        handleStyle={modalStyle.modalHandleStyle}
+        modalStyle={modalStyle.modalContainer}
         modalHeight={height - 150}
-				FooterComponent={
-					<>
-						<SpaceView>
-							<CommonBtn value={'저장(' + checkIntList.length + '/20)'} 
-										type={'primary'}
+        FooterComponent={
+          <>
+            <SpaceView>
+              <CommonBtn value={'저장(' + checkIntList.length + '/20)'} 
+                    type={'primary'}
                     height={60}
-										borderRadius={1}
-										onPress={int_confirm}/>
-						</SpaceView>
-					</>
-				}
-				HeaderComponent={
-					<>
-						<View style={modalStyle.modalHeaderContainer}>
-							<CommonText fontWeight={'700'} type={'h4'}>
-								관심사 등록(최대 20개)
-							</CommonText>
-							<TouchableOpacity onPress={int_onClose} hitSlop={commonStyle.hipSlop20}>
-								<Image source={ICON.xBtn2} style={styles.iconSize18} />
-							</TouchableOpacity>
-						</View>
-					</>
-				} >	
+                    borderRadius={1}
+                    onPress={int_confirm}/>
+            </SpaceView>
+          </>
+        }
+        HeaderComponent={
+          <>
+            <View style={modalStyle.modalHeaderContainer}>
+              <CommonText fontWeight={'700'} type={'h4'}>
+                관심사 등록(최대 20개)
+              </CommonText>
+              <TouchableOpacity onPress={int_onClose} hitSlop={commonStyle.hipSlop20}>
+                <Image source={ICON.xBtn2} style={styles.iconSize18} />
+              </TouchableOpacity>
+            </View>
+          </>
+        } > 
 
-				<View style={modalStyle.modalBody}>
-					{intList.map((item, index) => (
-						<SpaceView mt={20} mb={10} key={item.group_code + '_' + index}>
-							<SpaceView mb={16}>
-								<CommonText fontWeight={'700'}>{item.group_code_name}</CommonText>
-							</SpaceView>
+        <View style={modalStyle.modalBody}>
+          {intList.map((item, index) => (
+            <SpaceView mt={20} mb={10} key={item.group_code + '_' + index}>
+              <SpaceView mb={16}>
+                <CommonText fontWeight={'700'}>{item.group_code_name}</CommonText>
+              </SpaceView>
 
-							<View style={[_styles.rowStyle]}>
-								{item.list.map((i, idx) => {
-									let tmpCommonCode = '';
-									let tmpCnt = 0;
-	
-									for (let j = 0; j < checkIntList.length; j++) {
-										if(checkIntList[j].common_code == i.common_code){
-											tmpCommonCode = i.common_code
-											tmpCnt = j;
-											break;
-										}
-									}
+              <View style={[_styles.rowStyle]}>
+                {item.list.map((i, idx) => {
+                  let tmpCommonCode = '';
+                  let tmpCnt = 0;
+  
+                  for (let j = 0; j < checkIntList.length; j++) {
+                    if(checkIntList[j].common_code == i.common_code){
+                      tmpCommonCode = i.common_code
+                      tmpCnt = j;
+                      break;
+                    }
+                  }
 
-									return (
-										<SpaceView key={i.common_code} mr={5}>
-											<TouchableOpacity style={[styles.interestBox, i.common_code === tmpCommonCode && styles.boxActive]}
-																onPress={() => {
+                  return (
+                    <SpaceView key={i.common_code} mr={5}>
+                      <TouchableOpacity style={[styles.interestBox, i.common_code === tmpCommonCode && styles.boxActive]}
+                                onPress={() => {
                                   if(checkIntList.length > 19 && i.common_code !== tmpCommonCode) {
                                     /* if(Platform.OS == 'android') {
                                       show({
@@ -676,21 +682,21 @@ export const Introduce = (props: Props) => {
                                       setCheckIntList(intValue => [...intValue, i])
                                     }
                                   }
-																}}>
-												<CommonText
-													fontWeight={'500'}
-													color={i.common_code === tmpCommonCode ? ColorType.blue697A : ColorType.grayb1b1} >
-													{i.code_name}
-												</CommonText>
-											</TouchableOpacity>
-										</SpaceView>
-									)
-								})}	
-							</View>
-						</SpaceView>
-					))}
-				</View>
-			</Modalize>
+                                }}>
+                        <CommonText
+                          fontWeight={'500'}
+                          color={i.common_code === tmpCommonCode ? ColorType.blue697A : ColorType.grayb1b1} >
+                          {i.code_name}
+                        </CommonText>
+                      </TouchableOpacity>
+                    </SpaceView>
+                  )
+                })} 
+              </View>
+            </SpaceView>
+          ))}
+        </View>
+      </Modalize>
 
 
     </>
@@ -714,19 +720,19 @@ const _styles = StyleSheet.create({
     color: Color.balck333333,
   },
   rowStyle : {
-		flexDirection: 'row',
-		flexWrap: 'wrap'
-	},
+    flexDirection: 'row',
+    flexWrap: 'wrap'
+  },
   btnStyle: {
-		width: '100%',
-		height: 50,
-		borderRadius: 15,
-		alignItems: 'center',
-		justifyContent: 'center',
-		borderWidth: 1,
-		borderStyle: 'dotted',
-		borderColor: '#C7C7C7',
-		flexDirection: 'row',
+    width: '100%',
+    height: 50,
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderStyle: 'dotted',
+    borderColor: '#C7C7C7',
+    flexDirection: 'row',
   },
   countText: {
     marginLeft: 3,
