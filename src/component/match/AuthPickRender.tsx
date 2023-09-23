@@ -16,7 +16,7 @@ import { isEmptyData } from 'utils/functions';
 
 const { width, height } = Dimensions.get('window');
 
-export default function AuthPick({ _authLevel, _authList }) {
+export default function AuthPickRender({ _authLevel, _authList }) {
   const isFocus = useIsFocused();
 
   // 인증 목록 데이터
@@ -96,6 +96,7 @@ export default function AuthPick({ _authLevel, _authList }) {
   const authPickAnimate = async () => {
     authPickAnimateCancel();
 
+<<<<<<< HEAD:src/component/match/AuthPick.tsx
     //wrapTopValue.value = withDelay(500, withTiming(100, { duration: 800 }));
 
     wrapTopValue.value = withDelay(500, withSpring(100, { damping: 15, stiffness: 180 }));
@@ -104,6 +105,8 @@ export default function AuthPick({ _authLevel, _authList }) {
     //wrapTopValue.value = withDelay(500, withSpring(100, { damping: 15, stiffness: 180 }));
     //wrapOpacityValue.value = withDelay(500, withTiming(1, { duration: 300 }));  
 
+=======
+>>>>>>> c025179f4063f5efd7dd24329b92e54b0fcdb596:src/component/match/AuthPickRender.tsx
     wrapTopValue.value = withSequence(
       withDelay(500, withSpring(100, { damping: 15, stiffness: 180 })),
       withDelay(4500, withTiming(-100, { duration: 300 })),
@@ -118,6 +121,7 @@ export default function AuthPick({ _authLevel, _authList }) {
     topMainOpacityValue.value = withDelay(1300, withTiming(1, { duration: 300 }));
 
     bottomAuthOpacityValue.value = withDelay(1800, withTiming(1, { duration: 800 }));
+<<<<<<< HEAD:src/component/match/AuthPick.tsx
 
     wrapOpacityValue.value = withDelay(4500, withTiming(0, { duration: 800 }));
     wrapTopValue.value = withDelay(4500, withTiming(-100, { duration: 300 }));
@@ -127,6 +131,8 @@ export default function AuthPick({ _authLevel, _authList }) {
       //withDelay(200, withTiming(70, { duration: 500 })),
       //withDelay(500, withTiming(-300, { duration: 500 })),
     ); */
+=======
+>>>>>>> c025179f4063f5efd7dd24329b92e54b0fcdb596:src/component/match/AuthPickRender.tsx
   };
 
   // 애니메이션 취소 및 초기화 함수
@@ -160,21 +166,25 @@ export default function AuthPick({ _authLevel, _authList }) {
         <SpaceView viewStyle={_styles.area(Platform.OS)}>
           <SpaceView mb={5} viewStyle={_styles.topBox}>
 
-            <Animated.View style={[_styles.topAnimation, topBaseStyle]}>
+            <Animated.View style={[_styles.topAnimation(1)]}>
               <SpaceView viewStyle={_styles.topContent}>
                 <SpaceView viewStyle={_styles.topTitleArea}>
                   <Image source={ICON.celebrityIcon01} style={styles.iconSquareSize(30)} />
-                  <Text style={_styles.topTitleText}>리미티드 추천 회원</Text>
+
+                  <Animated.View style={[topBaseStyle]}>
+                    <Text style={_styles.topTitleText}>리미티드 추천 회원</Text>
+                  </Animated.View>
                 </SpaceView>
                 <SpaceView>
-                  <AuthLevel authAcctCnt={0} type={'BASE'} />
+                  {/* <AuthLevel authAcctCnt={5} type={'BASE'} /> */}
+                  <View style={{width: 48, height: 21, borderRadius: 5, backgroundColor: '#7986EE', marginRight: 5,}} />
                 </SpaceView>
               </SpaceView>
               <View style={_styles.topAuthLine} />
             </Animated.View>
 
             {_authLevel >= 5 && (
-              <Animated.View style={[_styles.topAnimation, topMainStyle]}>
+              <Animated.View style={[_styles.topAnimation(2), topMainStyle]}>
                 <SpaceView viewStyle={_styles.topContent}>
                   <SpaceView viewStyle={_styles.topTitleArea}>
                     {_authLevel >= 5 && _authLevel < 10 ? (
@@ -274,9 +284,14 @@ const _styles = StyleSheet.create({
         //backgroundColor: '#fff',
         marginHorizontal: 15,
         borderRadius: 5,
-        overflow: 'hidden',
-        borderWidth: 1,
-        borderColor: '#707070',
+        /* borderWidth: 1,
+        borderColor: '#707070', */
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 10 },
+        shadowOpacity: 0.23,
+        shadowRadius: 5.0,
+        elevation: 8,
+        overflow: 'visible',
       };
     } else {
       return {
@@ -298,14 +313,18 @@ const _styles = StyleSheet.create({
     height: 37,
     zIndex: 1,
   },
-  topAnimation: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    flexDirection: 'column',
-    alignItems: 'center',
+  topAnimation: (_zIndex: number) => {
+    return {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      flexDirection: 'column',
+      alignItems: 'center',
+      zIndex: _zIndex,
+    };
   },
+
   topContent: {
     flexDirection: 'row',
     alignItems:'center',

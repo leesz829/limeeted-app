@@ -20,7 +20,7 @@ import ProfileActive from 'component/match/ProfileActive';
 import InterviewRender from 'component/match/InterviewRender';
 import MemberIntro from 'component/match/MemberIntro';
 import { STACK } from 'constants/routes';
-import AuthPick from 'component/match/AuthPick';
+import AuthPickRender from 'component/match/AuthPickRender';
 
 
 const { width, height } = Dimensions.get('window');
@@ -220,7 +220,7 @@ export default function MyDailyView(props: Props) {
                     인증 Pick
         ################################################################################## */}
         {data?.match_member_info?.auth_acct_cnt >= 5 && (
-          <AuthPick _authLevel={data?.match_member_info?.auth_acct_cnt} _authList={data?.second_auth_list}  />
+          <AuthPickRender _authLevel={data?.match_member_info?.auth_acct_cnt} _authList={data?.second_auth_list}  />
         )}
       </>
     ) : (
