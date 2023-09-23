@@ -93,6 +93,7 @@ export const CommonImagePicker: FC<Props> = (props) => {
 
   useFocusEffect(
     React.useCallback(() => {
+      //적용
       return () => {
         setImgPath('');
       };
