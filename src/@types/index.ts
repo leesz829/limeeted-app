@@ -96,8 +96,16 @@ export type StackParamList = {
   };
   TutorialSetting: undefined;
   MyDailyView: undefined;
-
   ProfileImageSetting: undefined;
+  StoryRegi: undefined;
+  StoryEdit: {
+    storyBoardSeq: Number;
+    storyType: string;
+  };
+  StoryDetail: {
+    storyBoardSeq: Number;
+  };
+  StoryActive: undefined;
 };
 
 export type BottomParamList = {
@@ -111,6 +119,7 @@ export type BottomParamList = {
   LiveSearch: undefined;
   Matching: undefined;
   Shop: undefined;
+  Story: undefined;
 };
 
 export type StackScreenProp = NativeStackNavigationProp<StackParamList>;

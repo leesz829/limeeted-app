@@ -88,6 +88,10 @@ import {
   JOIN_CANCEL,
   POPUP_LIST,
   SHOP_MAIN,
+  STORY_BOARD_SAVE,
+  STORY_BOARD_DETAIL,
+  STORY_REPLY_SAVE,
+  STORY_LIKE_SAVE,
 } from './route';
 
 /* ========================================================================================================
@@ -856,4 +860,48 @@ export async function get_popup_list(body: {
   pop_type: string;
 }) {
   return send(POPUP_LIST, 'POST', body, true, false);
+};
+
+
+
+/* ========================================================================================================
+==================================================== 스토리
+======================================================================================================== */
+
+// 스토리 게시글을 저장한다.
+export async function story_board_save(body: {
+  story_board_seq: number;
+  story_type: string;
+  contents: string;
+  img_file_list: any;
+}) {
+  return send(STORY_BOARD_SAVE, 'POST', body, true, false);
+};
+
+
+// 스토리 게시글 정보를 조회한다.
+export async function story_board_detail(body: {
+  story_board_seq: number;
+}) {
+  return send(STORY_BOARD_DETAIL, 'POST', body, true, false);
+};
+
+// 스토리 댓글을 저장한다.
+export async function story_reply_save(body: {
+  story_reply_seq: number;
+  story_board_seq: number;
+  reply_contents: string;
+  group_seq: number;
+  depth: number;
+}) {
+  return send(STORY_REPLY_SAVE, 'POST', body, true, false);
+};
+
+// 스토리 좋아요를 저장한다.
+export async function story_like_save(body: {
+  type: string;
+  story_board_seq: number;
+  story_reply_seq: number;
+}) {
+  return send(STORY_LIKE_SAVE, 'POST', body, true, false);
 };

@@ -15,6 +15,8 @@ import { Message } from 'screens/message';
 import CustomTab from '../CustomTab';
 import Matching from 'screens/matching';
 
+import { Story } from 'screens/story';
+
 const Tab = createBottomTabNavigator<BottomParamList>();
 const Stack = createStackNavigator();
 const BottomNavigation = () => {
@@ -106,6 +108,13 @@ const BottomNavigation = () => {
       <Stack.Screen
         name="Shop"
         component={Shop}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Story"
+        component={Story}
         options={{
           headerShown: false,
         }}

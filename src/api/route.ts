@@ -138,3 +138,11 @@ export const GET_APP_VERSION = '/login/getAppVersion';
  * 팝업
  */
 export const POPUP_LIST = '/popup/selectPopList';
+
+/**
+ * 스토리
+ */
+export const STORY_BOARD_SAVE = '/story/saveStoryBoard';
+export const STORY_BOARD_DETAIL = '/story/getStoryBoard';
+export const STORY_LIKE_SAVE = '/story/saveStoryLike';
+export const STORY_REPLY_SAVE = '/story/saveStoryReply';
