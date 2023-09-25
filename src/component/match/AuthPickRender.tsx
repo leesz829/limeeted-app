@@ -47,7 +47,7 @@ export default function AuthPickRender({ _authLevel, _authList }) {
   });
 
   // ############################################################################################################# 애니메이션 관련
-  const wrapTopValue = useSharedValue(-100);
+  const wrapTopValue = useSharedValue(-200);
   const wrapOpacityValue = useSharedValue(0);
 
   const [authCount, setAuthCount] = React.useState(1);
@@ -146,7 +146,7 @@ export default function AuthPickRender({ _authLevel, _authList }) {
 
     wrapTopValue.value = withSequence(
       withDelay(500, withSpring(100, { damping: 15, stiffness: 180 })),
-      withDelay(5300, withTiming(-100, { duration: 300 })),
+      withDelay(5300, withTiming(-200, { duration: 300 })),
     );
 
     wrapOpacityValue.value = withSequence(
@@ -218,7 +218,7 @@ export default function AuthPickRender({ _authLevel, _authList }) {
     cancelAnimation(bottomAuthOpacityValue05);
     cancelAnimation(bottomAuthOpacityValue06);
 
-    wrapTopValue.value = -100;
+    wrapTopValue.value = -200;
     wrapOpacityValue.value = 0;
     topBaseOpacityValue.value = 1;
     topMainOpacityValue.value = 0;
