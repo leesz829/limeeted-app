@@ -47,7 +47,7 @@ export default function AuthPickRender({ _authLevel, _authList }) {
   });
 
   // ############################################################################################################# 애니메이션 관련
-  const wrapTopValue = useSharedValue(-200);
+  const wrapTopValue = useSharedValue(30);
   const wrapOpacityValue = useSharedValue(0);
 
   const [authCount, setAuthCount] = React.useState(1);
@@ -55,14 +55,9 @@ export default function AuthPickRender({ _authLevel, _authList }) {
   const topBaseOpacityValue = useSharedValue(1);
   const topMainOpacityValue = useSharedValue(0);
 
+  const bottomBaseOpacityValue = useSharedValue(1);
   const bottomMainOpacityValue = useSharedValue(0);
   const bottomAuthOpacityValue = useSharedValue(0.5);
-  const bottomAuthOpacityValue01 = useSharedValue(0.5);
-  const bottomAuthOpacityValue02 = useSharedValue(0.5);
-  const bottomAuthOpacityValue03 = useSharedValue(0.5);
-  const bottomAuthOpacityValue04 = useSharedValue(0.5);
-  const bottomAuthOpacityValue05 = useSharedValue(0.5);
-  const bottomAuthOpacityValue06 = useSharedValue(0.5);
 
   const [isRotated, setIsRotated] = React.useState(false);
 
@@ -90,6 +85,10 @@ export default function AuthPickRender({ _authLevel, _authList }) {
     return { opacity: topMainOpacityValue.value }
   });
 
+  const bottomBaseStyle = useAnimatedStyle(() => {
+    return { opacity: bottomBaseOpacityValue.value }
+  });
+
   const bottomMainStyle = useAnimatedStyle(() => {
     return { opacity: bottomMainOpacityValue.value }
   });
@@ -98,65 +97,23 @@ export default function AuthPickRender({ _authLevel, _authList }) {
     return { opacity: bottomAuthOpacityValue.value }
   });
 
-  const bottomAuthStyle01 = useAnimatedStyle(() => {
-    return { opacity: bottomAuthOpacityValue01.value }
-  });
-
-  const bottomAuthStyle02 = useAnimatedStyle(() => {
-    return { opacity: bottomAuthOpacityValue02.value }
-  });
-
-  const bottomAuthStyle03 = useAnimatedStyle(() => {
-    return { opacity: bottomAuthOpacityValue03.value }
-  });
-
-  const bottomAuthStyle04 = useAnimatedStyle(() => {
-    return { opacity: bottomAuthOpacityValue04.value }
-  });
-
-  const bottomAuthStyle05 = useAnimatedStyle(() => {
-    return { opacity: bottomAuthOpacityValue05.value }
-  });
-
-  const bottomAuthStyle06 = useAnimatedStyle(() => {
-    return { opacity: bottomAuthOpacityValue06.value }
-  });
-
-
-  // 애니메이션 실행 함수 적용
-  const bottomAuthStyleConverter = async (index:number) => {
-    if(index == 0) {
-      return bottomAuthStyle01;
-    } else if(index == 1) {
-      return bottomAuthStyle02;
-    } else if(index == 2) {
-      return bottomAuthStyle03;
-    } else if(index == 3) {
-      return bottomAuthStyle04;
-    } else if(index == 4) {
-      return bottomAuthStyle05;
-    } else if(index == 5) {
-      return bottomAuthStyle06;
-    }    
-  };
-
   // 애니메이션 실행 함수 적용
   const authPickAnimate = async () => {
     authPickAnimateCancel();
 
     wrapTopValue.value = withSequence(
-      withDelay(500, withSpring(100, { damping: 15, stiffness: 180 })),
-      withDelay(5300, withTiming(-200, { duration: 300 })),
+      withDelay(500, withSpring(100, { damping: 20, stiffness: 300 })),
+      withDelay(1500, withTiming(100, { duration: 200 })),
     );
 
     wrapOpacityValue.value = withSequence(
       withDelay(500, withTiming(1, { duration: 300 })),
-      withDelay(5300, withTiming(1, { duration: 800 })),
+      withDelay(3000, withTiming(0, { duration: 600 })),
     );
 
     setTimeout(() => {
       // 딜레이 후에 카운팅 애니메이션 시작
-      for (let i = 1; i <= _authLevel; i++) {
+      /* for (let i = 1; i <= _authLevel; i++) {
         setTimeout(() => {
           setAuthCount(i);
 
@@ -164,11 +121,13 @@ export default function AuthPickRender({ _authLevel, _authList }) {
             bottomAuthAnimate();
           }
         }, i * 50); // 10밀리초마다 업데이트하여 애니메이션 효과 생성
-      }
-    }, 1300);
+      } */
 
-    topBaseOpacityValue.value = withDelay(800, withTiming(0, { duration: 300 }));
-    topMainOpacityValue.value = withDelay(800, withTiming(1, { duration: 300 }));
+      bottomAuthAnimate();
+    }, 1500);
+
+    //topBaseOpacityValue.value = withDelay(800, withTiming(0, { duration: 300 }));
+    //topMainOpacityValue.value = withDelay(800, withTiming(1, { duration: 300 }));
 
     //bottomAuthOpacityValue.value = withDelay(2000, withTiming(1, { duration: 800 }));
   };
@@ -177,30 +136,13 @@ export default function AuthPickRender({ _authLevel, _authList }) {
   const bottomAuthAnimate = async () => {
     let _delayCount = 0;
 
-    bottomMainOpacityValue.value = withDelay(100, withTiming(1, { duration: 300 }));
+    bottomBaseOpacityValue.value = withDelay(100, withTiming(0, { duration: 800 }));
+    bottomMainOpacityValue.value = withDelay(100, withTiming(1, { duration: 750 }));
+    bottomAuthOpacityValue.value = withDelay(100, withTiming(1, { duration: 1200 }));
 
-    setTimeout(() => {
-      authList.map((item, index) => {
-        if(item.level > 0) {
-          _delayCount = _delayCount+400;
-          if(index == 0) {
-            bottomAuthOpacityValue01.value = withDelay(_delayCount, withTiming(1, { duration: 300 }));
-          } else if(index == 1) {
-            bottomAuthOpacityValue02.value = withDelay(_delayCount, withTiming(1, { duration: 300 }));
-          } else if(index == 2) {
-            bottomAuthOpacityValue03.value = withDelay(_delayCount, withTiming(1, { duration: 300 }));
-          } else if(index == 3) {
-            bottomAuthOpacityValue04.value = withDelay(_delayCount, withTiming(1, { duration: 300 }));
-          } else if(index == 4) {
-            bottomAuthOpacityValue05.value = withDelay(_delayCount, withTiming(1, { duration: 300 }));
-          } else if(index == 5) {
-            bottomAuthOpacityValue06.value = withDelay(_delayCount, withTiming(1, { duration: 300 }));
-          }
-        };
-      });
-    }, 1000);
-
-    //bottomAuthOpacityValue.value = withDelay(2000, withTiming(1, { duration: 800 }));
+    /* setTimeout(() => {
+      bottomAuthOpacityValue.value = withDelay(100, withTiming(1, { duration: 500 }));
+    }, 100); */
   };
 
   // 애니메이션 취소 및 초기화 함수
@@ -209,27 +151,17 @@ export default function AuthPickRender({ _authLevel, _authList }) {
     cancelAnimation(wrapOpacityValue);
     cancelAnimation(topBaseOpacityValue);
     cancelAnimation(topMainOpacityValue);
+    cancelAnimation(bottomBaseOpacityValue);
     cancelAnimation(bottomMainOpacityValue);
     cancelAnimation(bottomAuthOpacityValue);
-    cancelAnimation(bottomAuthOpacityValue01);
-    cancelAnimation(bottomAuthOpacityValue02);
-    cancelAnimation(bottomAuthOpacityValue03);
-    cancelAnimation(bottomAuthOpacityValue04);
-    cancelAnimation(bottomAuthOpacityValue05);
-    cancelAnimation(bottomAuthOpacityValue06);
 
-    wrapTopValue.value = -200;
+    wrapTopValue.value = 30;
     wrapOpacityValue.value = 0;
     topBaseOpacityValue.value = 1;
     topMainOpacityValue.value = 0;
+    bottomBaseOpacityValue.value = 1;
     bottomMainOpacityValue.value = 0;
     bottomAuthOpacityValue.value = 0.5;
-    bottomAuthOpacityValue01.value = 0.5;
-    bottomAuthOpacityValue02.value = 0.5;
-    bottomAuthOpacityValue03.value = 0.5;
-    bottomAuthOpacityValue04.value = 0.5;
-    bottomAuthOpacityValue05.value = 0.5;
-    bottomAuthOpacityValue06.value = 0.5;
 
     setAuthCount(1);
   }
@@ -250,7 +182,7 @@ export default function AuthPickRender({ _authLevel, _authList }) {
         <SpaceView viewStyle={_styles.area(Platform.OS)}>
           <SpaceView mb={5} viewStyle={_styles.topBox}>
 
-            <Animated.View style={[_styles.topAnimation(1)]}>
+            {/* <Animated.View style={[_styles.topAnimation(1)]}>
               <SpaceView viewStyle={_styles.topContent}>
                 <SpaceView viewStyle={_styles.topTitleArea}>
                   <Image source={ICON.celebrityIcon01} style={styles.iconSquareSize(30)} />
@@ -260,42 +192,41 @@ export default function AuthPickRender({ _authLevel, _authList }) {
                   </Animated.View>
                 </SpaceView>
                 <SpaceView>
-                  {/* <AuthLevel authAcctCnt={5} type={'BASE'} /> */}
                   <View style={{width: 48, height: 21, borderRadius: 5, backgroundColor: '#7986EE', marginRight: 5,}} />
                 </SpaceView>
               </SpaceView>
               <View style={_styles.topAuthLine} />
-            </Animated.View>
+            </Animated.View> */}
 
-            <Animated.View style={[_styles.topAnimation(2), topMainStyle]}>
+            <Animated.View style={[_styles.topAnimation(2)]}>
               <SpaceView viewStyle={_styles.topContent}>
                 <SpaceView viewStyle={_styles.topTitleArea}>
-                  {authCount < 10 ? (
+                  {_authLevel < 10 ? (
                     <>
                       <Image source={ICON.celebrityIcon01} style={styles.iconSquareSize(30)} />
                       <Text style={_styles.topTitleText}>리미티드 추천 회원</Text>
                     </>
-                  ) : authCount >= 10 && authCount < 15 ? (
+                  ) : _authLevel >= 10 && _authLevel < 15 ? (
                     <>
                       <Image source={ICON.celebrityIcon02} style={styles.iconSquareSize(30)} />
                       <Text style={_styles.topTitleText}>프로필 인증 상위 회원</Text>
                     </>
-                  ) : authCount >= 15 && authCount < 20 ? (
+                  ) : _authLevel >= 15 && _authLevel < 20 ? (
                     <>
                       <Image source={ICON.celebrityIcon03} style={styles.iconSquareSize(30)} />
                       <Text style={_styles.topTitleText}>프로필 인증 최상위 회원</Text>
                     </>
-                  ) : authCount >= 20 && authCount < 25 ? (
+                  ) : _authLevel >= 20 && _authLevel < 25 ? (
                     <>
                       <Image source={ICON.celebrityIcon04} style={styles.iconSquareSize(30)} />
                       <Text style={_styles.topTitleText}>TOP CLASS 회원</Text>
                     </>
-                  ) : authCount >= 25 && authCount < 30 ? (
+                  ) : _authLevel >= 25 && _authLevel < 30 ? (
                     <>
                       <Image source={ICON.celebrityIcon05} style={styles.iconSquareSize(30)} />
                       <Text style={_styles.topTitleText}>TOP CLASS 회원</Text>
                     </>
-                  ) : authCount >= 30 && (
+                  ) : _authLevel >= 30 && (
                     <>
                       <Image source={ICON.celebrityIcon06} style={styles.iconSquareSize(30)} />
                       <Text style={_styles.topTitleText}>TOP CLASS 회원</Text>
@@ -303,25 +234,21 @@ export default function AuthPickRender({ _authLevel, _authList }) {
                   )}
                 </SpaceView>
                 <SpaceView>
-                  {/* <AuthLevel authAcctCnt={_authLevel} type={'BASE'} /> */}
-                  <AuthLevel authAcctCnt={authCount} type={'BASE'} />
-                  {/* <Animated.Text style={{ fontSize: 48 }}>
-                    {authCount}
-                  </Animated.Text> */}
+                  <AuthLevel authAcctCnt={_authLevel} type={'BASE'} />
                 </SpaceView>
               </SpaceView>
 
-              {authCount < 10 ? (
+              {_authLevel < 10 ? (
                 <View style={_styles.topAuthLine} />
-              ) : authCount >= 10 && authCount < 15 ? (
+              ) : _authLevel >= 10 && _authLevel < 15 ? (
                 <LinearGradient colors={['#E0A9A9', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.topAuthLine} />
-              ) : authCount >= 15 && authCount < 20 ? (
+              ) : _authLevel >= 15 && _authLevel < 20 ? (
                 <LinearGradient colors={['#A9BBE0', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.topAuthLine} />
-              ) : authCount >= 20 && authCount < 25 ? (
+              ) : _authLevel >= 20 && _authLevel < 25 ? (
                 <LinearGradient colors={['#FEB961', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.topAuthLine} />
-              ) : authCount >= 25 && authCount < 30 ? (
+              ) : _authLevel >= 25 && _authLevel < 30 ? (
                 <LinearGradient colors={['#9BFFB5', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.topAuthLine} />
-              ) : authCount >= 30 && (
+              ) : _authLevel >= 30 && (
                 <LinearGradient colors={['#E84CEE', '#79DEEE']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={_styles.topAuthLine} />
               )}
             </Animated.View>
@@ -329,12 +256,12 @@ export default function AuthPickRender({ _authLevel, _authList }) {
           </SpaceView>
 
           <SpaceView viewStyle={_styles.bottomBox}>
-            <Animated.View style={[_styles.bottomAnimation(1)]}>
+            <Animated.View style={[_styles.bottomAnimation(1), bottomBaseStyle]}>
               {authList.map((item, index) => {
                   return (
                     <>
-                      <Animated.View style={[_styles.bottomAuthItem()]}>
-                        <Image source={item.img} style={{width: 40, height: 30}} />
+                      <Animated.View style={[_styles.bottomAuthItem(true)]}>
+                        <Image source={item.img} style={{width: 36, height: 27}} />
                         <Text style={_styles.bottomAuthText(0)}>{item.name}</Text>
                       </Animated.View>
                     </>
@@ -346,7 +273,7 @@ export default function AuthPickRender({ _authLevel, _authList }) {
               {authList.map((item, index) => {
                 return (
                   <>
-                    {index == 0 ? (
+                    {/* {index == 0 ? (
                       <Animated.View style={[_styles.bottomAuthItem(), (item.level > 0 && bottomAuthStyle01)]}>
                         <Image source={item.img} style={{width: 40, height: 30}} />
                         <Text style={_styles.bottomAuthText(item.level > 0)}>{item.level > 0 ? 'Lv.' + item.level : item.name}</Text>
@@ -376,13 +303,13 @@ export default function AuthPickRender({ _authLevel, _authList }) {
                         <Image source={item.img} style={{width: 40, height: 30}} />
                         <Text style={_styles.bottomAuthText(item.level > 0)}>{item.level > 0 ? 'Lv.' + item.level : item.name}</Text>
                       </Animated.View>
-                    ) : null}
+                    ) : null} */}
 
-                    {/* <Animated.View style={[_styles.bottomAuthItem(), (item.level > 0 && bottomAuthStyleConverter(index))]}>
-                      <Image source={item.img} style={{width: 40, height: 30}} />
-                      <Text style={_styles.bottomAuthText(item.level > 0)}>{item.name} {item.level > 0 && 'Lv.' + item.level}</Text>
-                    </Animated.View> */}
-                  </>                
+                    <Animated.View style={[_styles.bottomAuthItem(item.level > 0)]}>
+                      <Image source={item.img} style={{width: 36, height: 27}} />
+                      <Text style={_styles.bottomAuthText(item.level > 0)}>{item.level > 0 ? 'Lv.' + item.level : item.name}</Text>
+                    </Animated.View>
+                  </>
                 )
               })}
             </Animated.View>
@@ -417,30 +344,30 @@ const _styles = StyleSheet.create({
     if(device == 'ios') {
       return {
         //backgroundColor: '#fff',
-        marginHorizontal: 15,
+        marginHorizontal: 35,
         borderRadius: 5,
         /* borderWidth: 1,
         borderColor: '#707070', */
-        shadowColor: '#000',
+        /* shadowColor: '#000',
         shadowOffset: { width: 0, height: 10 },
         shadowOpacity: 0.23,
         shadowRadius: 5.0,
         elevation: 8,
-        overflow: 'visible',
+        overflow: 'visible', */
       };
     } else {
       return {
         //backgroundColor: '#fff',
-        marginHorizontal: 15,
+        marginHorizontal: 35,
         borderRadius: 5,
         /* borderWidth: 1,
         borderColor: '#707070', */
-        shadowColor: '#000',
+        /* shadowColor: '#000',
         shadowOffset: { width: 0, height: 10 },
         shadowOpacity: 0.23,
         shadowRadius: 5.0,
         elevation: 8,
-        overflow: 'visible',
+        overflow: 'visible', */
       };
     }    
   },
@@ -500,11 +427,13 @@ const _styles = StyleSheet.create({
   },
 
   bottomAuthItem: (isOpacity: boolean) => {
+    console.log('isOpacity ::: ' , isOpacity);
+
     return {
       alignItems: 'center',
       justifyContent: 'center',
       marginHorizontal: 5,
-      opacity: 0.5,
+      opacity: isOpacity ? 1 : 1,
     };
   },
   bottomAuthText: (isOn: boolean) => {
@@ -514,7 +443,7 @@ const _styles = StyleSheet.create({
       color: '#fff',
       backgroundColor: isOn ? '#7986EE' : '#B1B3C7',
       //backgroundColor: '#B1B3C7',
-      width: 48,
+      width: 40,
       textAlign: 'center',
       borderRadius: 8,
       overflow: 'hidden',
@@ -527,7 +456,8 @@ const _styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    //backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    backgroundColor: '#fff',
     borderRadius: 5,
     overflow: 'hidden',
   },

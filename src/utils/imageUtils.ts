@@ -28,6 +28,7 @@ export const ICON = {
   arrBottom: require('assets/icon/icon-arrow-bottom.png'),
   xBtn: require('assets/icon/icon-x.png'),
   xBtn2: require('assets/icon/icon-x2.png'),
+  xBtn3: require('assets/icon/icon-x3.png'),
   plus: require('assets/icon/icon-plus.png'),
   plus2: require('assets/icon/icon-plus2.png'),
   distance: require('assets/icon/icon-distance.png'),

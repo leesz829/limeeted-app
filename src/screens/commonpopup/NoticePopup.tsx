@@ -144,8 +144,15 @@ export const NoticePopup = (props: Props) => {
           <SpaceView>
             <SpaceView mt={3} viewStyle={_styles.topArea}>
               <Image source={ICON.bellIcon} style={styles.iconSquareSize(15)} />
-              <Text style={_styles.noticeText}>공지</Text>
+              <Text style={_styles.noticeText}>최근 소식</Text>
             </SpaceView>
+
+            <TouchableOpacity 
+              onPress={() => onPressConfirm(true)}
+              style={_styles.xButtonArea}
+              hitSlop={commonStyle.hipSlop20}>
+              <Image source={ICON.xBtn3} style={styles.iconSquareSize(23)} />
+            </TouchableOpacity>
 
             <SpaceView mt={6} viewStyle={_styles.noticeContent}>
 
@@ -250,6 +257,7 @@ const _styles = StyleSheet.create({
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 11,
     color: '#FFFFFF',
+    marginLeft: 2,
   },
   noticeContent: {
     backgroundColor: '#7980E9',
@@ -312,5 +320,10 @@ const _styles = StyleSheet.create({
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 12,
     color: '#707070',
+  },
+  xButtonArea: {
+    position: 'absolute',
+    top: -13,
+    right: -12,
   },
 });

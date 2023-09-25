@@ -168,6 +168,7 @@ const _styles = StyleSheet.create({
       borderRadius: 20,
       paddingHorizontal: 0,
       paddingTop: 60,
+      marginTop: -40,
       //overflow: 'hidden',
   },
   popupContent: {
