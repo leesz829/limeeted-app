@@ -138,17 +138,6 @@ export default function AuthPickRender({ _authLevel, _authList }) {
   const authPickAnimate = async () => {
     authPickAnimateCancel();
 
-<<<<<<< HEAD:src/component/match/AuthPick.tsx
-    //wrapTopValue.value = withDelay(500, withTiming(100, { duration: 800 }));
-
-    wrapTopValue.value = withDelay(500, withSpring(100, { damping: 15, stiffness: 180 }));
-    wrapOpacityValue.value = withDelay(500, withTiming(1, { duration: 300 }));
-
-    //wrapTopValue.value = withDelay(500, withSpring(100, { damping: 15, stiffness: 180 }));
-    //wrapOpacityValue.value = withDelay(500, withTiming(1, { duration: 300 }));  
-
-=======
->>>>>>> c025179f4063f5efd7dd24329b92e54b0fcdb596:src/component/match/AuthPickRender.tsx
     wrapTopValue.value = withSequence(
       withDelay(500, withSpring(100, { damping: 15, stiffness: 180 })),
       withDelay(5000, withTiming(-100, { duration: 300 })),
@@ -165,21 +154,6 @@ export default function AuthPickRender({ _authLevel, _authList }) {
         setTimeout(() => {
           setAuthCount(i);
 
-<<<<<<< HEAD
-    bottomAuthOpacityValue.value = withDelay(1800, withTiming(1, { duration: 800 }));
-<<<<<<< HEAD:src/component/match/AuthPick.tsx
-
-    wrapOpacityValue.value = withDelay(4500, withTiming(0, { duration: 800 }));
-    wrapTopValue.value = withDelay(4500, withTiming(-100, { duration: 300 }));
-
-    /* wrapTopValue.value = withSequence(
-      withDelay(1000, withTiming(100, { duration: 500 })),
-      //withDelay(200, withTiming(70, { duration: 500 })),
-      //withDelay(500, withTiming(-300, { duration: 500 })),
-    ); */
-=======
->>>>>>> c025179f4063f5efd7dd24329b92e54b0fcdb596:src/component/match/AuthPickRender.tsx
-=======
           if(i == _authLevel) {
             bottomAuthAnimate();
           }
@@ -218,7 +192,6 @@ export default function AuthPickRender({ _authLevel, _authList }) {
     });
 
     //bottomAuthOpacityValue.value = withDelay(2000, withTiming(1, { duration: 800 }));
->>>>>>> a9ad140856dc845c43145422028f5dd1c7044bdb
   };
 
   // 애니메이션 취소 및 초기화 함수
@@ -498,18 +471,6 @@ const _styles = StyleSheet.create({
       opacity: 0.5,
     };
   },
-<<<<<<< HEAD
-  bottomAuthText: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 10,
-    color: '#fff',
-    backgroundColor: '#7986EE',
-    width: 45,
-    textAlign: 'center',
-    borderRadius: 15,
-    overflow: 'hidden',
-    marginTop: 5,
-=======
   bottomAuthText: (isOn: boolean) => {
     return {
       fontFamily: 'AppleSDGothicNeoB00',
@@ -522,7 +483,6 @@ const _styles = StyleSheet.create({
       overflow: 'hidden',
       marginTop: 5,
     };
->>>>>>> a9ad140856dc845c43145422028f5dd1c7044bdb
   },
   bgBox: {
     position: 'absolute',

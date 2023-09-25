@@ -68,10 +68,10 @@ export const NoticePopup = (props: Props) => {
     };
   };
 
-  const onPressEtc = (item:any) => {
+  /* const onPressEtc = (item:any) => {
     props.etcCallbackFunc(item);
     props.setPopupVIsible(false);
-  };
+  }; */
 
   const onPressItem = async (index:number) => {
     setCurrentIndex(index);
@@ -96,13 +96,7 @@ export const NoticePopup = (props: Props) => {
   const noticeAnimate = async () => {
     noticeAnimateCancel();
 
-<<<<<<< HEAD
-    noticeMoveValue.value = withSequence(
-      withDelay(500, withTiming(1, { duration: 500 })),
-    );
-=======
     noticeMoveValue.value = withDelay(500, withTiming(1, { duration: 500 }));
->>>>>>> a9ad140856dc845c43145422028f5dd1c7044bdb
   };
 
   // 공지 팝업 초기화 함수
@@ -139,7 +133,7 @@ export const NoticePopup = (props: Props) => {
     <>
       {props.popupVisible &&
       <Animated.View style={[_styles.test, noticeStyle]}>
-				<LinearGradient
+        <LinearGradient
           colors={['#8800FF', '#0F68B7']}
           start={{ x: 0, y: 1 }}
           end={{ x: 1, y: 0 }}
@@ -219,7 +213,7 @@ export const NoticePopup = (props: Props) => {
           </SpaceView>
         </LinearGradient>
         </Animated.View>
-			}
+      }
     </>
   );
 };
