@@ -185,8 +185,8 @@ export const NoticePopup = (props: Props) => {
                 ref={noticeRef}
                 //onScroll={handleScroll}
                 showsHorizontalScrollIndicator={false}
-                sliderWidth={Math.round(width)} 
-                itemWidth={Math.round(width)}
+                sliderWidth={Math.round(width-180)} 
+                itemWidth={Math.round(width-180)}
                 horizontal={true}
                 inactiveSlideScale={1}
                 loop={true}

@@ -55,6 +55,7 @@ export default function AuthPickRender({ _authLevel, _authList }) {
   const topBaseOpacityValue = useSharedValue(1);
   const topMainOpacityValue = useSharedValue(0);
 
+  const bottomMainOpacityValue = useSharedValue(0);
   const bottomAuthOpacityValue = useSharedValue(0.5);
   const bottomAuthOpacityValue01 = useSharedValue(0.5);
   const bottomAuthOpacityValue02 = useSharedValue(0.5);
@@ -89,6 +90,10 @@ export default function AuthPickRender({ _authLevel, _authList }) {
     return { opacity: topMainOpacityValue.value }
   });
 
+  const bottomMainStyle = useAnimatedStyle(() => {
+    return { opacity: bottomMainOpacityValue.value }
+  });
+
   const bottomAuthStyle = useAnimatedStyle(() => {
     return { opacity: bottomAuthOpacityValue.value }
   });
@@ -117,6 +122,7 @@ export default function AuthPickRender({ _authLevel, _authList }) {
     return { opacity: bottomAuthOpacityValue06.value }
   });
 
+
   // 애니메이션 실행 함수 적용
   const bottomAuthStyleConverter = async (index:number) => {
     if(index == 0) {
@@ -140,12 +146,12 @@ export default function AuthPickRender({ _authLevel, _authList }) {
 
     wrapTopValue.value = withSequence(
       withDelay(500, withSpring(100, { damping: 15, stiffness: 180 })),
-      withDelay(5000, withTiming(-100, { duration: 300 })),
+      withDelay(5300, withTiming(-100, { duration: 300 })),
     );
 
     wrapOpacityValue.value = withSequence(
       withDelay(500, withTiming(1, { duration: 300 })),
-      withDelay(5000, withTiming(1, { duration: 800 })),
+      withDelay(5300, withTiming(1, { duration: 800 })),
     );
 
     setTimeout(() => {
@@ -157,7 +163,7 @@ export default function AuthPickRender({ _authLevel, _authList }) {
           if(i == _authLevel) {
             bottomAuthAnimate();
           }
-        }, i * 20); // 10밀리초마다 업데이트하여 애니메이션 효과 생성
+        }, i * 50); // 10밀리초마다 업데이트하여 애니메이션 효과 생성
       }
     }, 1300);
 
@@ -171,24 +177,28 @@ export default function AuthPickRender({ _authLevel, _authList }) {
   const bottomAuthAnimate = async () => {
     let _delayCount = 0;
 
-    authList.map((item, index) => {
-      if(item.level > 0) {
-        _delayCount = _delayCount+400;
-        if(index == 0) {
-          bottomAuthOpacityValue01.value = withDelay(_delayCount, withTiming(1, { duration: 300 }));
-        } else if(index == 1) {
-          bottomAuthOpacityValue02.value = withDelay(_delayCount, withTiming(1, { duration: 300 }));
-        } else if(index == 2) {
-          bottomAuthOpacityValue03.value = withDelay(_delayCount, withTiming(1, { duration: 300 }));
-        } else if(index == 3) {
-          bottomAuthOpacityValue04.value = withDelay(_delayCount, withTiming(1, { duration: 300 }));
-        } else if(index == 4) {
-          bottomAuthOpacityValue05.value = withDelay(_delayCount, withTiming(1, { duration: 300 }));
-        } else if(index == 5) {
-          bottomAuthOpacityValue06.value = withDelay(_delayCount, withTiming(1, { duration: 300 }));
-        }
-      };
-    });
+    bottomMainOpacityValue.value = withDelay(100, withTiming(1, { duration: 300 }));
+
+    setTimeout(() => {
+      authList.map((item, index) => {
+        if(item.level > 0) {
+          _delayCount = _delayCount+400;
+          if(index == 0) {
+            bottomAuthOpacityValue01.value = withDelay(_delayCount, withTiming(1, { duration: 300 }));
+          } else if(index == 1) {
+            bottomAuthOpacityValue02.value = withDelay(_delayCount, withTiming(1, { duration: 300 }));
+          } else if(index == 2) {
+            bottomAuthOpacityValue03.value = withDelay(_delayCount, withTiming(1, { duration: 300 }));
+          } else if(index == 3) {
+            bottomAuthOpacityValue04.value = withDelay(_delayCount, withTiming(1, { duration: 300 }));
+          } else if(index == 4) {
+            bottomAuthOpacityValue05.value = withDelay(_delayCount, withTiming(1, { duration: 300 }));
+          } else if(index == 5) {
+            bottomAuthOpacityValue06.value = withDelay(_delayCount, withTiming(1, { duration: 300 }));
+          }
+        };
+      });
+    }, 1000);
 
     //bottomAuthOpacityValue.value = withDelay(2000, withTiming(1, { duration: 800 }));
   };
@@ -199,6 +209,7 @@ export default function AuthPickRender({ _authLevel, _authList }) {
     cancelAnimation(wrapOpacityValue);
     cancelAnimation(topBaseOpacityValue);
     cancelAnimation(topMainOpacityValue);
+    cancelAnimation(bottomMainOpacityValue);
     cancelAnimation(bottomAuthOpacityValue);
     cancelAnimation(bottomAuthOpacityValue01);
     cancelAnimation(bottomAuthOpacityValue02);
@@ -211,6 +222,7 @@ export default function AuthPickRender({ _authLevel, _authList }) {
     wrapOpacityValue.value = 0;
     topBaseOpacityValue.value = 1;
     topMainOpacityValue.value = 0;
+    bottomMainOpacityValue.value = 0;
     bottomAuthOpacityValue.value = 0.5;
     bottomAuthOpacityValue01.value = 0.5;
     bottomAuthOpacityValue02.value = 0.5;
@@ -315,50 +327,65 @@ export default function AuthPickRender({ _authLevel, _authList }) {
             </Animated.View>
 
           </SpaceView>
+
           <SpaceView viewStyle={_styles.bottomBox}>
+            <Animated.View style={[_styles.bottomAnimation(1)]}>
+              {authList.map((item, index) => {
+                  return (
+                    <>
+                      <Animated.View style={[_styles.bottomAuthItem()]}>
+                        <Image source={item.img} style={{width: 40, height: 30}} />
+                        <Text style={_styles.bottomAuthText(0)}>{item.name}</Text>
+                      </Animated.View>
+                    </>
+                  )
+                })}
+            </Animated.View>
 
-            {authList.map((item, index) => {
-              return (
-                <>
-                  {index == 0 ? (
-                    <Animated.View style={[_styles.bottomAuthItem(), (item.level > 0 && bottomAuthStyle01)]}>
-                      <Image source={item.img} style={{width: 40, height: 30}} />
-                      <Text style={_styles.bottomAuthText(item.level > 0)}>{item.name} {item.level > 0 && 'Lv.' + item.level}</Text>
-                    </Animated.View>
-                  ) : index == 1 ? (
-                    <Animated.View style={[_styles.bottomAuthItem(), (item.level > 0 && bottomAuthStyle02)]}>
-                      <Image source={item.img} style={{width: 40, height: 30}} />
-                      <Text style={_styles.bottomAuthText(item.level > 0)}>{item.name} {item.level > 0 && 'Lv.' + item.level}</Text>
-                    </Animated.View>
-                  ) : index == 2 ? (
-                    <Animated.View style={[_styles.bottomAuthItem(), (item.level > 0 && bottomAuthStyle03)]}>
-                      <Image source={item.img} style={{width: 40, height: 30}} />
-                      <Text style={_styles.bottomAuthText(item.level > 0)}>{item.name} {item.level > 0 && 'Lv.' + item.level}</Text>
-                    </Animated.View>
-                  ) : index == 3 ? (
-                    <Animated.View style={[_styles.bottomAuthItem(), (item.level > 0 && bottomAuthStyle04)]}>
-                      <Image source={item.img} style={{width: 40, height: 30}} />
-                      <Text style={_styles.bottomAuthText(item.level > 0)}>{item.name} {item.level > 0 && 'Lv.' + item.level}</Text>
-                    </Animated.View>
-                  ) : index == 4 ? (
-                    <Animated.View style={[_styles.bottomAuthItem(), (item.level > 0 && bottomAuthStyle05)]}>
-                      <Image source={item.img} style={{width: 40, height: 30}} />
-                      <Text style={_styles.bottomAuthText(item.level > 0)}>{item.name} {item.level > 0 && 'Lv.' + item.level}</Text>
-                    </Animated.View>
-                  ) : index == 5 ? (
-                    <Animated.View style={[_styles.bottomAuthItem(), (item.level > 0 && bottomAuthStyle06)]}>
-                      <Image source={item.img} style={{width: 40, height: 30}} />
-                      <Text style={_styles.bottomAuthText(item.level > 0)}>{item.name} {item.level > 0 && 'Lv.' + item.level}</Text>
-                    </Animated.View>
-                  ) : null}
+            <Animated.View style={[_styles.bottomAnimation(2), bottomMainStyle]}>
+              {authList.map((item, index) => {
+                return (
+                  <>
+                    {index == 0 ? (
+                      <Animated.View style={[_styles.bottomAuthItem(), (item.level > 0 && bottomAuthStyle01)]}>
+                        <Image source={item.img} style={{width: 40, height: 30}} />
+                        <Text style={_styles.bottomAuthText(item.level > 0)}>{item.level > 0 ? 'Lv.' + item.level : item.name}</Text>
+                      </Animated.View>
+                    ) : index == 1 ? (
+                      <Animated.View style={[_styles.bottomAuthItem(), (item.level > 0 && bottomAuthStyle02)]}>
+                        <Image source={item.img} style={{width: 40, height: 30}} />
+                        <Text style={_styles.bottomAuthText(item.level > 0)}>{item.level > 0 ? 'Lv.' + item.level : item.name}</Text>
+                      </Animated.View>
+                    ) : index == 2 ? (
+                      <Animated.View style={[_styles.bottomAuthItem(), (item.level > 0 && bottomAuthStyle03)]}>
+                        <Image source={item.img} style={{width: 40, height: 30}} />
+                        <Text style={_styles.bottomAuthText(item.level > 0)}>{item.level > 0 ? 'Lv.' + item.level : item.name}</Text>
+                      </Animated.View>
+                    ) : index == 3 ? (
+                      <Animated.View style={[_styles.bottomAuthItem(), (item.level > 0 && bottomAuthStyle04)]}>
+                        <Image source={item.img} style={{width: 40, height: 30}} />
+                        <Text style={_styles.bottomAuthText(item.level > 0)}>{item.level > 0 ? 'Lv.' + item.level : item.name}</Text>
+                      </Animated.View>
+                    ) : index == 4 ? (
+                      <Animated.View style={[_styles.bottomAuthItem(), (item.level > 0 && bottomAuthStyle05)]}>
+                        <Image source={item.img} style={{width: 40, height: 30}} />
+                        <Text style={_styles.bottomAuthText(item.level > 0)}>{item.level > 0 ? 'Lv.' + item.level : item.name}</Text>
+                      </Animated.View>
+                    ) : index == 5 ? (
+                      <Animated.View style={[_styles.bottomAuthItem(), (item.level > 0 && bottomAuthStyle06)]}>
+                        <Image source={item.img} style={{width: 40, height: 30}} />
+                        <Text style={_styles.bottomAuthText(item.level > 0)}>{item.level > 0 ? 'Lv.' + item.level : item.name}</Text>
+                      </Animated.View>
+                    ) : null}
 
-                  {/* <Animated.View style={[_styles.bottomAuthItem(), (item.level > 0 && bottomAuthStyleConverter(index))]}>
-                    <Image source={item.img} style={{width: 40, height: 30}} />
-                    <Text style={_styles.bottomAuthText(item.level > 0)}>{item.name} {item.level > 0 && 'Lv.' + item.level}</Text>
-                  </Animated.View> */}
-                </>                
-              )
-            })}
+                    {/* <Animated.View style={[_styles.bottomAuthItem(), (item.level > 0 && bottomAuthStyleConverter(index))]}>
+                      <Image source={item.img} style={{width: 40, height: 30}} />
+                      <Text style={_styles.bottomAuthText(item.level > 0)}>{item.name} {item.level > 0 && 'Lv.' + item.level}</Text>
+                    </Animated.View> */}
+                  </>                
+                )
+              })}
+            </Animated.View>
           </SpaceView>
 
           <View style={_styles.bgBox} />
@@ -456,12 +483,22 @@ const _styles = StyleSheet.create({
     marginBottom: 5,
   },
   bottomBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
     marginBottom: 5,
-    zIndex: 1,
+    height: 53,
   },
+  bottomAnimation: (_zIndex: number) => {
+    return {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: _zIndex,
+    };
+  },
+
   bottomAuthItem: (isOpacity: boolean) => {
     return {
       alignItems: 'center',
@@ -476,6 +513,7 @@ const _styles = StyleSheet.create({
       fontSize: 10,
       color: '#fff',
       backgroundColor: isOn ? '#7986EE' : '#B1B3C7',
+      //backgroundColor: '#B1B3C7',
       width: 48,
       textAlign: 'center',
       borderRadius: 8,
