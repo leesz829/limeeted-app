@@ -1,4 +1,4 @@
-import { ColorType } from '@types';
+import { ColorType, ScreenNavigationProp } from '@types';
 import { Color } from 'assets/styles/Color';
 import { commonStyle, layoutStyle, modalStyle, styles } from 'assets/styles/Styles';
 import { CommonText } from 'component/CommonText';
@@ -11,8 +11,9 @@ import LinearGradient from 'react-native-linear-gradient';
 import { IMAGE, PROFILE_IMAGE, findSourcePath, ICON } from 'utils/imageUtils';
 import { CommaFormat, isEmptyData, formatNowDate } from 'utils/functions';
 import AsyncStorage from '@react-native-community/async-storage';
-import Animated, { useAnimatedStyle, withTiming, useSharedValue, withSpring, withSequence, withDelay, Easing, withRepeat, interpolate, Extrapolate, stopClock } from 'react-native-reanimated';
-import { useFocusEffect } from '@react-navigation/native';
+import Animated, { useAnimatedStyle, withTiming, useSharedValue, withSpring, withSequence, withDelay, Easing, withRepeat, interpolate, Extrapolate, stopClock, cancelAnimation } from 'react-native-reanimated';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { STACK } from 'constants/routes';
 
 
 
@@ -34,6 +35,7 @@ interface Props {
 const { width, height } = Dimensions.get('window');
 
 export const NoticePopup = (props: Props) => {
+  const navigation = useNavigation<ScreenNavigationProp>();
   const ref = React.useRef();
   const [currentIndex, setCurrentIndex] = React.useState(0);
   const noticeRef = React.useRef();
@@ -80,6 +82,7 @@ export const NoticePopup = (props: Props) => {
   }, [props]);
 
 
+  // 공지사항 이동 값
   const noticeMoveValue = useSharedValue(20);
 
   const noticeStyle = useAnimatedStyle(() => {
@@ -93,10 +96,6 @@ export const NoticePopup = (props: Props) => {
   const noticeAnimate = async () => {
     noticeAnimateCancel();
 
-    /* noticeMoveValue.value = withSequence(
-      withDelay(500, withTiming(1, { duration: 500 })),
-    ); */
-
     noticeMoveValue.value = withDelay(500, withTiming(1, { duration: 500 }));
   };
 
@@ -105,11 +104,25 @@ export const NoticePopup = (props: Props) => {
     noticeMoveValue.value = 20;
   };
 
+  // 상세 이동
+  const goDetail = async () => {
+    navigation.navigate(STACK.COMMON, {
+      screen: 'Board0',
+    });
+  };
+
+  const noticeAnimateInit = async () => {
+    cancelAnimation(noticeMoveValue);
+
+    noticeMoveValue.value = 20;
+  };
+
   useFocusEffect(
     React.useCallback(() => {
       noticeAnimate();
 
       return () => {
+        noticeAnimateInit();
       };
     }, []),
   );
@@ -140,7 +153,10 @@ export const NoticePopup = (props: Props) => {
               </SpaceView>
 
               {/* 상세보기 영역 */}
-              <TouchableOpacity style={_styles.detailBtnArea} hitSlop={commonStyle.hipSlop15}>
+              <TouchableOpacity 
+                onPress={() => goDetail()}
+                style={_styles.detailBtnArea} 
+                hitSlop={commonStyle.hipSlop15}>
                 <Image source={ICON.nextArrowIcon} style={styles.iconSquareSize(12)} />
               </TouchableOpacity>
 
@@ -174,7 +190,7 @@ export const NoticePopup = (props: Props) => {
                 loop={true}
                 pagingEnabled
                 autoplay={true}
-                autoplayDelay={2000}
+                autoplayDelay={5000}
                 renderItem={({ item, index }) => {
                   return (
                     <SpaceView key={index} viewStyle={_styles.noticeItem}>
