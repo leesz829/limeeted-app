@@ -37,20 +37,12 @@ const { width, height } = Dimensions.get('window');
 export const NoticePopup = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
   const ref = React.useRef();
-  const [currentIndex, setCurrentIndex] = React.useState(0);
+  const [currentIndex, setCurrentIndex] = React.useState(1);
   const noticeRef = React.useRef();
 
   const memberBase = useUserInfo();
 
   const [noticeList, setNoticeList] = React.useState([]);
-
-
-  // 스크롤 처리
-  const handleScroll = (event) => {
-    let contentOffset = event.nativeEvent.contentOffset;
-    let index = Math.floor((contentOffset.x / (width-180)) / 3);
-    setCurrentIndex(index);
-  };
 
   const onPressConfirm = async (isNextChk) => {
     if(isNextChk) {
@@ -68,40 +60,34 @@ export const NoticePopup = (props: Props) => {
     };
   };
 
-  /* const onPressEtc = (item:any) => {
-    props.etcCallbackFunc(item);
-    props.setPopupVIsible(false);
-  }; */
-
-  const onPressItem = async (index:number) => {
-    setCurrentIndex(index);
-  };
-
   React.useEffect(() => {
     setNoticeList(props.noticeList);
   }, [props]);
 
 
   // 공지사항 이동 값
-  const noticeMoveValue = useSharedValue(20);
+  const noticeMoveValue = useSharedValue(-500);
 
   const noticeStyle = useAnimatedStyle(() => {
-    const interpolatedMove = interpolate(noticeMoveValue.value, [0, 100], [10, -500], Extrapolate.CLAMP);
+    /* const interpolatedMove = interpolate(noticeMoveValue.value, [0, 100], [10, -500], Extrapolate.CLAMP);
 
     return {
       left: `${interpolatedMove}%`,
-    };
+    }; */
+
+    return {
+      left: noticeMoveValue.value,
+    }
   });
 
   const noticeAnimate = async () => {
-    noticeAnimateCancel();
+    if (noticeRef.current) {
+      noticeRef.current.startAutoplay();
+    }
 
-    noticeMoveValue.value = withDelay(500, withTiming(1, { duration: 500 }));
-  };
+    noticeAnimateInit();
 
-  // 공지 팝업 초기화 함수
-  const noticeAnimateCancel = async () => {
-    noticeMoveValue.value = 20;
+    noticeMoveValue.value = withDelay(500, withTiming(20, { duration: 500 }));
   };
 
   // 상세 이동
@@ -111,10 +97,25 @@ export const NoticePopup = (props: Props) => {
     });
   };
 
+  // 공지 팝업 초기화 함수
   const noticeAnimateInit = async () => {
     cancelAnimation(noticeMoveValue);
 
-    noticeMoveValue.value = 20;
+    noticeMoveValue.value = -500;
+  };
+
+  // 자동 스크롤 중지 함수
+  const stopAutoPlay = () => {
+    if (noticeRef.current) {
+      noticeRef.current.stopAutoplay();
+      noticeRef.current.snapToItem(0);
+      setCurrentIndex(1);
+    }
+  };
+
+  // 현재 스냅된 아이템의 인덱스를 저장하는 이벤트 핸들러
+  const handleSnapToItem = (index) => {
+    setCurrentIndex(index+1);
   };
 
   useFocusEffect(
@@ -123,6 +124,7 @@ export const NoticePopup = (props: Props) => {
 
       return () => {
         noticeAnimateInit();
+        stopAutoPlay();
       };
     }, []),
   );
@@ -132,7 +134,7 @@ export const NoticePopup = (props: Props) => {
   return (
     <>
       {props.popupVisible &&
-      <Animated.View style={[_styles.test, noticeStyle]}>
+      <Animated.View style={[_styles.popupWrap, noticeStyle]}>
         <LinearGradient
           colors={['#8800FF', '#0F68B7']}
           start={{ x: 0, y: 1 }}
@@ -181,7 +183,7 @@ export const NoticePopup = (props: Props) => {
               <Carousel
                 data={noticeList}
                 ref={noticeRef}
-                onScroll={handleScroll}
+                //onScroll={handleScroll}
                 showsHorizontalScrollIndicator={false}
                 sliderWidth={Math.round(width)} 
                 itemWidth={Math.round(width)}
@@ -191,6 +193,7 @@ export const NoticePopup = (props: Props) => {
                 pagingEnabled
                 autoplay={true}
                 autoplayDelay={5000}
+                onSnapToItem={handleSnapToItem} // 스냅 이벤트 핸들러 추가
                 renderItem={({ item, index }) => {
                   return (
                     <SpaceView key={index} viewStyle={_styles.noticeItem}>
@@ -228,6 +231,10 @@ export const NoticePopup = (props: Props) => {
 ####################################################################################################### */}
 
 const _styles = StyleSheet.create({
+  popupWrap: {
+    position: 'absolute',
+    bottom: 30,
+  },
   popupContainer: {
       width: width - 150,
       borderRadius: 8,
@@ -305,9 +312,5 @@ const _styles = StyleSheet.create({
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 12,
     color: '#707070',
-  },
-  test: {
-    position: 'absolute',
-    bottom: 30,
   },
 });

@@ -1037,12 +1037,14 @@ export const Roby = (props: Props) => {
       {/* ###############################################
                      공지사항 팝업
       ############################################### */}
-      <NoticePopup
-        popupVisible={noticePopupVisible}
-        setPopupVIsible={setNoticePopupVisible}
-        noticeList={noticeList}
-        //etcCallbackFunc={contents.etcCallback}
-      />
+      {noticePopupVisible && (
+        <NoticePopup
+          popupVisible={noticePopupVisible}
+          setPopupVIsible={setNoticePopupVisible}
+          noticeList={noticeList}
+          //etcCallbackFunc={contents.etcCallback}
+        />
+      )}
     </>
   );
 };

@@ -174,7 +174,6 @@ export default function AuthPickRender({ _authLevel, _authList }) {
     authList.map((item, index) => {
       if(item.level > 0) {
         _delayCount = _delayCount+400;
-        console.log('_delayCount ::::: ',  _delayCount);
         if(index == 0) {
           bottomAuthOpacityValue01.value = withDelay(_delayCount, withTiming(1, { duration: 300 }));
         } else if(index == 1) {
