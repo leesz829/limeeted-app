@@ -699,6 +699,10 @@ export const SecondAuthPopup = (props: Props) => {
                     <Text style={_styles.rowTextHalfLeft('40%')}>LV 6</Text>
                     <Text style={_styles.rowTextHalfRight('60%')}>5만명 이상</Text>
                   </View>
+                  <View style={_styles.rowStyle}>
+                    <Text style={_styles.rowTextHalfLeft('40%')}>LV 7</Text>
+                    <Text style={_styles.rowTextHalfRight('60%')}>10만명 이상</Text>
+                  </View>
                 </>
               )}
 
