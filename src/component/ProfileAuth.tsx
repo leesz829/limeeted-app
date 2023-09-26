@@ -289,7 +289,7 @@ function RenderAuthInfoNew({ item, isButton, onPressSecondAuthFunc, onPressSecon
                 </SpaceView>
               ) : (
                 <SpaceView mt={10} viewStyle={_styles.authIntroArea}>
-                  <Text style={_styles.authIntroText}>회원님이 작성한 인증 코멘트가 없습니다.</Text>
+                  <Text style={_styles.authIntroText}>작성한 인증 코멘트가 없습니다.</Text>
                 </SpaceView>
               )}
             </>
