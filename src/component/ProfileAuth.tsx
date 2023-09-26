@@ -187,6 +187,7 @@ function RenderAuthInfoNew({ item, isButton, onPressSecondAuthFunc, onPressSecon
   const code = item?.common_code;
   let imgSrc = ICON.jobNew;
   let textDesc = '"비교불가의 전문성을 갖춘 리더이자 역경을 이겨낸 승리자"';
+  let maxLevel = 7;
 
   if(code == 'JOB') {
     imgSrc = ICON.jobNew;
@@ -200,6 +201,10 @@ function RenderAuthInfoNew({ item, isButton, onPressSecondAuthFunc, onPressSecon
     imgSrc = ICON.snsNew;
   } else if(code == 'VEHICLE') {
     imgSrc = ICON.vehicleNew;
+  }
+
+  if(code == 'VEHICLE') {
+    maxLevel = 5;
   }
 
   return (
@@ -230,7 +235,7 @@ function RenderAuthInfoNew({ item, isButton, onPressSecondAuthFunc, onPressSecon
         {isEmptyData(item?.auth_level) && item?.auth_level > 0 && (
           <SpaceView mt={8} viewStyle={{width: '100%'}}>
             <SpaceView mt={13} viewStyle={{zIndex: 1, alignItems: 'flex-start', marginHorizontal: 70}}>
-              <View style={[_styles.scoreContainer, { left: item?.auth_level == 0 ? 0 : (item?.auth_level/7) * 100 - 7 + '%' }]}>
+              <View style={[_styles.scoreContainer, { left: item?.auth_level == 0 ? 0 : (item?.auth_level/maxLevel) * 100 - 7 + '%' }]}>
                 <Text style={_styles.scoreText}>Lv.{item?.auth_level}</Text>
                 <View style={_styles.triangle}></View>
               </View>
@@ -239,7 +244,7 @@ function RenderAuthInfoNew({ item, isButton, onPressSecondAuthFunc, onPressSecon
                 colors={['#ABEFE6', '#20E1E8']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
-                style={_styles.gradient(item?.auth_level/7)}>
+                style={_styles.gradient(item?.auth_level/maxLevel)}>
               </LinearGradient>
               
               <Slider
@@ -253,7 +258,7 @@ function RenderAuthInfoNew({ item, isButton, onPressSecondAuthFunc, onPressSecon
 
               <View style={_styles.gageContainer}>
                 <Text style={_styles.gageText}>Lv.1</Text>
-                <Text style={_styles.gageText}>Lv.7</Text>
+                <Text style={_styles.gageText}>Lv.{maxLevel}</Text>
               </View>
             </SpaceView>
           </SpaceView>
@@ -284,7 +289,7 @@ function RenderAuthInfoNew({ item, isButton, onPressSecondAuthFunc, onPressSecon
                 </SpaceView>
               ) : (
                 <SpaceView mt={10} viewStyle={_styles.authIntroArea}>
-                  <Text style={_styles.authIntroText}>작성된 인증 코멘트가 없습니다.</Text>
+                  <Text style={_styles.authIntroText}>회원님이 작성한 인증 코멘트가 없습니다.</Text>
                 </SpaceView>
               )}
             </>
@@ -551,8 +556,6 @@ const _styles = StyleSheet.create({
     if(value != null && typeof value != 'undefined') {
       percent = value * 100;
     };
-
-    console.log('percent ::::: ' , percent);
 
     return {
       position: 'absolute',

@@ -413,7 +413,7 @@ const _styles = StyleSheet.create({
     marginBottom: 5,
   },
   bottomBox: {
-    marginBottom: 5,
+    marginBottom: 0,
     height: 53,
     zIndex: 1,
   },
