@@ -101,14 +101,18 @@ export default function AuthPickRender({ _authLevel, _authList }) {
   const authPickAnimate = async () => {
     authPickAnimateCancel();
 
-    wrapTopValue.value = withSequence(
-      withDelay(500, withSpring(100, { damping: 20, stiffness: 300 })),
-      withDelay(1500, withTiming(100, { duration: 200 })),
-    );
+    console.log('???');
+
+    /* wrapTopValue.value = withSequence(
+      withDelay(800, withSpring(100, { damping: 20, stiffness: 300 })),
+      withDelay(1800, withTiming(100, { duration: 200 })),
+    ); */
+
+    wrapTopValue.value = withDelay(800, withSpring(100, { damping: 20, stiffness: 300 }));
 
     wrapOpacityValue.value = withSequence(
-      withDelay(500, withTiming(1, { duration: 300 })),
-      withDelay(3000, withTiming(0, { duration: 600 })),
+      withDelay(800, withTiming(1, { duration: 300 })),
+      withDelay(3300, withTiming(0, { duration: 600 })),
     );
 
     setTimeout(() => {
@@ -124,7 +128,7 @@ export default function AuthPickRender({ _authLevel, _authList }) {
       } */
 
       bottomAuthAnimate();
-    }, 1500);
+    }, 1800);
 
     //topBaseOpacityValue.value = withDelay(800, withTiming(0, { duration: 300 }));
     //topMainOpacityValue.value = withDelay(800, withTiming(1, { duration: 300 }));
@@ -427,8 +431,6 @@ const _styles = StyleSheet.create({
   },
 
   bottomAuthItem: (isOpacity: boolean) => {
-    console.log('isOpacity ::: ' , isOpacity);
-
     return {
       alignItems: 'center',
       justifyContent: 'center',
