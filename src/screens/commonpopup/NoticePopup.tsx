@@ -135,6 +135,15 @@ export const NoticePopup = (props: Props) => {
     <>
       {props.popupVisible &&
       <Animated.View style={[_styles.popupWrap, noticeStyle]}>
+
+        {/* 닫기 버튼 영역 */}
+        <TouchableOpacity 
+          onPress={() => onPressConfirm(true)}
+          style={_styles.xButtonArea}
+          hitSlop={commonStyle.hipSlop20}>
+          <Image source={ICON.xBtn3} style={styles.iconSquareSize(23)} />
+        </TouchableOpacity>
+
         <LinearGradient
           colors={['#8800FF', '#0F68B7']}
           start={{ x: 0, y: 1 }}
@@ -146,13 +155,6 @@ export const NoticePopup = (props: Props) => {
               <Image source={ICON.bellIcon} style={styles.iconSquareSize(15)} />
               <Text style={_styles.noticeText}>최근 소식</Text>
             </SpaceView>
-
-            <TouchableOpacity 
-              onPress={() => onPressConfirm(true)}
-              style={_styles.xButtonArea}
-              hitSlop={commonStyle.hipSlop20}>
-              <Image source={ICON.xBtn3} style={styles.iconSquareSize(23)} />
-            </TouchableOpacity>
 
             <SpaceView mt={6} viewStyle={_styles.noticeContent}>
 
@@ -325,7 +327,8 @@ const _styles = StyleSheet.create({
   },
   xButtonArea: {
     position: 'absolute',
-    top: -13,
-    right: -12,
+    top: -10,
+    right: -8,
+    zIndex: 1,
   },
 });
