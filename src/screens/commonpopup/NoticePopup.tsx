@@ -201,6 +201,8 @@ export const NoticePopup = (props: Props) => {
                 autoplay={true}
                 autoplayDelay={5000}
                 onSnapToItem={handleSnapToItem} // 스냅 이벤트 핸들러 추가
+                firstItem={noticeList.length}
+                useScrollView={true}
                 renderItem={({ item, index }) => {
                   return (
                     <SpaceView key={index} viewStyle={_styles.noticeItem}>

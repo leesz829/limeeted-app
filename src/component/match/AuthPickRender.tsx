@@ -386,7 +386,6 @@ const _styles = StyleSheet.create({
       zIndex: _zIndex,
     };
   },
-
   topContent: {
     flexDirection: 'row',
     alignItems:'center',
@@ -412,6 +411,7 @@ const _styles = StyleSheet.create({
   bottomBox: {
     marginBottom: 5,
     height: 53,
+    zIndex: 1,
   },
   bottomAnimation: (_zIndex: number) => {
     return {
