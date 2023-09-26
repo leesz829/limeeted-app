@@ -211,7 +211,7 @@ export default function MyDailyView(props: Props) {
                 </SpaceView>
               </>
             )}
-          </View>          
+          </View>
 
           <View style={{ height: 30 }} />
         </ScrollView>

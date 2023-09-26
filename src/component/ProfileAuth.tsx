@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { RouteProp, useIsFocused, useNavigation, useFocusEffect } from '@react-navigation/native';
-import { StackParamList, ScreenNavigationProp } from '@types';
+import { StackParamList, ScreenNavigationProp, ColorType } from '@types';
 import { Dimensions, Image, StyleSheet, Text, View, TouchableOpacity, ScrollView, Platform } from 'react-native';
 import { SimpleGrid } from 'react-native-super-grid';
 import { ICON } from 'utils/imageUtils';
@@ -13,6 +13,7 @@ import Carousel from 'react-native-snap-carousel';
 import { commonStyle } from 'assets/styles/Styles';
 import { isEmptyData } from 'utils/functions';
 import AuthLevel from 'component/common/AuthLevel';
+import { Slider } from '@miblanchard/react-native-slider';
 
 
 const { width } = Dimensions.get('window');
@@ -181,6 +182,7 @@ const renderAuthInfo = ({ item }: { item: auth }) => (
   </View>
 );
 
+/* #################################################### 인증 정보 렌더링 */
 function RenderAuthInfoNew({ item, isButton, onPressSecondAuthFunc, onPressSecondCommentFunc }) {
   const code = item?.common_code;
   let imgSrc = ICON.jobNew;
@@ -203,7 +205,7 @@ function RenderAuthInfoNew({ item, isButton, onPressSecondAuthFunc, onPressSecon
   return (
     <View style={_styles.authShadowArea}>
       <LinearGradient
-        colors={['#FFFFFF', '#E8FFFE']}
+        colors={['#FFFFFF', '#ABFFFB']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={_styles.authArea(Platform.OS)}>
@@ -220,13 +222,42 @@ function RenderAuthInfoNew({ item, isButton, onPressSecondAuthFunc, onPressSecon
           </SpaceView>
         } */}
 
-        <SpaceView>
+        <SpaceView mb={5}>
           <Image source={imgSrc} style={_styles.authIcon} resizeMode={'contain'} />
         </SpaceView>
 
-        <SpaceView mt={8}>
-          <Text style={_styles.authTit}>{/* {item?.code_name} */}{item?.auth_level != null && 'LV ' + item?.auth_level}</Text>
-        </SpaceView>
+        {/* 레벨 게이지 표시 영역 */}
+        {isEmptyData(item?.auth_level) && item?.auth_level > 0 && (
+          <SpaceView mt={8} viewStyle={{width: '100%'}}>
+            <SpaceView mt={13} viewStyle={{zIndex: 1, alignItems: 'flex-start', marginHorizontal: 70}}>
+              <View style={[_styles.scoreContainer, { left: item?.auth_level == 0 ? 0 : (item?.auth_level/7) * 100 - 7 + '%' }]}>
+                <Text style={_styles.scoreText}>Lv.{item?.auth_level}</Text>
+                <View style={_styles.triangle}></View>
+              </View>
+
+              <LinearGradient
+                colors={['#ABEFE6', '#20E1E8']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={_styles.gradient(item?.auth_level/7)}>
+              </LinearGradient>
+              
+              <Slider
+                animateTransitions={true}
+                renderThumbComponent={() => null}
+                containerStyle={_styles.sliderContainerStyle}
+                trackStyle={_styles.sliderThumbStyle}
+                trackClickable={false}
+                disabled
+              />
+
+              <View style={_styles.gageContainer}>
+                <Text style={_styles.gageText}>Lv.1</Text>
+                <Text style={_styles.gageText}>Lv.7</Text>
+              </View>
+            </SpaceView>
+          </SpaceView>
+        )}
 
         <SpaceView viewStyle={{minHeight: 35, justifyContent: 'center'}}>
           <Text style={_styles.authText}>{item?.slogan_name != null ? '"' + item?.slogan_name + '"' : '"프로필 인증 변경 심사 후 인증 레벨을 부여 받을 수 있어요."'}</Text>
@@ -430,7 +461,6 @@ const _styles = StyleSheet.create({
       };
     }    
   },
-
   authIcon: {
     width: 95,
     height: 71,
@@ -486,12 +516,81 @@ const _styles = StyleSheet.create({
       marginRight: 3,
     };
   },
-
   authIndicatorText: {
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 10,
     color: '#FFFFFF',
     marginRight: 7,
+  },
+  sliderContainerStyle: {
+    width: '100%',
+    height: 11,
+    borderRadius: 50,
+    backgroundColor: ColorType.primary,
+  },
+  sliderThumbStyle: {
+    height: 11,
+    borderRadius: 50,
+    backgroundColor: 'white',
+  },
+  gageContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 3,
+  },
+  gageText: {
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 10,
+    color: '#8A8DA4',
+  },
+  gradient: (value:any) => {
+    let percent = 0;
+
+    if(value != null && typeof value != 'undefined') {
+      percent = value * 100;
+    };
+
+    console.log('percent ::::: ' , percent);
+
+    return {
+      position: 'absolute',
+      width: percent + '%',
+      height: 11,
+      zIndex: 1,
+      borderRadius: 13,
+    };
+  },
+  scoreContainer: {
+    position: 'absolute',
+    transform: [{ translateY: -19 }], // 수직 중앙 정렬을 위한 translateY
+    alignItems: 'center',
+  },
+  scoreText: {
+    backgroundColor: '#151515',
+    color: ColorType.white,
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 10,
+    paddingHorizontal: 4,
+    paddingVertical: 1,
+    borderRadius: 3,
+    borderBottomColor: '#151515',
+    overflow: 'hidden',
+  },
+  triangle: {
+    marginTop: -1,
+    width: 0,
+    height: 0,
+    backgroundColor: 'transparent',
+    borderStyle: 'solid',
+    borderLeftWidth: 5,
+    borderRightWidth: 5,
+    borderBottomWidth: 5,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderBottomColor: '#151515',
+    transform: [{ rotate: '180deg' }],
   },
 });
 
