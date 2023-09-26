@@ -32,7 +32,7 @@ interface Props {
 export const Policy = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
 
-  //const { show } = usePopup();  // 공통 팝업
+  const { show } = usePopup();  // 공통 팝업
   const { width, height } = Dimensions.get('window');
 
   const [allAgree, setAllAgree] = useState<boolean>(false);

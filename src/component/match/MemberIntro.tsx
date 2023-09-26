@@ -100,7 +100,7 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                                   )}
                                   {memberData?.form_body == 'FIT' && (
                                     <>
-                                      {memberData?.job_name != null ? (
+                                      {isEmptyData(memberData?.job_name) ? (
                                         <>
                                           <Text style={_styles.addActiveText}>헬스를 즐기는</Text>{' '}
                                         </>
@@ -113,7 +113,7 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                                   )}
                                   {memberData?.form_body == 'GIANT' && (
                                     <>
-                                      {memberData?.job_name != null ? ( 
+                                      {isEmptyData(memberData?.job_name) ? ( 
                                         <>
                                           <Text style={_styles.addActiveText}>건장한 피지컬</Text>의{' '}
                                         </>
@@ -126,7 +126,7 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                                   )}
                                   {memberData?.form_body == 'SLIM' && (
                                     <>
-                                      {memberData?.job_name != null ? ( 
+                                      {isEmptyData(memberData?.job_name) ? ( 
                                         <>
                                           <Text style={_styles.addActiveText}>운동을 즐기는</Text>{' '}
                                         </>
@@ -139,7 +139,7 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                                   )}
                                   {memberData?.form_body == 'CHUBBY' && (
                                     <>
-                                      {memberData?.job_name != null ? ( 
+                                      {isEmptyData(memberData?.job_name) ? ( 
                                         <>
                                           <Text style={_styles.addActiveText}>통통한</Text> 체형의{' '}
                                         </>

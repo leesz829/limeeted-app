@@ -121,28 +121,32 @@ export const Shop = () => {
     const { success, data } = await get_shop_main({ banner_type: 'PROD' });
 
     if (success) {
-      
+
       // 프로모션 팝업 노출
       if(isPopupShow) {
         if(data.popup_bas_list?.length > 0 && isEmptyData(data.popup_bas_list[0]?.popup_detail) && data.popup_bas_list[0]?.popup_detail.length > 0) {
+          let endDt = await AsyncStorage.getItem('POPUP_ENDDT_PROMOTION');
           let nowDt = formatNowDate().substring(0, 8);
-          show({
-            type: 'PROMOTION',
-            prodList: data.popup_bas_list[0]?.popup_detail,
-            confirmCallback: async function(isNextChk) {
-              if(isNextChk) {
-                // 팝업 종료 일시 Storage 저장
-                await AsyncStorage.setItem('POPUP_ENDDT_' + 'PROMOTION', nowDt);
-                isPopup = false;
-              }
-            },
-            etcCallback: async function(item) {
-              openProductModal(item);
-              console.log('item :::::::: ' , item);
-            },
-          });
-        };
-      }
+
+          if(null == endDt || endDt < nowDt) {
+            show({
+              type: 'PROMOTION',
+              prodList: data.popup_bas_list[0]?.popup_detail,
+              confirmCallback: async function(isNextChk) {
+                if(isNextChk) {
+                  // 팝업 종료 일시 Storage 저장
+                  await AsyncStorage.setItem('POPUP_ENDDT_PROMOTION', nowDt);
+                  isPopup = false;
+                }
+              },
+              etcCallback: async function(item) {
+                openProductModal(item);
+                console.log('item :::::::: ' , item);
+              },
+            });
+          };
+        };  
+      };
 
       // 이벤트 팝업 노출
       /* if(data.popup_list?.length > 0) {

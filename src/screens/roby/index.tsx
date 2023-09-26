@@ -114,7 +114,9 @@ export const Roby = (props: Props) => {
               setNoticeList(data.popup_bas_list[0]?.popup_detail);
               setNoticePopupVisible(true);
             }
-          };
+          } else {
+            setNoticePopupVisible(false);
+          }
 
         } else {
           show({

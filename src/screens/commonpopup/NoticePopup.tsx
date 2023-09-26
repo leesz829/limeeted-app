@@ -47,7 +47,8 @@ export const NoticePopup = (props: Props) => {
   const onPressConfirm = async (isNextChk) => {
     if(isNextChk) {
       let nowDt = formatNowDate().substring(0, 8);
-      await AsyncStorage.setItem('POPUP_ENDDT_' + 'NOTICE', nowDt);
+      await AsyncStorage.setItem('POPUP_ENDDT_NOTICE', nowDt);
+      props.setPopupVIsible(false);
     } else {
       props.setPopupVIsible(false);
     };
@@ -58,6 +59,8 @@ export const NoticePopup = (props: Props) => {
       props.confirmCallbackFunc && props.confirmCallbackFunc(isNextChk);
       
     };
+
+    stopAutoPlay();
   };
 
   React.useEffect(() => {
@@ -208,22 +211,24 @@ export const NoticePopup = (props: Props) => {
                 renderItem={({ item, index }) => {
                   return (
                     <SpaceView key={index} viewStyle={_styles.noticeItem}>
-                      <Text style={_styles.noticeTit} numberOfLines={1}>{item.title}</Text>
-                      <Text style={_styles.noticeDesc} numberOfLines={1}>{item.content}</Text>
+                      <TouchableOpacity onPress={() => goDetail()}>
+                        <Text style={_styles.noticeTit} numberOfLines={1}>{item.title}</Text>
+                        <Text style={_styles.noticeDesc} numberOfLines={1}>{item.content}</Text>
+                      </TouchableOpacity>
                     </SpaceView>
                   )
                 }}
               />
             </SpaceView>
 
-            <SpaceView viewStyle={_styles.btnArea}>
+            {/* <SpaceView viewStyle={_styles.btnArea}>
               <TouchableOpacity onPress={() => onPressConfirm(true)}>
                 <Text style={_styles.closeBtnText}>오늘은 그만보기</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => onPressConfirm(false)}>
                 <Text style={_styles.closeBtnText}>닫기 X</Text>
               </TouchableOpacity>
-            </SpaceView>
+            </SpaceView> */}
           </SpaceView>
         </LinearGradient>
         </Animated.View>
@@ -244,7 +249,7 @@ export const NoticePopup = (props: Props) => {
 const _styles = StyleSheet.create({
   popupWrap: {
     position: 'absolute',
-    bottom: 30,
+    bottom: 20,
   },
   popupContainer: {
       width: width - 150,
