@@ -73,6 +73,9 @@ function NaviButtons({ navName, theme }: { navName: string; theme?: string }) {
   function onPressLive() {
     navigation.navigate('Live');
   }
+  function onPressStory() {
+    navigation.navigate('Story');
+  }
   const navigation = useNavigation<ScreenNavigationProp>();
 
   const limitedIcon = React.useMemo(() => {
@@ -91,13 +94,17 @@ function NaviButtons({ navName, theme }: { navName: string; theme?: string }) {
   }, [navName, theme]);
 
   return (
-    <View style={{ flexDirection: 'row' }}>
+    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
       <TouchableOpacity style={[_styles.tab]} onPress={onPressLimeeted} disabled={navName == 'LIMEETED' ? true : false}>
         <Image style={_styles.limitedIcon} source={limitedIcon} resizeMode="contain" />
       </TouchableOpacity>
       
       <TouchableOpacity style={[_styles.tab]} onPress={onPressLive} disabled={navName == 'LIVE' ? true : false}>
         <Image style={_styles.liveIcon} source={liveIcon} resizeMode="contain" />
+      </TouchableOpacity>
+
+      <TouchableOpacity style={[_styles.tab]} onPress={onPressStory} disabled={navName == 'Story' ? true : false}>
+        <Text style={_styles.storyTxt}>STORY</Text>
       </TouchableOpacity>
     </View>
   );
@@ -256,4 +263,9 @@ const _styles = StyleSheet.create({
   tooltipDescContainer: {
     
   },
+  storyTxt: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 18,
+  },
+
 });
