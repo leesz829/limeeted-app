@@ -143,6 +143,8 @@ export const POPUP_LIST = '/popup/selectPopList';
  * 스토리
  */
 export const STORY_BOARD_SAVE = '/story/saveStoryBoard';
-export const STORY_BOARD_DETAIL = '/story/getStoryBoard';
+export const GET_STORY_DETAIL = '/story/getStoryDetail';
 export const STORY_LIKE_SAVE = '/story/saveStoryLike';
 export const STORY_REPLY_SAVE = '/story/saveStoryReply';
+export const GET_STORY_ACTIVE = '/story/getStoryActive';
+

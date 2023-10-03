@@ -89,9 +89,10 @@ import {
   POPUP_LIST,
   SHOP_MAIN,
   STORY_BOARD_SAVE,
-  STORY_BOARD_DETAIL,
+  GET_STORY_DETAIL,
   STORY_REPLY_SAVE,
   STORY_LIKE_SAVE,
+  GET_STORY_ACTIVE,
 } from './route';
 
 /* ========================================================================================================
@@ -874,16 +875,16 @@ export async function story_board_save(body: {
   story_type: string;
   contents: string;
   img_file_list: any;
+  vote_list: any;
 }) {
   return send(STORY_BOARD_SAVE, 'POST', body, true, false);
 };
 
-
-// 스토리 게시글 정보를 조회한다.
-export async function story_board_detail(body: {
+// 스토리 게시글 상세 정보를 조회한다.
+export async function get_story_detail(body: {
   story_board_seq: number;
 }) {
-  return send(STORY_BOARD_DETAIL, 'POST', body, true, false);
+  return send(GET_STORY_DETAIL, 'POST', body, true, false);
 };
 
 // 스토리 댓글을 저장한다.
@@ -904,4 +905,11 @@ export async function story_like_save(body: {
   story_reply_seq: number;
 }) {
   return send(STORY_LIKE_SAVE, 'POST', body, true, false);
+};
+
+// 스토리 활동 정보를 조회한다.
+export async function get_story_active(body: {
+  
+}) {
+  return send(GET_STORY_ACTIVE, 'POST', body, true, false);
 };
