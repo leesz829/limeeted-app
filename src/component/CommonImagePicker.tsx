@@ -36,6 +36,7 @@ interface Props {
   auth_status?: string;
   imgWidth?: number;
   imgHeight?: number;
+  borderRadius?: number;
 }
 
 const includeExtra = true;
@@ -103,12 +104,12 @@ export const CommonImagePicker: FC<Props> = (props) => {
     <>
       {(isEmptyData(props.type) && props.type == 'STORY') ? (
 
-        <TouchableOpacity onPress={onButtonPress} style={_styles.imgBoxBase(props.imgWidth, props.imgHeight)}>
+        <TouchableOpacity onPress={onButtonPress} style={_styles.imgBoxBase(props.imgWidth, props.imgHeight, props.borderRadius)}>
           {imgPath != '' ? (
             <Image
               resizeMode="cover"
               resizeMethod="scale"
-              style={_styles.imgBoxBase(props.imgWidth, props.imgHeight)}
+              style={_styles.imgBoxBase(props.imgWidth, props.imgHeight, props.borderRadius)}
               source={isEmptyData(props.uriParam) ? props.uriParam : {uri : imgPath}}
             />
           ) : (
@@ -117,7 +118,7 @@ export const CommonImagePicker: FC<Props> = (props) => {
                 <Image
                   resizeMode="cover"
                   resizeMethod="scale"
-                  style={_styles.imgBoxBase(props.imgWidth, props.imgHeight)}
+                  style={_styles.imgBoxBase(props.imgWidth, props.imgHeight, props.borderRadius)}
                   key={props.uriParam}
                   source={props.uriParam}
                 />
@@ -174,11 +175,11 @@ export const CommonImagePicker: FC<Props> = (props) => {
 
 
 const _styles = StyleSheet.create({
-  imgBoxBase: (imgWidth: number, imgHeight: number) => {
+  imgBoxBase: (imgWidth: number, imgHeight: number, borderRadius: number) => {
     return {
       width: isEmptyData(imgWidth) ? imgWidth : (width - 160) / 2,
       height: isEmptyData(imgHeight) ? imgHeight : (width - 160) / 2,
-      borderRadius: 20,
+      borderRadius: isEmptyData(borderRadius) ? borderRadius : 20,
       alignItems: 'center',
       justifyContent: 'center',
       overflow: 'hidden',

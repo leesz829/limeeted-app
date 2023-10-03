@@ -1,5 +1,5 @@
 import { useIsFocused, useNavigation, useFocusEffect, RouteProp  } from '@react-navigation/native';
-import { CommonCode, FileInfo, LabelObj, ProfileImg, LiveMemberInfo, LiveProfileImg, StackParamList, ScreenNavigationProp, ColorType } from '@types';
+import { StackParamList, ScreenNavigationProp, ColorType } from '@types';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { styles, layoutStyle, commonStyle, modalStyle } from 'assets/styles/Styles';
 import { CommonText } from 'component/CommonText';
@@ -7,8 +7,8 @@ import SpaceView from 'component/SpaceView';
 import TopNavigation from 'component/TopNavigation';
 import * as React from 'react';
 import { useState, useRef, useEffect } from 'react';
-import { ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity, Animated, Easing, PanResponder, Platform, TouchableWithoutFeedback } from 'react-native';
-import { story_board_save, story_board_detail } from 'api/models';
+import { ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity, TextInput } from 'react-native';
+import { story_board_save, get_story_detail } from 'api/models';
 import { findSourcePath, IMAGE, GIF_IMG } from 'utils/imageUtils';
 import { usePopup } from 'Context';
 import { SUCCESS, NODATA } from 'constants/reusltcode';
@@ -24,6 +24,8 @@ import { CommonImagePicker } from 'component/CommonImagePicker';
 import { Modalize } from 'react-native-modalize';
 import { CommonTextarea } from 'component/CommonTextarea';
 import { CommonLoading } from 'component/CommonLoading';
+import { CommonInput } from 'component/CommonInput';
+import { VoteEndRadioBox } from 'component/story/VoteEndRadioBox';
 
 
 /* ################################################################################################################
@@ -42,12 +44,7 @@ export default function StoryEdit(props: Props) {
   const isFocus = useIsFocused();
   const dispatch = useDispatch();
 
-  // 본인 데이터
-  const memberBase = useUserInfo();
-
-  // 이미지 인덱스
-  const [page, setPage] = useState(0);
-
+  const memberBase = useUserInfo(); // 회원 기본 데이터
   const { show } = usePopup(); // 공통 팝업
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태 체크
   const [isClickable, setIsClickable] = useState(true); // 클릭 여부
@@ -57,6 +54,10 @@ export default function StoryEdit(props: Props) {
   const [contents, setContents] = useState(''); // 내용
   const [imageList, setImageList] = useState([]); // 이미지 목록
 
+  const [inputVoteName01, setInputVoteName01] = useState('');
+  const [inputVoteName02, setInputVoteName02] = useState('');
+  const [inputVoteImgUrl01, setInputVoteImgUrl01] = useState('');
+  const [inputVoteImgUrl02, setInputVoteImgUrl02] = useState('');
 
   // 이미지 데이터
   const [imgData, setImgData] = React.useState<any>({
@@ -64,6 +65,21 @@ export default function StoryEdit(props: Props) {
     orgImgUrl02: { story_board_img_seq: '', url: '', delYn: '' },
     orgImgUrl03: { story_board_img_seq: '', url: '', delYn: '' },
   });
+
+  // 투표 마감기한 유형
+  const [voteEndTypeList, setVoteEndTypeList] = useState([
+    {label: '1시간', value: 'HOURS_1'},
+    {label: '6시간', value: 'HOURS_6'},
+    {label: '12시간', value: 'HOURS_12'},
+    {label: '1일', value: 'DAY_1'},
+    {label: '3일', value: 'DAY_3'},
+  ]);
+
+  //
+  const voteEndTypeCallbackFn = (value: string) => {
+    console.log('value ::::: ', value);
+    //setCheckReportType(value);
+  };
 
   // ################################################################ 프로필 이미지 파일 콜백 함수
   const fileCallBack1 = async (uri: any, base64: string) => {
@@ -79,6 +95,14 @@ export default function StoryEdit(props: Props) {
   const fileCallBack3 = async (uri: any, base64: string) => {
     let data = { file_uri: uri, file_base64: base64, order_seq: 3 };
     imageDataApply(data);
+  };
+
+  const voteFileCallBack01 = async (uri: any, base64: string) => {
+    
+  };
+
+  const voteFileCallBack02 = async (uri: any, base64: string) => {
+    
   };
 
   // ################################################################ 프로필 이미지 데이터 적용
@@ -171,7 +195,7 @@ export default function StoryEdit(props: Props) {
         story_board_seq: storyBoardSeq,
       };
 
-      const { success, data } = await story_board_detail(body);
+      const { success, data } = await get_story_detail(body);
       if(success) {
         switch (data.result_code) {
         case SUCCESS:
@@ -246,28 +270,27 @@ export default function StoryEdit(props: Props) {
     <>
       {isLoading && <CommonLoading />}
 
-      <CommonHeader title={'스토리 등록'} />
+      <CommonHeader title={storyType == 'STORY' ? '스토리 등록' : storyType == 'VOTE' ? '투표형 게시글 등록' : '비밀 게시글 등록'} />
 
-        <ScrollView 
-          showsVerticalScrollIndicator={false}
-          style={{backgroundColor: '#fff'}}>
+      <ScrollView showsVerticalScrollIndicator={false} style={{backgroundColor: '#fff'}}>
 
+        {/* ############################################################################ 스토리형 */}
+        {storyType == 'STORY' && (
           <SpaceView mt={50} pl={20} pr={20}>
-
             <SpaceView mb={25}>
               <Text style={_styles.titleText}>게시글 내용을 작성해 주세요.</Text>
             </SpaceView>
             
             <SpaceView viewStyle={_styles.imgArea}>
               {[0,1,2].map((i, index) => {
-              return (
-                <>
-                  {index == 0 && <ImageRenderItem index={index} _imgData={imgData.orgImgUrl01} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack1}  /> }
-                  {index == 1 && <ImageRenderItem index={index} _imgData={imgData.orgImgUrl02} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack2}  /> }
-                  {index == 2 && <ImageRenderItem index={index} _imgData={imgData.orgImgUrl03} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack3}  /> }
-                </>
-              )
-            })}
+                return (
+                  <>
+                    {index == 0 && <ImageRenderItem index={index} _imgData={imgData.orgImgUrl01} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack1}  /> }
+                    {index == 1 && <ImageRenderItem index={index} _imgData={imgData.orgImgUrl02} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack2}  /> }
+                    {index == 2 && <ImageRenderItem index={index} _imgData={imgData.orgImgUrl03} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack3}  /> }
+                  </>
+                )
+              })}
             </SpaceView>
 
             <SpaceView mt={20}>
@@ -284,17 +307,118 @@ export default function StoryEdit(props: Props) {
                 fontColor={'#000'}
               />
             </SpaceView>
-
           </SpaceView>
-        </ScrollView>
+        )}
 
-        <SpaceView viewStyle={_styles.btnArea}>
-          <TouchableOpacity
-            onPress={() => { storyRegister(); }}
-            style={_styles.regiBtn}>
-            <Text style={_styles.regiBtnText}>등록</Text>
-          </TouchableOpacity>
-        </SpaceView>
+        {/* ############################################################################ 투표형 */}
+        {storyType == 'VOTE' && (
+          <SpaceView mt={50} pl={20} pr={20}>
+
+            {/* ############### 선택지 입력 영역 */}
+            <SpaceView mb={30}>
+              <SpaceView mb={10}>
+                <Text style={_styles.titleText}>선택지를 작성해 주세요.</Text>
+              </SpaceView>
+              
+              <SpaceView viewStyle={_styles.voteArea}>
+                <SpaceView mb={10}>
+                  <TextInput
+                    value={inputVoteName01}
+                    onChangeText={(inputVoteName01) => setInputVoteName01(inputVoteName01)}
+                    multiline={false}
+                    autoCapitalize="none"
+                    style={_styles.voteInput}
+                    placeholder={'선택지 입력'}
+                    placeholderTextColor={'#c7c7c7'}
+                    editable={true}
+                    secureTextEntry={false}
+                    maxLength={50}
+                    numberOfLines={1}
+                  />
+
+                  <SpaceView viewStyle={_styles.voteImgArea}>
+                    <CommonImagePicker 
+                      type={'STORY'} 
+                      callbackFn={voteFileCallBack01} 
+                      uriParam={isEmptyData(inputVoteImgUrl01) ? inputVoteImgUrl01 : ''}
+                      imgWidth={48} 
+                      imgHeight={48}
+                      borderRadius={8}
+                    />
+                  </SpaceView>
+                </SpaceView>
+                <SpaceView>
+                  <TextInput
+                    value={inputVoteName02}
+                    onChangeText={(inputVoteName02) => setInputVoteName02(inputVoteName02)}
+                    multiline={false}
+                    autoCapitalize="none"
+                    style={_styles.voteInput}
+                    placeholder={'선택지 입력'}
+                    placeholderTextColor={'#c7c7c7'}
+                    editable={true}
+                    secureTextEntry={false}
+                    maxLength={50}
+                    numberOfLines={1}
+                  />
+
+                  <SpaceView viewStyle={_styles.voteImgArea}>
+                    <CommonImagePicker 
+                      type={'STORY'} 
+                      callbackFn={voteFileCallBack02} 
+                      uriParam={isEmptyData(inputVoteImgUrl02) ? inputVoteImgUrl02 : ''}
+                      imgWidth={48} 
+                      imgHeight={48}
+                      borderRadius={8}
+                    />
+                  </SpaceView>
+                </SpaceView>
+              </SpaceView>
+            </SpaceView>
+
+            {/* ############### 투표 마감기한 입력 영역 */}
+            <SpaceView mb={30}>
+              <SpaceView mb={10}>
+                <Text style={_styles.titleText}>투표 마감기한을 입력해 주세요.</Text>
+              </SpaceView>
+
+              <SpaceView>
+                <VoteEndRadioBox
+                  items={voteEndTypeList}
+                  callBackFunction={voteEndTypeCallbackFn}
+                />
+              </SpaceView>
+            </SpaceView>
+
+            {/* ############### 투표 내용 입력 영역 */}
+            <SpaceView mb={20}>
+              <SpaceView mb={10}>
+                <Text style={_styles.titleText}>투표 내용을 작성해 주세요.</Text>
+              </SpaceView>
+              <CommonTextarea
+                value={contents}
+                onChangeText={(contents) => setContents(contents)}
+                placeholder={'소소한 일상부터 음식, 여행 등 주제에 관계없이 자유롭게 소통해 보세요.\n\n20글자 이상 입력해 주세요.\n\n(주의)이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 제재 대상이 될 수 있으며 상대를 배려하는 마음으로 이용해 주세요.'}
+                placeholderTextColor={'#C7C7C7'}
+                maxLength={1000}
+                exceedCharCountColor={'#990606'}
+                fontSize={13}
+                height={height-400}
+                backgroundColor={'#F6F7FE'}
+                fontColor={'#000'}
+              />
+            </SpaceView>
+          </SpaceView>
+        )}
+      </ScrollView>
+
+      <SpaceView viewStyle={_styles.btnArea}>
+        <TouchableOpacity
+          onPress={() => { storyRegister(); }}
+          style={_styles.regiBtn}>
+          <Text style={_styles.regiBtnText}>등록</Text>
+        </TouchableOpacity>
+      </SpaceView>
     </>
   );
 
@@ -395,7 +519,23 @@ const _styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
     paddingVertical: 5,
-  }
+  },
+  voteArea: {
+
+  },
+  voteInput: {
+    backgroundColor: '#F0F0F0',
+    paddingLeft: 10,
+    paddingRight: 50,
+  },
+  voteImgArea: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    backgroundColor: '#D0D0D0',
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
 
   
 });

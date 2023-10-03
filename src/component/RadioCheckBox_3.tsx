@@ -25,14 +25,10 @@ export const RadioCheckBox_3: FC<Props> = (props) => {
         if (!item.label) return;
 
         return (
-          <SpaceView
-            key={index + 'check'}>
-            <TouchableOpacity
-              style={[
-                styles.checkWrap,
-              ]}
+          <SpaceView key={index + 'check'}>
+            <TouchableOpacity style={[ styles.checkWrap ]}
               onPress={() => onPressFn(index, item.value)}>
-              
+                
               <View
                 style={[
                   styles.checkContainer,

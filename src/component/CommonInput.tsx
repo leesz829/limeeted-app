@@ -5,6 +5,7 @@ import { FC } from 'react';
 import { Color } from 'assets/styles/Color';
 import { ICON } from 'utils/imageUtils';
 import { commonStyle } from 'assets/styles/Styles';
+import { isEmptyData } from 'utils/functions';
 
 type Props = {
   label?: string;
@@ -32,9 +33,11 @@ export const CommonInput: FC<Props> = (props: any) => {
 
   return (
     <View>
-      <View style={style.labelContainer}>
-        <Text style={style.labelStyle}>{props.label}</Text>
-      </View>
+      {isEmptyData(props.label) && (
+        <View style={style.labelContainer}>
+          <Text style={style.labelStyle}>{props.label}</Text>
+        </View>
+      )}
       <View style={style.inputContainer}>
         <TextInput
           hitSlop={commonStyle.hipSlop30}

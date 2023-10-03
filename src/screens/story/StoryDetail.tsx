@@ -4,11 +4,9 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { styles, layoutStyle, commonStyle, modalStyle } from 'assets/styles/Styles';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
-import TopNavigation from 'component/TopNavigation';
 import * as React from 'react';
-import { useState, useRef, useEffect } from 'react';
 import { ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity, Animated, Easing, PanResponder, Platform, TouchableWithoutFeedback } from 'react-native';
-import { story_board_detail, story_like_save } from 'api/models';
+import { get_story_detail, story_like_save } from 'api/models';
 import { findSourcePath, IMAGE, GIF_IMG } from 'utils/imageUtils';
 import { usePopup } from 'Context';
 import { SUCCESS, NODATA } from 'constants/reusltcode';
@@ -52,21 +50,21 @@ export default function StoryDetail(props: Props) {
   const imgRef = React.useRef();
 
   const { show } = usePopup(); // 공통 팝업
-  const [isLoading, setIsLoading] = useState(false); // 로딩 상태 체크
-  const [isClickable, setIsClickable] = useState(true); // 클릭 여부
-  const [isReplyVisible, setIsReplyVisible] = useState(false);
+  const [isLoading, setIsLoading] = React.useState(false); // 로딩 상태 체크
+  const [isClickable, setIsClickable] = React.useState(true); // 클릭 여부
+  const [isReplyVisible, setIsReplyVisible] = React.useState(false);
   
-  const [storyBoardSeq, setStoryBoardSeq] = useState(props.route.params.storyBoardSeq);
-  const [storyType, setStoryType] = useState(isEmptyData(props.route.params.storyType) ? props.route.params.storyType : ''); // 스토리 유형
+  const [storyBoardSeq, setStoryBoardSeq] = React.useState(props.route.params.storyBoardSeq);
+  const [storyType, setStoryType] = React.useState(isEmptyData(props.route.params.storyType) ? props.route.params.storyType : ''); // 스토리 유형
 
   // 선택된 댓글 데이터(댓글 등록 모달 적용)
-  const [selectedReplyData, setSelectedReplyData] = useState({
+  const [selectedReplyData, setSelectedReplyData] = React.useState({
     storyReplySeq: 0,
     depth: 0,
   });
 
   // 스토리 데이터
-  const [storyData, setStoryData] = useState({
+  const [storyData, setStoryData] = React.useState({
     board: {},
     imageList: [],
     replyList: [],
@@ -127,20 +125,20 @@ export default function StoryDetail(props: Props) {
         story_board_seq: storyBoardSeq,
       };
 
-      const { success, data } = await story_board_detail(body);
+      const { success, data } = await get_story_detail(body);
       if(success) {
         switch (data.result_code) {
-        case SUCCESS:
-          setStoryData({
-            board: data.story,
-            imageList: data.story_img_list,
-            replyList: data.story_reply_list,
-          });
+          case SUCCESS:
+            setStoryData({
+              board: data.story,
+              imageList: data.story_img_list,
+              replyList: data.story_reply_list,
+            });
           
-          break;
-        default:
-          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-          break;
+            break;
+          default:
+            show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+            break;
         }
       } else {
         show({ content: '오류입니다. 관리자에게 문의해주세요.' });
@@ -170,13 +168,12 @@ export default function StoryDetail(props: Props) {
         const { success, data } = await story_like_save(body);
         if(success) {
           switch (data.result_code) {
-          case SUCCESS:
-            getStoryBoard();
-            
-            break;
-          default:
-            show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-            break;
+            case SUCCESS:
+              getStoryBoard();
+              break;
+            default:
+              show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+              break;
           }
         } else {
           show({ content: '오류입니다. 관리자에게 문의해주세요.' });
