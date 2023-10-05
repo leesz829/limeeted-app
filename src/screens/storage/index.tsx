@@ -333,13 +333,13 @@ export const Storage = (props: Props) => {
 
           if(!isReal) {
             if(loadPage == 'ZZIM' || loadPage == 'LIVE') {
-              if((loadPage == 'ZZIM' && data.zzim_trgt_list.length == 0) || (loadPage == 'LIVE' && data.live_high_list.length == 0)) {
+              if((loadPage == 'ZZIM' && zzimItemUseYn != 'Y') || (loadPage == 'LIVE' && data.live_high_list.length == 0)) {
                 onPressDot(0);
               } else {
                 if(loadPage == 'ZZIM') {
                   onPressDot(3);
                 } else if(loadPage == 'LIVE') {
-                  if(data.zzim_trgt_list.length == 0) {
+                  if(zzimItemUseYn != 'Y') {
                     onPressDot(3);
                   } else {
                     onPressDot(4);
@@ -451,6 +451,7 @@ export const Storage = (props: Props) => {
         if(success) {
           if (data.result_code == '0000') {
             dispatch(myProfile());
+            setIsProfileOpenVisible(false);
             navigation.navigate(STACK.COMMON, {
               screen: 'StorageProfile', 
               params: {
@@ -522,7 +523,7 @@ export const Storage = (props: Props) => {
   // ######################################################################################## 초기 실행 함수
   React.useEffect(() => {
     if(isFocusStorage) {
-      getStorageData(false);
+      getStorageData(isEmptyData(params?.loadPage) ? false : true);
     }
   }, [isFocusStorage]);
 
@@ -539,7 +540,7 @@ export const Storage = (props: Props) => {
   );
 
   // #######################################################################################################
-  const onPressDot = async (index:any) => {
+  const onPressDot = async (index:any, type:any) => {
     if(isEmptyData(dataRef?.current)) {
       setCurrentIndex(index);
       //dataRef?.current?.snapToItem(index);
@@ -797,7 +798,7 @@ export const Storage = (props: Props) => {
         {(tabs[currentIndex]?.type != 'ZZIM' && tabs[currentIndex]?.data.length > 0) &&
           <SpaceView mt={7} mb={3} pl={22} pr={22}>
             <View style={[_styles.row, {minHeight: 30}]}>
-              {(currentIndex < 3 && tabs[currentIndex]?.data.length > 0) &&
+              {(tabs[currentIndex].type != 'LIVE' && tabs[currentIndex]?.data.length > 0) &&
                 <>
                   <View style={{flexDirection: 'row'}}>
                     <Text style={_styles.showText}>찐심만 보기</Text>
