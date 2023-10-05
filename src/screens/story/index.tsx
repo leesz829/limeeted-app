@@ -18,6 +18,8 @@ import { useUserInfo } from 'hooks/useUserInfo';
 import { ColorType } from '@types';
 import { isEmptyData } from 'utils/functions';
 import { STACK } from 'constants/routes';
+import AuthLevel from 'component/common/AuthLevel';
+import ProfileGrade from 'component/common/ProfileGrade';
 
 
 /* ################################################################################################################
@@ -155,7 +157,6 @@ export const Story = () => {
       if(success) {
         switch (data.result_code) {
           case SUCCESS:
-            console.log('data.story_list :::: ' , data.story_list);
             setStoryList(data.story_list);
           
             break;
@@ -185,9 +186,27 @@ export const Story = () => {
     return (
       <>
         <SpaceView viewStyle={_styles.itemArea(width - 40)}>
-          <TouchableOpacity onPress={() => { goStoryDetail(storyBoardSeq); }}>
-            <Image source={imgUrl} style={styles.iconSquareSize(width - 40)} resizeMode={'cover'} />
+          <TouchableOpacity onPress={() => { goStoryDetail(storyBoardSeq); }}> 
+            <SpaceView>
+              <Image source={imgUrl} style={styles.iconSquareSize(width - 40)} resizeMode={'cover'} />
+            </SpaceView>
+
+            <SpaceView viewStyle={_styles.topArea}>
+              <Image source={findSourcePath(item?.mst_img_path)} style={_styles.mstImgStyle} resizeMode={'cover'} />
+              <AuthLevel authAcctCnt={item?.auth_acct_cnt} type={'BASE'} />
+              <ProfileGrade profileScore={item?.profile_score} type={'BASE'} />
+            </SpaceView>
+
+            <SpaceView viewStyle={_styles.bottomArea}>
+              <SpaceView><Text style={_styles.contentsText}>{item?.contents}</Text></SpaceView>
+              <SpaceView mt={8}><Text style={_styles.contentsText}>23시간 전</Text></SpaceView>
+            </SpaceView>
+
+            <SpaceView viewStyle={_styles.typeArea(item?.story_type)}>
+              <Text style={_styles.typeText}>{item?.story_type_name}</Text>
+            </SpaceView>
           </TouchableOpacity>
+
         </SpaceView>
       </>
     );
@@ -206,37 +225,48 @@ export const Story = () => {
       {url: findSourcePathLocal(item?.vote_img_path_02)},
     ];
 
-    console.log('item.story_type :::::: ' , item.story_type);
-
     return (
       <>
         <SpaceView viewStyle={_styles.itemArea((width - 43) / 1.5)}>
           <TouchableOpacity activeOpacity={0.7} onPress={() => { goStoryDetail(storyBoardSeq); }}>
-            {item.story_type == 'VOTE' ? (
-              <>
-                {/* <FlatList
-                  data={voteImgList}                  
-                  showsHorizontalScrollIndicator={false}
-                  horizontal
-                  pagingEnabled
-                  renderItem={({ item, index }) => {
+            <SpaceView>
+              {item?.story_type == 'VOTE' ? (
+                <>
+                  {/* <FlatList
+                    data={voteImgList}
+                    showsHorizontalScrollIndicator={false}
+                    horizontal
+                    pagingEnabled
+                    renderItem={({ item, index }) => {
 
-                    return (
-                      <View style={{width: (width - 43) / 1.5, height: (width - 43) / 1.5}}>
-                          <Image source={item.url} style={{width: (width - 43) / 1.5, height: (width - 43) / 1.5}} resizeMode={'cover'} />
-                      </View>
-                    )
-                  }}
-                /> */}
+                      return (
+                        <View style={{width: (width - 43) / 1.5, height: (width - 43) / 1.5}}>
+                            <Image source={item.url} style={{width: (width - 43) / 1.5, height: (width - 43) / 1.5}} resizeMode={'cover'} />
+                        </View>
+                      )
+                    }}
+                  /> */}
 
-                <Image source={voteImgPath01} style={styles.iconSquareSize((width - 43) / 1.5)} resizeMode={'cover'} />
-              </>
-            ) : (
-              <Image source={imgUrl} style={styles.iconSquareSize((width - 43) / 1.5)} resizeMode={'cover'} />
-            )}
+                  <Image source={voteImgPath01} style={styles.iconSquareSize((width - 43) / 1.5)} resizeMode={'cover'} />
+                </>
+              ) : (
+                <Image source={imgUrl} style={styles.iconSquareSize((width - 43) / 1.5)} resizeMode={'cover'} />
+              )}
+            </SpaceView>
 
-            <SpaceView viewStyle={_styles.stroyTypeArea(item.story_type)}>
-              <Text style={_styles.stroyTypeText}>{item.story_type_name}</Text>
+            <SpaceView viewStyle={_styles.topArea}>
+              <Image source={findSourcePath(item?.mst_img_path)} style={_styles.mstImgStyle} resizeMode={'cover'} />
+              <AuthLevel authAcctCnt={item?.auth_acct_cnt} type={'BASE'} />
+              <ProfileGrade profileScore={item?.profile_score} type={'BASE'} />
+            </SpaceView>
+
+            <SpaceView viewStyle={_styles.bottomArea}>
+              <SpaceView><Text style={_styles.contentsText}>{item?.contents}</Text></SpaceView>
+              <SpaceView mt={8}><Text style={_styles.contentsText}>23시간 전</Text></SpaceView>
+            </SpaceView>
+
+            <SpaceView viewStyle={_styles.typeArea(item?.story_type)}>
+              <Text style={_styles.typeText}>{item?.story_type_name}</Text>
             </SpaceView>
           </TouchableOpacity>
         </SpaceView>
@@ -319,7 +349,7 @@ export const Story = () => {
                     ) : innerItem.type == 'ONLY_SMALL' ? (
                       <>
                         <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                          {innerItem.small_List.map((item, index) => {
+                          {innerItem.small_list.map((item, index) => {
                             return (
                               <SmallRenderItem item={item} />
                             )
@@ -335,7 +365,7 @@ export const Story = () => {
                             )
                           })}
                           <SpaceView viewStyle={{flexDirection: 'column'}}>
-                            {innerItem.small_List.map((item, index) => {
+                            {innerItem.small_list.map((item, index) => {
                               return (
                                 <SpaceView mb={index == 0 ? 8 : 0}>
                                   <SmallRenderItem item={item} />
@@ -349,7 +379,7 @@ export const Story = () => {
                       <>
                         <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
                           <SpaceView viewStyle={{flexDirection: 'column'}}>
-                            {innerItem.small_List.map((item, index) => {
+                            {innerItem.small_list.map((item, index) => {
                               return (
                                 <SpaceView mb={index == 0 ? 8 : 0}>
                                   <SmallRenderItem item={item} />
@@ -460,7 +490,23 @@ const _styles = StyleSheet.create({
     fontFamily: 'AppleSDGothicNeoEB00',
     color: '#fff',
   },
-  stroyTypeArea: (type:string) => {
+  topArea: {
+    position: 'absolute',
+    top: 10,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  bottomArea: {
+    position: 'absolute',
+    bottom: 10,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 10,
+  },
+  typeArea: (type:string) => {
     return {
       position: 'absolute',
       bottom: 10,
@@ -471,10 +517,25 @@ const _styles = StyleSheet.create({
       paddingHorizontal: 5,
     };
   },
-  stroyTypeText: {
+  typeText: {
     fontFamily: 'AppleSDGothicNeoR00',
     fontSize: 13,
     color: '#fff',
   },
+  mstImgStyle: {
+    width: 30,
+    height: 30,
+    borderRadius: 20,
+    overflow: 'hidden',
+    marginRight: 5,
+    borderWidth: 1,
+    borderColor: '#fff',
+  },
+  contentsText: {
+    fontFamily: 'AppleSDGothicNeoR00',
+    fontSize: 13,
+    color: '#fff',
+  },
+
   
 });
