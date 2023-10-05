@@ -171,6 +171,10 @@ export const ICON = {
   celebrityIcon04: require('assets/icon/celebrity_icon04.png'),
   celebrityIcon05: require('assets/icon/celebrity_icon05.png'),
   celebrityIcon06: require('assets/icon/celebrity_icon06.png'),
+  secret: require('assets/icon/icon-secret.png'),
+  mail: require('assets/icon/icon-mail.png'),
+  megaphone: require('assets/icon/icon-megaphone.png'),
+  closeLight: require('assets/icon/icon-close-light.png'),
 };
 
 export const GIF_IMG = {

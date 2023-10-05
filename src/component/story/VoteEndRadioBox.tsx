@@ -47,15 +47,15 @@ const _styles = StyleSheet.create({
   },
   checkWrap: (isOn:boolean) => {
     return {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: isOn ? '#697AE6' : '#D0D0D0',
+      backgroundColor: isOn ? '#697AE6' : '#fff',
       paddingHorizontal: 10,
       paddingVertical: 3,
       borderRadius: 5,
       overflow: 'hidden',
       width: 60,
+      borderWidth: 1,
+      borderColor: '#697AE6',
+      marginRight: 7.5,
     };
   },
   active: {
@@ -67,7 +67,7 @@ const _styles = StyleSheet.create({
     return {
       fontFamily: 'AppleSDGothicNeoEB00',
       fontSize: 14,
-      color: isOn ? '#fff' : '#fff',
+      color: isOn ? '#fff' : '#697AE6',
       textAlign: 'center',
     };
   },

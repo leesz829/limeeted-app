@@ -108,7 +108,7 @@ export default function LikeListPopup({ isVisible, closeModal, type, _storyBoard
         <View style={_styles.titleBox}>
           <Text style={_styles.titleText}>좋아요 목록</Text>
           <TouchableOpacity onPress={() => closeModal()}>
-            <Image source={ICON.closeBlack} style={_styles.iconSize} />
+            <Image source={ICON.closeLight} style={_styles.iconSize} />
           </TouchableOpacity>
         </View>
 
@@ -213,8 +213,8 @@ const _styles = StyleSheet.create({
     marginRight: 5,
   },
   iconSize: {
-    width: 15,
-    height: 15,
+    width: 20,
+    height: 20,
   },
   levelBadge: {
     width: 51,

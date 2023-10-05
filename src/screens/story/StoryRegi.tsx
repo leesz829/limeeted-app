@@ -16,6 +16,7 @@ import { useUserInfo } from 'hooks/useUserInfo';
 import { isEmptyData } from 'utils/functions';
 import CommonHeader from 'component/CommonHeader';
 import { STACK } from 'constants/routes';
+import Image from 'react-native-fast-image';
 
 
 
@@ -71,19 +72,22 @@ export default function StoryRegi(props: Props) {
           </SpaceView>
 
           <SpaceView viewStyle={_styles.contentArea}>
-            <TouchableOpacity style={_styles.contentItem} onPress={() => { selectedStoryType('STORY'); }}>
+            <TouchableOpacity style={[_styles.contentItem, {backgroundColor: '#E0E4FF',}]} onPress={() => { selectedStoryType('STORY'); }}>
               <Text style={_styles.contentTitle}>스토리</Text>
-              <Text style={_styles.contentSubTitle}>소소한 일상부터 음식, 여행 등 주제에 관계없이{'\n'}자유롭게 소통해 보세요.</Text>
+              <Text style={_styles.contentSubTitle}>소소한 일상부터 음식, 여행 등 주제에 관계없이 자유롭게 소통해 보세요.</Text>
+              <Image source={ICON.megaphone} style={_styles.contentImg} resizeMode={'cover'} />
             </TouchableOpacity>
 
-            <TouchableOpacity style={_styles.contentItem} onPress={() => { selectedStoryType('VOTE'); }}>
+            <TouchableOpacity style={[_styles.contentItem, {backgroundColor: '#FEEFF2',}]} onPress={() => { selectedStoryType('VOTE'); }}>
               <Text style={_styles.contentTitle}>투표형</Text>
               <Text style={_styles.contentSubTitle}>왼 VS 오 어떤 것?{'\n'}밸런스 게임으로 사람들의 성향을 알아가요.</Text>
+              <Image source={ICON.mail} style={_styles.contentImg} resizeMode={'cover'} />
             </TouchableOpacity>
 
-            <TouchableOpacity style={_styles.contentItem} onPress={() => { selectedStoryType('SECRET'); }}>
+            <TouchableOpacity style={[_styles.contentItem, {backgroundColor: '#FFFCEE',}]} onPress={() => { selectedStoryType('SECRET'); }}>
               <Text style={_styles.contentTitle}>비밀</Text>
               <Text style={_styles.contentSubTitle}>이야기 앞에 “비밀”이 붙으면 재미있어 지는 법이죠!</Text>
+              <Image source={ICON.secret} style={_styles.contentImg} resizeMode={'cover'} />
             </TouchableOpacity>
           </SpaceView>
 
@@ -114,15 +118,15 @@ const _styles = StyleSheet.create({
     color: '#000',
   },
   contentArea: {
-
+    
   },
   contentItem: {
     backgroundColor: '#C5C5C5',
     borderRadius: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 10,
+    paddingVertical: 20,
+    paddingHorizontal: 20,
     marginBottom: 20,
-    height: 120,
+    height: 160,
   },
   contentTitle: {
     fontFamily: 'AppleSDGothicNeoB00',
@@ -133,5 +137,10 @@ const _styles = StyleSheet.create({
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 14,
   },
-  
+  contentImg: {
+    width: 30,
+    height: 30,
+    marginTop: 15,
+    marginLeft: 'auto',
+  },
 });

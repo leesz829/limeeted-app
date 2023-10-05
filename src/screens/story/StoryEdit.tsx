@@ -339,7 +339,7 @@ export default function StoryEdit(props: Props) {
 
         {/* ############################################################################ 스토리형 */}
         {storyData.storyType == 'STORY' && (
-          <SpaceView mt={50} pl={20} pr={20}>
+          <SpaceView mt={20} pl={20} pr={20}>
             <SpaceView mb={25}>
               <Text style={_styles.titleText}>게시글 내용을 작성해 주세요.</Text>
             </SpaceView>
@@ -360,14 +360,15 @@ export default function StoryEdit(props: Props) {
               <CommonTextarea
                 value={storyData.contents}
                 onChangeText={(text) => setStoryData({...storyData, contents: text})}
-                placeholder={'소소한 일상부터 음식, 여행 등 주제에 관계없이 자유롭게 소통해 보세요.\n\n20글자 이상 입력해 주세요.\n\n(주의)이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 제재 대상이 될 수 있으며 상대를 배려하는 마음으로 이용해 주세요.'}
+                placeholder={'소소한 일상부터 음식, 여행 등 주제에 관계없이 자유롭게 소통해 보세요.\n\n20글자 이상 입력해 주세요.\n\n(주의*) 이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 제재 대상이 될 수 있으며 상대를 배려하는 마음으로 이용해 주세요.'}
                 placeholderTextColor={'#C7C7C7'}
                 maxLength={1000}
                 exceedCharCountColor={'#990606'}
                 fontSize={13}
-                height={height-400}
-                backgroundColor={'#F6F7FE'}
+                height={height-430}
+                backgroundColor={'#fff'}
                 fontColor={'#000'}
+                borderColor={isEmptyData(storyData.contents) ? '#7986EE' : '#ebe9ef'}
               />
             </SpaceView>
           </SpaceView>
@@ -375,7 +376,7 @@ export default function StoryEdit(props: Props) {
 
         {/* ############################################################################ 투표형 */}
         {storyData.storyType == 'VOTE' && (
-          <SpaceView mt={50} pl={20} pr={20}>
+          <SpaceView mt={20} pl={20} pr={20}>
 
             {/* ############### 선택지 입력 영역 */}
             <SpaceView mb={30}>
@@ -383,7 +384,7 @@ export default function StoryEdit(props: Props) {
                 <Text style={_styles.titleText}>선택지를 작성해 주세요.</Text>
               </SpaceView>
               
-              <SpaceView viewStyle={_styles.voteArea}>
+              <SpaceView mt={10} viewStyle={_styles.voteArea}>
                 <SpaceView mb={10}>
                   <TextInput
                     value={voteData.voteName01}
@@ -462,14 +463,15 @@ export default function StoryEdit(props: Props) {
               <CommonTextarea
                 value={storyData.contents}
                 onChangeText={(text) => setStoryData({...storyData, contents: text})}
-                placeholder={'소소한 일상부터 음식, 여행 등 주제에 관계없이 자유롭게 소통해 보세요.\n\n20글자 이상 입력해 주세요.\n\n(주의)이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 제재 대상이 될 수 있으며 상대를 배려하는 마음으로 이용해 주세요.'}
+                placeholder={'투표 내용을 입력해 주세요.'}
                 placeholderTextColor={'#C7C7C7'}
                 maxLength={1000}
                 exceedCharCountColor={'#990606'}
                 fontSize={13}
-                height={height-400}
-                backgroundColor={'#F6F7FE'}
+                height={height-555}
+                backgroundColor={'#fff'}
                 fontColor={'#000'}
+                borderColor={isEmptyData(storyData.contents) ? '#7986EE' : '#ebe9ef'}
               />
             </SpaceView>
           </SpaceView>
@@ -477,9 +479,24 @@ export default function StoryEdit(props: Props) {
       </ScrollView>
 
       <SpaceView viewStyle={_styles.btnArea}>
-        <TouchableOpacity onPress={() => { storyRegister(); }} style={_styles.regiBtn}>
-          <Text style={_styles.regiBtnText}>등록</Text>
-        </TouchableOpacity>
+        {
+          isEmptyData(storyData.contents) ? (
+            <LinearGradient
+              colors={['#7984ED', '#8759D5']}
+              style={[_styles.regiActiveBtn]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+            >
+              <TouchableOpacity onPress={() => { storyRegister(); }}>
+                <Text style={[_styles.regiBtnText, {color: '#fff'}]}>등록</Text>
+              </TouchableOpacity>
+            </LinearGradient>
+          ) : (
+            <TouchableOpacity onPress={() => { storyRegister(); }} style={_styles.regiBtn}>
+              <Text style={_styles.regiBtnText}>등록</Text>
+            </TouchableOpacity>
+          )
+        }
       </SpaceView>
     </>
   );
@@ -570,14 +587,22 @@ const _styles = StyleSheet.create({
     alignItems: 'center',
   },
   regiBtn: {
-    backgroundColor: '#B1B1B1',
-    width: 100,
-    borderRadius: 10,
+    backgroundColor: '#eee',
+    width: '90%',
+    paddingVertical: 5,
+    borderRadius: 20,
+    overflow: 'hidden',
+  },
+  regiActiveBtn: {
+    width: '90%',
+    paddingVertical: 5,
+    borderRadius: 20,
     overflow: 'hidden',
   },
   regiBtnText: {
     fontFamily: 'AppleSDGothicNeoEB00',
-    color: '#fff',
+    fontSize: 16,
+    color: '#555',
     textAlign: 'center',
     paddingVertical: 5,
   },
@@ -585,15 +610,19 @@ const _styles = StyleSheet.create({
 
   },
   voteInput: {
-    backgroundColor: '#F0F0F0',
-    paddingLeft: 10,
-    paddingRight: 50,
+    backgroundColor: '#fff',
+    paddingHorizontal: 10,
+    paddingVertical: 15,
+    borderColor: '#F0F0F0',
+    borderWidth: 1,
+    borderRadius: 8,
+    width: '85%',
   },
   voteImgArea: {
     position: 'absolute',
     top: 0,
     right: 0,
-    backgroundColor: '#D0D0D0',
+    backgroundColor: 'rgba(155, 165, 242, 0.12)',
     borderRadius: 8,
     overflow: 'hidden',
   },

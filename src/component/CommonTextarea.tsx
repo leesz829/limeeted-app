@@ -20,6 +20,7 @@ type Props = {
   fontColor?: string;
   lineCount?: number;
   backgroundColor?: string;
+  borderColor?: string;
 } & StyleProp<TextInputProps>;
 
 /**
