@@ -376,18 +376,20 @@ export default function StoryDetail(props: Props) {
         </SpaceView>
       </ScrollView>
 
-      <SpaceView viewStyle={_styles.btnArea}>
-        <TouchableOpacity
-          onPress={() => { goStoryModfy(); }}
-          style={_styles.regiBtn}>
-          <Text style={_styles.regiBtnText}>수정하기</Text>
-        </TouchableOpacity>
-        {/* <TouchableOpacity
-          onPress={() => { reply_onOpen(); }}
-          style={_styles.regiBtn}>
-          <Text style={_styles.regiBtnText}>댓글달기</Text>
-        </TouchableOpacity> */}
-      </SpaceView>
+      {memberBase?.member_seq == storyData.board?.member_seq && (
+        <SpaceView viewStyle={_styles.btnArea}>
+          <TouchableOpacity
+            onPress={() => { goStoryModfy(); }}
+            style={_styles.regiBtn}>
+            <Text style={_styles.regiBtnText}>수정하기</Text>
+          </TouchableOpacity>
+          {/* <TouchableOpacity
+            onPress={() => { reply_onOpen(); }}
+            style={_styles.regiBtn}>
+            <Text style={_styles.regiBtnText}>댓글달기</Text>
+          </TouchableOpacity> */}
+        </SpaceView>
+      )}
 
       {/* ##################################################################################
                 댓글 입력 팝업
