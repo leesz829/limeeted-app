@@ -187,6 +187,10 @@ export default function StoryActive(props: Props) {
                           )}
                         </Text>
 
+                        <SpaceView>
+                            <Text>{_item.time_text}</Text>
+                        </SpaceView>
+
                         {storyAlarmType == 'REPLY' && (
                           <SpaceView mt={2} viewStyle={{alignItems: 'flex-start'}}>
                             <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center',}}>
@@ -282,7 +286,7 @@ export default function StoryActive(props: Props) {
                             </SpaceView>
                           </SpaceView>
                           <SpaceView>
-                            <Text style={_styles.storyDateText}>9시간전</Text>
+                            <Text style={_styles.storyDateText}>{_item?.time_text}</Text>
                           </SpaceView>
                         </SpaceView>
                         
@@ -331,7 +335,7 @@ export default function StoryActive(props: Props) {
 
         <ScrollView 
           showsVerticalScrollIndicator={false}
-          style={{backgroundColor: '#fff'}}>
+          style={{backgroundColor: '#fff', height: height-120}}>
 
           {/* ###################################################################################### 컨텐츠 영역 */}
           <SpaceView>

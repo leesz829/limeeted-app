@@ -68,6 +68,7 @@ export default function StoryDetail(props: Props) {
   const [storyData, setStoryData] = React.useState({
     board: {},
     imageList: [],
+    voteList: [],
     replyList: [],
   });
 
@@ -134,6 +135,7 @@ export default function StoryDetail(props: Props) {
               board: data.story,
               imageList: data.story_img_list,
               replyList: data.story_reply_list,
+              voteList: data.story_vote_list,
             });
           
             break;
@@ -235,7 +237,7 @@ export default function StoryDetail(props: Props) {
               
               <SpaceView ml={5} pt={3} viewStyle={{flexDirection: 'column', width: width - 70 - depthStyleSize}}>
                 <Text style={_styles.replyNickname}>
-                  {item.nickname}  <Text style={_styles.replyContents}>{item.reply_contents}</Text> <Text style={_styles.replyTimeText}> 1분전</Text>
+                  {item.nickname}  <Text style={_styles.replyContents}>{item.reply_contents}</Text> <Text style={_styles.replyTimeText}> {item.time_text}</Text>
                 </Text>
 
                 <SpaceView pt={2} viewStyle={{alignItems: 'flex-start'}}>
@@ -309,7 +311,7 @@ export default function StoryDetail(props: Props) {
 
             <FlatList
               ref={imgRef}
-              data={storyData.imageList}
+              data={storyData.board?.story_type == 'VOTE' ? storyData.voteList : storyData.imageList}
               renderItem={ImageRender}
               onScroll={handleScroll}
               showsHorizontalScrollIndicator={false}
@@ -413,13 +415,41 @@ export default function StoryDetail(props: Props) {
   /* ############# 이미지 렌더링 */
   function ImageRender({ item }) {
     //const url = findSourcePath(item?.img_file_path);  운영 반영시 적용
-    const url = findSourcePathLocal(item?.img_file_path);
+    let url = '';
+
+    if(isEmptyData(item?.img_file_path)) {
+      url = findSourcePathLocal(item?.img_file_path);
+    } else {
+      url = findSourcePathLocal(item?.file_path);
+    };
 
     return (
       <>
-        <View>
-          <Image source={url} style={_styles.imageStyle} resizeMode={'cover'} />
-        </View>
+        <SpaceView>
+          {storyData.board?.story_type == 'STORY' ? (
+            <Image source={url} style={_styles.imageStyle} resizeMode={'cover'} />
+          ) : (
+            <>
+              <SpaceView mb={15}>
+                <Image source={url} style={_styles.imageStyle} resizeMode={'cover'} />
+              </SpaceView>
+              <SpaceView viewStyle={_styles.voteArea}>
+                <SpaceView mb={10}><Text style={_styles.voteOrderText}>0{item.order_seq}</Text></SpaceView>
+                <SpaceView mb={10}><Text style={_styles.voteNameText}>{item.vote_name}</Text></SpaceView>
+                <SpaceView mb={20}><Text style={_styles.voteDescText}>투표 후에도 선택을 바꿀 수 있습니다.</Text></SpaceView>
+                <TouchableOpacity style={{width: '100%'}}>
+                  <LinearGradient
+                    colors={['#7984ED', '#8759D5']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={_styles.voteBtn}>
+                    <Text style={_styles.voteBtnText}>투표하기</Text>
+                  </LinearGradient>
+                </TouchableOpacity>               
+              </SpaceView>
+            </>
+          )}
+        </SpaceView>
       </>
     );
   };
@@ -456,8 +486,7 @@ const _styles = StyleSheet.create({
   imageStyle: {
     flex: 1,
     width: width,
-    height: height * 0.45,
-    borderRadius: 20,
+    height: width,
   },
   btnArea: {
     position: 'absolute',
@@ -585,5 +614,46 @@ const _styles = StyleSheet.create({
     color: '#000',
     fontSize: 13,
   },
+  voteArea: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: '#7A85EE',
+    borderRadius: 10,
+    overflow: 'hidden',
+    marginHorizontal: 15,
+    paddingVertical: 15,
+  },
+  voteOrderText: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    backgroundColor: '#7A85EE',
+    fontSize: 14,
+    borderRadius: 13,
+    color: '#fff',
+    paddingHorizontal: 15,
+    paddingVertical: 3,
+  },
+  voteNameText: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    color: '#333333',
+    fontSize: 18,
+  },
+  voteDescText: {
+    fontFamily: 'AppleSDGothicNeoR00',
+    fontSize: 14,
+    color: '#555555',
+  },
+  voteBtn: {
+    marginHorizontal: 10,
+    paddingVertical: 8,
+    borderRadius: 15,
+  },
+  voteBtnText: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    color: '#ffffff',
+    fontSize: 16,
+    textAlign: 'center',
+  },
+
   
 });

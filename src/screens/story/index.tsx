@@ -182,13 +182,19 @@ export const Story = () => {
   const LargeRenderItem = React.memo(({ item }) => {
     const storyBoardSeq = item.story_board_seq;
     const imgUrl = findSourcePathLocal(item?.story_img_path);
+    const voteImgPath01 = findSourcePathLocal(item?.vote_img_path_01);
+    const voteImgPath02 = findSourcePathLocal(item?.vote_img_path_02);
 
     return (
       <>
         <SpaceView viewStyle={_styles.itemArea(width - 40)}>
           <TouchableOpacity onPress={() => { goStoryDetail(storyBoardSeq); }}> 
             <SpaceView>
-              <Image source={imgUrl} style={styles.iconSquareSize(width - 40)} resizeMode={'cover'} />
+              {item?.story_type == 'VOTE' ? (
+                <Image source={voteImgPath01} style={styles.iconSquareSize(width - 40)} resizeMode={'cover'} />
+              ) : (
+                <Image source={imgUrl} style={styles.iconSquareSize(width - 40)} resizeMode={'cover'} />
+              )}
             </SpaceView>
 
             <SpaceView viewStyle={_styles.topArea}>
@@ -199,7 +205,7 @@ export const Story = () => {
 
             <SpaceView viewStyle={_styles.bottomArea}>
               <SpaceView><Text style={_styles.contentsText}>{item?.contents}</Text></SpaceView>
-              <SpaceView mt={8}><Text style={_styles.contentsText}>23시간 전</Text></SpaceView>
+              <SpaceView mt={8}><Text style={_styles.contentsText}>{item?.time_text}</Text></SpaceView>
             </SpaceView>
 
             <SpaceView viewStyle={_styles.typeArea(item?.story_type)}>
@@ -262,7 +268,7 @@ export const Story = () => {
 
             <SpaceView viewStyle={_styles.bottomArea}>
               <SpaceView><Text style={_styles.contentsText}>{item?.contents}</Text></SpaceView>
-              <SpaceView mt={8}><Text style={_styles.contentsText}>23시간 전</Text></SpaceView>
+              <SpaceView mt={8}><Text numberOfLines={2} style={_styles.contentsText}>{item?.time_text}</Text></SpaceView>
             </SpaceView>
 
             <SpaceView viewStyle={_styles.typeArea(item?.story_type)}>
@@ -278,21 +284,31 @@ export const Story = () => {
   const SmallRenderItem = React.memo(({ item }) => {
     const storyBoardSeq = item.story_board_seq;
     const imgUrl = findSourcePathLocal(item?.story_img_path);
-    const dummyYn = item?.dummyYn;
+    const voteImgPath01 = findSourcePathLocal(item?.vote_img_path_01);
+    const voteImgPath02 = findSourcePathLocal(item?.vote_img_path_02);
 
     return (
       <>
-        {dummyYn == 'Y' ? (
-          <SpaceView viewStyle={_styles.dummyArea('')}>
-            <Text style={_styles.dummyText}>배너</Text>
-          </SpaceView>
-        ) : (
-          <SpaceView viewStyle={_styles.itemArea}>
-            <TouchableOpacity onPress={() => { goStoryDetail(); }}>
-              <Image source={imgUrl} style={{width: (width - 55) / 3, height: (width - 55) / 3}} resizeMode={'cover'} />
-            </TouchableOpacity>
-          </SpaceView>
-        )}
+        <SpaceView viewStyle={_styles.itemArea((width - 55) / 3)}>
+          <TouchableOpacity onPress={() => { goStoryDetail(storyBoardSeq); }}>
+            <SpaceView>
+              {item?.story_type == 'VOTE' ? (
+                <Image source={voteImgPath01} style={{width: (width - 55) / 3, height: (width - 55) / 3}} resizeMode={'cover'} />
+              ) : (
+                <Image source={imgUrl} style={{width: (width - 55) / 3, height: (width - 55) / 3}} resizeMode={'cover'} />
+              )}
+            </SpaceView>
+
+            <SpaceView viewStyle={_styles.bottomArea}>
+              <SpaceView><Text style={_styles.contentsText}>{item?.contents}</Text></SpaceView>
+              <SpaceView mt={8}><Text style={_styles.contentsText}>{item?.time_text}</Text></SpaceView>
+            </SpaceView>
+
+            <SpaceView viewStyle={_styles.typeArea(item?.story_type)}>
+              <Text style={_styles.typeText}>{item?.story_type_name}</Text>
+            </SpaceView>
+          </TouchableOpacity>
+        </SpaceView>
       </>
     );
   });
@@ -354,6 +370,16 @@ export const Story = () => {
                               <SmallRenderItem item={item} />
                             )
                           })}
+
+                          {innerItem.small_list.length == 1 ? (
+                            <>
+                              <SpaceView viewStyle={_styles.dummyArea('')}><Text style={_styles.dummyText}>배너</Text></SpaceView>
+                              <SpaceView viewStyle={_styles.dummyArea('')}><Text style={_styles.dummyText}>배너</Text></SpaceView>
+                            </>
+                          ) : innerItem.small_list.length == 2 && (
+                            <SpaceView viewStyle={_styles.dummyArea('')}><Text style={_styles.dummyText}>배너</Text></SpaceView>
+                          )}
+
                         </SpaceView>
                       </>
                     ) : innerItem.type == 'COMPLEX_MEDIUM' ? (
@@ -501,7 +527,7 @@ const _styles = StyleSheet.create({
   },
   bottomArea: {
     position: 'absolute',
-    bottom: 10,
+    bottom: 12,
     left: 0,
     right: 0,
     paddingHorizontal: 10,
