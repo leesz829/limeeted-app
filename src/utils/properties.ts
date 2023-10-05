@@ -2,8 +2,8 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { JWT_TOKEN } from 'constants/storeKey';
 
 // api 서버 도메인
-export const api_domain = "http://115.85.182.94:9915";
-//export const api_domain = "http://211.104.55.222:9915";
+//export const api_domain = "http://115.85.182.94:9915";
+export const api_domain = "http://61.72.154.87:9915";
 //export const api_domain = 'http://118.67.134.149:9915';
 //export const api_domain = 'http://www.api.limeeted.com';
 
@@ -12,6 +12,7 @@ export const api_domain = "http://115.85.182.94:9915";
 // 이미지 서버 경로
 //export const img_domain = 'http://www.api.limeeted.com' + '/uploads';
 export const img_domain = 'http://115.85.182.94:9915' + '/uploads';
+export const local_img_domain = api_domain + '/file/local';
 
 // token 값
 export const jwt_token = () => { 
@@ -37,4 +38,4 @@ export const get_json_data = (key: string) => {
   });
 };
 
-export default { api_domain, img_domain, jwt_token, get_json_data };
+export default { api_domain, img_domain, local_img_domain, jwt_token, get_json_data };

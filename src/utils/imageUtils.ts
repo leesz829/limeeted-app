@@ -267,3 +267,17 @@ export function findSourcePath(img_file_path: any) {
   }
   return img_file_path;
 }
+
+export function findSourcePathLocal(img_file_path: any) {
+  if (img_file_path) {
+    if (img_file_path.startsWith('http')) {
+      return { uri: img_file_path };
+    } else if (img_file_path.startsWith('file:///')) {
+      return { uri: img_file_path };
+    } else {
+      const path = properties.local_img_domain + img_file_path;
+      return { uri: path };
+    }
+  }
+  return img_file_path;
+}

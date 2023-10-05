@@ -6,9 +6,9 @@ import SpaceView from 'component/SpaceView';
 import TopNavigation from 'component/TopNavigation';
 import * as React from 'react';
 import { useState, useRef, useEffect } from 'react';
-import { ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity, Animated, Easing, PanResponder, Platform, TouchableWithoutFeedback } from 'react-native';
-import { get_live_members, regist_profile_evaluation, get_common_code, update_additional } from 'api/models';
-import { findSourcePath, IMAGE, GIF_IMG } from 'utils/imageUtils';
+import { ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity } from 'react-native';
+import { get_story_board_list } from 'api/models';
+import { findSourcePath, IMAGE, GIF_IMG, findSourcePathLocal } from 'utils/imageUtils';
 import { usePopup } from 'Context';
 import { SUCCESS, NODATA } from 'constants/reusltcode';
 import { useDispatch } from 'react-redux';
@@ -31,23 +31,17 @@ export const Story = () => {
   const isFocus = useIsFocused();
   const dispatch = useDispatch();
 
-  // 본인 데이터
-  const memberBase = useUserInfo();
-
-  // 이미지 인덱스
-  const [page, setPage] = useState(0);
-
-  // 공통 팝업
-  const { show } = usePopup();
-
-  // Live 팝업 Modal
-  const [liveModalVisible, setLiveModalVisible] = useState(false);
+  const memberBase = useUserInfo(); // 본인 데이터
+  const { show } = usePopup(); // 공통 팝업
+  const [isLoading, setIsLoading] = React.useState(false); // 로딩 상태 체크
 
   const [isBlackBg, setIsBlackBg] = useState(false);
 
-  // 로딩 상태 체크
-  const [isLoad, setIsLoad] = useState(false);
+  const [isLoad, setIsLoad] = useState(false); // 로딩 상태 체크
   const [isEmpty, setIsEmpty] = useState(false);
+
+  const [storyList, setStoryList] = useState([]);
+
 
 
   const [itemList, setItemList] = useState([
@@ -75,7 +69,6 @@ export const Story = () => {
       },
       {
         dummyYn: 'Y',
-        imgUrl: PROFILE_IMAGE.manTmp2,
       }],
     },
     {
@@ -93,7 +86,6 @@ export const Story = () => {
       },
       {
         dummyYn: 'Y',
-        imgUrl: PROFILE_IMAGE.manTmp2,
       }],
     },
     {
@@ -110,7 +102,6 @@ export const Story = () => {
       },
       {
         dummyYn: 'Y',
-        imgUrl: PROFILE_IMAGE.manTmp2,
       }],
     },
     {
@@ -142,63 +133,134 @@ export const Story = () => {
   };
 
   // 스토리 상세 이동
-  const goStoryDetail = async () => {
+  const goStoryDetail = async (storyBoardSeq:number) => {
     navigation.navigate(STACK.COMMON, {
       screen: 'StoryDetail',
       params: {
-        storyBoardSeq: 7,
+        storyBoardSeq: storyBoardSeq,
       }
     });
   };
 
+  // ############################################################################# 스토리 목록 조회
+  const getStoryBoardList = async () => {
+    try {
+      setIsLoading(true);
 
+      const body = {
+        
+      };
 
-
+      const { success, data } = await get_story_board_list(body);
+      if(success) {
+        switch (data.result_code) {
+          case SUCCESS:
+            console.log('data.story_list :::: ' , data.story_list);
+            setStoryList(data.story_list);
+          
+            break;
+          default:
+            show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+            break;
+        }
+      } else {
+        show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   /* ##################################################################################################################################
   ################## 아이템 렌더링 관련 함수
   ################################################################################################################################## */
 
-  // 대 렌더링
+  // ############################### 대 렌더링
   const LargeRenderItem = React.memo(({ item }) => {
-    const imgUrl = item?.imgUrl;
+    const storyBoardSeq = item.story_board_seq;
+    const imgUrl = findSourcePathLocal(item?.story_img_path);
 
     return (
       <>
-        <SpaceView viewStyle={_styles.itemArea}>
-          <Image source={imgUrl} style={{width: width - 40, height: width - 40}} resizeMode={'cover'} />
+        <SpaceView viewStyle={_styles.itemArea(width - 40)}>
+          <TouchableOpacity onPress={() => { goStoryDetail(storyBoardSeq); }}>
+            <Image source={imgUrl} style={styles.iconSquareSize(width - 40)} resizeMode={'cover'} />
+          </TouchableOpacity>
         </SpaceView>
       </>
     );
   });
 
-  // 중 렌더링
+  // ############################### 중 렌더링
   const MediumRenderItem = React.memo(({ item }) => {
-    const imgUrl = item?.imgUrl;
+    const storyBoardSeq = item.story_board_seq;
+    //const imgUrl = findSourcePath(item?.story_img_path); 운영 반영 시 적용
+    const imgUrl = findSourcePathLocal(item?.story_img_path);
+    const voteImgPath01 = findSourcePathLocal(item?.vote_img_path_01);
+    const voteImgPath02 = findSourcePathLocal(item?.vote_img_path_02);
+
+    const voteImgList = [
+      {url: findSourcePathLocal(item?.vote_img_path_01)},
+      {url: findSourcePathLocal(item?.vote_img_path_02)},
+    ];
+
+    console.log('item.story_type :::::: ' , item.story_type);
 
     return (
       <>
-        <SpaceView viewStyle={_styles.itemArea}>
-          <Image source={imgUrl} style={{width: (width - 43) / 1.5, height: (width - 43) / 1.5}} resizeMode={'cover'} />
+        <SpaceView viewStyle={_styles.itemArea((width - 43) / 1.5)}>
+          <TouchableOpacity activeOpacity={0.7} onPress={() => { goStoryDetail(storyBoardSeq); }}>
+            {item.story_type == 'VOTE' ? (
+              <>
+                {/* <FlatList
+                  data={voteImgList}                  
+                  showsHorizontalScrollIndicator={false}
+                  horizontal
+                  pagingEnabled
+                  renderItem={({ item, index }) => {
+
+                    return (
+                      <View style={{width: (width - 43) / 1.5, height: (width - 43) / 1.5}}>
+                          <Image source={item.url} style={{width: (width - 43) / 1.5, height: (width - 43) / 1.5}} resizeMode={'cover'} />
+                      </View>
+                    )
+                  }}
+                /> */}
+
+                <Image source={voteImgPath01} style={styles.iconSquareSize((width - 43) / 1.5)} resizeMode={'cover'} />
+              </>
+            ) : (
+              <Image source={imgUrl} style={styles.iconSquareSize((width - 43) / 1.5)} resizeMode={'cover'} />
+            )}
+
+            <SpaceView viewStyle={_styles.stroyTypeArea(item.story_type)}>
+              <Text style={_styles.stroyTypeText}>{item.story_type_name}</Text>
+            </SpaceView>
+          </TouchableOpacity>
         </SpaceView>
       </>
     );
   });
 
-  // 소 렌더링
+  // ############################### 소 렌더링
   const SmallRenderItem = React.memo(({ item }) => {
-    const imgUrl = item?.imgUrl;
+    const storyBoardSeq = item.story_board_seq;
+    const imgUrl = findSourcePathLocal(item?.story_img_path);
     const dummyYn = item?.dummyYn;
 
     return (
       <>
         {dummyYn == 'Y' ? (
-          <SpaceView viewStyle={_styles.dummyArea}>
+          <SpaceView viewStyle={_styles.dummyArea('')}>
             <Text style={_styles.dummyText}>배너</Text>
           </SpaceView>
         ) : (
           <SpaceView viewStyle={_styles.itemArea}>
-            <Image source={imgUrl} style={{width: (width - 55) / 3, height: (width - 55) / 3}} resizeMode={'cover'} />
+            <TouchableOpacity onPress={() => { goStoryDetail(); }}>
+              <Image source={imgUrl} style={{width: (width - 55) / 3, height: (width - 55) / 3}} resizeMode={'cover'} />
+            </TouchableOpacity>
           </SpaceView>
         )}
       </>
@@ -210,7 +272,7 @@ export const Story = () => {
   ################################################################################################################################## */
   React.useEffect(() => {
     if(isFocus) {
-      
+      getStoryBoardList();
     };
   }, [isFocus]);
 
@@ -225,79 +287,90 @@ export const Story = () => {
           <FlatList
             contentContainerStyle={{marginBottom: 50, paddingHorizontal: 20}}
             //ref={noticeRef}
-            data={itemList}
+            data={storyList}
             renderItem={({ item:innerItem, index:innerIndex }) => {
-              //console.log('innerItem :::: ' , innerItem.dataList.length);
 
               return (
                 <>
-                  <TouchableOpacity onPress={() => { goStoryDetail(); }}>
-                    <SpaceView key={innerIndex} viewStyle={{flexDirection: 'column'}} mb={10}>
+                  <SpaceView key={innerIndex} viewStyle={{flexDirection: 'column'}} mb={10}>
 
-                      {innerItem.type == 'ONLY_LARGE' ? (
-                        <>
-                          {innerItem.lDataList.map((item, index) => {
+                    {innerItem.type == 'ONLY_LARGE' ? (
+                      <>
+                        {innerItem.large_list.map((item, index) => {
+                          return (
+                            <LargeRenderItem item={item} />
+                          )
+                        })}
+                      </>
+                    ) : innerItem.type == 'ONLY_MEDIUM' ? (
+                      <>
+                        <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                          {innerItem.medium_list.map((item, index) => {
                             return (
-                              <LargeRenderItem item={item} />
+                              <MediumRenderItem item={item} />
                             )
                           })}
-                        </>
-                      ) : innerItem.type == 'ONLY_SMALL' ? (
-                        <>
-                          <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                            {innerItem.sDataList.map((item, index) => {
-                              return (
-                                <SmallRenderItem item={item} />
-                              )
-                            })}
-                          </SpaceView>
-                        </>
-                      ) : innerItem.type == 'COMPLEX_MEDIUM' ? (
-                        <>
-                          <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                            {innerItem.mDataList.map((item, index) => {
-                              return (
-                                <MediumRenderItem item={item} />
-                              )
-                            })}
-                            <SpaceView viewStyle={{flexDirection: 'column'}}>
-                              {innerItem.sDataList.map((item, index) => {
-                                return (
-                                  <SpaceView mb={index == 0 ? 8 : 0}>
-                                    <SmallRenderItem item={item} />
-                                  </SpaceView>
-                                )
-                              })}
-                            </SpaceView>
-                          </SpaceView>
-                        </>
-                      ) : innerItem.type == 'COMPLEX_SMALL' ? (
-                        <>
-                          <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                            <SpaceView viewStyle={{flexDirection: 'column'}}>
-                              {innerItem.sDataList.map((item, index) => {
-                                return (
-                                  <SpaceView mb={index == 0 ? 8 : 0}>
-                                    <SmallRenderItem item={item} />
-                                  </SpaceView>
-                                )
-                              })}
-                            </SpaceView>
-                            {innerItem.mDataList.map((item, index) => {
-                              return (
-                                <MediumRenderItem item={item} />
-                              )
-                            })}
-                          </SpaceView>
-                        </>
-                      ) : (
-                        <>
-                          
-                        </>
-                      )}
 
-                    </SpaceView>
-                  </TouchableOpacity>
+                          <SpaceView viewStyle={_styles.dummyArea('H')}>
+                            <Text style={_styles.dummyText}>배너</Text>
+                          </SpaceView>
+                        </SpaceView>
+                      </>
+                    ) : innerItem.type == 'ONLY_SMALL' ? (
+                      <>
+                        <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                          {innerItem.small_List.map((item, index) => {
+                            return (
+                              <SmallRenderItem item={item} />
+                            )
+                          })}
+                        </SpaceView>
+                      </>
+                    ) : innerItem.type == 'COMPLEX_MEDIUM' ? (
+                      <>
+                        <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                          {innerItem.medium_list.map((item, index) => {
+                            return (
+                              <MediumRenderItem item={item} />
+                            )
+                          })}
+                          <SpaceView viewStyle={{flexDirection: 'column'}}>
+                            {innerItem.small_List.map((item, index) => {
+                              return (
+                                <SpaceView mb={index == 0 ? 8 : 0}>
+                                  <SmallRenderItem item={item} />
+                                </SpaceView>
+                              )
+                            })}
+                          </SpaceView>
+                        </SpaceView>
+                      </>
+                    ) : innerItem.type == 'COMPLEX_SMALL' ? (
+                      <>
+                        <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                          <SpaceView viewStyle={{flexDirection: 'column'}}>
+                            {innerItem.small_List.map((item, index) => {
+                              return (
+                                <SpaceView mb={index == 0 ? 8 : 0}>
+                                  <SmallRenderItem item={item} />
+                                </SpaceView>
+                              )
+                            })}
+                          </SpaceView>
+                          {innerItem.medium_list.map((item, index) => {
+                            return (
+                              <MediumRenderItem item={item} />
+                            )
+                          })}
+                        </SpaceView>
+                      </>
+                    ) : (
+                      <>
+                        
+                      </>
+                    )}
+
+                  </SpaceView>
                 </>
               )
             }}
@@ -335,18 +408,31 @@ const _styles = StyleSheet.create({
   wrap: {
     backgroundColor: '#fff',
   },
-  itemArea: {
-    borderRadius: 10,
-    overflow: 'hidden',
+  itemArea: (size:number) => {
+    return {
+      width: size,
+      height: size,
+      borderRadius: 10,
+      overflow: 'hidden',
+    };
   },
-  dummyArea: {
-    width: (width - 55) / 3,
-    height: (width - 55) / 3,
-    backgroundColor: '#FE0456',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 10,
-    overflow: 'hidden',
+  dummyArea: (type:string) => {
+    let _w = (width - 55) / 3;
+    let _h = (width - 55) / 3;
+
+    if(type == 'H') {
+      _h = (width - 43) / 1.5;
+    }
+
+    return {
+      width: _w,
+      height: _h,
+      backgroundColor: '#FE0456',
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: 10,
+      overflow: 'hidden',
+    };
   },
   dummyText: {
     fontFamily: 'AppleSDGothicNeoEB00',
@@ -372,6 +458,22 @@ const _styles = StyleSheet.create({
   },
   btnText: {
     fontFamily: 'AppleSDGothicNeoEB00',
+    color: '#fff',
+  },
+  stroyTypeArea: (type:string) => {
+    return {
+      position: 'absolute',
+      bottom: 10,
+      right: 10,
+      backgroundColor: '#7986EE',
+      borderRadius: 13,
+      paddingVertical: 3,
+      paddingHorizontal: 5,
+    };
+  },
+  stroyTypeText: {
+    fontFamily: 'AppleSDGothicNeoR00',
+    fontSize: 13,
     color: '#fff',
   },
   

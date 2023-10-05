@@ -9,7 +9,7 @@ import * as React from 'react';
 import { useState, useRef, useEffect } from 'react';
 import { ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity, TextInput } from 'react-native';
 import { story_board_save, get_story_detail } from 'api/models';
-import { findSourcePath, IMAGE, GIF_IMG } from 'utils/imageUtils';
+import { findSourcePath, IMAGE, GIF_IMG, findSourcePathLocal } from 'utils/imageUtils';
 import { usePopup } from 'Context';
 import { SUCCESS, NODATA } from 'constants/reusltcode';
 import { useDispatch } from 'react-redux';
@@ -50,20 +50,36 @@ export default function StoryEdit(props: Props) {
   const [isClickable, setIsClickable] = useState(true); // 클릭 여부
   
   const [storyBoardSeq, setStoryBoardSeq] = useState(props.route.params.storyBoardSeq);
-  const [storyType, setStoryType] = useState(isEmptyData(props.route.params.storyType) ? props.route.params.storyType : ''); // 스토리 유형
-  const [contents, setContents] = useState(''); // 내용
   const [imageList, setImageList] = useState([]); // 이미지 목록
+
+  // 스토리 기본 데이터
+  const [storyData, setStoryData] = useState({
+    storyBoardSeq: props.route.params.storyBoardSeq,
+    storyType: isEmptyData(props.route.params.storyType) ? props.route.params.storyType : '',
+    contents: '',
+    voteEndType: '',
+  });
 
   const [inputVoteName01, setInputVoteName01] = useState('');
   const [inputVoteName02, setInputVoteName02] = useState('');
-  const [inputVoteImgUrl01, setInputVoteImgUrl01] = useState('');
-  const [inputVoteImgUrl02, setInputVoteImgUrl02] = useState('');
+  const [inputVoteFileData01, setInputVoteFileData01] = useState('');
+  const [inputVoteFileData02, setInputVoteFileData02] = useState('');
+
+  // 투표 데이터
+  const [voteData, setVoteData] = useState({
+    voteSeq01: null,
+    voteSeq02: null,
+    voteName01: '',
+    voteName02: '',
+    voteImgUrl01: '',
+    voteImgUrl02: '',
+  });
 
   // 이미지 데이터
   const [imgData, setImgData] = React.useState<any>({
-    orgImgUrl01: { story_board_img_seq: '', url: '', delYn: '' },
-    orgImgUrl02: { story_board_img_seq: '', url: '', delYn: '' },
-    orgImgUrl03: { story_board_img_seq: '', url: '', delYn: '' },
+    orgImgUrl01: { story_board_img_seq: '', imgPath: '', delYn: '' },
+    orgImgUrl02: { story_board_img_seq: '', imgPath: '', delYn: '' },
+    orgImgUrl03: { story_board_img_seq: '', imgPath: '', delYn: '' },
   });
 
   // 투표 마감기한 유형
@@ -75,10 +91,9 @@ export default function StoryEdit(props: Props) {
     {label: '3일', value: 'DAY_3'},
   ]);
 
-  //
+  // 투표 종료 유형 콜백 함수
   const voteEndTypeCallbackFn = (value: string) => {
-    console.log('value ::::: ', value);
-    //setCheckReportType(value);
+    setStoryData({...storyData, voteEndType: value});
   };
 
   // ################################################################ 프로필 이미지 파일 콜백 함수
@@ -98,14 +113,14 @@ export default function StoryEdit(props: Props) {
   };
 
   const voteFileCallBack01 = async (uri: any, base64: string) => {
-    
+    setInputVoteFileData01(base64);
   };
 
   const voteFileCallBack02 = async (uri: any, base64: string) => {
-    
+    setInputVoteFileData02(base64);
   };
 
-  // ################################################################ 프로필 이미지 데이터 적용
+  // ################################################################ 이미지 데이터 적용
   const imageDataApply = async (data:any) => {
     setImageList((prev) => {
       const dupChk = prev.some(item => item.order_seq === data.order_seq);
@@ -144,17 +159,42 @@ export default function StoryEdit(props: Props) {
       setIsLoading(true);
 
       try {
+        let voteList = [];
 
-        if(!isEmptyData(contents)) {
+        if(!isEmptyData(storyData.contents)) {
           show({ content: '내용을 입력해 주세요.' });
           return false;
+        };
+        
+        if(storyData.storyType == 'VOTE') {
+          if(!isEmptyData(voteData.voteName01) || !isEmptyData(voteData.voteName02)) {
+            show({ content: '선택지를 작성해 주세요.' });
+            return false;
+          };
+
+          if((!isEmptyData(voteData.voteImgUrl01) && !isEmptyData(inputVoteFileData01)) || (!isEmptyData(voteData.voteImgUrl02) && !isEmptyData(inputVoteFileData02))) {
+            show({ content: '선택지를 작성해 주세요.' });
+            return false;
+          };
+
+          if(!isEmptyData(storyData.voteEndType)) {
+            show({ content: '투표 마감기한을 입력해 주세요.' });
+            return false;
+          };
+
+          voteList = [
+            {story_vote_seq: voteData.voteSeq01, order_seq: 1, vote_name: voteData.voteName01, file_base64: inputVoteFileData01},
+            {story_vote_seq: voteData.voteSeq02, order_seq: 2, vote_name: voteData.voteName02, file_base64: inputVoteFileData02}
+          ]
         };
     
         const body = {
           story_board_seq: storyBoardSeq,
-          story_type: storyType,
-          contents: contents,
+          story_type: storyData.storyType,
+          contents: storyData.contents,
           img_file_list: imageList,
+          vote_list: voteList,
+          vote_end_type: storyData.voteEndType,
         };
 
         //console.log('body :::::: ' , body);
@@ -200,44 +240,67 @@ export default function StoryEdit(props: Props) {
         switch (data.result_code) {
         case SUCCESS:
 
-          setStoryType(data.story?.story_type);
-          setContents(data.story?.contents);
+          setStoryData({
+            ...storyData,
+            storyBoardSeq: data.story?.story_board_seq,
+            storyType: data.story?.story_type,
+            contents: data.story?.contents,
+            voteEndType: data.story?.vote_end_type,
+          });
 
+          // 스토리 이미지 데이터 구성
           if(isEmptyData(null != data.story_img_list) && data.story_img_list?.length > 0) {
             let imgData: any = {
-              orgImgUrl01: { story_board_img_seq: '', url: '', delYn: '' },
-              orgImgUrl02: { story_board_img_seq: '', url: '', delYn: '' },
-              orgImgUrl03: { story_board_img_seq: '', url: '', delYn: '' },
+              orgImgUrl01: { story_board_img_seq: '', imgPath: '', delYn: '' },
+              orgImgUrl02: { story_board_img_seq: '', imgPath: '', delYn: '' },
+              orgImgUrl03: { story_board_img_seq: '', imgPath: '', delYn: '' },
             };
 
-            data?.story_img_list?.map(
-              ({
-                story_board_img_seq,
-                img_file_path,
-                order_seq,
-              }: {
-                story_board_img_seq: any;
-                img_file_path: any;
-                order_seq: any;
-              }) => {
-                let data = {
-                  story_board_img_seq: story_board_img_seq,
-                  url: findSourcePath(img_file_path),
-                  delYn: 'N',
-                };
-                if (order_seq == 1) {
-                  imgData.orgImgUrl01 = data;
-                }
-                if (order_seq == 2) {
-                  imgData.orgImgUrl02 = data;
-                }
-                if (order_seq == 3) {
-                  imgData.orgImgUrl03 = data;
-                }
-              }
-            );
+            data?.story_img_list?.map(({story_board_img_seq, img_file_path, order_seq}: { story_board_img_seq: any; img_file_path: any; order_seq: any; }) => {
+              let data = {
+                story_board_img_seq: story_board_img_seq,
+                imgPath: img_file_path,
+                delYn: 'N',
+              };
+              if(order_seq == 1) { imgData.orgImgUrl01 = data; }
+              if(order_seq == 2) { imgData.orgImgUrl02 = data; }
+              if(order_seq == 3) { imgData.orgImgUrl03 = data; }
+            });
 
             setImgData({ ...imgData, imgData });
+          };
+
+          // 스토리 투표 데이터 구성
+          if(isEmptyData(data.story_vote_list) && data.story_vote_list?.length > 0) {
+
+            let voteSeq01 = null;
+            let voteSeq02 = null;
+            let voteName01 = '';
+            let voteName02 = '';
+            let voteImgUrl01 = '';
+            let voteImgUrl02 = '';
+
+            data?.story_vote_list?.map((item, index) => {
+              if(item.order_seq == 1) {
+                voteSeq01 = item.story_vote_seq;
+                voteName01 = item.vote_name;
+                voteImgUrl01 = item.file_path;
+              } else if(item.order_seq == 2) {
+                voteSeq02 = item.story_vote_seq;
+                voteName02 = item.vote_name;
+                voteImgUrl02 = item.file_path;
+              }
+            });
+
+            setVoteData({
+              ...voteData,
+              voteSeq01: voteSeq01,
+              voteSeq02: voteSeq02,
+              voteName01: voteName01,
+              voteName02: voteName02,
+              voteImgUrl01: voteImgUrl01,
+              voteImgUrl02: voteImgUrl02,
+            })
           };
           
           break;
@@ -270,12 +333,12 @@ export default function StoryEdit(props: Props) {
     <>
       {isLoading && <CommonLoading />}
 
-      <CommonHeader title={storyType == 'STORY' ? '스토리 등록' : storyType == 'VOTE' ? '투표형 게시글 등록' : '비밀 게시글 등록'} />
+      <CommonHeader title={storyData.storyType == 'STORY' ? '스토리 등록' : storyData.storyType == 'VOTE' ? '투표형 게시글 등록' : '비밀 게시글 등록'} />
 
       <ScrollView showsVerticalScrollIndicator={false} style={{backgroundColor: '#fff'}}>
 
         {/* ############################################################################ 스토리형 */}
-        {storyType == 'STORY' && (
+        {storyData.storyType == 'STORY' && (
           <SpaceView mt={50} pl={20} pr={20}>
             <SpaceView mb={25}>
               <Text style={_styles.titleText}>게시글 내용을 작성해 주세요.</Text>
@@ -295,8 +358,8 @@ export default function StoryEdit(props: Props) {
 
             <SpaceView mt={20}>
               <CommonTextarea
-                value={contents}
-                onChangeText={(contents) => setContents(contents)}
+                value={storyData.contents}
+                onChangeText={(text) => setStoryData({...storyData, contents: text})}
                 placeholder={'소소한 일상부터 음식, 여행 등 주제에 관계없이 자유롭게 소통해 보세요.\n\n20글자 이상 입력해 주세요.\n\n(주의)이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 제재 대상이 될 수 있으며 상대를 배려하는 마음으로 이용해 주세요.'}
                 placeholderTextColor={'#C7C7C7'}
                 maxLength={1000}
@@ -311,7 +374,7 @@ export default function StoryEdit(props: Props) {
         )}
 
         {/* ############################################################################ 투표형 */}
-        {storyType == 'VOTE' && (
+        {storyData.storyType == 'VOTE' && (
           <SpaceView mt={50} pl={20} pr={20}>
 
             {/* ############### 선택지 입력 영역 */}
@@ -323,8 +386,8 @@ export default function StoryEdit(props: Props) {
               <SpaceView viewStyle={_styles.voteArea}>
                 <SpaceView mb={10}>
                   <TextInput
-                    value={inputVoteName01}
-                    onChangeText={(inputVoteName01) => setInputVoteName01(inputVoteName01)}
+                    value={voteData.voteName01}
+                    onChangeText={(text) => setVoteData({...voteData, voteName01 : text})}
                     multiline={false}
                     autoCapitalize="none"
                     style={_styles.voteInput}
@@ -340,7 +403,7 @@ export default function StoryEdit(props: Props) {
                     <CommonImagePicker 
                       type={'STORY'} 
                       callbackFn={voteFileCallBack01} 
-                      uriParam={isEmptyData(inputVoteImgUrl01) ? inputVoteImgUrl01 : ''}
+                      uriParam={isEmptyData(voteData.voteImgUrl01) ? voteData.voteImgUrl01 : ''}
                       imgWidth={48} 
                       imgHeight={48}
                       borderRadius={8}
@@ -349,8 +412,8 @@ export default function StoryEdit(props: Props) {
                 </SpaceView>
                 <SpaceView>
                   <TextInput
-                    value={inputVoteName02}
-                    onChangeText={(inputVoteName02) => setInputVoteName02(inputVoteName02)}
+                    value={voteData.voteName02}
+                    onChangeText={(text) => setVoteData({...voteData, voteName02 : text})}
                     multiline={false}
                     autoCapitalize="none"
                     style={_styles.voteInput}
@@ -366,7 +429,7 @@ export default function StoryEdit(props: Props) {
                     <CommonImagePicker 
                       type={'STORY'} 
                       callbackFn={voteFileCallBack02} 
-                      uriParam={isEmptyData(inputVoteImgUrl02) ? inputVoteImgUrl02 : ''}
+                      uriParam={isEmptyData(voteData.voteImgUrl02) ? voteData.voteImgUrl02 : ''}
                       imgWidth={48} 
                       imgHeight={48}
                       borderRadius={8}
@@ -384,6 +447,7 @@ export default function StoryEdit(props: Props) {
 
               <SpaceView>
                 <VoteEndRadioBox
+                  value={storyData.voteEndType}
                   items={voteEndTypeList}
                   callBackFunction={voteEndTypeCallbackFn}
                 />
@@ -396,8 +460,8 @@ export default function StoryEdit(props: Props) {
                 <Text style={_styles.titleText}>투표 내용을 작성해 주세요.</Text>
               </SpaceView>
               <CommonTextarea
-                value={contents}
-                onChangeText={(contents) => setContents(contents)}
+                value={storyData.contents}
+                onChangeText={(text) => setStoryData({...storyData, contents: text})}
                 placeholder={'소소한 일상부터 음식, 여행 등 주제에 관계없이 자유롭게 소통해 보세요.\n\n20글자 이상 입력해 주세요.\n\n(주의)이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 제재 대상이 될 수 있으며 상대를 배려하는 마음으로 이용해 주세요.'}
                 placeholderTextColor={'#C7C7C7'}
                 maxLength={1000}
@@ -413,9 +477,7 @@ export default function StoryEdit(props: Props) {
       </ScrollView>
 
       <SpaceView viewStyle={_styles.btnArea}>
-        <TouchableOpacity
-          onPress={() => { storyRegister(); }}
-          style={_styles.regiBtn}>
+        <TouchableOpacity onPress={() => { storyRegister(); }} style={_styles.regiBtn}>
           <Text style={_styles.regiBtnText}>등록</Text>
         </TouchableOpacity>
       </SpaceView>
@@ -426,10 +488,9 @@ export default function StoryEdit(props: Props) {
 
 // ############################################################################# 이미지 렌더링 아이템
 function ImageRenderItem ({ index, _imgData, delFn, fileCallBackFn }) {
-  const imgUrl = _imgData?.url;
+  //const imgUrl = findSourcePath(_imgData?.imgPath);  운영 반영시 적용
+  const imgUrl = findSourcePathLocal(_imgData?.imgPath);
   const imgDelYn = _imgData?.delYn;
-
-  console.log('imgUrl :::: ' , imgUrl);
 
   return (
     <View style={_styles.imgItem}>

@@ -94,6 +94,7 @@ import {
   STORY_LIKE_SAVE,
   GET_STORY_ACTIVE,
   GET_STORY_LIKE_LIST,
+  GET_STORY_BOARD_LIST,
 } from './route';
 
 /* ========================================================================================================
@@ -870,6 +871,13 @@ export async function get_popup_list(body: {
 ==================================================== 스토리
 ======================================================================================================== */
 
+// 스토리 게시글 목록을 조회한다.
+export async function get_story_board_list(body: { 
+
+}) {
+  return send(GET_STORY_BOARD_LIST, 'POST', body, true, false);
+};
+
 // 스토리 게시글을 저장한다.
 export async function story_board_save(body: {
   story_board_seq: number;
@@ -877,6 +885,7 @@ export async function story_board_save(body: {
   contents: string;
   img_file_list: any;
   vote_list: any;
+  vote_end_type: string;
 }) {
   return send(STORY_BOARD_SAVE, 'POST', body, true, false);
 };

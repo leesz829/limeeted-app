@@ -7,15 +7,16 @@ import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 
 interface Props {
+  value: string;
   items: { label: string; value: string }[];
   callBackFunction: (value: string) => void;
 }
 
 export const VoteEndRadioBox: FC<Props> = (props) => {
-  const [checkIndex, setCheckIndex] = useState(-1);
+  const [checkValue, setCheckValue] = useState(props.value);
 
   const onPressFn = (index: number, value: string) => {
-    setCheckIndex(index);
+    setCheckValue(value);
     props.callBackFunction(value);
   };
 
@@ -27,8 +28,8 @@ export const VoteEndRadioBox: FC<Props> = (props) => {
 
           return (
             <SpaceView mr={5} key={index + 'check'}>
-              <TouchableOpacity style={_styles.checkWrap(index === checkIndex)} onPress={() => onPressFn(index, item.value)}>
-                <Text style={_styles.labelText(index === checkIndex)}>{item.label}</Text>
+              <TouchableOpacity style={_styles.checkWrap(item.value === checkValue)} onPress={() => onPressFn(index, item.value)}>
+                <Text style={_styles.labelText(item.value === checkValue)}>{item.label}</Text>
               </TouchableOpacity>
             </SpaceView>
           );

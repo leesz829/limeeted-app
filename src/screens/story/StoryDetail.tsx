@@ -7,7 +7,7 @@ import SpaceView from 'component/SpaceView';
 import * as React from 'react';
 import { ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity, Animated, Easing, PanResponder, Platform, TouchableWithoutFeedback } from 'react-native';
 import { get_story_detail, story_like_save } from 'api/models';
-import { findSourcePath, IMAGE, GIF_IMG } from 'utils/imageUtils';
+import { findSourcePath, IMAGE, GIF_IMG, findSourcePathLocal } from 'utils/imageUtils';
 import { usePopup } from 'Context';
 import { SUCCESS, NODATA } from 'constants/reusltcode';
 import { useDispatch } from 'react-redux';
@@ -412,24 +412,13 @@ export default function StoryDetail(props: Props) {
 
   /* ############# 이미지 렌더링 */
   function ImageRender({ item }) {
-    const url = findSourcePath(item?.img_file_path);
+    //const url = findSourcePath(item?.img_file_path);  운영 반영시 적용
+    const url = findSourcePathLocal(item?.img_file_path);
 
     return (
       <>
         <View>
-          <Image source={PROFILE_IMAGE.womanTmp1} style={_styles.imageStyle} resizeMode={'cover'} />
-
-          {/* <Image
-            source={url}
-            style={{
-              flex: 1,
-              width: width,
-              height: height * 0.7,
-              borderRadius: 20,
-            }}
-            resizeMode={'cover'}
-          /> */}
-          {/* <Watermark value={memberBase?.phone_number}/> */}
+          <Image source={url} style={_styles.imageStyle} resizeMode={'cover'} />
         </View>
       </>
     );
