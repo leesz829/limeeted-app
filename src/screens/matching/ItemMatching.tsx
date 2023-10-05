@@ -367,7 +367,7 @@ export default function ItemMatching(props: Props) {
   useFocusEffect(
     React.useCallback(() => {
       navigation.addListener('beforeRemove', (e) => {
-        if(e.data.action.type == 'POP') {
+        if(e.data.action.type == 'POP' && type == 'PROFILE_CARD_ITEM') {
           show({ 
             content: '선택을 안하시는 경우 아이템이 소멸됩니다.\n그래도 나가시겠습니까?',
             cancelCallback: function() {},
