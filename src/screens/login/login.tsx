@@ -388,7 +388,7 @@ export const Login01 = () => {
 
           {/* ############################################################### 텍스트 입력 */}
           <View style={[layoutStyle.alignCenter, commonStyle.paddingHorizontal20, commonStyle.mb15]}>
-            <SpaceView viewStyle={[commonStyle.width100]}>
+            <SpaceView mb={10} viewStyle={[commonStyle.width100]}>
               <CommonInput
                 label=""
                 value={id}
