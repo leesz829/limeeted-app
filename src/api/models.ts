@@ -93,6 +93,7 @@ import {
   STORY_REPLY_SAVE,
   STORY_LIKE_SAVE,
   GET_STORY_ACTIVE,
+  GET_STORY_LIKE_LIST,
 } from './route';
 
 /* ========================================================================================================
@@ -912,4 +913,11 @@ export async function get_story_active(body: {
   
 }) {
   return send(GET_STORY_ACTIVE, 'POST', body, true, false);
+};
+
+// 스토리 좋아요 목록을 조회한다.
+export async function get_story_like_list(body: {
+  
+}) {
+  return send(GET_STORY_LIKE_LIST, 'POST', body, true, false);
 };

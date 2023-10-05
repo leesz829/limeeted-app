@@ -147,4 +147,4 @@ export const GET_STORY_DETAIL = '/story/getStoryDetail';
 export const STORY_LIKE_SAVE = '/story/saveStoryLike';
 export const STORY_REPLY_SAVE = '/story/saveStoryReply';
 export const GET_STORY_ACTIVE = '/story/getStoryActive';
-
+export const GET_STORY_LIKE_LIST = '/story/getStoryLikeList';

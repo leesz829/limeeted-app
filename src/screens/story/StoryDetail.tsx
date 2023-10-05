@@ -24,7 +24,8 @@ import { CommonTextarea } from 'component/CommonTextarea';
 import { CommonLoading } from 'component/CommonLoading';
 import Modal from 'react-native-modal';
 import ReplyRegiPopup from 'component/story/ReplyRegiPopup';
-
+import LikeListPopup from 'component/story/LikeListPopup';
+import { useEffect, useRef, useState } from 'react';
 
 
 /* ################################################################################################################
@@ -188,9 +189,33 @@ export default function StoryDetail(props: Props) {
 
   };
 
+  const [likeListPopup, setLikeListPopup] = useState(false);
+  const [likeListTypePopup, setLikeListTypePopup] = useState('');
+  const [replyInfo, setReplyInfo] = useState({});
+
+  const popupStoryBoardActive = () => {
+    setLikeListPopup(true);
+    setLikeListTypePopup('BOARD');
+  };
+
+  const popupStoryReplyActive = (_storyReplySeq:number, _depth:number, replyInfo:{}) => {
+    setLikeListPopup(true);
+    setLikeListTypePopup('REPLY');
+    setSelectedReplyData({
+      storyReplySeq: _storyReplySeq,
+      depth: _depth,
+    });
+    setReplyInfo(replyInfo);
+  };
+
+  const likeListCloseModal = () => {
+    setLikeListPopup(false);
+  };
+
 
   // ############################################################################# 댓글 렌더링
   const ReplyRender = ({ item, index, likeFunc, replyModalOpenFunc }) => {
+    console.log('item::', item);
     const memberMstImgPath = findSourcePath(item?.mst_img_path); // 회원 대표 이미지 경로
     const storyReplySeq = item?.story_reply_seq; // 댓글 번호
     const depth = item?.depth;
@@ -207,7 +232,7 @@ export default function StoryDetail(props: Props) {
           <SpaceView ml={depthStyleSize} viewStyle={_styles.replyItemTopArea}>
             <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'flex-start'}}>
               <Image source={memberMstImgPath} style={_styles.replyImageStyle} resizeMode={'cover'} />
-
+              
               <SpaceView ml={5} pt={3} viewStyle={{flexDirection: 'column', width: width - 70 - depthStyleSize}}>
                 <Text style={_styles.replyNickname}>
                   {item.nickname}  <Text style={_styles.replyContents}>{item.reply_contents}</Text> <Text style={_styles.replyTimeText}> 1분전</Text>
@@ -216,8 +241,7 @@ export default function StoryDetail(props: Props) {
                 <SpaceView pt={2} viewStyle={{alignItems: 'flex-start'}}>
                   <SpaceView viewStyle={_styles.replyItemEtcWrap}>
                     <TouchableOpacity 
-                      disabled={memberBase.member_seq == item?.member_seq}
-                      onPress={() => { likeFunc('REPLY', storyReplySeq); }}
+                      onPress={() => { memberBase.member_seq == storyData.board?.member_seq ? popupStoryReplyActive(storyReplySeq, depth, item) : likeFunc('REPLY', storyReplySeq); }}
                       style={{marginRight: 3}}>
 
                       {(memberBase.member_seq == item?.member_seq || item?.member_like_yn == 'N') ? (
@@ -306,9 +330,8 @@ export default function StoryDetail(props: Props) {
                 <Text style={_styles.replyRegiText}>댓글달기</Text>
               </TouchableOpacity>
               <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                <TouchableOpacity 
-                  disabled={memberBase.member_seq == storyData.board?.member_seq}
-                  onPress={() => { storyLikeProc('BOARD', 0); }}
+                <TouchableOpacity
+                  onPress={() => { memberBase.member_seq == storyData.board?.member_seq ? popupStoryBoardActive() : storyLikeProc('BOARD', 0); }}
                   style={{marginRight: 5}}>
 
                   {(memberBase.member_seq == storyData.board?.member_seq || storyData.board?.member_like_yn == 'N') ? (
@@ -375,6 +398,14 @@ export default function StoryDetail(props: Props) {
         callbackFunc={replyRegiCallback} 
       />
 
+      <LikeListPopup
+        isVisible={likeListPopup}
+        closeModal={likeListCloseModal}
+        type={likeListTypePopup}
+        _storyBoardSeq={props.route.params.storyBoardSeq}
+        _storyReplySeq={selectedReplyData}
+        replyInfo={replyInfo}
+      />
     </>
   );
 
