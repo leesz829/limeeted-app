@@ -404,7 +404,7 @@ export default function StoryEdit(props: Props) {
                     <CommonImagePicker 
                       type={'STORY'} 
                       callbackFn={voteFileCallBack01} 
-                      uriParam={isEmptyData(voteData.voteImgUrl01) ? voteData.voteImgUrl01 : ''}
+                      uriParam={isEmptyData(voteData.voteImgUrl01) ? findSourcePathLocal(voteData.voteImgUrl01) : ''}
                       imgWidth={48} 
                       imgHeight={48}
                       borderRadius={8}
@@ -430,7 +430,7 @@ export default function StoryEdit(props: Props) {
                     <CommonImagePicker 
                       type={'STORY'} 
                       callbackFn={voteFileCallBack02} 
-                      uriParam={isEmptyData(voteData.voteImgUrl02) ? voteData.voteImgUrl02 : ''}
+                      uriParam={isEmptyData(voteData.voteImgUrl02) ? findSourcePathLocal(voteData.voteImgUrl02) : ''}
                       imgWidth={48} 
                       imgHeight={48}
                       borderRadius={8}
