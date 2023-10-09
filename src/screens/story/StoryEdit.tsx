@@ -391,7 +391,7 @@ export default function StoryEdit(props: Props) {
                     onChangeText={(text) => setVoteData({...voteData, voteName01 : text})}
                     multiline={false}
                     autoCapitalize="none"
-                    style={_styles.voteInput}
+                    style={[_styles.voteInput, isEmptyData(voteData.voteName01) ? {borderColor: '#7986EE'} : {borderColor:'#ebe9ef'}]}
                     placeholder={'선택지 입력'}
                     placeholderTextColor={'#c7c7c7'}
                     editable={true}
@@ -417,7 +417,7 @@ export default function StoryEdit(props: Props) {
                     onChangeText={(text) => setVoteData({...voteData, voteName02 : text})}
                     multiline={false}
                     autoCapitalize="none"
-                    style={_styles.voteInput}
+                    style={[_styles.voteInput, isEmptyData(voteData.voteName02) ? {borderColor: '#7986EE'} : {borderColor:'#ebe9ef'}]}
                     placeholder={'선택지 입력'}
                     placeholderTextColor={'#c7c7c7'}
                     editable={true}
@@ -469,6 +469,43 @@ export default function StoryEdit(props: Props) {
                 exceedCharCountColor={'#990606'}
                 fontSize={13}
                 height={height-555}
+                backgroundColor={'#fff'}
+                fontColor={'#000'}
+                borderColor={isEmptyData(storyData.contents) ? '#7986EE' : '#ebe9ef'}
+              />
+            </SpaceView>
+          </SpaceView>
+        )}
+
+        {/* ############################################################################ 비밀형 */}
+        {storyData.storyType == 'SECRET' && (
+          <SpaceView mt={20} pl={20} pr={20}>
+            <SpaceView mb={25}>
+              <Text style={_styles.titleText}>게시글 내용을 작성해 주세요.</Text>
+            </SpaceView>
+            
+            <SpaceView viewStyle={_styles.imgArea}>
+              {[0,1,2].map((i, index) => {
+                return (
+                  <>
+                    {index == 0 && <ImageRenderItem index={index} _imgData={imgData.orgImgUrl01} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack1}  /> }
+                    {index == 1 && <ImageRenderItem index={index} _imgData={imgData.orgImgUrl02} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack2}  /> }
+                    {index == 2 && <ImageRenderItem index={index} _imgData={imgData.orgImgUrl03} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack3}  /> }
+                  </>
+                )
+              })}
+            </SpaceView>
+
+            <SpaceView mt={20}>
+              <CommonTextarea
+                value={storyData.contents}
+                onChangeText={(text) => setStoryData({...storyData, contents: text})}
+                placeholder={'이야기 앞에 "비밀"이 붙으면 재밌어지는 법이죠!.\n\n20글자 이상 입력해 주세요.\n\n(주의*) 타인 비방 등 폭력적이거나 선정적인 게시글은 운영진의 판단 하에 삭제처리 될 수 있습니다.'}
+                placeholderTextColor={'#C7C7C7'}
+                maxLength={1000}
+                exceedCharCountColor={'#990606'}
+                fontSize={13}
+                height={height-430}
                 backgroundColor={'#fff'}
                 fontColor={'#000'}
                 borderColor={isEmptyData(storyData.contents) ? '#7986EE' : '#ebe9ef'}
@@ -613,10 +650,11 @@ const _styles = StyleSheet.create({
     backgroundColor: '#fff',
     paddingHorizontal: 10,
     paddingVertical: 15,
-    borderColor: '#F0F0F0',
+    borderColor: '#ebe9ef',
     borderWidth: 1,
     borderRadius: 8,
     width: '85%',
+    
   },
   voteImgArea: {
     position: 'absolute',

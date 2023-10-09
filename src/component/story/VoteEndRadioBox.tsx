@@ -27,7 +27,7 @@ export const VoteEndRadioBox: FC<Props> = (props) => {
           if (!item.label) return;
 
           return (
-            <SpaceView mr={5} key={index + 'check'}>
+            <SpaceView key={index + 'check'}>
               <TouchableOpacity style={_styles.checkWrap(item.value === checkValue)} onPress={() => onPressFn(index, item.value)}>
                 <Text style={_styles.labelText(item.value === checkValue)}>{item.label}</Text>
               </TouchableOpacity>
@@ -44,6 +44,7 @@ export const VoteEndRadioBox: FC<Props> = (props) => {
 const _styles = StyleSheet.create({
   wrap: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   checkWrap: (isOn:boolean) => {
     return {
@@ -55,7 +56,6 @@ const _styles = StyleSheet.create({
       width: 60,
       borderWidth: 1,
       borderColor: '#697AE6',
-      marginRight: 7.5,
     };
   },
   active: {
