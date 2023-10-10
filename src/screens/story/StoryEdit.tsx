@@ -8,7 +8,7 @@ import TopNavigation from 'component/TopNavigation';
 import * as React from 'react';
 import { useState, useRef, useEffect } from 'react';
 import { ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity, TextInput } from 'react-native';
-import { story_board_save, get_story_detail } from 'api/models';
+import { save_story_board, get_story_detail } from 'api/models';
 import { findSourcePath, IMAGE, GIF_IMG, findSourcePathLocal } from 'utils/imageUtils';
 import { usePopup } from 'Context';
 import { SUCCESS, NODATA } from 'constants/reusltcode';
@@ -199,7 +199,7 @@ export default function StoryEdit(props: Props) {
 
         //console.log('body :::::: ' , body);
 
-        const { success, data } = await story_board_save(body);
+        const { success, data } = await save_story_board(body);
         if(success) {
           switch (data.result_code) {
           case SUCCESS:

@@ -12,7 +12,7 @@ import { ROUTES, STACK } from 'constants/routes';
 import Modal from 'react-native-modal';
 import { CommonTextarea } from 'component/CommonTextarea';
 import { styles, layoutStyle, commonStyle, modalStyle } from 'assets/styles/Styles';
-import { story_reply_save } from 'api/models';
+import { save_story_reply } from 'api/models';
 import { isEmptyData } from 'utils/functions';
 import { SUCCESS, NODATA } from 'constants/reusltcode';
 import { useProfileImg } from 'hooks/useProfileImg';
@@ -68,7 +68,7 @@ export default function ReplyRegiPopup({ isVisible, storyBoardSeq, storyReplySeq
 
         console.log('body :::::: ' , body);
 
-        const { success, data } = await story_reply_save(body);
+        const { success, data } = await save_story_reply(body);
         if(success) {
           switch (data.result_code) {
           case SUCCESS:

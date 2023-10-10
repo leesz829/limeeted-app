@@ -20,6 +20,8 @@ import { isEmptyData } from 'utils/functions';
 import { STACK } from 'constants/routes';
 import AuthLevel from 'component/common/AuthLevel';
 import ProfileGrade from 'component/common/ProfileGrade';
+import MasonryList from '@react-native-seoul/masonry-list';
+
 
 
 /* ################################################################################################################
@@ -129,9 +131,7 @@ export const Story = () => {
 
   // 스토리 알림 이동
   const goStoryActive = async () => {
-    navigation.navigate(STACK.COMMON, {
-      screen: 'StoryActive',
-    });
+    navigation.navigate(STACK.COMMON, { screen: 'StoryActive', });
   };
 
   // 스토리 상세 이동
@@ -313,6 +313,66 @@ export const Story = () => {
     );
   });
 
+
+
+
+
+
+
+
+
+
+
+  // ###############################  목록 아이템 렌더링
+  const RenderListItem = React.memo(({ item, type }) => {
+    const storyBoardSeq = item.story_board_seq;
+    const imgUrl = findSourcePathLocal(item?.story_img_path);
+    const voteImgPath01 = findSourcePathLocal(item?.vote_img_path_01);
+    const voteImgPath02 = findSourcePathLocal(item?.vote_img_path_02);
+
+    console.log('type :::::: ' , type);
+
+    let _width = 0;
+    let _height = 0;
+
+    if(type == 'LARGE') {
+      _width = width - 16;
+      _height = width - 43;
+      /* _width = (width - 43) / 2;
+      _height = (width - 43) /1; */
+    } else if(type == 'MEDIUM') {
+      _width = (width - 40) / 1.64;
+      _height = width - 40;
+    } else {
+      _width = (width - 40) / 2.27;
+      _height = (width - 40);
+    }
+
+    return (
+      <>
+        <SpaceView mb={5} viewStyle={_styles.itemArea02(_width, _height)}>
+          <TouchableOpacity onPress={() => { goStoryDetail(storyBoardSeq); }}>
+            <SpaceView>
+              {item?.story_type == 'VOTE' ? (
+                <Image source={voteImgPath01} style={{width: _width, height: _height}} resizeMode={'cover'} />
+              ) : (
+                <Image source={imgUrl} style={{width: _width, height: _height}} resizeMode={'cover'} />
+              )}
+            </SpaceView>
+          </TouchableOpacity>
+        </SpaceView>
+      </>
+    );
+  });
+
+
+
+
+
+
+
+
+
   /* ##################################################################################################################################
   ################## 초기 실행 함수
   ################################################################################################################################## */
@@ -326,11 +386,92 @@ export const Story = () => {
     <>
       <TopNavigation currentPath={'Story'} />
 
-        <ScrollView 
+        {/* <ScrollView 
           showsVerticalScrollIndicator={false}
-          style={{backgroundColor: '#fff'}}>
+          style={{backgroundColor: '#fff'}}> */}
+
+          {/* <MasonryList
+            data={storyList}
+            //keyExtractor={(item): string => item.id}
+            //numColumns={2}
+            //showsVerticalScrollIndicator={false}
+            //refreshing={isLoadingNext}
+            //onRefresh={() => refetch({first: ITEM_CNT})}
+            //onEndReachedThreshold={0.1}
+            //onEndReached={() => loadNext(ITEM_CNT)}
+
+            renderItem={({ item }) => (
+              <>
+                <View style={{width: item?.size_type == 'LARGE' ? '50%' : '50%'}}>
+                  <ExampleRenderItem item={item} type={item?.size_type} />
+                </View>
+              </>
+            )}
+          /> */}
 
           <FlatList
+            data={storyList}
+            keyExtractor={(item) => item.id}
+            //style={_styles.contentWrap}
+            contentContainerStyle={_styles.contentWrap}
+            showsVerticalScrollIndicator={false}
+            //contentContainerStyle={{marginBottom: 50, paddingHorizontal: 10}}
+            renderItem={({ item:innerItem, index:innerIndex }) => {
+
+              return (
+                <>
+                  <SpaceView key={innerIndex} viewStyle={_styles.itemWrap}>
+                    {innerItem.type == 'ONLY_LARGE' ? (
+                      <>
+                        {innerItem.large_list.map((item, index) => {
+                          return (
+                            <RenderListItem item={item} type={item?.size_type} />
+                          )
+                        })}
+                      </>
+                    ) : innerItem.type == 'COMPLEX' ? (
+                      <>
+                        {innerItem.complex_list.map((item, index) => {
+                          return (
+                            <RenderListItem item={item} type={item?.size_type} />
+                          )
+                        })}
+
+                        {/* <SpaceView viewStyle={_styles.dummyArea(innerItem?.first_type)}>
+                          <Text style={_styles.dummyText}>배너{innerItem.complex_list.length}</Text>
+                        </SpaceView> */}
+
+                        {innerItem.complex_list.length == 1 && (
+                          <SpaceView viewStyle={_styles.dummyArea(innerItem?.first_type)}>
+                            <Text style={_styles.dummyText}>배너</Text>
+                          </SpaceView>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        
+                      </>
+                    )}
+
+                  </SpaceView>
+                </>
+              )
+            }}
+
+
+            /* renderItem={({ item }) => (
+              <RenderListItem item={item} type={item?.size_type} />
+            )} */
+          />
+
+
+
+
+          
+
+
+          {/* ######################################################################### 첫번째 기존 UI */}
+          {/* <FlatList
             contentContainerStyle={{marginBottom: 50, paddingHorizontal: 20}}
             //ref={noticeRef}
             data={storyList}
@@ -398,6 +539,10 @@ export const Story = () => {
                                 </SpaceView>
                               )
                             })}
+
+                            {innerItem.small_list.length < 2 && (
+                              <SpaceView viewStyle={_styles.dummyArea('')}><Text style={_styles.dummyText}>배너</Text></SpaceView>
+                            )}
                           </SpaceView>
                         </SpaceView>
                       </>
@@ -413,6 +558,9 @@ export const Story = () => {
                               )
                             })}
                           </SpaceView>
+                          {innerItem.small_list.length < 2 && (
+                              <SpaceView viewStyle={_styles.dummyArea('')}><Text style={_styles.dummyText}>배너</Text></SpaceView>
+                          )}
                           {innerItem.medium_list.map((item, index) => {
                             return (
                               <MediumRenderItem item={item} />
@@ -430,9 +578,9 @@ export const Story = () => {
                 </>
               )
             }}
-          />
+          /> */}
 
-        </ScrollView>
+        {/* </ScrollView> */}
 
         <SpaceView viewStyle={_styles.btnArea}>
           <SpaceView viewStyle={_styles.btnTextArea}>
@@ -464,6 +612,29 @@ const _styles = StyleSheet.create({
   wrap: {
     backgroundColor: '#fff',
   },
+  contentWrap: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    paddingTop: 5,
+    paddingBottom: 50,
+    paddingHorizontal: 5,
+    backgroundColor: '#fff',
+    width: width,
+  },
+  itemWrap: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    width: '100%',
+  },
+  itemArea02: (width:number, height:number) => {
+    return {
+      width: width,
+      height: height,
+      borderRadius: 10,
+      overflow: 'hidden',
+      marginHorizontal: 3,
+    };
+  },
   itemArea: (size:number) => {
     return {
       width: size,
@@ -473,11 +644,11 @@ const _styles = StyleSheet.create({
     };
   },
   dummyArea: (type:string) => {
-    let _w = (width - 55) / 3;
-    let _h = (width - 55) / 3;
+    let _w = (width - 40) / 2.27;
+    let _h = width - 40;
 
-    if(type == 'H') {
-      _h = (width - 43) / 1.5;
+    if(type == 'SMALL') {
+      _w = (width - 40) / 1.64;
     }
 
     return {
@@ -488,6 +659,7 @@ const _styles = StyleSheet.create({
       justifyContent: 'center',
       borderRadius: 10,
       overflow: 'hidden',
+      marginHorizontal: 3,
     };
   },
   dummyText: {

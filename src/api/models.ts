@@ -88,13 +88,14 @@ import {
   JOIN_CANCEL,
   POPUP_LIST,
   SHOP_MAIN,
-  STORY_BOARD_SAVE,
+  SAVE_STORY_BOARD,
   GET_STORY_DETAIL,
-  STORY_REPLY_SAVE,
-  STORY_LIKE_SAVE,
+  SAVE_STORY_REPLY,
+  SAVE_STORY_LIKE,
   GET_STORY_ACTIVE,
   GET_STORY_LIKE_LIST,
   GET_STORY_BOARD_LIST,
+  SAVE_STORY_VOTE_MEMBER
 } from './route';
 
 /* ========================================================================================================
@@ -879,7 +880,7 @@ export async function get_story_board_list(body: {
 };
 
 // 스토리 게시글을 저장한다.
-export async function story_board_save(body: {
+export async function save_story_board(body: {
   story_board_seq: number;
   story_type: string;
   contents: string;
@@ -887,7 +888,7 @@ export async function story_board_save(body: {
   vote_list: any;
   vote_end_type: string;
 }) {
-  return send(STORY_BOARD_SAVE, 'POST', body, true, false);
+  return send(SAVE_STORY_BOARD, 'POST', body, true, false);
 };
 
 // 스토리 게시글 상세 정보를 조회한다.
@@ -898,23 +899,23 @@ export async function get_story_detail(body: {
 };
 
 // 스토리 댓글을 저장한다.
-export async function story_reply_save(body: {
+export async function save_story_reply(body: {
   story_reply_seq: number;
   story_board_seq: number;
   reply_contents: string;
   group_seq: number;
   depth: number;
 }) {
-  return send(STORY_REPLY_SAVE, 'POST', body, true, false);
+  return send(SAVE_STORY_REPLY, 'POST', body, true, false);
 };
 
 // 스토리 좋아요를 저장한다.
-export async function story_like_save(body: {
+export async function save_story_like(body: {
   type: string;
   story_board_seq: number;
   story_reply_seq: number;
 }) {
-  return send(STORY_LIKE_SAVE, 'POST', body, true, false);
+  return send(SAVE_STORY_LIKE, 'POST', body, true, false);
 };
 
 // 스토리 활동 정보를 조회한다.
@@ -929,4 +930,12 @@ export async function get_story_like_list(body: {
   
 }) {
   return send(GET_STORY_LIKE_LIST, 'POST', body, true, false);
+};
+
+// 스토리 투표 회원을 저장한다.
+export async function save_story_vote_member(body: {
+  story_board_seq: number;
+  story_vote_seq: number;
+}) {
+  return send(SAVE_STORY_VOTE_MEMBER, 'POST', body, true, false);
 };

@@ -6,7 +6,7 @@ import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
 import { ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity, Animated, Easing, PanResponder, Platform, TouchableWithoutFeedback } from 'react-native';
-import { get_story_detail, story_like_save } from 'api/models';
+import { get_story_detail, save_story_like, save_story_vote_member } from 'api/models';
 import { findSourcePath, IMAGE, GIF_IMG, findSourcePathLocal } from 'utils/imageUtils';
 import { usePopup } from 'Context';
 import { SUCCESS, NODATA } from 'constants/reusltcode';
@@ -168,7 +168,7 @@ export default function StoryDetail(props: Props) {
           story_reply_seq: storyReplySeq,
         };
   
-        const { success, data } = await story_like_save(body);
+        const { success, data } = await save_story_like(body);
         if(success) {
           switch (data.result_code) {
             case SUCCESS:
@@ -212,6 +212,44 @@ export default function StoryDetail(props: Props) {
 
   const likeListCloseModal = () => {
     setLikeListPopup(false);
+  };
+
+  // ############################################################################# 투표하기 실행
+  const voteProc = async (storyVoteSeq:number) => {
+    console.log('storyVoteSeq ::::: ' , storyVoteSeq);
+
+    // 중복 클릭 방지 설정
+    if(isClickable) {
+      try {
+        setIsClickable(false);
+        setIsLoading(true);
+  
+        const body = {
+          story_board_seq: storyBoardSeq,
+          story_vote_seq: storyVoteSeq,
+        };
+  
+        const { success, data } = await save_story_vote_member(body);
+        if(success) {
+          switch (data.result_code) {
+            case SUCCESS:
+              getStoryBoard();
+              break;
+            default:
+              show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+              break;
+          }
+        } else {
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsClickable(true);
+        setIsLoading(false);
+      }
+    }
+
   };
 
 
@@ -290,7 +328,7 @@ export default function StoryDetail(props: Props) {
     <>
       {isLoading && <CommonLoading />}
 
-      <CommonHeader title={'스토리 상세'} />      
+      <CommonHeader title={'스토리 상세'} />
 
       <ScrollView 
         showsVerticalScrollIndicator={false}
@@ -416,13 +454,48 @@ export default function StoryDetail(props: Props) {
 
   /* ############# 이미지 렌더링 */
   function ImageRender({ item }) {
+    const isVote = item?.vote_yn == 'Y' ? true : false; // 투표 여부
+
     //const url = findSourcePath(item?.img_file_path);  운영 반영시 적용
     let url = '';
+    let baseColor = '#7A85EE';
+    let baseColorArr = ['#7984ED', '#8759D5'];
+    let textColor = '#ffffff';
+    let btnText = '투표하기';
 
     if(isEmptyData(item?.img_file_path)) {
       url = findSourcePathLocal(item?.img_file_path);
     } else {
       url = findSourcePathLocal(item?.file_path);
+    };
+
+    // 작성자 여부 구분 처리
+    if(memberBase?.member_seq == storyData.board?.member_seq) {
+      if(storyData.board?.vote_end_yn == 'Y') {
+        if(storyData.board?.selected_vote_seq != item?.story_vote_seq) {
+          baseColorArr = ['#FE0456', '#FE0456'];
+          baseColor = '#FE0456';
+          btnText = item?.vote_member_cnt + '표';
+        } else {
+          btnText = item?.vote_member_cnt + '표(당선)';
+        }
+      } else {
+        baseColorArr = ['#7984ED', '#7984ED'];
+        btnText = item?.vote_member_cnt + '표';
+      }
+    } else {
+      if(isVote) {
+        baseColorArr = ['#FE0456', '#FE0456'];
+        baseColor = '#FE0456';
+        btnText = '투표완료';
+      } else {
+        if(storyData.board?.vote_end_yn == 'Y') {
+          baseColorArr = ['#EEEEEE', '#EEEEEE'];
+          baseColor = '#DDDDDD';
+          textColor = '#555555';
+          btnText = '투표마감';
+        }
+      }
     };
 
     return (
@@ -435,19 +508,29 @@ export default function StoryDetail(props: Props) {
               <SpaceView mb={15}>
                 <Image source={url} style={_styles.imageStyle} resizeMode={'cover'} />
               </SpaceView>
-              <SpaceView viewStyle={_styles.voteArea}>
-                <SpaceView mb={10}><Text style={_styles.voteOrderText}>0{item.order_seq}</Text></SpaceView>
-                <SpaceView mb={10}><Text style={_styles.voteNameText}>{item.vote_name}</Text></SpaceView>
-                <SpaceView mb={20}><Text style={_styles.voteDescText}>투표 후에도 선택을 바꿀 수 있습니다.</Text></SpaceView>
-                <TouchableOpacity style={{width: '100%'}}>
+              <SpaceView viewStyle={_styles.voteArea(baseColor)}>
+                <SpaceView mb={10}><Text style={_styles.voteOrderText(baseColor, textColor)}>0{item?.order_seq}</Text></SpaceView>
+                <SpaceView mb={10}><Text style={_styles.voteNameText}>{item?.vote_name}</Text></SpaceView>
+                <SpaceView mb={20} viewStyle={_styles.voteDescArea}>
+                  <Text style={_styles.voteDescText}>투표 후에도 선택을 바꿀 수 있습니다.</Text>
+
+                  {isEmptyData(storyData.board?.vote_time_text) && (
+                    <Text style={_styles.voteTimeText}>({storyData.board?.vote_time_text})</Text>
+                  )}
+                </SpaceView>
+                <TouchableOpacity
+                  disabled={memberBase?.member_seq == storyData.board?.member_seq || isVote}
+                  style={{width: '100%'}}
+                  onPress={() => { voteProc(item?.story_vote_seq) }}>
+
                   <LinearGradient
-                    colors={['#7984ED', '#8759D5']}
+                    colors={baseColorArr}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                     style={_styles.voteBtn}>
-                    <Text style={_styles.voteBtnText}>투표하기</Text>
+                    <Text style={_styles.voteBtnText(textColor)}>{btnText}</Text>
                   </LinearGradient>
-                </TouchableOpacity>               
+                </TouchableOpacity>
               </SpaceView>
             </>
           )}
@@ -616,45 +699,62 @@ const _styles = StyleSheet.create({
     color: '#000',
     fontSize: 13,
   },
-  voteArea: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: '#7A85EE',
-    borderRadius: 10,
-    overflow: 'hidden',
-    marginHorizontal: 15,
-    paddingVertical: 15,
+  voteArea: (bdColor: string) => {
+    return {
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: 2,
+      borderColor: bdColor,
+      borderRadius: 10,
+      overflow: 'hidden',
+      marginHorizontal: 15,
+      paddingVertical: 15,
+    };
   },
-  voteOrderText: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    backgroundColor: '#7A85EE',
-    fontSize: 14,
-    borderRadius: 13,
-    color: '#fff',
-    paddingHorizontal: 15,
-    paddingVertical: 3,
+  voteOrderText: (bgColor: string, textColor: string) => {
+    return {
+      fontFamily: 'AppleSDGothicNeoB00',
+      backgroundColor: bgColor,
+      fontSize: 14,
+      borderRadius: 13,
+      color: textColor,
+      paddingHorizontal: 15,
+      paddingVertical: 3,
+    };
   },
   voteNameText: {
     fontFamily: 'AppleSDGothicNeoB00',
     color: '#333333',
     fontSize: 18,
   },
+  voteDescArea: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   voteDescText: {
     fontFamily: 'AppleSDGothicNeoR00',
     fontSize: 14,
     color: '#555555',
+  },
+  voteTimeText: {
+    fontFamily: 'AppleSDGothicNeoR00',
+    fontSize: 14,
+    color: '#EE2E62',
+    marginLeft: 3,
   },
   voteBtn: {
     marginHorizontal: 10,
     paddingVertical: 8,
     borderRadius: 15,
   },
-  voteBtnText: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    color: '#ffffff',
-    fontSize: 16,
-    textAlign: 'center',
+  voteBtnText: (textColor: string) => {
+    return {
+      fontFamily: 'AppleSDGothicNeoB00',
+      color: textColor,
+      fontSize: 16,
+      textAlign: 'center',
+    };
   },
 
   

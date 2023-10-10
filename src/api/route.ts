@@ -143,9 +143,11 @@ export const POPUP_LIST = '/popup/selectPopList';
  * 스토리
  */
 export const GET_STORY_BOARD_LIST = '/story/getStoryBoardList';
-export const STORY_BOARD_SAVE = '/story/saveStoryBoard';
+export const SAVE_STORY_BOARD = '/story/saveStoryBoard';
 export const GET_STORY_DETAIL = '/story/getStoryDetail';
-export const STORY_LIKE_SAVE = '/story/saveStoryLike';
-export const STORY_REPLY_SAVE = '/story/saveStoryReply';
+export const SAVE_STORY_LIKE = '/story/saveStoryLike';
+export const SAVE_STORY_REPLY = '/story/saveStoryReply';
 export const GET_STORY_ACTIVE = '/story/getStoryActive';
 export const GET_STORY_LIKE_LIST = '/story/getStoryLikeList';
+export const SAVE_STORY_VOTE_MEMBER = '/story/saveStoryVoteMember';
+
