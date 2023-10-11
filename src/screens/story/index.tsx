@@ -330,10 +330,8 @@ export const Story = () => {
     const voteImgPath01 = findSourcePathLocal(item?.vote_img_path_01);
     const voteImgPath02 = findSourcePathLocal(item?.vote_img_path_02);
 
-    console.log('type :::::: ' , type);
-
-    let _width = 0;
-    let _height = 0;
+    let _width = 0; // 가로길이
+    let _height = 0; // 세로길이
 
     if(type == 'LARGE') {
       _width = width - 16;
@@ -358,6 +356,31 @@ export const Story = () => {
               ) : (
                 <Image source={imgUrl} style={{width: _width, height: _height}} resizeMode={'cover'} />
               )}
+            </SpaceView>
+
+            <SpaceView viewStyle={_styles.topArea}>
+              <Image source={findSourcePath(item?.mst_img_path)} style={_styles.mstImgStyle} resizeMode={'cover'} />
+              {/* <AuthLevel authAcctCnt={item?.auth_acct_cnt} type={'BASE'} />
+              <ProfileGrade profileScore={item?.profile_score} type={'BASE'} /> */}
+
+              <SpaceView>
+                <Text style={_styles.activeText}>
+                  {item?.profile_score > 0 && item?.profile_score}
+                  {(isEmptyData(item?.auth_acct_cnt) && item?.profile_score > 0) && ' | '}
+                  {isEmptyData(item?.auth_acct_cnt) && 'LV' + item?.auth_acct_cnt}
+                </Text>
+                <Text style={_styles.nicknameText}>{item?.nickname}</Text>
+              </SpaceView>
+
+            </SpaceView>
+
+            <SpaceView viewStyle={_styles.bottomArea}>
+              <SpaceView><Text style={_styles.contentsText}>{item?.contents}</Text></SpaceView>
+              {/* <SpaceView mt={8}><Text style={_styles.contentsText}>{item?.time_text}</Text></SpaceView> */}
+            </SpaceView>
+
+            <SpaceView viewStyle={_styles.typeArea(item?.story_type)}>
+              <Text style={_styles.typeText}>{item?.story_type_name}</Text>
             </SpaceView>
           </TouchableOpacity>
         </SpaceView>
@@ -436,10 +459,6 @@ export const Story = () => {
                             <RenderListItem item={item} type={item?.size_type} />
                           )
                         })}
-
-                        {/* <SpaceView viewStyle={_styles.dummyArea(innerItem?.first_type)}>
-                          <Text style={_styles.dummyText}>배너{innerItem.complex_list.length}</Text>
-                        </SpaceView> */}
 
                         {innerItem.complex_list.length == 1 && (
                           <SpaceView viewStyle={_styles.dummyArea(innerItem?.first_type)}>
@@ -707,8 +726,8 @@ const _styles = StyleSheet.create({
   typeArea: (type:string) => {
     return {
       position: 'absolute',
-      bottom: 10,
-      right: 10,
+      top: 5,
+      right: 5,
       backgroundColor: '#7986EE',
       borderRadius: 13,
       paddingVertical: 3,
@@ -734,6 +753,15 @@ const _styles = StyleSheet.create({
     fontSize: 13,
     color: '#fff',
   },
-
+  activeText: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 13,
+    color: '#fff',
+  },
+  nicknameText: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 13,
+    color: '#fff',
+  },
   
 });
