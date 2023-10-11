@@ -337,8 +337,8 @@ export default function StoryEdit(props: Props) {
 
       <ScrollView showsVerticalScrollIndicator={false} style={{backgroundColor: '#fff'}}>
 
-        {/* ############################################################################ 스토리형 */}
-        {storyData.storyType == 'STORY' && (
+        {/* ############################################################################ 스토리형 또는 비밀 */}
+        {(storyData.storyType == 'STORY' || storyData.storyType == 'SECRET') && (
           <SpaceView mt={20} pl={20} pr={20}>
             <SpaceView mb={25}>
               <Text style={_styles.titleText}>게시글 내용을 작성해 주세요.</Text>
@@ -360,7 +360,10 @@ export default function StoryEdit(props: Props) {
               <CommonTextarea
                 value={storyData.contents}
                 onChangeText={(text) => setStoryData({...storyData, contents: text})}
-                placeholder={'소소한 일상부터 음식, 여행 등 주제에 관계없이 자유롭게 소통해 보세요.\n\n20글자 이상 입력해 주세요.\n\n(주의*) 이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 제재 대상이 될 수 있으며 상대를 배려하는 마음으로 이용해 주세요.'}
+                placeholder={
+                  storyData.storyType == 'SECRET' ? '이야기 앞에 "비밀"이 붙으면 재밌어지는 법이죠!.\n\n20글자 이상 입력해 주세요.\n\n(주의*) 타인 비방 등 폭력적이거나 선정적인 게시글은 운영진의 판단 하에 삭제처리 될 수 있습니다.' :
+                  '소소한 일상부터 음식, 여행 등 주제에 관계없이 자유롭게 소통해 보세요.\n\n20글자 이상 입력해 주세요.\n\n(주의*) 이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 제재 대상이 될 수 있으며 상대를 배려하는 마음으로 이용해 주세요.'
+                }
                 placeholderTextColor={'#C7C7C7'}
                 maxLength={1000}
                 exceedCharCountColor={'#990606'}
@@ -368,7 +371,9 @@ export default function StoryEdit(props: Props) {
                 height={height-430}
                 backgroundColor={'#fff'}
                 fontColor={'#000'}
-                borderColor={isEmptyData(storyData.contents) ? '#7986EE' : '#ebe9ef'}
+                borderColor={isEmptyData(storyData.contents) ? '#7986EE' : '#DDDDDD'}
+                borderRadius={20}
+                padding={20}
               />
             </SpaceView>
           </SpaceView>
@@ -391,7 +396,7 @@ export default function StoryEdit(props: Props) {
                     onChangeText={(text) => setVoteData({...voteData, voteName01 : text})}
                     multiline={false}
                     autoCapitalize="none"
-                    style={[_styles.voteInput, isEmptyData(voteData.voteName01) ? {borderColor: '#7986EE'} : {borderColor:'#ebe9ef'}]}
+                    style={[_styles.voteInput, isEmptyData(voteData.voteName01) ? {borderColor: '#7986EE'} : {borderColor:'#DDDDDD'}]}
                     placeholder={'선택지 입력'}
                     placeholderTextColor={'#c7c7c7'}
                     editable={true}
@@ -417,7 +422,7 @@ export default function StoryEdit(props: Props) {
                     onChangeText={(text) => setVoteData({...voteData, voteName02 : text})}
                     multiline={false}
                     autoCapitalize="none"
-                    style={[_styles.voteInput, isEmptyData(voteData.voteName02) ? {borderColor: '#7986EE'} : {borderColor:'#ebe9ef'}]}
+                    style={[_styles.voteInput, isEmptyData(voteData.voteName02) ? {borderColor: '#7986EE'} : {borderColor:'#DDDDDD'}]}
                     placeholder={'선택지 입력'}
                     placeholderTextColor={'#c7c7c7'}
                     editable={true}
@@ -442,7 +447,7 @@ export default function StoryEdit(props: Props) {
 
             {/* ############### 투표 마감기한 입력 영역 */}
             <SpaceView mb={30}>
-              <SpaceView mb={10}>
+              <SpaceView mb={20}>
                 <Text style={_styles.titleText}>투표 마감기한을 입력해 주세요.</Text>
               </SpaceView>
 
@@ -456,8 +461,8 @@ export default function StoryEdit(props: Props) {
             </SpaceView>
 
             {/* ############### 투표 내용 입력 영역 */}
-            <SpaceView mb={20}>
-              <SpaceView mb={10}>
+            <SpaceView>
+              <SpaceView mb={20}>
                 <Text style={_styles.titleText}>투표 내용을 작성해 주세요.</Text>
               </SpaceView>
               <CommonTextarea
@@ -478,7 +483,7 @@ export default function StoryEdit(props: Props) {
         )}
 
         {/* ############################################################################ 비밀형 */}
-        {storyData.storyType == 'SECRET' && (
+        {/* {storyData.storyType == 'SECRET' && (
           <SpaceView mt={20} pl={20} pr={20}>
             <SpaceView mb={25}>
               <Text style={_styles.titleText}>게시글 내용을 작성해 주세요.</Text>
@@ -512,7 +517,7 @@ export default function StoryEdit(props: Props) {
               />
             </SpaceView>
           </SpaceView>
-        )}
+        )} */}
       </ScrollView>
 
       <SpaceView viewStyle={_styles.btnArea}>
@@ -592,8 +597,8 @@ function ImageRenderItem ({ index, _imgData, delFn, fileCallBackFn }) {
 const _styles = StyleSheet.create({
 
   titleText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 20,
+    fontFamily: 'AppleSDGothicNeoR00',
+    fontSize: 19,
     color: '#000',
   },
   imgArea: {
@@ -641,7 +646,7 @@ const _styles = StyleSheet.create({
     fontSize: 16,
     color: '#555',
     textAlign: 'center',
-    paddingVertical: 5,
+    paddingVertical: 8,
   },
   voteArea: {
 
@@ -649,11 +654,11 @@ const _styles = StyleSheet.create({
   voteInput: {
     backgroundColor: '#fff',
     paddingHorizontal: 10,
-    paddingVertical: 15,
+    paddingVertical: 10,
     borderColor: '#ebe9ef',
     borderWidth: 1,
-    borderRadius: 8,
-    width: '85%',
+    borderRadius: 4,
+    width: '84%',
     
   },
   voteImgArea: {

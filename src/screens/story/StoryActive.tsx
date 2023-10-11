@@ -7,7 +7,7 @@ import SpaceView from 'component/SpaceView';
 import * as React from 'react';
 import { ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity, Animated, Easing, PanResponder, Platform, TouchableWithoutFeedback } from 'react-native';
 import { get_story_active } from 'api/models';
-import { findSourcePath, IMAGE, GIF_IMG } from 'utils/imageUtils';
+import { findSourcePath, IMAGE, findSourcePathLocal } from 'utils/imageUtils';
 import { usePopup } from 'Context';
 import { SUCCESS, NODATA } from 'constants/reusltcode';
 import { useDispatch } from 'react-redux';
@@ -115,6 +115,16 @@ export default function StoryActive(props: Props) {
     });
   };
 
+  // ############################################################################# 스토리 상세 이동
+  const goStoryDetail = async (storyBoardSeq:number) => {
+    navigation.navigate(STACK.COMMON, {
+      screen: 'StoryDetail',
+      params: {
+        storyBoardSeq: storyBoardSeq,
+      }
+    });
+  };
+
   // ############################################################################# 스토리 활동 정보 조회
   const getStoryActive = async () => {
     try {
@@ -128,9 +138,6 @@ export default function StoryActive(props: Props) {
       if(success) {
         switch (data.result_code) {
           case SUCCESS:
-
-            console.log('data.alarm_data :::: ' , data.alarm_data);
-
             setActiveData({
               alarmData: data?.alarm_data,
               storyData: data?.story_data,
@@ -157,43 +164,56 @@ export default function StoryActive(props: Props) {
     return (
       <>
         <SpaceView viewStyle={_styles.alarmWrap}>
-          <SpaceView mb={15} viewStyle={_styles.alarmTitle}>
+
+          {/* ###### 제목 */}
+          <SpaceView viewStyle={_styles.alarmTitle}>
             <Text style={_styles.alarmTitleText}>{item?.name}</Text>
           </SpaceView>
-          <SpaceView pl={10} pr={10}>
+
+          {/* ###### 목록 */}
+          <SpaceView>
             {item?.dataList?.length > 0 ? (
               <>
                 {item?.dataList?.map((_item, _index) => {
 
                   const storyAlarmType = _item?.story_alarm_type; // 스토리 알림 유형
+                  const storyBoardSeq = _item?.story_board_seq; // 스토리 게시글 번호
                   const storyReplySeq = _item?.story_reply_seq; // 스토리 댓글 번호
                   const depth = _item?.depth; // 댓글 계층
                   const memberLikeYn = _item?.member_like_yn; // 회원 좋아요 여부
                   const replyContents = _item?.reply_contents; // 댓글 내용
 
+                  //const boardImgPath = findSourcePath(_item?.story_img_path); 운영 오픈시 반영
+                  const boardImgPath = findSourcePathLocal(_item?.story_img_path);
+
                   return (
                     <SpaceView viewStyle={_styles.alarmItemWrap} key={'item' + _index}>
+
+                      {/* 회원 대표사진 */}
                       <SpaceView mb={20} viewStyle={_styles.alarmItemMember}>
                         <Image source={findSourcePath(_item?.mst_img_path)} style={_styles.alarmItemMemberThum} resizeMode={'cover'} />
                       </SpaceView>
 
+                      {/* 내용 */}
                       <SpaceView viewStyle={_styles.alarmItemContent}>
                         <Text style={_styles.alarmContentText}>
                           <Text style={_styles.alarmNickname}>{_item?.nickname}</Text>
                           {storyAlarmType == 'REPLY' ? (
                             <>
-                              님이 게시글에 댓글을 남겼습니다 : {replyContents}
+                              님이 게시글에 댓글을 남겼습니다 : <Text numberOfLines={2}>{replyContents}</Text>
+                              <Text style={_styles.timeText}> {_item.time_text}</Text>
                             </>
                           ) : (
                             <>
-                              님이 내 게시물을 좋아합니다
+                              님이 내 게시물을 좋아합니다.
                             </>
                           )}
+                          
                         </Text>
 
-                        <SpaceView>
-                          <Text style={{color: '#999'}}> {_item.time_text}</Text>
-                        </SpaceView>
+                        {storyAlarmType == 'LIKE' && (
+                          <SpaceView mt={3}><Text style={_styles.timeText}>{_item.time_text}</Text></SpaceView>
+                        )}
 
                         {storyAlarmType == 'REPLY' && (
                           <SpaceView mt={2} viewStyle={{alignItems: 'flex-start'}}>
@@ -222,12 +242,13 @@ export default function StoryActive(props: Props) {
                         )}
                       </SpaceView>
                       
-                      <SpaceView viewStyle={_styles.alarmItemBoard}>
-                        <Image source={PROFILE_IMAGE.womanTmp1} style={_styles.alarmItemStoryThum} resizeMode={'cover'} />
-                      </SpaceView>
+                      {/* 게시글 썸네일 */}
+                      <TouchableOpacity onPress={() => { goStoryDetail(storyBoardSeq) }} style={_styles.alarmItemBoard}>
+                        <Image source={boardImgPath} style={_styles.alarmItemStoryThum} resizeMode={'cover'} />
+                      </TouchableOpacity>
                     </SpaceView>
                   )
-                  })}
+                })}
               </>
             ) : (
               <>
@@ -241,15 +262,19 @@ export default function StoryActive(props: Props) {
   };
 
   // ############################################################################# 스토리 렌더링
-  const StoryRender = ({ item, index }) => {
+  const MyStoryRender = ({ item, index }) => {
 
     return (
       <>
-        <SpaceView mb={15} viewStyle={_styles.alarmWrap}>
-          <SpaceView mb={8} viewStyle={_styles.alarmTitle}>
+        <SpaceView viewStyle={_styles.alarmWrap}>
+
+          {/* ###### 제목 */}
+          <SpaceView viewStyle={_styles.alarmTitle}>
             <Text style={_styles.alarmTitleText}>{item?.name}</Text>
           </SpaceView>
-          <SpaceView pl={10} pr={10}>
+
+          {/* ###### 목록 */}
+          <SpaceView>
             {item?.dataList?.length > 0 ? (
               <>
                 {item?.dataList?.map((_item, _index) => {
@@ -259,21 +284,22 @@ export default function StoryActive(props: Props) {
                   const likeCnt = _item?.like_cnt; // 좋아요 수
                   const replyCnt = _item?.reply_cnt; // 댓글 수
 
+                  //const boardImgPath = findSourcePath(_item?.story_img_path); 운영 오픈시 반영
+                  const boardImgPath = findSourcePathLocal(_item?.story_img_path);
+
                   return (
                     <SpaceView mb={10} viewStyle={_styles.alarmItemWrap} key={'item' + _index}>
 
-                      <SpaceView viewStyle={_styles.alarmItemBoard}>
-                        <Image source={PROFILE_IMAGE.womanTmp1} style={_styles.storyItemThum} resizeMode={'cover'} />
-                        {/* <Image source={findSourcePath(_item?.story_img_path)} style={_styles.alarmItemStoryThum} resizeMode={'cover'} /> */}
-                      </SpaceView>
+                      {/* 게시글 썸네일 */}
+                      <TouchableOpacity onPress={() => { goStoryDetail(storyBoardSeq) }} style={_styles.alarmItemBoard}>
+                        <Image source={boardImgPath} style={_styles.alarmItemStoryThum} resizeMode={'cover'} />
+                      </TouchableOpacity>
 
                       <SpaceView viewStyle={_styles.storyItemContent}>
 
                         {/* 내용 */}
                         <SpaceView viewStyle={_styles.alarmContentArea}>
-                          <Text style={_styles.alarmContentText} numberOfLines={2}>
-                            {contents}
-                          </Text>
+                          <Text style={_styles.alarmContentText} numberOfLines={2}>{contents}</Text>
                         </SpaceView>
 
                         {/* 좋아요수, 댓글수, 타임스탬프 노출 */}
@@ -289,6 +315,8 @@ export default function StoryActive(props: Props) {
                               <Text style={_styles.storyCntText}>{replyCnt}</Text>
                             </SpaceView>
                           </SpaceView>
+
+                          {/* 타임스탬프 */}
                           <SpaceView>
                             <Text style={_styles.storyDateText}>{_item?.time_text}</Text>
                           </SpaceView>
@@ -337,82 +365,75 @@ export default function StoryActive(props: Props) {
           </TouchableOpacity>
         </SpaceView>
 
-        <ScrollView 
-          showsVerticalScrollIndicator={false}
-          style={{backgroundColor: '#fff', height: height-120}}>
+        {/* ###################################################################################### 컨텐츠 영역 */}
+        <SpaceView>
+          <FlatList
+            ref={baseRef}
+            data={['새소식','내가쓴글']}
+            onScroll={handleScroll}
+            showsHorizontalScrollIndicator={false}
+            horizontal
+            pagingEnabled
+            renderItem={({ item, index }) => {
+              return (
+                <View key={'active_' + index} style={{width: width, minHeight: height}}>
+                  {index == 0 ? (
+                    <>
+                      {/* ###################################################################### 새소식 */}
+                      <FlatList
+                        //style={_styles.itemWrap}
+                        //contentContainerStyle={_styles.itemWrap}
+                        data={activeData.alarmData}
+                        keyExtractor={(item, index) => index.toString()}
+                        removeClippedSubviews={true}
+                        /* getItemLayout={(data, index) => (
+                          {
+                              length: (width - 54) / 2,
+                              offset: ((width - 54) / 2) * index,
+                              index
+                          }
+                        )} */
+                        renderItem={({ item: innerItem, index: innerIndex }) => {
+                          return (
+                            <View key={'alarm_' + index}>
+                              <AlarmRender item={innerItem} index={innerIndex} likeFunc={undefined} replyModalOpenFunc={undefined} />
+                            </View>
+                          )
+                        }}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      {/* ###################################################################### 내가쓴글 */}
+                      <FlatList
+                        //style={_styles.itemWrap}
+                        //contentContainerStyle={_styles.itemWrap}
+                        data={activeData.storyData}
+                        keyExtractor={(item, index) => index.toString()}
+                        removeClippedSubviews={true}
+                        /* getItemLayout={(data, index) => (
+                          {
+                              length: (width - 54) / 2,
+                              offset: ((width - 54) / 2) * index,
+                              index
+                          }
+                        )} */
+                        renderItem={({ item: innerItem, index: innerIndex }) => {
+                          return (
+                            <View key={'alarm_' + index}>
+                              <MyStoryRender item={innerItem} index={innerIndex} />
+                            </View>
+                          )
+                        }}
+                      />                      
+                    </>
+                  )}
+                </View>
+              )
+            }}
+          />
 
-          {/* ###################################################################################### 컨텐츠 영역 */}
-          <SpaceView>
-
-            <FlatList
-              ref={baseRef}
-              data={['새소식','내가쓴글']}
-              onScroll={handleScroll}
-              showsHorizontalScrollIndicator={false}
-              horizontal
-              pagingEnabled
-              renderItem={({ item, index }) => {
-                return (
-                  <View key={'active_' + index} style={{width: width, minHeight: height}}>
-                    {index == 0 ? (
-                      <>
-                        {/* ###################################################################### 새소식 */}
-                        <FlatList
-                          //style={_styles.itemWrap}
-                          //contentContainerStyle={_styles.itemWrap}
-                          data={activeData.alarmData}
-                          keyExtractor={(item, index) => index.toString()}
-                          removeClippedSubviews={true}
-                          /* getItemLayout={(data, index) => (
-                            {
-                                length: (width - 54) / 2,
-                                offset: ((width - 54) / 2) * index,
-                                index
-                            }
-                          )} */
-                          renderItem={({ item: innerItem, index: innerIndex }) => {
-                            return (
-                              <View key={'alarm_' + index}>
-                                <AlarmRender item={innerItem} index={innerIndex} likeFunc={undefined} replyModalOpenFunc={undefined} />
-                              </View>
-                            )
-                          }}
-                        />
-                      </>
-                    ) : (
-                      <>
-                        {/* ###################################################################### 내가쓴글 */}
-                        <FlatList
-                          //style={_styles.itemWrap}
-                          //contentContainerStyle={_styles.itemWrap}
-                          data={activeData.storyData}
-                          keyExtractor={(item, index) => index.toString()}
-                          removeClippedSubviews={true}
-                          /* getItemLayout={(data, index) => (
-                            {
-                                length: (width - 54) / 2,
-                                offset: ((width - 54) / 2) * index,
-                                index
-                            }
-                          )} */
-                          renderItem={({ item: innerItem, index: innerIndex }) => {
-                            return (
-                              <View key={'alarm_' + index}>
-                                <StoryRender item={innerItem} index={innerIndex} />
-                              </View>
-                            )
-                          }}
-                        />                      
-                      </>
-                    )}
-                  </View>
-                )
-              }}
-            />
-
-          </SpaceView>
-        </ScrollView>
-
+        </SpaceView>
       </View>
 
       {/* ##################################################################################
@@ -442,14 +463,15 @@ const _styles = StyleSheet.create({
 
   alarmWrap: {
     paddingVertical: 20,
+    paddingHorizontal: 15,
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
   },
   alarmTitle: {
-    paddingHorizontal: 10,
+    marginBottom: 20,
   },
   alarmTitleText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'AppleSDGothicNeoM00',
     fontSize: 15,
     color: '#333',
   },
@@ -462,18 +484,22 @@ const _styles = StyleSheet.create({
 
   },
   alarmItemContent: {
-    width: width - 130,
+    width: width - 145,
   },
   alarmNickname: {
     fontFamily: 'AppleSDGothicNeoEB00',
     color: '#000',
-    fontWeight: '900',
+    fontSize: 14,
   },
   alarmContentText: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'AppleSDGothicNeoM00',
     color: '#333',
     fontSize: 14,
-    fontWeight: '100',
+  },
+  timeText: {
+    fontFamily: 'AppleSDGothicNeoM00',
+    color: '#999',
+    fontSize: 14,
   },
   alarmItemBoard: {
 
@@ -520,12 +546,12 @@ const _styles = StyleSheet.create({
     };
   },
   emptyText: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'AppleSDGothicNeoM00',
     color: '#000',
-    fontSize: 13,
+    fontSize: 14,
   },
   storyItemContent: {
-    width: width - 90,
+    width: width - 100,
     flexDirection: 'column',
     justifyContent: 'space-between',
     alignContent: 'space-between',
@@ -534,9 +560,9 @@ const _styles = StyleSheet.create({
     height: 40,
   },
   storyDateText: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'AppleSDGothicNeoM00',
     color: '#999',
-    fontSize: 13,
+    fontSize: 14,
   },
   storyItemThum: {
     width: 60,
@@ -544,9 +570,9 @@ const _styles = StyleSheet.create({
     overflow: 'hidden',
   },
   storyCntText: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    color: '#000',
-    fontSize: 13,
+    fontFamily: 'AppleSDGothicNeoM00',
+    color: '#555555',
+    fontSize: 14,
     marginLeft: 6,
   },
   

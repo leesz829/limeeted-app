@@ -65,7 +65,7 @@ export default function StoryRegi(props: Props) {
       <CommonHeader title={'NEW STORY'} />
 
       <ScrollView showsVerticalScrollIndicator={false} style={{backgroundColor: '#fff'}}>
-        <SpaceView mt={50} pl={20} pr={20}>
+        <SpaceView mt={20} pl={20} pr={20}>
 
           <SpaceView mb={30} viewStyle={_styles.titleArea}>
             <Text style={_styles.titleText}>게시글 유형을 선택해 주세요.</Text>
@@ -113,9 +113,9 @@ const _styles = StyleSheet.create({
 
   },
   titleText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'AppleSDGothicNeoR00',
     fontSize: 20,
-    color: '#000',
+    color: '#333',
   },
   contentArea: {
     
@@ -123,20 +123,28 @@ const _styles = StyleSheet.create({
   contentItem: {
     position:'relative',
     backgroundColor: '#C5C5C5',
-    borderRadius: 10,
+    borderRadius: 20,
     paddingVertical: 20,
     paddingHorizontal: 20,
     marginBottom: 20,
     height: 160,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    elevation: 5,
+    overflow: 'visible',
   },
   contentTitle: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'AppleSDGothicNeoM00',
     fontSize: 17,
-    marginBottom: 10,
+    color: '#333333',
+    marginBottom: 15,
   },
   contentSubTitle: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 14,
+    fontFamily: 'AppleSDGothicNeoR00',
+    fontSize: 15,
+    color: '#333333',
   },
   contentImg: {
     position: 'absolute',

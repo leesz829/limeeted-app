@@ -874,7 +874,7 @@ export async function get_popup_list(body: {
 
 // 스토리 게시글 목록을 조회한다.
 export async function get_story_board_list(body: { 
-
+  page_num: number;
 }) {
   return send(GET_STORY_BOARD_LIST, 'POST', body, true, false);
 };

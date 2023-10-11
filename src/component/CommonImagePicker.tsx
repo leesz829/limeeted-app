@@ -123,7 +123,7 @@ export const CommonImagePicker: FC<Props> = (props) => {
                   source={props.uriParam}
                 />
               ) : (
-                <Image source={props.plusBtnType == '02' ? ICON.plus2 : ICON.plus_primary} style={styles.iconSquareSize((width - 100) / 10)} />
+                <Image source={props.plusBtnType == '02' ? ICON.plus2 : ICON.plus_primary} style={styles.iconSquareSize((width - 100) / 13)} />
               )}
             </>
           )}

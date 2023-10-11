@@ -44,18 +44,19 @@ export const VoteEndRadioBox: FC<Props> = (props) => {
 const _styles = StyleSheet.create({
   wrap: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
   },
   checkWrap: (isOn:boolean) => {
     return {
       backgroundColor: isOn ? '#697AE6' : '#fff',
       paddingHorizontal: 10,
-      paddingVertical: 3,
+      paddingVertical: 5,
       borderRadius: 5,
       overflow: 'hidden',
       width: 60,
       borderWidth: 1,
-      borderColor: '#697AE6',
+      borderColor: '#7986EE',
+      marginRight: 7,
     };
   },
   active: {
@@ -65,9 +66,9 @@ const _styles = StyleSheet.create({
 
   labelText: (isOn:boolean) => {
     return {
-      fontFamily: 'AppleSDGothicNeoEB00',
+      fontFamily: 'AppleSDGothicNeoR00',
       fontSize: 14,
-      color: isOn ? '#fff' : '#697AE6',
+      color: isOn ? '#fff' : '#7986EE',
       textAlign: 'center',
     };
   },

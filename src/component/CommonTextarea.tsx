@@ -1,9 +1,11 @@
 import { Image, StyleSheet, Text, TextInput, View } from 'react-native';
-import type { TextInputProps, StyleProp } from 'react-native';
+import type { TextInputProps, StyleProp, TextStyle } from 'react-native';
 import * as React from 'react';
 import { FC } from 'react';
 import { Color } from 'assets/styles/Color';
 import { ICON } from 'utils/imageUtils';
+import { isEmptyData } from 'utils/functions';
+
 
 type Props = {
   label?: string;
@@ -21,6 +23,7 @@ type Props = {
   lineCount?: number;
   backgroundColor?: string;
   borderColor?: string;
+  padding?: number;
 } & StyleProp<TextInputProps>;
 
 /**
@@ -88,7 +91,7 @@ const _styles = (props: Props) => {
       maxHeight: props.height != null ? props.height : 420,
       borderWidth: props.borderWidth != null ? props.borderWidth : 1,
       borderRadius: props.borderRadius != null ? props.borderRadius : 10,
-      padding: 10,
+      padding: isEmptyData(props.padding) ? props.padding : 10,
       textAlignVertical: 'top',
       backgroundColor: '#ffffff',
       color: props.fontColor != null ? props.fontColor : '#000000',
