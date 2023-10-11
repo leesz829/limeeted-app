@@ -175,6 +175,8 @@ export const ICON = {
   mail: require('assets/icon/icon-mail.png'),
   megaphone: require('assets/icon/icon-megaphone.png'),
   closeLight: require('assets/icon/icon-close-light.png'),
+  storyHeart: require('assets/icon/icon-story-heart.png'),
+  reply: require('assets/icon/icon-reply.png'),
 };
 
 export const GIF_IMG = {

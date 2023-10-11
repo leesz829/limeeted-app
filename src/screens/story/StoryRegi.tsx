@@ -121,6 +121,7 @@ const _styles = StyleSheet.create({
     
   },
   contentItem: {
+    position:'relative',
     backgroundColor: '#C5C5C5',
     borderRadius: 10,
     paddingVertical: 20,
@@ -138,9 +139,10 @@ const _styles = StyleSheet.create({
     fontSize: 14,
   },
   contentImg: {
-    width: 30,
-    height: 30,
-    marginTop: 15,
-    marginLeft: 'auto',
+    position: 'absolute',
+    bottom: 25,
+    right: 25,
+    width: 35,
+    height: 35,
   },
 });

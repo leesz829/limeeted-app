@@ -95,6 +95,7 @@ export default function StoryActive(props: Props) {
 
   // 이미지 스크롤 처리
   const handleScroll = (event) => {
+    console.log('event::', event);
     let contentOffset = event.nativeEvent.contentOffset;
     let index = Math.floor(contentOffset.x / (width-10));
 
@@ -152,8 +153,8 @@ export default function StoryActive(props: Props) {
 
     return (
       <>
-        <SpaceView mb={15} viewStyle={_styles.alarmWrap}>
-          <SpaceView mb={8} viewStyle={_styles.alarmTitle}>
+        <SpaceView viewStyle={_styles.alarmWrap}>
+          <SpaceView mb={15} viewStyle={_styles.alarmTitle}>
             <Text style={_styles.alarmTitleText}>{item?.name}</Text>
           </SpaceView>
           <SpaceView pl={10} pr={10}>
@@ -168,8 +169,8 @@ export default function StoryActive(props: Props) {
                   const replyContents = _item?.reply_contents; // 댓글 내용
 
                   return (
-                    <SpaceView mb={10} viewStyle={_styles.alarmItemWrap} key={'item' + _index}>
-                      <SpaceView viewStyle={_styles.alarmItemMember}>
+                    <SpaceView viewStyle={_styles.alarmItemWrap} key={'item' + _index}>
+                      <SpaceView mb={20} viewStyle={_styles.alarmItemMember}>
                         <Image source={findSourcePath(_item?.mst_img_path)} style={_styles.alarmItemMemberThum} resizeMode={'cover'} />
                       </SpaceView>
 
@@ -182,13 +183,13 @@ export default function StoryActive(props: Props) {
                             </>
                           ) : (
                             <>
-                              님이 내 게시물을 좋아합니다.
+                              님이 내 게시물을 좋아합니다
                             </>
                           )}
                         </Text>
 
                         <SpaceView>
-                            <Text>{_item.time_text}</Text>
+                          <Text style={{color: '#999'}}> {_item.time_text}</Text>
                         </SpaceView>
 
                         {storyAlarmType == 'REPLY' && (
@@ -276,12 +277,12 @@ export default function StoryActive(props: Props) {
                         <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
                           <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center',}}>
                             <SpaceView mr={10} viewStyle={{flexDirection: 'row'}}>
-                              <Image source={ICON.storageOn} style={styles.iconSquareSize(20)} />
+                              <Image source={ICON.storyHeart} style={styles.iconSquareSize(20)} />
                               <Text style={_styles.storyCntText}>{likeCnt}</Text>
                             </SpaceView>
 
                             <SpaceView viewStyle={{flexDirection: 'row'}}>
-                              <Image source={ICON.royalpass} style={styles.iconSquareSize(20)} />
+                              <Image source={ICON.reply} style={styles.iconSquareSize(20)} />
                               <Text style={_styles.storyCntText}>{replyCnt}</Text>
                             </SpaceView>
                           </SpaceView>
@@ -325,10 +326,10 @@ export default function StoryActive(props: Props) {
 
         {/* ###################################################################################### 탭 영역 */}
         <SpaceView mb={15} viewStyle={_styles.tabWrap}>
-          <TouchableOpacity style={_styles.tabItem}>
+          <TouchableOpacity style={_styles.tabItem(currentIndex == 0 ? true : false)} onPress={() => {setCurrentIndex(0)}}>
             <Text style={_styles.tabItemText(currentIndex == 0 ? true : false)}>새소식</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={_styles.tabItem}>
+          <TouchableOpacity style={_styles.tabItem(currentIndex == 1 ? true : false)} onPress={() => {setCurrentIndex(1)}}>
             <Text style={_styles.tabItemText(currentIndex == 1 ? true : false)}>내가쓴글</Text>
           </TouchableOpacity>
         </SpaceView>
@@ -437,17 +438,17 @@ export default function StoryActive(props: Props) {
 const _styles = StyleSheet.create({
 
   alarmWrap: {
-
+    paddingVertical: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
   },
   alarmTitle: {
-    borderBottomWidth: 2,
-    borderBottomColor: '#8E9AEB',
-    paddingHorizontal: 5,
+    paddingHorizontal: 10,
   },
   alarmTitleText: {
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 15,
-    color: '#8E9AEB',
+    color: '#333',
   },
   alarmItemWrap: {
     flexDirection: 'row',
@@ -463,11 +464,13 @@ const _styles = StyleSheet.create({
   alarmNickname: {
     fontFamily: 'AppleSDGothicNeoEB00',
     color: '#000',
+    fontWeight: '900',
   },
   alarmContentText: {
     fontFamily: 'AppleSDGothicNeoB00',
-    color: '#8E8E8E',
-    fontSize: 13,
+    color: '#333',
+    fontSize: 14,
+    fontWeight: '100',
   },
   alarmItemBoard: {
 
@@ -495,13 +498,15 @@ const _styles = StyleSheet.create({
   },
   tabWrap: {
     flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderBottomColor: '#000',
     backgroundColor: '#fff',
   },
-  tabItem: {
-    width: '50%',
-    paddingVertical: 10,
+  tabItem: (isOn:boolean) => {
+    return {
+      width: '50%',
+      paddingVertical: 10,
+      borderBottomWidth: 1,
+      borderBottomColor: isOn ? '#7A85EE' : '#eee',
+    }
   },
   tabItemText: (isOn:boolean) => {
     return {
@@ -527,7 +532,7 @@ const _styles = StyleSheet.create({
   },
   storyDateText: {
     fontFamily: 'AppleSDGothicNeoB00',
-    color: '#000',
+    color: '#999',
     fontSize: 13,
   },
   storyItemThum: {
@@ -539,7 +544,7 @@ const _styles = StyleSheet.create({
     fontFamily: 'AppleSDGothicNeoB00',
     color: '#000',
     fontSize: 13,
-    marginLeft: 3,
+    marginLeft: 6,
   },
   
 });
