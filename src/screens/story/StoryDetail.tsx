@@ -255,7 +255,6 @@ export default function StoryDetail(props: Props) {
 
   // ############################################################################# 댓글 렌더링
   const ReplyRender = ({ item, index, likeFunc, replyModalOpenFunc }) => {
-    console.log('item::', item);
     const memberMstImgPath = findSourcePath(item?.mst_img_path); // 회원 대표 이미지 경로
     const storyReplySeq = item?.story_reply_seq; // 댓글 번호
     const depth = item?.depth;
@@ -275,10 +274,12 @@ export default function StoryDetail(props: Props) {
               
               <SpaceView ml={5} pt={3} viewStyle={{flexDirection: 'column', width: width - 70 - depthStyleSize}}>
                 <Text style={_styles.replyNickname}>
-                  {item.nickname}  <Text style={_styles.replyContents}>{item.reply_contents}</Text> <Text style={_styles.replyTimeText}> {item.time_text}</Text>
+                  {item.nickname}  <Text style={_styles.replyTimeText}> {item.time_text}</Text>
                 </Text>
 
-                <SpaceView pt={2} viewStyle={{alignItems: 'flex-start'}}>
+                <Text style={_styles.replyContents}>{item.reply_contents}</Text>
+
+                <SpaceView pt={2} mt={6} viewStyle={{alignItems: 'flex-start'}}>
                   <SpaceView viewStyle={_styles.replyItemEtcWrap}>
                     <TouchableOpacity 
                       onPress={() => { memberBase.member_seq == storyData.board?.member_seq ? popupStoryReplyActive(storyReplySeq, depth, item) : likeFunc('REPLY', storyReplySeq); }}
@@ -358,17 +359,9 @@ export default function StoryDetail(props: Props) {
             />
           </SpaceView>
 
-          {/* ###################################################################################### 내용 영역 */}
-          <SpaceView mt={25} pl={20} pr={20}>
-            <Text style={_styles.contentsText}>{storyData.board?.contents}</Text>
-          </SpaceView>
-
           {/* ###################################################################################### 댓글 영역 */}
           <SpaceView mt={20}>
             <SpaceView pl={20} pr={20} pb={10} viewStyle={_styles.replyEtcArea}>
-              <TouchableOpacity onPress={() => { replyModalOpen(0, 0); }}>
-                <Text style={_styles.replyRegiText}>댓글달기</Text>
-              </TouchableOpacity>
               <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
                 <TouchableOpacity
                   onPress={() => { memberBase.member_seq == storyData.board?.member_seq ? popupStoryBoardActive() : storyLikeProc('BOARD', 0); }}
@@ -383,7 +376,31 @@ export default function StoryDetail(props: Props) {
                 <TouchableOpacity>
                   <Text style={_styles.likeCntText}>{storyData.board?.like_cnt}</Text>
                 </TouchableOpacity>
+                <TouchableOpacity style={{marginLeft: 10,}} onPress={() => { replyModalOpen(0, 0); }}>
+                <Image source={ICON.reply} style={styles.iconSquareSize(20)} />
+              </TouchableOpacity>
               </SpaceView>
+
+              {memberBase?.member_seq == storyData.board?.member_seq && (
+                <SpaceView viewStyle={_styles.btnArea}>
+                  <TouchableOpacity
+                    onPress={() => { goStoryModfy(); }}
+                    style={_styles.regiBtn}>
+                    <Text style={_styles.regiBtnText}>수정하기</Text>
+                  </TouchableOpacity>
+                  {/* <TouchableOpacity
+                    onPress={() => { reply_onOpen(); }}
+                    style={_styles.regiBtn}>
+                    <Text style={_styles.regiBtnText}>댓글달기</Text>
+                  </TouchableOpacity> */}
+                </SpaceView>
+              )}
+            </SpaceView>
+
+            {/* ###################################################################################### 내용 영역 */}
+            <SpaceView pl={20} pr={20} pb={15} viewStyle={{borderBottomWidth: 1, borderBottomColor: '#eee'}}>
+              <Text style={_styles.contentsText}>{storyData.board?.contents}</Text>
+              <Text style={[_styles.contentsText], {color: '#999', marginTop: 10,}}>{storyData.board?.time_text}</Text>
             </SpaceView>
 
             <SpaceView ml={20} mr={20}>
@@ -410,24 +427,8 @@ export default function StoryDetail(props: Props) {
               />
             </SpaceView>
           </SpaceView>
-
         </SpaceView>
       </ScrollView>
-
-      {memberBase?.member_seq == storyData.board?.member_seq && (
-        <SpaceView viewStyle={_styles.btnArea}>
-          <TouchableOpacity
-            onPress={() => { goStoryModfy(); }}
-            style={_styles.regiBtn}>
-            <Text style={_styles.regiBtnText}>수정하기</Text>
-          </TouchableOpacity>
-          {/* <TouchableOpacity
-            onPress={() => { reply_onOpen(); }}
-            style={_styles.regiBtn}>
-            <Text style={_styles.regiBtnText}>댓글달기</Text>
-          </TouchableOpacity> */}
-        </SpaceView>
-      )}
 
       {/* ##################################################################################
                 댓글 입력 팝업
@@ -501,7 +502,7 @@ export default function StoryDetail(props: Props) {
     return (
       <>
         <SpaceView>
-          {storyData.board?.story_type == 'STORY' ? (
+          {storyData.board?.story_type == 'STORY' || storyData.board?.story_type == 'SECRET' ? (
             <Image source={url} style={_styles.imageStyle} resizeMode={'cover'} />
           ) : (
             <>
@@ -509,7 +510,7 @@ export default function StoryDetail(props: Props) {
                 <Image source={url} style={_styles.imageStyle} resizeMode={'cover'} />
               </SpaceView>
               <SpaceView viewStyle={_styles.voteArea(baseColor)}>
-                <SpaceView mb={10}><Text style={_styles.voteOrderText(baseColor, textColor)}>0{item?.order_seq}</Text></SpaceView>
+                <SpaceView mb={10} viewStyle={_styles.voteViewArea(baseColor)}><Text style={_styles.voteOrderText(textColor)}>0{item?.order_seq}</Text></SpaceView>
                 <SpaceView mb={10}><Text style={_styles.voteNameText}>{item?.vote_name}</Text></SpaceView>
                 <SpaceView mb={20} viewStyle={_styles.voteDescArea}>
                   <Text style={_styles.voteDescText}>투표 후에도 선택을 바꿀 수 있습니다.</Text>
@@ -574,10 +575,6 @@ const _styles = StyleSheet.create({
     height: width,
   },
   btnArea: {
-    position: 'absolute',
-    bottom: 20,
-    left: 0,
-    right: 0,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -602,7 +599,7 @@ const _styles = StyleSheet.create({
     width,
     flexDirection: 'row',
     justifyContent: 'center',
-    top: 18,
+    top: 8,
   },
   pagingDotStyle: {
     width: 19,
@@ -624,8 +621,7 @@ const _styles = StyleSheet.create({
   },
   replyEtcArea: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    borderBottomWidth: 1,
+    justifyContent: 'flex-start',
   },
   replyListWrap: {
     flex: 1,
@@ -656,14 +652,15 @@ const _styles = StyleSheet.create({
   },
   replyContents: {
     fontFamily: 'AppleSDGothicNeoSB00',
-    fontSize: 13,
-    color: '#9D9D9D',
+    fontSize: 14,
+    color: '#000',
+    marginTop: 6,
     //flex: 0.8,
   },
   replyTimeText: {
     fontFamily: 'AppleSDGothicNeoEB00',
-    color: '#000',
-    fontSize: 12,
+    color: '#999',
+    fontSize: 14,
   },
   replyItemEtcWrap: {
     flexDirection: 'row',
@@ -678,11 +675,6 @@ const _styles = StyleSheet.create({
     fontFamily: 'AppleSDGothicNeoB00',
     color: '#000',
     fontSize: 12,
-  },
-  replyRegiText: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    color: '#000',
-    fontSize: 13,
   },
   replyLengthText: {
     fontFamily: 'AppleSDGothicNeoB00',
@@ -711,10 +703,17 @@ const _styles = StyleSheet.create({
       paddingVertical: 15,
     };
   },
-  voteOrderText: (bgColor: string, textColor: string) => {
+  voteViewArea: (bgColor: string) => {
+    return {
+      backgroundColor: bgColor,
+      borderRadius: 13,
+      borderWidth: 1,
+      borderColor: '#DDD',
+    };
+  },
+  voteOrderText: (textColor: string) => {
     return {
       fontFamily: 'AppleSDGothicNeoB00',
-      backgroundColor: bgColor,
       fontSize: 14,
       borderRadius: 13,
       color: textColor,
