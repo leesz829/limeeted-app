@@ -95,11 +95,14 @@ export default function StoryActive(props: Props) {
 
   // 이미지 스크롤 처리
   const handleScroll = (event) => {
-    console.log('event::', event);
     let contentOffset = event.nativeEvent.contentOffset;
     let index = Math.floor(contentOffset.x / (width-10));
 
     setCurrentIndex(index);
+  };
+
+  const handleTabPress = (index) => {
+    baseRef.current.scrollToIndex({ animated: true, index: index });
   };
 
   // ############################################################################# 수정하기 이동
@@ -326,10 +329,10 @@ export default function StoryActive(props: Props) {
 
         {/* ###################################################################################### 탭 영역 */}
         <SpaceView mb={15} viewStyle={_styles.tabWrap}>
-          <TouchableOpacity style={_styles.tabItem(currentIndex == 0 ? true : false)} onPress={() => {setCurrentIndex(0)}}>
+          <TouchableOpacity style={_styles.tabItem(currentIndex == 0 ? true : false)} onPress={() => {handleTabPress(0)}}>
             <Text style={_styles.tabItemText(currentIndex == 0 ? true : false)}>새소식</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={_styles.tabItem(currentIndex == 1 ? true : false)} onPress={() => {setCurrentIndex(1)}}>
+          <TouchableOpacity style={_styles.tabItem(currentIndex == 1 ? true : false)} onPress={() => {handleTabPress(1)}}>
             <Text style={_styles.tabItemText(currentIndex == 1 ? true : false)}>내가쓴글</Text>
           </TouchableOpacity>
         </SpaceView>
