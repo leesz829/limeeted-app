@@ -42,88 +42,10 @@ export const Story = () => {
   const [isRefreshing, setIsRefreshing] = useState(false); // 새로고침 여부
   const [isLoadingMore, setIsLoadingMore] = useState(false); // 더보기 로딩 여부
 
-  
-
   const [isEmpty, setIsEmpty] = useState(false); 
-  const [storyList, setStoryList] = useState([]); // 스토리 목록
-  const [pageNum, setPageNum] = useState(5); // 페이지 번호
-
-
-  const [itemList, setItemList] = useState([
-    {
-      idx: 1,
-      type: 'ONLY_LARGE',
-      lDataList: [{
-        dummyYn: 'N',
-        imgUrl: PROFILE_IMAGE.manTmp3,
-      }],
-      mDataList: [],
-      sDataList: [],
-    },
-    {
-      idx: 2,
-      type: 'COMPLEX_MEDIUM',
-      lDataList: [],
-      mDataList: [{
-        dummyYn: 'N',
-        imgUrl: PROFILE_IMAGE.manTmp2,
-      }],
-      sDataList: [{
-        dummyYn: 'N',
-        imgUrl: PROFILE_IMAGE.manTmp1,
-      },
-      {
-        dummyYn: 'Y',
-      }],
-    },
-    {
-      idx: 3,
-      type: 'ONLY_SMALL',
-      lDataList: [],
-      mDataList: [],
-      sDataList: [{
-        dummyYn: 'N',
-        imgUrl: PROFILE_IMAGE.womanTmp2,
-      },
-      {
-        dummyYn: 'N',
-        imgUrl: PROFILE_IMAGE.womanTmp3,
-      },
-      {
-        dummyYn: 'Y',
-      }],
-    },
-    {
-      idx: 2,
-      type: 'COMPLEX_SMALL',
-      lDataList: [],
-      mDataList: [{
-        dummyYn: 'N',
-        imgUrl: PROFILE_IMAGE.womanTmp1,
-      }],
-      sDataList: [{
-        dummyYn: 'N',
-        imgUrl: PROFILE_IMAGE.manTmp5,
-      },
-      {
-        dummyYn: 'Y',
-      }],
-    },
-    {
-      idx: 4,
-      type: 'ONLY_LARGE',
-      lDataList: [{
-        dummyYn: 'N',
-        imgUrl: PROFILE_IMAGE.womanTmp5,
-      }],
-      mDataList: [],
-      sDataList: [],
-    },
-  ]);
-
-
-
-
+  //const [storyList, setStoryList] = useState<any>([]); // 스토리 목록
+  const [storyList, setStoryList] = React.useState<any>([]);
+  const [pageNum, setPageNum] = useState(0); // 페이지 번호
 
   // 스토리 등록 이동
   const goStoryRegister = async () => {
@@ -145,35 +67,51 @@ export const Story = () => {
     });
   };
 
-  // ##################################################################################### 새로고침 함수
+  // ##################################################################################### 목록 새로고침
   const handleRefresh = () => {
-    console.log('????');
-    getStoryBoardList(true);
+    console.log('refresh!!!!!!!!!!!!!!');
+    getStoryBoardList('REFRESH', 0);
   };
 
+  // ##################################################################################### 목록 더보기
   const loadMoreData = () => {
-    console.log('bottom!!!!!!!!!!!!!!');
+    console.log('ADD!!!!!!!!!!!!!!');
+    getStoryBoardList('ADD', pageNum+1);
   };
 
   // ############################################################################# 스토리 목록 조회
-  const getStoryBoardList = async (isRefresh:boolean) => {
+  const getStoryBoardList = async (_type:string, _pageNum:number) => {
     try {
-      if(isRefresh) {
+      if(_type == 'REFRESH') {
         setIsRefreshing(true);
       } else {
         setIsLoading(true);
-      }
+      };
 
       const body = {
-        page_num: pageNum,
+        page_num: _pageNum,
       };
+
+      console.log('body ::::: ' , body);
 
       const { success, data } = await get_story_board_list(body);
       if(success) {
         switch (data.result_code) {
           case SUCCESS:
-            setStoryList(data.story_list);
-          
+            if(_type == 'ADD') {
+              let dataArray = storyList;
+              data?.story_list.map((item: any) => {
+                dataArray.push(item);
+              })
+              setStoryList(dataArray);
+            } else {
+              setStoryList(data?.story_list);
+            };
+
+            if(data?.story_list.length > 0) {
+              setPageNum(isEmptyData(data?.page_num) ? data?.page_num : 0);
+            }
+
             break;
           default:
             show({ content: '오류입니다. 관리자에게 문의해주세요.' });
@@ -185,7 +123,7 @@ export const Story = () => {
     } catch (error) {
       console.log(error);
     } finally {
-      if(isRefresh) {
+      if(_type == 'REFRESH') {
         setIsRefreshing(false);
       } else {
         setIsLoading(false);
@@ -196,151 +134,6 @@ export const Story = () => {
   /* ##################################################################################################################################
   ################## 아이템 렌더링 관련 함수
   ################################################################################################################################## */
-
-  // ############################### 대 렌더링
-  const LargeRenderItem = React.memo(({ item }) => {
-    const storyBoardSeq = item.story_board_seq;
-    const imgUrl = findSourcePathLocal(item?.story_img_path);
-    const voteImgPath01 = findSourcePathLocal(item?.vote_img_path_01);
-    const voteImgPath02 = findSourcePathLocal(item?.vote_img_path_02);
-
-    return (
-      <>
-        <SpaceView viewStyle={_styles.itemArea(width - 40)}>
-          <TouchableOpacity onPress={() => { goStoryDetail(storyBoardSeq); }}> 
-            <SpaceView>
-              {item?.story_type == 'VOTE' ? (
-                <Image source={voteImgPath01} style={styles.iconSquareSize(width - 40)} resizeMode={'cover'} />
-              ) : (
-                <Image source={imgUrl} style={styles.iconSquareSize(width - 40)} resizeMode={'cover'} />
-              )}
-            </SpaceView>
-
-            <SpaceView viewStyle={_styles.topArea}>
-              <Image source={findSourcePath(item?.mst_img_path)} style={_styles.mstImgStyle} resizeMode={'cover'} />
-              <AuthLevel authAcctCnt={item?.auth_acct_cnt} type={'BASE'} />
-              <ProfileGrade profileScore={item?.profile_score} type={'BASE'} />
-            </SpaceView>
-
-            <SpaceView viewStyle={_styles.bottomArea}>
-              <SpaceView><Text style={_styles.contentsText}>{item?.contents}</Text></SpaceView>
-              <SpaceView mt={8}><Text style={_styles.contentsText}>{item?.time_text}</Text></SpaceView>
-            </SpaceView>
-
-            <SpaceView viewStyle={_styles.typeArea(item?.story_type)}>
-              <Text style={_styles.typeText}>{item?.story_type_name}</Text>
-            </SpaceView>
-          </TouchableOpacity>
-
-        </SpaceView>
-      </>
-    );
-  });
-
-  // ############################### 중 렌더링
-  const MediumRenderItem = React.memo(({ item }) => {
-    const storyBoardSeq = item.story_board_seq;
-    //const imgUrl = findSourcePath(item?.story_img_path); 운영 반영 시 적용
-    const imgUrl = findSourcePathLocal(item?.story_img_path);
-    const voteImgPath01 = findSourcePathLocal(item?.vote_img_path_01);
-    const voteImgPath02 = findSourcePathLocal(item?.vote_img_path_02);
-
-    const voteImgList = [
-      {url: findSourcePathLocal(item?.vote_img_path_01)},
-      {url: findSourcePathLocal(item?.vote_img_path_02)},
-    ];
-
-    return (
-      <>
-        <SpaceView viewStyle={_styles.itemArea((width - 43) / 1.5)}>
-          <TouchableOpacity activeOpacity={0.7} onPress={() => { goStoryDetail(storyBoardSeq); }}>
-            <SpaceView>
-              {item?.story_type == 'VOTE' ? (
-                <>
-                  {/* <FlatList
-                    data={voteImgList}
-                    showsHorizontalScrollIndicator={false}
-                    horizontal
-                    pagingEnabled
-                    renderItem={({ item, index }) => {
-
-                      return (
-                        <View style={{width: (width - 43) / 1.5, height: (width - 43) / 1.5}}>
-                            <Image source={item.url} style={{width: (width - 43) / 1.5, height: (width - 43) / 1.5}} resizeMode={'cover'} />
-                        </View>
-                      )
-                    }}
-                  /> */}
-
-                  <Image source={voteImgPath01} style={styles.iconSquareSize((width - 43) / 1.5)} resizeMode={'cover'} />
-                </>
-              ) : (
-                <Image source={imgUrl} style={styles.iconSquareSize((width - 43) / 1.5)} resizeMode={'cover'} />
-              )}
-            </SpaceView>
-
-            <SpaceView viewStyle={_styles.topArea}>
-              <Image source={findSourcePath(item?.mst_img_path)} style={_styles.mstImgStyle} resizeMode={'cover'} />
-              <AuthLevel authAcctCnt={item?.auth_acct_cnt} type={'BASE'} />
-              <ProfileGrade profileScore={item?.profile_score} type={'BASE'} />
-            </SpaceView>
-
-            <SpaceView viewStyle={_styles.bottomArea}>
-              <SpaceView><Text style={_styles.contentsText}>{item?.contents}</Text></SpaceView>
-              <SpaceView mt={8}><Text numberOfLines={2} style={_styles.contentsText}>{item?.time_text}</Text></SpaceView>
-            </SpaceView>
-
-            <SpaceView viewStyle={_styles.typeArea(item?.story_type)}>
-              <Text style={_styles.typeText}>{item?.story_type_name}</Text>
-            </SpaceView>
-          </TouchableOpacity>
-        </SpaceView>
-      </>
-    );
-  });
-
-  // ############################### 소 렌더링
-  const SmallRenderItem = React.memo(({ item }) => {
-    const storyBoardSeq = item.story_board_seq;
-    const imgUrl = findSourcePathLocal(item?.story_img_path);
-    const voteImgPath01 = findSourcePathLocal(item?.vote_img_path_01);
-    const voteImgPath02 = findSourcePathLocal(item?.vote_img_path_02);
-
-    return (
-      <>
-        <SpaceView viewStyle={_styles.itemArea((width - 55) / 3)}>
-          <TouchableOpacity onPress={() => { goStoryDetail(storyBoardSeq); }}>
-            <SpaceView>
-              {item?.story_type == 'VOTE' ? (
-                <Image source={voteImgPath01} style={{width: (width - 55) / 3, height: (width - 55) / 3}} resizeMode={'cover'} />
-              ) : (
-                <Image source={imgUrl} style={{width: (width - 55) / 3, height: (width - 55) / 3}} resizeMode={'cover'} />
-              )}
-            </SpaceView>
-
-            <SpaceView viewStyle={_styles.bottomArea}>
-              <SpaceView><Text style={_styles.contentsText}>{item?.contents}</Text></SpaceView>
-              <SpaceView mt={8}><Text style={_styles.contentsText}>{item?.time_text}</Text></SpaceView>
-            </SpaceView>
-
-            <SpaceView viewStyle={_styles.typeArea(item?.story_type)}>
-              <Text style={_styles.typeText}>{item?.story_type_name}</Text>
-            </SpaceView>
-          </TouchableOpacity>
-        </SpaceView>
-      </>
-    );
-  });
-
-
-
-
-
-
-
-
-
-
 
   // ###############################  목록 아이템 렌더링
   const RenderListItem = React.memo(({ item, type }) => {
@@ -413,8 +206,10 @@ export const Story = () => {
   React.useEffect(() => {
     if(isFocus) {
       setIsRefreshing(false);
-      getStoryBoardList(false);
-    };
+      getStoryBoardList('BASE', 0);
+    } else {
+      //setStoryList([]);
+    }
   }, [isFocus]);
 
   return (
