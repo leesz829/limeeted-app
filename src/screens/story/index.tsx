@@ -265,7 +265,7 @@ export const Story = () => {
 
             return (
               <>
-                <SpaceView key={innerIndex} viewStyle={_styles.itemWrap}>
+                <SpaceView key={innerIndex} viewStyle={_styles.itemWrap(innerItem.type)}>
                   {innerItem.type == 'ONLY_LARGE' ? (
                     <>
                       {innerItem.large_list.map((item, index) => {
@@ -274,7 +274,7 @@ export const Story = () => {
                         )
                       })}
                     </>
-                  ) : innerItem.type == 'COMPLEX' ? (
+                  ) : (
                     <>
                       {innerItem.complex_list.map((item, index) => {
                         return (
@@ -282,15 +282,11 @@ export const Story = () => {
                         )
                       })}
 
-                      {innerItem.complex_list.length == 1 && (
+                      {/* {innerItem.complex_list.length == 1 && (
                         <SpaceView viewStyle={_styles.dummyArea(innerItem?.first_type)}>
                           <Text style={_styles.dummyText}>배너</Text>
                         </SpaceView>
-                      )}
-                    </>
-                  ) : (
-                    <>
-                      
+                      )} */}
                     </>
                   )}
 
@@ -450,11 +446,22 @@ const _styles = StyleSheet.create({
     width: width,
     height: height-150,
   },
-  itemWrap: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    width: '100%',
+  itemWrap: (type:string) => {
+    let loc = 'center';
+    if(type == 'COMPLEX_RIGHT') {
+      loc = 'flex-end';
+    } else if(type == 'COMPLEX_LEFT') {
+      loc = 'flex-start';
+    }
+
+    return {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: loc,
+      width: '100%',
+    };
   },
+
   itemArea02: (width:number, height:number) => {
     return {
       width: width,
