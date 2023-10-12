@@ -6,7 +6,7 @@ import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
 import { ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity, Animated, Easing, PanResponder, Platform, TouchableWithoutFeedback } from 'react-native';
-import { get_story_active } from 'api/models';
+import { get_story_active, save_story_like } from 'api/models';
 import { findSourcePath, IMAGE, findSourcePathLocal } from 'utils/imageUtils';
 import { usePopup } from 'Context';
 import { SUCCESS, NODATA } from 'constants/reusltcode';
@@ -56,6 +56,7 @@ export default function StoryActive(props: Props) {
 
   // 선택된 댓글 데이터(댓글 등록 모달 적용)
   const [selectedReplyData, setSelectedReplyData] = React.useState({
+    storyBoardSeq: 0,
     storyReplySeq: 0,
     depth: 0,
   });
@@ -65,30 +66,6 @@ export default function StoryActive(props: Props) {
     alarmData: [],
     storyData: [],
   });
-
-  // 댓글 모달 열기
-  const replyModalOpen = async (_storyReplySeq:number, _depth:number) => {
-    setSelectedReplyData({
-      storyReplySeq: _storyReplySeq,
-      depth: _depth,
-    });
-
-    setIsReplyVisible(true);
-  };
-
-  // 댓글 모달 닫기
-  const replyModalClose = async () => {
-    setIsReplyVisible(false);
-  };
-
-  // 댓글 등록 콜백 함수
-  const replyRegiCallback = async (_isRegi:boolean) => {
-    if(_isRegi) {
-      //getStoryBoard();
-    };
-
-    setIsReplyVisible(false);
-  };
 
   // 이미지 인덱스
   const [currentIndex, setCurrentIndex] = React.useState(0);
@@ -158,6 +135,77 @@ export default function StoryActive(props: Props) {
     }
   };
 
+  // ############################################################################# 게시글 좋아요 저장
+  const storyLikeProc = async (type:string, storyBoardSeq:number, storyReplySeq:number) => {
+
+    // 중복 클릭 방지 설정
+    if(isClickable) {
+      try {
+        setIsClickable(false);
+        setIsLoading(true);
+  
+        const body = {
+          type: type,
+          story_board_seq: storyBoardSeq,
+          story_reply_seq: storyReplySeq,
+        };
+  
+        const { success, data } = await save_story_like(body);
+        if(success) {
+          switch (data.result_code) {
+            case SUCCESS:
+              getStoryActive();
+              break;
+            default:
+              show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+              break;
+          }
+        } else {
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsClickable(true);
+        setIsLoading(false);
+      }
+    }
+
+  };
+
+  /* ##################################################################################################################################
+  ################## 댓글 등록 관련 함수
+  ################################################################################################################################## */
+
+  // 댓글 모달 열기
+  const replyModalOpen = async (_storyBoardSeq:number, _storyReplySeq:number, _depth:number) => {
+    setSelectedReplyData({
+      storyBoardSeq: _storyBoardSeq,
+      storyReplySeq: _storyReplySeq,
+      depth: _depth,
+    });
+
+    setIsReplyVisible(true);
+  };
+
+  // 댓글 모달 닫기
+  const replyModalClose = async () => {
+    setIsReplyVisible(false);
+  };
+
+  // 댓글 등록 콜백 함수
+  const replyRegiCallback = async (_isRegi:boolean) => {
+    if(_isRegi) {
+      getStoryActive();
+    };
+
+    setIsReplyVisible(false);
+  };
+
+  /* ##################################################################################################################################
+  ################## 렌더링 함수
+  ################################################################################################################################## */
+
   // ############################################################################# 알림 렌더링
   const AlarmRender = ({ item, index, likeFunc, replyModalOpenFunc }) => {
 
@@ -170,7 +218,6 @@ export default function StoryActive(props: Props) {
             <SpaceView viewStyle={_styles.alarmTitle}>
               <Text style={_styles.alarmTitleText}>{item?.name}</Text>
             </SpaceView>
-
 
             {/* ###### 목록 */}
             <SpaceView>
@@ -200,7 +247,7 @@ export default function StoryActive(props: Props) {
                         <Text style={_styles.alarmNickname}>{_item?.nickname}</Text>
                         {storyAlarmType == 'REPLY' ? (
                           <>
-                            님이 게시글에 댓글을 남겼습니다 : <Text>{replyContents}</Text>
+                            님이 {depth == 1 ? '게시글에 댓글' : '답글'}을 남겼습니다 : <Text>{replyContents}</Text>
                             <Text style={_styles.timeText}> {_item.time_text}</Text>
                           </>
                         ) : (
@@ -216,23 +263,19 @@ export default function StoryActive(props: Props) {
                       )}
 
                       {storyAlarmType == 'REPLY' && (
-                        <SpaceView mt={2} viewStyle={{alignItems: 'flex-start'}}>
-                          <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center',}}>
-                            <TouchableOpacity onPress={() => { likeFunc('REPLY', storyReplySeq); }} style={{marginRight: 3}}>
+                        <SpaceView mt={7} mb={5} viewStyle={{alignItems: 'flex-start'}}>
+                          <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                            <TouchableOpacity onPress={() => { likeFunc('REPLY', storyBoardSeq, storyReplySeq); }} style={{marginRight: 2}}>
                               {(memberLikeYn == 'N') ? (
-                                <Image source={ICON.storage} style={styles.iconSquareSize(15)} />
+                                <Image source={ICON.heartOffIcon} style={styles.iconSquareSize(14)} />
                               ) : (
-                                <Image source={ICON.storageOn} style={styles.iconSquareSize(15)} />
+                                <Image source={ICON.heartOnIcon} style={styles.iconSquareSize(14)} />
                               )}
                             </TouchableOpacity>
 
-                            {/* <TouchableOpacity>
-                              <Text style={_styles.replyLikeCntText}>{item?.like_cnt}</Text>
-                            </TouchableOpacity> */}
-
                             {depth == 1 && (
                               <TouchableOpacity 
-                                onPress={() => { replyModalOpenFunc(storyReplySeq, depth); }}
+                                onPress={() => { replyModalOpenFunc(storyBoardSeq, storyReplySeq, depth); }}
                                 style={{marginLeft: 10}}>
                                 <Text style={_styles.replyTextStyle}>답글달기</Text>
                               </TouchableOpacity>
@@ -373,7 +416,8 @@ export default function StoryActive(props: Props) {
                       {/* ###################################################################### 새소식 */}
                       <FlatList
                         style={{height: height-135}}
-                        //contentContainerStyle={_styles.itemWrap}
+                        contentContainerStyle={{ paddingBottom: 30 }} // 하단 여백 추가
+                        contentInset={{ bottom: 20 }}
                         data={activeData.alarmData}
                         keyExtractor={(item, index) => index.toString()}
                         showsVerticalScrollIndicator={false}
@@ -388,7 +432,7 @@ export default function StoryActive(props: Props) {
                         renderItem={({ item: innerItem, index: innerIndex }) => {
                           return (
                             <View key={'alarm_' + index}>
-                              <AlarmRender item={innerItem} index={innerIndex} likeFunc={undefined} replyModalOpenFunc={undefined} />
+                              <AlarmRender item={innerItem} index={innerIndex} likeFunc={storyLikeProc} replyModalOpenFunc={replyModalOpen} />
                             </View>
                           )
                         }}
@@ -399,7 +443,8 @@ export default function StoryActive(props: Props) {
                       {/* ###################################################################### 내가쓴글 */}
                       <FlatList
                         style={{height: height-135}}
-                        //contentContainerStyle={_styles.itemWrap}
+                        contentContainerStyle={{ paddingBottom: 30 }} // 하단 여백 추가
+                        contentInset={{ bottom: 20 }}
                         data={activeData.storyData}
                         keyExtractor={(item, index) => index.toString()}
                         showsVerticalScrollIndicator={false}
@@ -432,13 +477,13 @@ export default function StoryActive(props: Props) {
       {/* ##################################################################################
                 댓글 입력 팝업
       ################################################################################## */}
-      {/* <ReplyRegiPopup 
+      <ReplyRegiPopup 
         isVisible={isReplyVisible} 
-        storyBoardSeq={storyData?.board?.story_board_seq}
+        storyBoardSeq={selectedReplyData.storyBoardSeq}
         storyReplySeq={selectedReplyData.storyReplySeq}
         depth={selectedReplyData.depth}
         callbackFunc={replyRegiCallback} 
-      /> */}
+      />
 
     </>
   );
@@ -472,6 +517,7 @@ const _styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
+    marginBottom: 5,
   },
   alarmItemMember: {
 
@@ -514,8 +560,8 @@ const _styles = StyleSheet.create({
     fontSize: 13,
   },
   replyTextStyle: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    color: '#000',
+    fontFamily: 'AppleSDGothicNeoM00',
+    color: '#555',
     fontSize: 12,
   },
   tabWrap: {

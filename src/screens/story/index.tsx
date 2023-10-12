@@ -243,6 +243,8 @@ export const Story = () => {
           data={storyList}
           keyExtractor={(item, index) => index.toString()}
           style={_styles.contentWrap}
+          contentContainerStyle={{ paddingBottom: 30 }} // 하단 여백 추가
+          contentInset={{ bottom: 20 }}
           showsVerticalScrollIndicator={false}
           removeClippedSubviews={true}
           /* getItemLayout={(data, index) => (
@@ -334,7 +336,7 @@ const _styles = StyleSheet.create({
     paddingHorizontal: 5,
     backgroundColor: '#fff',
     width: width,
-    height: height-150,
+    height: height-120,
   },
   itemWrap: (type:string) => {
     let loc = 'center';
