@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { RouteProp, useIsFocused, useNavigation, useFocusEffect } from '@react-navigation/native';
 import { StackParamList, ScreenNavigationProp } from '@types';
-import { Dimensions, Image, StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native';
+import { Dimensions, Image, StyleSheet, Text, View, TouchableOpacity, FlatList, Platform, KeyboardAvoidingView } from 'react-native';
 import { findSourcePath, ICON, IMAGE, GUIDE_IMAGE } from 'utils/imageUtils';
 import { Watermark } from 'component/Watermark';
 import LinearGradient from 'react-native-linear-gradient';
@@ -66,8 +66,6 @@ export default function ReplyRegiPopup({ isVisible, storyBoardSeq, storyReplySeq
           depth: depth+1,
         };
 
-        console.log('body :::::: ' , body);
-
         const { success, data } = await save_story_reply(body);
         if(success) {
           switch (data.result_code) {
@@ -109,42 +107,60 @@ export default function ReplyRegiPopup({ isVisible, storyBoardSeq, storyReplySeq
 
   return (
     <>
-      <Modal 
-        isVisible={isVisible} 
-        style={_styles.replyModalWrap}
-        //onSwipeComplete={toggleModal}
-        onBackdropPress={() => { closeMoadal() }}
-        //swipeDirection="down" // 아래 방향으로 스와이프
-        //propagateSwipe={true}
-        onRequestClose={() => { closeMoadal() }}>
+      <KeyboardAvoidingView 
+        style={{flex:1}}
+        behavior={Platform.OS === 'ios' ? 'padding' : null}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0} // iOS에서 키보드가 화면을 가릴 때 조절할 수 있는 오프셋
+      >
 
-        <SpaceView viewStyle={_styles.modalWrap}>
-          <SpaceView viewStyle={_styles.inputArea}>
-            <Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={_styles.memberImageStyle} resizeMode={'cover'} />
+        <Modal 
+          isVisible={isVisible} 
+          style={_styles.replyModalWrap}
+          //onSwipeComplete={toggleModal}
+          onBackdropPress={() => { closeMoadal() }}
+          //swipeDirection="down" // 아래 방향으로 스와이프
+          //propagateSwipe={true}
+          onRequestClose={() => { closeMoadal() }}>
 
-            <CommonTextarea
-              value={inputReplyText}
-              onChangeText={(inputReplyText) => setInputReplyText(inputReplyText)}
-              placeholder={'댓글을 입력해 주세요.'}
-              placeholderTextColor={'#C7C7C7'}
-              maxLength={200}
-              exceedCharCountColor={'#990606'}
-              fontSize={12}
-              height={60}
-              backgroundColor={'#F6F7FE'}
-              fontColor={'#000'}
-              style={_styles.replyTextStyle}
-            />
+          {/* <KeyboardAwareScrollView behavior={"padding"} style={{backgroundColor: 'white'}} extraScrollHeight={370}> */}
+          {/* <KeyboardAwareScrollView 
+            //behavior={Platform.OS === 'ios' ? 'padding' : null} 
+            //style={{height: 200}} 
+            //contentContainerStyle={{ flexGrow: 1 }}
+            //keyboardVerticalOffset={Platform.OS ===
+            'ios' ? 64 : 0} // iOS에서 키보드가 화면을 가릴 때 조절할 수 있는 오프셋
+            enableOnAndroid={true}> */}
 
-            <TouchableOpacity
-              onPress={() => { replyRegister(); }}
-              style={_styles.btnArea}>
-              <Text style={_styles.regiText}>등록</Text>
-            </TouchableOpacity>
+          
+
+          <SpaceView viewStyle={_styles.modalWrap}>
+            <SpaceView viewStyle={_styles.inputArea}>
+              <Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={_styles.memberImageStyle} resizeMode={'cover'} />
+
+              <CommonTextarea
+                value={inputReplyText}
+                onChangeText={(inputReplyText) => setInputReplyText(inputReplyText)}
+                placeholder={'댓글을 입력해 주세요.'}
+                placeholderTextColor={'#C7C7C7'}
+                maxLength={200}
+                exceedCharCountColor={'#990606'}
+                fontSize={12}
+                height={60}
+                backgroundColor={'#F6F7FE'}
+                fontColor={'#000'}
+                style={_styles.replyTextStyle}
+              />
+
+              <TouchableOpacity
+                onPress={() => { replyRegister(); }}
+                style={_styles.btnArea}>
+                <Text style={_styles.regiText}>등록</Text>
+              </TouchableOpacity>
+            </SpaceView>
           </SpaceView>
-        </SpaceView>
+        </Modal>
 
-      </Modal>
+      </KeyboardAvoidingView>
     </>
   );
 
