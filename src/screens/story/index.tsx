@@ -218,7 +218,7 @@ export const Story = () => {
 
       <TopNavigation currentPath={'Story'} />
 
-      <SpaceView mb={100}>
+      <SpaceView>
 
         {/* <MasonryList
           data={storyList}
@@ -295,125 +295,15 @@ export const Story = () => {
             )
           }}
         />
-
-        {/* ######################################################################### 첫번째 기존 UI */}
-        {/* <FlatList
-          contentContainerStyle={{marginBottom: 50, paddingHorizontal: 20}}
-          //ref={noticeRef}
-          data={storyList}
-          renderItem={({ item:innerItem, index:innerIndex }) => {
-
-            return (
-              <>
-                <SpaceView key={innerIndex} viewStyle={{flexDirection: 'column'}} mb={10}>
-
-                  {innerItem.type == 'ONLY_LARGE' ? (
-                    <>
-                      {innerItem.large_list.map((item, index) => {
-                        return (
-                          <LargeRenderItem item={item} />
-                        )
-                      })}
-                    </>
-                  ) : innerItem.type == 'ONLY_MEDIUM' ? (
-                    <>
-                      <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                        {innerItem.medium_list.map((item, index) => {
-                          return (
-                            <MediumRenderItem item={item} />
-                          )
-                        })}
-
-                        <SpaceView viewStyle={_styles.dummyArea('H')}>
-                          <Text style={_styles.dummyText}>배너</Text>
-                        </SpaceView>
-                      </SpaceView>
-                    </>
-                  ) : innerItem.type == 'ONLY_SMALL' ? (
-                    <>
-                      <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                        {innerItem.small_list.map((item, index) => {
-                          return (
-                            <SmallRenderItem item={item} />
-                          )
-                        })}
-
-                        {innerItem.small_list.length == 1 ? (
-                          <>
-                            <SpaceView viewStyle={_styles.dummyArea('')}><Text style={_styles.dummyText}>배너</Text></SpaceView>
-                            <SpaceView viewStyle={_styles.dummyArea('')}><Text style={_styles.dummyText}>배너</Text></SpaceView>
-                          </>
-                        ) : innerItem.small_list.length == 2 && (
-                          <SpaceView viewStyle={_styles.dummyArea('')}><Text style={_styles.dummyText}>배너</Text></SpaceView>
-                        )}
-
-                      </SpaceView>
-                    </>
-                  ) : innerItem.type == 'COMPLEX_MEDIUM' ? (
-                    <>
-                      <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                        {innerItem.medium_list.map((item, index) => {
-                          return (
-                            <MediumRenderItem item={item} />
-                          )
-                        })}
-                        <SpaceView viewStyle={{flexDirection: 'column'}}>
-                          {innerItem.small_list.map((item, index) => {
-                            return (
-                              <SpaceView mb={index == 0 ? 8 : 0}>
-                                <SmallRenderItem item={item} />
-                              </SpaceView>
-                            )
-                          })}
-
-                          {innerItem.small_list.length < 2 && (
-                            <SpaceView viewStyle={_styles.dummyArea('')}><Text style={_styles.dummyText}>배너</Text></SpaceView>
-                          )}
-                        </SpaceView>
-                      </SpaceView>
-                    </>
-                  ) : innerItem.type == 'COMPLEX_SMALL' ? (
-                    <>
-                      <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                        <SpaceView viewStyle={{flexDirection: 'column'}}>
-                          {innerItem.small_list.map((item, index) => {
-                            return (
-                              <SpaceView mb={index == 0 ? 8 : 0}>
-                                <SmallRenderItem item={item} />
-                              </SpaceView>
-                            )
-                          })}
-                        </SpaceView>
-                        {innerItem.small_list.length < 2 && (
-                            <SpaceView viewStyle={_styles.dummyArea('')}><Text style={_styles.dummyText}>배너</Text></SpaceView>
-                        )}
-                        {innerItem.medium_list.map((item, index) => {
-                          return (
-                            <MediumRenderItem item={item} />
-                          )
-                        })}
-                      </SpaceView>
-                    </>
-                  ) : (
-                    <>
-                      
-                    </>
-                  )}
-
-                </SpaceView>
-              </>
-            )
-          }}
-        /> */}
       </SpaceView>
 
       <SpaceView viewStyle={_styles.btnArea}>
         <SpaceView viewStyle={_styles.btnTextArea}>
-          <TouchableOpacity onPress={() => { goStoryActive(); }}>
-            <Text style={_styles.btnText}>활동</Text>
+          <TouchableOpacity onPress={() => { goStoryActive(); }} style={_styles.btnItemArea}>
+            <Image source={ICON.clockIcon} style={styles.iconSquareSize(18)} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => { goStoryRegister(); }}>
-            <Text style={_styles.btnText}>등록</Text>
+          <TouchableOpacity onPress={() => { goStoryRegister(); }} style={_styles.btnItemArea}>
+            <Image source={ICON.storyPlusIcon} style={styles.iconSquareSize(18)} />
           </TouchableOpacity>
         </SpaceView>
       </SpaceView>
@@ -511,14 +401,17 @@ const _styles = StyleSheet.create({
   },
   btnTextArea: {
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: '#000',
-    width: 150,
-    paddingVertical: 5,
-    paddingHorizontal: 20,
-    borderRadius: 10,
+  },
+  btnItemArea: {
+    width: 50,
+    paddingVertical: 8,
+    paddingHorizontal: 30,
+    marginHorizontal: 8,
+    borderRadius: 20,
     overflow: 'hidden',
+    backgroundColor: 'rgba(38,38,38,0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   btnText: {
     fontFamily: 'AppleSDGothicNeoEB00',

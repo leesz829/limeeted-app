@@ -358,6 +358,7 @@ export default function StoryActive(props: Props) {
         {/* ###################################################################################### 컨텐츠 영역 */}
         <SpaceView>
           <FlatList
+            style={{backgroundColor: '#fff'}}
             ref={baseRef}
             data={['새소식','내가쓴글']}
             onScroll={handleScroll}
@@ -366,15 +367,16 @@ export default function StoryActive(props: Props) {
             pagingEnabled
             renderItem={({ item, index }) => {
               return (
-                <View key={'active_' + index} style={{width: width, height: height-200}}>
+                <View key={'active_' + index} style={{width: width}}>
                   {index == 0 ? (
                     <>
                       {/* ###################################################################### 새소식 */}
                       <FlatList
-                        //style={_styles.itemWrap}
+                        style={{height: height-135}}
                         //contentContainerStyle={_styles.itemWrap}
                         data={activeData.alarmData}
                         keyExtractor={(item, index) => index.toString()}
+                        showsVerticalScrollIndicator={false}
                         removeClippedSubviews={true}
                         /* getItemLayout={(data, index) => (
                           {
@@ -396,10 +398,11 @@ export default function StoryActive(props: Props) {
                     <>
                       {/* ###################################################################### 내가쓴글 */}
                       <FlatList
-                        //style={_styles.itemWrap}
+                        style={{height: height-135}}
                         //contentContainerStyle={_styles.itemWrap}
                         data={activeData.storyData}
                         keyExtractor={(item, index) => index.toString()}
+                        showsVerticalScrollIndicator={false}
                         removeClippedSubviews={true}
                         /* getItemLayout={(data, index) => (
                           {

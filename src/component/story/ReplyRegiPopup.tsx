@@ -97,7 +97,15 @@ export default function ReplyRegiPopup({ isVisible, storyBoardSeq, storyReplySeq
     }
   };
 
+  useFocusEffect(
+    React.useCallback(() => {
+      setInputReplyText('');
 
+      return () => {
+
+      };
+    }, []),
+  );
 
   return (
     <>

@@ -177,6 +177,8 @@ export const ICON = {
   closeLight: require('assets/icon/icon-close-light.png'),
   storyHeart: require('assets/icon/icon-story-heart.png'),
   reply: require('assets/icon/icon-reply.png'),
+  clockIcon: require('assets/icon/icon-clock.png'),
+  storyPlusIcon: require('assets/icon/icon-story-plus.png'),
 };
 
 export const GIF_IMG = {
