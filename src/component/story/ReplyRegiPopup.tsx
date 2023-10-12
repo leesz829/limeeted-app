@@ -107,11 +107,7 @@ export default function ReplyRegiPopup({ isVisible, storyBoardSeq, storyReplySeq
 
   return (
     <>
-      <KeyboardAvoidingView 
-        style={{flex:1}}
-        behavior={Platform.OS === 'ios' ? 'padding' : null}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0} // iOS에서 키보드가 화면을 가릴 때 조절할 수 있는 오프셋
-      >
+      
 
         <Modal 
           isVisible={isVisible} 
@@ -160,7 +156,6 @@ export default function ReplyRegiPopup({ isVisible, storyBoardSeq, storyReplySeq
           </SpaceView>
         </Modal>
 
-      </KeyboardAvoidingView>
     </>
   );
 

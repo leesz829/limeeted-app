@@ -5,7 +5,7 @@ import { styles, layoutStyle, commonStyle, modalStyle } from 'assets/styles/Styl
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
-import { ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity, Animated, Easing, PanResponder, Platform, TouchableWithoutFeedback } from 'react-native';
+import { ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity, Animated, Easing, PanResponder, Platform, TouchableWithoutFeedback, KeyboardAvoidingView } from 'react-native';
 import { get_story_detail, save_story_like, save_story_vote_member } from 'api/models';
 import { findSourcePath, IMAGE, GIF_IMG, findSourcePathLocal } from 'utils/imageUtils';
 import { usePopup } from 'Context';
@@ -216,7 +216,7 @@ export default function StoryDetail(props: Props) {
 
   // ############################################################################# 투표하기 실행
   const voteProc = async (storyVoteSeq:number) => {
-    
+
     // 중복 클릭 방지 설정
     if(isClickable) {
       try {
@@ -432,13 +432,20 @@ export default function StoryDetail(props: Props) {
       {/* ##################################################################################
                 댓글 입력 팝업
       ################################################################################## */}
-      <ReplyRegiPopup 
-        isVisible={isReplyVisible} 
-        storyBoardSeq={storyData?.board?.story_board_seq}
-        storyReplySeq={selectedReplyData.storyReplySeq}
-        depth={selectedReplyData.depth}
-        callbackFunc={replyRegiCallback} 
-      />
+
+      <KeyboardAvoidingView 
+        style={{flex:1}}
+        behavior={Platform.OS === 'ios' ? 'padding' : null}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 264 : 0} // iOS에서 키보드가 화면을 가릴 때 조절할 수 있는 오프셋
+      >
+        <ReplyRegiPopup 
+          isVisible={isReplyVisible} 
+          storyBoardSeq={storyData?.board?.story_board_seq}
+          storyReplySeq={selectedReplyData.storyReplySeq}
+          depth={selectedReplyData.depth}
+          callbackFunc={replyRegiCallback} 
+        />
+      </KeyboardAvoidingView>
 
       <LikeListPopup
         isVisible={likeListPopup}
