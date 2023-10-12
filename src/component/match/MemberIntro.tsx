@@ -528,8 +528,8 @@ const _styles = StyleSheet.create({
   introduceArea: {
     backgroundColor: '#6E6E6E',
     width: '100%',
-    paddingVertical: 15,
-    paddingHorizontal: 10,
+    paddingVertical: 18,
+    paddingHorizontal: 18,
     borderRadius: 12,
     overflow: 'hidden',
   },
