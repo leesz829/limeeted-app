@@ -182,13 +182,14 @@ const _styles = StyleSheet.create({
   replyModalWrap: {
     flex: 1,
     margin: 0,
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
   },
   modalWrap: {
     backgroundColor: '#fff',
     height: 80,
     alignItems: 'center',
     justifyContent: 'center',
+    //marginBottom: 300,
   },
   inputArea: {
     flexDirection: 'row',
