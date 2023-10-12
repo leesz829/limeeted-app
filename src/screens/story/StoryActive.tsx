@@ -376,7 +376,7 @@ export default function StoryActive(props: Props) {
             pagingEnabled
             renderItem={({ item, index }) => {
               return (
-                <View key={'active_' + index} style={{width: width, minHeight: height}}>
+                <View key={'active_' + index} style={{width: width, height: height-140}}>
                   {index == 0 ? (
                     <>
                       {/* ###################################################################### 새소식 */}
