@@ -216,8 +216,7 @@ export default function StoryDetail(props: Props) {
 
   // ############################################################################# 투표하기 실행
   const voteProc = async (storyVoteSeq:number) => {
-    console.log('storyVoteSeq ::::: ' , storyVoteSeq);
-
+    
     // 중복 클릭 방지 설정
     if(isClickable) {
       try {
@@ -264,8 +263,7 @@ export default function StoryDetail(props: Props) {
     if(depth == 2) {
       depthStyleSize = 15;
     }
-console.log('item::', item);
-console.log('memberBase.member_seq',memberBase.member_seq)
+
     return (
       <>
         <SpaceView viewStyle={_styles.replyItemWarp}>
@@ -283,13 +281,13 @@ console.log('memberBase.member_seq',memberBase.member_seq)
                 <SpaceView pt={2} mt={6} viewStyle={{alignItems: 'flex-start'}}>
                   <SpaceView viewStyle={_styles.replyItemEtcWrap}>
                     <TouchableOpacity 
-                      onPress={() => { memberBase.member_seq == storyData.board?.member_seq ? popupStoryReplyActive(storyReplySeq, depth, item) : likeFunc('REPLY', storyReplySeq); }}
+                      onPress={() => { memberBase.member_seq == item?.member_seq ? popupStoryReplyActive(storyReplySeq, depth, item) : likeFunc('REPLY', storyReplySeq); }}
                       style={{marginRight: 3}}>
 
                       {(memberBase.member_seq == item?.member_seq || item?.member_like_yn == 'N') ? (
-                        <Image source={ICON.storage} style={styles.iconSquareSize(15)} />
+                        <Image source={ICON.heartOffIcon} style={styles.iconSquareSize(15)} />
                       ) : (
-                        <Image source={ICON.storageOn} style={styles.iconSquareSize(15)} />
+                        <Image source={ICON.heartOnIcon} style={styles.iconSquareSize(15)} />
                       )}
                     </TouchableOpacity>
 
@@ -360,7 +358,7 @@ console.log('memberBase.member_seq',memberBase.member_seq)
             />
           </SpaceView>
 
-          {/* ###################################################################################### 댓글 영역 */}
+          {/* ###################################################################################### 내용 영역 */}
           <SpaceView mt={20}>
             <SpaceView pl={20} pr={20} pb={10} viewStyle={_styles.replyEtcArea}>
               <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
@@ -369,21 +367,21 @@ console.log('memberBase.member_seq',memberBase.member_seq)
                   style={{marginRight: 5}}>
 
                   {(memberBase.member_seq == storyData.board?.member_seq || storyData.board?.member_like_yn == 'N') ? (
-                    <Image source={ICON.storage} style={styles.iconSquareSize(20)} />
+                    <Image source={ICON.heartOffIcon} style={styles.iconSquareSize(20)} />
                   ) : (
-                    <Image source={ICON.storageOn} style={styles.iconSquareSize(20)} />
+                    <Image source={ICON.heartOnIcon} style={styles.iconSquareSize(20)} />
                   )}
                 </TouchableOpacity>
                 <TouchableOpacity>
                   <Text style={_styles.likeCntText}>{storyData.board?.like_cnt}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={{marginLeft: 10,}} onPress={() => { replyModalOpen(0, 0); }}>
-                <Image source={ICON.reply} style={styles.iconSquareSize(20)} />
-              </TouchableOpacity>
+                <TouchableOpacity style={{marginLeft: 15}} onPress={() => { replyModalOpen(0, 0); }}>
+                  <Image source={ICON.reply} style={styles.iconSquareSize(21)} />
+                </TouchableOpacity>
               </SpaceView>
 
               {memberBase?.member_seq == storyData.board?.member_seq && (
-                <SpaceView viewStyle={_styles.btnArea}>
+                <SpaceView ml={15} viewStyle={_styles.btnArea}>
                   <TouchableOpacity
                     onPress={() => { goStoryModfy(); }}
                     style={_styles.regiBtn}>
@@ -398,7 +396,7 @@ console.log('memberBase.member_seq',memberBase.member_seq)
               )}
             </SpaceView>
 
-            {/* ###################################################################################### 내용 영역 */}
+            {/* ###################################################################################### 댓글 영역 */}
             <SpaceView pl={20} pr={20} pb={15} viewStyle={{borderBottomWidth: 1, borderBottomColor: '#eee'}}>
               <Text style={_styles.contentsText}>{storyData.board?.contents}</Text>
               <Text style={[_styles.contentsText], {color: '#999', marginTop: 10,}}>{storyData.board?.time_text}</Text>
@@ -582,16 +580,16 @@ const _styles = StyleSheet.create({
   },
   regiBtn: {
     backgroundColor: '#B1B1B1',
-    width: 100,
+    width: 60,
     borderRadius: 10,
     overflow: 'hidden',
-    marginHorizontal: 5,
   },
   regiBtnText: {
     fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 12,
     color: '#fff',
     textAlign: 'center',
-    paddingVertical: 5,
+    paddingVertical: 4,
   },
   pagingContainer: {
     position: 'absolute',
@@ -623,6 +621,7 @@ const _styles = StyleSheet.create({
   replyEtcArea: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
+    alignItems: 'center',
   },
   replyListWrap: {
     flex: 1,
@@ -630,7 +629,7 @@ const _styles = StyleSheet.create({
     //marginHorizontal: 5,
   },
   replyItemWarp: {
-    marginBottom: 5,
+    marginBottom: 15,
   },
   replyItemTopArea: {
     flex: 1,

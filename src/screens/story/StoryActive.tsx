@@ -417,7 +417,7 @@ export default function StoryActive(props: Props) {
                       <FlatList
                         style={{height: height-135}}
                         contentContainerStyle={{ paddingBottom: 30 }} // 하단 여백 추가
-                        contentInset={{ bottom: 20 }}
+                        contentInset={{ bottom: 50 }}
                         data={activeData.alarmData}
                         keyExtractor={(item, index) => index.toString()}
                         showsVerticalScrollIndicator={false}
@@ -444,7 +444,7 @@ export default function StoryActive(props: Props) {
                       <FlatList
                         style={{height: height-135}}
                         contentContainerStyle={{ paddingBottom: 30 }} // 하단 여백 추가
-                        contentInset={{ bottom: 20 }}
+                        contentInset={{ bottom: 50 }}
                         data={activeData.storyData}
                         keyExtractor={(item, index) => index.toString()}
                         showsVerticalScrollIndicator={false}

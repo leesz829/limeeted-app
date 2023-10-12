@@ -244,7 +244,7 @@ export const Story = () => {
           keyExtractor={(item, index) => index.toString()}
           style={_styles.contentWrap}
           contentContainerStyle={{ paddingBottom: 30 }} // 하단 여백 추가
-          contentInset={{ bottom: 20 }}
+          contentInset={{ bottom: 60 }}
           showsVerticalScrollIndicator={false}
           removeClippedSubviews={true}
           /* getItemLayout={(data, index) => (
