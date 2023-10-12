@@ -16,7 +16,7 @@ import ProfileGrade from 'component/common/ProfileGrade';
 import { ScrollView } from 'react-native-gesture-handler';
 
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 interface Props {
   isVisible: boolean;
@@ -117,19 +117,19 @@ export default function LikeListPopup({ isVisible, closeModal, type, _storyBoard
               <SpaceView viewStyle={_styles.replyArea}>
                 <Image source={findSourcePath(replyInfo.mst_img_path)} style={[_styles.imageStyle, {marginTop: 15}]} resizeMode={'cover'} />
                 <SpaceView mt={10} ml={5} pt={3} viewStyle={{flexDirection: 'column', flex: 1}}>
-                  <Text style={{fontSize: 16}}>{replyInfo.nickname}<Text style={{fontWeight: '200'}}> 1분전</Text></Text>
-                  <Text style={{marginTop: 10, fontSize: 16, fontWeight: '200'}}>{replyInfo.reply_contents}</Text>
+                  <Text style={[_styles.replyText]}>{replyInfo.nickname}<Text style={{fontFamily: 'AppleSDGothicNeoR00', color: '#999'}}> {replyInfo.time_text}</Text></Text>
+                  <Text style={[_styles.replyText, {marginTop: 15}]}>{replyInfo.reply_contents}</Text>
                 </SpaceView>
               </SpaceView>
               : <></>
           }
 
         <SpaceView viewStyle={_styles.likeCntArea}>
-          <Text>{likeListCnt}<Text style={[_styles.likeListText, {fontWeight: '200'}]}>개의 좋아요</Text></Text>
+          <Text>{likeListCnt}<Text style={_styles.likeListText}>개의 좋아요</Text></Text>
         </SpaceView>
         
         <FlatList
-          style={{marginBottom: 50, minHeight: 300}}
+          style={{marginBottom: 30}}
           data={likeListData.likeList}
           renderItem={({ item, index }) => {
             return (
@@ -152,6 +152,7 @@ const _styles = StyleSheet.create({
     width: '100%',
     borderRadius: 20,
     backgroundColor: '#ffffff',
+    maxHeight: height - 350,
   },
   titleBox: {
     flexDirection: 'row',
@@ -161,12 +162,12 @@ const _styles = StyleSheet.create({
     marginHorizontal: 15,
   },
   titleText: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'AppleSDGothicNeoR00',
     fontSize: 16,
     fontWeight: 'bold',
     letterSpacing: 0,
     textAlign: 'left',
-    color: '#676767',
+    color: '#333',
   },
   contentBody: {
     flexDirection: 'column',
@@ -191,19 +192,28 @@ const _styles = StyleSheet.create({
     borderTopColor: '#ddd',
   },
   likeListText: {
-    fontFamily: 'AppleSDGothicNeoSB00',
+    fontFamily: 'AppleSDGothicNeoR00',
     fontSize: 16,
     marginLeft: 10,
+    marginTop: 5,
     letterSpacing: 0,
     fontWeight: '300',
     textAlign: 'left',
-    color: '#646464',
+    color: '#333',
   },
   replyArea: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     marginHorizontal: 10,
     marginBottom: 20,
+  },
+  replyText: {
+    fontFamily: 'AppleSDGothicNeoR00',
+    fontSize: 16,
+    letterSpacing: 0,
+    fontWeight: '300',
+    textAlign: 'left',
+    color: '#333',
   },
   imageStyle: {
     width: 35,

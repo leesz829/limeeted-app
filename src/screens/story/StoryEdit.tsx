@@ -473,7 +473,7 @@ export default function StoryEdit(props: Props) {
                 maxLength={1000}
                 exceedCharCountColor={'#990606'}
                 fontSize={13}
-                height={height-555}
+                height={height-575}
                 backgroundColor={'#fff'}
                 fontColor={'#000'}
                 borderColor={isEmptyData(storyData.contents) ? '#7986EE' : '#ebe9ef'}
@@ -522,7 +522,13 @@ export default function StoryEdit(props: Props) {
 
       <SpaceView viewStyle={_styles.btnArea}>
         {
-          isEmptyData(storyData.contents) ? (
+          (storyData.storyType == 'VOTE' ? isEmptyData(storyData.contents)
+                                        && isEmptyData(voteData.voteName01)
+                                        && isEmptyData(voteData.voteName02)
+                                        && isEmptyData(inputVoteFileData01)
+                                        && isEmptyData(inputVoteFileData02)
+                                        && isEmptyData(storyData.voteEndType)
+                                        : isEmptyData(storyData.contents)) ? (
             <LinearGradient
               colors={['#7984ED', '#8759D5']}
               style={[_styles.regiActiveBtn]}
@@ -659,11 +665,12 @@ const _styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 4,
     width: '84%',
-    
+    marginTop: 5,
+    height: height-798,
   },
   voteImgArea: {
     position: 'absolute',
-    top: 0,
+    top: 4,
     right: 0,
     backgroundColor: 'rgba(155, 165, 242, 0.12)',
     borderRadius: 8,

@@ -264,7 +264,8 @@ export default function StoryDetail(props: Props) {
     if(depth == 2) {
       depthStyleSize = 15;
     }
-
+console.log('item::', item);
+console.log('memberBase.member_seq',memberBase.member_seq)
     return (
       <>
         <SpaceView viewStyle={_styles.replyItemWarp}>
@@ -615,9 +616,9 @@ const _styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   contentsText: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'AppleSDGothicNeoR00',
     fontSize: 14,
-    color: '#363636',
+    color: '#333',
   },
   replyEtcArea: {
     flexDirection: 'row',
@@ -625,7 +626,6 @@ const _styles = StyleSheet.create({
   },
   replyListWrap: {
     flex: 1,
-    width: width,
     //flexWrap: 'nowrap',
     //marginHorizontal: 5,
   },
@@ -645,20 +645,20 @@ const _styles = StyleSheet.create({
     marginRight: 5,
   },
   replyNickname: {
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'AppleSDGothicNeoR00',
     fontSize: 14,
     color: '#000',
     marginRight: 8,
   },
   replyContents: {
-    fontFamily: 'AppleSDGothicNeoSB00',
+    fontFamily: 'AppleSDGothicNeoR00',
     fontSize: 14,
-    color: '#000',
+    color: '#333',
     marginTop: 6,
     //flex: 0.8,
   },
   replyTimeText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'AppleSDGothicNeoR00',
     color: '#999',
     fontSize: 14,
   },
@@ -667,28 +667,28 @@ const _styles = StyleSheet.create({
     alignItems: 'center',
   },
   replyLikeIcon: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'AppleSDGothicNeoR00',
     color: '#000',
     fontSize: 12,
   },
   replyTextStyle: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    color: '#000',
+    fontFamily: 'AppleSDGothicNeoR00',
+    color: '#555',
     fontSize: 12,
   },
   replyLengthText: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    color: '#000',
+    fontFamily: 'AppleSDGothicNeoR00',
+    color: '#555',
     fontSize: 13,
   },
   likeCntText: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    color: '#000',
+    fontFamily: 'AppleSDGothicNeoR00',
+    color: '#555',
     fontSize: 14,
   },
   replyLikeCntText: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    color: '#000',
+    fontFamily: 'AppleSDGothicNeoR00',
+    color: '#555',
     fontSize: 13,
   },
   voteArea: (bdColor: string) => {
