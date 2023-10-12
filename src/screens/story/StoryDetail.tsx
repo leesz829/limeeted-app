@@ -432,20 +432,14 @@ export default function StoryDetail(props: Props) {
       {/* ##################################################################################
                 댓글 입력 팝업
       ################################################################################## */}
-
-      <KeyboardAvoidingView 
-        style={{flex:1}}
-        behavior={Platform.OS === 'ios' ? 'padding' : null}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 264 : 0} // iOS에서 키보드가 화면을 가릴 때 조절할 수 있는 오프셋
-      >
-        <ReplyRegiPopup 
-          isVisible={isReplyVisible} 
-          storyBoardSeq={storyData?.board?.story_board_seq}
-          storyReplySeq={selectedReplyData.storyReplySeq}
-          depth={selectedReplyData.depth}
-          callbackFunc={replyRegiCallback} 
-        />
-      </KeyboardAvoidingView>
+      
+      <ReplyRegiPopup 
+        isVisible={isReplyVisible} 
+        storyBoardSeq={storyData?.board?.story_board_seq}
+        storyReplySeq={selectedReplyData.storyReplySeq}
+        depth={selectedReplyData.depth}
+        callbackFunc={replyRegiCallback} 
+      />
 
       <LikeListPopup
         isVisible={likeListPopup}
