@@ -41,6 +41,8 @@ export const Story = () => {
   const [isLoading, setIsLoading] = React.useState(false); // 로딩 상태 체크
   const [isRefreshing, setIsRefreshing] = useState(false); // 새로고침 여부
   const [isLoadingMore, setIsLoadingMore] = useState(false); // 더보기 로딩 여부
+  const flatListRef = useRef(null);
+
 
   const [isEmpty, setIsEmpty] = useState(false); 
   //const [storyList, setStoryList] = useState<any>([]); // 스토리 목록
@@ -77,6 +79,12 @@ export const Story = () => {
   const loadMoreData = () => {
     console.log('ADD!!!!!!!!!!!!!!');
     getStoryBoardList('ADD', pageNum+1);
+  };
+
+  // ##################################################################################### 맨위 이동
+  const scrollToTop = () => {
+    console.log('asdasadssd');
+    flatListRef.current.scrollToIndex({ animated: true, index: 0 });
   };
 
   // ############################################################################# 스토리 목록 조회
@@ -137,8 +145,9 @@ export const Story = () => {
 
   // ###############################  목록 아이템 렌더링
   const RenderListItem = React.memo(({ item, type }) => {
-    const storyBoardSeq = item.story_board_seq;
-    const imgUrl = findSourcePathLocal(item?.story_img_path);
+    const storyBoardSeq = item.story_board_seq; // 스토리 게시글 번호
+    const storyType = item?.story_type; // 스토리 유형
+    const imgPath = findSourcePathLocal(item?.story_img_path);
     const voteImgPath01 = findSourcePathLocal(item?.vote_img_path_01);
     const voteImgPath02 = findSourcePathLocal(item?.vote_img_path_02);
 
@@ -162,38 +171,61 @@ export const Story = () => {
       <>
         <SpaceView mb={5} viewStyle={_styles.itemArea02(_width, _height)}>
           <TouchableOpacity activeOpacity={0.7} onPress={() => { goStoryDetail(storyBoardSeq); }}>
-            <SpaceView>
-              {item?.story_type == 'VOTE' ? (
-                <Image source={voteImgPath01} style={{width: _width, height: _height}} resizeMode={'cover'} />
-              ) : (
-                <Image source={imgUrl} style={{width: _width, height: _height}} resizeMode={'cover'} />
-              )}
-            </SpaceView>
 
-            <SpaceView viewStyle={_styles.topArea}>
-              <Image source={findSourcePath(item?.mst_img_path)} style={_styles.mstImgStyle} resizeMode={'cover'} />
-              {/* <AuthLevel authAcctCnt={item?.auth_acct_cnt} type={'BASE'} />
-              <ProfileGrade profileScore={item?.profile_score} type={'BASE'} /> */}
-
+          {(storyType == 'SECRECT' || (storyType == 'STORY' && !isEmptyData(imgPath))) ? (
+            <>
+              <SpaceView viewStyle={_styles.noImageArea(item?.gender)} >
+                <SpaceView>
+                  <Image source={findSourcePath(item?.mst_img_path)} style={_styles.mstImgStyle(50, 40)} resizeMode={'cover'} />
+                </SpaceView>
+                <SpaceView mt={10} viewStyle={{flexDirection: 'row'}}>
+                  <AuthLevel authAcctCnt={item?.auth_acct_cnt} type={'BASE'} />
+                  <ProfileGrade profileScore={item?.profile_score} type={'BASE'} />
+                </SpaceView>
+                <SpaceView mt={25} pl={10} pr={10}>
+                  <Text style={_styles.contentsText('#333333')}>{item?.contents}</Text>
+                </SpaceView>
+                <SpaceView viewStyle={_styles.typeArea(storyType)}>
+                  <Text style={_styles.typeText}>{item?.story_type_name}</Text>
+                </SpaceView>
+              </SpaceView>
+            </>
+          ) : (
+            <>
               <SpaceView>
-                <Text style={_styles.activeText}>
-                  {item?.profile_score > 0 && item?.profile_score}
-                  {(isEmptyData(item?.auth_acct_cnt) && item?.profile_score > 0) && ' | '}
-                  {isEmptyData(item?.auth_acct_cnt) && 'LV.' + item?.auth_acct_cnt}
-                </Text>
-                <Text style={_styles.nicknameText}>{item?.nickname}</Text>
+                {item?.story_type == 'VOTE' ? (
+                  <Image source={voteImgPath01} style={{width: _width, height: _height}} resizeMode={'cover'} />
+                ) : (
+                  <Image source={imgPath} style={{width: _width, height: _height}} resizeMode={'cover'} />
+                )}
               </SpaceView>
 
-            </SpaceView>
+              <SpaceView viewStyle={_styles.topArea}>
+                <Image source={findSourcePath(item?.mst_img_path)} style={_styles.mstImgStyle(30, 20)} resizeMode={'cover'} />
+                {/* <AuthLevel authAcctCnt={item?.auth_acct_cnt} type={'BASE'} />
+                <ProfileGrade profileScore={item?.profile_score} type={'BASE'} /> */}
 
-            <SpaceView viewStyle={_styles.bottomArea}>
-              <SpaceView><Text style={_styles.contentsText}>{item?.contents}</Text></SpaceView>
-              {/* <SpaceView mt={8}><Text style={_styles.contentsText}>{item?.time_text}</Text></SpaceView> */}
-            </SpaceView>
+                <SpaceView>
+                  <Text style={_styles.activeText}>
+                    {item?.profile_score > 0 && item?.profile_score}
+                    {(isEmptyData(item?.auth_acct_cnt) && item?.profile_score > 0) && ' | '}
+                    {isEmptyData(item?.auth_acct_cnt) && 'LV.' + item?.auth_acct_cnt}
+                  </Text>
+                  <Text style={_styles.nicknameText}>{item?.nickname}</Text>
+                </SpaceView>
+              </SpaceView>
 
-            <SpaceView viewStyle={_styles.typeArea(item?.story_type)}>
-              <Text style={_styles.typeText}>{item?.story_type_name}</Text>
-            </SpaceView>
+              <SpaceView viewStyle={_styles.bottomArea}>
+                <SpaceView><Text style={_styles.contentsText('#fff')}>{item?.contents}</Text></SpaceView>
+                {/* <SpaceView mt={8}><Text style={_styles.contentsText}>{item?.time_text}</Text></SpaceView> */}
+              </SpaceView>
+
+              <SpaceView viewStyle={_styles.typeArea(storyType)}>
+                <Text style={_styles.typeText}>{item?.story_type_name}</Text>
+              </SpaceView>
+            </>
+          )}
+
           </TouchableOpacity>
         </SpaceView>
       </>
@@ -241,6 +273,7 @@ export const Story = () => {
 
         <FlatList
           data={storyList}
+          ref={flatListRef}
           keyExtractor={(item, index) => index.toString()}
           style={_styles.contentWrap}
           contentContainerStyle={{ paddingBottom: 30 }} // 하단 여백 추가
@@ -299,6 +332,7 @@ export const Story = () => {
         />
       </SpaceView>
 
+      {/* ###################################################################################################### 하단 버튼 */}
       <SpaceView viewStyle={_styles.btnArea}>
         <SpaceView viewStyle={_styles.btnTextArea}>
           <TouchableOpacity onPress={() => { goStoryActive(); }} style={_styles.btnItemArea}>
@@ -308,6 +342,14 @@ export const Story = () => {
             <Image source={ICON.storyPlusIcon} style={styles.iconSquareSize(18)} />
           </TouchableOpacity>
         </SpaceView>
+      </SpaceView>
+
+      {/* ###################################################################################################### 맨위 이동 버튼 */}
+      <SpaceView viewStyle={_styles.topBtnArea}>
+        <TouchableOpacity onPress={() => { scrollToTop(); }}>
+          {/* <Text>맨위</Text> */}
+          <Image source={ICON.boxTipsIcon} style={styles.iconSquareSize(50)} />
+        </TouchableOpacity>
       </SpaceView>
     </>
   );
@@ -353,7 +395,6 @@ const _styles = StyleSheet.create({
       width: '100%',
     };
   },
-
   itemArea02: (width:number, height:number) => {
     return {
       width: width,
@@ -451,19 +492,23 @@ const _styles = StyleSheet.create({
     fontSize: 13,
     color: '#fff',
   },
-  mstImgStyle: {
-    width: 30,
-    height: 30,
-    borderRadius: 20,
-    overflow: 'hidden',
-    marginRight: 5,
-    borderWidth: 1,
-    borderColor: '#fff',
+  mstImgStyle: (size:number, bdRadius:number) => {
+    return {
+      width: size,
+      height: size,
+      borderRadius: bdRadius,
+      overflow: 'hidden',
+      marginRight: 5,
+      borderWidth: 1,
+      borderColor: '#fff',
+    };
   },
-  contentsText: {
-    fontFamily: 'AppleSDGothicNeoR00',
-    fontSize: 13,
-    color: '#fff',
+  contentsText: (_color:string) => {
+    return {
+      fontFamily: 'AppleSDGothicNeoR00',
+      fontSize: 13,
+      color: _color,
+    };
   },
   activeText: {
     fontFamily: 'AppleSDGothicNeoEB00',
@@ -475,5 +520,19 @@ const _styles = StyleSheet.create({
     fontSize: 13,
     color: '#fff',
   },
-  
+  noImageArea: (gender:string) => {
+    return {
+      width: '100%',
+      height: '100%',
+      backgroundColor: gender == 'M' ? '#D5DAFC' : '#FEEFF2',
+      alignItems: 'center',
+      justifyContent: 'center',
+    };
+  },
+  topBtnArea: {
+    position: 'absolute',
+    bottom: 50,
+    right: 10,
+  },
+
 });

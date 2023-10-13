@@ -99,8 +99,6 @@ export default function StoryDetail(props: Props) {
 
   // 댓글 등록 콜백 함수
   const replyRegiCallback = async (_isRegi:boolean) => {
-    console.log('_isRegi ::::: ' , _isRegi);
-
     if(_isRegi) {
       getStoryBoard();
     };
@@ -453,7 +451,7 @@ export default function StoryDetail(props: Props) {
   );
 
 
-  /* ############# 이미지 렌더링 */
+  /* ################################################################################################## 이미지 렌더링 */
   function ImageRender({ item }) {
     const isVote = item?.vote_yn == 'Y' ? true : false; // 투표 여부
 
@@ -520,7 +518,7 @@ export default function StoryDetail(props: Props) {
                   )}
                 </SpaceView>
                 <TouchableOpacity
-                  disabled={memberBase?.member_seq == storyData.board?.member_seq || isVote}
+                  disabled={memberBase?.member_seq == storyData.board?.member_seq || isVote || storyData.board?.vote_end_yn == 'Y'}
                   style={{width: '100%'}}
                   onPress={() => { voteProc(item?.story_vote_seq) }}>
 
