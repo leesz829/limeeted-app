@@ -101,8 +101,6 @@ export default function AuthPickRender({ _authLevel, _authList }) {
   const authPickAnimate = async () => {
     authPickAnimateCancel();
 
-    console.log('???');
-
     /* wrapTopValue.value = withSequence(
       withDelay(800, withSpring(100, { damping: 20, stiffness: 300 })),
       withDelay(1800, withTiming(100, { duration: 200 })),
@@ -112,7 +110,7 @@ export default function AuthPickRender({ _authLevel, _authList }) {
 
     wrapOpacityValue.value = withSequence(
       withDelay(800, withTiming(1, { duration: 300 })),
-      withDelay(3300, withTiming(0, { duration: 600 })),
+      withDelay(4300, withTiming(0, { duration: 600 })),
     );
 
     setTimeout(() => {
