@@ -160,19 +160,19 @@ export const Story = () => {
       /* _width = (width - 43) / 2;
       _height = (width - 43) /1; */
     } else if(type == 'MEDIUM') {
-      _width = (width - 40) / 1.64;
+      _width = (width - 40) / 1.91;
       _height = width - 40;
     } else {
-      _width = (width - 40) / 2.27;
-      _height = (width - 40);
+      _width = (width - 40) / 1.91;
+      _height = (width - 45) / 2;
     }
 
     return (
       <>
-        <SpaceView mb={5} viewStyle={_styles.itemArea02(_width, _height)}>
+        <SpaceView mb={type == 'SMALL' ? 0 : 5} viewStyle={_styles.itemArea02(_width, _height)}>
           <TouchableOpacity activeOpacity={0.7} onPress={() => { goStoryDetail(storyBoardSeq); }}>
 
-          {(storyType == 'SECRECT' || (storyType == 'STORY' && !isEmptyData(imgPath))) ? (
+          {(storyType == 'SECRET' || (storyType == 'STORY' && !isEmptyData(imgPath))) ? (
             <>
               <SpaceView viewStyle={_styles.noImageArea(item?.gender)} >
                 <SpaceView>
@@ -252,25 +252,6 @@ export const Story = () => {
 
       <SpaceView>
 
-        {/* <MasonryList
-          data={storyList}
-          //keyExtractor={(item): string => item.id}
-          //numColumns={2}
-          //showsVerticalScrollIndicator={false}
-          //refreshing={isLoadingNext}
-          //onRefresh={() => refetch({first: ITEM_CNT})}
-          //onEndReachedThreshold={0.1}
-          //onEndReached={() => loadNext(ITEM_CNT)}
-
-          renderItem={({ item }) => (
-            <>
-              <View style={{width: item?.size_type == 'LARGE' ? '50%' : '50%'}}>
-                <ExampleRenderItem item={item} type={item?.size_type} />
-              </View>
-            </>
-          )}
-        /> */}
-
         <FlatList
           data={storyList}
           ref={flatListRef}
@@ -301,6 +282,7 @@ export const Story = () => {
             return (
               <>
                 <SpaceView key={innerIndex} viewStyle={_styles.itemWrap(innerItem.type)}>
+
                   {innerItem.type == 'ONLY_LARGE' ? (
                     <>
                       {innerItem.large_list.map((item, index) => {
@@ -309,19 +291,86 @@ export const Story = () => {
                         )
                       })}
                     </>
+                  ) : innerItem.type == 'ONLY_MEDIUM' ? (
+                    <>
+                      <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                        {innerItem.medium_list.map((item, index) => {
+                          return (
+                            <RenderListItem item={item} type={item?.size_type} />
+                          )
+                        })}
+
+                        {innerItem.medium_list.length < 2 && (
+                          <SpaceView viewStyle={_styles.dummyArea('M')}>
+                            <Text style={_styles.dummyText}>배너</Text>
+                          </SpaceView>
+                        )}
+                      </SpaceView>
+                    </>
+                  ) : innerItem.type == 'ONLY_SMALL' ? (
+                    <>
+                      <SpaceView mb={5} viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                        {innerItem.small_list.map((item, index) => {
+                          return (
+                            <RenderListItem item={item} type={item?.size_type} />
+                          )
+                        })}
+
+                        {innerItem.medium_list.length < 2 && (
+                          <SpaceView viewStyle={_styles.dummyArea('S')}>
+                            <Text style={_styles.dummyText}>배너</Text>
+                          </SpaceView>
+                        )}
+                      </SpaceView>
+                    </>
+                  ) : innerItem.type == 'COMPLEX_MEDIUM' ? (
+                    <>
+                      <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                        {innerItem.medium_list.map((item, index) => {
+                          return (
+                            <RenderListItem item={item} type={item?.size_type} />
+                          )
+                        })}
+                        <SpaceView viewStyle={{flexDirection: 'column'}}>
+                          {innerItem.small_list.map((item, index) => {
+                            return (
+                              <SpaceView mb={index == 0 ? 5 : 0}>
+                                <RenderListItem item={item} type={item?.size_type} />
+                              </SpaceView>
+                            )
+                          })}
+
+                          {innerItem.small_list.length < 2 && (
+                            <SpaceView viewStyle={_styles.dummyArea('S')}><Text style={_styles.dummyText}>배너</Text></SpaceView>
+                          )}
+                        </SpaceView>
+                      </SpaceView>
+                    </>
+                  ) : innerItem.type == 'COMPLEX_SMALL' ? (
+                    <>
+                      <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <SpaceView viewStyle={{flexDirection: 'column'}}>
+                          {innerItem.small_list.map((item, index) => {
+                            return (
+                              <SpaceView mb={index == 0 ? 5 : 0}>
+                                <RenderListItem item={item} type={item?.size_type} />
+                              </SpaceView>
+                            )
+                          })}
+                          {innerItem.small_list.length < 2 && (
+                              <SpaceView viewStyle={_styles.dummyArea('S')}><Text style={_styles.dummyText}>배너</Text></SpaceView>
+                          )}
+                        </SpaceView>
+                        {innerItem.medium_list.map((item, index) => {
+                          return (
+                            <RenderListItem item={item} type={item?.size_type} />
+                          )
+                        })}
+                      </SpaceView>
+                    </>
                   ) : (
                     <>
-                      {innerItem.complex_list.map((item, index) => {
-                        return (
-                          <RenderListItem item={item} type={item?.size_type} />
-                        )
-                      })}
-
-                      {/* {innerItem.complex_list.length == 1 && (
-                        <SpaceView viewStyle={_styles.dummyArea(innerItem?.first_type)}>
-                          <Text style={_styles.dummyText}>배너</Text>
-                        </SpaceView>
-                      )} */}
+                      
                     </>
                   )}
 
@@ -382,11 +431,11 @@ const _styles = StyleSheet.create({
   },
   itemWrap: (type:string) => {
     let loc = 'center';
-    if(type == 'COMPLEX_RIGHT') {
+    /* if(type == 'COMPLEX_RIGHT') {
       loc = 'flex-end';
     } else if(type == 'COMPLEX_LEFT') {
       loc = 'flex-start';
-    }
+    } */
 
     return {
       flexDirection: 'row',
@@ -413,11 +462,12 @@ const _styles = StyleSheet.create({
     };
   },
   dummyArea: (type:string) => {
-    let _w = (width - 40) / 2.27;
+    let _w = (width - 40) / 1.91;
     let _h = width - 40;
 
-    if(type == 'SMALL') {
-      _w = (width - 40) / 1.64;
+    if(type == 'S') {
+      _w = (width - 40) / 1.91;
+      _h = (width - 45) / 2;
     }
 
     return {
