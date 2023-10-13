@@ -104,7 +104,8 @@ function NaviButtons({ navName, theme }: { navName: string; theme?: string }) {
       </TouchableOpacity>
 
       <TouchableOpacity style={[_styles.tab]} onPress={onPressStory} disabled={navName == 'Story' ? true : false}>
-        <Text style={_styles.storyTxt}>STORY</Text>
+        <Text style={_styles.storyTxt(navName == 'Story', theme != undefined)}>STORY</Text>
+        <View style={{borderBottomWidth: navName == 'Story' ? 2 : 0, borderBottomColor: '#7986EE', position: 'absolute', bottom: 1, left: 0, right: 17}} />
       </TouchableOpacity>
     </View>
   );
@@ -116,10 +117,7 @@ export function Wallet({ theme }) {
   return (
     <>
       {typeof memberBase != 'undefined' && (
-        <View
-          style={{
-            flexDirection: 'row',
-          }} >
+        <View style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
 
           <View style={[_styles.itemContainer, { marginRight: 10 }]}>
             <Tooltip
@@ -183,7 +181,7 @@ const _styles = StyleSheet.create({
   logo1: { width: 105, height: 29 },
   tabContainer: {
     flexDirection: 'row',
-    paddingVertical: 16,
+    paddingVertical: 12,
     paddingLeft: 16,
     paddingRight: 16,
     // backgroundColor: 'white',
@@ -212,8 +210,8 @@ const _styles = StyleSheet.create({
     backgroundColor: Color.black2222,
   },
   itemStyle: {
-    width: 25,
-    height: 25,
+    width: 17,
+    height: 17,
     marginRight: 2,
   },
   itemStyle2: {
@@ -227,7 +225,7 @@ const _styles = StyleSheet.create({
     justifyContent: `center`,
   },
   statusText: {
-    fontSize: 12,
+    fontSize: 11,
     color: 'rgb(84, 84 , 86)',
     fontWeight: 'bold',
     fontFamily: 'AppleSDGothicNeoEB00',
@@ -261,11 +259,24 @@ const _styles = StyleSheet.create({
     paddingVertical: 5,
   },
   tooltipDescContainer: {
-    
+
   },
-  storyTxt: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 18,
+  storyTxt: (isOn:boolean, isTheme:boolean) => {
+    let _color = '#999999';
+
+    if(isOn) {
+      _color = '#7986EE';
+    } else if(isTheme) {
+      _color = '#fff';
+    }
+
+    return {
+      fontFamily: 'AppleSDGothicNeoEB00',
+      fontSize: 18,
+      color: _color,
+      //borderBottomWidth: isOn ? 2 : 0,
+      //borderBottomColor: '#7986EE',
+    };
   },
 
 });
