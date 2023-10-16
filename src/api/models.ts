@@ -885,6 +885,7 @@ export async function save_story_board(body: {
   story_type: string;
   contents: string;
   img_file_list: any;
+  img_del_seq_str: string;
   vote_list: any;
   vote_end_type: string;
 }) {

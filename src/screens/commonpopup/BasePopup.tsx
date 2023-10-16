@@ -1,13 +1,13 @@
 import { ColorType } from '@types';
 import { Color } from 'assets/styles/Color';
-import { layoutStyle, modalStyle } from 'assets/styles/Styles';
+import { layoutStyle, modalStyle, styles } from 'assets/styles/Styles';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
-import { Modal, TouchableOpacity, View } from 'react-native';
+import { Modal, TouchableOpacity, View, Image, Text, StyleSheet } from 'react-native';
 import { color } from 'react-native-reanimated';
 import { isEmptyData } from 'utils/functions';
-
+import { ICON, IMAGE } from 'utils/imageUtils';
 
 /* ################################################################################################################
 ###################################################################################################################
@@ -27,6 +27,7 @@ interface Props {
   confirmBtnText?: string;
   cancelBtnText?: string;
   btnExpYn?: string;
+  passAmt?: string;
 }
 
 export const BasePopup = (props: Props) => {
@@ -64,9 +65,16 @@ export const BasePopup = (props: Props) => {
                 <CommonText type={'h6'} textStyle={layoutStyle.textCenter} color={'#9c89e5'} fontWeight={'700'}>
                   {props.subText}
                 </CommonText>
-              }              
-              
-              {/* <CommonText type={'h5'} color={ColorType.red}>패스 x5</CommonText> */}
+              }
+
+              {isEmptyData(props.passAmt) && (
+                <SpaceView mt={5} viewStyle={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                  <Image style={styles.iconSquareSize(25)} source={ICON.passCircle} resizeMode={'contain'} />
+                  <Text style={_styles.openPopupDescIcon}>X 15</Text>
+                </SpaceView>
+              )}
+
+              {/* <CommonText type={'h5'} color={ColorType.red}>패스 x{props.passAmt}</CommonText> */}
             </SpaceView>
 
             {(!isEmptyData(props.btnExpYn) || props.btnExpYn == 'Y') &&
@@ -111,3 +119,22 @@ export const BasePopup = (props: Props) => {
     </>
   );
 };
+
+
+
+
+
+{/* #######################################################################################################
+###########################################################################################################
+##################### Style 영역
+###########################################################################################################
+####################################################################################################### */}
+
+const _styles = StyleSheet.create({
+  openPopupDescIcon: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 16,
+    color: '#697AE6',
+    marginLeft: 3,
+  },
+});

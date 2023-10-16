@@ -83,8 +83,28 @@ export const Story = () => {
 
   // ##################################################################################### 맨위 이동
   const scrollToTop = () => {
-    console.log('asdasadssd');
     flatListRef.current.scrollToIndex({ animated: true, index: 0 });
+  };
+
+  // ##################################################################################### 프로필 카드 열람
+  const profileCardOpenPopup = (member_seq:number) => {
+    show({
+      title: '프로필 카드 열람',
+      content: '(7일간)프로필을 열람하시겠습니까?',
+      passAmt: '15',
+      confirmCallback: function() {
+        if(memberBase?.pass_has_amt >= 15) {
+          profileCardOpen();
+        }
+      },
+      cancelCallback: function() {
+
+      },
+    });
+  };
+
+  const profileCardOpen = () => {
+
   };
 
   // ############################################################################# 스토리 목록 조회
@@ -212,15 +232,19 @@ export const Story = () => {
 
               <SpaceView viewStyle={_styles.profileArea}>
                 <SpaceView mr={5}>
-                  <Image source={storyType == 'SECRET' ? ICON.storyNoIcon : findSourcePath(item?.mst_img_path)} style={_styles.mstImgStyle(30, 20)} resizeMode={'cover'} />
+                  <TouchableOpacity onPress={() => { profileCardOpenPopup(item?.member_seq); }}>
+                    <Image source={storyType == 'SECRET' ? ICON.storyNoIcon : findSourcePath(item?.mst_img_path)} style={_styles.mstImgStyle(30, 20)} resizeMode={'cover'} />
+                  </TouchableOpacity>
                 </SpaceView>
 
                 <SpaceView>
-                  <Text style={_styles.activeText('#ffffff')}>
-                    {item?.profile_score >= 7.0 && item?.profile_score}
-                    {((isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && item?.profile_score >= 7.0) && ' | '}
-                    {(isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && 'Lv ' + item?.auth_acct_cnt}
-                  </Text>
+                  {(item?.profile_score >= 7.0 || (isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5)) && (
+                    <Text style={_styles.activeText('#ffffff')}>
+                      {item?.profile_score >= 7.0 && item?.profile_score}
+                      {((isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && item?.profile_score >= 7.0) && ' | '}
+                      {(isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && 'Lv ' + item?.auth_acct_cnt}
+                    </Text>
+                  )}
                   <Text style={_styles.nicknameText('#ffffff')}>{item?.nickname}</Text>
                 </SpaceView>
               </SpaceView>
@@ -406,10 +430,11 @@ export const Story = () => {
       {/* ###################################################################################################### 맨위 이동 버튼 */}
       <SpaceView viewStyle={_styles.topBtnArea}>
         <TouchableOpacity onPress={() => { scrollToTop(); }}>
-          <Text style={_styles.topBtnText}>맨 위로 가기</Text>
+          <Text style={_styles.topBtnText}>TOP</Text>
           {/* <Image source={ICON.boxTipsIcon} style={styles.iconSquareSize(50)} /> */}
         </TouchableOpacity>
       </SpaceView>
+      
     </>
   );
 };
@@ -522,7 +547,7 @@ const _styles = StyleSheet.create({
   },
   profileArea: {
     position: 'absolute',
-    bottom: 5,
+    bottom: 10,
     left: 0,
     right: 0,
     paddingHorizontal: 10,
@@ -611,12 +636,12 @@ const _styles = StyleSheet.create({
   topBtnText: {
     textAlign: 'center',
     backgroundColor: '#222222',
-    width: 160,
+    width: 100,
     paddingVertical: 2,
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 13,
     color: '#ACA6AB',
-    borderRadius: 24,
+    borderRadius: 10,
     overflow: 'hidden',
   },
 

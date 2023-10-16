@@ -53,6 +53,8 @@ export default function StoryEdit(props: Props) {
   const [storyBoardSeq, setStoryBoardSeq] = useState(props.route.params.storyBoardSeq);
   const [imageList, setImageList] = useState([]); // 이미지 목록
 
+  const [imgDelSeqStr, setImgDelSeqStr] = useState('');
+
   // 스토리 기본 데이터
   const [storyData, setStoryData] = useState({
     storyBoardSeq: props.route.params.storyBoardSeq,
@@ -68,6 +70,8 @@ export default function StoryEdit(props: Props) {
 
   // 투표 데이터
   const [voteData, setVoteData] = useState({
+    /* voteImgData01: { vote_seq: '', imgPath: '', delYn: '' },
+    voteImgData02: { vote_seq: '', imgPath: '', delYn: '' }, */
     voteSeq01: null,
     voteSeq02: null,
     voteName01: '',
@@ -97,36 +101,27 @@ export default function StoryEdit(props: Props) {
     setStoryData({...storyData, voteEndType: value});
   };
 
-  const [imgYn1, setImgYn1] = React.useState('N');
-  const [imgYn2, setImgYn2] = React.useState('N');
-  const [imgYn3, setImgYn3] = React.useState('N');
-
   // ################################################################ 프로필 이미지 파일 콜백 함수
   const fileCallBack1 = async (uri: any, base64: string) => {
     let data = { file_uri: uri, file_base64: base64, order_seq: 1 };
-    setImgYn1('Y');
     imageDataApply(data);
   };
 
   const fileCallBack2 = async (uri: any, base64: string) => {
     let data = { file_uri: uri, file_base64: base64, order_seq: 2 };
-    setImgYn2('Y');
     imageDataApply(data);
   };
 
   const fileCallBack3 = async (uri: any, base64: string) => {
     let data = { file_uri: uri, file_base64: base64, order_seq: 3 };
-    setImgYn3('Y');
     imageDataApply(data);
   };
 
   const voteFileCallBack01 = async (uri: any, base64: string, i: number) => {
-    setImgYn1('Y');
     setInputVoteFileData01(base64);
   };
 
   const voteFileCallBack02 = async (uri: any, base64: string, i: number) => {
-    setImgYn2('Y');
     setInputVoteFileData02(base64);
   };
 
@@ -148,11 +143,70 @@ export default function StoryEdit(props: Props) {
   // ############################################################################# 사진 변경/삭제 팝업
   const imgDel_modalizeRef = useRef<Modalize>(null);
 
-  const imgDel_onOpen = (imgData: any, order_seq: any) => {
+  const imgDel_onOpen = (imgSeq: any, orderSeq: any, type: string) => {
+    console.log('imgSeq ::::: ' , imgSeq);
+    setIsDelImgData({
+      img_seq: imgSeq,
+      order_seq: orderSeq,
+      type: type,
+    });
     imgDel_modalizeRef.current?.open();
   };
   const imgDel_onClose = () => {
     imgDel_modalizeRef.current?.close();
+  };
+
+  // ############################################################################# 사진삭제 컨트롤 변수
+  const [isDelImgData, setIsDelImgData] = React.useState<any>({
+    img_seq: '',
+    order_seq: '',
+    type: '',
+  });
+
+  // ############################################################################# 사진 삭제
+  const imgDelProc = () => {
+
+    if(isDelImgData.type == 'STORY') {
+      if(isDelImgData.order_seq == '1') {
+        setImgData({
+          ...imgData,
+          orgImgUrl01: { ...imgData.orgImgUrl01, delYn: 'Y' },
+        });
+      }
+      if(isDelImgData.order_seq == '2') {
+        setImgData({
+          ...imgData,
+          orgImgUrl02: { ...imgData.orgImgUrl02, delYn: 'Y' },
+        });
+      }
+      if(isDelImgData.order_seq == '3') {
+        setImgData({
+          ...imgData,
+          orgImgUrl03: { ...imgData.orgImgUrl03, delYn: 'Y' },
+        });
+      }
+    } else if(isDelImgData.type == 'VOTE') {
+      if(isDelImgData.order_seq == '1') {
+        setVoteData({...voteData, voteImgUrl01: ''});
+      } else if(isDelImgData.order_seq == '2') {
+        setVoteData({...voteData, voteImgUrl02: ''});
+      }
+    }    
+
+    let delArr = imgDelSeqStr;
+    if (!isEmptyData(delArr)) {
+      delArr = isDelImgData.img_seq;
+    } else {
+      delArr = delArr + ',' + isDelImgData.img_seq;
+    }
+
+    setImgDelSeqStr(delArr);
+    imgDel_onClose();
+  };
+
+  // ############################################################################# 사진 수정
+  const imgModProc = () => {
+
   };
 
   // ############################################################################# 스토리 등록
@@ -165,7 +219,6 @@ export default function StoryEdit(props: Props) {
 
       try {
         let voteList = [];
-console.log('inputVoteFileData01',inputVoteFileData01)
         if(!isEmptyData(storyData.contents)) {
           show({ content: '내용을 입력해 주세요.' });
           return false;
@@ -192,12 +245,15 @@ console.log('inputVoteFileData01',inputVoteFileData01)
             {story_vote_seq: voteData.voteSeq02, order_seq: 2, vote_name: voteData.voteName02, file_base64: inputVoteFileData02}
           ]
         };
+
+        //return;
     
         const body = {
           story_board_seq: storyBoardSeq,
           story_type: storyData.storyType,
           contents: storyData.contents,
           img_file_list: imageList,
+          img_del_seq_str: storyData.storyType == 'STORY' ? imgDelSeqStr : '',
           vote_list: voteList,
           vote_end_type: storyData.voteEndType,
         };
@@ -297,6 +353,8 @@ console.log('inputVoteFileData01',inputVoteFileData01)
               }
             });
 
+            console.log('voteImgUrl01 :::::: ' , voteImgUrl01);
+
             setVoteData({
               ...voteData,
               voteSeq01: voteSeq01,
@@ -363,9 +421,9 @@ console.log('inputVoteFileData01',inputVoteFileData01)
               {[0,1,2].map((i, index) => {
                 return (
                   <>
-                    {index == 0 && <ImageRenderItem index={index} _imgData={imgData.orgImgUrl01} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack1} imgYn={imgYn1} /> }
-                    {index == 1 && <ImageRenderItem index={index} _imgData={imgData.orgImgUrl02} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack2} imgYn={imgYn2} /> }
-                    {index == 2 && <ImageRenderItem index={index} _imgData={imgData.orgImgUrl03} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack3} imgYn={imgYn3} /> }
+                    {index == 0 && <ImageRenderItem index={index} _imgData={imgData.orgImgUrl01} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack1} storyType={storyData.storyType} /> }
+                    {index == 1 && <ImageRenderItem index={index} _imgData={imgData.orgImgUrl02} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack2} storyType={storyData.storyType} /> }
+                    {index == 2 && <ImageRenderItem index={index} _imgData={imgData.orgImgUrl03} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack3} storyType={storyData.storyType} /> }
                   </>
                 )
               })}
@@ -424,8 +482,8 @@ console.log('inputVoteFileData01',inputVoteFileData01)
                           />
 
                           <SpaceView viewStyle={_styles.voteImgArea}>
-                            {index == 0 && <VoteImageRenderItem index={index} _imgData={voteData.voteImgUrl01} delFn={imgDel_onOpen} fileCallBackFn={voteFileCallBack01} imgYn={imgYn1} />}
-                            {index == 1 && <VoteImageRenderItem index={index} _imgData={voteData.voteImgUrl02} delFn={imgDel_onOpen} fileCallBackFn={voteFileCallBack02} imgYn={imgYn2} />}
+                            {index == 0 && <VoteImageRenderItem index={index} _imgData={voteData.voteImgUrl01} delFn={imgDel_onOpen} fileCallBackFn={voteFileCallBack01} storyType={storyData.storyType} />}
+                            {index == 1 && <VoteImageRenderItem index={index} _imgData={voteData.voteImgUrl02} delFn={imgDel_onOpen} fileCallBackFn={voteFileCallBack02} storyType={storyData.storyType} />}
                           </SpaceView>
                         </SpaceView>
                       </>
@@ -549,7 +607,7 @@ console.log('inputVoteFileData01',inputVoteFileData01)
 
         <View style={modalStyle.modalHeaderContainer}>
           <CommonText fontWeight={'700'} type={'h3'}>
-            사진 변경/삭제
+            사진 삭제
           </CommonText>
           <TouchableOpacity onPress={imgDel_onClose} hitSlop={commonStyle.hipSlop20}>
             <Image source={ICON.xBtn2} style={styles.iconSize20} />
@@ -557,11 +615,11 @@ console.log('inputVoteFileData01',inputVoteFileData01)
         </View>
 
         <View style={[modalStyle.modalBody, layoutStyle.flex1]}>
-          <SpaceView>
-            <CommonBtn value={'사진 변경'} type={'primary2'} borderRadius={12} />
-          </SpaceView>
+          {/* <SpaceView>
+            <CommonBtn value={'사진 변경'} type={'primary2'} borderRadius={12} onPress={imgModProc} />
+          </SpaceView> */}
           <SpaceView mt={10}>
-            <CommonBtn value={'사진 삭제'} type={'primary2'} borderRadius={12} />
+            <CommonBtn value={'사진 삭제'} type={'primary2'} borderRadius={12} onPress={imgDelProc} />
           </SpaceView>
         </View>
 
@@ -575,61 +633,72 @@ console.log('inputVoteFileData01',inputVoteFileData01)
 };
 
 // ############################################################################# 이미지 렌더링 아이템
-function ImageRenderItem ({ index, _imgData, delFn, fileCallBackFn, imgYn }) {
+function ImageRenderItem ({ index, _imgData, delFn, fileCallBackFn, storyType }) {
 
   const imgUrl = findSourcePathLocal(_imgData?.imgPath);
   const imgDelYn = _imgData?.delYn;
 
   return (
     <View style={_styles.imgItem}>
-      {isEmptyData(imgUrl) || imgYn == 'Y' ? (
-        <TouchableOpacity onPress={() => { delFn(_imgData, index+1); }}>
-          <Image
-            resizeMode="cover"
-            resizeMethod="scale"
-            style={_styles.imageStyle}
-            key={imgUrl}
-            source={imgUrl}
+      {((isEmptyData(imgUrl) && imgDelYn == 'Y') || !isEmptyData(imgUrl)) ? (
+        <>
+          <CommonImagePicker 
+            type={'STORY'} 
+            callbackFn={fileCallBackFn} 
+            uriParam={''}
+            imgWidth={(width - 70) / 3} 
+            imgHeight={(width - 70) / 3}
           />
-        </TouchableOpacity>
+        </>
       ) : (
-        <CommonImagePicker 
-          type={'STORY'} 
-          callbackFn={fileCallBackFn} 
-          uriParam={''}
-          imgWidth={(width - 70) / 3} 
-          imgHeight={(width - 70) / 3}
-        />
+        <>
+          <TouchableOpacity onPress={() => { delFn(_imgData?.story_board_img_seq, index+1, storyType); }}>
+            <Image
+              resizeMode="cover"
+              resizeMethod="scale"
+              style={_styles.imageStyle}
+              key={imgUrl}
+              source={imgUrl}
+            />
+          </TouchableOpacity>
+        </>
       )}
     </View>
   );
 };
 
-function VoteImageRenderItem ({ index, _imgData, delFn, fileCallBackFn, imgYn }) {
+function VoteImageRenderItem ({ index, _imgData, delFn, fileCallBackFn, storyType }) {
 
-  const imgUrl = findSourcePathLocal(_imgData?.imgPath);
+  const imgUrl = findSourcePathLocal(_imgData);
   const imgDelYn = _imgData?.delYn;
+
+console.log('_imgData :::::: ' , _imgData);
 
   return (
     <View style={[_styles.imgItem, {borderRadius: 10,}]}>
-      {isEmptyData(imgUrl) || imgYn == 'Y' ? (
-        <TouchableOpacity onPress={() => { delFn(_imgData, index+1); }}>
-          <Image
-            resizeMode="cover"
-            resizeMethod="scale"
-            style={{width: 48, height: 48,}}
-            key={imgUrl}
-            source={imgUrl}
+      {((isEmptyData(imgUrl) && imgDelYn == 'Y') || !isEmptyData(imgUrl)) ? (
+      //{isEmptyData(imgUrl) || imgYn == 'Y' ? (
+        <>
+          <CommonImagePicker 
+            type={'STORY'} 
+            callbackFn={fileCallBackFn} 
+            uriParam={''}
+            imgWidth={48}
+            imgHeight={48}
           />
-        </TouchableOpacity>
+        </>
       ) : (
-        <CommonImagePicker 
-          type={'STORY'} 
-          callbackFn={fileCallBackFn} 
-          uriParam={''}
-          imgWidth={48}
-          imgHeight={48}
-        />
+        <>
+          <TouchableOpacity onPress={() => { delFn(_imgData, index+1, storyType); }}>
+            <Image
+              resizeMode="cover"
+              resizeMethod="scale"
+              style={{width: 48, height: 48,}}
+              key={imgUrl}
+              source={imgUrl}
+            />
+          </TouchableOpacity>
+        </>
       )}
     </View>
   );
@@ -711,7 +780,7 @@ const _styles = StyleSheet.create({
     borderRadius: 4,
     width: '84%',
     marginTop: 5,
-    height: height-798,
+    height: 43,
   },
   voteImgArea: {
     position: 'absolute',
@@ -721,7 +790,7 @@ const _styles = StyleSheet.create({
   modalCloseText: {
     width: '100%',
     backgroundColor: '#7984ED',
-    height: height-790,
+    paddingVertical: 15,
     justifyContent: 'center',
     alignItems: 'center',
   }
