@@ -193,6 +193,7 @@ const _styles = StyleSheet.create({
     marginRight: 7,
   },
   nicknameText: (storyType:string, gender:string) => {
+    
     let clr = '#333333';
 
     if(storyType == 'SECRET') {

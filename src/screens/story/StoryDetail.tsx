@@ -267,7 +267,7 @@ export default function StoryDetail(props: Props) {
     if(storyData.board?.story_type == 'SECRET') {
       _w = _w + 25;
     }
-
+    
     return (
       <>
         <SpaceView viewStyle={_styles.replyItemWarp}>
@@ -300,7 +300,7 @@ export default function StoryDetail(props: Props) {
                         onPress={() => { likeFunc('REPLY', storyReplySeq); }}
                         style={{marginRight: 3}}>
 
-                        {(memberBase.member_seq == item?.member_seq || item?.member_like_yn == 'N') ? (
+                        {(item?.member_like_yn == 'N') ? (
                           <Image source={ICON.heartOffIcon} style={styles.iconSquareSize(15)} />
                         ) : (
                           <Image source={ICON.heartOnIcon} style={styles.iconSquareSize(15)} />
