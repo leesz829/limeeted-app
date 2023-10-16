@@ -223,6 +223,11 @@ export default function StoryEdit(props: Props) {
           show({ content: '내용을 입력해 주세요.' });
           return false;
         };
+
+        if(storyData.contents.length < 20) {
+          show({ content: '최소 20글자 이상 입력해 주세요.' });
+          return false;
+        }
         
         if(storyData.storyType == 'VOTE') {
           if(!isEmptyData(voteData.voteName01) || !isEmptyData(voteData.voteName02)) {

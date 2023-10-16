@@ -296,7 +296,9 @@ export default function StoryActive(props: Props) {
                         </SpaceView>
 
                         {/* 게시글 썸네일 */}
-                        <TouchableOpacity onPress={() => { goStoryDetail(storyBoardSeq) }} style={_styles.alarmItemBoard}>
+                        <TouchableOpacity
+                          disabled={!isEmptyData(boardImgPath)} 
+                          onPress={() => { goStoryDetail(storyBoardSeq) }} style={_styles.alarmItemBoard}>
                           <Image source={boardImgPath} style={_styles.alarmItemStoryThum} resizeMode={'cover'} />
                         </TouchableOpacity>
 
@@ -308,14 +310,14 @@ export default function StoryActive(props: Props) {
                           <SpaceView mt={7} mb={5} viewStyle={{flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between'}}>
                             <SpaceView>
                               {depth == 1 && (
-                                <TouchableOpacity onPress={() => { replyModalOpenFunc(storyBoardSeq, storyReplySeq, depth); }}>
+                                <TouchableOpacity onPress={() => { replyModalOpenFunc(storyBoardSeq, storyReplySeq, depth); }} hitSlop={commonStyle.hipSlop25}>
                                   <Text style={_styles.replyTextStyle}>답글달기</Text>
                                 </TouchableOpacity>
                               )}
                             </SpaceView>
 
                             <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-                              <TouchableOpacity onPress={() => { likeFunc('REPLY', storyBoardSeq, storyReplySeq); }} style={{marginRight: 3}}>
+                              <TouchableOpacity onPress={() => { likeFunc('REPLY', storyBoardSeq, storyReplySeq); }} style={{marginRight: 3}} hitSlop={commonStyle.hipSlop30}>
                                 {(memberLikeYn == 'N') ? (
                                   <Image source={ICON.heartOffIcon} style={styles.iconSquareSize(14)} />
                                 ) : (

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { RouteProp, useIsFocused, useNavigation, useFocusEffect } from '@react-navigation/native';
 import { StackParamList, ScreenNavigationProp } from '@types';
-import { Dimensions, Image, StyleSheet, Text, View, TouchableOpacity, FlatList, Platform, KeyboardAvoidingView, InputAccessoryView } from 'react-native';
+import { Dimensions, Image, StyleSheet, Text, View, TouchableOpacity, FlatList, Platform, KeyboardAvoidingView, InputAccessoryView, TextInput, Keyboard  } from 'react-native';
 import { findSourcePath, ICON, IMAGE, GUIDE_IMAGE } from 'utils/imageUtils';
 import { Watermark } from 'component/Watermark';
 import LinearGradient from 'react-native-linear-gradient';
@@ -38,6 +38,8 @@ export default function ReplyRegiPopup({ isVisible, storyBoardSeq, storyReplySeq
   const [isClickable, setIsClickable] = React.useState(true); // 클릭 여부
 
   const [inputReplyText, setInputReplyText] = React.useState(''); // 댓글 입력 텍스트
+
+  const inputRef = React.useRef();
 
   const closeMoadal = async () => {
     setInputReplyText('');
@@ -133,6 +135,16 @@ export default function ReplyRegiPopup({ isVisible, storyBoardSeq, storyReplySeq
   useFocusEffect(
     React.useCallback(() => {
       setInputReplyText('');
+      //this.textInputRef.current.focus();
+
+      //inputRef.current?.focus();
+
+      //Keyboard.show();    // 키보드를 다시 활성화합니다.
+
+      //inputRef.current.focus();
+
+
+
 
       return () => {
 
@@ -178,7 +190,8 @@ export default function ReplyRegiPopup({ isVisible, storyBoardSeq, storyReplySeq
 
                       <TouchableOpacity
                         onPress={() => { replyRegister(); }}
-                        style={_styles.btnArea}>
+                        style={_styles.btnArea}
+                        hitSlop={commonStyle.hipSlop30}>
                         <Text style={_styles.regiText}>등록</Text>
                       </TouchableOpacity>
                     </SpaceView>
@@ -191,7 +204,7 @@ export default function ReplyRegiPopup({ isVisible, storyBoardSeq, storyReplySeq
                   <SpaceView viewStyle={_styles.inputArea}>
                     <Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={_styles.memberImageStyle} resizeMode={'cover'} />
 
-                    <CommonTextarea
+                    {/* <CommonTextarea
                       value={inputReplyText}
                       onChangeText={(inputReplyText) => setInputReplyText(inputReplyText)}
                       placeholder={'댓글을 입력해 주세요.'}
@@ -203,6 +216,24 @@ export default function ReplyRegiPopup({ isVisible, storyBoardSeq, storyReplySeq
                       backgroundColor={'#F6F7FE'}
                       fontColor={'#000'}
                       style={_styles.replyTextStyle}
+                    /> */}
+
+                    <TextInput
+                      ref={inputRef}
+                      value={inputReplyText}
+                      onChangeText={(text) => setInputReplyText(text)}
+                      multiline={true}
+                      textAlignVertical="top"
+                      autoCapitalize="none"
+                      style={_styles.replyTextStyle}
+                      placeholder={'댓글을 입력해 주세요.'}
+                      placeholderTextColor={'#c7c7c7'}
+                      editable={true}
+                      secureTextEntry={false}
+                      maxLength={150}
+                      numberOfLines={4}
+                      autoFocus={true}
+                      //onSubmitEditing={() => { this.inputRef.focus(); }}
                     />
 
                     <TouchableOpacity
@@ -258,10 +289,11 @@ const _styles = StyleSheet.create({
   },
   replyTextStyle: {
     width: width - 100,
-    height: 50,
+    height: 60,
     borderWidth: 1,
     borderColor: '#EBE9EF',
     paddingRight: 30,
+    backgroundColor: '#F6F7FE',
   },
   btnArea: {
     position: 'absolute',

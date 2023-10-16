@@ -22,6 +22,7 @@ import AuthLevel from 'component/common/AuthLevel';
 import ProfileGrade from 'component/common/ProfileGrade';
 import MasonryList from '@react-native-seoul/masonry-list';
 import { CommonLoading } from 'component/CommonLoading';
+import LinearGradient from 'react-native-linear-gradient';
 
 
 
@@ -335,9 +336,9 @@ export const Story = () => {
                         })}
 
                         {innerItem.medium_list.length < 2 && (
-                          <SpaceView viewStyle={_styles.dummyArea('M')}>
-                            <Text style={_styles.dummyText}>배너</Text>
-                          </SpaceView>
+                          <LinearGradient colors={['#7984ED', '#8759D5']} style={_styles.dummyArea('M')} start={{ x: 1, y: 0 }} end={{ x: 1, y: 1 }} >
+                            <Image source={IMAGE.logoStoryTmp} style={{width: 150, height: 45}} resizeMode={'cover'} />
+                          </LinearGradient>
                         )}
                       </SpaceView>
                     </>
@@ -351,9 +352,9 @@ export const Story = () => {
                         })}
 
                         {innerItem.medium_list.length < 2 && (
-                          <SpaceView viewStyle={_styles.dummyArea('S')}>
-                            <Text style={_styles.dummyText}>배너</Text>
-                          </SpaceView>
+                          <LinearGradient colors={['#7984ED', '#8759D5']} style={_styles.dummyArea('S')} start={{ x: 1, y: 0 }} end={{ x: 1, y: 1 }} >
+                            <Image source={IMAGE.logoStoryTmp} style={{width: 150, height: 45}} resizeMode={'cover'} />
+                          </LinearGradient>
                         )}
                       </SpaceView>
                     </>
@@ -375,7 +376,9 @@ export const Story = () => {
                           })}
 
                           {innerItem.small_list.length < 2 && (
-                            <SpaceView viewStyle={_styles.dummyArea('S')}><Text style={_styles.dummyText}>배너</Text></SpaceView>
+                            <LinearGradient colors={['#7984ED', '#8759D5']} style={_styles.dummyArea('S')} start={{ x: 1, y: 0 }} end={{ x: 1, y: 1 }} >
+                              <Image source={IMAGE.logoStoryTmp} style={{width: 150, height: 45}} resizeMode={'cover'} />
+                            </LinearGradient>
                           )}
                         </SpaceView>
                       </SpaceView>
@@ -392,7 +395,9 @@ export const Story = () => {
                             )
                           })}
                           {innerItem.small_list.length < 2 && (
-                              <SpaceView viewStyle={_styles.dummyArea('S')}><Text style={_styles.dummyText}>배너</Text></SpaceView>
+                              <LinearGradient colors={['#7984ED', '#8759D5']} style={_styles.dummyArea('S')} start={{ x: 1, y: 0 }} end={{ x: 1, y: 1 }} >
+                                <Image source={IMAGE.logoStoryTmp} style={{width: 150, height: 45}} resizeMode={'cover'} />
+                              </LinearGradient>
                           )}
                         </SpaceView>
                         {innerItem.medium_list.map((item, index) => {

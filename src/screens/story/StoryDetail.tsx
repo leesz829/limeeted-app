@@ -291,7 +291,7 @@ export default function StoryDetail(props: Props) {
                   <SpaceView viewStyle={_styles.replyItemEtcWrap}>
                     {depth == 1 && (
                       <TouchableOpacity onPress={() => { replyModalOpenFunc(storyReplySeq, depth); }}>
-                        <Text style={_styles.replyTextStyle}>답글달기</Text>
+                        <Text style={_styles.replyTextStyle}>댓글달기</Text>
                       </TouchableOpacity>
                     )}
 
@@ -614,7 +614,7 @@ const _styles = StyleSheet.create({
   imageStyle: {
     flex: 1,
     width: width,
-    height: width,
+    height: width * 1.3,
   },
   btnArea: {
     flexDirection: 'row',
