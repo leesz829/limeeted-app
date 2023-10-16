@@ -149,15 +149,72 @@ export default function ReplyRegiPopup({ isVisible, storyBoardSeq, storyReplySeq
           onBackdropPress={() => { closeMoadal(); }}
           //swipeDirection="down" // 아래 방향으로 스와이프
           //propagateSwipe={true}
-          onRequestClose={() => { closeMoadal(); }}>
+          onRequestClose={() => { closeMoadal(); }}
+        >
 
           <ScrollView style={{position: 'absolute', bottom: 0, left: 0, right: 0}}>
             {Platform.OS == 'ios' ? (
-              <InputAccessoryView>
-                <InputRender />
-              </InputAccessoryView>
+              <>
+                <InputAccessoryView>
+                  {/* <InputRender /> */}
+
+                  <SpaceView viewStyle={_styles.modalWrap}>
+                    <SpaceView viewStyle={_styles.inputArea}>
+                      <Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={_styles.memberImageStyle} resizeMode={'cover'} />
+
+                      <CommonTextarea
+                        value={inputReplyText}
+                        onChangeText={(inputReplyText) => setInputReplyText(inputReplyText)}
+                        placeholder={'댓글을 입력해 주세요.'}
+                        placeholderTextColor={'#C7C7C7'}
+                        maxLength={200}
+                        exceedCharCountColor={'#990606'}
+                        fontSize={12}
+                        height={60}
+                        backgroundColor={'#F6F7FE'}
+                        fontColor={'#000'}
+                        style={_styles.replyTextStyle}
+                      />
+
+                      <TouchableOpacity
+                        onPress={() => { replyRegister(); }}
+                        style={_styles.btnArea}>
+                        <Text style={_styles.regiText}>등록</Text>
+                      </TouchableOpacity>
+                    </SpaceView>
+                  </SpaceView>
+                </InputAccessoryView>
+              </>
             ) : (
-              <InputRender />
+              <>
+                <SpaceView viewStyle={_styles.modalWrap}>
+                  <SpaceView viewStyle={_styles.inputArea}>
+                    <Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={_styles.memberImageStyle} resizeMode={'cover'} />
+
+                    <CommonTextarea
+                      value={inputReplyText}
+                      onChangeText={(inputReplyText) => setInputReplyText(inputReplyText)}
+                      placeholder={'댓글을 입력해 주세요.'}
+                      placeholderTextColor={'#C7C7C7'}
+                      maxLength={200}
+                      exceedCharCountColor={'#990606'}
+                      fontSize={12}
+                      height={60}
+                      backgroundColor={'#F6F7FE'}
+                      fontColor={'#000'}
+                      style={_styles.replyTextStyle}
+                    />
+
+                    <TouchableOpacity
+                      onPress={() => { replyRegister(); }}
+                      style={_styles.btnArea}>
+                      <Text style={_styles.regiText}>등록</Text>
+                    </TouchableOpacity>
+                  </SpaceView>
+                </SpaceView>
+
+                {/* <InputRender /> */}
+              </>
             )}            
           </ScrollView>
         </Modal>

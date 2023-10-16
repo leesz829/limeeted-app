@@ -6,9 +6,10 @@ import { StackScreenProp } from '@types';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import { Color } from 'assets/styles/Color';
 import { Wallet } from './TopNavigation';
-import { commonStyle } from 'assets/styles/Styles';
+import { commonStyle, styles } from 'assets/styles/Styles';
 import { usePopup } from 'Context';
 import { isEmptyData } from 'utils/functions';
+import SpaceView from './SpaceView';
 
 
 export type NavigationHeaderProps = {
@@ -18,6 +19,13 @@ export type NavigationHeaderProps = {
   backIcon?: any;
   walletTextStyle?: any;
   isLogoType?: any;
+  type?: string;
+  mstImgPath?: any;
+  nickname?: string;
+  gender?: string;
+  profileScore?: any;
+  authLevel?: any;
+  storyType?: string;
 };
 
 /**
@@ -31,6 +39,13 @@ function CommonHeader({
   backIcon,
   walletTextStyle,
   isLogoType,
+  type,
+  mstImgPath,
+  nickname,
+  gender,
+  profileScore,
+  authLevel,
+  storyType,
 }: NavigationHeaderProps) {
 
   const navigation = useNavigation<StackScreenProp>();
@@ -76,31 +91,58 @@ function CommonHeader({
     <>
       {isLogoType ? (
         <>
-          <View style={{ ...styles.headerLogoContainer}}>
+          <View style={{ ..._styles.headerLogoContainer}}>
             <Image source={IMAGE.logoBanner} resizeMode={'cover'} style={{width: '100%', height: 43}} />
           </View>
         </>
       ) : (
         <>
-          <View style={{ ...styles.headerContainer, ...containerStyle, zIndex: 1 }}>
-            <TouchableOpacity
-              onPress={goHome}
-              style={styles.backContainer}
-              hitSlop={commonStyle.hipSlop10}
-            >
-              <Image source={backIcon || ICON.back} style={styles.backImg} />
-            </TouchableOpacity>
+          <View style={{ ..._styles.headerContainer, ...containerStyle, zIndex: 1 }}>
 
-            {title && (
+            <SpaceView viewStyle={{flexDirection: 'row'}}>
+              {/* 뒤로가기 버튼 */}
               <TouchableOpacity
-                style={{ flex: 1 }}
                 onPress={goHome}
+                style={_styles.backContainer}
                 hitSlop={commonStyle.hipSlop10}
               >
-                <Text style={styles.titleStyle}>{title}</Text>
+                <Image source={backIcon || ICON.back} style={_styles.backImg} />
+
+                {type == 'STORY_DETAIL' ? (
+                  <>
+                    <SpaceView ml={13} viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start'}}>
+
+                      {storyType == 'SECRET' ? (
+                        <Text style={_styles.nicknameText(storyType, gender)}>{nickname}</Text>
+                      ) : (
+                        <>
+                          <Image source={mstImgPath} style={_styles.mstImgStyle} />
+                          <Text style={_styles.nicknameText(storyType, gender)}>{nickname}</Text>
+
+                          <Text style={_styles.scoreText}>
+                            {profileScore}
+                            {(isEmptyData(authLevel) && authLevel >= 1) && ' | '}
+                            {(isEmptyData(authLevel) && authLevel >= 1) && 'Lv ' + authLevel}
+                          </Text>
+                        </>
+                      )}
+                    </SpaceView>
+                  </>
+                ) : (
+                  <>
+                    <SpaceView ml={13}>
+                      <Text style={_styles.titleStyle}>{title}</Text>
+                    </SpaceView>
+                  </>
+                )}
               </TouchableOpacity>
-            )}
-            <View>{right || <Wallet textStyle={walletTextStyle} />}</View>
+
+            </SpaceView>
+
+            <SpaceView>
+              {/* 재화 표시 */}
+              <View>{right || <Wallet textStyle={walletTextStyle} />}</View>
+            </SpaceView>
           </View>
         </>
       )}
@@ -110,9 +152,10 @@ function CommonHeader({
 
 export default CommonHeader;
 
-const styles = StyleSheet.create({
+const _styles = StyleSheet.create({
   backContainer: {
     height: 56,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     paddingLeft: 16,
@@ -142,4 +185,35 @@ const styles = StyleSheet.create({
     lineHeight: 32,
     color: Color.black2222,
   },
+  mstImgStyle: {
+    width: 28,
+    height: 28,
+    borderRadius: 50,
+    overflow: 'hidden',
+    marginRight: 7,
+  },
+  nicknameText: (storyType:string, gender:string) => {
+    let clr = '#333333';
+
+    if(storyType == 'SECRET') {
+      if(gender == 'M') {
+        clr = '#7986EE';
+      } else {
+        clr = '#FE0456';
+      }
+    }
+
+    return {
+      fontFamily: 'AppleSDGothicNeoEB00',
+      fontSize: 14,
+      color: clr,
+      marginRight: 9,
+    };
+  },
+  scoreText: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 14,
+    color: '#333333',
+  },
+
 });

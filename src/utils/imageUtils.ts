@@ -181,6 +181,8 @@ export const ICON = {
   storyPlusIcon: require('assets/icon/icon-story-plus.png'),
   heartOffIcon: require('assets/icon/icon-heart-off.png'),
   heartOnIcon: require('assets/icon/icon-heart-on.png'),
+  modfyIcon: require('assets/icon/icon-modfy.png'),
+  storyNoIcon: require('assets/icon/icon-story-no.png'),
 };
 
 export const GIF_IMG = {

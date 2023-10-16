@@ -176,17 +176,27 @@ export const Story = () => {
             <>
               <SpaceView viewStyle={_styles.noImageArea(item?.gender)} >
                 <SpaceView>
-                  <Image source={findSourcePath(item?.mst_img_path)} style={_styles.mstImgStyle(50, 40)} resizeMode={'cover'} />
+                  <Image source={storyType == 'SECRET' ? ICON.storyNoIcon : findSourcePath(item?.mst_img_path)} style={_styles.mstImgStyle(type == 'SMALL' ? 50 : 80, 40)} resizeMode={'cover'} />
                 </SpaceView>
-                <SpaceView mt={10} viewStyle={{flexDirection: 'row'}}>
-                  <AuthLevel authAcctCnt={item?.auth_acct_cnt} type={'BASE'} />
-                  <ProfileGrade profileScore={item?.profile_score} type={'BASE'} />
+                <SpaceView mt={10} viewStyle={{flexDirection: 'column', alignItems: 'center'}}>
+                  {/* <AuthLevel authAcctCnt={item?.auth_acct_cnt} type={'BASE'} />
+                  <ProfileGrade profileScore={item?.profile_score} type={'BASE'} /> */}
+
+                  {/* 프로필 평점, 인증 레벨 */}
+                  {((isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) || item?.profile_score >= 7.0) && (
+                    <Text style={_styles.activeText('#333333')}>
+                      {item?.profile_score >= 7.0 && item?.profile_score}
+                      {((isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && item?.profile_score >= 7.0) && ' | '}
+                      {(isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && 'Lv ' + item?.auth_acct_cnt}
+                    </Text>
+                  )}
+                  <Text style={_styles.nicknameText('#333333')}>{item?.nickname}</Text>
                 </SpaceView>
                 <SpaceView mt={25} pl={10} pr={10}>
                   <Text style={_styles.contentsText('#333333')}>{item?.contents}</Text>
                 </SpaceView>
                 <SpaceView viewStyle={_styles.typeArea(storyType)}>
-                  <Text style={_styles.typeText}>{item?.story_type_name}</Text>
+                  <Text style={_styles.typeText} numberOfLines={type == 'SMALL' ? 2 : 6}>{item?.story_type_name}</Text>
                 </SpaceView>
               </SpaceView>
             </>
@@ -200,23 +210,23 @@ export const Story = () => {
                 )}
               </SpaceView>
 
-              <SpaceView viewStyle={_styles.topArea}>
-                <Image source={findSourcePath(item?.mst_img_path)} style={_styles.mstImgStyle(30, 20)} resizeMode={'cover'} />
-                {/* <AuthLevel authAcctCnt={item?.auth_acct_cnt} type={'BASE'} />
-                <ProfileGrade profileScore={item?.profile_score} type={'BASE'} /> */}
+              <SpaceView viewStyle={_styles.profileArea}>
+                <SpaceView mr={5}>
+                  <Image source={storyType == 'SECRET' ? ICON.storyNoIcon : findSourcePath(item?.mst_img_path)} style={_styles.mstImgStyle(30, 20)} resizeMode={'cover'} />
+                </SpaceView>
 
                 <SpaceView>
-                  <Text style={_styles.activeText}>
-                    {item?.profile_score > 0 && item?.profile_score}
-                    {(isEmptyData(item?.auth_acct_cnt) && item?.profile_score > 0) && ' | '}
-                    {isEmptyData(item?.auth_acct_cnt) && 'LV.' + item?.auth_acct_cnt}
+                  <Text style={_styles.activeText('#ffffff')}>
+                    {item?.profile_score >= 7.0 && item?.profile_score}
+                    {((isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && item?.profile_score >= 7.0) && ' | '}
+                    {(isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && 'Lv ' + item?.auth_acct_cnt}
                   </Text>
-                  <Text style={_styles.nicknameText}>{item?.nickname}</Text>
+                  <Text style={_styles.nicknameText('#ffffff')}>{item?.nickname}</Text>
                 </SpaceView>
               </SpaceView>
 
               <SpaceView viewStyle={_styles.bottomArea}>
-                <SpaceView><Text style={_styles.contentsText('#fff')}>{item?.contents}</Text></SpaceView>
+                {/* <SpaceView><Text style={_styles.contentsText('#fff')}>{item?.contents}</Text></SpaceView> */}
                 {/* <SpaceView mt={8}><Text style={_styles.contentsText}>{item?.time_text}</Text></SpaceView> */}
               </SpaceView>
 
@@ -396,8 +406,8 @@ export const Story = () => {
       {/* ###################################################################################################### 맨위 이동 버튼 */}
       <SpaceView viewStyle={_styles.topBtnArea}>
         <TouchableOpacity onPress={() => { scrollToTop(); }}>
-          {/* <Text>맨위</Text> */}
-          <Image source={ICON.boxTipsIcon} style={styles.iconSquareSize(50)} />
+          <Text style={_styles.topBtnText}>맨 위로 가기</Text>
+          {/* <Image source={ICON.boxTipsIcon} style={styles.iconSquareSize(50)} /> */}
         </TouchableOpacity>
       </SpaceView>
     </>
@@ -510,9 +520,9 @@ const _styles = StyleSheet.create({
     fontFamily: 'AppleSDGothicNeoEB00',
     color: '#fff',
   },
-  topArea: {
+  profileArea: {
     position: 'absolute',
-    top: 10,
+    bottom: 5,
     left: 0,
     right: 0,
     paddingHorizontal: 10,
@@ -527,11 +537,19 @@ const _styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   typeArea: (type:string) => {
+    let bgColor = '#7986EE';
+
+    if(type == 'VOTE') {
+      bgColor = '#19DBE0';
+    } else if(type == 'SECRET') {
+      bgColor = '#FE0456';
+    }
+
     return {
       position: 'absolute',
       top: 5,
       right: 5,
-      backgroundColor: '#7986EE',
+      backgroundColor: bgColor,
       borderRadius: 13,
       paddingVertical: 3,
       paddingHorizontal: 5,
@@ -548,7 +566,6 @@ const _styles = StyleSheet.create({
       height: size,
       borderRadius: bdRadius,
       overflow: 'hidden',
-      marginRight: 5,
       borderWidth: 1,
       borderColor: '#fff',
     };
@@ -560,15 +577,20 @@ const _styles = StyleSheet.create({
       color: _color,
     };
   },
-  activeText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 13,
-    color: '#fff',
+  activeText: (_color:string) => {
+    return {
+      fontFamily: 'AppleSDGothicNeoH00',
+      fontSize: 13,
+      color: _color,
+    };
   },
-  nicknameText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 13,
-    color: '#fff',
+  nicknameText: (_color:string) => {
+    return {
+      fontFamily: 'AppleSDGothicNeoEB00',
+      fontSize: 13,
+      color: _color,
+      marginTop: -3,
+    };
   },
   noImageArea: (gender:string) => {
     return {
@@ -581,8 +603,21 @@ const _styles = StyleSheet.create({
   },
   topBtnArea: {
     position: 'absolute',
-    bottom: 50,
-    right: 10,
+    top: 70,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+  },
+  topBtnText: {
+    textAlign: 'center',
+    backgroundColor: '#222222',
+    width: 160,
+    paddingVertical: 2,
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 13,
+    color: '#ACA6AB',
+    borderRadius: 24,
+    overflow: 'hidden',
   },
 
 });

@@ -24,6 +24,7 @@ import { CommonTextarea } from 'component/CommonTextarea';
 import { CommonLoading } from 'component/CommonLoading';
 import Modal from 'react-native-modal';
 import ReplyRegiPopup from 'component/story/ReplyRegiPopup';
+import LikeListPopup from 'component/story/LikeListPopup';
 
 
 
@@ -203,6 +204,34 @@ export default function StoryActive(props: Props) {
   };
 
   /* ##################################################################################################################################
+  ################## 좋아요 목록 팝업 관련 함수
+  ################################################################################################################################## */
+
+  const [likeListPopup, setLikeListPopup] = React.useState(false);
+  const [likeListTypePopup, setLikeListTypePopup] = React.useState('');
+  const [replyInfo, setReplyInfo] = React.useState({});
+
+  const popupStoryBoardActive = () => {
+    setLikeListPopup(true);
+    setLikeListTypePopup('BOARD');
+  };
+
+  const popupStoryReplyActive = (_storyBoardSeq:number, _storyReplySeq:number, _depth:number, replyInfo:{}) => {
+    setLikeListPopup(true);
+    setLikeListTypePopup('REPLY');
+    setSelectedReplyData({
+      storyBoardSeq: _storyBoardSeq,
+      storyReplySeq: _storyReplySeq,
+      depth: _depth,
+    });
+    setReplyInfo(replyInfo);
+  };
+
+  const likeListCloseModal = () => {
+    setLikeListPopup(false);
+  };
+
+  /* ##################################################################################################################################
   ################## 렌더링 함수
   ################################################################################################################################## */
 
@@ -234,61 +263,77 @@ export default function StoryActive(props: Props) {
                 const boardImgPath = findSourcePathLocal(_item?.story_img_path);
 
                 return (
-                  <SpaceView viewStyle={_styles.alarmItemWrap} key={'item' + _index}>
+                  <SpaceView mb={18} viewStyle={_styles.alarmItemWrap} key={'item' + _index}>
 
                     {/* 회원 대표사진 */}
-                    <SpaceView mb={20} viewStyle={_styles.alarmItemMember}>
+                    <SpaceView viewStyle={_styles.alarmItemMember}>
                       <Image source={findSourcePath(_item?.mst_img_path)} style={_styles.alarmItemMemberThum} resizeMode={'cover'} />
                     </SpaceView>
 
-                    {/* 내용 */}
-                    <SpaceView viewStyle={_styles.alarmItemContent}>
-                      <Text style={_styles.alarmContentText} numberOfLines={2}>
-                        <Text style={_styles.alarmNickname}>{_item?.nickname}</Text>
-                        {storyAlarmType == 'REPLY' ? (
-                          <>
-                            님이 {depth == 1 ? '게시글에 댓글' : '답글'}을 남겼습니다 : <Text>{replyContents}</Text>
-                            <Text style={_styles.timeText}> {_item.time_text}</Text>
-                          </>
-                        ) : (
-                          <>
-                            님이 내 게시물을 좋아합니다.
-                          </>
-                        )}
-                        
-                      </Text>
+                    <SpaceView viewStyle={{flex:2.5}}>
 
-                      {storyAlarmType == 'LIKE' && (
-                        <SpaceView mt={3}><Text style={_styles.timeText}>{_item.time_text}</Text></SpaceView>
-                      )}
-
-                      {storyAlarmType == 'REPLY' && (
-                        <SpaceView mt={7} mb={5} viewStyle={{alignItems: 'flex-start'}}>
-                          <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-                            <TouchableOpacity onPress={() => { likeFunc('REPLY', storyBoardSeq, storyReplySeq); }} style={{marginRight: 2}}>
-                              {(memberLikeYn == 'N') ? (
-                                <Image source={ICON.heartOffIcon} style={styles.iconSquareSize(14)} />
-                              ) : (
-                                <Image source={ICON.heartOnIcon} style={styles.iconSquareSize(14)} />
-                              )}
-                            </TouchableOpacity>
-
-                            {depth == 1 && (
-                              <TouchableOpacity 
-                                onPress={() => { replyModalOpenFunc(storyBoardSeq, storyReplySeq, depth); }}
-                                style={{marginLeft: 10}}>
-                                <Text style={_styles.replyTextStyle}>답글달기</Text>
-                              </TouchableOpacity>
+                      <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                        {/* 내용 */}
+                        <SpaceView viewStyle={_styles.alarmItemContent}>
+                          <Text style={_styles.alarmContentText} numberOfLines={2}>
+                            <Text style={_styles.alarmNickname}>{_item?.nickname}</Text>
+                            {storyAlarmType == 'REPLY' ? (
+                              <>
+                                님이 {depth == 1 ? '게시글에 댓글' : '답글'}을 남겼습니다 : <Text>{replyContents}</Text>
+                                <Text style={_styles.timeText}> {_item.time_text}</Text>
+                              </>
+                            ) : (
+                              <>
+                                님이 내 게시물을 좋아합니다.
+                              </>
                             )}
-                          </SpaceView>
+                            
+                          </Text>
+
+                          {storyAlarmType == 'LIKE' && (
+                            <SpaceView mt={3}><Text style={_styles.timeText}>{_item.time_text}</Text></SpaceView>
+                          )}
                         </SpaceView>
-                      )}
-                    </SpaceView>
+
+                        {/* 게시글 썸네일 */}
+                        <TouchableOpacity onPress={() => { goStoryDetail(storyBoardSeq) }} style={_styles.alarmItemBoard}>
+                          <Image source={boardImgPath} style={_styles.alarmItemStoryThum} resizeMode={'cover'} />
+                        </TouchableOpacity>
+
+                      </SpaceView>
+
+                      {/* 좋아요, 답글달기 버튼 영역 */}
+                      <SpaceView>
+                        {storyAlarmType == 'REPLY' && (
+                          <SpaceView mt={7} mb={5} viewStyle={{flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between'}}>
+                            <SpaceView>
+                              {depth == 1 && (
+                                <TouchableOpacity onPress={() => { replyModalOpenFunc(storyBoardSeq, storyReplySeq, depth); }}>
+                                  <Text style={_styles.replyTextStyle}>답글달기</Text>
+                                </TouchableOpacity>
+                              )}
+                            </SpaceView>
+
+                            <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                              <TouchableOpacity onPress={() => { likeFunc('REPLY', storyBoardSeq, storyReplySeq); }} style={{marginRight: 3}}>
+                                {(memberLikeYn == 'N') ? (
+                                  <Image source={ICON.heartOffIcon} style={styles.iconSquareSize(14)} />
+                                ) : (
+                                  <Image source={ICON.heartOnIcon} style={styles.iconSquareSize(14)} />
+                                )}
+                              </TouchableOpacity>
+
+                              <TouchableOpacity onPress={() => { popupStoryReplyActive(storyBoardSeq, storyReplySeq, depth, _item) }}>
+                                <Text style={_styles.likeCntText}>좋아요{_item?.like_cnt > 0 && _item?.like_cnt + '개'}</Text>
+                              </TouchableOpacity>
+                              
+                            </SpaceView>
+                          </SpaceView>
+                        )}
+                      </SpaceView>
                     
-                    {/* 게시글 썸네일 */}
-                    <TouchableOpacity onPress={() => { goStoryDetail(storyBoardSeq) }} style={_styles.alarmItemBoard}>
-                      <Image source={boardImgPath} style={_styles.alarmItemStoryThum} resizeMode={'cover'} />
-                    </TouchableOpacity>
+                    </SpaceView>
+
                   </SpaceView>
                 )}
               )}
@@ -321,6 +366,7 @@ export default function StoryActive(props: Props) {
                 const contents = _item?.contents; // 내용
                 const likeCnt = _item?.like_cnt; // 좋아요 수
                 const replyCnt = _item?.reply_cnt; // 댓글 수
+                const memberLikeYn = _item?.member_like_yn; // 좋아요 여부
 
                 //const boardImgPath = findSourcePath(_item?.story_img_path); 운영 오픈시 반영
                 const boardImgPath = findSourcePathLocal(_item?.story_img_path);
@@ -344,7 +390,15 @@ export default function StoryActive(props: Props) {
                       <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
                         <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center',}}>
                           <SpaceView mr={10} viewStyle={{flexDirection: 'row'}}>
-                            <Image source={ICON.storyHeart} style={styles.iconSquareSize(20)} />
+                            {/* <Image source={ICON.storyHeart} style={styles.iconSquareSize(20)} /> */}
+
+                            {(memberLikeYn == 'N') ? (
+                              <Image source={ICON.heartOffIcon} style={styles.iconSquareSize(20)} />
+                            ) : (
+                              <Image source={ICON.heartOnIcon} style={styles.iconSquareSize(20)} />
+                            )}
+
+
                             <Text style={_styles.storyCntText}>{likeCnt}</Text>
                           </SpaceView>
 
@@ -485,6 +539,18 @@ export default function StoryActive(props: Props) {
         callbackFunc={replyRegiCallback} 
       />
 
+      {/* ##################################################################################
+                좋아요 목록 팝업
+      ################################################################################## */}
+      <LikeListPopup
+        isVisible={likeListPopup}
+        closeModal={likeListCloseModal}
+        type={likeListTypePopup}
+        _storyBoardSeq={selectedReplyData.storyBoardSeq}
+        storyReplyData={selectedReplyData}
+        replyInfo={replyInfo}
+      />
+
     </>
   );
 
@@ -520,10 +586,11 @@ const _styles = StyleSheet.create({
     marginBottom: 5,
   },
   alarmItemMember: {
-
+    //width: 50,
+    flex: 0.5,
   },
   alarmItemContent: {
-    width: width - 145,
+    width: width - 150,
   },
   alarmNickname: {
     fontFamily: 'AppleSDGothicNeoEB00',
@@ -613,6 +680,11 @@ const _styles = StyleSheet.create({
     color: '#555555',
     fontSize: 14,
     marginLeft: 6,
+  },
+  likeCntText: {
+    fontFamily: 'AppleSDGothicNeoM00',
+    color: '#555555',
+    fontSize: 12,
   },
   
 });

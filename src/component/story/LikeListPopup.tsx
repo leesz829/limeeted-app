@@ -23,11 +23,11 @@ interface Props {
   closeModal: () => void;
   type: String;
   _storyBoardSeq: Number;
-  _storyReplySeq: {};
+  storyReplyData: {};
   replyInfo: {};
 }
 
-export default function LikeListPopup({ isVisible, closeModal, type, _storyBoardSeq, _storyReplySeq, replyInfo }: Props) {
+export default function LikeListPopup({ isVisible, closeModal, type, _storyBoardSeq, storyReplyData, replyInfo }: Props) {
   const { show } = usePopup();
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -51,7 +51,7 @@ export default function LikeListPopup({ isVisible, closeModal, type, _storyBoard
 
     // 스토리 댓글 좋아요 파람
     const replyBody = {
-      story_reply_seq: _storyReplySeq.storyReplySeq,
+      story_reply_seq: storyReplyData?.storyReplySeq,
       type: type,
     };
 

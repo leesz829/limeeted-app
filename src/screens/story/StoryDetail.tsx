@@ -256,10 +256,16 @@ export default function StoryDetail(props: Props) {
     const storyReplySeq = item?.story_reply_seq; // 댓글 번호
     const depth = item?.depth;
 
+    let _w = width - 70;
     let depthStyleSize = 0;
 
     if(depth == 2) {
+      _w = _w - 15;
       depthStyleSize = 15;
+    }
+
+    if(storyData.board?.story_type == 'SECRET') {
+      _w = _w + 25;
     }
 
     return (
@@ -267,39 +273,47 @@ export default function StoryDetail(props: Props) {
         <SpaceView viewStyle={_styles.replyItemWarp}>
           <SpaceView ml={depthStyleSize} viewStyle={_styles.replyItemTopArea}>
             <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'flex-start'}}>
-              <Image source={memberMstImgPath} style={_styles.replyImageStyle} resizeMode={'cover'} />
+
+              {storyData.board?.story_type != 'SECRET' && (
+                <Image source={memberMstImgPath} style={_styles.replyImageStyle} resizeMode={'cover'} />
+              )}
               
-              <SpaceView ml={5} pt={3} viewStyle={{flexDirection: 'column', width: width - 70 - depthStyleSize}}>
+              <SpaceView ml={5} pt={3} viewStyle={{flexDirection: 'column', width: _w}}>
                 <Text style={_styles.replyNickname}>
-                  {item.nickname}  <Text style={_styles.replyTimeText}> {item.time_text}</Text>
+                  <Text style={_styles.replyNicknameText(storyData.board?.story_type, item.gender)}>{item.nickname}</Text>{' '}
+                  <Text style={_styles.replyTimeText}> {item.time_text}</Text>
                 </Text>
 
                 <Text style={_styles.replyContents}>{item.reply_contents}</Text>
 
-                <SpaceView pt={2} mt={6} viewStyle={{alignItems: 'flex-start'}}>
+                {/* 버튼 영역 */}
+                <SpaceView pt={2} mt={10} viewStyle={{alignItems: 'flex-start'}}>
                   <SpaceView viewStyle={_styles.replyItemEtcWrap}>
-                    <TouchableOpacity 
-                      onPress={() => { memberBase.member_seq == item?.member_seq ? popupStoryReplyActive(storyReplySeq, depth, item) : likeFunc('REPLY', storyReplySeq); }}
-                      style={{marginRight: 3}}>
-
-                      {(memberBase.member_seq == item?.member_seq || item?.member_like_yn == 'N') ? (
-                        <Image source={ICON.heartOffIcon} style={styles.iconSquareSize(15)} />
-                      ) : (
-                        <Image source={ICON.heartOnIcon} style={styles.iconSquareSize(15)} />
-                      )}
-                    </TouchableOpacity>
-
-                    <TouchableOpacity>
-                      <Text style={_styles.replyLikeCntText}>{item?.like_cnt}</Text>
-                    </TouchableOpacity>
-
                     {depth == 1 && (
-                      <TouchableOpacity 
-                        onPress={() => { replyModalOpenFunc(storyReplySeq, depth); }}
-                        style={{marginLeft: 10}}>
+                      <TouchableOpacity onPress={() => { replyModalOpenFunc(storyReplySeq, depth); }}>
                         <Text style={_styles.replyTextStyle}>답글달기</Text>
                       </TouchableOpacity>
                     )}
+
+                    <SpaceView viewStyle={_styles.likeArea}>
+                      <TouchableOpacity 
+                        onPress={() => { likeFunc('REPLY', storyReplySeq); }}
+                        style={{marginRight: 3}}>
+
+                        {(memberBase.member_seq == item?.member_seq || item?.member_like_yn == 'N') ? (
+                          <Image source={ICON.heartOffIcon} style={styles.iconSquareSize(15)} />
+                        ) : (
+                          <Image source={ICON.heartOnIcon} style={styles.iconSquareSize(15)} />
+                        )}
+                      </TouchableOpacity>
+
+                      <TouchableOpacity 
+                        disabled={memberBase.member_seq != item?.member_seq}
+                        onPress={() => { popupStoryReplyActive(storyReplySeq, depth, item) }}>
+                        <Text style={_styles.replyLikeCntText}>좋아요{item?.like_cnt > 0 && item?.like_cnt + '개'}</Text>
+                      </TouchableOpacity>
+                    </SpaceView>
+
                   </SpaceView>
                 </SpaceView>
               </SpaceView>
@@ -326,7 +340,20 @@ export default function StoryDetail(props: Props) {
     <>
       {isLoading && <CommonLoading />}
 
-      <CommonHeader title={'스토리 상세'} />
+      <CommonHeader 
+        title={'스토리 상세'} 
+        type={'STORY_DETAIL'} 
+        mstImgPath={findSourcePath(storyData.board?.mst_img_path)} 
+        nickname={storyData.board?.nickname}
+        gender={storyData.board?.gender}
+        profileScore={storyData.board?.profile_score}
+        authLevel={storyData.board?.auth_acct_cnt}
+        storyType={storyData.board?.story_type}
+      />
+
+      <SpaceView>
+        
+      </SpaceView>
 
       <ScrollView 
         showsVerticalScrollIndicator={false}
@@ -356,53 +383,67 @@ export default function StoryDetail(props: Props) {
             />
           </SpaceView>
 
-          {/* ###################################################################################### 내용 영역 */}
+          {/* ###################################################################################### 버튼 영역 */}
           <SpaceView mt={20}>
             <SpaceView pl={20} pr={20} pb={10} viewStyle={_styles.replyEtcArea}>
-              <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                <TouchableOpacity
-                  onPress={() => { memberBase.member_seq == storyData.board?.member_seq ? popupStoryBoardActive() : storyLikeProc('BOARD', 0); }}
-                  style={{marginRight: 5}}>
+              <SpaceView viewStyle={{width: '100%', height: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
 
-                  {(memberBase.member_seq == storyData.board?.member_seq || storyData.board?.member_like_yn == 'N') ? (
-                    <Image source={ICON.heartOffIcon} style={styles.iconSquareSize(20)} />
-                  ) : (
-                    <Image source={ICON.heartOnIcon} style={styles.iconSquareSize(20)} />
-                  )}
-                </TouchableOpacity>
-                <TouchableOpacity>
-                  <Text style={_styles.likeCntText}>{storyData.board?.like_cnt}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={{marginLeft: 15}} onPress={() => { replyModalOpen(0, 0); }}>
-                  <Image source={ICON.reply} style={styles.iconSquareSize(21)} />
-                </TouchableOpacity>
+                {/* 수정하기 버튼 */}
+                {memberBase?.member_seq == storyData.board?.member_seq && (
+                  <SpaceView viewStyle={_styles.btnArea}>
+                    <TouchableOpacity
+                      onPress={() => { goStoryModfy(); }}
+                      style={_styles.regiBtn}>
+                      <Image source={ICON.modfyIcon} style={styles.iconSquareSize(20)} />
+                      <Text style={_styles.regiBtnText}>수정하기</Text>
+                    </TouchableOpacity>
+                    {/* <TouchableOpacity
+                      onPress={() => { reply_onOpen(); }}
+                      style={_styles.regiBtn}>
+                      <Text style={_styles.regiBtnText}>댓글달기</Text>
+                    </TouchableOpacity> */}
+                  </SpaceView>
+                )}
+
+                {/* 좋아요 영역 */}
+                <SpaceView viewStyle={{flexDirection: 'row', position: 'absolute', top: 0, right: 0,}}>
+                  <TouchableOpacity onPress={() => { storyLikeProc('BOARD', 0); }} style={{marginRight: 5}}>
+
+                    {storyData.board?.member_like_yn == 'N' ? (
+                      <Image source={ICON.heartOffIcon} style={styles.iconSquareSize(20)} />
+                    ) : (
+                      <Image source={ICON.heartOnIcon} style={styles.iconSquareSize(20)} />
+                    )}
+                  </TouchableOpacity>
+                  <TouchableOpacity 
+                    //disabled={memberBase.member_seq != storyData.board?.member_seq}
+                    onPress={() => { popupStoryBoardActive(); }}>
+                    <Text style={_styles.likeCntText}>좋아요 {storyData.board?.like_cnt > 0 && storyData.board?.like_cnt + '개'}</Text>
+                  </TouchableOpacity>
+                </SpaceView>
               </SpaceView>
 
-              {memberBase?.member_seq == storyData.board?.member_seq && (
-                <SpaceView ml={15} viewStyle={_styles.btnArea}>
-                  <TouchableOpacity
-                    onPress={() => { goStoryModfy(); }}
-                    style={_styles.regiBtn}>
-                    <Text style={_styles.regiBtnText}>수정하기</Text>
-                  </TouchableOpacity>
-                  {/* <TouchableOpacity
-                    onPress={() => { reply_onOpen(); }}
-                    style={_styles.regiBtn}>
-                    <Text style={_styles.regiBtnText}>댓글달기</Text>
-                  </TouchableOpacity> */}
-                </SpaceView>
-              )}
+            </SpaceView>
+
+            {/* ###################################################################################### 내용 영역 */}
+            <SpaceView mt={8} pl={20} pr={20} pb={15} viewStyle={{borderBottomWidth: 1, borderBottomColor: '#eee'}}>
+              <Text style={_styles.contentsText}>{storyData.board?.contents}</Text>
+              <Text style={_styles.timeText}>{storyData.board?.time_text}</Text>
             </SpaceView>
 
             {/* ###################################################################################### 댓글 영역 */}
-            <SpaceView pl={20} pr={20} pb={15} viewStyle={{borderBottomWidth: 1, borderBottomColor: '#eee'}}>
-              <Text style={_styles.contentsText}>{storyData.board?.contents}</Text>
-              <Text style={[_styles.contentsText], {color: '#999', marginTop: 10,}}>{storyData.board?.time_text}</Text>
-            </SpaceView>
-
             <SpaceView ml={20} mr={20}>
-              <SpaceView mt={10} mb={10}>
-                <Text style={_styles.replyLengthText}>{storyData.replyList?.length}개의 댓글</Text>
+              {/* <TouchableOpacity style={{marginLeft: 15}} onPress={() => { replyModalOpen(0, 0); }}>
+                  <Image source={ICON.reply} style={styles.iconSquareSize(21)} />
+                </TouchableOpacity> */}
+
+              <SpaceView mt={15} mb={10}>
+                <TouchableOpacity 
+                  style={{flexDirection: 'row'}}
+                  onPress={() => { replyModalOpen(0, 0); }}>
+                  <Image source={ICON.reply} style={styles.iconSquareSize(21)} />
+                  <Text style={_styles.replyLengthText}>{storyData.replyList?.length}개의 댓글</Text>
+                </TouchableOpacity>
               </SpaceView>
 
               <FlatList
@@ -439,12 +480,15 @@ export default function StoryDetail(props: Props) {
         callbackFunc={replyRegiCallback} 
       />
 
+      {/* ##################################################################################
+                좋아요 목록 팝업
+      ################################################################################## */}
       <LikeListPopup
         isVisible={likeListPopup}
         closeModal={likeListCloseModal}
         type={likeListTypePopup}
         _storyBoardSeq={props.route.params.storyBoardSeq}
-        _storyReplySeq={selectedReplyData}
+        storyReplyData={selectedReplyData}
         replyInfo={replyInfo}
       />
     </>
@@ -578,17 +622,15 @@ const _styles = StyleSheet.create({
     justifyContent: 'center',
   },
   regiBtn: {
-    backgroundColor: '#B1B1B1',
-    width: 60,
-    borderRadius: 10,
-    overflow: 'hidden',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    //width: 200,
   },
   regiBtnText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 12,
-    color: '#fff',
-    textAlign: 'center',
-    paddingVertical: 4,
+    fontFamily: 'AppleSDGothicNeoR00',
+    fontSize: 14,
+    color: '#555555',
   },
   pagingContainer: {
     position: 'absolute',
@@ -617,6 +659,12 @@ const _styles = StyleSheet.create({
     fontSize: 14,
     color: '#333',
   },
+  timeText: {
+    fontFamily: 'AppleSDGothicNeoR00',
+    fontSize: 14,
+    color: '#999',
+    marginTop: 10
+  },
   replyEtcArea: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
@@ -628,7 +676,7 @@ const _styles = StyleSheet.create({
     //marginHorizontal: 5,
   },
   replyItemWarp: {
-    marginBottom: 15,
+    marginBottom: 20,
   },
   replyItemTopArea: {
     flex: 1,
@@ -654,6 +702,21 @@ const _styles = StyleSheet.create({
     color: '#333',
     marginTop: 6,
     //flex: 0.8,
+  }, 
+  replyNicknameText: (storyType:string, gender:string) => {
+    let clr = '#000';
+
+    if(storyType == 'SECRET') {
+      if(gender == 'M') {
+        clr = '#7986EE';
+      } else {
+        clr = '#FE0456';
+      }
+    }
+
+    return {
+      color: clr,
+    };
   },
   replyTimeText: {
     fontFamily: 'AppleSDGothicNeoR00',
@@ -661,8 +724,11 @@ const _styles = StyleSheet.create({
     fontSize: 14,
   },
   replyItemEtcWrap: {
+    width: '97%',
+    height: 14,
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
   replyLikeIcon: {
     fontFamily: 'AppleSDGothicNeoR00',
@@ -678,16 +744,25 @@ const _styles = StyleSheet.create({
     fontFamily: 'AppleSDGothicNeoR00',
     color: '#555',
     fontSize: 13,
+    marginLeft: 1,
   },
   likeCntText: {
-    fontFamily: 'AppleSDGothicNeoR00',
+    fontFamily: 'AppleSDGothicNeoM00',
     color: '#555',
-    fontSize: 14,
+    fontSize: 13,
   },
   replyLikeCntText: {
     fontFamily: 'AppleSDGothicNeoR00',
     color: '#555',
-    fontSize: 13,
+    fontSize: 12,
+  },
+  likeArea: {
+    flexDirection: 'row',
+    //alignItems: 'flex-start',
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    //width: 80,
   },
   voteArea: (bdColor: string) => {
     return {
