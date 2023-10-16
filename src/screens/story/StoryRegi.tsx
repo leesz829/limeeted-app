@@ -50,7 +50,6 @@ export default function StoryRegi(props: Props) {
     });
   }
 
-
   /* ##################################################################################################################################
   ################## 초기 실행 함수
   ################################################################################################################################## */
@@ -68,24 +67,25 @@ export default function StoryRegi(props: Props) {
         <SpaceView mt={20} pl={20} pr={20}>
 
           <SpaceView mb={30} viewStyle={_styles.titleArea}>
-            <Text style={_styles.titleText}>게시글 유형을 선택해 주세요.</Text>
+            <Text style={_styles.titleText}>{memberBase?.nickname}님의{'\n'}이야기로 리미티드에 일상읊{'\n'}공유하고 소통해보세요.</Text>
+            <View style={_styles.titleUnderline}></View>
           </SpaceView>
 
           <SpaceView viewStyle={_styles.contentArea}>
             <TouchableOpacity style={[_styles.contentItem, {backgroundColor: '#E0E4FF',}]} onPress={() => { selectedStoryType('STORY'); }}>
-              <Text style={_styles.contentTitle}>스토리</Text>
+              <Text style={[_styles.contentTitle, {color: '#6C76BE'}]}>스토리</Text>
               <Text style={_styles.contentSubTitle}>소소한 일상부터 음식, 여행 등 주제에 관계없이 자유롭게 소통해 보세요.</Text>
               <Image source={ICON.megaphone} style={_styles.contentImg} resizeMode={'cover'} />
             </TouchableOpacity>
 
-            <TouchableOpacity style={[_styles.contentItem, {backgroundColor: '#FEEFF2',}]} onPress={() => { selectedStoryType('VOTE'); }}>
-              <Text style={_styles.contentTitle}>투표형</Text>
+            <TouchableOpacity style={[_styles.contentItem, {backgroundColor: '#B5FBFD',}]} onPress={() => { selectedStoryType('VOTE'); }}>
+              <Text style={[_styles.contentTitle, {color: '#48B2B5'}]}>투표형</Text>
               <Text style={_styles.contentSubTitle}>왼 VS 오 어떤 것?{'\n'}밸런스 게임으로 사람들의 성향을 알아가요.</Text>
               <Image source={ICON.mail} style={_styles.contentImg} resizeMode={'cover'} />
             </TouchableOpacity>
 
-            <TouchableOpacity style={[_styles.contentItem, {backgroundColor: '#FFFCEE',}]} onPress={() => { selectedStoryType('SECRET'); }}>
-              <Text style={_styles.contentTitle}>비밀</Text>
+            <TouchableOpacity style={[_styles.contentItem, {backgroundColor: '#FEEFF2',}]} onPress={() => { selectedStoryType('SECRET'); }}>
+              <Text style={[_styles.contentTitle, {color: '#D3697E'}]}>시크릿</Text>
               <Text style={_styles.contentSubTitle}>이야기 앞에 “비밀”이 붙으면 재미있어 지는 법이죠!</Text>
               <Image source={ICON.secret} style={_styles.contentImg} resizeMode={'cover'} />
             </TouchableOpacity>
@@ -113,9 +113,18 @@ const _styles = StyleSheet.create({
 
   },
   titleText: {
-    fontFamily: 'AppleSDGothicNeoR00',
+    fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 20,
     color: '#333',
+  },
+  titleUnderline: {
+    position: 'absolute',
+    top:71,
+    left:-1,
+    width: width-205,
+    height: height-835,
+    backgroundColor: '#7986EE',
+    zIndex:-1,
   },
   contentArea: {
     
@@ -136,7 +145,7 @@ const _styles = StyleSheet.create({
     overflow: 'visible',
   },
   contentTitle: {
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 17,
     color: '#333333',
     marginBottom: 15,

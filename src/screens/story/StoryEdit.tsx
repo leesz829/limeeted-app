@@ -26,6 +26,7 @@ import { CommonTextarea } from 'component/CommonTextarea';
 import { CommonLoading } from 'component/CommonLoading';
 import { CommonInput } from 'component/CommonInput';
 import { VoteEndRadioBox } from 'component/story/VoteEndRadioBox';
+import { CommonBtn } from 'component/CommonBtn';
 
 
 /* ################################################################################################################
@@ -96,27 +97,36 @@ export default function StoryEdit(props: Props) {
     setStoryData({...storyData, voteEndType: value});
   };
 
+  const [imgYn1, setImgYn1] = React.useState('N');
+  const [imgYn2, setImgYn2] = React.useState('N');
+  const [imgYn3, setImgYn3] = React.useState('N');
+
   // ################################################################ 프로필 이미지 파일 콜백 함수
   const fileCallBack1 = async (uri: any, base64: string) => {
     let data = { file_uri: uri, file_base64: base64, order_seq: 1 };
+    setImgYn1('Y');
     imageDataApply(data);
   };
 
   const fileCallBack2 = async (uri: any, base64: string) => {
     let data = { file_uri: uri, file_base64: base64, order_seq: 2 };
+    setImgYn2('Y');
     imageDataApply(data);
   };
 
   const fileCallBack3 = async (uri: any, base64: string) => {
     let data = { file_uri: uri, file_base64: base64, order_seq: 3 };
+    setImgYn3('Y');
     imageDataApply(data);
   };
 
-  const voteFileCallBack01 = async (uri: any, base64: string) => {
+  const voteFileCallBack01 = async (uri: any, base64: string, i: number) => {
+    setImgYn1('Y');
     setInputVoteFileData01(base64);
   };
 
-  const voteFileCallBack02 = async (uri: any, base64: string) => {
+  const voteFileCallBack02 = async (uri: any, base64: string, i: number) => {
+    setImgYn2('Y');
     setInputVoteFileData02(base64);
   };
 
@@ -135,15 +145,10 @@ export default function StoryEdit(props: Props) {
     });
   };
 
-  // ############################################################################# 사진 삭제 팝업
+  // ############################################################################# 사진 변경/삭제 팝업
   const imgDel_modalizeRef = useRef<Modalize>(null);
+
   const imgDel_onOpen = (imgData: any, order_seq: any) => {
-    /* setIsDelImgData({
-      img_seq: imgData.member_img_seq,
-      order_seq: order_seq,
-      status: imgData.status,
-      return_reason: imgData.return_reason,
-    }); */
     imgDel_modalizeRef.current?.open();
   };
   const imgDel_onClose = () => {
@@ -160,7 +165,7 @@ export default function StoryEdit(props: Props) {
 
       try {
         let voteList = [];
-
+console.log('inputVoteFileData01',inputVoteFileData01)
         if(!isEmptyData(storyData.contents)) {
           show({ content: '내용을 입력해 주세요.' });
           return false;
@@ -341,16 +346,26 @@ export default function StoryEdit(props: Props) {
         {(storyData.storyType == 'STORY' || storyData.storyType == 'SECRET') && (
           <SpaceView mt={20} pl={20} pr={20}>
             <SpaceView mb={25}>
-              <Text style={_styles.titleText}>게시글 내용을 작성해 주세요.</Text>
+              <Text style={_styles.titleText}>{storyData.storyType == 'SECRET' ? '이야기 앞에 "비밀"이 붙으면\n더 재밌어지는 법이죠!' : '소소한 일상부터 음식, 여행 등\n주제에 관계없이 자유롭게 소통해 보세요.'}</Text>            
+                <View style={{
+                    position: 'absolute', 
+                    top: storyData.storyType == 'SECRET' ? 17 : 42,
+                    left: storyData.storyType == 'SECRET' ? 95 : -2,
+                    width:  storyData.storyType == 'SECRET' ? width-347 : width-195,
+                    height: height-835,
+                    backgroundColor: '#7986EE',
+                    zIndex: -1,
+                  }}>
+                  </View>            
             </SpaceView>
             
             <SpaceView viewStyle={_styles.imgArea}>
               {[0,1,2].map((i, index) => {
                 return (
                   <>
-                    {index == 0 && <ImageRenderItem index={index} _imgData={imgData.orgImgUrl01} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack1}  /> }
-                    {index == 1 && <ImageRenderItem index={index} _imgData={imgData.orgImgUrl02} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack2}  /> }
-                    {index == 2 && <ImageRenderItem index={index} _imgData={imgData.orgImgUrl03} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack3}  /> }
+                    {index == 0 && <ImageRenderItem index={index} _imgData={imgData.orgImgUrl01} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack1} imgYn={imgYn1} /> }
+                    {index == 1 && <ImageRenderItem index={index} _imgData={imgData.orgImgUrl02} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack2} imgYn={imgYn2} /> }
+                    {index == 2 && <ImageRenderItem index={index} _imgData={imgData.orgImgUrl03} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack3} imgYn={imgYn3} /> }
                   </>
                 )
               })}
@@ -361,14 +376,14 @@ export default function StoryEdit(props: Props) {
                 value={storyData.contents}
                 onChangeText={(text) => setStoryData({...storyData, contents: text})}
                 placeholder={
-                  storyData.storyType == 'SECRET' ? '이야기 앞에 "비밀"이 붙으면 재밌어지는 법이죠!.\n\n20글자 이상 입력해 주세요.\n\n(주의*) 타인 비방 등 폭력적이거나 선정적인 게시글은 운영진의 판단 하에 삭제처리 될 수 있습니다.' :
-                  '소소한 일상부터 음식, 여행 등 주제에 관계없이 자유롭게 소통해 보세요.\n\n20글자 이상 입력해 주세요.\n\n(주의*) 이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 제재 대상이 될 수 있으며 상대를 배려하는 마음으로 이용해 주세요.'
+                  storyData.storyType == 'SECRET' ? '20글자 이상 입력해 주세요.\n\n(주의*)타인 비방 등 폭력적이거나 선정적인 게시글은 운영진의 판단 하에 삭제처리 될 수 있습니다.' :
+                  '20글자 이상 입력해 주세요.\n\n(주의*)이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 제재 대상이 될 수 있으며 상대를 배려하는 마음으로 이용해 주세요.'
                 }
-                placeholderTextColor={'#C7C7C7'}
+                placeholderTextColor={'#A9A9A9'}
                 maxLength={1000}
                 exceedCharCountColor={'#990606'}
                 fontSize={13}
-                height={height-430}
+                height={height-460}
                 backgroundColor={'#fff'}
                 fontColor={'#000'}
                 borderColor={isEmptyData(storyData.contents) ? '#7986EE' : '#DDDDDD'}
@@ -390,58 +405,33 @@ export default function StoryEdit(props: Props) {
               </SpaceView>
               
               <SpaceView mt={10} viewStyle={_styles.voteArea}>
-                <SpaceView mb={10}>
-                  <TextInput
-                    value={voteData.voteName01}
-                    onChangeText={(text) => setVoteData({...voteData, voteName01 : text})}
-                    multiline={false}
-                    autoCapitalize="none"
-                    style={[_styles.voteInput, isEmptyData(voteData.voteName01) ? {borderColor: '#7986EE'} : {borderColor:'#DDDDDD'}]}
-                    placeholder={'선택지 입력'}
-                    placeholderTextColor={'#c7c7c7'}
-                    editable={true}
-                    secureTextEntry={false}
-                    maxLength={50}
-                    numberOfLines={1}
-                  />
+                  {[0,1].map((i, index) => {
+                    return (
+                      <>
+                        <SpaceView mb={10}>
+                          <TextInput
+                            value={voteData[`voteName0${i+1}`]}
+                            onChangeText={(text) => setVoteData({...voteData, [`voteName0${i+1}`] : text})}
+                            multiline={false}
+                            autoCapitalize="none"
+                            style={[_styles.voteInput, isEmptyData(voteData[`voteName0${i+1}`]) ? {borderColor: '#7986EE'} : {borderColor:'#DDDDDD'}]}
+                            placeholder={'선택지 입력'}
+                            placeholderTextColor={'#c7c7c7'}
+                            editable={true}
+                            secureTextEntry={false}
+                            maxLength={50}
+                            numberOfLines={1}
+                          />
 
-                  <SpaceView viewStyle={_styles.voteImgArea}>
-                    <CommonImagePicker 
-                      type={'STORY'} 
-                      callbackFn={voteFileCallBack01} 
-                      uriParam={isEmptyData(voteData.voteImgUrl01) ? findSourcePathLocal(voteData.voteImgUrl01) : ''}
-                      imgWidth={48} 
-                      imgHeight={48}
-                      borderRadius={8}
-                    />
-                  </SpaceView>
-                </SpaceView>
-                <SpaceView>
-                  <TextInput
-                    value={voteData.voteName02}
-                    onChangeText={(text) => setVoteData({...voteData, voteName02 : text})}
-                    multiline={false}
-                    autoCapitalize="none"
-                    style={[_styles.voteInput, isEmptyData(voteData.voteName02) ? {borderColor: '#7986EE'} : {borderColor:'#DDDDDD'}]}
-                    placeholder={'선택지 입력'}
-                    placeholderTextColor={'#c7c7c7'}
-                    editable={true}
-                    secureTextEntry={false}
-                    maxLength={50}
-                    numberOfLines={1}
-                  />
+                          <SpaceView viewStyle={_styles.voteImgArea}>
+                            {index == 0 && <VoteImageRenderItem index={index} _imgData={voteData.voteImgUrl01} delFn={imgDel_onOpen} fileCallBackFn={voteFileCallBack01} imgYn={imgYn1} />}
+                            {index == 1 && <VoteImageRenderItem index={index} _imgData={voteData.voteImgUrl02} delFn={imgDel_onOpen} fileCallBackFn={voteFileCallBack02} imgYn={imgYn2} />}
+                          </SpaceView>
+                        </SpaceView>
+                      </>
+                    )
+                  })}
 
-                  <SpaceView viewStyle={_styles.voteImgArea}>
-                    <CommonImagePicker 
-                      type={'STORY'} 
-                      callbackFn={voteFileCallBack02} 
-                      uriParam={isEmptyData(voteData.voteImgUrl02) ? findSourcePathLocal(voteData.voteImgUrl02) : ''}
-                      imgWidth={48} 
-                      imgHeight={48}
-                      borderRadius={8}
-                    />
-                  </SpaceView>
-                </SpaceView>
               </SpaceView>
             </SpaceView>
 
@@ -473,7 +463,7 @@ export default function StoryEdit(props: Props) {
                 maxLength={1000}
                 exceedCharCountColor={'#990606'}
                 fontSize={13}
-                height={height-575}
+                height={height-585}
                 backgroundColor={'#fff'}
                 fontColor={'#000'}
                 borderColor={isEmptyData(storyData.contents) ? '#7986EE' : '#ebe9ef'}
@@ -546,20 +536,53 @@ export default function StoryEdit(props: Props) {
           )
         }
       </SpaceView>
+
+
+      {/* ###############################################
+							사진 변경/삭제 팝업
+			############################################### */}
+      <Modalize
+        ref={imgDel_modalizeRef}
+        adjustToContentHeight={true}
+        handleStyle={modalStyle.modalHandleStyle}
+        modalStyle={[modalStyle.modalContainer]} >
+
+        <View style={modalStyle.modalHeaderContainer}>
+          <CommonText fontWeight={'700'} type={'h3'}>
+            사진 변경/삭제
+          </CommonText>
+          <TouchableOpacity onPress={imgDel_onClose} hitSlop={commonStyle.hipSlop20}>
+            <Image source={ICON.xBtn2} style={styles.iconSize20} />
+          </TouchableOpacity>
+        </View>
+
+        <View style={[modalStyle.modalBody, layoutStyle.flex1]}>
+          <SpaceView>
+            <CommonBtn value={'사진 변경'} type={'primary2'} borderRadius={12} />
+          </SpaceView>
+          <SpaceView mt={10}>
+            <CommonBtn value={'사진 삭제'} type={'primary2'} borderRadius={12} />
+          </SpaceView>
+        </View>
+
+        <TouchableOpacity style={_styles.modalCloseText} onPress={imgDel_onClose} hitSlop={commonStyle.hipSlop20}>
+          <Text style={{color: '#fff', fontFamily: 'AppleSDGothicNeoEB00', fontSize: 16}}>확인</Text>
+        </TouchableOpacity>
+      </Modalize>
     </>
   );
 
 };
 
 // ############################################################################# 이미지 렌더링 아이템
-function ImageRenderItem ({ index, _imgData, delFn, fileCallBackFn }) {
-  //const imgUrl = findSourcePath(_imgData?.imgPath);  운영 반영시 적용
+function ImageRenderItem ({ index, _imgData, delFn, fileCallBackFn, imgYn }) {
+
   const imgUrl = findSourcePathLocal(_imgData?.imgPath);
   const imgDelYn = _imgData?.delYn;
 
   return (
     <View style={_styles.imgItem}>
-      {/* {isEmptyData(imgUrl) && imgDelYn == 'N' ? (
+      {isEmptyData(imgUrl) || imgYn == 'Y' ? (
         <TouchableOpacity onPress={() => { delFn(_imgData, index+1); }}>
           <Image
             resizeMode="cover"
@@ -577,15 +600,37 @@ function ImageRenderItem ({ index, _imgData, delFn, fileCallBackFn }) {
           imgWidth={(width - 70) / 3} 
           imgHeight={(width - 70) / 3}
         />
-      )} */}
+      )}
+    </View>
+  );
+};
 
-      <CommonImagePicker 
-        type={'STORY'} 
-        callbackFn={fileCallBackFn} 
-        uriParam={isEmptyData(imgUrl) ? imgUrl : ''}
-        imgWidth={(width - 70) / 3} 
-        imgHeight={(width - 70) / 3}
-      />
+function VoteImageRenderItem ({ index, _imgData, delFn, fileCallBackFn, imgYn }) {
+
+  const imgUrl = findSourcePathLocal(_imgData?.imgPath);
+  const imgDelYn = _imgData?.delYn;
+
+  return (
+    <View style={[_styles.imgItem, {borderRadius: 10,}]}>
+      {isEmptyData(imgUrl) || imgYn == 'Y' ? (
+        <TouchableOpacity onPress={() => { delFn(_imgData, index+1); }}>
+          <Image
+            resizeMode="cover"
+            resizeMethod="scale"
+            style={{width: 48, height: 48,}}
+            key={imgUrl}
+            source={imgUrl}
+          />
+        </TouchableOpacity>
+      ) : (
+        <CommonImagePicker 
+          type={'STORY'} 
+          callbackFn={fileCallBackFn} 
+          uriParam={''}
+          imgWidth={48}
+          imgHeight={48}
+        />
+      )}
     </View>
   );
 };
@@ -603,7 +648,7 @@ function ImageRenderItem ({ index, _imgData, delFn, fileCallBackFn }) {
 const _styles = StyleSheet.create({
 
   titleText: {
-    fontFamily: 'AppleSDGothicNeoR00',
+    fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 19,
     color: '#000',
   },
@@ -670,12 +715,15 @@ const _styles = StyleSheet.create({
   },
   voteImgArea: {
     position: 'absolute',
-    top: 4,
-    right: 0,
-    backgroundColor: 'rgba(155, 165, 242, 0.12)',
-    borderRadius: 8,
-    overflow: 'hidden',
+    top: -2,
+    right: -4,
   },
+  modalCloseText: {
+    width: '100%',
+    backgroundColor: '#7984ED',
+    height: height-790,
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
 
-  
 });
