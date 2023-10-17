@@ -190,7 +190,7 @@ export default function ReplyRegiPopup({ isVisible, storyBoardSeq, storyReplySeq
                         autoFocus={true}
                         //onSubmitEditing={() => { this.inputRef.focus(); }}
                       />
-                      
+
                       <TouchableOpacity
                         onPress={() => { replyRegister(); }}
                         style={_styles.btnArea}
@@ -296,6 +296,10 @@ const _styles = StyleSheet.create({
     borderColor: '#EBE9EF',
     paddingRight: 30,
     backgroundColor: '#F6F7FE',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    fontFamily: 'AppleSDGothicNeoM00',
+    fontSize: 13,
   },
   btnArea: {
     position: 'absolute',

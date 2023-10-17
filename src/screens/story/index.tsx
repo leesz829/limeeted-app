@@ -196,9 +196,17 @@ export const Story = () => {
           {(storyType == 'SECRET' || (storyType == 'STORY' && !isEmptyData(imgPath))) ? (
             <>
               <SpaceView viewStyle={_styles.noImageArea(item?.gender)} >
+
+                {/* 썸네일 이미지 */}
                 <SpaceView>
                   <Image source={storyType == 'SECRET' ? ICON.storyNoIcon : findSourcePath(item?.mst_img_path)} style={_styles.mstImgStyle(type == 'SMALL' ? 50 : 80, 40)} resizeMode={'cover'} />
                 </SpaceView>
+
+                {/* 스토리 유형 */}
+                <SpaceView viewStyle={_styles.typeArea(storyType)}>
+                  <Text style={_styles.typeText} numberOfLines={type == 'SMALL' ? 2 : 6}>{item?.story_type_name}</Text>
+                </SpaceView>
+
                 <SpaceView mt={10} viewStyle={{flexDirection: 'column', alignItems: 'center'}}>
                   {/* <AuthLevel authAcctCnt={item?.auth_acct_cnt} type={'BASE'} />
                   <ProfileGrade profileScore={item?.profile_score} type={'BASE'} /> */}
@@ -211,18 +219,21 @@ export const Story = () => {
                       {(isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && 'Lv ' + item?.auth_acct_cnt}
                     </Text>
                   )}
+
+                  {/* 닉네임 */}
                   <Text style={_styles.nicknameText('#333333')}>{item?.nickname}</Text>
                 </SpaceView>
+
+                {/* 내용 */}
                 <SpaceView mt={25} pl={10} pr={10}>
                   <Text style={_styles.contentsText('#333333')}>{item?.contents}</Text>
                 </SpaceView>
-                <SpaceView viewStyle={_styles.typeArea(storyType)}>
-                  <Text style={_styles.typeText} numberOfLines={type == 'SMALL' ? 2 : 6}>{item?.story_type_name}</Text>
-                </SpaceView>
+                
               </SpaceView>
             </>
           ) : (
             <>
+              {/* 썸네일 이미지 */}
               <SpaceView>
                 {item?.story_type == 'VOTE' ? (
                   <Image source={voteImgPath01} style={{width: _width, height: _height}} resizeMode={'cover'} />
@@ -231,6 +242,12 @@ export const Story = () => {
                 )}
               </SpaceView>
 
+              {/* 스토리 유형 */}
+              <SpaceView viewStyle={_styles.typeArea(storyType)}>
+                <Text style={_styles.typeText}>{item?.story_type_name}</Text>
+              </SpaceView>
+
+              {/* 프로필 영역 */}
               <SpaceView viewStyle={_styles.profileArea}>
                 <SpaceView mr={5}>
                   <TouchableOpacity onPress={() => { profileCardOpenPopup(item?.member_seq); }}>
@@ -253,11 +270,14 @@ export const Story = () => {
               <SpaceView viewStyle={_styles.bottomArea}>
                 {/* <SpaceView><Text style={_styles.contentsText('#fff')}>{item?.contents}</Text></SpaceView> */}
                 {/* <SpaceView mt={8}><Text style={_styles.contentsText}>{item?.time_text}</Text></SpaceView> */}
-              </SpaceView>
+              </SpaceView>              
 
-              <SpaceView viewStyle={_styles.typeArea(storyType)}>
-                <Text style={_styles.typeText}>{item?.story_type_name}</Text>
-              </SpaceView>
+              {/* 딤 처리 영역 */}
+              <LinearGradient
+                colors={['transparent', '#000000']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 0, y: 1 }}
+                style={_styles.dimsArea} />
             </>
           )}
 
@@ -558,6 +578,7 @@ const _styles = StyleSheet.create({
     paddingHorizontal: 10,
     flexDirection: 'row',
     alignItems: 'center',
+    zIndex: 1,
   },
   bottomArea: {
     position: 'absolute',
@@ -648,6 +669,14 @@ const _styles = StyleSheet.create({
     color: '#ACA6AB',
     borderRadius: 10,
     overflow: 'hidden',
+  },
+  dimsArea: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    opacity: 0.48,
+    height: 60,
   },
 
 });

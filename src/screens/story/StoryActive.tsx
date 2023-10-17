@@ -368,6 +368,7 @@ export default function StoryActive(props: Props) {
 
             {/* ###### 목록 */}
             <SpaceView>
+              
               {item?.dataList?.map((_item, _index) => {
 
                 const storyBoardSeq = _item?.story_board_seq; // 스토리 댓글 번호
@@ -479,56 +480,70 @@ export default function StoryActive(props: Props) {
                   {index == 0 ? (
                     <>
                       {/* ###################################################################### 새소식 */}
-                      <FlatList
-                        style={{height: height-135}}
-                        contentContainerStyle={{ paddingBottom: 30 }} // 하단 여백 추가
-                        contentInset={{ bottom: 50 }}
-                        data={activeData.alarmData}
-                        keyExtractor={(item, index) => index.toString()}
-                        showsVerticalScrollIndicator={false}
-                        removeClippedSubviews={true}
-                        /* getItemLayout={(data, index) => (
-                          {
-                              length: (width - 54) / 2,
-                              offset: ((width - 54) / 2) * index,
-                              index
-                          }
-                        )} */
-                        renderItem={({ item: innerItem, index: innerIndex }) => {
-                          return (
-                            <View key={'alarm_' + index}>
-                              <AlarmRender item={innerItem} index={innerIndex} likeFunc={storyLikeProc} replyModalOpenFunc={replyModalOpen} />
-                            </View>
-                          )
-                        }}
-                      />
+
+                      {activeData.alarmData.length > 0 ? (
+                        <FlatList
+                          style={{height: height-135}}
+                          contentContainerStyle={{ paddingBottom: 30 }} // 하단 여백 추가
+                          contentInset={{ bottom: 50 }}
+                          data={activeData.alarmData}
+                          keyExtractor={(item, index) => index.toString()}
+                          showsVerticalScrollIndicator={false}
+                          removeClippedSubviews={true}
+                          /* getItemLayout={(data, index) => (
+                            {
+                                length: (width - 54) / 2,
+                                offset: ((width - 54) / 2) * index,
+                                index
+                            }
+                          )} */
+                          renderItem={({ item: innerItem, index: innerIndex }) => {
+                            return (
+                              <View key={'alarm_' + index}>
+                                <AlarmRender item={innerItem} index={innerIndex} likeFunc={storyLikeProc} replyModalOpenFunc={replyModalOpen} />
+                              </View>
+                            )
+                          }}
+                        />
+                      ) : (
+                        <SpaceView viewStyle={_styles.noData}>
+                          <Text style={_styles.noDataText}>새소식이 없습니다.</Text>
+                        </SpaceView>
+                      )}
                     </>
                   ) : (
                     <>
                       {/* ###################################################################### 내가쓴글 */}
-                      <FlatList
-                        style={{height: height-135}}
-                        contentContainerStyle={{ paddingBottom: 30 }} // 하단 여백 추가
-                        contentInset={{ bottom: 50 }}
-                        data={activeData.storyData}
-                        keyExtractor={(item, index) => index.toString()}
-                        showsVerticalScrollIndicator={false}
-                        removeClippedSubviews={true}
-                        /* getItemLayout={(data, index) => (
-                          {
-                              length: (width - 54) / 2,
-                              offset: ((width - 54) / 2) * index,
-                              index
-                          }
-                        )} */
-                        renderItem={({ item: innerItem, index: innerIndex }) => {
-                          return (
-                            <View key={'alarm_' + index}>
-                              <MyStoryRender item={innerItem} index={innerIndex} />
-                            </View>
-                          )
-                        }}
-                      />                      
+
+                      {activeData.storyData.length > 0 ? (
+                        <FlatList
+                          style={{height: height-135}}
+                          contentContainerStyle={{ paddingBottom: 30 }} // 하단 여백 추가
+                          contentInset={{ bottom: 50 }}
+                          data={activeData.storyData}
+                          keyExtractor={(item, index) => index.toString()}
+                          showsVerticalScrollIndicator={false}
+                          removeClippedSubviews={true}
+                          /* getItemLayout={(data, index) => (
+                            {
+                                length: (width - 54) / 2,
+                                offset: ((width - 54) / 2) * index,
+                                index
+                            }
+                          )} */
+                          renderItem={({ item: innerItem, index: innerIndex }) => {
+                            return (
+                              <View key={'alarm_' + index}>
+                                <MyStoryRender item={innerItem} index={innerIndex} />
+                              </View>
+                            )
+                          }}
+                        />
+                      ) : (
+                        <SpaceView viewStyle={_styles.noData}>
+                          <Text style={_styles.noDataText}>내가쓴글이 없습니다.</Text>
+                        </SpaceView>
+                      )}                                       
                     </>
                   )}
                 </View>
@@ -698,6 +713,17 @@ const _styles = StyleSheet.create({
     fontFamily: 'AppleSDGothicNeoM00',
     color: '#555555',
     fontSize: 12,
+  },
+  noData: {
+    paddingHorizontal: 20,
+    height: height - 230,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noDataText: {
+    fontFamily: 'AppleSDGothicNeoM00',
+    color: '#555555',
+    fontSize: 15,
   },
   
 });
