@@ -44,6 +44,7 @@ export const Story = () => {
   const [isLoadingMore, setIsLoadingMore] = useState(false); // 더보기 로딩 여부
   const flatListRef = useRef(null);
 
+  const [isTopBtn, setIsTopBtn] = useState(false);
 
   const [isEmpty, setIsEmpty] = useState(false); 
   //const [storyList, setStoryList] = useState<any>([]); // 스토리 목록
@@ -157,6 +158,16 @@ export const Story = () => {
       } else {
         setIsLoading(false);
       }
+    }
+  };
+
+  /* ################################################################################ 스크롤 제어 */
+  const handleScroll = async (event) => {
+    const yOffset = event.nativeEvent.contentOffset.y;
+    if(yOffset > 300) {
+      setIsTopBtn(true);
+    } else {
+      setIsTopBtn(false);
     }
   };
 
@@ -316,6 +327,7 @@ export const Story = () => {
           contentInset={{ bottom: 60 }}
           showsVerticalScrollIndicator={false}
           removeClippedSubviews={true}
+          onScroll={handleScroll} // 스크롤 감지 이벤트 핸들러
           /* getItemLayout={(data, index) => (
             {
                 length: (width - 54) / 2,
@@ -453,13 +465,15 @@ export const Story = () => {
       </SpaceView>
 
       {/* ###################################################################################################### 맨위 이동 버튼 */}
-      <SpaceView viewStyle={_styles.topBtnArea}>
-        <TouchableOpacity onPress={() => { scrollToTop(); }}>
-          <Text style={_styles.topBtnText}>TOP</Text>
-          {/* <Image source={ICON.boxTipsIcon} style={styles.iconSquareSize(50)} /> */}
-        </TouchableOpacity>
-      </SpaceView>
-      
+
+      {isTopBtn && (
+        <SpaceView viewStyle={_styles.topBtnArea}>
+          <TouchableOpacity onPress={() => { scrollToTop(); }}>
+            <Text style={_styles.topBtnText}>TOP</Text>
+            {/* <Image source={ICON.boxTipsIcon} style={styles.iconSquareSize(50)} /> */}
+          </TouchableOpacity>
+        </SpaceView>
+      )}
     </>
   );
 };

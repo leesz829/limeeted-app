@@ -46,6 +46,8 @@ export default function ReplyRegiPopup({ isVisible, storyBoardSeq, storyReplySeq
     callbackFunc(false);
   };
 
+
+
   // ############################################################################# 댓글 등록
   const replyRegister = async () => {
 
@@ -99,7 +101,7 @@ export default function ReplyRegiPopup({ isVisible, storyBoardSeq, storyReplySeq
   };
 
   // ############################################################################# Input 렌더링
-  const InputRender = () => {
+  /* const InputRender = () => {
     
     return (
       <>
@@ -130,7 +132,13 @@ export default function ReplyRegiPopup({ isVisible, storyBoardSeq, storyReplySeq
         </SpaceView>
       </>
     );
-  };
+  }; */
+
+  React.useEffect(() => {
+    /* if (inputRef.current) {
+      inputRef.current.focus();
+    } */
+  }, []);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -141,9 +149,9 @@ export default function ReplyRegiPopup({ isVisible, storyBoardSeq, storyReplySeq
 
       //Keyboard.show();    // 키보드를 다시 활성화합니다.
 
-      //inputRef.current.focus();
-
-
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
 
 
       return () => {
