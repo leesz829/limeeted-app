@@ -263,7 +263,7 @@ export default function StoryActive(props: Props) {
                 const boardImgPath = findSourcePathLocal(_item?.story_img_path);
 
                 return (
-                  <SpaceView mb={18} viewStyle={_styles.alarmItemWrap} key={'item' + _index}>
+                  <SpaceView viewStyle={_styles.alarmItemWrap('ALARM')} key={'item' + _index}>
 
                     {/* 회원 대표사진 */}
                     <SpaceView viewStyle={_styles.alarmItemMember}>
@@ -272,7 +272,10 @@ export default function StoryActive(props: Props) {
 
                     <SpaceView viewStyle={{flex:2.5}}>
 
-                      <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                      <TouchableOpacity 
+                        onPress={() => { goStoryDetail(storyBoardSeq) }}
+                        style={{flexDirection: 'row', justifyContent: 'space-between'}} >
+
                         {/* 내용 */}
                         <SpaceView viewStyle={_styles.alarmItemContent}>
                           <Text style={_styles.alarmContentText} numberOfLines={2}>
@@ -296,13 +299,11 @@ export default function StoryActive(props: Props) {
                         </SpaceView>
 
                         {/* 게시글 썸네일 */}
-                        <TouchableOpacity
-                          disabled={!isEmptyData(boardImgPath)} 
-                          onPress={() => { goStoryDetail(storyBoardSeq) }} style={_styles.alarmItemBoard}>
-                          <Image source={boardImgPath} style={_styles.alarmItemStoryThum} resizeMode={'cover'} />
-                        </TouchableOpacity>
+                        <SpaceView viewStyle={_styles.alarmItemBoard}>
+                          <Image source={isEmptyData(boardImgPath) ? boardImgPath : IMAGE.logoStoryBox} style={_styles.alarmItemStoryThum} resizeMode={'cover'} />
+                        </SpaceView>
 
-                      </SpaceView>
+                      </TouchableOpacity>
 
                       {/* 좋아요, 답글달기 버튼 영역 */}
                       <SpaceView>
@@ -317,7 +318,11 @@ export default function StoryActive(props: Props) {
                             </SpaceView>
 
                             <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-                              <TouchableOpacity onPress={() => { likeFunc('REPLY', storyBoardSeq, storyReplySeq); }} style={{marginRight: 3}} hitSlop={commonStyle.hipSlop30}>
+                              <TouchableOpacity 
+                                onPress={() => { likeFunc('REPLY', storyBoardSeq, storyReplySeq); }} 
+                                style={{marginRight: 5}} 
+                                hitSlop={commonStyle.hipSlop30}>
+
                                 {(memberLikeYn == 'N') ? (
                                   <Image source={ICON.heartOffIcon} style={styles.iconSquareSize(14)} />
                                 ) : (
@@ -325,7 +330,9 @@ export default function StoryActive(props: Props) {
                                 )}
                               </TouchableOpacity>
 
-                              <TouchableOpacity onPress={() => { popupStoryReplyActive(storyBoardSeq, storyReplySeq, depth, _item) }}>
+                              <TouchableOpacity
+                                onPress={() => { popupStoryReplyActive(storyBoardSeq, storyReplySeq, depth, _item) }}
+                                hitSlop={commonStyle.hipSlop10}>
                                 <Text style={_styles.likeCntText}>좋아요{_item?.like_cnt > 0 && _item?.like_cnt + '개'}</Text>
                               </TouchableOpacity>
                               
@@ -359,7 +366,6 @@ export default function StoryActive(props: Props) {
               <Text style={_styles.alarmTitleText}>{item?.name}</Text>
             </SpaceView>
 
-
             {/* ###### 목록 */}
             <SpaceView>
               {item?.dataList?.map((_item, _index) => {
@@ -374,12 +380,15 @@ export default function StoryActive(props: Props) {
                 const boardImgPath = findSourcePathLocal(_item?.story_img_path);
 
                 return (
-                  <SpaceView mb={10} viewStyle={_styles.alarmItemWrap} key={'item' + _index}>
+                  <TouchableOpacity 
+                    key={'item' + _index}
+                    style={_styles.alarmItemWrap('BOARD')} 
+                    onPress={() => { goStoryDetail(storyBoardSeq) }} >
 
                     {/* 게시글 썸네일 */}
-                    <TouchableOpacity onPress={() => { goStoryDetail(storyBoardSeq) }} style={_styles.alarmItemBoard}>
-                      <Image source={boardImgPath} style={_styles.alarmItemStoryThum} resizeMode={'cover'} />
-                    </TouchableOpacity>
+                    <SpaceView viewStyle={_styles.alarmItemBoard}>
+                      <Image source={isEmptyData(boardImgPath) ? boardImgPath : IMAGE.logoStoryBox} style={_styles.alarmItemStoryThum} resizeMode={'cover'} />
+                    </SpaceView>
 
                     <SpaceView viewStyle={_styles.storyItemContent}>
 
@@ -417,7 +426,7 @@ export default function StoryActive(props: Props) {
                       </SpaceView>
                       
                     </SpaceView>
-                  </SpaceView>
+                  </TouchableOpacity>
                 )}
               )}
             </SpaceView>
@@ -581,11 +590,13 @@ const _styles = StyleSheet.create({
     fontSize: 15,
     color: '#333',
   },
-  alarmItemWrap: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 5,
+  alarmItemWrap: (type:string) => {
+    return {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+      marginBottom: type == 'ALARM' ? 23 : 20,
+    }
   },
   alarmItemMember: {
     //width: 50,

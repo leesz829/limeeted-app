@@ -174,20 +174,23 @@ export default function ReplyRegiPopup({ isVisible, storyBoardSeq, storyReplySeq
                     <SpaceView viewStyle={_styles.inputArea}>
                       <Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={_styles.memberImageStyle} resizeMode={'cover'} />
 
-                      <CommonTextarea
+                      <TextInput
+                        ref={inputRef}
                         value={inputReplyText}
-                        onChangeText={(inputReplyText) => setInputReplyText(inputReplyText)}
-                        placeholder={'댓글을 입력해 주세요.'}
-                        placeholderTextColor={'#C7C7C7'}
-                        maxLength={200}
-                        exceedCharCountColor={'#990606'}
-                        fontSize={12}
-                        height={60}
-                        backgroundColor={'#F6F7FE'}
-                        fontColor={'#000'}
+                        onChangeText={(text) => setInputReplyText(text)}
+                        multiline={true}
+                        textAlignVertical="top"
+                        autoCapitalize="none"
                         style={_styles.replyTextStyle}
+                        placeholder={'댓글을 입력해 주세요.'}
+                        placeholderTextColor={'#c7c7c7'}
+                        editable={true}
+                        secureTextEntry={false}
+                        maxLength={150}
+                        autoFocus={true}
+                        //onSubmitEditing={() => { this.inputRef.focus(); }}
                       />
-
+                      
                       <TouchableOpacity
                         onPress={() => { replyRegister(); }}
                         style={_styles.btnArea}
@@ -231,7 +234,6 @@ export default function ReplyRegiPopup({ isVisible, storyBoardSeq, storyReplySeq
                       editable={true}
                       secureTextEntry={false}
                       maxLength={150}
-                      numberOfLines={4}
                       autoFocus={true}
                       //onSubmitEditing={() => { this.inputRef.focus(); }}
                     />

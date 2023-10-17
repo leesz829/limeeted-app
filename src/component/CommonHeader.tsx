@@ -85,8 +85,6 @@ function CommonHeader({
         );
   }
 
-  
-
   return (
     <>
       {isLogoType ? (
@@ -116,14 +114,18 @@ function CommonHeader({
                         <Text style={_styles.nicknameText(storyType, gender)}>{nickname}</Text>
                       ) : (
                         <>
-                          <Image source={mstImgPath} style={_styles.mstImgStyle} />
-                          <Text style={_styles.nicknameText(storyType, gender)}>{nickname}</Text>
+                          <SpaceView>
+                            <Image source={mstImgPath} style={_styles.mstImgStyle} />
+                          </SpaceView>
 
-                          <Text style={_styles.scoreText}>
-                            {profileScore}
-                            {(isEmptyData(authLevel) && authLevel >= 1) && ' | '}
-                            {(isEmptyData(authLevel) && authLevel >= 1) && 'Lv ' + authLevel}
-                          </Text>
+                          <SpaceView viewStyle={{flexDirection: 'column'}}>
+                            <Text style={_styles.scoreText}>
+                              {profileScore}
+                              {(isEmptyData(authLevel) && authLevel >= 1) && ' | '}
+                              {(isEmptyData(authLevel) && authLevel >= 1) && 'Lv ' + authLevel}
+                            </Text>
+                            <Text style={_styles.nicknameText(storyType, gender)}>{nickname}</Text>
+                          </SpaceView>
                         </>
                       )}
                     </SpaceView>
@@ -186,16 +188,14 @@ const _styles = StyleSheet.create({
     color: Color.black2222,
   },
   mstImgStyle: {
-    width: 28,
-    height: 28,
+    width: 32,
+    height: 32,
     borderRadius: 50,
     overflow: 'hidden',
     marginRight: 7,
   },
   nicknameText: (storyType:string, gender:string) => {
-    
     let clr = '#333333';
-
     if(storyType == 'SECRET') {
       if(gender == 'M') {
         clr = '#7986EE';
@@ -208,7 +208,7 @@ const _styles = StyleSheet.create({
       fontFamily: 'AppleSDGothicNeoEB00',
       fontSize: 14,
       color: clr,
-      marginRight: 9,
+      marginTop: -3,
     };
   },
   scoreText: {

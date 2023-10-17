@@ -206,6 +206,7 @@ export const IMAGE = {
   logoIcon02: require('assets/img/logo_icon02.png'),
   logoIcon03: require('assets/img/logo_icon03.png'),
   logoStoryTmp: require('assets/img/logo_story_tmp.png'),
+  logoStoryBox: require('assets/img/logo_story_box.png'),
   kakaoBtn: require('assets/img/kakao-btn.png'),
   main: require('assets/img/main.png'),
   common: require('assets/img/common.png'),

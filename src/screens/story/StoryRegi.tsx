@@ -67,8 +67,8 @@ export default function StoryRegi(props: Props) {
         <SpaceView mt={20} pl={20} pr={20}>
 
           <SpaceView mb={30} viewStyle={_styles.titleArea}>
-            <Text style={_styles.titleText}>{memberBase?.nickname}님의{'\n'}이야기로 리미티드에 일상읊{'\n'}공유하고 소통해보세요.</Text>
-            <View style={_styles.titleUnderline}></View>
+            <Text style={_styles.titleText}>{memberBase?.nickname}님의{'\n'}이야기로 리미티드에 일상을{'\n'}공유하고 소통해보세요.</Text>
+            <View style={_styles.titleUnderline} />
           </SpaceView>
 
           <SpaceView viewStyle={_styles.contentArea}>
@@ -119,10 +119,10 @@ const _styles = StyleSheet.create({
   },
   titleUnderline: {
     position: 'absolute',
-    top:71,
-    left:-1,
+    top: 72,
+    left: -1,
     width: width-205,
-    height: height-835,
+    height: 8,
     backgroundColor: '#7986EE',
     zIndex:-1,
   },
