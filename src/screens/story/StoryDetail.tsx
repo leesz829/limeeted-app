@@ -9,7 +9,7 @@ import { ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpac
 import { get_story_detail, save_story_like, save_story_vote_member, profile_open } from 'api/models';
 import { findSourcePath, IMAGE, GIF_IMG, findSourcePathLocal } from 'utils/imageUtils';
 import { usePopup } from 'Context';
-import { SUCCESS, NODATA } from 'constants/reusltcode';
+import { SUCCESS, NODATA, EXIST } from 'constants/reusltcode';
 import { useDispatch } from 'react-redux';
 import Image from 'react-native-fast-image';
 import { ICON, PROFILE_IMAGE } from 'utils/imageUtils';
@@ -309,6 +309,12 @@ export default function StoryDetail(props: Props) {
                 } 
               });
               break;
+            case EXIST:
+              show({
+                content: '이미 보관함에 존재하는 회원입니다.',
+                isCross: true,
+              });
+              break;
             default:
               show({ content: '오류입니다. 관리자에게 문의해주세요.' });
               break;
@@ -330,6 +336,7 @@ export default function StoryDetail(props: Props) {
     const memberMstImgPath = findSourcePath(item?.mst_img_path); // 회원 대표 이미지 경로
     const storyReplySeq = item?.story_reply_seq; // 댓글 번호
     const depth = item?.depth;
+    const gender = item?.gender;
 
     let _w = width - 70;
     let depthStyleSize = 0;
@@ -340,7 +347,7 @@ export default function StoryDetail(props: Props) {
     }
 
     if(storyData.board?.story_type == 'SECRET') {
-      _w = _w + 25;
+      _w = _w + 15;
     }
     
     return (
@@ -349,13 +356,17 @@ export default function StoryDetail(props: Props) {
           <SpaceView ml={depthStyleSize} viewStyle={_styles.replyItemTopArea}>
             <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'flex-start'}}>
 
-              {storyData.board?.story_type != 'SECRET' && (
+              {storyData.board?.story_type != 'SECRET' ? (
                 <TouchableOpacity 
                   disabled={memberBase?.gender === item?.gender || memberBase?.member_seq === item?.member_seq}
                   onPress={() => { profileCardOpenPopup(item?.member_seq, item?.open_cnt); }}>
 
                   <Image source={memberMstImgPath} style={_styles.replyImageStyle} resizeMode={'cover'} />
                 </TouchableOpacity>
+              ) : (
+                <SpaceView mt={5}>
+                  <Image source={gender == 'M' ? ICON.maleIcon : ICON.femaleIcon} style={styles.iconSquareSize(15)} resizeMode={'cover'} />
+                </SpaceView>
               )}
               
               <SpaceView ml={5} pt={3} viewStyle={{flexDirection: 'column', width: _w}}>
@@ -378,7 +389,8 @@ export default function StoryDetail(props: Props) {
                     <SpaceView viewStyle={_styles.likeArea}>
                       <TouchableOpacity 
                         onPress={() => { likeFunc('REPLY', storyReplySeq); }}
-                        style={{marginRight: 3}}>
+                        style={{marginRight: 6}} 
+                        hitSlop={commonStyle.hipSlop20}>
 
                         {(item?.member_like_yn == 'N') ? (
                           <Image source={ICON.heartOffIcon} style={styles.iconSquareSize(15)} />
@@ -389,6 +401,7 @@ export default function StoryDetail(props: Props) {
 
                       <TouchableOpacity 
                         //disabled={memberBase.member_seq != item?.member_seq}
+                        hitSlop={commonStyle.hipSlop10}
                         onPress={() => { popupStoryReplyActive(storyReplySeq, depth, item) }}>
                         <Text style={_styles.replyLikeCntText}>좋아요{item?.like_cnt > 0 && item?.like_cnt + '개'}</Text>
                       </TouchableOpacity>
@@ -421,7 +434,7 @@ export default function StoryDetail(props: Props) {
       {isLoading && <CommonLoading />}
 
       <CommonHeader 
-        title={'스토리 상세'} 
+        title={(storyData.board?.story_type == 'STORY' ? '스토리' : storyData.board?.story_type == 'VOTE' ? '투표' : '시크릿')}
         type={'STORY_DETAIL'} 
         mstImgPath={findSourcePath(storyData.board?.mst_img_path)} 
         nickname={storyData.board?.nickname}
@@ -431,10 +444,6 @@ export default function StoryDetail(props: Props) {
         storyType={storyData.board?.story_type}
       />
 
-      <SpaceView>
-        
-      </SpaceView>
-
       <ScrollView 
         showsVerticalScrollIndicator={false}
         style={{backgroundColor: '#fff'}}>
@@ -443,12 +452,17 @@ export default function StoryDetail(props: Props) {
 
           {/* ###################################################################################### 이미지 영역 */}
           <SpaceView>
-
             <View style={_styles.pagingContainer}>
               {storyData.imageList?.map((item, index) => {
-                <View style={_styles.dotContainerStyle} key={'dot' + index}>
-                  <View style={[_styles.pagingDotStyle, index == currentIndex && _styles.activeDot]} />
-                </View>
+                return (
+                  <View style={_styles.dotContainerStyle} key={'dot' + index}>
+                    <LinearGradient
+                      colors={['#727FFF', '#B8BFFF']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={[_styles.pagingDotStyle(index == currentIndex)]} />
+                  </View>
+                )
               })}
             </View>
 
@@ -465,11 +479,11 @@ export default function StoryDetail(props: Props) {
 
           {/* ###################################################################################### 버튼 영역 */}
           <SpaceView mt={20}>
-            <SpaceView pl={20} pr={20} pb={10} viewStyle={_styles.replyEtcArea}>
+            <SpaceView pl={20} pr={20} pb={10} mb={8} viewStyle={_styles.replyEtcArea}>
               <SpaceView viewStyle={{width: '100%', height: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
 
                 {/* 수정하기 버튼 */}
-                {memberBase?.member_seq == storyData.board?.member_seq && (
+                {memberBase?.member_seq == storyData.board?.member_seq ? (
                   <SpaceView viewStyle={_styles.btnArea}>
                     <TouchableOpacity
                       onPress={() => { goStoryModfy(); }}
@@ -483,11 +497,38 @@ export default function StoryDetail(props: Props) {
                       <Text style={_styles.regiBtnText}>댓글달기</Text>
                     </TouchableOpacity> */}
                   </SpaceView>
+                ) : (
+                  <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                    {storyData.board?.story_type == 'SECRET' ? (
+                      <Text style={_styles.nicknameText(storyData.board?.story_type, storyData.board?.gender)}>{storyData.board?.nickname}</Text>
+                    ) : (
+                      <>
+                        <TouchableOpacity
+                          disabled={memberBase?.gender === storyData.board?.gender || memberBase?.member_seq === storyData.board?.member_seq}
+                          onPress={() => { profileCardOpenPopup(storyData.board?.member_seq, storyData.board?.open_cnt); }} >
+
+                          <Image source={findSourcePath(storyData.board?.mst_img_path)} style={_styles.mstImgStyle} />
+                        </TouchableOpacity>
+
+                        <SpaceView viewStyle={{flexDirection: 'column'}}>
+                          <Text style={_styles.scoreText}>
+                            {storyData.board?.profile_score}
+                            {(isEmptyData(storyData.board?.auth_level) && storyData.board?.auth_level >= 1) && ' | '}
+                            {(isEmptyData(storyData.board?.auth_level) && storyData.board?.auth_level >= 1) && 'Lv ' + storyData.board?.auth_level}
+                          </Text>
+                          <Text style={_styles.nicknameText(storyData.board?.story_type, storyData.board?.gender)}>{storyData.board?.nickname}</Text>
+                        </SpaceView>
+                      </>
+                    )}
+                  </SpaceView>
                 )}
 
                 {/* 좋아요 영역 */}
                 <SpaceView viewStyle={{flexDirection: 'row', position: 'absolute', top: 0, right: 0,}}>
-                  <TouchableOpacity onPress={() => { storyLikeProc('BOARD', 0); }} style={{marginRight: 5}}>
+                  <TouchableOpacity 
+                    onPress={() => { storyLikeProc('BOARD', 0); }} 
+                    style={{marginRight: 5}}
+                    hitSlop={commonStyle.hipSlop20}>
 
                     {storyData.board?.member_like_yn == 'N' ? (
                       <Image source={ICON.heartOffIcon} style={styles.iconSquareSize(20)} />
@@ -497,6 +538,7 @@ export default function StoryDetail(props: Props) {
                   </TouchableOpacity>
                   <TouchableOpacity 
                     //disabled={memberBase.member_seq != storyData.board?.member_seq}
+                    hitSlop={commonStyle.hipSlop10}
                     onPress={() => { popupStoryBoardActive(); }}>
                     <Text style={_styles.likeCntText}>좋아요 {storyData.board?.like_cnt > 0 && storyData.board?.like_cnt + '개'}</Text>
                   </TouchableOpacity>
@@ -715,18 +757,20 @@ const _styles = StyleSheet.create({
   },
   pagingContainer: {
     position: 'absolute',
-    zIndex: 10,
+    zIndex: 100,
     alignItems: 'center',
-    width,
     flexDirection: 'row',
     justifyContent: 'center',
-    top: 8,
+    bottom: 18,
+    left: 0,
+    right: 0,
   },
-  pagingDotStyle: {
-    width: 19,
-    height: 2,
-    backgroundColor: 'rgba(255,255,255,0.3)',
-    borderRadius: 4,
+  pagingDotStyle: (isOn:boolean) => {
+    return {
+      width: isOn ? 20 : 4,
+      height: 4,
+      borderRadius: 10,
+    };
   },
   dotContainerStyle: {
     marginRight: 2,
@@ -772,7 +816,7 @@ const _styles = StyleSheet.create({
     marginRight: 5,
   },
   replyNickname: {
-    fontFamily: 'AppleSDGothicNeoR00',
+    fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 14,
     color: '#000',
     marginRight: 8,
@@ -908,6 +952,35 @@ const _styles = StyleSheet.create({
       fontSize: 16,
       textAlign: 'center',
     };
+  },
+  mstImgStyle: {
+    width: 32,
+    height: 32,
+    borderRadius: 50,
+    overflow: 'hidden',
+    marginRight: 7,
+  },
+  nicknameText: (storyType:string, gender:string) => {
+    let clr = '#333333';
+    if(storyType == 'SECRET') {
+      if(gender == 'M') {
+        clr = '#7986EE';
+      } else {
+        clr = '#FE0456';
+      }
+    }
+
+    return {
+      fontFamily: 'AppleSDGothicNeoEB00',
+      fontSize: 14,
+      color: clr,
+      marginTop: -3,
+    };
+  },
+  scoreText: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 14,
+    color: '#333333',
   },
 
   

@@ -256,14 +256,15 @@ export default function ItemMatching(props: Props) {
             show({
               type: 'RESPONSIVE',
               content: '프로필을 보관함에 담아드렸어요.',
+              isCross: true,
             });
           };
           
         } else if (data.result_code == '6010') {
-          show({ content: '보유 패스가 부족합니다.' });
+          show({ content: '보유 패스가 부족합니다.', isCross: true });
           return false;
         } else {
-          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+          show({ content: '오류입니다. 관리자에게 문의해주세요.', isCross: true });
         }
       }
     } catch (error) {

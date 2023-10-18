@@ -189,6 +189,8 @@ export const ICON = {
   talkBalloonIcon: require('assets/icon/icon-talk-balloon.png'),
   talkQuestionIcon: require('assets/icon/icon-talk-question.png'),
   voteIcon: require('assets/icon/icon-vote.png'),
+  maleIcon: require('assets/icon/icon-male.png'),
+  femaleIcon: require('assets/icon/icon-female.png'),
 };
 
 export const GIF_IMG = {

@@ -2,6 +2,7 @@ export const SUCCESS = "0000";
 export const ERROR = "9999";
 export const NODATA = "9998";
 export const PARAM_ERROR = "9997";
+export const EXIST = "9996";
 
 export const LOGIN_EMPTY = "0001";    // 일치하는 회원이 없음
 export const LOGIN_WAIT = "0002";     // 가입진행 및 가입승인 대기상태 회원
@@ -22,6 +23,7 @@ export default {
   ERROR,
   NODATA,
   PARAM_ERROR,
+  EXIST,
   LOGIN_EMPTY,
   LOGIN_WAIT,
   LOGIN_REFUSE,

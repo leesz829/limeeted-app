@@ -9,7 +9,7 @@ import { ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpac
 import { get_story_active, save_story_like, profile_open } from 'api/models';
 import { findSourcePath, IMAGE, findSourcePathLocal } from 'utils/imageUtils';
 import { usePopup } from 'Context';
-import { SUCCESS, NODATA } from 'constants/reusltcode';
+import { SUCCESS, NODATA, EXIST } from 'constants/reusltcode';
 import { useDispatch } from 'react-redux';
 import Image from 'react-native-fast-image';
 import { ICON, PROFILE_IMAGE } from 'utils/imageUtils';
@@ -228,6 +228,12 @@ export default function StoryActive(props: Props) {
                   type: 'OPEN',
                   //matchType: 'STORY',
                 } 
+              });
+              break;
+            case EXIST:
+              show({
+                content: '이미 보관함에 존재하는 회원입니다.',
+                isCross: true,
               });
               break;
             default:

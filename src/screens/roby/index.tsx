@@ -646,7 +646,7 @@ export const Roby = (props: Props) => {
                 />
               ) : (
                 <RatingCard
-                  title={'프로필 평점'}
+                  title={'라이브 평점'}
                   desc={`내 프로필을 평가한\n이성들의 평균 점수 입니다`}
                   value={memberBase?.profile_score}
                   isPennding={reassessment}

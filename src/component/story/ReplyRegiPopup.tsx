@@ -80,6 +80,7 @@ export default function ReplyRegiPopup({ isVisible, storyBoardSeq, storyReplySeq
               screen: 'Story',
             }); */
 
+            setInputReplyText('');
             callbackFunc(true);
             
             break;
@@ -153,9 +154,7 @@ export default function ReplyRegiPopup({ isVisible, storyBoardSeq, storyReplySeq
         inputRef.current.focus();
       }
 
-
       return () => {
-
       };
     }, []),
   );

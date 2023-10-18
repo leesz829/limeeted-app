@@ -102,7 +102,7 @@ export const Live = () => {
   const scoreSelectedCallBackFunc = async (score: number) => {
     // 2.5 보다 아래 체크
     if(score == 0) {
-      show({ content: '프로필 평점을 다시 선택해 주세요!' , });
+      show({ content: '라이브 평점을 다시 선택해 주세요!' , });
     } else if(score <= 3.0) {
       insertProfileAssessment(score);
     } else {
@@ -491,7 +491,7 @@ export const Live = () => {
 
       <View style={_styles.root}>
         <View style={_styles.titArea}>
-          {pageIndex == 1 && <Text style={_styles.titText}><Text style={{color: '#97A1EF'}}>{data.live_member_info.nickname}</Text>님의{'\n'}프로필 평점을 선택해 주세요.</Text>}
+          {pageIndex == 1 && <Text style={_styles.titText}><Text style={{color: '#97A1EF'}}>{data.live_member_info.nickname}</Text>님의{'\n'}라이브 평점을 선택해 주세요.</Text>}
           {pageIndex == 2 && <Text style={_styles.titText}><Text style={{color: '#97A1EF'}}>{data.live_member_info.nickname}</Text>님의{'\n'}인상을 선택해 주세요.</Text>}
         </View>
 

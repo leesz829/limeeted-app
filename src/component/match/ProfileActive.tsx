@@ -24,7 +24,7 @@ export default function ProfileActive({ memberData }) {
           <View style={[_styles.levelBadge, {marginRight: 0, marginTop: 1}]}>
 
             {/* ####################################################################################################
-            ##################################### 프로필 평점 노출 영역
+            ##################################### 라이브 노출 영역
             #################################################################################################### */}
             <ProfileGrade profileScore={memberData?.profile_score} type={'BASE'} />
           </View>
@@ -32,18 +32,18 @@ export default function ProfileActive({ memberData }) {
         </SpaceView>
 
         {/* ##############################################################################################
-        ############### 프로필 평점 영역
+        ############### 라이브 평점 영역
         ############################################################################################## */}
         <View style={_styles.profileActivePannel}>
           <View style={{zIndex: 1}}>
-            <Text style={_styles.profileEverageText}>프로필 평점</Text>
+            <Text style={_styles.profileEverageText}>라이브 평점</Text>
             <Text style={_styles.profileActiveText1}>
               <Text style={{ fontFamily: 'AppleSDGothicNeoEB00' }}>{memberData.nickname}</Text>
               님의 리미티드 대표 인상
             </Text>
             <Text style={_styles.profileActiveText2}>{memberData.face_code_name}</Text>
             <View style={_styles.sliderContainer}>
-              <Text style={_styles.sliderText}>프로필 평점 {memberData.profile_score}</Text>
+              <Text style={_styles.sliderText}>라이브 평점 {memberData.profile_score}</Text>
 
               {(isEmptyData(memberData?.profile_score) && memberData?.profile_score > 3) &&
                 <View style={[_styles.scoreContainer, { left: memberData?.profile_score == 0 ? 0 : memberData?.profile_score * 10 - 5 + '%' }]}>

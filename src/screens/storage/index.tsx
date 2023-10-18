@@ -465,11 +465,11 @@ export const Storage = (props: Props) => {
             navigation.setParams({ loadPage: type });
   
           } else if (data.result_code == '6010') {
-            show({ content: '보유 패스가 부족합니다.' });
+            show({ content: '보유 패스가 부족합니다.', isCross: true, });
             return false;
           } else {
             console.log(data.result_msg);
-            show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+            show({ content: '오류입니다. 관리자에게 문의해주세요.', isCross: true, });
           }
         }
       } catch (error) {
@@ -678,7 +678,7 @@ export const Storage = (props: Props) => {
                 {/* ############# 인증 레벨 노출 */}
                 <AuthLevel authAcctCnt={item.auth_acct_cnt} type={'SMALL'} />
 
-                {/* ############# 프로필 평점 노출 */}
+                {/* ############# 라이브 평점 노출 */}
                 <ProfileGrade profileScore={item.profile_score} type={'SMALL'} />
 
               </View>

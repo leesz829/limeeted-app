@@ -48,7 +48,7 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                 <AuthLevel authAcctCnt={memberData?.auth_acct_cnt} type={'BASE'} />
 
                 {/* ####################################################################################################
-                ##################################### 프로필 평점 노출 영역
+                ##################################### 라이브 평점 노출 영역
                 #################################################################################################### */}
                 <ProfileGrade profileScore={memberData?.profile_score} type={'BASE'} />
               </SpaceView>

@@ -26,6 +26,7 @@ export type NavigationHeaderProps = {
   profileScore?: any;
   authLevel?: any;
   storyType?: string;
+  callbackFunc: () => void;
 };
 
 /**
@@ -40,12 +41,7 @@ function CommonHeader({
   walletTextStyle,
   isLogoType,
   type,
-  mstImgPath,
-  nickname,
-  gender,
-  profileScore,
-  authLevel,
-  storyType,
+  callbackFunc,
 }: NavigationHeaderProps) {
 
   const navigation = useNavigation<StackScreenProp>();
@@ -106,7 +102,7 @@ function CommonHeader({
               >
                 <Image source={backIcon || ICON.back} style={_styles.backImg} />
 
-                {type == 'STORY_DETAIL' ? (
+                {/* {type == 'STORY_DETAIL' ? (
                   <>
                     <SpaceView ml={13} viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start'}}>
 
@@ -136,14 +132,29 @@ function CommonHeader({
                       <Text style={_styles.titleStyle}>{title}</Text>
                     </SpaceView>
                   </>
-                )}
+                )} */}
+
+                <SpaceView ml={13}>
+                  <Text style={_styles.titleStyle}>{title}</Text>
+                </SpaceView>
               </TouchableOpacity>
 
             </SpaceView>
 
             <SpaceView>
-              {/* 재화 표시 */}
-              <View>{right || <Wallet textStyle={walletTextStyle} />}</View>
+              {type == 'STORY_REGI' ? (
+                <>
+                  <TouchableOpacity onPress={callbackFunc} hitSlop={commonStyle.hipSlop20}>
+                    <Text style={_styles.regiText}>등록</Text>
+                  </TouchableOpacity>
+                </>
+              ) : (
+                <>
+                  {/* 재화 표시 */}
+                  <View>{right || <Wallet textStyle={walletTextStyle} />}</View>
+                </>  
+              )}
+
             </SpaceView>
           </View>
         </>
@@ -214,6 +225,11 @@ const _styles = StyleSheet.create({
   scoreText: {
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 14,
+    color: '#333333',
+  },
+  regiText: {
+    fontFamily: 'AppleSDGothicNeoB00',
+    fontSize: 16,
     color: '#333333',
   },
 

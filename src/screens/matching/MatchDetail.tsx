@@ -217,6 +217,15 @@ export default function MatchDetail(props: Props) {
 
   // ############################################################ 찐심/관심/거부 저장
   const insertMatchInfo = async (activeType: string, special_level: number, message: string) => {
+
+    if(data.match_member_info?.match_dup_yn == 'Y') {
+      show({ 
+        content: '이미 보관함에 존재하는 회원입니다.' ,
+        isCross: true,
+      });
+      return;
+    }
+
     let body = {
       active_type: activeType,
       res_member_seq: data.match_member_info.member_seq,
@@ -240,16 +249,17 @@ export default function MatchDetail(props: Props) {
             show({
               type: 'RESPONSIVE',
               content: '프로필을 보관함에 담아드렸어요.',
+              isCross: true,
             });
           };
 
           navigation.goBack();
           
         } else if (data.result_code == '6010') {
-          show({ content: '보유 패스가 부족합니다.' });
+          show({ content: '보유 패스가 부족합니다.', isCross: true, });
           return false;
         } else {
-          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+          show({ content: '오류입니다. 관리자에게 문의해주세요.', isCross: true, });
         }
       }
     } catch (error) {
@@ -401,9 +411,9 @@ export default function MatchDetail(props: Props) {
               <View style={_styles.buttonsContainer}>
 
                 {/* ######### 거절 버튼 */}
-                <TouchableOpacity onPress={() => { popupActive('pass'); }}>
+                {/* <TouchableOpacity onPress={() => { popupActive('pass'); }}>
                   <Image source={ICON.closeCircle} style={_styles.smallButton} />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
                 {/* ######### 관심 버튼 */}
                 <TouchableOpacity onPress={() => { popupActive('interest'); }} style={_styles.freePassContainer}>

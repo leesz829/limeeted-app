@@ -170,7 +170,7 @@ export const StorageProfile = (props: Props) => {
           if(data.use_item.FREE_CONTACT){
             setFreeContactYN('Y');
           }else{
-            setFreeContactYN('N')
+            setFreeContactYN('N');
           }
         }
       }
@@ -314,7 +314,7 @@ export const StorageProfile = (props: Props) => {
 
   // ############################################################ 연락처 열기 팝업 활성화
   const hpOpenPopup = async () => {    
-    let tmpContent = '현재 보고 계신 프로필의 연락처를 확인하시겠어요?\n패스 x' + (data.match_base.special_interest_yn == 'Y' ? '40' : '100');
+    let tmpContent = '현재 보고 계신 프로필의 연락처를 확인하시겠어요?\n패스 x' + (data.match_base.special_interest_yn == 'Y' ? '50' : '100');
     let subContent = '';
 
     if('Y' == freeContactYN){
@@ -457,7 +457,7 @@ export const StorageProfile = (props: Props) => {
     }
   };
 
-  // ############################################################ 매칭 회원 정보 조회
+  // ############################################################ 클립보드 복사
   const onCopyPress = async (value: string) => {
     try {
       await Clipboard.setString(value);
@@ -498,6 +498,7 @@ export const StorageProfile = (props: Props) => {
           else if(props.route.params.type == 'REQ') return '내가 보낸 관심';
           else if(props.route.params.type == 'MATCH') return '성공 매칭'
           else if(props.route.params.type == 'ZZIM') return '찜한 프로필'
+          else if(props.route.params.type == 'OPEN') return '열람 프로필'
           else if(props.route.params.type == 'LIVE' && props.route.params.matchType == 'LIVE_RES') return '받은 고평점 LIVE'
           else if(props.route.params.type == 'LIVE' && props.route.params.matchType == 'LIVE_REQ') return '보낸 고평점 LIVE';
         })()

@@ -10,7 +10,7 @@ import { ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpac
 import { get_story_board_list, profile_open } from 'api/models';
 import { findSourcePath, IMAGE, GIF_IMG, findSourcePathLocal } from 'utils/imageUtils';
 import { usePopup } from 'Context';
-import { SUCCESS, NODATA } from 'constants/reusltcode';
+import { SUCCESS, NODATA, EXIST } from 'constants/reusltcode';
 import { useDispatch } from 'react-redux';
 import Image from 'react-native-fast-image';
 import { ICON, PROFILE_IMAGE } from 'utils/imageUtils';
@@ -147,6 +147,12 @@ export const Story = () => {
                   type: 'OPEN',
                   //matchType: 'STORY',
                 } 
+              });
+              break;
+            case EXIST:
+              show({
+                content: '이미 보관함에 존재하는 회원입니다.',
+                isCross: true,
               });
               break;
             default:
@@ -378,6 +384,25 @@ export const Story = () => {
     }
   }, [isFocus]);
 
+
+  function CustomRefreshControl({ refreshing, onRefresh }) {
+    console.log('refreshing ::::::: ' , refreshing);
+    console.log('onRefresh ::::::: ' , onRefresh);
+
+    return (
+      <>
+        <View style={{ position: 'absolute', top: 0, height: 100, backgroundColor: '#fff' }}>
+        {refreshing ? (
+          <Text>Pull to Refresh</Text>
+        ) : (
+          <Text>Pull to Refresh</Text>
+        )}
+      </View>
+      </>
+      
+    );
+  }
+
   return (
     <>
       {isLoading && <CommonLoading />}
@@ -407,7 +432,12 @@ export const Story = () => {
             <RefreshControl
               refreshing={isRefreshing}
               onRefresh={handleRefresh}
-            />
+              tintColor="#ff0000" // Pull to Refresh 아이콘 색상 변경
+              title="Loading..." // Pull to Refresh 아이콘 아래에 표시될 텍스트
+              titleColor="#ff0000" // 텍스트 색상 변경
+              colors={['#ff0000', '#00ff00', '#0000ff']} // 로딩 아이콘 색상 변경
+              progressBackgroundColor="#ffffff" >
+            </RefreshControl>
           }
           onEndReached={loadMoreData}
           onEndReachedThreshold={0.1}

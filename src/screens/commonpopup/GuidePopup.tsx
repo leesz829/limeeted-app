@@ -233,7 +233,7 @@ export const GuidePopup = (props: Props) => {
                                   colors={['#DBEEEE', '#FFF']}
                                   start={{ x: 0.5, y: 0 }}
                                   end={{ x: 0.5, y: 1 }}>
-                                  <SpaceView mb={10} ml={15} mt={20} viewStyle={layoutStyle.alignStart}><Text style={_styles.liveTxt01}>"프로필 평점" 알아보기</Text></SpaceView>
+                                  <SpaceView mb={10} ml={15} mt={20} viewStyle={layoutStyle.alignStart}><Text style={_styles.liveTxt01}>"라이브 평점" 알아보기</Text></SpaceView>
                                   <SpaceView viewStyle={layoutStyle.alignCenter} mb={10}>
                                     {index == 0 && <Image source={GUIDE_IMAGE.robyProfile01Content} style={{width: 299, height: 178}} resizeMode={'cover'} /> }
                                     {index == 1 && <Image source={GUIDE_IMAGE.robyProfile02Content} style={{width: 299, height: 178}} resizeMode={'cover'} /> }
@@ -241,15 +241,15 @@ export const GuidePopup = (props: Props) => {
                                   <SpaceView viewStyle={commonStyle.paddingHorizontal15}>
                                     {index == 0 &&
                                       <>
-                                        <Text style={[_styles.liveTxt02, {marginBottom: 8}]}>#프로필 평점</Text>
-                                        <Text style={_styles.liveTxt03}>내 프로필 평점과 동등한 이성을 소개받을 수 있어요.</Text>
+                                        <Text style={[_styles.liveTxt02, {marginBottom: 8}]}>#라이브 평점</Text>
+                                        <Text style={_styles.liveTxt03}>내 라이브 평점과 동등한 이성을 소개받을 수 있어요.</Text>
                                       </>
                                     }
                                     {index == 1 &&
                                       <>
-                                        <Text style={[_styles.liveTxt02, {marginBottom: 8}]}>#프로필 평점</Text>
+                                        <Text style={[_styles.liveTxt02, {marginBottom: 8}]}>#라이브 평점</Text>
                                         <Text style={_styles.liveTxt03}>
-                                          <Text style={{color: '#697AE6'}}>"내 프로필 재심사"</Text>를 받고 높은 프로필 평점에 도전해보세요.!{'\n'}
+                                          <Text style={{color: '#697AE6'}}>"내 프로필 재심사"</Text>를 받고 높은 라이브 평점에 도전해보세요.!{'\n'}
                                           {/* 프로필 평점 <Text style={{color: '#697AE6'}}>7.0</Text>이 되면 프로필 인증 레벨이 <Text style={{color: '#697AE6'}}>+1</Text>이 가산돼요.{'\n'}
                                           (7 / 8 / 9 / 10 마다 +1씩 가산) */}
                                         </Text>
