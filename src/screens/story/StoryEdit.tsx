@@ -473,6 +473,7 @@ export default function StoryEdit(props: Props) {
                     borderColor={isEmptyData(storyData.contents) ? '#7986EE' : '#DDDDDD'}
                     borderRadius={20}
                     padding={20}
+                    paddingTop={20}
                   />
                 </SpaceView>
               </>
