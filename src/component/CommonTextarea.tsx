@@ -24,6 +24,7 @@ type Props = {
   backgroundColor?: string;
   borderColor?: string;
   padding?: number;
+  paddingTop?: number;
 } & StyleProp<TextInputProps>;
 
 /**

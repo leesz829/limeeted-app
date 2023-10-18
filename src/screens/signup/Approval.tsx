@@ -318,8 +318,10 @@ export const Approval = (props: Props) => {
               <View style={_styles.refuseTextArea}>
                 <CommonText textStyle={_styles.refuseText01}>심사 반려 안내</CommonText>
                 <CommonText textStyle={_styles.refuseText02}>
-                  가입 기준에 맞지 않거나 증빙 자료가 불충분한 대상이 있어요.{'\n'}
-                  "프로필 수정하기"를 이용해 재심사 신청을 해주세요.
+                  {/* 가입 기준에 맞지 않거나 증빙 자료가 불충분한 대상이 있어요.{'\n'}
+                  "프로필 수정하기"를 이용해 재심사 신청을 해주세요. */}
+                  가입 기준에 맞지 않거나 증빙 자료가 불충분한 항목이 있어요.{'\n'}
+                  "프로필 수정하기"를 이용하여 상세 반려 사유 확인 및 재심사 신청을 해주세요.
                 </CommonText>
 
                 <ScrollView horizontal style={_styles.refuseIconArea}>
@@ -402,7 +404,7 @@ const _styles = StyleSheet.create({
   },
   refuseText02: {
     color: '#8E8E8E',
-    fontSize: 13,
+    fontSize: 12,
     fontFamily: 'AppleSDGothicNeoM00',
     lineHeight: 18,
   },
