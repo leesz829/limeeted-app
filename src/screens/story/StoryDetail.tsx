@@ -455,17 +455,37 @@ export default function StoryDetail(props: Props) {
           {/* ###################################################################################### 이미지 영역 */}
           <SpaceView>
             <View style={_styles.pagingContainer}>
-              {storyData.imageList?.map((item, index) => {
-                return (
-                  <View style={_styles.dotContainerStyle} key={'dot' + index}>
-                    <LinearGradient
-                      colors={['#727FFF', '#B8BFFF']}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 1 }}
-                      style={[_styles.pagingDotStyle(index == currentIndex)]} />
-                  </View>
-                )
-              })}
+              {storyData.board?.story_type == 'VOTE' ? (
+                <>
+                  {storyData.voteList?.map((item, index) => {
+                    return (
+                      <View style={_styles.dotContainerStyle} key={'dot' + index}>
+                        <LinearGradient
+                          colors={['#727FFF', '#B8BFFF']}
+                          start={{ x: 0, y: 0 }}
+                          end={{ x: 1, y: 1 }}
+                          style={[_styles.pagingDotStyle(index == currentIndex)]} />
+                      </View>
+                    )
+                  })}
+                </>
+              ) : (
+                <>
+                  {storyData.imageList?.map((item, index) => {
+                    return (
+                      <View style={_styles.dotContainerStyle} key={'dot' + index}>
+                        <LinearGradient
+                          colors={['#727FFF', '#B8BFFF']}
+                          start={{ x: 0, y: 0 }}
+                          end={{ x: 1, y: 1 }}
+                          style={[_styles.pagingDotStyle(index == currentIndex)]} />
+                      </View>
+                    )
+                  })}
+                </>
+              )}
+
+              
             </View>
 
             <FlatList
@@ -763,7 +783,7 @@ const _styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
-    bottom: 18,
+    top: width * 1.3 - 20,
     left: 0,
     right: 0,
   },

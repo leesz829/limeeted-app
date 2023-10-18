@@ -362,7 +362,7 @@ export default function StoryActive(props: Props) {
 
                         {/* 내용 */}
                         <SpaceView viewStyle={_styles.alarmItemContent}>
-                          <Text style={_styles.alarmContentText} numberOfLines={2}>
+                          <Text style={_styles.alarmContentText} numberOfLines={3}>
                             <Text style={_styles.alarmNickname}>{_item?.nickname}</Text>
                             {storyAlarmType == 'REPLY' ? (
                               <>

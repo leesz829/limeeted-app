@@ -297,7 +297,7 @@ export const Story = () => {
 
                 {/* 스토리 유형 */}
                 <SpaceView viewStyle={_styles.typeArea(storyType)}>
-                  <Text style={_styles.typeText} numberOfLines={type == 'SMALL' ? 2 : 6}>{item?.story_type_name}</Text>
+                  <Text style={_styles.typeText}>{item?.story_type_name}</Text>
                 </SpaceView>
 
                 <SpaceView mt={10} viewStyle={{flexDirection: 'column', alignItems: 'center'}}>
@@ -319,7 +319,7 @@ export const Story = () => {
 
                 {/* 내용 */}
                 <SpaceView mt={25} pl={10} pr={10}>
-                  <Text style={_styles.contentsText('#333333')}>{item?.contents}</Text>
+                  <Text style={_styles.contentsText('#333333')} numberOfLines={type == 'SMALL' ? 2 : 6}>{item?.contents}</Text>
                 </SpaceView>
                 
               </SpaceView>
