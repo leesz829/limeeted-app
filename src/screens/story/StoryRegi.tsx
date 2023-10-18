@@ -80,7 +80,7 @@ export default function StoryRegi(props: Props) {
             </TouchableOpacity>
 
             <TouchableOpacity style={[_styles.contentItem, {backgroundColor: '#B5FBFD',}]} onPress={() => { selectedStoryType('VOTE'); }}>
-              <Text style={[_styles.contentTitle, {color: '#48B2B5'}]}>투표형</Text>
+              <Text style={[_styles.contentTitle, {color: '#48B2B5'}]}>투표</Text>
               <Text style={_styles.contentSubTitle}>왼 VS 오 어떤 것?{'\n'}밸런스 게임으로 사람들의 성향을 알아가요.</Text>
               <Image source={ICON.mail} style={_styles.contentImg} resizeMode={'cover'} />
             </TouchableOpacity>

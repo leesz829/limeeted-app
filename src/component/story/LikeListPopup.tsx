@@ -98,7 +98,12 @@ export default function LikeListPopup({ isVisible, closeModal, type, _storyBoard
       <>
         <SpaceView mt={15} mb={5} viewStyle={_styles.likeListArea}>
           <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-            <Image source={ memberMstImgPath } style={_styles.imageStyle(45)} resizeMode={'cover'} />
+            <TouchableOpacity
+              disabled={memberBase?.gender === item?.gender || memberBase?.member_seq === item?.member_seq}
+              onPress={() => { profileOpen(item?.member_seq, item?.open_cnt); }} >
+
+              <Image source={ memberMstImgPath } style={_styles.imageStyle(45)} resizeMode={'cover'} />
+            </TouchableOpacity>
             {/* <Text style={_styles.likeListText}>{item.nickname}, {item.age}</Text> */}
             <SpaceView ml={6}>
               {/* 프로필 평점, 인증 레벨 */}
@@ -127,7 +132,10 @@ export default function LikeListPopup({ isVisible, closeModal, type, _storyBoard
   };
 
   return (
-    <Modal isVisible={isVisible}>
+    <Modal
+      isVisible={isVisible}
+      onRequestClose={() => { closeModal(); }}
+      onBackdropPress={closeModal} >
       <SafeAreaView style={_styles.container}>
         <View style={_styles.titleBox}>
           <Text style={_styles.titleText}>좋아요 목록</Text>
@@ -148,7 +156,7 @@ export default function LikeListPopup({ isVisible, closeModal, type, _storyBoard
           <></>
         )}
 
-        <SpaceView>
+        <SpaceView viewStyle={{maxHeight: height - 350}}>
           <SpaceView viewStyle={_styles.likeCntArea}>
             <Text>{likeListCnt}<Text style={_styles.likeListText}>개의 좋아요</Text></Text>
           </SpaceView>
@@ -179,7 +187,6 @@ const _styles = StyleSheet.create({
     width: '100%',
     borderRadius: 20,
     backgroundColor: '#ffffff',
-    maxHeight: height - 350,
     paddingHorizontal: 18,
   },
   titleBox: {
@@ -226,7 +233,7 @@ const _styles = StyleSheet.create({
     color: '#333',
   },
   profileText: {
-    fontFamily: 'AppleSDGothicNeoH00',
+    fontFamily: 'AppleSDGothicNeoR00',
     fontSize: 16,
     color: '#333333',
   },
@@ -236,10 +243,9 @@ const _styles = StyleSheet.create({
     color: '#333333',
   },
   nicknameText: {
-    fontFamily: 'AppleSDGothicNeoH00',
+    fontFamily: 'AppleSDGothicNeoR00',
     fontSize: 16,
     color: '#333333',
-    marginTop: -3,
   },
   replyArea: {
     flexDirection: 'row',

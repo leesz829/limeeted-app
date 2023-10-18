@@ -401,7 +401,7 @@ export default function StoryEdit(props: Props) {
     <>
       {isLoading && <CommonLoading />}
 
-      <CommonHeader title={storyData.storyType == 'STORY' ? '스토리 등록' : storyData.storyType == 'VOTE' ? '투표형 게시글 등록' : '비밀 게시글 등록'} />
+      <CommonHeader title={storyData.storyType == 'STORY' ? '스토리 등록' : storyData.storyType == 'VOTE' ? '투표 게시글 등록' : '시크릿 게시글 등록'} />
 
       <ScrollView showsVerticalScrollIndicator={false} style={{backgroundColor: '#fff'}}>
         <SpaceView mt={20} pl={20} pr={20}>
@@ -467,7 +467,7 @@ export default function StoryEdit(props: Props) {
           {storyData.storyType == 'VOTE' && (
             <>
               {/* ############### 선택지 입력 영역 */}
-              <SpaceView mb={23}>
+              <SpaceView mb={10}>
                 <SpaceView viewStyle={_styles.voteArea}>
                     {[0,1].map((i, index) => {
                       return (
@@ -500,7 +500,7 @@ export default function StoryEdit(props: Props) {
               </SpaceView>
 
               {/* ############### 투표 마감기한 입력 영역 */}
-              <SpaceView mb={30}>
+              <SpaceView mb={20}>
                 <SpaceView mb={20}>
                   <Text style={_styles.subTitleText}>투표 마감기한을 입력해 주세요.</Text>
                 </SpaceView>
@@ -535,40 +535,40 @@ export default function StoryEdit(props: Props) {
                   padding={20}
                 />
               </SpaceView>
-            </>          
+            </>
           )}
         </SpaceView>
-
-        {/* ##############################################################################################################
-        ##### 버튼 영역
-        ############################################################################################################## */}
-        <SpaceView mt={20} mb={10} viewStyle={_styles.btnArea}>
-          {
-            (storyData.storyType == 'VOTE' ? isEmptyData(storyData.contents)
-                                          && isEmptyData(voteData.voteName01)
-                                          && isEmptyData(voteData.voteName02)
-                                          && isEmptyData(inputVoteFileData01)
-                                          && isEmptyData(inputVoteFileData02)
-                                          && isEmptyData(storyData.voteEndType)
-                                          : isEmptyData(storyData.contents)) ? (
-              <LinearGradient
-                colors={['#7984ED', '#8759D5']}
-                style={[_styles.regiActiveBtn]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-              >
-                <TouchableOpacity onPress={() => { storyRegister(); }}>
-                  <Text style={[_styles.regiBtnText, {color: '#fff'}]}>등록</Text>
-                </TouchableOpacity>
-              </LinearGradient>
-            ) : (
-              <TouchableOpacity onPress={() => { storyRegister(); }} style={_styles.regiBtn}>
-                <Text style={_styles.regiBtnText}>등록</Text>
-              </TouchableOpacity>
-            )
-          }
-        </SpaceView>
       </ScrollView>
+
+      {/* ##############################################################################################################
+      ##### 버튼 영역
+      ############################################################################################################## */}
+      <SpaceView mt={20} mb={10} viewStyle={_styles.btnArea}>
+        {
+          (storyData.storyType == 'VOTE' ? isEmptyData(storyData.contents)
+                                        && isEmptyData(voteData.voteName01)
+                                        && isEmptyData(voteData.voteName02)
+                                        && isEmptyData(inputVoteFileData01)
+                                        && isEmptyData(inputVoteFileData02)
+                                        && isEmptyData(storyData.voteEndType)
+                                        : isEmptyData(storyData.contents)) ? (
+            <LinearGradient
+              colors={['#7984ED', '#8759D5']}
+              style={[_styles.regiActiveBtn]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+            >
+              <TouchableOpacity onPress={() => { storyRegister(); }}>
+                <Text style={[_styles.regiBtnText, {color: '#fff'}]}>등록</Text>
+              </TouchableOpacity>
+            </LinearGradient>
+          ) : (
+            <TouchableOpacity onPress={() => { storyRegister(); }} style={_styles.regiBtn}>
+              <Text style={_styles.regiBtnText}>등록</Text>
+            </TouchableOpacity>
+          )
+        }
+      </SpaceView>
 
 
       {/* ###############################################
@@ -747,10 +747,10 @@ const _styles = StyleSheet.create({
     overflow: 'hidden',
   },
   btnArea: {
-    /* position: 'absolute',
-    bottom: 20,
+    position: 'absolute',
+    bottom: 10,
     left: 0,
-    right: 0, */
+    right: 0,
     alignItems: 'center',
   },
   regiBtn: {

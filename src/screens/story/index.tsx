@@ -259,7 +259,7 @@ export const Story = () => {
         <SpaceView mb={type == 'SMALL' ? 0 : 5} viewStyle={_styles.itemArea02(_width, _height)}>
           <TouchableOpacity activeOpacity={0.7} onPress={() => { goStoryDetail(storyBoardSeq); }}>
 
-          {(storyType == 'SECRET' || (storyType == 'STORY' && !isEmptyData(imgPath))) ? (
+          {((storyType == 'SECRET' || storyType == 'STORY') && !isEmptyData(imgPath)) ? (
             <>
               <SpaceView viewStyle={_styles.noImageArea(item?.gender)} >
 
@@ -742,12 +742,13 @@ const _styles = StyleSheet.create({
   },
   topBtnText: {
     textAlign: 'center',
-    backgroundColor: '#222222',
+    //backgroundColor: '#222222',
+    backgroundColor: 'rgba(38,38,38,0.9)',
     width: 100,
     paddingVertical: 2,
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 13,
-    color: '#ACA6AB',
+    color: '#fff',
     borderRadius: 10,
     overflow: 'hidden',
   },
@@ -756,7 +757,7 @@ const _styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    opacity: 0.48,
+    opacity: 0.6,
     height: 80,
   },
 
