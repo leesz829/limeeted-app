@@ -565,6 +565,7 @@ export default function StoryDetail(props: Props) {
         _storyBoardSeq={props.route.params.storyBoardSeq}
         storyReplyData={selectedReplyData}
         replyInfo={replyInfo}
+        profileOpenFn={profileCardOpenPopup}
       />
     </>
   );
