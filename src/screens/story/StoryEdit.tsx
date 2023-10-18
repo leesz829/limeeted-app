@@ -409,7 +409,7 @@ export default function StoryEdit(props: Props) {
       <CommonHeader title={storyData.storyType == 'STORY' ? '스토리 등록' : storyData.storyType == 'VOTE' ? '투표 등록' : '시크릿 등록'} />
 
       <KeyboardAvoidingView
-        style={{flex: 1}}
+        style={{flex: 1, backgroundColor: '#fff'}}
         behavior={Platform.OS === 'ios' ? 'padding' : null} // iOS에서는 'padding'을 사용합니다.
         keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0} // iOS에서 상단 바 (예: 네비게이션 바) 고려
       >      
@@ -572,39 +572,66 @@ export default function StoryEdit(props: Props) {
             </>
           )}
         </SpaceView>
+
+        {Platform.OS == 'ios' && (
+          <SpaceView mb={10} viewStyle={_styles.btnArea}>
+          {
+            (storyData.storyType == 'VOTE' ? isEmptyData(storyData.contents)
+                                          && isEmptyData(voteData.voteName01)
+                                          && isEmptyData(voteData.voteName02)
+                                          && isEmptyData(inputVoteFileData01)
+                                          && isEmptyData(inputVoteFileData02)
+                                          && isEmptyData(storyData.voteEndType)
+                                          : isEmptyData(storyData.contents)) ? (
+              <LinearGradient
+                colors={['#7984ED', '#8759D5']}
+                style={[_styles.regiActiveBtn]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+              >
+                <TouchableOpacity onPress={() => { storyRegister(); }}>
+                  <Text style={[_styles.regiBtnText, {color: '#fff'}]}>등록</Text>
+                </TouchableOpacity>
+              </LinearGradient>
+            ) : (
+              <TouchableOpacity onPress={() => { storyRegister(); }} style={_styles.regiBtn}>
+                <Text style={_styles.regiBtnText}>등록</Text>
+              </TouchableOpacity>
+            )
+          }
+        </SpaceView>
+        )}
         
       </ScrollView>
 
-      {/* ##############################################################################################################
-      ##### 버튼 영역
-      ############################################################################################################## */}
-      <SpaceView mb={10} viewStyle={_styles.btnArea}>
-        {
-          (storyData.storyType == 'VOTE' ? isEmptyData(storyData.contents)
-                                        && isEmptyData(voteData.voteName01)
-                                        && isEmptyData(voteData.voteName02)
-                                        && isEmptyData(inputVoteFileData01)
-                                        && isEmptyData(inputVoteFileData02)
-                                        && isEmptyData(storyData.voteEndType)
-                                        : isEmptyData(storyData.contents)) ? (
-            <LinearGradient
-              colors={['#7984ED', '#8759D5']}
-              style={[_styles.regiActiveBtn]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-            >
-              <TouchableOpacity onPress={() => { storyRegister(); }}>
-                <Text style={[_styles.regiBtnText, {color: '#fff'}]}>등록</Text>
+      {Platform.OS == 'android' && (
+        <SpaceView mb={10} viewStyle={_styles.btnArea}>
+          {
+            (storyData.storyType == 'VOTE' ? isEmptyData(storyData.contents)
+                                          && isEmptyData(voteData.voteName01)
+                                          && isEmptyData(voteData.voteName02)
+                                          && isEmptyData(inputVoteFileData01)
+                                          && isEmptyData(inputVoteFileData02)
+                                          && isEmptyData(storyData.voteEndType)
+                                          : isEmptyData(storyData.contents)) ? (
+              <LinearGradient
+                colors={['#7984ED', '#8759D5']}
+                style={[_styles.regiActiveBtn]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+              >
+                <TouchableOpacity onPress={() => { storyRegister(); }}>
+                  <Text style={[_styles.regiBtnText, {color: '#fff'}]}>등록</Text>
+                </TouchableOpacity>
+              </LinearGradient>
+            ) : (
+              <TouchableOpacity onPress={() => { storyRegister(); }} style={_styles.regiBtn}>
+                <Text style={_styles.regiBtnText}>등록</Text>
               </TouchableOpacity>
-            </LinearGradient>
-          ) : (
-            <TouchableOpacity onPress={() => { storyRegister(); }} style={_styles.regiBtn}>
-              <Text style={_styles.regiBtnText}>등록</Text>
-            </TouchableOpacity>
-          )
-        }
-      </SpaceView>
-
+            )
+          }
+        </SpaceView>
+      )}
       </KeyboardAvoidingView>
 
       {/* ###############################################
