@@ -109,10 +109,11 @@ export const Story = () => {
         confirmCallback: function() {
           if(memberBase?.pass_has_amt >= 15) {
             profileCardOpen(memberSeq);
-
-            /* show({
+          } else {
+            show({
               content: '패스가 부족합니다.',
-            }); */
+              isCross: true,
+            });
           }
         },
         cancelCallback: function() {

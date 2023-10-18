@@ -26,11 +26,13 @@ interface PopupContextProps {
   popupDuration: any | undefined; // 팝업 지속 시간
   prodList: any | undefined; // 상품 목록
   passAmt: string | undefined; // 패스 금액
+  isCross: boolean | undefined; // 교차 여부
 }
 
 export const PopupProvider = ({ children }: any) => {
   const [visible, setVisible] = useState(false);
   const [visibleResponsive, setVisibleResponsive] = useState(false);
+  const [visibleCross, setVisibleCross] = useState(false);
   const [contents, setContents] = useState<PopupContextProps>({
     title: '',
     content: '',
@@ -50,18 +52,27 @@ export const PopupProvider = ({ children }: any) => {
     popupDuration: undefined,
     prodList: [],
     passAmt: '',
+    isCross: false,
   });
 
   function show(content: PopupContextProps) {
     if(content.type == 'RESPONSIVE') {
       setVisibleResponsive(true);
     } else {
-      setVisible(true);
+      if(content.isCross) {
+        setVisibleCross(true);
+      } else {
+        setVisible(true);
+      }
     }
     setContents(content);
   }
-  function hide() {
-    setVisible(false);
+  function hide(content: PopupContextProps) {
+    if(content.isCross) {
+      setVisibleCross(true);
+    } else {
+      setVisible(false);
+    }
     
     setContents({
       title: '',
@@ -82,6 +93,7 @@ export const PopupProvider = ({ children }: any) => {
       popupDuration: undefined,
       prodList: [],
       passAmt: '',
+      isCross: false,
     });
   }
 
@@ -125,8 +137,8 @@ export const PopupProvider = ({ children }: any) => {
         />
       ) : (
         <BasePopup
-          popupVisible={visible}
-          setPopupVIsible={setVisible}
+          popupVisible={!contents.isCross ? visible : visibleCross}
+          setPopupVIsible={!contents.isCross ? setVisible : setVisibleCross}
           title={contents.title}
           text={contents.content}
           subText={contents.subContent}

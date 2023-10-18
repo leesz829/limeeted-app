@@ -250,7 +250,7 @@ export default function StoryDetail(props: Props) {
   };
 
   // ##################################################################################### 프로필 카드 열람 팝업 활성화
-  const profileCardOpenPopup = (memberSeq:number, openCnt:number) => {
+  const profileCardOpenPopup = async (memberSeq:number, openCnt:number) => {
     if(openCnt > 0) {
       navigation.navigate(STACK.COMMON, { 
         screen: 'MatchDetail',
@@ -269,6 +269,11 @@ export default function StoryDetail(props: Props) {
         confirmCallback: function() {
           if(memberBase?.pass_has_amt >= 15) {
             profileCardOpen(memberSeq);
+          } else {
+            show({
+              content: '패스가 부족합니다.',
+              isCross: true,
+            });
           }
         },
         cancelCallback: function() {
