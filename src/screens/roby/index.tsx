@@ -636,7 +636,7 @@ export const Roby = (props: Props) => {
 
               {memberBase?.reex_yn == 'Y' ? (
                 <RatingCard
-                  title={'프로필 심사중'}
+                  title={'라이브 심사중'}
                   //desc={'내 프로필에 ' + memberBase?.profile_eval_cnt + '명의 회원님이\n평가를 남겨 주셨어요.'}
                   desc={'LIVE에서 노출되고 있는 내 프로필을 회원님들이 직접 평가 진행중 이에요.'}
                   value={memberBase?.profile_score}
@@ -674,13 +674,13 @@ export const Roby = (props: Props) => {
 
           {memberBase?.reex_yn == 'Y' ? (
             <View style={[_styles.pennding, layoutStyle.mb20]}>
-              <Text style={_styles.submitText}>내 프로필 심사 진행중!</Text>
+              <Text style={_styles.submitText}>내 프로필 사진이 라이브에 공개되고 있어요.</Text>
             </View>
           ) : (
             <TouchableOpacity
               onPress={() => profileReexPopupOpen()}
               style={_styles.submitBtn}>
-              <Text style={_styles.submitText}>내 프로필 재심사</Text>
+              <Text style={_styles.submitText}>라이브 재심사</Text>
             </TouchableOpacity>
           )}
 
