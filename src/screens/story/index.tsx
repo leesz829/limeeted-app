@@ -285,7 +285,7 @@ export const Story = () => {
                   <ProfileGrade profileScore={item?.profile_score} type={'BASE'} /> */}
 
                   {/* 프로필 평점, 인증 레벨 */}
-                  {((isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) || item?.profile_score >= 7.0) && (
+                  {(storyType != 'SECRET' && ((isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) || item?.profile_score >= 7.0)) && (
                     <Text style={_styles.activeText('#333333')}>
                       {item?.profile_score >= 7.0 && item?.profile_score}
                       {((isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && item?.profile_score >= 7.0) && ' | '}
@@ -331,7 +331,7 @@ export const Story = () => {
                 </SpaceView>
 
                 <SpaceView>
-                  {(item?.profile_score >= 7.0 || (isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5)) && (
+                  {(storyType != 'SECRET' && (item?.profile_score >= 7.0 || (isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5))) && (
                     <Text style={_styles.activeText('#ffffff')}>
                       {item?.profile_score >= 7.0 && item?.profile_score}
                       {((isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && item?.profile_score >= 7.0) && ' | '}

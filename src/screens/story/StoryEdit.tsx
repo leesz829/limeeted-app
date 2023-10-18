@@ -49,6 +49,7 @@ export default function StoryEdit(props: Props) {
   const { show } = usePopup(); // 공통 팝업
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태 체크
   const [isClickable, setIsClickable] = useState(true); // 클릭 여부
+  const inputRef = React.useRef();
   
   const [storyBoardSeq, setStoryBoardSeq] = useState(props.route.params.storyBoardSeq);
   const [imageList, setImageList] = useState([]); // 이미지 목록
@@ -100,6 +101,10 @@ export default function StoryEdit(props: Props) {
   const voteEndTypeCallbackFn = (value: string) => {
     setStoryData({...storyData, voteEndType: value});
   };
+
+  const handleTextInputClick = async () => {
+    console.log('dddd');
+  }
 
   // ################################################################ 프로필 이미지 파일 콜백 함수
   const fileCallBack1 = async (uri: any, base64: string) => {
@@ -405,8 +410,6 @@ export default function StoryEdit(props: Props) {
 
       <ScrollView showsVerticalScrollIndicator={false} style={{backgroundColor: '#fff'}}>
 
-        <KeyboardAvoidingView behavior={"padding"} style={{flex:1}}>
-
         <SpaceView mt={20} pl={20} pr={20}>
 
           {/* ##############################################################################################################
@@ -538,12 +541,28 @@ export default function StoryEdit(props: Props) {
                   borderRadius={20}
                   padding={20}
                 />
+
+                  {/* <TextInput
+                    ref={inputRef}
+                    value={storyData.contents}
+                    onChangeText={(text) => setStoryData({...storyData, contents: text})}
+                    multiline={true}
+                    textAlignVertical="top"
+                    autoCapitalize="none"
+                    style={_styles.contentInputText(isEmptyData(storyData.contents))}
+                    placeholder={'20글자 이상 입력해 주세요.\n\n(주의*)이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 제재 대상이 될 수 있으며 상대를 배려하는 마음으로 이용해 주세요.'}
+                    placeholderTextColor={'#c7c7c7'}
+                    editable={true}
+                    secureTextEntry={false}
+                    maxLength={1000}
+                    //autoFocus={true}
+                    //onSubmitEditing={() => { this.inputRef.focus(); }}
+                  /> */}
+
               </SpaceView>
             </>
           )}
         </SpaceView>
-
-        </KeyboardAvoidingView>
       </ScrollView>
 
       {/* ##############################################################################################################
@@ -653,8 +672,6 @@ function VoteImageRenderItem ({ index, _imgData, delFn, fileCallBackFn, storyTyp
   const imgUrl = findSourcePathLocal(_imgData);
   const imgDelYn = _imgData?.delYn;
 
-console.log('_imgData :::::: ' , _imgData);
-
   return (
     <View style={[_styles.imgItem, {borderRadius: 10,}]}>
       {((isEmptyData(imgUrl) && imgDelYn == 'Y') || !isEmptyData(imgUrl)) ? (
@@ -754,7 +771,7 @@ const _styles = StyleSheet.create({
   },
   btnArea: {
     position: 'absolute',
-    bottom: 10,
+    bottom: 5,
     left: 0,
     right: 0,
     alignItems: 'center',
@@ -804,6 +821,21 @@ const _styles = StyleSheet.create({
     paddingVertical: 15,
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
+  contentInputText: (isOn:boolean) => {
+
+    return {
+      borderColor: isOn ? '#7986EE' : '#ebe9ef',
+      backgroundColor: '#fff',
+      fontFamily: 'AppleSDGothicNeoM00',
+      fontSize: 13,
+      color: '#000',
+      borderRadius: 20,
+      borderWith: 1,
+      padding: 20,
+      height: 240,
+    };
+    
+  },
 
 });
