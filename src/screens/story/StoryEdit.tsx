@@ -268,8 +268,6 @@ export default function StoryEdit(props: Props) {
           vote_end_type: storyData.voteEndType,
         };
 
-        //console.log('body :::::: ' , body);
-
         const { success, data } = await save_story_board(body);
         if(success) {
           switch (data.result_code) {
@@ -684,7 +682,7 @@ function VoteImageRenderItem ({ index, _imgData, delFn, fileCallBackFn, storyTyp
   const imgDelYn = _imgData?.delYn;
 
   return (
-    <View style={[_styles.imgItem, {borderRadius: 10,}]}>
+    <View style={[_styles.imgItem, {borderRadius: 10, overflow: 'hidden'}]}>
       {((isEmptyData(imgUrl) && imgDelYn == 'Y') || !isEmptyData(imgUrl)) ? (
       //{isEmptyData(imgUrl) || imgYn == 'Y' ? (
         <>
@@ -702,7 +700,7 @@ function VoteImageRenderItem ({ index, _imgData, delFn, fileCallBackFn, storyTyp
             <Image
               resizeMode="cover"
               resizeMethod="scale"
-              style={{width: 48, height: 48,}}
+              style={{width: 48, height: 48, borderRadius: 10, overflow: 'hidden'}}
               key={imgUrl}
               source={imgUrl}
             />
