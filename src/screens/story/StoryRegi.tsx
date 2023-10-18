@@ -17,6 +17,7 @@ import { isEmptyData } from 'utils/functions';
 import CommonHeader from 'component/CommonHeader';
 import { STACK } from 'constants/routes';
 import Image from 'react-native-fast-image';
+import LinearGradient from 'react-native-linear-gradient';
 
 
 
@@ -93,6 +94,51 @@ export default function StoryRegi(props: Props) {
 
         </SpaceView>
       </ScrollView>
+
+      {/* 디자인 리뉴얼 
+      <CommonHeader title={'NEW STORY'} />
+
+      <ScrollView showsVerticalScrollIndicator={false} style={{backgroundColor: '#fff'}}>
+        <SpaceView mt={20} pl={20} pr={20}>
+
+          <SpaceView mb={30} viewStyle={_styles.titleArea}>
+            <Text style={_styles.titleText}><Text style={{color: '#7B81EC', fontSize: 20}}>{memberBase?.nickname}님</Text>의 이야기로{'\n'}리미티드에 일상을공유하고 소통해보세요.</Text>
+          </SpaceView>
+
+          <SpaceView viewStyle={_styles.contentArea}>
+            <TouchableOpacity style={_styles.contentItemContents} onPress={() => { selectedStoryType('STORY'); }}>
+              <LinearGradient colors={['#FFD76B', '#FFB801']} style={_styles.contentItem}>
+                <View style={_styles.contentImgArea}>
+                  <Image source={ICON.talkBalloonIcon} style={_styles.contentImg} resizeMode={'cover'} />
+                </View>
+                <Text style={_styles.contentTitle}>스토리</Text>
+                <Text style={_styles.contentSubTitle}>소소한 일상부터 음식, 여행 등 주제에 관계없이 자유롭게 소통해 보세요.</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={[_styles.contentItemContents, {marginLeft: 7,}]} onPress={() => { selectedStoryType('VOTE'); }}>
+              <LinearGradient colors={['#A9DBFF', '#7B81EC']} style={_styles.contentItem}>
+                <View style={_styles.contentImgArea}>
+                  <Image source={ICON.voteIcon} style={_styles.contentImg} resizeMode={'cover'} />
+                </View>
+                <Text style={_styles.contentTitle}>투표형</Text>
+                <Text style={_styles.contentSubTitle}>왼 VS 오 어떤 것?{'\n'}밸런스 게임으로 사람들의 성향을 알아가요.</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={_styles.contentItemContents} onPress={() => { selectedStoryType('SECRET'); }}>
+              <LinearGradient colors={['#8E1DFF', '#000000']} style={_styles.contentItem}>
+                <View style={_styles.contentImgArea}>
+                  <Image source={ICON.talkQuestionIcon} style={{width: 70, height: 70,}} resizeMode={'cover'} />
+                </View>
+                <Text style={_styles.contentTitle}>시크릿</Text>
+                <Text style={_styles.contentSubTitle}>이야기 앞에 “비밀”이 붙으면 재미있어 지는 법이죠!</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </SpaceView>
+
+        </SpaceView>
+      </ScrollView> */}
     </>
   );
 
@@ -162,4 +208,49 @@ const _styles = StyleSheet.create({
     width: 35,
     height: 35,
   },
+
+  // 디자인 리뉴얼
+  // titleText: {
+  //   fontFamily: 'AppleSDGothicNeoEB00',
+  //   fontSize: 16,
+  //   color: '#333',
+  // },
+  // contentArea: {
+  //    flex: 1,
+  //    flexDirection: 'row',
+  //    flexWrap: 'wrap',
+  // },
+  // contentItemContents: {
+  //   flexDirection: 'column',
+  //   backgroundColor: '#C5C5C5',
+  //   borderRadius: 10,
+  //   marginBottom: 7,
+  //   width: '49%',
+  // },
+  // contentItem: {
+  //   paddingVertical: 20,
+  //   paddingHorizontal: 20,
+  //   borderRadius: 10,
+  //   height: 266,
+  // },
+  // contentTitle: {
+  //   fontFamily: 'AppleSDGothicNeoEB00',
+  //   fontSize: 17,
+  //   color: '#FFF',
+  //   marginBottom: 15,
+  //   marginTop: 30,
+  // },
+  // contentSubTitle: {
+  //   fontFamily: 'AppleSDGothicNeoR00',
+  //   fontSize: 15,
+  //   color: '#FFF',
+  // },
+  // contentImgArea: {
+  //   alignItems: 'center',
+  //   marginTop: 10,
+  // },
+  // contentImg: {
+  //   width: 55,
+  //   height: 55,
+  // },
 });

@@ -186,6 +186,9 @@ export const ICON = {
   betaWhiteIcon: require('assets/icon/icon-beta-white.png'),
   betaBlueIcon: require('assets/icon/icon-beta-blue.png'),
   betaGrayIcon: require('assets/icon/icon-beta-gray.png'),
+  talkBalloonIcon: require('assets/icon/icon-talk-balloon.png'),
+  talkQuestionIcon: require('assets/icon/icon-talk-question.png'),
+  voteIcon: require('assets/icon/icon-vote.png'),
 };
 
 export const GIF_IMG = {
