@@ -7,7 +7,7 @@ import SpaceView from 'component/SpaceView';
 import TopNavigation from 'component/TopNavigation';
 import * as React from 'react';
 import { useState, useRef, useEffect } from 'react';
-import { ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity, TextInput, InputAccessoryView, Platform } from 'react-native';
+import { ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity, TextInput, InputAccessoryView, Platform, KeyboardAvoidingView } from 'react-native';
 import { save_story_board, get_story_detail } from 'api/models';
 import { findSourcePath, IMAGE, GIF_IMG, findSourcePathLocal } from 'utils/imageUtils';
 import { usePopup } from 'Context';
@@ -404,6 +404,9 @@ export default function StoryEdit(props: Props) {
       <CommonHeader title={storyData.storyType == 'STORY' ? '스토리 등록' : storyData.storyType == 'VOTE' ? '투표 등록' : '시크릿 등록'} />
 
       <ScrollView showsVerticalScrollIndicator={false} style={{backgroundColor: '#fff'}}>
+
+        <KeyboardAvoidingView behavior={"padding"} style={{flex:1}}>
+
         <SpaceView mt={20} pl={20} pr={20}>
 
           {/* ##############################################################################################################
@@ -520,45 +523,27 @@ export default function StoryEdit(props: Props) {
                   <Text style={_styles.subTitleText}>투표 내용을 작성해 주세요.</Text>
                 </SpaceView>
 
-                {Platform.OS == 'ios' ? (
-                  <InputAccessoryView>
-                    <CommonTextarea
-                      value={storyData.contents}
-                      onChangeText={(text) => setStoryData({...storyData, contents: text})}
-                      placeholder={'20글자 이상 입력해 주세요.\n\n(주의*)이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 제재 대상이 될 수 있으며 상대를 배려하는 마음으로 이용해 주세요.'}
-                      placeholderTextColor={'#C7C7C7'}
-                      maxLength={1000}
-                      exceedCharCountColor={'#990606'}
-                      fontSize={13}
-                      height={240}
-                      backgroundColor={'#fff'}
-                      fontColor={'#000'}
-                      borderColor={isEmptyData(storyData.contents) ? '#7986EE' : '#ebe9ef'}
-                      borderRadius={20}
-                      padding={20}
-                    />
-                  </InputAccessoryView>
-                ) : (
-                  <CommonTextarea
-                    value={storyData.contents}
-                    onChangeText={(text) => setStoryData({...storyData, contents: text})}
-                    placeholder={'20글자 이상 입력해 주세요.\n\n(주의*)이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 제재 대상이 될 수 있으며 상대를 배려하는 마음으로 이용해 주세요.'}
-                    placeholderTextColor={'#C7C7C7'}
-                    maxLength={1000}
-                    exceedCharCountColor={'#990606'}
-                    fontSize={13}
-                    height={240}
-                    backgroundColor={'#fff'}
-                    fontColor={'#000'}
-                    borderColor={isEmptyData(storyData.contents) ? '#7986EE' : '#ebe9ef'}
-                    borderRadius={20}
-                    padding={20}
-                  />
-                )}
+                <CommonTextarea
+                  value={storyData.contents}
+                  onChangeText={(text) => setStoryData({...storyData, contents: text})}
+                  placeholder={'20글자 이상 입력해 주세요.\n\n(주의*)이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 제재 대상이 될 수 있으며 상대를 배려하는 마음으로 이용해 주세요.'}
+                  placeholderTextColor={'#C7C7C7'}
+                  maxLength={1000}
+                  exceedCharCountColor={'#990606'}
+                  fontSize={13}
+                  height={240}
+                  backgroundColor={'#fff'}
+                  fontColor={'#000'}
+                  borderColor={isEmptyData(storyData.contents) ? '#7986EE' : '#ebe9ef'}
+                  borderRadius={20}
+                  padding={20}
+                />
               </SpaceView>
             </>
           )}
         </SpaceView>
+
+        </KeyboardAvoidingView>
       </ScrollView>
 
       {/* ##############################################################################################################
