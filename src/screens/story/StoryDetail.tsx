@@ -364,8 +364,10 @@ export default function StoryDetail(props: Props) {
                   <Image source={memberMstImgPath} style={_styles.replyImageStyle} resizeMode={'cover'} />
                 </TouchableOpacity>
               ) : (
-                <SpaceView mt={5}>
-                  <Image source={gender == 'M' ? ICON.maleIcon : ICON.femaleIcon} style={styles.iconSquareSize(15)} resizeMode={'cover'} />
+                <SpaceView mt={5} viewStyle={{width:15}}>
+                  {memberBase?.member_seq === item?.member_seq && (
+                    <Image source={gender == 'M' ? ICON.maleIcon : ICON.femaleIcon} style={styles.iconSquareSize(15)} resizeMode={'cover'} />
+                  )}
                 </SpaceView>
               )}
               
@@ -630,9 +632,9 @@ export default function StoryDetail(props: Props) {
     let btnText = '투표하기';
 
     if(isEmptyData(item?.img_file_path)) {
-      url = findSourcePathLocal(item?.img_file_path);
+      url = findSourcePath(item?.img_file_path);
     } else {
-      url = findSourcePathLocal(item?.file_path);
+      url = findSourcePath(item?.file_path);
     };
 
     // 작성자 여부 구분 처리

@@ -146,7 +146,12 @@ export default function LikeListPopup({ isVisible, closeModal, type, _storyBoard
 
         {type == 'REPLY' ? (
           <SpaceView viewStyle={_styles.replyArea}>
-            <Image source={findSourcePath(replyInfo.mst_img_path)} style={[_styles.imageStyle(35), {marginTop: 15}]} resizeMode={'cover'} />
+            <TouchableOpacity
+              disabled={memberBase?.gender === replyInfo?.gender || memberBase?.member_seq === replyInfo?.reg_seq}
+              onPress={() => { profileOpen(replyInfo?.reg_seq, replyInfo?.open_cnt); }} >
+
+              <Image source={findSourcePath(replyInfo.mst_img_path)} style={[_styles.imageStyle(35), {marginTop: 15}]} resizeMode={'cover'} />
+            </TouchableOpacity>
             <SpaceView mt={10} ml={5} pt={3} viewStyle={{flexDirection: 'column', flex: 1}}>
               <Text style={[_styles.mainNicknameText]}>{replyInfo.nickname}<Text style={{fontFamily: 'AppleSDGothicNeoR00', color: '#999'}}> {replyInfo.time_text}</Text></Text>
               <Text style={[_styles.replyText, {marginTop: 5}]}>{replyInfo.reply_contents}</Text>

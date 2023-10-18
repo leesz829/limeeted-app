@@ -50,7 +50,7 @@ export const Story = () => {
   const [isEmpty, setIsEmpty] = useState(false); 
   //const [storyList, setStoryList] = useState<any>([]); // 스토리 목록
   const [storyList, setStoryList] = React.useState<any>([]);
-  const [pageNum, setPageNum] = useState(0); // 페이지 번호
+  const [pageNum, setPageNum] = useState(1); // 페이지 번호
 
   // 스토리 등록 이동
   const goStoryRegister = async () => {
@@ -75,7 +75,7 @@ export const Story = () => {
   // ##################################################################################### 목록 새로고침
   const handleRefresh = () => {
     console.log('refresh!!!!!!!!!!!!!!');
-    getStoryBoardList('REFRESH', 0);
+    getStoryBoardList('REFRESH', 1);
   };
 
   // ##################################################################################### 목록 더보기
@@ -140,6 +140,7 @@ export const Story = () => {
         if(success) {
           switch (data.result_code) {
             case SUCCESS:
+              getStoryBoardList('ADD', pageNum);
               navigation.navigate(STACK.COMMON, { 
                 screen: 'MatchDetail',
                 params: {
@@ -181,6 +182,7 @@ export const Story = () => {
       };
 
       const body = {
+        load_type: _type,
         page_num: _pageNum,
       };
 
@@ -190,7 +192,7 @@ export const Story = () => {
       if(success) {
         switch (data.result_code) {
           case SUCCESS:
-            if(_type == 'ADD') {
+            /* if(_type == 'ADD') {
               let dataArray = storyList;
               data?.story_list.map((item: any) => {
                 dataArray.push(item);
@@ -198,10 +200,21 @@ export const Story = () => {
               setStoryList(dataArray);
             } else {
               setStoryList(data?.story_list);
-            };
+            }; */
 
-            if(data?.story_list.length > 0) {
+            setStoryList(data?.story_list);
+
+            /* if(data?.story_list.length > 0) {
+              console.log('data?.page_num :::: ' ,data?.page_num);
               setPageNum(isEmptyData(data?.page_num) ? data?.page_num : 0);
+            } */
+
+            if(_type == 'REFRESH') {
+              setPageNum(1);
+            } else {
+              if(data?.story_list.length > storyList.length) {
+                setPageNum(isEmptyData(data?.page_num) ? data?.page_num : 0);
+              }
             }
 
             break;
@@ -241,9 +254,9 @@ export const Story = () => {
   const RenderListItem = React.memo(({ item, type }) => {
     const storyBoardSeq = item.story_board_seq; // 스토리 게시글 번호
     const storyType = item?.story_type; // 스토리 유형
-    const imgPath = findSourcePathLocal(item?.story_img_path);
-    const voteImgPath01 = findSourcePathLocal(item?.vote_img_path_01);
-    const voteImgPath02 = findSourcePathLocal(item?.vote_img_path_02);
+    const imgPath = findSourcePath(item?.story_img_path);
+    const voteImgPath01 = findSourcePath(item?.vote_img_path_01);
+    const voteImgPath02 = findSourcePath(item?.vote_img_path_02);
 
     let _width = 0; // 가로길이
     let _height = 0; // 세로길이
@@ -376,8 +389,10 @@ export const Story = () => {
     if(isFocus) {
       setIsRefreshing(false);
 
+      getStoryBoardList('ADD', pageNum == 0 ? 1 : pageNum);
+
       if(storyList.length == 0) {
-        getStoryBoardList('BASE', 0);
+        //getStoryBoardList('BASE', 0);
       }
     } else {
       //setStoryList([]);
@@ -411,143 +426,154 @@ export const Story = () => {
 
       <SpaceView>
 
-        <FlatList
-          data={storyList}
-          ref={flatListRef}
-          keyExtractor={(item, index) => index.toString()}
-          style={_styles.contentWrap}
-          contentContainerStyle={{ paddingBottom: 30 }} // 하단 여백 추가
-          contentInset={{ bottom: 60 }}
-          showsVerticalScrollIndicator={false}
-          removeClippedSubviews={true}
-          onScroll={handleScroll} // 스크롤 감지 이벤트 핸들러
-          /* getItemLayout={(data, index) => (
-            {
-                length: (width - 54) / 2,
-                offset: ((width - 54) / 2) * index,
-                index
-            }
-          )} */
-          refreshControl={
-            <RefreshControl
-              refreshing={isRefreshing}
-              onRefresh={handleRefresh}
-              tintColor="#ff0000" // Pull to Refresh 아이콘 색상 변경
-              title="Loading..." // Pull to Refresh 아이콘 아래에 표시될 텍스트
-              titleColor="#ff0000" // 텍스트 색상 변경
-              colors={['#ff0000', '#00ff00', '#0000ff']} // 로딩 아이콘 색상 변경
-              progressBackgroundColor="#ffffff" >
-            </RefreshControl>
-          }
-          onEndReached={loadMoreData}
-          onEndReachedThreshold={0.1}
-          ListFooterComponent={isLoadingMore && <Text>Loading more...</Text>}
-          renderItem={({ item:innerItem, index:innerIndex }) => {
+        {storyList.length > 0 ? (
+          <>
+            <FlatList
+              data={storyList}
+              ref={flatListRef}
+              keyExtractor={(item, index) => index.toString()}
+              style={_styles.contentWrap}
+              contentContainerStyle={{ paddingBottom: 30 }} // 하단 여백 추가
+              contentInset={{ bottom: 60 }}
+              showsVerticalScrollIndicator={false}
+              removeClippedSubviews={true}
+              onScroll={handleScroll} // 스크롤 감지 이벤트 핸들러
+              /* getItemLayout={(data, index) => (
+                {
+                    length: (width - 54) / 2,
+                    offset: ((width - 54) / 2) * index,
+                    index
+                }
+              )} */
+              refreshControl={
+                <RefreshControl
+                  refreshing={isRefreshing}
+                  onRefresh={handleRefresh}
+                  tintColor="#ff0000" // Pull to Refresh 아이콘 색상 변경
+                  title="Loading..." // Pull to Refresh 아이콘 아래에 표시될 텍스트
+                  titleColor="#ff0000" // 텍스트 색상 변경
+                  colors={['#ff0000', '#00ff00', '#0000ff']} // 로딩 아이콘 색상 변경
+                  progressBackgroundColor="#ffffff" >
+                </RefreshControl>
+              }
+              onEndReached={loadMoreData}
+              onEndReachedThreshold={0.1}
+              ListFooterComponent={isLoadingMore && <Text>Loading more...</Text>}
+              renderItem={({ item:innerItem, index:innerIndex }) => {
 
-            return (
-              <>
-                <SpaceView key={innerIndex} viewStyle={_styles.itemWrap(innerItem.type)}>
+                return (
+                  <>
+                    <SpaceView key={innerIndex} viewStyle={_styles.itemWrap(innerItem.type)}>
 
-                  {innerItem.type == 'ONLY_LARGE' ? (
-                    <>
-                      {innerItem.large_list.map((item, index) => {
-                        return (
-                          <RenderListItem item={item} type={item?.size_type} />
-                        )
-                      })}
-                    </>
-                  ) : innerItem.type == 'ONLY_MEDIUM' ? (
-                    <>
-                      <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                        {innerItem.medium_list.map((item, index) => {
-                          return (
-                            <RenderListItem item={item} type={item?.size_type} />
-                          )
-                        })}
-
-                        {innerItem.medium_list.length < 2 && (
-                          <LinearGradient colors={['#7984ED', '#8759D5']} style={_styles.dummyArea('M')} start={{ x: 1, y: 0 }} end={{ x: 1, y: 1 }} >
-                            <Image source={IMAGE.logoStoryTmp} style={{width: 150, height: 45}} resizeMode={'cover'} />
-                          </LinearGradient>
-                        )}
-                      </SpaceView>
-                    </>
-                  ) : innerItem.type == 'ONLY_SMALL' ? (
-                    <>
-                      <SpaceView mb={5} viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                        {innerItem.small_list.map((item, index) => {
-                          return (
-                            <RenderListItem item={item} type={item?.size_type} />
-                          )
-                        })}
-
-                        {innerItem.medium_list.length < 2 && (
-                          <LinearGradient colors={['#7984ED', '#8759D5']} style={_styles.dummyArea('S')} start={{ x: 1, y: 0 }} end={{ x: 1, y: 1 }} >
-                            <Image source={IMAGE.logoStoryTmp} style={{width: 150, height: 45}} resizeMode={'cover'} />
-                          </LinearGradient>
-                        )}
-                      </SpaceView>
-                    </>
-                  ) : innerItem.type == 'COMPLEX_MEDIUM' ? (
-                    <>
-                      <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                        {innerItem.medium_list.map((item, index) => {
-                          return (
-                            <RenderListItem item={item} type={item?.size_type} />
-                          )
-                        })}
-                        <SpaceView viewStyle={{flexDirection: 'column'}}>
-                          {innerItem.small_list.map((item, index) => {
+                      {innerItem.type == 'ONLY_LARGE' ? (
+                        <>
+                          {innerItem.large_list.map((item, index) => {
                             return (
-                              <SpaceView mb={index == 0 ? 5 : 0}>
-                                <RenderListItem item={item} type={item?.size_type} />
-                              </SpaceView>
+                              <RenderListItem item={item} type={item?.size_type} />
                             )
                           })}
-
-                          {innerItem.small_list.length < 2 && (
-                            <LinearGradient colors={['#7984ED', '#8759D5']} style={_styles.dummyArea('S')} start={{ x: 1, y: 0 }} end={{ x: 1, y: 1 }} >
-                              <Image source={IMAGE.logoStoryTmp} style={{width: 150, height: 45}} resizeMode={'cover'} />
-                            </LinearGradient>
-                          )}
-                        </SpaceView>
-                      </SpaceView>
-                    </>
-                  ) : innerItem.type == 'COMPLEX_SMALL' ? (
-                    <>
-                      <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                        <SpaceView viewStyle={{flexDirection: 'column'}}>
-                          {innerItem.small_list.map((item, index) => {
-                            return (
-                              <SpaceView mb={index == 0 ? 5 : 0}>
+                        </>
+                      ) : innerItem.type == 'ONLY_MEDIUM' ? (
+                        <>
+                          <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                            {innerItem.medium_list.map((item, index) => {
+                              return (
                                 <RenderListItem item={item} type={item?.size_type} />
-                              </SpaceView>
-                            )
-                          })}
-                          {innerItem.small_list.length < 2 && (
+                              )
+                            })}
+
+                            {innerItem.medium_list.length < 2 && (
+                              <LinearGradient colors={['#7984ED', '#8759D5']} style={_styles.dummyArea('M')} start={{ x: 1, y: 0 }} end={{ x: 1, y: 1 }} >
+                                <Image source={IMAGE.logoStoryTmp} style={{width: 150, height: 45}} resizeMode={'cover'} />
+                              </LinearGradient>
+                            )}
+                          </SpaceView>
+                        </>
+                      ) : innerItem.type == 'ONLY_SMALL' ? (
+                        <>
+                          <SpaceView mb={5} viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                            {innerItem.small_list.map((item, index) => {
+                              return (
+                                <RenderListItem item={item} type={item?.size_type} />
+                              )
+                            })}
+
+                            {innerItem.medium_list.length < 2 && (
                               <LinearGradient colors={['#7984ED', '#8759D5']} style={_styles.dummyArea('S')} start={{ x: 1, y: 0 }} end={{ x: 1, y: 1 }} >
                                 <Image source={IMAGE.logoStoryTmp} style={{width: 150, height: 45}} resizeMode={'cover'} />
                               </LinearGradient>
-                          )}
-                        </SpaceView>
-                        {innerItem.medium_list.map((item, index) => {
-                          return (
-                            <RenderListItem item={item} type={item?.size_type} />
-                          )
-                        })}
-                      </SpaceView>
-                    </>
-                  ) : (
-                    <>
-                      
-                    </>
-                  )}
+                            )}
+                          </SpaceView>
+                        </>
+                      ) : innerItem.type == 'COMPLEX_MEDIUM' ? (
+                        <>
+                          <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                            {innerItem.medium_list.map((item, index) => {
+                              return (
+                                <RenderListItem item={item} type={item?.size_type} />
+                              )
+                            })}
+                            <SpaceView viewStyle={{flexDirection: 'column'}}>
+                              {innerItem.small_list.map((item, index) => {
+                                return (
+                                  <SpaceView mb={index == 0 ? 5 : 0}>
+                                    <RenderListItem item={item} type={item?.size_type} />
+                                  </SpaceView>
+                                )
+                              })}
 
-                </SpaceView>
-              </>
-            )
-          }}
-        />
+                              {innerItem.small_list.length < 2 && (
+                                <LinearGradient colors={['#7984ED', '#8759D5']} style={_styles.dummyArea('S')} start={{ x: 1, y: 0 }} end={{ x: 1, y: 1 }} >
+                                  <Image source={IMAGE.logoStoryTmp} style={{width: 150, height: 45}} resizeMode={'cover'} />
+                                </LinearGradient>
+                              )}
+                            </SpaceView>
+                          </SpaceView>
+                        </>
+                      ) : innerItem.type == 'COMPLEX_SMALL' ? (
+                        <>
+                          <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                            <SpaceView viewStyle={{flexDirection: 'column'}}>
+                              {innerItem.small_list.map((item, index) => {
+                                return (
+                                  <SpaceView mb={index == 0 ? 5 : 0}>
+                                    <RenderListItem item={item} type={item?.size_type} />
+                                  </SpaceView>
+                                )
+                              })}
+                              {innerItem.small_list.length < 2 && (
+                                  <LinearGradient colors={['#7984ED', '#8759D5']} style={_styles.dummyArea('S')} start={{ x: 1, y: 0 }} end={{ x: 1, y: 1 }} >
+                                    <Image source={IMAGE.logoStoryTmp} style={{width: 150, height: 45}} resizeMode={'cover'} />
+                                  </LinearGradient>
+                              )}
+                            </SpaceView>
+                            {innerItem.medium_list.map((item, index) => {
+                              return (
+                                <RenderListItem item={item} type={item?.size_type} />
+                              )
+                            })}
+                          </SpaceView>
+                        </>
+                      ) : (
+                        <>
+                          
+                        </>
+                      )}
+
+                    </SpaceView>
+                  </>
+                )
+              }}
+            />
+          </>
+        ) : (
+          <>
+            <SpaceView viewStyle={_styles.noData}>
+              <Text style={_styles.noDataText}>스토리가 없습니다.</Text>
+            </SpaceView>
+          </>
+        )}
+
       </SpaceView>
 
       {/* ###################################################################################################### 하단 버튼 */}
@@ -564,7 +590,7 @@ export const Story = () => {
 
       {/* ###################################################################################################### 맨위 이동 버튼 */}
 
-      {isTopBtn && (
+      {(storyList.length > 0 && isTopBtn) && (
         <SpaceView viewStyle={_styles.topBtnArea}>
           <TouchableOpacity onPress={() => { scrollToTop(); }}>
             <Text style={_styles.topBtnText}>TOP</Text>
@@ -790,6 +816,19 @@ const _styles = StyleSheet.create({
     right: 0,
     opacity: 0.6,
     height: 80,
+  },
+  noData: {
+    paddingHorizontal: 20,
+    height: height,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: 180,
+    backgroundColor: '#fff',
+  },
+  noDataText: {
+    fontFamily: 'AppleSDGothicNeoM00',
+    color: '#555555',
+    fontSize: 15,
   },
 
 });
