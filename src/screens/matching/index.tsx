@@ -73,6 +73,8 @@ export default function Matching(props: Props) {
   const [isLoad, setIsLoad] = useState(false);
   const [isEmpty, setIsEmpty] = useState(false);
 
+  const [isClickable, setIsClickable] = useState(true); // 클릭 여부
+
   // 본인 데이터
   const memberBase = useUserInfo(); //hooksMember.getBase();
 
@@ -314,39 +316,45 @@ export default function Matching(props: Props) {
 
   // ############################################################ 찐심/관심/거부 저장
   const insertMatchInfo = async (activeType: string, special_level: number, message: string) => {
-    const body = {
-      active_type: activeType,
-      res_member_seq: matchData.match_member_info?.member_seq,
-      special_level: special_level,
-      message: message,
-    };
+    // 중복 클릭 방지 설정
+    if(isClickable) {
+      setIsClickable(false);
+      
+      const body = {
+        active_type: activeType,
+        res_member_seq: matchData.match_member_info?.member_seq,
+        special_level: special_level,
+        message: message,
+      };
 
-    try {
-      const { success, data } = await regist_match_status(body);
+      try {
+        const { success, data } = await regist_match_status(body);
 
-      if(success) {
-        if(data.result_code == '0000') {
-          dispatch(myProfile());
-          getDailyMatchInfo(false);
-          setIsLoad(false);
+        if(success) {
+          if(data.result_code == '0000') {
+            dispatch(myProfile());
+            getDailyMatchInfo(false);
+            setIsLoad(false);
 
-          if(activeType == 'zzim') {
-            show({
-              type: 'RESPONSIVE',
-              content: '찜하기가 성공되었습니다.\n보관함에서 찜한 이성을 확인해 주세요.',
-            });
+            if(activeType == 'zzim') {
+              show({
+                type: 'RESPONSIVE',
+                content: '찜하기가 성공되었습니다.\n보관함에서 찜한 이성을 확인해 주세요.',
+              });
+            }
+
+          } else if (data.result_code == '6010') {
+            show({ content: '보유 패스가 부족합니다.' });
+            return false;
+          } else {
+            show({ content: '오류입니다. 관리자에게 문의해주세요.' });
           }
-
-        } else if (data.result_code == '6010') {
-          show({ content: '보유 패스가 부족합니다.' });
-          return false;
-        } else {
-          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
         }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsClickable(true);
       }
-    } catch (error) {
-      console.log(error);
-    } finally {
     }
   };
 
