@@ -408,6 +408,12 @@ export default function StoryEdit(props: Props) {
 
       <CommonHeader title={storyData.storyType == 'STORY' ? '스토리 등록' : storyData.storyType == 'VOTE' ? '투표 등록' : '시크릿 등록'} />
 
+      <KeyboardAvoidingView
+        style={{flex: 1}}
+        behavior={Platform.OS === 'ios' ? 'padding' : null} // iOS에서는 'padding'을 사용합니다.
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0} // iOS에서 상단 바 (예: 네비게이션 바) 고려
+      >      
+
       <ScrollView showsVerticalScrollIndicator={false} style={{backgroundColor: '#fff'}}>
 
         <SpaceView mt={20} pl={20} pr={20}>
@@ -446,7 +452,7 @@ export default function StoryEdit(props: Props) {
                 })}
               </SpaceView>
 
-              <SpaceView mt={20}>
+              <SpaceView mt={20} mb={100}>
                 <CommonTextarea
                   value={storyData.contents}
                   onChangeText={(text) => setStoryData({...storyData, contents: text})}
@@ -526,49 +532,53 @@ export default function StoryEdit(props: Props) {
                   <Text style={_styles.subTitleText}>투표 내용을 작성해 주세요.</Text>
                 </SpaceView>
 
-                <CommonTextarea
-                  value={storyData.contents}
-                  onChangeText={(text) => setStoryData({...storyData, contents: text})}
-                  placeholder={'20글자 이상 입력해 주세요.\n\n(주의*)이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 제재 대상이 될 수 있으며 상대를 배려하는 마음으로 이용해 주세요.'}
-                  placeholderTextColor={'#C7C7C7'}
-                  maxLength={1000}
-                  exceedCharCountColor={'#990606'}
-                  fontSize={13}
-                  height={240}
-                  backgroundColor={'#fff'}
-                  fontColor={'#000'}
-                  borderColor={isEmptyData(storyData.contents) ? '#7986EE' : '#ebe9ef'}
-                  borderRadius={20}
-                  padding={20}
-                />
-
-                  {/* <TextInput
-                    ref={inputRef}
+                <SpaceView mb={100}>
+                  <CommonTextarea
                     value={storyData.contents}
                     onChangeText={(text) => setStoryData({...storyData, contents: text})}
-                    multiline={true}
-                    textAlignVertical="top"
-                    autoCapitalize="none"
-                    style={_styles.contentInputText(isEmptyData(storyData.contents))}
                     placeholder={'20글자 이상 입력해 주세요.\n\n(주의*)이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 제재 대상이 될 수 있으며 상대를 배려하는 마음으로 이용해 주세요.'}
-                    placeholderTextColor={'#c7c7c7'}
-                    editable={true}
-                    secureTextEntry={false}
+                    placeholderTextColor={'#C7C7C7'}
                     maxLength={1000}
-                    //autoFocus={true}
-                    //onSubmitEditing={() => { this.inputRef.focus(); }}
-                  /> */}
+                    exceedCharCountColor={'#990606'}
+                    fontSize={13}
+                    height={250}
+                    backgroundColor={'#fff'}
+                    fontColor={'#000'}
+                    borderColor={isEmptyData(storyData.contents) ? '#7986EE' : '#ebe9ef'}
+                    borderRadius={20}
+                    padding={20}
+                  />
+
+                    {/* <TextInput
+                      ref={inputRef}
+                      value={storyData.contents}
+                      onChangeText={(text) => setStoryData({...storyData, contents: text})}
+                      multiline={true}
+                      textAlignVertical="top"
+                      autoCapitalize="none"
+                      style={_styles.contentInputText(isEmptyData(storyData.contents))}
+                      placeholder={'20글자 이상 입력해 주세요.\n\n(주의*)이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 제재 대상이 될 수 있으며 상대를 배려하는 마음으로 이용해 주세요.'}
+                      placeholderTextColor={'#c7c7c7'}
+                      editable={true}
+                      secureTextEntry={false}
+                      maxLength={1000}
+                      //autoFocus={true}
+                      //onSubmitEditing={() => { this.inputRef.focus(); }}
+                    /> */}
+
+                </SpaceView>
 
               </SpaceView>
             </>
           )}
         </SpaceView>
+        
       </ScrollView>
 
       {/* ##############################################################################################################
       ##### 버튼 영역
       ############################################################################################################## */}
-      <SpaceView mt={20} mb={10} viewStyle={_styles.btnArea}>
+      <SpaceView mb={10} viewStyle={_styles.btnArea}>
         {
           (storyData.storyType == 'VOTE' ? isEmptyData(storyData.contents)
                                         && isEmptyData(voteData.voteName01)
@@ -595,6 +605,7 @@ export default function StoryEdit(props: Props) {
         }
       </SpaceView>
 
+      </KeyboardAvoidingView>
 
       {/* ###############################################
 							사진 변경/삭제 팝업
