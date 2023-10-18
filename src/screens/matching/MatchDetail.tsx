@@ -146,6 +146,8 @@ export default function MatchDetail(props: Props) {
         if (data.result_code == '0000') {
           //setData(data);
 
+          dispatch(myProfile());
+
           const auth_list = data?.second_auth_list.filter(item => item.auth_status == 'ACCEPT');
           setData({
             match_member_info: data?.match_member_info,

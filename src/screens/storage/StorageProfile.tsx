@@ -66,6 +66,8 @@ export const StorageProfile = (props: Props) => {
   const { show } = usePopup();  // 공통 팝업
   const dispatch = useDispatch();
 
+  const [isClickable, setIsClickable] = useState(true); // 클릭 여부
+
   // 이미지 인덱스
   const [currentIndex, setCurrentIndex] = React.useState(0);
 
@@ -337,35 +339,44 @@ export const StorageProfile = (props: Props) => {
 
   // ############################################################ 연락처 열기
   const goHpOpen = async () => {
-    const body = {
-      match_seq: data.match_base.match_seq
-    };
-    try {
-      const { success, data } = await resolve_match(body);
 
-      if(success) {
-        if (data.result_code == '0000') {
-          dispatch(myProfile());
-        } else if(data.result_code == '5000') {
-          show({
-            title: '연락처 열람 알림',
-            content: '이미 열람된 연락처 입니다.\n보관함 이동 후 다시 조회 해주세요.',
-            confirmCallback: function () {
-              navigation.goBack();
-            },
-          });
-        } else {
-          show({
-            title: '재화 부족',
-            content: '보유 재화가 부족합니다.',
-            confirmCallback: function () {},
-          });
+    // 중복 클릭 방지 설정
+    if(isClickable) {
+      setIsClickable(false);
+
+      const body = {
+        match_seq: data.match_base.match_seq
+      };
+      try {
+        const { success, data } = await resolve_match(body);
+  
+        if(success) {
+          if (data.result_code == '0000') {
+            dispatch(myProfile());
+          } else if(data.result_code == '5000') {
+            show({
+              title: '연락처 열람 알림',
+              content: '이미 열람된 연락처 입니다.\n보관함 이동 후 다시 조회 해주세요.',
+              isCross: true,
+              confirmCallback: function () {
+                navigation.goBack();
+              },
+            });
+          } else {
+            show({
+              title: '재화 부족',
+              content: '보유 재화가 부족합니다.',
+              isCross: true,
+              confirmCallback: function () {},
+            });
+          }
         }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsClickable(true);
+        selectMatchMemberInfo();
       }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      selectMatchMemberInfo();
     }
   };
 
