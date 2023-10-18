@@ -108,13 +108,19 @@ export default function ProfileActive({ memberData }) {
         <View style={_styles.socialContainer}>
           <Text style={_styles.socialEverageText}>소셜 평점</Text>
           <Text style={[_styles.socialText1, { fontFamily: 'AppleSDGothicNeoEB00' }]}>
-            {memberData?.social_grade > 9 && '천상계와 신계 그 어딘가의 존재'}
-            {memberData?.social_grade > 8 && memberData?.social_grade <= 9 && '미세먼지없이 맑은 하늘 위에 숨쉬는 존재'}
-            {memberData?.social_grade > 7 && memberData?.social_grade <= 8 && '쾌청한 하늘 아래 맑은 바닷물과 어울리는 분'}
-            {memberData?.social_grade > 6 && memberData?.social_grade <= 7 && '따사로운 햇살이 비치는 꽃길을 걷는 분'}
-            {memberData?.social_grade > 5 && memberData?.social_grade <= 6 && '어두운 골목과 화려한 조명의 조화 속에 숨은 사람'}
-            {memberData?.social_grade > 4 && memberData?.social_grade <= 5 && '심해로 통하는 어두운 바다에 몸을 담근 자'}
-            {memberData?.social_grade <= 4 && '깊은 심해를 탐험하는 자'}
+            {isEmptyData(memberData?.social_grade) ? (
+              <>
+                {memberData?.social_grade > 9 && '천상계와 신계 그 어딘가의 존재'}
+                {memberData?.social_grade > 8 && memberData?.social_grade <= 9 && '미세먼지없이 맑은 하늘 위에 숨쉬는 존재'}
+                {memberData?.social_grade > 7 && memberData?.social_grade <= 8 && '쾌청한 하늘 아래 맑은 바닷물과 어울리는 분'}
+                {memberData?.social_grade > 6 && memberData?.social_grade <= 7 && '따사로운 햇살이 비치는 꽃길을 걷는 분'}
+                {memberData?.social_grade > 5 && memberData?.social_grade <= 6 && '어두운 골목과 화려한 조명의 조화 속에 숨은 사람'}
+                {memberData?.social_grade > 4 && memberData?.social_grade <= 5 && '심해로 통하는 어두운 바다에 몸을 담근 자'}
+                {memberData?.social_grade <= 4 && '깊은 심해를 탐험하는 자'}
+              </>
+            ) : (
+              <>깊은 심해를 탐험하는 자</>
+            )}
           </Text>
           {/* <Text style={styles.socialText1}>매칭되면</Text>
           <Text style={styles.socialText1}>

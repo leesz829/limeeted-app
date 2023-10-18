@@ -95,7 +95,9 @@ import {
   GET_STORY_ACTIVE,
   GET_STORY_LIKE_LIST,
   GET_STORY_BOARD_LIST,
-  SAVE_STORY_VOTE_MEMBER
+  SAVE_STORY_VOTE_MEMBER,
+  PROFILE_OPEN,
+  GET_MATCH_DETAIL,
 } from './route';
 
 /* ========================================================================================================
@@ -600,6 +602,23 @@ export async function match_check_all(body: {
   type: string;
 }) {
   return send(MATCH_CHECK_ALL, 'POST', body, true, false);
+}
+
+// 상대 회원 프로필을 열람한다.
+export async function profile_open(body: {
+  type: string;
+  trgt_member_seq: number;
+}) {
+  return send(PROFILE_OPEN, 'POST', body, true, false);
+}
+
+// 매칭 상세 정보를 조회한다.
+export async function get_match_detail(body: {
+  type: string;
+  match_member_seq: number;
+  match_seq: number;
+}) {
+  return send(GET_MATCH_DETAIL, 'POST', body, true, false);
 }
 
 

@@ -35,6 +35,7 @@ import MileageOrder from 'screens/shop/MileageOrder';
 import GifticonDetail from 'screens/shop/GifticonDetail';
 import ItemMatching from 'screens/matching/ItemMatching';
 import MyDailyView from 'screens/profile/MyDailyView';
+import MatchDetail from 'screens/matching/MatchDetail';
 
 import EventDetail from 'screens/event/EventDetail';
 import { ProfileImageSetting } from 'screens/profile/ProfileImageSetting';
@@ -81,6 +82,7 @@ const CommonNavigation = () => {
       <CommonStack.Screen name="ItemMatching" component={ItemMatching} />
       <CommonStack.Screen name="ImagePreview" component={ImagePreview} />
       <CommonStack.Screen name="MyDailyView" component={MyDailyView} />
+      <CommonStack.Screen name="MatchDetail" component={MatchDetail} />
       <CommonStack.Screen name="EventDetail" component={EventDetail} />
       <CommonStack.Screen name="ProfileImageSetting" component={ProfileImageSetting} />
       <CommonStack.Screen name="StoryRegi" component={StoryRegi} />

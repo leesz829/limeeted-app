@@ -26,4 +26,5 @@ export const ROUTES = {
   Mileage_Order: 'MileageOrder',
   Gifticon_Detail: 'GifticonDetail',
   ItemMatching: 'ItemMatching',
+  MatchDetail: 'MatchDetail',
 };

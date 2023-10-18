@@ -7,7 +7,7 @@ import TopNavigation from 'component/TopNavigation';
 import * as React from 'react';
 import { useState, useRef, useEffect } from 'react';
 import { ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity, RefreshControl } from 'react-native';
-import { get_story_board_list } from 'api/models';
+import { get_story_board_list, profile_open } from 'api/models';
 import { findSourcePath, IMAGE, GIF_IMG, findSourcePathLocal } from 'utils/imageUtils';
 import { usePopup } from 'Context';
 import { SUCCESS, NODATA } from 'constants/reusltcode';
@@ -42,6 +42,7 @@ export const Story = () => {
   const [isLoading, setIsLoading] = React.useState(false); // 로딩 상태 체크
   const [isRefreshing, setIsRefreshing] = useState(false); // 새로고침 여부
   const [isLoadingMore, setIsLoadingMore] = useState(false); // 더보기 로딩 여부
+  const [isClickable, setIsClickable] = React.useState(true); // 클릭 여부
   const flatListRef = useRef(null);
 
   const [isTopBtn, setIsTopBtn] = useState(false);
@@ -88,25 +89,79 @@ export const Story = () => {
     flatListRef.current.scrollToIndex({ animated: true, index: 0 });
   };
 
-  // ##################################################################################### 프로필 카드 열람
-  const profileCardOpenPopup = (member_seq:number) => {
-    show({
-      title: '프로필 카드 열람',
-      content: '(7일간)프로필을 열람하시겠습니까?',
-      passAmt: '15',
-      confirmCallback: function() {
-        if(memberBase?.pass_has_amt >= 15) {
-          profileCardOpen();
-        }
-      },
-      cancelCallback: function() {
+  // ##################################################################################### 프로필 카드 열람 팝업 활성화
+  const profileCardOpenPopup = (memberSeq:number, openCnt:number) => {
+    if(openCnt > 0) {
+      navigation.navigate(STACK.COMMON, { 
+        screen: 'MatchDetail',
+        params: {
+          trgtMemberSeq: memberSeq,
+          type: 'OPEN',
+          //matchType: 'STORY',
+        } 
+      });
 
-      },
-    });
+    } else {
+      show({
+        title: '프로필 카드 열람',
+        content: '(7일간)프로필을 열람하시겠습니까?',
+        passAmt: '15',
+        confirmCallback: function() {
+          if(memberBase?.pass_has_amt >= 15) {
+            profileCardOpen(memberSeq);
+
+            /* show({
+              content: '패스가 부족합니다.',
+            }); */
+          }
+        },
+        cancelCallback: function() {
+        },
+      });
+    }
   };
 
-  const profileCardOpen = () => {
+  // ##################################################################################### 프로필 카드 열람
+  const profileCardOpen =  async (memberSeq:number) => {
 
+    // 중복 클릭 방지 설정
+    if(isClickable) {
+      try {
+        setIsClickable(false);
+        setIsLoading(true);
+  
+        const body = {
+          type: 'STORY',
+          trgt_member_seq: memberSeq
+        };
+  
+        const { success, data } = await profile_open(body);
+        if(success) {
+          switch (data.result_code) {
+            case SUCCESS:
+              navigation.navigate(STACK.COMMON, { 
+                screen: 'MatchDetail',
+                params: {
+                  trgtMemberSeq: memberSeq,
+                  type: 'OPEN',
+                  //matchType: 'STORY',
+                } 
+              });
+              break;
+            default:
+              show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+              break;
+          }
+        } else {
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsClickable(true);
+        setIsLoading(false);
+      }
+    }
   };
 
   // ############################################################################# 스토리 목록 조회
@@ -209,9 +264,16 @@ export const Story = () => {
               <SpaceView viewStyle={_styles.noImageArea(item?.gender)} >
 
                 {/* 썸네일 이미지 */}
-                <SpaceView>
+                <TouchableOpacity 
+                  disabled={memberBase?.gender === item?.gender || memberBase?.member_seq === item?.member_seq || storyType == 'SECRET'}
+                  onPress={() => { profileCardOpenPopup(item?.member_seq, item?.open_cnt); }} >
+
                   <Image source={storyType == 'SECRET' ? ICON.storyNoIcon : findSourcePath(item?.mst_img_path)} style={_styles.mstImgStyle(type == 'SMALL' ? 50 : 80, 40)} resizeMode={'cover'} />
-                </SpaceView>
+                </TouchableOpacity>
+
+                {/* <SpaceView>
+                  <Image source={storyType == 'SECRET' ? ICON.storyNoIcon : findSourcePath(item?.mst_img_path)} style={_styles.mstImgStyle(type == 'SMALL' ? 50 : 80, 40)} resizeMode={'cover'} />
+                </SpaceView> */}
 
                 {/* 스토리 유형 */}
                 <SpaceView viewStyle={_styles.typeArea(storyType)}>
@@ -261,7 +323,9 @@ export const Story = () => {
               {/* 프로필 영역 */}
               <SpaceView viewStyle={_styles.profileArea}>
                 <SpaceView mr={5}>
-                  <TouchableOpacity onPress={() => { profileCardOpenPopup(item?.member_seq); }}>
+                  <TouchableOpacity 
+                    disabled={memberBase?.gender === item?.gender || memberBase?.member_seq === item?.member_seq}
+                    onPress={() => { profileCardOpenPopup(item?.member_seq, item?.open_cnt); }}>
                     <Image source={storyType == 'SECRET' ? ICON.storyNoIcon : findSourcePath(item?.mst_img_path)} style={_styles.mstImgStyle(30, 20)} resizeMode={'cover'} />
                   </TouchableOpacity>
                 </SpaceView>
@@ -304,7 +368,10 @@ export const Story = () => {
   React.useEffect(() => {
     if(isFocus) {
       setIsRefreshing(false);
-      getStoryBoardList('BASE', 0);
+
+      if(storyList.length == 0) {
+        getStoryBoardList('BASE', 0);
+      }
     } else {
       //setStoryList([]);
     }
@@ -690,7 +757,7 @@ const _styles = StyleSheet.create({
     left: 0,
     right: 0,
     opacity: 0.48,
-    height: 60,
+    height: 80,
   },
 
 });

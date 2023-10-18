@@ -90,6 +90,12 @@ export type StackParamList = {
     matchType: string;
   };
   ItemMatching: undefined;
+  MatchDetail: {
+    type: string;
+    matchSeq: Number;
+    trgtMemberSeq: Number;
+    memberSeqList: [];
+  };
   ImagePreview: {
     imgList: [];
     orderSeq: Number;

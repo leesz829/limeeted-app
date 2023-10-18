@@ -81,6 +81,8 @@ export const RESOLVE_MATCH = '/match/procMatchMemberHpOpen';
 export const FIRST_MATCH_PASS_ADD = '/match/firstMatchPassAddProc';
 export const DAILY_MATCH_ADD_OPEN = '/match/profileCardAddOpen';
 export const MATCH_CHECK_ALL = '/match/matchCheckAllProc';
+export const PROFILE_OPEN = '/match/profileOpen';
+export const GET_MATCH_DETAIL = '/match/getMatchInfoDetail';
 
 /**
  * ORDER

@@ -6,7 +6,7 @@ import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
 import { ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity, Animated, Easing, PanResponder, Platform, TouchableWithoutFeedback, KeyboardAvoidingView } from 'react-native';
-import { get_story_detail, save_story_like, save_story_vote_member } from 'api/models';
+import { get_story_detail, save_story_like, save_story_vote_member, profile_open } from 'api/models';
 import { findSourcePath, IMAGE, GIF_IMG, findSourcePathLocal } from 'utils/imageUtils';
 import { usePopup } from 'Context';
 import { SUCCESS, NODATA } from 'constants/reusltcode';
@@ -249,6 +249,76 @@ export default function StoryDetail(props: Props) {
 
   };
 
+  // ##################################################################################### 프로필 카드 열람 팝업 활성화
+  const profileCardOpenPopup = (memberSeq:number, openCnt:number) => {
+    if(openCnt > 0) {
+      navigation.navigate(STACK.COMMON, { 
+        screen: 'MatchDetail',
+        params: {
+          trgtMemberSeq: memberSeq,
+          type: 'OPEN',
+          //matchType: 'STORY',
+        } 
+      });
+
+    } else {
+      show({
+        title: '프로필 카드 열람',
+        content: '(7일간)프로필을 열람하시겠습니까?',
+        passAmt: '15',
+        confirmCallback: function() {
+          if(memberBase?.pass_has_amt >= 15) {
+            profileCardOpen(memberSeq);
+          }
+        },
+        cancelCallback: function() {
+        },
+      });
+    }
+  };
+
+  // ##################################################################################### 프로필 카드 열람
+  const profileCardOpen =  async (memberSeq:number) => {
+
+    // 중복 클릭 방지 설정
+    if(isClickable) {
+      try {
+        setIsClickable(false);
+        setIsLoading(true);
+  
+        const body = {
+          type: 'STORY',
+          trgt_member_seq: memberSeq
+        };
+  
+        const { success, data } = await profile_open(body);
+        if(success) {
+          switch (data.result_code) {
+            case SUCCESS:
+              navigation.navigate(STACK.COMMON, { 
+                screen: 'MatchDetail',
+                params: {
+                  trgtMemberSeq: memberSeq,
+                  type: 'OPEN',
+                  //matchType: 'STORY',
+                } 
+              });
+              break;
+            default:
+              show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+              break;
+          }
+        } else {
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsClickable(true);
+        setIsLoading(false);
+      }
+    }
+  };
 
   // ############################################################################# 댓글 렌더링
   const ReplyRender = ({ item, index, likeFunc, replyModalOpenFunc }) => {
@@ -275,7 +345,12 @@ export default function StoryDetail(props: Props) {
             <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'flex-start'}}>
 
               {storyData.board?.story_type != 'SECRET' && (
-                <Image source={memberMstImgPath} style={_styles.replyImageStyle} resizeMode={'cover'} />
+                <TouchableOpacity 
+                  disabled={memberBase?.gender === item?.gender || memberBase?.member_seq === item?.member_seq}
+                  onPress={() => { profileCardOpenPopup(item?.member_seq, item?.open_cnt); }}>
+
+                  <Image source={memberMstImgPath} style={_styles.replyImageStyle} resizeMode={'cover'} />
+                </TouchableOpacity>
               )}
               
               <SpaceView ml={5} pt={3} viewStyle={{flexDirection: 'column', width: _w}}>
@@ -308,7 +383,7 @@ export default function StoryDetail(props: Props) {
                       </TouchableOpacity>
 
                       <TouchableOpacity 
-                        disabled={memberBase.member_seq != item?.member_seq}
+                        //disabled={memberBase.member_seq != item?.member_seq}
                         onPress={() => { popupStoryReplyActive(storyReplySeq, depth, item) }}>
                         <Text style={_styles.replyLikeCntText}>좋아요{item?.like_cnt > 0 && item?.like_cnt + '개'}</Text>
                       </TouchableOpacity>

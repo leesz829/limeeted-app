@@ -6,7 +6,7 @@ import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
 import { ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity, Animated, Easing, PanResponder, Platform, TouchableWithoutFeedback } from 'react-native';
-import { get_story_active, save_story_like } from 'api/models';
+import { get_story_active, save_story_like, profile_open } from 'api/models';
 import { findSourcePath, IMAGE, findSourcePathLocal } from 'utils/imageUtils';
 import { usePopup } from 'Context';
 import { SUCCESS, NODATA } from 'constants/reusltcode';
@@ -44,11 +44,8 @@ export default function StoryActive(props: Props) {
   const isFocus = useIsFocused();
   const dispatch = useDispatch();
 
-  // 기본 인덱스
-  const baseRef = React.useRef();
-
-  // 본인 데이터
-  const memberBase = useUserInfo();
+  const baseRef = React.useRef(); // 기본 인덱스
+  const memberBase = useUserInfo(); // 본인 데이터
 
   const { show } = usePopup(); // 공통 팝업
   const [isLoading, setIsLoading] = React.useState(false); // 로딩 상태 체크
@@ -171,7 +168,77 @@ export default function StoryActive(props: Props) {
         setIsLoading(false);
       }
     }
+  };
 
+  // ##################################################################################### 프로필 카드 열람 팝업 활성화
+  const profileCardOpenPopup = (memberSeq:number, openCnt:number) => {
+    if(openCnt > 0) {
+      navigation.navigate(STACK.COMMON, { 
+        screen: 'MatchDetail',
+        params: {
+          trgtMemberSeq: memberSeq,
+          type: 'OPEN',
+          //matchType: 'STORY',
+        } 
+      });
+
+    } else {
+      show({
+        title: '프로필 카드 열람',
+        content: '(7일간)프로필을 열람하시겠습니까?',
+        passAmt: '15',
+        confirmCallback: function() {
+          if(memberBase?.pass_has_amt >= 15) {
+            profileCardOpen(memberSeq);
+          }
+        },
+        cancelCallback: function() {
+        },
+      });
+    }
+  };
+
+  // ##################################################################################### 프로필 카드 열람
+  const profileCardOpen =  async (memberSeq:number) => {
+
+    // 중복 클릭 방지 설정
+    if(isClickable) {
+      try {
+        setIsClickable(false);
+        setIsLoading(true);
+  
+        const body = {
+          type: 'STORY',
+          trgt_member_seq: memberSeq
+        };
+  
+        const { success, data } = await profile_open(body);
+        if(success) {
+          switch (data.result_code) {
+            case SUCCESS:
+              navigation.navigate(STACK.COMMON, { 
+                screen: 'MatchDetail',
+                params: {
+                  trgtMemberSeq: memberSeq,
+                  type: 'OPEN',
+                  //matchType: 'STORY',
+                } 
+              });
+              break;
+            default:
+              show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+              break;
+          }
+        } else {
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsClickable(true);
+        setIsLoading(false);
+      }
+    }
   };
 
   /* ##################################################################################################################################
@@ -207,17 +274,17 @@ export default function StoryActive(props: Props) {
   ################## 좋아요 목록 팝업 관련 함수
   ################################################################################################################################## */
 
-  const [likeListPopup, setLikeListPopup] = React.useState(false);
+  const [isLikeListPopup, setIsLikeListPopup] = React.useState(false);
   const [likeListTypePopup, setLikeListTypePopup] = React.useState('');
   const [replyInfo, setReplyInfo] = React.useState({});
 
   const popupStoryBoardActive = () => {
-    setLikeListPopup(true);
+    setIsLikeListPopup(true);
     setLikeListTypePopup('BOARD');
   };
 
   const popupStoryReplyActive = (_storyBoardSeq:number, _storyReplySeq:number, _depth:number, replyInfo:{}) => {
-    setLikeListPopup(true);
+    setIsLikeListPopup(true);
     setLikeListTypePopup('REPLY');
     setSelectedReplyData({
       storyBoardSeq: _storyBoardSeq,
@@ -228,7 +295,7 @@ export default function StoryActive(props: Props) {
   };
 
   const likeListCloseModal = () => {
-    setLikeListPopup(false);
+    setIsLikeListPopup(false);
   };
 
   /* ##################################################################################################################################
@@ -255,6 +322,8 @@ export default function StoryActive(props: Props) {
                 const storyAlarmType = _item?.story_alarm_type; // 스토리 알림 유형
                 const storyBoardSeq = _item?.story_board_seq; // 스토리 게시글 번호
                 const storyReplySeq = _item?.story_reply_seq; // 스토리 댓글 번호
+                const storyBoardLikeSeq = _item?.story_board_like_seq; // 스토리 게시글 좋아요 번호
+                const storyReplyLikeSeq = _item?.story_reply_like_seq; // 스토리 댓글 좋아요 번호
                 const depth = _item?.depth; // 댓글 계층
                 const memberLikeYn = _item?.member_like_yn; // 회원 좋아요 여부
                 const replyContents = _item?.reply_contents; // 댓글 내용
@@ -266,9 +335,13 @@ export default function StoryActive(props: Props) {
                   <SpaceView viewStyle={_styles.alarmItemWrap('ALARM')} key={'item' + _index}>
 
                     {/* 회원 대표사진 */}
-                    <SpaceView viewStyle={_styles.alarmItemMember}>
+                    <TouchableOpacity
+                      style={_styles.alarmItemMember}
+                      disabled={memberBase?.gender === _item?.gender || memberBase?.member_seq === _item?.reg_seq}
+                      onPress={() => { profileCardOpenPopup(_item?.reg_seq, _item?.open_cnt); }} >
+
                       <Image source={findSourcePath(_item?.mst_img_path)} style={_styles.alarmItemMemberThum} resizeMode={'cover'} />
-                    </SpaceView>
+                    </TouchableOpacity>
 
                     <SpaceView viewStyle={{flex:2.5}}>
 
@@ -287,7 +360,7 @@ export default function StoryActive(props: Props) {
                               </>
                             ) : (
                               <>
-                                님이 내 게시물을 좋아합니다.
+                                님이 내 {isEmptyData(storyReplyLikeSeq) ? '댓글' : '게시물'}을 좋아합니다.
                               </>
                             )}
                             
@@ -300,7 +373,7 @@ export default function StoryActive(props: Props) {
 
                         {/* 게시글 썸네일 */}
                         <SpaceView viewStyle={_styles.alarmItemBoard}>
-                          <Image source={isEmptyData(boardImgPath) ? boardImgPath : IMAGE.logoStoryBox} style={_styles.alarmItemStoryThum} resizeMode={'cover'} />
+                          <Image source={boardImgPath} style={_styles.alarmItemStoryThum} resizeMode={'cover'} />
                         </SpaceView>
 
                       </TouchableOpacity>
@@ -388,7 +461,7 @@ export default function StoryActive(props: Props) {
 
                     {/* 게시글 썸네일 */}
                     <SpaceView viewStyle={_styles.alarmItemBoard}>
-                      <Image source={isEmptyData(boardImgPath) ? boardImgPath : IMAGE.logoStoryBox} style={_styles.alarmItemStoryThum} resizeMode={'cover'} />
+                      <Image source={boardImgPath} style={_styles.alarmItemStoryThum} resizeMode={'cover'} />
                     </SpaceView>
 
                     <SpaceView viewStyle={_styles.storyItemContent}>
@@ -569,12 +642,13 @@ export default function StoryActive(props: Props) {
                 좋아요 목록 팝업
       ################################################################################## */}
       <LikeListPopup
-        isVisible={likeListPopup}
+        isVisible={isLikeListPopup}
         closeModal={likeListCloseModal}
         type={likeListTypePopup}
         _storyBoardSeq={selectedReplyData.storyBoardSeq}
         storyReplyData={selectedReplyData}
         replyInfo={replyInfo}
+        profileOpenFn={profileCardOpenPopup}
       />
 
     </>
@@ -716,9 +790,10 @@ const _styles = StyleSheet.create({
   },
   noData: {
     paddingHorizontal: 20,
-    height: height - 230,
+    height: height,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingBottom: 180,
   },
   noDataText: {
     fontFamily: 'AppleSDGothicNeoM00',
