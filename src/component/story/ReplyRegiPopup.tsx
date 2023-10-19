@@ -307,6 +307,7 @@ const _styles = StyleSheet.create({
     paddingVertical: 5,
     fontFamily: 'AppleSDGothicNeoM00',
     fontSize: 13,
+    color: '#000',
   },
   btnArea: {
     position: 'absolute',

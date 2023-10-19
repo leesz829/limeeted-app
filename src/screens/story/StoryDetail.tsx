@@ -484,8 +484,6 @@ export default function StoryDetail(props: Props) {
                   })}
                 </>
               )}
-
-              
             </View>
 
             <FlatList
@@ -665,7 +663,7 @@ export default function StoryDetail(props: Props) {
           baseColor = '#FE0456';
           btnText = item?.vote_member_cnt + '표';
         } else {
-          btnText = item?.vote_member_cnt + '표(당선)';
+          btnText = item?.vote_member_cnt + '표(PICK)';
         }
       } else {
         baseColorArr = ['#7984ED', '#7984ED'];

@@ -149,7 +149,6 @@ export default function StoryEdit(props: Props) {
   const imgDel_modalizeRef = useRef<Modalize>(null);
 
   const imgDel_onOpen = (imgSeq: any, orderSeq: any, type: string) => {
-    console.log('imgSeq ::::: ' , imgSeq);
     setIsDelImgData({
       img_seq: imgSeq,
       order_seq: orderSeq,
@@ -229,8 +228,8 @@ export default function StoryEdit(props: Props) {
           return false;
         };
 
-        if(storyData.contents.length < 20) {
-          show({ content: '최소 20글자 이상 입력해 주세요.' });
+        if(storyData.contents.length < 10) {
+          show({ content: '최소 10글자 이상 입력해 주세요.' });
           return false;
         }
         
@@ -458,8 +457,8 @@ export default function StoryEdit(props: Props) {
                     value={storyData.contents}
                     onChangeText={(text) => setStoryData({...storyData, contents: text})}
                     placeholder={
-                      storyData.storyType == 'SECRET' ? '20글자 이상 입력해 주세요.\n\n(주의*)타인 비방 등 폭력적이거나 선정적인 게시글은 운영진의 판단 하에 삭제처리 될 수 있습니다.' :
-                      '20글자 이상 입력해 주세요.\n\n(주의*)이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 제재 대상이 될 수 있으며 상대를 배려하는 마음으로 이용해 주세요.'
+                      storyData.storyType == 'SECRET' ? '10글자 이상 입력해 주세요.\n\n(주의*)타인 비방 등 폭력적이거나 선정적인 게시글은 운영진의 판단 하에 삭제처리 될 수 있습니다.' :
+                      '10글자 이상 입력해 주세요.\n\n(주의*)이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 제재 대상이 될 수 있으며 상대를 배려하는 마음으로 이용해 주세요.'
                     }
                     placeholderTextColor={'#A9A9A9'}
                     maxLength={1000}
@@ -538,7 +537,7 @@ export default function StoryEdit(props: Props) {
                     <CommonTextarea
                       value={storyData.contents}
                       onChangeText={(text) => setStoryData({...storyData, contents: text})}
-                      placeholder={'20글자 이상 입력해 주세요.\n\n(주의*)이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 제재 대상이 될 수 있으며 상대를 배려하는 마음으로 이용해 주세요.'}
+                      placeholder={'10글자 이상 입력해 주세요.\n\n(주의*)이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 제재 대상이 될 수 있으며 상대를 배려하는 마음으로 이용해 주세요.'}
                       placeholderTextColor={'#C7C7C7'}
                       maxLength={1000}
                       exceedCharCountColor={'#990606'}
@@ -818,6 +817,7 @@ const _styles = StyleSheet.create({
     width: '84%',
     marginTop: 5,
     height: 43,
+    color: '#000',
   },
   voteImgArea: {
     position: 'absolute',
