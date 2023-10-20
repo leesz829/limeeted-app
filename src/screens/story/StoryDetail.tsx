@@ -497,98 +497,106 @@ export default function StoryDetail(props: Props) {
             />
           </SpaceView>
 
-          {/* 투표 선택 영역 */}
+          {/* ###################################################################################### 투표 선택 영역 */}
           {storyData.board?.story_type == 'VOTE' && (
-            <SpaceView viewStyle={{flex:1, flexDirection: 'row', height: 180, flexWrap: 'wrap', justifyContent: 'space-evenly', position: 'relative'}}>
-              <View style={_styles.voteVsArea}>
-                <Text style={_styles.voteVsText}>VS</Text>
-              </View>
-              {storyData.voteList?.map((item, index) => {
-                const isVote = item?.vote_yn == 'Y' ? true : false; // 투표 여부
-                const regiMember = (memberBase?.member_seq == storyData.board?.member_seq) ? true : false; 
+            <SpaceView>
+              <SpaceView viewStyle={_styles.voteSelectArea}>  
+                <View style={_styles.voteVsArea}>
+                  <Text style={_styles.voteVsText}>VS</Text>
+                </View>
+                {storyData.voteList?.map((item, index) => {
+                  const isVote = item?.vote_yn == 'Y' ? true : false; // 투표 여부
+                  const isRegiMember = (memberBase?.member_seq == storyData.board?.member_seq) ? true : false;
+                  const isVoteEndYn = storyData.board?.vote_end_yn == 'Y' ? true : false;
 
-                let baseColor = '#3616CF';
-                let textColor = '#333333';
-                let bgColorArr = ['#8759D5', '#7984ED'];
+                  let baseColor = '#3616CF';
+                  let textColor = '#333333';
+                  let bgColorArr = ['#8759D5', '#7984ED'];
 
-                // 작성자 여부 구분 처리
-                if(memberBase?.member_seq == storyData.board?.member_seq) {
-                  if(storyData.board?.vote_end_yn == 'Y') {
-                    if(storyData.board?.selected_vote_seq != item?.story_vote_seq) {
-                      baseColor = '#3616CF';
-                      bgColorArr = ['#FFF', '#FFF'];
-                    } else {
-                      textColor = '#FFF'
-                    };
-                  } else {
-                    bgColorArr = ['#FFF', '#FFF'];
-                  }
-                } else {
-                    if(isVote) {
-                      baseColor = '#3616CF';
-                      bgColorArr = ['#7984ED', '#7984ED'];
-                      textColor = '#FFF';
-                    } else {
-                      bgColorArr = ['#FFF', '#FFF'];
-                    } 
-                    
+                  // 작성자 여부 구분 처리
+                  if(memberBase?.member_seq == storyData.board?.member_seq) {
                     if(storyData.board?.vote_end_yn == 'Y') {
-                      if(storyData.board?.vote_end_yn == 'Y') {
-                          baseColor = '#999999';
-                          bgColorArr = ['#EEE', '#EEE'];
-                          textColor = '#999999';
-                      }
+                      if(storyData.board?.selected_vote_seq != item?.story_vote_seq) {
+                        baseColor = '#3616CF';
+                        bgColorArr = ['#FFF', '#FFF'];
+                      } else {
+                        textColor = '#FFF'
+                      };
+                    } else {
+                      bgColorArr = ['#FFF', '#FFF'];
                     }
-                };
-                return (
-                  <SpaceView>
-                    <TouchableOpacity
-                      disabled={regiMember || isVote || storyData.board?.vote_end_yn == 'Y'}
-                      onPress={() => { voteProc(item?.story_vote_seq) }}>
-                      <LinearGradient
-                        colors={bgColorArr}
-                        start={{ x: 1, y: 1 }}
-                        end={{ x: 1, y: 0 }}
-                        style={_styles.voteArea(baseColor, bgColorArr)}>
-                          <SpaceView mt={10} viewStyle={{zIndex:2,}}>
-                            <Image source={findSourcePathLocal(item?.file_path)} style={[_styles.mstImgStyle, {width: 70, height: 70,}]} resizeMode={'cover'} />
-                          </SpaceView>
-                          <SpaceView mt={10} mb={20} viewStyle={{zIndex:2}}><Text numberOfLines={3} style={_styles.voteNameText(textColor)}>{item?.vote_name}</Text></SpaceView>
-                          
-                          {/* PICK 텍스트 및 이미지 */}
-                          {(storyData.board?.vote_end_yn == 'Y') && (memberBase?.member_seq == storyData.board?.member_seq) && (storyData.board?.selected_vote_seq == item?.story_vote_seq) ?
-                            <> 
-                              <View style={_styles.voteMmbrCntArea}>
-                                <Text style={{color: '#FFF', fontSize: 20, fontFamily: 'AppleSDGothicNeoEB00'}}>PICK</Text>
-                              </View>
-                              <Image source={ICON.confetti} style={{zIndex: 1, width: width - 215, height: 180, position: 'absolute', top: 0, left: 0, overflow: 'hidden',}} />
-                            </>
-                            : 
-                            <>
-                              {(storyData.board?.vote_end_yn == 'N') &&
-                                <>
-                                  <View style={[_styles.voteMmbrCntArea, {opacity: (memberBase?.member_seq == storyData.board?.member_seq) ? 0.7 : 0, backgroundColor: '#664EDB'}]}></View>
-                                  <View style={[_styles.voteMmbrCntArea, {opacity: (memberBase?.member_seq == storyData.board?.member_seq) ? 1 : 0}]}>
-                                    <Text style={{color: '#FFF', fontSize: 20, fontFamily: 'AppleSDGothicNeoR00'}}>{item?.vote_member_cnt}표</Text>
-                                  </View>
-                                </>
-                              }
-                            </>
-                          }
-                      </LinearGradient>
-                    </TouchableOpacity>
-                  </SpaceView>
+                  } else {
+                      if(isVote) {
+                        baseColor = '#3616CF';
+                        bgColorArr = ['#7984ED', '#7984ED'];
+                        textColor = '#FFF';
+                      } else {
+                        bgColorArr = ['#FFF', '#FFF'];
+                      } 
+                      
+                      if(storyData.board?.vote_end_yn == 'Y') {
+                        if(storyData.board?.vote_end_yn == 'Y') {
+                            baseColor = '#999999';
+                            bgColorArr = ['#EEE', '#EEE'];
+                            textColor = '#999999';
+                        }
+                      }
+                  };
+                  
+                  return (
+                    <SpaceView viewStyle={{position: 'relative'}}>
+                      <SpaceView viewStyle={[_styles.votePickShadow, {shadowColor: (isVoteEndYn ? '#EEE': '#7984ED'),}]}></SpaceView>
+                      <TouchableOpacity
+                        disabled={isRegiMember || isVote || isVoteEndYn}
+                        onPress={() => { voteProc(item?.story_vote_seq) }}>
+                        <LinearGradient
+                          colors={bgColorArr}
+                          start={{ x: 1, y: 1 }}
+                          end={{ x: 1, y: 0 }}
+                          style={_styles.voteArea(baseColor, bgColorArr)}>                          
+                            <SpaceView mt={10}>
+                              <Image source={findSourcePathLocal(item?.file_path)} style={[_styles.mstImgStyle, {width: 70, height: 70, marginRight: 0,}]} resizeMode={'cover'} />
+                            </SpaceView>
+                            <SpaceView mt={15} mb={20} viewStyle={{zIndex:2}}><Text numberOfLines={3} style={_styles.voteNameText(textColor)}>{item?.vote_name}</Text></SpaceView>
+                            
+                            {/* PICK 텍스트 및 이미지 */}
+                            {isVoteEndYn && isRegiMember && (storyData.board?.selected_vote_seq == item?.story_vote_seq) ?
+                              <> 
+                                <View style={_styles.voteMmbrCntArea}>
+                                  <Text style={{color: '#FFF', fontSize: 20, fontFamily: 'AppleSDGothicNeoEB00', marginTop: -60}}>PICK</Text>
+                                </View>
+                                <Image source={ICON.confetti} style={_styles.votePickImg} />
+                              </>
+                              : 
+                              <>
+                                {(!isVoteEndYn) &&
+                                  <>
+                                    <View style={[_styles.voteMmbrCntArea, {opacity: (isRegiMember) ? 0.7 : 0, backgroundColor: '#664EDB'}]}></View>
+                                    <View style={[_styles.voteMmbrCntArea, {opacity: (isRegiMember) ? 1 : 0}]}>
+                                      <Text style={{color: '#FFF', fontSize: 20, fontFamily: 'AppleSDGothicNeoR00'}}>{item?.vote_member_cnt}표</Text>
+                                    </View>
+                                  </>
+                                }
+                              </>
+                            }
+                        </LinearGradient>
+                      </TouchableOpacity>
+                    </SpaceView>
+                  )}
                 )}
-              )}
+              </SpaceView>
 
               {/* 투표 선택 알림글 */}
               {isEmptyData(storyData.board?.vote_time_text) && (
-                <SpaceView pl={15} mt={15} viewStyle={{width: '100%',}}>
+                <>
+                <SpaceView pl={20} mt={15} viewStyle={{width: '100%',}}>
                   <Text style={_styles.voteDescText}>투표 후에도 선택을 바꿀 수 있습니다.&nbsp;
                       <Text style={_styles.voteTimeText}>({storyData.board?.vote_time_text})</Text>
                   </Text>
                 </SpaceView>
+                </>
               )}
+              
             </SpaceView>
           )}
 
@@ -735,14 +743,14 @@ export default function StoryDetail(props: Props) {
 
   /* ################################################################################################## 이미지 렌더링 */
   function ImageRender({ item }) {
-    const isVote = item?.vote_yn == 'Y' ? true : false; // 투표 여부
+    //const isVote = item?.vote_yn == 'Y' ? true : false; // 투표 여부
 
     //const url = findSourcePath(item?.img_file_path);  운영 반영시 적용
     let url = '';
-    let baseColor = '#7A85EE';
-    let baseColorArr = ['#7984ED', '#8759D5'];
-    let textColor = '#ffffff';
-    let btnText = '투표하기';
+    // let baseColor = '#7A85EE';
+    // let baseColorArr = ['#7984ED', '#8759D5'];
+    // let textColor = '#ffffff';
+    // let btnText = '투표하기';
 
     if(isEmptyData(item?.img_file_path)) {
       url = findSourcePathLocal(item?.img_file_path);
@@ -751,33 +759,33 @@ export default function StoryDetail(props: Props) {
     };
 
     // 작성자 여부 구분 처리
-    if(memberBase?.member_seq == storyData.board?.member_seq) {
-      if(storyData.board?.vote_end_yn == 'Y') {
-        if(storyData.board?.selected_vote_seq != item?.story_vote_seq) {
-          baseColorArr = ['#FE0456', '#FE0456'];
-          baseColor = '#FE0456';
-          btnText = item?.vote_member_cnt + '표';
-        } else {
-          btnText = item?.vote_member_cnt + '표(PICK)';
-        }
-      } else {
-        baseColorArr = ['#7984ED', '#7984ED'];
-        btnText = item?.vote_member_cnt + '표';
-      }
-    } else {
-      if(isVote) {
-        baseColorArr = ['#FE0456', '#FE0456'];
-        baseColor = '#FE0456';
-        btnText = '투표완료';
-      } else {
-        if(storyData.board?.vote_end_yn == 'Y') {
-          baseColorArr = ['#EEEEEE', '#EEEEEE'];
-          baseColor = '#DDDDDD';
-          textColor = '#555555';
-          btnText = '투표마감';
-        }
-      }
-    };
+    // if(memberBase?.member_seq == storyData.board?.member_seq) {
+    //   if(storyData.board?.vote_end_yn == 'Y') {
+    //     if(storyData.board?.selected_vote_seq != item?.story_vote_seq) {
+    //       baseColorArr = ['#FE0456', '#FE0456'];
+    //       baseColor = '#FE0456';
+    //       btnText = item?.vote_member_cnt + '표';
+    //     } else {
+    //       btnText = item?.vote_member_cnt + '표(PICK)';
+    //     }
+    //   } else {
+    //     baseColorArr = ['#7984ED', '#7984ED'];
+    //     btnText = item?.vote_member_cnt + '표';
+    //   }
+    // } else {
+    //   if(isVote) {
+    //     baseColorArr = ['#FE0456', '#FE0456'];
+    //     baseColor = '#FE0456';
+    //     btnText = '투표완료';
+    //   } else {
+    //     if(storyData.board?.vote_end_yn == 'Y') {
+    //       baseColorArr = ['#EEEEEE', '#EEEEEE'];
+    //       baseColor = '#DDDDDD';
+    //       textColor = '#555555';
+    //       btnText = '투표마감';
+    //     }
+    //   }
+    // };
 
     return (
       <>
@@ -1005,10 +1013,57 @@ const _styles = StyleSheet.create({
     right: 0,
     //width: 80,
   },
+  nicknameText: (storyType:string, gender:string) => {
+    let clr = '#333333';
+    if(storyType == 'SECRET') {
+      if(gender == 'M') {
+        clr = '#7986EE';
+      } else {
+        clr = '#FE0456';
+      }
+    }
+
+    return {
+      fontFamily: 'AppleSDGothicNeoEB00',
+      fontSize: 14,
+      color: clr,
+      marginTop: -3,
+    };
+  },
+  scoreText: {
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 14,
+    color: '#333333',
+  },
+  voteSelectArea: {
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    position: 'relative',
+    flex:1,
+    flexDirection: 'row',
+  },
+  voteVsArea: {
+    width: 55,
+    height: 28,
+    backgroundColor: '#000',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: [{translateX: -27.5}, {translateY: -14}],
+    zIndex: 1,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  voteVsText: {
+    color: '#FFF',
+    fontFamily: 'AppleSDGothicNeoEB00',
+    fontSize: 14,
+    letterSpacing: 2,
+  },
   voteArea: (bdColor: string, bgColor: string) => {
     return {
       alignItems: 'center',
-      justifyContent: 'center',
       borderWidth: 1,
       borderColor: bdColor,
       backgroundColor: bgColor,
@@ -1019,6 +1074,8 @@ const _styles = StyleSheet.create({
       overflow: 'hidden',
       paddingLeft: 20,
       paddingRight: 20,
+      marginLeft: 3,
+      marginRight: 3,
     };
   },
   voteViewArea: (bgColor: string) => {
@@ -1083,59 +1140,41 @@ const _styles = StyleSheet.create({
     overflow: 'hidden',
     marginRight: 7,
   },
-  nicknameText: (storyType:string, gender:string) => {
-    let clr = '#333333';
-    if(storyType == 'SECRET') {
-      if(gender == 'M') {
-        clr = '#7986EE';
-      } else {
-        clr = '#FE0456';
-      }
-    }
-
-    return {
-      fontFamily: 'AppleSDGothicNeoEB00',
-      fontSize: 14,
-      color: clr,
-      marginTop: -3,
-    };
-  },
-  scoreText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 14,
-    color: '#333333',
-  },
-  voteVsArea: {
-    width: 55,
-    height: 28,
-    backgroundColor: '#000',
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: [{translateX: -27.5}, {translateY: -14}],
-    zIndex: 1,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  voteVsText: {
-    color: '#FFF',
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 14,
-    letterSpacing: 2,
-  },
   voteMmbrCntArea: {
-    width: width - 215,
+    width: width - 216,
     height: 180,
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
     top: 0,
     left: 0,
-    borderWidth: 1,
-    borderColor: '#3616CF',
+    zIndex: 10,
+  },
+  votePickImg: {
+    zIndex: 1,
+    width: width - 215,
+    height: 180,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    overflow: 'hidden',
+  },
+  votePickShadow: {
+    position:'absolute',
+    top: 0,
+    left: 0,
+    width: width-215,
+    height: 180,
+    alignItems: 'center',
+    marginLeft: 3,
+    marginRight: 3,
     borderRadius: 10,
-    zIndex: 9999,
-  }
-  
+    borderWidth: 1,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 8,
+    shadowRadius: 3,
+    elevation: 5,
+    backgroundColor: '#fff',
+  },
+
 });
