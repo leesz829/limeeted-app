@@ -191,10 +191,7 @@ export default function StoryActive(props: Props) {
           if(memberBase?.pass_has_amt >= 15) {
             profileCardOpen(memberSeq);
           } else {
-            show({
-              content: '패스가 부족합니다.',
-              isCross: true,
-            });
+            show({ content: '패스가 부족합니다.', isCross: true });
           }
         },
         cancelCallback: function() {
@@ -231,17 +228,14 @@ export default function StoryActive(props: Props) {
               });
               break;
             case EXIST:
-              show({
-                content: '이미 보관함에 존재하는 회원입니다.',
-                isCross: true,
-              });
+              show({ content: '이미 보관함에 존재하는 회원입니다.', isCross: true });
               break;
             default:
-              show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+              show({ content: '오류입니다. 관리자에게 문의해주세요.',isCross: true });
               break;
           }
         } else {
-          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+          show({ content: '오류입니다. 관리자에게 문의해주세요.', isCross: true });
         }
       } catch (error) {
         console.log(error);

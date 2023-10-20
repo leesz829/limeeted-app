@@ -192,6 +192,7 @@ export const ICON = {
   maleIcon: require('assets/icon/icon-male.png'),
   femaleIcon: require('assets/icon/icon-female.png'),
   confetti: require('assets/icon/confetti.png'),
+  storySecretIcon: require('assets/icon/icon-story-secret.png'),
 };
 
 export const GIF_IMG = {

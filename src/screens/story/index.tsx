@@ -254,9 +254,9 @@ export const Story = () => {
   const RenderListItem = React.memo(({ item, type }) => {
     const storyBoardSeq = item.story_board_seq; // 스토리 게시글 번호
     const storyType = item?.story_type; // 스토리 유형
-    const imgPath = findSourcePath(item?.story_img_path);
-    const voteImgPath01 = findSourcePath(item?.vote_img_path_01);
-    const voteImgPath02 = findSourcePath(item?.vote_img_path_02);
+    const imgPath = findSourcePathLocal(item?.story_img_path);
+    const voteImgPath01 = findSourcePathLocal(item?.vote_img_path_01);
+    const voteImgPath02 = findSourcePathLocal(item?.vote_img_path_02);
 
     let _width = 0; // 가로길이
     let _height = 0; // 세로길이
@@ -279,102 +279,135 @@ export const Story = () => {
         <SpaceView mb={type == 'SMALL' ? 0 : 5} viewStyle={_styles.itemArea02(_width, _height)}>
           <TouchableOpacity activeOpacity={0.7} onPress={() => { goStoryDetail(storyBoardSeq); }}>
 
-          {((storyType == 'SECRET' || storyType == 'STORY') && !isEmptyData(imgPath)) ? (
-            <>
-              <SpaceView viewStyle={_styles.noImageArea(item?.gender)} >
+            {((storyType == 'SECRET' || storyType == 'STORY') && !isEmptyData(imgPath)) ? (
+              <>
+                <LinearGradient
+                  colors={storyType == 'SECRET' ? ['#8E1DFF', '#000000'] : item?.gender == 'M' ? ['#D5DAFC', '#D5DAFC'] : ['#FEEFF2', '#FEEFF2']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 0.5, y: 1 }}
+                  style={_styles.noImageArea(item?.gender, storyType)} >
 
+                  {storyType == 'SECRET' ? (
+                    <>
+                      {/* 시크릿 아이콘 */}
+                      <SpaceView viewStyle={{position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, alignItems: 'center', justifyContent: 'center'}}>
+                        <Image source={ICON.storySecretIcon} style={_styles.secretIconStyle(type)} resizeMode={'cover'} />
+                      </SpaceView>
+
+                      {/* 스토리 유형 */}
+                      <SpaceView viewStyle={_styles.typeArea(storyType)}>
+                        <Text style={_styles.typeText}>{item?.story_type_name}</Text>
+                      </SpaceView>
+
+                      <SpaceView pr={10} pl={10} viewStyle={{position: 'absolute', bottom: 10, left: 0, right: 0}}>
+                        <SpaceView>
+                          <Text style={_styles.contentsText('#ffffff')} numberOfLines={type == 'SMALL' ? 4 : 10}>{item?.contents}</Text>
+                        </SpaceView>
+
+                        <SpaceView mt={15}>
+                          {/* <Text style={_styles.nicknameText(storyType == 'SECRET' ? '#ffffff' : '#333333', type == 'SMALL' ? 12 : 13, type)}>{item?.nickname}</Text> */}
+                          <Text style={_styles.nicknameText('#ffffff', 12, type)}>{item?.nickname_modifier}</Text>
+                          <Text style={_styles.nicknameText('#ffffff', 12, type)}>{item?.nickname_noun}</Text>
+                        </SpaceView>
+                      </SpaceView>
+                    </>
+                  ) : (
+                    <>
+                      {/* 썸네일 이미지 */}
+                      <TouchableOpacity 
+                        disabled={memberBase?.gender === item?.gender || memberBase?.member_seq === item?.member_seq || storyType == 'SECRET'}
+                        onPress={() => { profileCardOpenPopup(item?.member_seq, item?.open_cnt); }} >
+
+                        <Image source={findSourcePath(item?.mst_img_path)} style={_styles.mstImgStyle(type == 'SMALL' ? 50 : 80, 40)} resizeMode={'cover'} />
+                      </TouchableOpacity>
+
+                      {/* 스토리 유형 */}
+                      <SpaceView viewStyle={_styles.typeArea(storyType)}>
+                        <Text style={_styles.typeText}>{item?.story_type_name}</Text>
+                      </SpaceView>
+
+                      <SpaceView mt={10} viewStyle={{flexDirection: 'column', alignItems: 'center'}}>
+
+                        {/* 프로필 평점, 인증 레벨 */}
+                        {(storyType != 'SECRET' && ((isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) || item?.profile_score >= 7.0)) && (
+                          <Text style={_styles.activeText('#333333')}>
+                            {item?.profile_score >= 7.0 && item?.profile_score}
+                            {((isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && item?.profile_score >= 7.0) && ' | '}
+                            {(isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && 'Lv ' + item?.auth_acct_cnt}
+                          </Text>
+                        )}
+
+                        {/* 닉네임 */}
+                        <Text style={[_styles.nicknameText(storyType == 'SECRET' ? '#ffffff' : '#333333', type == 'SMALL' ? 13 : 15, type), {textAlign: 'center'}]}>{item?.nickname}</Text>
+                      </SpaceView>
+
+                      {/* 내용 */}
+                      <SpaceView mt={type == 'SMALL' ? 10 : 20} pl={10} pr={10}>
+                        <Text style={_styles.contentsText(storyType == 'SECRET' ? '#ffffff' : '#333333')} numberOfLines={type == 'SMALL' ? 2 : 6}>{item?.contents}</Text>
+                      </SpaceView>
+                    </>
+                  )}
+                </LinearGradient>
+              </>
+            ) : (
+              <>
                 {/* 썸네일 이미지 */}
-                <TouchableOpacity 
-                  disabled={memberBase?.gender === item?.gender || memberBase?.member_seq === item?.member_seq || storyType == 'SECRET'}
-                  onPress={() => { profileCardOpenPopup(item?.member_seq, item?.open_cnt); }} >
-
-                  <Image source={storyType == 'SECRET' ? ICON.storyNoIcon : findSourcePath(item?.mst_img_path)} style={_styles.mstImgStyle(type == 'SMALL' ? 50 : 80, 40)} resizeMode={'cover'} />
-                </TouchableOpacity>
-
-                {/* <SpaceView>
-                  <Image source={storyType == 'SECRET' ? ICON.storyNoIcon : findSourcePath(item?.mst_img_path)} style={_styles.mstImgStyle(type == 'SMALL' ? 50 : 80, 40)} resizeMode={'cover'} />
-                </SpaceView> */}
+                <SpaceView>
+                  {item?.story_type == 'VOTE' ? (
+                    <Image source={voteImgPath01} style={{width: _width, height: _height}} resizeMode={'cover'} />
+                  ) : (
+                    <Image source={imgPath} style={{width: _width, height: _height}} resizeMode={'cover'} />
+                  )}
+                </SpaceView>
 
                 {/* 스토리 유형 */}
                 <SpaceView viewStyle={_styles.typeArea(storyType)}>
                   <Text style={_styles.typeText}>{item?.story_type_name}</Text>
                 </SpaceView>
 
-                <SpaceView mt={10} viewStyle={{flexDirection: 'column', alignItems: 'center'}}>
-                  {/* <AuthLevel authAcctCnt={item?.auth_acct_cnt} type={'BASE'} />
-                  <ProfileGrade profileScore={item?.profile_score} type={'BASE'} /> */}
+                {/* 프로필 영역 */}
+                <SpaceView viewStyle={_styles.profileArea}>
+                  <SpaceView mr={5}>
+                    <TouchableOpacity 
+                      disabled={memberBase?.gender === item?.gender || memberBase?.member_seq === item?.member_seq}
+                      onPress={() => { profileCardOpenPopup(item?.member_seq, item?.open_cnt); }}>
+                      <Image source={storyType == 'SECRET' ? ICON.storyNoIcon : findSourcePath(item?.mst_img_path)} style={_styles.mstImgStyle(30, 20)} resizeMode={'cover'} />
+                    </TouchableOpacity>
+                  </SpaceView>
 
-                  {/* 프로필 평점, 인증 레벨 */}
-                  {(storyType != 'SECRET' && ((isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) || item?.profile_score >= 7.0)) && (
-                    <Text style={_styles.activeText('#333333')}>
-                      {item?.profile_score >= 7.0 && item?.profile_score}
-                      {((isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && item?.profile_score >= 7.0) && ' | '}
-                      {(isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && 'Lv ' + item?.auth_acct_cnt}
-                    </Text>
-                  )}
+                  <SpaceView>
+                    {(storyType != 'SECRET' && (item?.profile_score >= 7.0 || (isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5))) && (
+                      <Text style={_styles.activeText('#ffffff')}>
+                        {item?.profile_score >= 7.0 && item?.profile_score}
+                        {((isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && item?.profile_score >= 7.0) && ' | '}
+                        {(isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && 'Lv ' + item?.auth_acct_cnt}
+                      </Text>
+                    )}
 
-                  {/* 닉네임 */}
-                  <Text style={_styles.nicknameText('#333333')}>{item?.nickname}</Text>
+                    {storyType == 'SECRET' ? (
+                      <>
+                        <Text style={_styles.nicknameText('#ffffff', 13, type)}>{item?.nickname_modifier}</Text>
+                        <Text style={_styles.nicknameText('#ffffff', 13, type)}>{item?.nickname_noun}</Text>
+                      </>                    
+                    ) : (
+                      <Text style={_styles.nicknameText('#ffffff', 13, type)}>{item?.nickname}</Text>
+                    )}
+                  </SpaceView>
                 </SpaceView>
 
-                {/* 내용 */}
-                <SpaceView mt={25} pl={10} pr={10}>
-                  <Text style={_styles.contentsText('#333333')} numberOfLines={type == 'SMALL' ? 2 : 6}>{item?.contents}</Text>
-                </SpaceView>
-                
-              </SpaceView>
-            </>
-          ) : (
-            <>
-              {/* 썸네일 이미지 */}
-              <SpaceView>
-                {item?.story_type == 'VOTE' ? (
-                  <Image source={voteImgPath01} style={{width: _width, height: _height}} resizeMode={'cover'} />
-                ) : (
-                  <Image source={imgPath} style={{width: _width, height: _height}} resizeMode={'cover'} />
-                )}
-              </SpaceView>
+                <SpaceView viewStyle={_styles.bottomArea}>
+                  {/* <SpaceView><Text style={_styles.contentsText('#fff')}>{item?.contents}</Text></SpaceView> */}
+                  {/* <SpaceView mt={8}><Text style={_styles.contentsText}>{item?.time_text}</Text></SpaceView> */}
+                </SpaceView>              
 
-              {/* 스토리 유형 */}
-              <SpaceView viewStyle={_styles.typeArea(storyType)}>
-                <Text style={_styles.typeText}>{item?.story_type_name}</Text>
-              </SpaceView>
-
-              {/* 프로필 영역 */}
-              <SpaceView viewStyle={_styles.profileArea}>
-                <SpaceView mr={5}>
-                  <TouchableOpacity 
-                    disabled={memberBase?.gender === item?.gender || memberBase?.member_seq === item?.member_seq}
-                    onPress={() => { profileCardOpenPopup(item?.member_seq, item?.open_cnt); }}>
-                    <Image source={storyType == 'SECRET' ? ICON.storyNoIcon : findSourcePath(item?.mst_img_path)} style={_styles.mstImgStyle(30, 20)} resizeMode={'cover'} />
-                  </TouchableOpacity>
-                </SpaceView>
-
-                <SpaceView>
-                  {(storyType != 'SECRET' && (item?.profile_score >= 7.0 || (isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5))) && (
-                    <Text style={_styles.activeText('#ffffff')}>
-                      {item?.profile_score >= 7.0 && item?.profile_score}
-                      {((isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && item?.profile_score >= 7.0) && ' | '}
-                      {(isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && 'Lv ' + item?.auth_acct_cnt}
-                    </Text>
-                  )}
-                  <Text style={_styles.nicknameText('#ffffff')}>{item?.nickname}</Text>
-                </SpaceView>
-              </SpaceView>
-
-              <SpaceView viewStyle={_styles.bottomArea}>
-                {/* <SpaceView><Text style={_styles.contentsText('#fff')}>{item?.contents}</Text></SpaceView> */}
-                {/* <SpaceView mt={8}><Text style={_styles.contentsText}>{item?.time_text}</Text></SpaceView> */}
-              </SpaceView>              
-
-              {/* 딤 처리 영역 */}
-              <LinearGradient
-                colors={['transparent', '#000000']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 0, y: 1 }}
-                style={_styles.dimsArea} />
-            </>
-          )}
+                {/* 딤 처리 영역 */}
+                <LinearGradient
+                  colors={['transparent', '#000000']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 0, y: 1 }}
+                  style={_styles.dimsArea} />
+              </>
+            )}
 
           </TouchableOpacity>
         </SpaceView>
@@ -450,7 +483,7 @@ export const Story = () => {
                   refreshing={isRefreshing}
                   onRefresh={handleRefresh}
                   tintColor="#ff0000" // Pull to Refresh 아이콘 색상 변경
-                  title="Loading..." // Pull to Refresh 아이콘 아래에 표시될 텍스트
+                  //title="Loading..." // Pull to Refresh 아이콘 아래에 표시될 텍스트
                   titleColor="#ff0000" // 텍스트 색상 변경
                   colors={['#ff0000', '#00ff00', '#0000ff']} // 로딩 아이콘 색상 변경
                   progressBackgroundColor="#ffffff" >
@@ -736,12 +769,12 @@ const _styles = StyleSheet.create({
 
     return {
       position: 'absolute',
-      top: 5,
-      right: 5,
-      backgroundColor: bgColor,
+      top: 10,
+      left: 10,
+      backgroundColor: 'rgba(0,0,0,0.5)',
       borderRadius: 13,
       paddingVertical: 3,
-      paddingHorizontal: 5,
+      paddingHorizontal: 8,
     };
   },
   typeText: {
@@ -759,9 +792,24 @@ const _styles = StyleSheet.create({
       borderColor: '#fff',
     };
   },
+  secretIconStyle: (sizeType:string) => {
+    let size = 200;
+
+    if(sizeType == 'MEDIUM') {
+      size = 170;
+    } else if(sizeType == 'SMALL') {
+      size = 120;
+    }
+
+    return {
+      width: size,
+      height: size,
+      overflow: 'hidden',
+    };
+  },
   contentsText: (_color:string) => {
     return {
-      fontFamily: 'AppleSDGothicNeoR00',
+      fontFamily: 'Pretendard-Regular',
       fontSize: 13,
       color: _color,
     };
@@ -773,21 +821,22 @@ const _styles = StyleSheet.create({
       color: _color,
     };
   },
-  nicknameText: (_color:string) => {
+  nicknameText: (_color:string, _fontSize:number, _sizeType:string) => {
     return {
       fontFamily: 'AppleSDGothicNeoEB00',
-      fontSize: 13,
+      fontSize: _fontSize,
       color: _color,
       marginTop: -3,
+      width: _sizeType == 'LARGE' ? '100%' : width - 260,
     };
   },
-  noImageArea: (gender:string) => {
+  noImageArea: (gender:string, storyType:string) => {
     return {
       width: '100%',
       height: '100%',
-      backgroundColor: gender == 'M' ? '#D5DAFC' : '#FEEFF2',
-      alignItems: 'center',
-      justifyContent: 'center',
+      //backgroundColor: gender == 'M' ? '#D5DAFC' : '#FEEFF2',
+      alignItems: storyType == 'SECRET' ? 'flex-start' : 'center',
+      justifyContent: storyType == 'SECRET' ? 'flex-end' : 'center',
     };
   },
   topBtnArea: {

@@ -1,13 +1,13 @@
-import Modal from 'react-native-modal';
+//import Modal from 'react-native-modal';
 import React, { useRef, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions, TextInput } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions, TextInput, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Image from 'react-native-fast-image';
 import { findSourcePath, IMAGE, GIF_IMG, ICON } from 'utils/imageUtils';
 import Carousel from 'react-native-snap-carousel';
 import { useUserInfo } from 'hooks/useUserInfo';
 import SpaceView from 'component/SpaceView';
-import { styles } from 'assets/styles/Styles';
+import { commonStyle, styles, modalStyle } from 'assets/styles/Styles';
 import { get_story_like_list } from 'api/models';
 import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import { usePopup } from 'Context';
@@ -102,10 +102,10 @@ export default function LikeListPopup({ isVisible, closeModal, type, _storyBoard
               disabled={memberBase?.gender === item?.gender || memberBase?.member_seq === item?.member_seq}
               onPress={() => { profileOpen(item?.member_seq, item?.open_cnt); }} >
 
-              <Image source={ memberMstImgPath } style={_styles.imageStyle(45)} resizeMode={'cover'} />
+              <Image source={ memberMstImgPath } style={_styles.imageStyle(40)} resizeMode={'cover'} />
             </TouchableOpacity>
             {/* <Text style={_styles.likeListText}>{item.nickname}, {item.age}</Text> */}
-            <SpaceView ml={6}>
+            <SpaceView ml={3}>
               {/* 프로필 평점, 인증 레벨 */}
               {(isEmptyData(item?.auth_acct_cnt) || item?.profile_score > 0.0) && (
                 <Text style={_styles.profileText}>
@@ -133,63 +133,72 @@ export default function LikeListPopup({ isVisible, closeModal, type, _storyBoard
 
   return (
     <Modal
-      isVisible={isVisible}
-      onRequestClose={() => { closeModal(); }}
-      onBackdropPress={closeModal} >
-      <SafeAreaView style={_styles.container}>
-        <View style={_styles.titleBox}>
-          <Text style={_styles.titleText}>좋아요 목록</Text>
-          <TouchableOpacity onPress={() => closeModal()}>
-            <Image source={ICON.closeLight} style={_styles.iconSize} />
-          </TouchableOpacity>
-        </View>
-
-        {type == 'REPLY' ? (
-          <SpaceView viewStyle={_styles.replyArea}>
-            <TouchableOpacity
-              disabled={memberBase?.gender === replyInfo?.gender || memberBase?.member_seq === replyInfo?.reg_seq}
-              onPress={() => { profileOpen(replyInfo?.reg_seq, replyInfo?.open_cnt); }} >
-
-              <Image source={findSourcePath(replyInfo.mst_img_path)} style={[_styles.imageStyle(35), {marginTop: 15}]} resizeMode={'cover'} />
+      //isVisible={isVisible}
+      visible={isVisible}
+      transparent={true} // 배경을 불투명하게 설정
+      //onRequestClose={() => { closeModal(); }}
+      //onBackdropPress={closeModal} 
+    >
+      <View style={{ height, backgroundColor: 'rgba(0,0,0,0.7)', alignItems: 'center', justifyContent: 'center' }}>
+        <SafeAreaView style={_styles.container}>
+          <View style={_styles.titleBox}>
+            <Text style={_styles.titleText}>좋아요 목록</Text>
+            <TouchableOpacity onPress={() => closeModal()} hitSlop={commonStyle.hipSlop25}>
+              <Image source={ICON.closeLight} style={_styles.iconSize} />
             </TouchableOpacity>
-            <SpaceView mt={10} ml={5} pt={3} viewStyle={{flexDirection: 'column', flex: 1}}>
-              <Text style={[_styles.mainNicknameText]}>{replyInfo.nickname}<Text style={{fontFamily: 'AppleSDGothicNeoR00', color: '#999'}}> {replyInfo.time_text}</Text></Text>
-              <Text style={[_styles.replyText, {marginTop: 5}]}>{replyInfo.reply_contents}</Text>
-            </SpaceView>
-          </SpaceView>
-        ) : (
-          <></>
-        )}
+          </View>
 
-        <SpaceView viewStyle={{maxHeight: height - 350}}>
-          <SpaceView viewStyle={_styles.likeCntArea}>
-            <Text>{likeListCnt}<Text style={_styles.likeListText}>개의 좋아요</Text></Text>
+          {type == 'REPLY' ? (
+            <SpaceView viewStyle={_styles.replyArea}>
+              <TouchableOpacity
+                disabled={memberBase?.gender === replyInfo?.gender || memberBase?.member_seq === replyInfo?.reg_seq}
+                onPress={() => { profileOpen(replyInfo?.reg_seq, replyInfo?.open_cnt); }} >
+
+                <Image source={findSourcePath(replyInfo.mst_img_path)} style={[_styles.imageStyle(40), {marginTop: 15}]} resizeMode={'cover'} />
+              </TouchableOpacity>
+              <SpaceView mt={10} ml={5} pt={3} viewStyle={{flexDirection: 'column', flex: 1}}>
+                <Text style={[_styles.mainNicknameText]}>
+                  {replyInfo.nickname}
+                  <Text style={{fontFamily: 'AppleSDGothicNeoR00', fontSize: 13, color: '#999'}}> {replyInfo.time_text}</Text>
+                </Text>
+                <Text style={[_styles.replyText, {marginTop: 3}]}>{replyInfo.reply_contents}</Text>
+              </SpaceView>
+            </SpaceView>
+          ) : (
+            <></>
+          )}
+
+          <SpaceView viewStyle={{maxHeight: height - 350}}>
+            <SpaceView viewStyle={_styles.likeCntArea}>
+              <Text style={_styles.likeListText}>{likeListCnt}개의 좋아요</Text>
+            </SpaceView>
+            
+            <FlatList
+              style={{marginBottom: 30}}
+              data={likeListData.likeList}
+              renderItem={({ item, index }) => {
+                return (
+                  <View>
+                    <LikeListRender 
+                      item={item}
+                      index={index} 
+                    />
+                  </View>
+                )
+              }}
+            />
           </SpaceView>
           
-          <FlatList
-            style={{marginBottom: 30}}
-            data={likeListData.likeList}
-            renderItem={({ item, index }) => {
-              return (
-                <View>
-                  <LikeListRender 
-                    item={item}
-                    index={index} 
-                  />
-                </View>
-              )
-            }}
-          />
-        </SpaceView>
-        
-      </SafeAreaView>
+        </SafeAreaView>
+
+      </View>
     </Modal>
   );
 };
 
 const _styles = StyleSheet.create({
   container: {
-    width: '100%',
+    width: width - 40,
     borderRadius: 20,
     backgroundColor: '#ffffff',
     paddingHorizontal: 18,
@@ -202,7 +211,7 @@ const _styles = StyleSheet.create({
   },
   titleText: {
     fontFamily: 'AppleSDGothicNeoR00',
-    fontSize: 16,
+    fontSize: 14,
     textAlign: 'left',
     color: '#333',
   },
@@ -229,8 +238,7 @@ const _styles = StyleSheet.create({
   },
   likeListText: {
     fontFamily: 'AppleSDGothicNeoR00',
-    fontSize: 16,
-    marginLeft: 10,
+    fontSize: 14,
     marginTop: 5,
     letterSpacing: 0,
     fontWeight: '300',
@@ -239,17 +247,17 @@ const _styles = StyleSheet.create({
   },
   profileText: {
     fontFamily: 'AppleSDGothicNeoR00',
-    fontSize: 16,
+    fontSize: 14,
     color: '#333333',
   },
   mainNicknameText: {
     fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 15,
+    fontSize: 14,
     color: '#333333',
   },
   nicknameText: {
     fontFamily: 'AppleSDGothicNeoR00',
-    fontSize: 16,
+    fontSize: 14,
     color: '#333333',
   },
   replyArea: {
@@ -259,7 +267,7 @@ const _styles = StyleSheet.create({
   },
   replyText: {
     fontFamily: 'AppleSDGothicNeoR00',
-    fontSize: 16,
+    fontSize: 14,
     letterSpacing: 0,
     fontWeight: '300',
     textAlign: 'left',

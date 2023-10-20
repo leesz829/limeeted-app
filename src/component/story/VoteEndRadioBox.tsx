@@ -1,4 +1,4 @@
-import { View, StyleSheet, Image, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, Image, TouchableOpacity, Text, Dimensions } from 'react-native';
 import * as React from 'react';
 import { FC, useState, useEffect } from 'react';
 import { ICON } from 'utils/imageUtils';
@@ -6,10 +6,13 @@ import { Color } from 'assets/styles/Color';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 
+const { width, height } = Dimensions.get('window');
+
 interface Props {
   value: string;
   items: { label: string; value: string }[];
   callBackFunction: (value: string) => void;
+  isModfy: boolean;
 }
 
 export const VoteEndRadioBox: FC<Props> = (props) => {
@@ -27,11 +30,14 @@ export const VoteEndRadioBox: FC<Props> = (props) => {
           if (!item.label) return;
 
           return (
-            <SpaceView key={index + 'check'}>
-              <TouchableOpacity style={_styles.checkWrap(item.value === checkValue)} onPress={() => onPressFn(index, item.value)}>
-                <Text style={_styles.labelText(item.value === checkValue)}>{item.label}</Text>
-              </TouchableOpacity>
-            </SpaceView>
+            <TouchableOpacity 
+              disabled={!props.isModfy}
+              key={index} 
+              style={_styles.checkWrap(item.value === checkValue)} 
+              onPress={() => onPressFn(index, item.value)}
+              activeOpacity={0.9}>
+              <Text style={_styles.labelText(item.value === checkValue)}>{item.label}</Text>
+            </TouchableOpacity>
           );
         })}
       </SpaceView>
@@ -44,19 +50,22 @@ export const VoteEndRadioBox: FC<Props> = (props) => {
 const _styles = StyleSheet.create({
   wrap: {
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F3F4FD',
+    borderRadius: 35,
+    overflow: 'hidden',
+    //paddingHorizontal: 10,
   },
   checkWrap: (isOn:boolean) => {
     return {
-      backgroundColor: isOn ? '#697AE6' : '#fff',
-      paddingHorizontal: 10,
-      paddingVertical: 5,
-      borderRadius: 5,
+      backgroundColor: isOn ? '#7984ED' : '#F3F4FD',
+      //paddingHorizontal: 22,
+      paddingVertical: 13,
+      borderRadius: isOn ? 35 : 0,
       overflow: 'hidden',
-      width: 60,
-      borderWidth: 1,
-      borderColor: '#7986EE',
-      marginRight: 7,
+      alignItems: 'center',
+      justifyContent: 'center',
     };
   },
   active: {
@@ -66,10 +75,11 @@ const _styles = StyleSheet.create({
 
   labelText: (isOn:boolean) => {
     return {
-      fontFamily: 'AppleSDGothicNeoR00',
+      fontFamily: isOn ? 'Pretendard-Bold' : 'Pretendard-Regular',
       fontSize: 14,
       color: isOn ? '#fff' : '#7986EE',
       textAlign: 'center',
+      width: (width / 5) - 8,
     };
   },
 });

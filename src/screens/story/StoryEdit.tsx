@@ -245,7 +245,7 @@ export default function StoryEdit(props: Props) {
           };
 
           if(!isEmptyData(storyData.voteEndType)) {
-            show({ content: '투표 마감기한을 입력해 주세요.' });
+            show({ content: '투표 마감기한을 선택해 주세요.' });
             return false;
           };
 
@@ -421,17 +421,17 @@ export default function StoryEdit(props: Props) {
             {/* ##############################################################################################################
             ##### 타이틀 영역
             ############################################################################################################## */}
-            <SpaceView mb={20}>
+            <SpaceView mb={25}>
               <Text style={_styles.titleText}>
                 {storyData.storyType == 'SECRET' ? (
-                  <>이야기 앞에 "비밀"이 붙으면{'\n'}더 재밌어지는 법이죠!</>
+                  <>이야기 앞에 <Text style={_styles.titleHightText}>"비밀"</Text>이 붙으면{'\n'}더 재밌어지는 법이죠!</>
                 ) : storyData.storyType == 'VOTE' ? (
-                  <>왼 VS 오 어떤것?{'\n'}선택 장애 해결, 밸런스 게임을 즐기기.{'\n'}모두 가능!</>
+                  <><Text style={_styles.titleHightText}>왼 VS 오 어떤것?</Text>{'\n'}선택 장애 해결! 밸런스 게임 즐기기!</>
                 ) : (
-                  <>소소한 일상부터 음식, 여행 등{'\n'}주제에 관계없이 자유롭게 소통해 보세요.</>
+                  <>소소한 일상부터 음식, 여행 등{'\n'}<Text style={_styles.titleHightText}>주제에 관계없이 자유롭게</Text> 소통해 보세요.</>
                 )}
               </Text>
-              <View style={_styles.titleUnderline(storyData.storyType)} />
+              {/* <View style={_styles.titleUnderline(storyData.storyType)} /> */}
             </SpaceView>
 
             {/* ##############################################################################################################
@@ -452,13 +452,13 @@ export default function StoryEdit(props: Props) {
                   })}
                 </SpaceView>
 
-                <SpaceView mt={20} mb={100}>
+                <SpaceView mt={20}>
                   <CommonTextarea
                     value={storyData.contents}
                     onChangeText={(text) => setStoryData({...storyData, contents: text})}
                     placeholder={
-                      storyData.storyType == 'SECRET' ? '10글자 이상 입력해 주세요.\n\n(주의*)타인 비방 등 폭력적이거나 선정적인 게시글은 운영진의 판단 하에 삭제처리 될 수 있습니다.' :
-                      '10글자 이상 입력해 주세요.\n\n(주의*)이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 제재 대상이 될 수 있으며 상대를 배려하는 마음으로 이용해 주세요.'
+                      storyData.storyType == 'SECRET' ? '10글자 이상 입력해 주세요.\n\n이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 작성자의 동의없이 게시글이 삭제 될 수 있으며, 이용 제재 대상이 될 수 있습니다.\n\n상대를 배려하는 마음으로 이용해 주세요.' :
+                      '10글자 이상 입력해 주세요.\n\n이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 작성자의 동의없이 게시글이 삭제 될 수 있으며, 이용 제재 대상이 될 수 있습니다.\n\n상대를 배려하는 마음으로 이용해 주세요.'
                     }
                     placeholderTextColor={'#A9A9A9'}
                     maxLength={1000}
@@ -468,7 +468,7 @@ export default function StoryEdit(props: Props) {
                     backgroundColor={'#fff'}
                     fontColor={'#000'}
                     borderColor={isEmptyData(storyData.contents) ? '#7986EE' : '#DDDDDD'}
-                    borderRadius={20}
+                    borderRadius={10}
                     padding={20}
                     paddingTop={20}
                   />
@@ -480,18 +480,18 @@ export default function StoryEdit(props: Props) {
             {storyData.storyType == 'VOTE' && (
               <>
                 {/* ############### 선택지 입력 영역 */}
-                <SpaceView mb={10}>
+                <SpaceView mb={20}>
                   <SpaceView viewStyle={_styles.voteArea}>
                       {[0,1].map((i, index) => {
                         return (
                           <>
-                            <SpaceView mb={10}>
+                            <SpaceView mb={7}>
                               <TextInput
                                 value={voteData[`voteName0${i+1}`]}
                                 onChangeText={(text) => setVoteData({...voteData, [`voteName0${i+1}`] : text})}
                                 multiline={false}
                                 autoCapitalize="none"
-                                style={[_styles.voteInput, isEmptyData(voteData[`voteName0${i+1}`]) ? {borderColor: '#7986EE'} : {borderColor:'#DDDDDD'}]}
+                                style={_styles.voteInput(isEmptyData(voteData[`voteName0${i+1}`]))}
                                 placeholder={'선택지 입력'}
                                 placeholderTextColor={'#c7c7c7'}
                                 editable={true}
@@ -513,9 +513,9 @@ export default function StoryEdit(props: Props) {
                 </SpaceView>
 
                 {/* ############### 투표 마감기한 입력 영역 */}
-                <SpaceView mb={20}>
+                <SpaceView mb={35}>
                   <SpaceView mb={20}>
-                    <Text style={_styles.subTitleText}>투표 마감기한을 입력해 주세요.</Text>
+                    <Text style={_styles.subTitleText}>투표 마감기한을 선택해 주세요.</Text>
                   </SpaceView>
 
                   <SpaceView>
@@ -523,6 +523,7 @@ export default function StoryEdit(props: Props) {
                       value={storyData.voteEndType}
                       items={voteEndTypeList}
                       callBackFunction={voteEndTypeCallbackFn}
+                      isModfy={isEmptyData(storyBoardSeq) ? false : true}
                     />
                   </SpaceView>
                 </SpaceView>
@@ -533,11 +534,11 @@ export default function StoryEdit(props: Props) {
                     <Text style={_styles.subTitleText}>투표 내용을 작성해 주세요.</Text>
                   </SpaceView>
 
-                  <SpaceView mb={100}>
+                  <SpaceView>
                     <CommonTextarea
                       value={storyData.contents}
                       onChangeText={(text) => setStoryData({...storyData, contents: text})}
-                      placeholder={'10글자 이상 입력해 주세요.\n\n(주의*)이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 제재 대상이 될 수 있으며 상대를 배려하는 마음으로 이용해 주세요.'}
+                      placeholder={'10글자 이상 입력해 주세요.\n\n이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 작성자의 동의없이 게시글이 삭제 될 수 있으며, 이용 제재 대상이 될 수 있습니다.\n\n상대를 배려하는 마음으로 이용해 주세요.'}
                       placeholderTextColor={'#C7C7C7'}
                       maxLength={1000}
                       exceedCharCountColor={'#990606'}
@@ -546,7 +547,7 @@ export default function StoryEdit(props: Props) {
                       backgroundColor={'#fff'}
                       fontColor={'#000'}
                       borderColor={isEmptyData(storyData.contents) ? '#7986EE' : '#ebe9ef'}
-                      borderRadius={20}
+                      borderRadius={10}
                       padding={20}
                       paddingTop={20}
                     />
@@ -575,33 +576,6 @@ export default function StoryEdit(props: Props) {
             )}
           </SpaceView>
         </ScrollView>
-
-        {/* <SpaceView mb={10} viewStyle={_styles.btnArea}>
-          {
-            (storyData.storyType == 'VOTE' ? isEmptyData(storyData.contents)
-                                          && isEmptyData(voteData.voteName01)
-                                          && isEmptyData(voteData.voteName02)
-                                          && isEmptyData(inputVoteFileData01)
-                                          && isEmptyData(inputVoteFileData02)
-                                          && isEmptyData(storyData.voteEndType)
-                                          : isEmptyData(storyData.contents)) ? (
-              <LinearGradient
-                colors={['#7984ED', '#8759D5']}
-                style={[_styles.regiActiveBtn]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-              >
-                <TouchableOpacity onPress={() => { storyRegister(); }}>
-                  <Text style={[_styles.regiBtnText, {color: '#fff'}]}>등록</Text>
-                </TouchableOpacity>
-              </LinearGradient>
-            ) : (
-              <TouchableOpacity onPress={() => { storyRegister(); }} style={_styles.regiBtn}>
-                <Text style={_styles.regiBtnText}>등록</Text>
-              </TouchableOpacity>
-            )
-          }
-        </SpaceView> */}
       </KeyboardAvoidingView>
 
       {/* ###############################################
@@ -643,20 +617,27 @@ export default function StoryEdit(props: Props) {
 // ############################################################################# 이미지 렌더링 아이템
 function ImageRenderItem ({ index, _imgData, delFn, fileCallBackFn, storyType }) {
 
-  const imgUrl = findSourcePath(_imgData?.imgPath);
+  const imgUrl = findSourcePathLocal(_imgData?.imgPath);
   const imgDelYn = _imgData?.delYn;
 
   return (
     <View style={_styles.imgItem}>
       {((isEmptyData(imgUrl) && imgDelYn == 'Y') || !isEmptyData(imgUrl)) ? (
         <>
-          <CommonImagePicker 
-            type={'STORY'} 
-            callbackFn={fileCallBackFn} 
-            uriParam={''}
-            imgWidth={(width - 70) / 3} 
-            imgHeight={(width - 70) / 3}
-          />
+          <LinearGradient
+            colors={['#F3F4FD', '#CACFFF']}
+            start={{ x: 0.2, y: 0 }}
+            end={{ x: 0.5, y: 1 }}
+            style={{borderRadius: 10, overflow: 'hidden'}} >
+
+            <CommonImagePicker 
+              type={'STORY'} 
+              callbackFn={fileCallBackFn} 
+              uriParam={''}
+              imgWidth={(width - 70) / 3} 
+              imgHeight={(width - 70) / 3}
+            />
+          </LinearGradient>
         </>
       ) : (
         <>
@@ -675,23 +656,31 @@ function ImageRenderItem ({ index, _imgData, delFn, fileCallBackFn, storyType })
   );
 };
 
+// ############################################################################# 투표 이미지 렌더링 아이템
 function VoteImageRenderItem ({ index, _imgData, delFn, fileCallBackFn, storyType }) {
 
-  const imgUrl = findSourcePath(_imgData);
+  const imgUrl = findSourcePathLocal(_imgData);
   const imgDelYn = _imgData?.delYn;
 
   return (
-    <View style={[_styles.imgItem, {borderRadius: 10, overflow: 'hidden'}]}>
+    <View style={_styles.imgItem}>
       {((isEmptyData(imgUrl) && imgDelYn == 'Y') || !isEmptyData(imgUrl)) ? (
-      //{isEmptyData(imgUrl) || imgYn == 'Y' ? (
         <>
-          <CommonImagePicker 
-            type={'STORY'} 
-            callbackFn={fileCallBackFn} 
-            uriParam={''}
-            imgWidth={48}
-            imgHeight={48}
-          />
+          <LinearGradient
+            colors={['#F3F4FD', '#CACFFF']}
+            start={{ x: 0.2, y: 0 }}
+            end={{ x: 0.5, y: 1 }}
+            style={{borderRadius: 10, overflow: 'hidden'}} >
+
+            <CommonImagePicker 
+              type={'STORY'} 
+              callbackFn={fileCallBackFn} 
+              uriParam={''}
+              imgWidth={48}
+              imgHeight={48}
+              iconSize={15}
+            />
+          </LinearGradient>
         </>
       ) : (
         <>
@@ -723,12 +712,16 @@ function VoteImageRenderItem ({ index, _imgData, delFn, fileCallBackFn, storyTyp
 const _styles = StyleSheet.create({
 
   titleText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 19,
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 20,
     color: '#333333',
+    lineHeight: 30,
+  },
+  titleHightText: {
+    color: '#7B81EC',
   },
   subTitleText: {
-    fontFamily: 'AppleSDGothicNeoR00',
+    fontFamily: 'Pretendard-SemiBold',
     fontSize: 19,
     color: '#333333',
   },
@@ -765,7 +758,8 @@ const _styles = StyleSheet.create({
     backgroundColor: 'rgba(155, 165, 242, 0.12)',
     marginHorizontal: 4,
     marginVertical: 5,
-    borderRadius: 20,
+    borderRadius: 10,
+    overflow: 'hidden',
     flexDirection: `row`,
     alignItems: `center`,
     justifyContent: `center`,
@@ -805,19 +799,30 @@ const _styles = StyleSheet.create({
     paddingVertical: 8,
   },
   voteArea: {
-
+    //{borderColor: '#7986EE'} : {borderColor:'#DDDDDD'}
   },
-  voteInput: {
-    backgroundColor: '#fff',
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    borderColor: '#ebe9ef',
-    borderWidth: 1,
-    borderRadius: 4,
-    width: '84%',
-    marginTop: 5,
-    height: 43,
-    color: '#000',
+  voteInput: (isOn:boolean) => {
+    return {
+      fontFamily: 'Pretendard-Regular',
+      backgroundColor: '#fff',
+      paddingHorizontal: 10,
+      paddingVertical: 10,
+      borderColor: isOn ? '#7986EE' : '#DDDDDD',
+      borderWidth: 1,
+      borderRadius: 8,
+      width: '84%',
+      marginTop: 3,
+      height: 48,
+      color: '#000',
+      elevation: isOn ? 10 : 0,
+      shadowColor: "#0047FF",
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+    };
   },
   voteImgArea: {
     position: 'absolute',
@@ -832,7 +837,6 @@ const _styles = StyleSheet.create({
     alignItems: 'center',
   },
   contentInputText: (isOn:boolean) => {
-
     return {
       borderColor: isOn ? '#7986EE' : '#ebe9ef',
       backgroundColor: '#fff',
@@ -844,7 +848,6 @@ const _styles = StyleSheet.create({
       padding: 20,
       height: 240,
     };
-    
   },
 
 });
