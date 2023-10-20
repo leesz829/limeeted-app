@@ -191,6 +191,7 @@ export const ICON = {
   voteIcon: require('assets/icon/icon-vote.png'),
   maleIcon: require('assets/icon/icon-male.png'),
   femaleIcon: require('assets/icon/icon-female.png'),
+  confetti: require('assets/icon/confetti.png'),
 };
 
 export const GIF_IMG = {
