@@ -333,8 +333,8 @@ export default function StoryActive(props: Props) {
                 const memberLikeYn = _item?.member_like_yn; // 회원 좋아요 여부
                 const replyContents = _item?.reply_contents; // 댓글 내용
 
-                const boardImgPath = findSourcePath(_item?.story_img_path); // 운영 오픈시 반영
-                //const boardImgPath = findSourcePathLocal(_item?.story_img_path);
+                //const boardImgPath = findSourcePath(_item?.story_img_path); // 운영 오픈시 반영
+                const boardImgPath = findSourcePathLocal(_item?.story_img_path);
 
                 return (
                   <SpaceView viewStyle={_styles.alarmItemWrap('ALARM')} key={'item' + _index}>
@@ -455,8 +455,8 @@ export default function StoryActive(props: Props) {
                 const replyCnt = _item?.reply_cnt; // 댓글 수
                 const memberLikeYn = _item?.member_like_yn; // 좋아요 여부
 
-                const boardImgPath = findSourcePath(_item?.story_img_path); // 운영 오픈시 반영
-                //const boardImgPath = findSourcePathLocal(_item?.story_img_path);
+                //const boardImgPath = findSourcePath(_item?.story_img_path); // 운영 오픈시 반영
+                const boardImgPath = findSourcePathLocal(_item?.story_img_path);
 
                 return (
                   <TouchableOpacity 

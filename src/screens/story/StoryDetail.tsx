@@ -333,7 +333,7 @@ export default function StoryDetail(props: Props) {
 
   // ############################################################################# 댓글 렌더링
   const ReplyRender = ({ item, index, likeFunc, replyModalOpenFunc }) => {
-    const memberMstImgPath = findSourcePathLocal(item?.mst_img_path); // 회원 대표 이미지 경로
+    const memberMstImgPath = findSourcePath(item?.mst_img_path); // 회원 대표 이미지 경로
     const storyReplySeq = item?.story_reply_seq; // 댓글 번호
     const depth = item?.depth;
     const gender = item?.gender;
@@ -438,7 +438,7 @@ export default function StoryDetail(props: Props) {
       <CommonHeader 
         title={(storyData.board?.story_type == 'STORY' ? '스토리' : storyData.board?.story_type == 'VOTE' ? '투표' : '시크릿')}
         type={'STORY_DETAIL'} 
-        mstImgPath={findSourcePathLocal(storyData.board?.mst_img_path)} 
+        mstImgPath={findSourcePath(storyData.board?.mst_img_path)} 
         nickname={storyData.board?.nickname}
         gender={storyData.board?.gender}
         profileScore={storyData.board?.profile_score}
@@ -500,70 +500,79 @@ export default function StoryDetail(props: Props) {
           {/* ###################################################################################### 투표 선택 영역 */}
           {storyData.board?.story_type == 'VOTE' && (
             <SpaceView>
-              <SpaceView viewStyle={_styles.voteSelectArea}>  
-                <View style={_styles.voteVsArea}>
+              <SpaceView viewStyle={_styles.voteSelectArea}>
+
+                <SpaceView viewStyle={_styles.voteVsArea}>
                   <Text style={_styles.voteVsText}>VS</Text>
-                </View>
-                {storyData.voteList?.map((item, index) => {
-                  const isVote = item?.vote_yn == 'Y' ? true : false; // 투표 여부
-                  const isRegiMember = (memberBase?.member_seq == storyData.board?.member_seq) ? true : false;
-                  const isVoteEndYn = storyData.board?.vote_end_yn == 'Y' ? true : false;
+                </SpaceView>
 
-                  let baseColor = '#3616CF';
-                  let textColor = '#333333';
-                  let bgColorArr = ['#8759D5', '#7984ED'];
+                <SpaceView viewStyle={{flexDirection:'row', zIndex:1}}>
+                  {storyData.voteList?.map((item, index) => {
+                    const isVote = item?.vote_yn == 'Y' ? true : false; // 투표 여부
+                    const isRegiMember = (memberBase?.member_seq == storyData.board?.member_seq) ? true : false;
+                    const isVoteEndYn = storyData.board?.vote_end_yn == 'Y' ? true : false;
 
-                  // 작성자 여부 구분 처리
-                  if(memberBase?.member_seq == storyData.board?.member_seq) {
-                    if(storyData.board?.vote_end_yn == 'Y') {
-                      if(storyData.board?.selected_vote_seq != item?.story_vote_seq) {
-                        baseColor = '#3616CF';
-                        bgColorArr = ['#FFF', '#FFF'];
-                      } else {
-                        textColor = '#FFF'
-                      };
-                    } else {
-                      bgColorArr = ['#FFF', '#FFF'];
-                    }
-                  } else {
-                      if(isVote) {
-                        baseColor = '#3616CF';
-                        bgColorArr = ['#7984ED', '#7984ED'];
-                        textColor = '#FFF';
-                      } else {
-                        bgColorArr = ['#FFF', '#FFF'];
-                      } 
-                      
+                    let baseColor = '#3616CF';
+                    let textColor = '#333333';
+                    let bgColorArr = ['#8759D5', '#7984ED'];
+
+                    // 작성자 여부 구분 처리
+                    if(memberBase?.member_seq == storyData.board?.member_seq) {
                       if(storyData.board?.vote_end_yn == 'Y') {
-                        if(storyData.board?.vote_end_yn == 'Y') {
-                            baseColor = '#999999';
-                            bgColorArr = ['#EEE', '#EEE'];
-                            textColor = '#999999';
-                        }
+                        if(storyData.board?.selected_vote_seq != item?.story_vote_seq) {
+                          baseColor = '#3616CF';
+                          bgColorArr = ['#FFF', '#FFF'];
+                        } else {
+                          textColor = '#FFF'
+                        };
+                      } else {
+                        bgColorArr = ['#FFF', '#FFF'];
                       }
-                  };
-                  
-                  return (
-                    <SpaceView viewStyle={{position: 'relative'}}>
-                      <SpaceView viewStyle={[_styles.votePickShadow, {shadowColor: (isVoteEndYn ? '#EEE': '#7984ED'),}]}></SpaceView>
-                      <TouchableOpacity
-                        disabled={isRegiMember || isVote || isVoteEndYn}
-                        onPress={() => { voteProc(item?.story_vote_seq) }}>
-                        <LinearGradient
-                          colors={bgColorArr}
-                          start={{ x: 1, y: 1 }}
-                          end={{ x: 1, y: 0 }}
-                          style={_styles.voteArea(baseColor, bgColorArr)}>                          
-                            <SpaceView mt={10}>
-                              <Image source={findSourcePathLocal(item?.file_path)} style={[_styles.mstImgStyle, {width: 70, height: 70, marginRight: 0,}]} resizeMode={'cover'} />
+                    } else {
+                        if(isVote) {
+                          baseColor = '#3616CF';
+                          bgColorArr = ['#7984ED', '#7984ED'];
+                          textColor = '#FFF';
+                        } else {
+                          bgColorArr = ['#FFF', '#FFF'];
+                        } 
+                        
+                        if(storyData.board?.vote_end_yn == 'Y') {
+                          if(storyData.board?.vote_end_yn == 'Y') {
+                              baseColor = '#999999';
+                              bgColorArr = ['#EEE', '#EEE'];
+                              textColor = '#999999';
+                          }
+                        }
+                    };
+                    
+                    return (
+                      <SpaceView key={index}>
+                        <TouchableOpacity
+                          disabled={isRegiMember || isVote || isVoteEndYn}
+                          onPress={() => { voteProc(item?.story_vote_seq) }} >
+
+                          <LinearGradient
+                            colors={bgColorArr}
+                            start={{ x: 1, y: 1 }}
+                            end={{ x: 1, y: 0 }}
+                            style={_styles.voteArea(baseColor, bgColorArr)}>
+
+                            {/* 투표 이미지 */}
+                            <SpaceView mt={5}>
+                              <Image source={findSourcePathLocal(item?.file_path)} style={_styles.voteImgStyle} resizeMode={'cover'} />
                             </SpaceView>
-                            <SpaceView mt={15} mb={20} viewStyle={{zIndex:2}}><Text numberOfLines={3} style={_styles.voteNameText(textColor)}>{item?.vote_name}</Text></SpaceView>
+
+                            {/* 투표 명 */}
+                            <SpaceView mt={15} mb={20} viewStyle={{zIndex:2}}>
+                              <Text numberOfLines={3} style={_styles.voteNameText(textColor)}>{item?.vote_name}</Text>
+                            </SpaceView>
                             
                             {/* PICK 텍스트 및 이미지 */}
                             {isVoteEndYn && isRegiMember && (storyData.board?.selected_vote_seq == item?.story_vote_seq) ?
                               <> 
                                 <View style={_styles.voteMmbrCntArea}>
-                                  <Text style={{color: '#FFF', fontSize: 20, fontFamily: 'AppleSDGothicNeoEB00', marginTop: -60}}>PICK</Text>
+                                  <Text style={_styles.votePickText}>PICK</Text>
                                 </View>
                                 <Image source={ICON.confetti} style={_styles.votePickImg} />
                               </>
@@ -573,17 +582,21 @@ export default function StoryDetail(props: Props) {
                                   <>
                                     <View style={[_styles.voteMmbrCntArea, {opacity: (isRegiMember) ? 0.7 : 0, backgroundColor: '#664EDB'}]}></View>
                                     <View style={[_styles.voteMmbrCntArea, {opacity: (isRegiMember) ? 1 : 0}]}>
-                                      <Text style={{color: '#FFF', fontSize: 20, fontFamily: 'AppleSDGothicNeoR00'}}>{item?.vote_member_cnt}표</Text>
+                                      <Text style={_styles.voteCntText}>{item?.vote_member_cnt}표</Text>
                                     </View>
                                   </>
                                 }
                               </>
                             }
-                        </LinearGradient>
-                      </TouchableOpacity>
-                    </SpaceView>
+                          </LinearGradient>
+                        </TouchableOpacity>
+
+                        {/* <SpaceView viewStyle={[_styles.votePickShadow, {shadowColor: (isVoteEndYn ? '#EEE': '#7984ED'),}]} /> */}
+                      </SpaceView>
+                    )}
                   )}
-                )}
+
+                </SpaceView>
               </SpaceView>
 
               {/* 투표 선택 알림글 */}
@@ -630,7 +643,7 @@ export default function StoryDetail(props: Props) {
                           disabled={memberBase?.gender === storyData.board?.gender || memberBase?.member_seq === storyData.board?.member_seq}
                           onPress={() => { profileCardOpenPopup(storyData.board?.member_seq, storyData.board?.open_cnt); }} >
 
-                          <Image source={findSourcePathLocal(storyData.board?.mst_img_path)} style={_styles.mstImgStyle} />
+                          <Image source={findSourcePath(storyData.board?.mst_img_path)} style={_styles.mstImgStyle} />
                         </TouchableOpacity>
 
                         <SpaceView viewStyle={{flexDirection: 'column'}}>
@@ -1050,14 +1063,14 @@ const _styles = StyleSheet.create({
     top: '50%',
     left: '50%',
     transform: [{translateX: -27.5}, {translateY: -14}],
-    zIndex: 1,
+    zIndex: 2,
     borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
   },
   voteVsText: {
     color: '#FFF',
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-Regular',
     fontSize: 14,
     letterSpacing: 2,
   },
@@ -1070,12 +1083,10 @@ const _styles = StyleSheet.create({
       borderRadius: 10,
       paddingVertical: 15,
       width: width - 215,
-      height: 180,
+      height: width - 210,
       overflow: 'hidden',
-      paddingLeft: 20,
-      paddingRight: 20,
-      marginLeft: 3,
-      marginRight: 3,
+      paddingHorizontal: 13,
+      marginHorizontal: 3,
     };
   },
   voteViewArea: (bgColor: string) => {
@@ -1098,9 +1109,9 @@ const _styles = StyleSheet.create({
   },
   voteNameText: (textColor: string) => {
     return {
-      fontFamily: 'AppleSDGothicNeoR00',
+      fontFamily: 'Pretendard-Regular',
       color: textColor,
-      fontSize: 16,
+      fontSize: 15,
       textAlign: 'center',
     }
   },
@@ -1140,6 +1151,13 @@ const _styles = StyleSheet.create({
     overflow: 'hidden',
     marginRight: 7,
   },
+  voteImgStyle: {
+    borderRadius: 50,
+    overflow: 'hidden',
+    width: 75,
+    height: 75,
+    marginRight: 0,
+  },
   voteMmbrCntArea: {
     width: width - 216,
     height: 180,
@@ -1149,6 +1167,12 @@ const _styles = StyleSheet.create({
     top: 0,
     left: 0,
     zIndex: 10,
+  },
+  votePickText: {
+    color: '#FFF',
+    fontSize: 18,
+    fontFamily: 'Pretendard-Bold',
+    marginTop: -60,
   },
   votePickImg: {
     zIndex: 1,
@@ -1175,6 +1199,12 @@ const _styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 5,
     backgroundColor: '#fff',
+    zIndex: 1,
+  },
+  voteCntText: {
+    color: '#FFF',
+    fontSize: 19,
+    fontFamily: 'Pretendard-Medium'
   },
 
 });
