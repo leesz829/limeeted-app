@@ -75,7 +75,7 @@ const _styles = StyleSheet.create({
 
   labelText: (isOn:boolean) => {
     return {
-      fontFamily: isOn ? 'Pretendard-Bold' : 'Pretendard-Regular',
+      fontFamily: isOn ? 'AppleSDGothicNeoEB00' : 'Pretendard-Regular',
       fontSize: 14,
       color: isOn ? '#fff' : '#7986EE',
       textAlign: 'center',

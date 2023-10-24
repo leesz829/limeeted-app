@@ -712,7 +712,7 @@ function VoteImageRenderItem ({ index, _imgData, delFn, fileCallBackFn, storyTyp
 const _styles = StyleSheet.create({
 
   titleText: {
-    fontFamily: 'Pretendard-SemiBold',
+    fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 20,
     color: '#333333',
     lineHeight: 30,
@@ -721,7 +721,7 @@ const _styles = StyleSheet.create({
     color: '#7B81EC',
   },
   subTitleText: {
-    fontFamily: 'Pretendard-SemiBold',
+    fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 19,
     color: '#333333',
   },
@@ -840,7 +840,7 @@ const _styles = StyleSheet.create({
     return {
       borderColor: isOn ? '#7986EE' : '#ebe9ef',
       backgroundColor: '#fff',
-      fontFamily: 'AppleSDGothicNeoM00',
+      fontFamily: 'Pretendard-Regular',
       fontSize: 13,
       color: '#000',
       borderRadius: 20,

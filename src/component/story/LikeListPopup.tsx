@@ -210,7 +210,7 @@ const _styles = StyleSheet.create({
     paddingVertical: 20,
   },
   titleText: {
-    fontFamily: 'AppleSDGothicNeoR00',
+    fontFamily: 'Pretendard-Regular',
     fontSize: 14,
     textAlign: 'left',
     color: '#333',
@@ -237,7 +237,7 @@ const _styles = StyleSheet.create({
     borderTopColor: '#ddd',
   },
   likeListText: {
-    fontFamily: 'AppleSDGothicNeoR00',
+    fontFamily: 'Pretendard-Regular',
     fontSize: 14,
     marginTop: 5,
     letterSpacing: 0,
@@ -246,7 +246,7 @@ const _styles = StyleSheet.create({
     color: '#333',
   },
   profileText: {
-    fontFamily: 'AppleSDGothicNeoR00',
+    fontFamily: 'Pretendard-Regular',
     fontSize: 14,
     color: '#333333',
   },
@@ -256,7 +256,7 @@ const _styles = StyleSheet.create({
     color: '#333333',
   },
   nicknameText: {
-    fontFamily: 'AppleSDGothicNeoR00',
+    fontFamily: 'Pretendard-Regular',
     fontSize: 14,
     color: '#333333',
   },
@@ -266,7 +266,7 @@ const _styles = StyleSheet.create({
     marginBottom: 20,
   },
   replyText: {
-    fontFamily: 'AppleSDGothicNeoR00',
+    fontFamily: 'Pretendard-Regular',
     fontSize: 14,
     letterSpacing: 0,
     fontWeight: '300',

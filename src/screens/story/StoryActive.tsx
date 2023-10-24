@@ -680,7 +680,7 @@ const _styles = StyleSheet.create({
     marginBottom: 20,
   },
   alarmTitleText: {
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
     fontSize: 15,
     color: '#333',
   },
@@ -705,12 +705,12 @@ const _styles = StyleSheet.create({
     fontSize: 14,
   },
   alarmContentText: {
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Regular',
     color: '#333',
     fontSize: 14,
   },
   timeText: {
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Regular',
     color: '#999',
     fontSize: 14,
   },
@@ -729,12 +729,12 @@ const _styles = StyleSheet.create({
     overflow: 'hidden',
   },
   replyLikeCntText: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Medium',
     color: '#000',
     fontSize: 13,
   },
   replyTextStyle: {
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
     color: '#555',
     fontSize: 12,
   },
@@ -759,7 +759,7 @@ const _styles = StyleSheet.create({
     };
   },
   emptyText: {
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
     color: '#000',
     fontSize: 14,
   },
@@ -773,7 +773,7 @@ const _styles = StyleSheet.create({
     height: 40,
   },
   storyDateText: {
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
     color: '#999',
     fontSize: 14,
   },
@@ -783,13 +783,13 @@ const _styles = StyleSheet.create({
     overflow: 'hidden',
   },
   storyCntText: {
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
     color: '#555555',
     fontSize: 14,
     marginLeft: 6,
   },
   likeCntText: {
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
     color: '#555555',
     fontSize: 12,
   },
@@ -801,7 +801,7 @@ const _styles = StyleSheet.create({
     paddingBottom: 180,
   },
   noDataText: {
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
     color: '#555555',
     fontSize: 15,
   },

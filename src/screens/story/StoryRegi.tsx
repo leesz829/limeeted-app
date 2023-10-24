@@ -62,7 +62,7 @@ export default function StoryRegi(props: Props) {
 
   return (
     <>
-      <CommonHeader title={'NEW STORY'} />
+      {/* <CommonHeader title={'NEW STORY'} />
 
       <ScrollView showsVerticalScrollIndicator={false} style={{backgroundColor: '#fff'}}>
         <SpaceView mt={20} pl={20} pr={20}>
@@ -93,53 +93,49 @@ export default function StoryRegi(props: Props) {
           </SpaceView>
 
         </SpaceView>
-      </ScrollView>
+      </ScrollView> */}
 
-      {/* 디자인 리뉴얼 
+      {/* 디자인 리뉴얼 */}
       <CommonHeader title={'NEW STORY'} />
 
       <ScrollView showsVerticalScrollIndicator={false} style={{backgroundColor: '#fff'}}>
         <SpaceView mt={20} pl={20} pr={20}>
 
           <SpaceView mb={30} viewStyle={_styles.titleArea}>
-            <Text style={_styles.titleText}><Text style={{color: '#7B81EC', fontSize: 20}}>{memberBase?.nickname}님</Text>의 이야기로{'\n'}리미티드에 일상을공유하고 소통해보세요.</Text>
+            <Text style={_styles.titleText}><Text style={{color: '#7B81EC', fontFamily: 'AppleSDGothicNeoEB00', fontSize: 20}}>{memberBase?.nickname}님</Text>의 이야기로{'\n'}리미티드에 일상을공유하고 소통해보세요.</Text>
           </SpaceView>
 
-          <SpaceView viewStyle={_styles.contentArea}>
-            <TouchableOpacity style={_styles.contentItemContents} onPress={() => { selectedStoryType('STORY'); }}>
-              <LinearGradient colors={['#FFD76B', '#FFB801']} style={_styles.contentItem}>
-                <View style={_styles.contentImgArea}>
-                  <Image source={ICON.talkBalloonIcon} style={_styles.contentImg} resizeMode={'cover'} />
-                </View>
-                <Text style={_styles.contentTitle}>스토리</Text>
-                <Text style={_styles.contentSubTitle}>소소한 일상부터 음식, 여행 등 주제에 관계없이 자유롭게 소통해 보세요.</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={[_styles.contentItemContents, {marginLeft: 7,}]} onPress={() => { selectedStoryType('VOTE'); }}>
-              <LinearGradient colors={['#A9DBFF', '#7B81EC']} style={_styles.contentItem}>
-                <View style={_styles.contentImgArea}>
-                  <Image source={ICON.voteIcon} style={_styles.contentImg} resizeMode={'cover'} />
-                </View>
+          <SpaceView>
+            <LinearGradient colors={['#FFD76B', '#FFB801']} style={_styles.contentItem}>
+              <TouchableOpacity style={{flex: 1, flexWrap: 'wrap', justifyContent:'flex-start'}}  onPress={() => { selectedStoryType('STORY'); }}>
+                <SpaceView viewStyle={{width: 220}}>
+                  <Text style={_styles.contentTitle}>스토리</Text>
+                  <Text style={_styles.contentSubTitle}>소소한 일상부터 음식, 여행 등 주제에 관계없이 자유롭게 소통해 보세요.</Text>
+                </SpaceView>
+                <Image source={ICON.talkBalloonIcon} style={_styles.contentImg} resizeMode={'cover'} />
+              </TouchableOpacity>
+            </LinearGradient>
+            
+            <LinearGradient colors={['#A9DBFF', '#7B81EC']} style={_styles.contentItem} >
+              <TouchableOpacity onPress={() => { selectedStoryType('VOTE'); }}>
                 <Text style={_styles.contentTitle}>투표형</Text>
-                <Text style={_styles.contentSubTitle}>왼 VS 오 어떤 것?{'\n'}밸런스 게임으로 사람들의 성향을 알아가요.</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={_styles.contentItemContents} onPress={() => { selectedStoryType('SECRET'); }}>
-              <LinearGradient colors={['#8E1DFF', '#000000']} style={_styles.contentItem}>
-                <View style={_styles.contentImgArea}>
-                  <Image source={ICON.talkQuestionIcon} style={{width: 70, height: 70,}} resizeMode={'cover'} />
-                </View>
+                <Text style={_styles.contentSubTitle}>왼 VS 오 어떤 것? 밸런스 게임으로{'\n'}사람들의 성향을 알아가요.</Text>
+                <Image source={ICON.voteIcon} style={_styles.contentImg} resizeMode={'cover'} />
+              </TouchableOpacity>
+            </LinearGradient>
+            
+            <LinearGradient colors={['#8E1DFF', '#000000']} style={_styles.contentItem}>
+              <TouchableOpacity onPress={() => { selectedStoryType('SECRET'); }}>
                 <Text style={_styles.contentTitle}>시크릿</Text>
-                <Text style={_styles.contentSubTitle}>이야기 앞에 “비밀”이 붙으면 재미있어 지는 법이죠!</Text>
-              </LinearGradient>
-            </TouchableOpacity>
+                <Text style={_styles.contentSubTitle}>이야기 앞에 “비밀”이 붙으면{'\n'}재미있어 지는 법이죠!</Text>
+                <Image source={ICON.talkQuestionIcon} style={[_styles.contentImg, {width: 70, height: 70, right: -5}]} resizeMode={'cover'} />
+              </TouchableOpacity>
+            </LinearGradient>
           </SpaceView>
 
         </SpaceView>
-      </ScrollView> */}
-    </>
+      </ScrollView>
+    </> 
   );
 
 };
@@ -155,63 +151,96 @@ export default function StoryRegi(props: Props) {
 ####################################################################################################### */}
 
 const _styles = StyleSheet.create({
-  titleArea: {
+  // titleArea: {
 
-  },
-  titleText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 20,
-    color: '#333',
-  },
-  titleUnderline: {
-    position: 'absolute',
-    top: 72,
-    left: -1,
-    width: width-205,
-    height: 8,
-    backgroundColor: '#7986EE',
-    zIndex:-1,
-  },
-  contentArea: {
+  // },
+  // titleText: {
+  //   fontFamily: 'AppleSDGothicNeoEB00',
+  //   fontSize: 20,
+  //   color: '#333',
+  // },
+  // titleUnderline: {
+  //   position: 'absolute',
+  //   top: 72,
+  //   left: -1,
+  //   width: width-205,
+  //   height: 8,
+  //   backgroundColor: '#7986EE',
+  //   zIndex:-1,
+  // },
+  // contentArea: {
     
+  // },
+  // contentItem: {
+  //   position:'relative',
+  //   backgroundColor: '#C5C5C5',
+  //   borderRadius: 20,
+  //   paddingVertical: 20,
+  //   paddingHorizontal: 20,
+  //   marginBottom: 20,
+  //   height: 160,
+  //   shadowColor: '#000',
+  //   shadowOffset: { width: 0, height: 4 },
+  //   shadowOpacity: 0.08,
+  //   shadowRadius: 10,
+  //   elevation: 5,
+  //   overflow: 'visible',
+  // },
+  // contentTitle: {
+  //   fontFamily: 'AppleSDGothicNeoEB00',
+  //   fontSize: 17,
+  //   color: '#333333',
+  //   marginBottom: 15,
+  // },
+  // contentSubTitle: {
+  //   fontFamily: 'AppleSDGothicNeoR00',
+  //   fontSize: 15,
+  //   color: '#333333',
+  // },
+  // contentImg: {
+  //   position: 'absolute',
+  //   bottom: 25,
+  //   right: 25,
+  //   width: 35,
+  //   height: 35,
+  // },
+
+  titleText: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 18,
+    color: '#333',
   },
   contentItem: {
     position:'relative',
-    backgroundColor: '#C5C5C5',
     borderRadius: 20,
     paddingVertical: 20,
     paddingHorizontal: 20,
     marginBottom: 20,
-    height: 160,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
-    shadowRadius: 10,
-    elevation: 5,
-    overflow: 'visible',
+    height: 120,
+    overflow: 'hidden',
   },
   contentTitle: {
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 17,
-    color: '#333333',
+    color: '#FFF',
     marginBottom: 15,
   },
   contentSubTitle: {
-    fontFamily: 'AppleSDGothicNeoR00',
+    fontFamily: 'Pretendard-Regular',
     fontSize: 15,
-    color: '#333333',
+    color: '#FFF',
   },
   contentImg: {
     position: 'absolute',
-    bottom: 25,
-    right: 25,
-    width: 35,
-    height: 35,
+    top: 10,
+    right: 0,
+    width: 60,
+    height: 60,
   },
 
   // 디자인 리뉴얼
   // titleText: {
-  //   fontFamily: 'AppleSDGothicNeoEB00',
+  //   fontFamily: 'Pretendard-Medium',
   //   fontSize: 16,
   //   color: '#333',
   // },
@@ -241,7 +270,7 @@ const _styles = StyleSheet.create({
   //   marginTop: 30,
   // },
   // contentSubTitle: {
-  //   fontFamily: 'AppleSDGothicNeoR00',
+  //   fontFamily: 'Pretendard-Regular',
   //   fontSize: 15,
   //   color: '#FFF',
   // },

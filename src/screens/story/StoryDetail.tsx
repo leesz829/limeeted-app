@@ -5,7 +5,7 @@ import { styles, layoutStyle, commonStyle, modalStyle } from 'assets/styles/Styl
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
-import { ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity, Animated, Easing, PanResponder, Platform, TouchableWithoutFeedback, KeyboardAvoidingView } from 'react-native';
+import { RefreshControl, ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity, Animated, Easing, PanResponder, Platform, TouchableWithoutFeedback, KeyboardAvoidingView } from 'react-native';
 import { get_story_detail, save_story_like, save_story_vote_member, profile_open } from 'api/models';
 import { findSourcePath, IMAGE, GIF_IMG, findSourcePathLocal } from 'utils/imageUtils';
 import { usePopup } from 'Context';
@@ -117,9 +117,13 @@ export default function StoryDetail(props: Props) {
   };
 
   // ############################################################################# 스토리 조회
-  const getStoryBoard = async () => {
+  const getStoryBoard = async (_type:string, _pageNum:number) => {
     try {
-      setIsLoading(true);
+      if(_type == 'REFRESH') {
+        setIsRefreshing(true);
+      } else {
+        setIsLoading(true);
+      };
 
       const body = {
         story_board_seq: storyBoardSeq,
@@ -147,7 +151,11 @@ export default function StoryDetail(props: Props) {
     } catch (error) {
       console.log(error);
     } finally {
-      setIsLoading(false);
+      if(_type == 'REFRESH') {
+        setIsRefreshing(false);
+      } else {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -425,11 +433,21 @@ export default function StoryDetail(props: Props) {
   ################################################################################################################################## */
   React.useEffect(() => {
     if(isFocus) {
+      setIsRefreshing(false);
+
       if(isEmptyData(props.route.params.storyBoardSeq)) {
         getStoryBoard();
       }
     };
   }, [isFocus]);
+
+  const [isRefreshing, setIsRefreshing] = useState(false); // 새로고침 여부
+  
+  // ##################################################################################### 목록 새로고침
+  const handleRefresh = () => {
+    console.log('refresh!!!!!!!!!!!!!!');
+    getStoryBoard('REFRESH', 1);
+  };
 
   return (
     <>
@@ -448,7 +466,19 @@ export default function StoryDetail(props: Props) {
 
       <ScrollView 
         showsVerticalScrollIndicator={false}
-        style={{backgroundColor: '#fff'}}>
+        style={{backgroundColor: '#fff'}}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={handleRefresh}
+            tintColor="#ff0000" // Pull to Refresh 아이콘 색상 변경
+            //title="Loading..." // Pull to Refresh 아이콘 아래에 표시될 텍스트
+            titleColor="#ff0000" // 텍스트 색상 변경
+            colors={['#ff0000', '#00ff00', '#0000ff']} // 로딩 아이콘 색상 변경
+            progressBackgroundColor="#ffffff" >
+          </RefreshControl>
+        }
+        >
 
         <SpaceView mb={20}>
 
@@ -512,13 +542,16 @@ export default function StoryDetail(props: Props) {
                     const isRegiMember = (memberBase?.member_seq == storyData.board?.member_seq) ? true : false;
                     const isVoteEndYn = storyData.board?.vote_end_yn == 'Y' ? true : false;
 
+                    const firVoteMmbrCntVal = storyData.voteList[0]['vote_member_cnt'];
+                    const secVoteMmbrCntVal = storyData.voteList[1]['vote_member_cnt'];
+
                     let baseColor = '#3616CF';
                     let textColor = '#333333';
                     let bgColorArr = ['#8759D5', '#7984ED'];
 
                     // 작성자 여부 구분 처리
                     if(memberBase?.member_seq == storyData.board?.member_seq) {
-                      if(storyData.board?.vote_end_yn == 'Y') {
+                      if(storyData.board?.vote_end_yn == 'Y' && (firVoteMmbrCntVal != secVoteMmbrCntVal)) {
                         if(storyData.board?.selected_vote_seq != item?.story_vote_seq) {
                           baseColor = '#3616CF';
                           bgColorArr = ['#FFF', '#FFF'];
@@ -569,7 +602,7 @@ export default function StoryDetail(props: Props) {
                             </SpaceView>
                             
                             {/* PICK 텍스트 및 이미지 */}
-                            {isVoteEndYn && isRegiMember && (storyData.board?.selected_vote_seq == item?.story_vote_seq) ?
+                            {isVoteEndYn && isRegiMember && (storyData.board?.selected_vote_seq == item?.story_vote_seq) && (firVoteMmbrCntVal != secVoteMmbrCntVal) ?
                               <> 
                                 <View style={_styles.voteMmbrCntArea}>
                                   <Text style={_styles.votePickText}>PICK</Text>
@@ -578,7 +611,7 @@ export default function StoryDetail(props: Props) {
                               </>
                               : 
                               <>
-                                {(!isVoteEndYn) &&
+                                {(!isVoteEndYn || (isVoteEndYn && firVoteMmbrCntVal == secVoteMmbrCntVal)) &&
                                   <>
                                     <View style={[_styles.voteMmbrCntArea, {opacity: (isRegiMember) ? 0.7 : 0, backgroundColor: '#664EDB'}]}></View>
                                     <View style={[_styles.voteMmbrCntArea, {opacity: (isRegiMember) ? 1 : 0}]}>
@@ -1084,9 +1117,17 @@ const _styles = StyleSheet.create({
       paddingVertical: 15,
       width: width - 215,
       height: width - 210,
-      overflow: 'hidden',
+
       paddingHorizontal: 13,
       marginHorizontal: 3,
+
+  
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
     };
   },
   voteViewArea: (bgColor: string) => {
@@ -1171,7 +1212,7 @@ const _styles = StyleSheet.create({
   votePickText: {
     color: '#FFF',
     fontSize: 18,
-    fontFamily: 'Pretendard-Bold',
+    fontFamily: 'AppleSDGothicNeoEB00',
     marginTop: -60,
   },
   votePickImg: {
@@ -1187,24 +1228,24 @@ const _styles = StyleSheet.create({
     position:'absolute',
     top: 0,
     left: 0,
-    width: width-215,
+    width: width - 205,
     height: 180,
     alignItems: 'center',
     marginLeft: 3,
     marginRight: 3,
     borderRadius: 10,
     borderWidth: 1,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 8,
-    shadowRadius: 3,
-    elevation: 5,
-    backgroundColor: '#fff',
-    zIndex: 1,
+    shadowOffset: { width: 1, height: 12 },
+    shadowOpacity: 5,
+    shadowRadius: 1,
+    elevation: 8,
+    backgroundColor: '#FFF',
+    zIndex: -1,
   },
   voteCntText: {
     color: '#FFF',
     fontSize: 19,
-    fontFamily: 'Pretendard-Medium'
+    fontFamily: 'Pretendard-Medium',
   },
 
 });
