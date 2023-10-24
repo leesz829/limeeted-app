@@ -51,6 +51,9 @@ export const ICON = {
   starNew: require('assets/icon/icon-star-new.png'),
   starHalfNew: require('assets/icon/icon-star-half-new.png'),
   starEmptyNew: require('assets/icon/icon-star-empty-new.png'),
+  starBlack: require('assets/icon/icon-star-black.png'),
+  starWhite: require('assets/icon/icon-star-white.png'),
+  starYellow: require('assets/icon/icon-star-yellow.png'),
   new: require('assets/icon/icon-new.png'),
   badge: require('assets/icon/icon-badege.png'),
   process: require('assets/icon/icon-process.png'),
@@ -193,6 +196,10 @@ export const ICON = {
   femaleIcon: require('assets/icon/icon-female.png'),
   confetti: require('assets/icon/confetti.png'),
   storySecretIcon: require('assets/icon/icon-story-secret.png'),
+  bookmarkBlack: require('assets/icon/icon-bookmark-black.png'),
+  bookmarkPurple: require('assets/icon/icon-bookmark-purple.png'),
+  bookmarkWhite: require('assets/icon/icon-bookmark-white.png'),
+  murtipleImage: require('assets/icon/icon-murtiple-image.png'),
 };
 
 export const GIF_IMG = {
