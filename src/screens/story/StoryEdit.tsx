@@ -679,6 +679,7 @@ function VoteImageRenderItem ({ index, _imgData, delFn, fileCallBackFn, storyTyp
               imgWidth={48}
               imgHeight={48}
               iconSize={15}
+              borderRadius={10}
             />
           </LinearGradient>
         </>

@@ -46,6 +46,8 @@ export default function LikeListPopup({ isVisible, closeModal, type, _storyBoard
   // 좋아요 목록 조회
 	const getStoryLikeList = async () => {
 		setIsLoading(true);
+    setLikeListData({likeList: null});
+    setLikeListCnt('0');
 
     // 스토리 게시물 좋아요 파람
     const boardBody = {
@@ -106,14 +108,32 @@ export default function LikeListPopup({ isVisible, closeModal, type, _storyBoard
             </TouchableOpacity>
             {/* <Text style={_styles.likeListText}>{item.nickname}, {item.age}</Text> */}
             <SpaceView ml={3}>
+              <SpaceView viewStyle={{flexDirection: 'row'}}>
               {/* 프로필 평점, 인증 레벨 */}
-              {(isEmptyData(item?.auth_acct_cnt) || item?.profile_score > 0.0) && (
+              {/* {(isEmptyData(item?.auth_acct_cnt) || item?.profile_score > 0.0) && (
                 <Text style={_styles.profileText}>
                   {item?.profile_score}
                   {(isEmptyData(item?.auth_acct_cnt) && item?.profile_score > 0.0) && ' | '}
                   {isEmptyData(item?.auth_acct_cnt) && 'Lv ' + item?.auth_acct_cnt}
                 </Text>
-              )}
+              )} */}
+              {(isEmptyData(item?.auth_acct_cnt) || item?.profile_score > 0.0) && (
+                <Text style={_styles.profileText}>
+                  <SpaceView mt={-2} mr={1}>
+                    <Image source={ICON.starYellow} style={styles.iconSize16} resizeMode={'cover'} />
+                  </SpaceView>
+                  {item?.profile_score}
+                  {isEmptyData(item?.auth_acct_cnt) && (
+                    <>
+                      <SpaceView mt={-2} mr={1} pl={5}>
+                        <Image source={ICON.bookmarkPurple} style={styles.iconSize16} resizeMode={'cover'} />
+                      </SpaceView>
+                      {item?.auth_acct_cnt}
+                    </>
+                  )}
+                </Text>
+              )}              
+              </SpaceView>
               <Text style={_styles.nicknameText}>{item.nickname}</Text>
             </SpaceView>
           </SpaceView>
@@ -133,7 +153,6 @@ export default function LikeListPopup({ isVisible, closeModal, type, _storyBoard
 
   return (
     <Modal
-      //isVisible={isVisible}
       visible={isVisible}
       transparent={true} // 배경을 불투명하게 설정
       //onRequestClose={() => { closeModal(); }}
@@ -148,7 +167,7 @@ export default function LikeListPopup({ isVisible, closeModal, type, _storyBoard
             </TouchableOpacity>
           </View>
 
-          {type == 'REPLY' ? (
+          {type == 'REPLY' && (
             <SpaceView viewStyle={_styles.replyArea}>
               <TouchableOpacity
                 disabled={memberBase?.gender === replyInfo?.gender || memberBase?.member_seq === replyInfo?.reg_seq}
@@ -164,8 +183,6 @@ export default function LikeListPopup({ isVisible, closeModal, type, _storyBoard
                 <Text style={[_styles.replyText, {marginTop: 3}]}>{replyInfo.reply_contents}</Text>
               </SpaceView>
             </SpaceView>
-          ) : (
-            <></>
           )}
 
           <SpaceView viewStyle={{maxHeight: height - 350}}>
@@ -246,7 +263,7 @@ const _styles = StyleSheet.create({
     color: '#333',
   },
   profileText: {
-    fontFamily: 'Pretendard-Regular',
+    fontFamily: 'Pretendard-SemiBold',
     fontSize: 14,
     color: '#333333',
   },
@@ -256,8 +273,9 @@ const _styles = StyleSheet.create({
     color: '#333333',
   },
   nicknameText: {
-    fontFamily: 'Pretendard-Regular',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 14,
+    marginTop: 5,
     color: '#333333',
   },
   replyArea: {

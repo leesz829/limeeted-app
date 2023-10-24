@@ -624,7 +624,7 @@ export default function StoryDetail(props: Props) {
                           </LinearGradient>
                         </TouchableOpacity>
 
-                        {/* <SpaceView viewStyle={[_styles.votePickShadow, {shadowColor: (isVoteEndYn ? '#EEE': '#7984ED'),}]} /> */}
+                        <SpaceView viewStyle={_styles.votePickShadow(baseColor)} />
                       </SpaceView>
                     )}
                   )}
@@ -692,11 +692,11 @@ export default function StoryDetail(props: Props) {
                   </SpaceView>
                 )}
 
+
                 {/* 좋아요 영역 */}
                 <SpaceView viewStyle={{flexDirection: 'row', position: 'absolute', top: 0, right: 0,}}>
                   <TouchableOpacity 
                     onPress={() => { storyLikeProc('BOARD', 0); }} 
-                    style={{marginRight: 5}}
                     hitSlop={commonStyle.hipSlop20}>
 
                     {storyData.board?.member_like_yn == 'N' ? (
@@ -705,15 +705,20 @@ export default function StoryDetail(props: Props) {
                       <Image source={ICON.heartOnIcon} style={styles.iconSquareSize(20)} />
                     )}
                   </TouchableOpacity>
+
                   <TouchableOpacity 
-                    //disabled={memberBase.member_seq != storyData.board?.member_seq}
-                    hitSlop={commonStyle.hipSlop10}
-                    onPress={() => { popupStoryBoardActive(); }}>
-                    <Text style={_styles.likeCntText}>좋아요 {storyData.board?.like_cnt > 0 && storyData.board?.like_cnt + '개'}</Text>
+                    style={{flexDirection: 'row', marginHorizontal: 12}}
+                    onPress={() => { replyModalOpen(0, 0); }}>
+                    <Image source={ICON.reply} style={styles.iconSquareSize(21)} />
+                  </TouchableOpacity>
+
+                  <TouchableOpacity style={{flexDirection:'row', marginTop: 8}}>
+                    <View style={[_styles.blackDot, {marginRight: 3}]}></View>
+                    <View style={[_styles.blackDot, {marginRight: 3}]}></View>
+                    <View style={_styles.blackDot}></View>
                   </TouchableOpacity>
                 </SpaceView>
               </SpaceView>
-
             </SpaceView>
 
             {/* ###################################################################################### 내용 영역 */}
@@ -728,13 +733,14 @@ export default function StoryDetail(props: Props) {
                   <Image source={ICON.reply} style={styles.iconSquareSize(21)} />
                 </TouchableOpacity> */}
 
-              <SpaceView mt={15} mb={10}>
-                <TouchableOpacity 
-                  style={{flexDirection: 'row'}}
-                  onPress={() => { replyModalOpen(0, 0); }}>
-                  <Image source={ICON.reply} style={styles.iconSquareSize(21)} />
-                  <Text style={_styles.replyLengthText}>{storyData.replyList?.length}개의 댓글</Text>
-                </TouchableOpacity>
+              <SpaceView mt={15} mb={10} viewStyle={{flexDirection:'row'}}>
+                  <Text style={_styles.replyLengthText}>댓글{storyData.replyList?.length}개</Text>
+                  <TouchableOpacity 
+                    hitSlop={commonStyle.hipSlop10}
+                    style={{marginLeft: 5}}
+                    onPress={() => { popupStoryBoardActive(); }}>
+                    <Text style={_styles.likeCntText}>좋아요{storyData.board?.like_cnt > 0 && storyData.board?.like_cnt + '개'}</Text>
+                  </TouchableOpacity>  
               </SpaceView>
 
               <FlatList
@@ -887,7 +893,7 @@ export default function StoryDetail(props: Props) {
 const _styles = StyleSheet.create({
 
   titleText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 20,
     color: '#000',
   },
@@ -921,7 +927,7 @@ const _styles = StyleSheet.create({
     //width: 200,
   },
   regiBtnText: {
-    fontFamily: 'AppleSDGothicNeoR00',
+    fontFamily: 'Pretendard-Regular',
     fontSize: 14,
     color: '#555555',
   },
@@ -950,12 +956,12 @@ const _styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   contentsText: {
-    fontFamily: 'AppleSDGothicNeoR00',
+    fontFamily: 'Pretendard-Regular',
     fontSize: 14,
     color: '#333',
   },
   timeText: {
-    fontFamily: 'AppleSDGothicNeoR00',
+    fontFamily: 'Pretendard-Regular',
     fontSize: 14,
     color: '#999',
     marginTop: 10
@@ -986,13 +992,13 @@ const _styles = StyleSheet.create({
     marginRight: 5,
   },
   replyNickname: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 14,
     color: '#000',
     marginRight: 8,
   },
   replyContents: {
-    fontFamily: 'AppleSDGothicNeoR00',
+    fontFamily: 'Pretendard-Regular',
     fontSize: 14,
     color: '#333',
     marginTop: 6,
@@ -1014,7 +1020,7 @@ const _styles = StyleSheet.create({
     };
   },
   replyTimeText: {
-    fontFamily: 'AppleSDGothicNeoR00',
+    fontFamily: 'Pretendard-Regular',
     color: '#999',
     fontSize: 14,
   },
@@ -1026,30 +1032,31 @@ const _styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   replyLikeIcon: {
-    fontFamily: 'AppleSDGothicNeoR00',
+    fontFamily: 'Pretendard-Regular',
     color: '#000',
     fontSize: 12,
   },
   replyTextStyle: {
-    fontFamily: 'AppleSDGothicNeoR00',
+    fontFamily: 'Pretendard-Regular',
     color: '#555',
     fontSize: 12,
   },
   replyLengthText: {
-    fontFamily: 'AppleSDGothicNeoR00',
+    fontFamily: 'Pretendard-Regular',
     color: '#555',
     fontSize: 13,
     marginLeft: 1,
   },
   likeCntText: {
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Regular',
     color: '#555',
     fontSize: 13,
   },
   replyLikeCntText: {
-    fontFamily: 'AppleSDGothicNeoR00',
+    fontFamily: 'Pretendard-Regular',
     color: '#555',
     fontSize: 12,
+    marginLeft: 6,
   },
   likeArea: {
     flexDirection: 'row',
@@ -1070,14 +1077,14 @@ const _styles = StyleSheet.create({
     }
 
     return {
-      fontFamily: 'AppleSDGothicNeoEB00',
+      fontFamily: 'Pretendard-Bold',
       fontSize: 14,
       color: clr,
       marginTop: -3,
     };
   },
   scoreText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 14,
     color: '#333333',
   },
@@ -1117,17 +1124,9 @@ const _styles = StyleSheet.create({
       paddingVertical: 15,
       width: width - 215,
       height: width - 210,
-
       paddingHorizontal: 13,
       marginHorizontal: 3,
-
-  
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
+      overflow: 'hidden',
     };
   },
   voteViewArea: (bgColor: string) => {
@@ -1140,7 +1139,7 @@ const _styles = StyleSheet.create({
   },
   voteOrderText: (textColor: string) => {
     return {
-      fontFamily: 'AppleSDGothicNeoB00',
+      fontFamily: 'Pretendard-Bold',
       fontSize: 14,
       borderRadius: 13,
       color: textColor,
@@ -1162,12 +1161,12 @@ const _styles = StyleSheet.create({
     alignItems: 'center',
   },
   voteDescText: {
-    fontFamily: 'AppleSDGothicNeoR00',
+    fontFamily: 'Pretendard-Regular',
     fontSize: 14,
     color: '#555555',
   },
   voteTimeText: {
-    fontFamily: 'AppleSDGothicNeoR00',
+    fontFamily: 'Pretendard-Regular',
     fontSize: 14,
     color: '#EE2E62',
     marginLeft: 3,
@@ -1179,7 +1178,7 @@ const _styles = StyleSheet.create({
   },
   voteBtnText: (textColor: string) => {
     return {
-      fontFamily: 'AppleSDGothicNeoB00',
+      fontFamily: 'Pretendard-Medium',
       color: textColor,
       fontSize: 16,
       textAlign: 'center',
@@ -1212,7 +1211,7 @@ const _styles = StyleSheet.create({
   votePickText: {
     color: '#FFF',
     fontSize: 18,
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-Bold',
     marginTop: -60,
   },
   votePickImg: {
@@ -1224,28 +1223,36 @@ const _styles = StyleSheet.create({
     left: 0,
     overflow: 'hidden',
   },
-  votePickShadow: {
-    position:'absolute',
-    top: 0,
-    left: 0,
-    width: width - 205,
-    height: 180,
-    alignItems: 'center',
-    marginLeft: 3,
-    marginRight: 3,
-    borderRadius: 10,
-    borderWidth: 1,
-    shadowOffset: { width: 1, height: 12 },
-    shadowOpacity: 5,
-    shadowRadius: 1,
-    elevation: 8,
-    backgroundColor: '#FFF',
-    zIndex: -1,
+  votePickShadow: (bdColor: string) => {
+    return {
+      position:'absolute',
+      top: 0,
+      left: 0,
+      width: width - 215,
+      height: 180,
+      alignItems: 'center',
+      marginLeft: 3,
+      marginRight: 3,
+      borderRadius: 10,
+      shadowOffset: { width: 0, height: 0 },
+      shadowOpacity: 0.3,
+      shadowRadius: 8,
+      elevation: 10,
+      backgroundColor: '#FFF',
+      zIndex: -1,
+      shadowColor: bdColor,
+    }
   },
   voteCntText: {
     color: '#FFF',
     fontSize: 19,
     fontFamily: 'Pretendard-Medium',
+  },
+  blackDot: {
+    width: 4,
+    height: 4,
+    backgroundColor: '#000',
+    borderRadius: 50,
   },
 
 });
