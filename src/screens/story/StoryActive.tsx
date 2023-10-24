@@ -700,7 +700,7 @@ const _styles = StyleSheet.create({
     width: width - 150,
   },
   alarmNickname: {
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-Bold',
     color: '#000',
     fontSize: 14,
   },
@@ -752,7 +752,7 @@ const _styles = StyleSheet.create({
   },
   tabItemText: (isOn:boolean) => {
     return {
-      fontFamily: 'AppleSDGothicNeoEB00',
+      fontFamily: 'Pretendard-Bold',
       fontSize: 14,
       color: isOn ? '#000' : '#ACACAC',
       textAlign: 'center',

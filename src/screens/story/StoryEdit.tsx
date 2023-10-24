@@ -426,7 +426,7 @@ export default function StoryEdit(props: Props) {
                 {storyData.storyType == 'SECRET' ? (
                   <>이야기 앞에 <Text style={_styles.titleHightText}>"비밀"</Text>이 붙으면{'\n'}더 재밌어지는 법이죠!</>
                 ) : storyData.storyType == 'VOTE' ? (
-                  <><Text style={_styles.titleHightText}>왼 VS 오 어떤것?</Text>{'\n'}선택 장애 해결! 밸런스 게임 즐기기!</>
+                  <><Text style={[_styles.titleHightText, {fontFamily: 'Pretendard-Bold'}]}>왼 VS 오 어떤것?</Text>{'\n'}<Text style={{fontFamily: 'Pretendard-SemiBold'}}>선택 장애 해결! 밸런스 게임 즐기기!</Text></>
                 ) : (
                   <>소소한 일상부터 음식, 여행 등{'\n'}<Text style={_styles.titleHightText}>주제에 관계없이 자유롭게</Text> 소통해 보세요.</>
                 )}
@@ -606,7 +606,7 @@ export default function StoryEdit(props: Props) {
         </View>
 
         <TouchableOpacity style={_styles.modalCloseText} onPress={imgDel_onClose} hitSlop={commonStyle.hipSlop20}>
-          <Text style={{color: '#fff', fontFamily: 'AppleSDGothicNeoEB00', fontSize: 16}}>확인</Text>
+          <Text style={{color: '#fff', fontFamily: 'Pretendard-Bold', fontSize: 16}}>확인</Text>
         </TouchableOpacity>
       </Modalize>
     </>
@@ -712,7 +712,7 @@ function VoteImageRenderItem ({ index, _imgData, delFn, fileCallBackFn, storyTyp
 const _styles = StyleSheet.create({
 
   titleText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 20,
     color: '#333333',
     lineHeight: 30,
@@ -721,7 +721,7 @@ const _styles = StyleSheet.create({
     color: '#7B81EC',
   },
   subTitleText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-SemiBold',
     fontSize: 19,
     color: '#333333',
   },
@@ -792,7 +792,7 @@ const _styles = StyleSheet.create({
     overflow: 'hidden',
   },
   regiBtnText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 16,
     color: '#555',
     textAlign: 'center',

@@ -159,7 +159,7 @@ export default function LikeListPopup({ isVisible, closeModal, type, _storyBoard
               <SpaceView mt={10} ml={5} pt={3} viewStyle={{flexDirection: 'column', flex: 1}}>
                 <Text style={[_styles.mainNicknameText]}>
                   {replyInfo.nickname}
-                  <Text style={{fontFamily: 'AppleSDGothicNeoR00', fontSize: 13, color: '#999'}}> {replyInfo.time_text}</Text>
+                  <Text style={{fontFamily: 'Pretendard-Medium', fontSize: 14, color: '#999'}}> {replyInfo.time_text}</Text>
                 </Text>
                 <Text style={[_styles.replyText, {marginTop: 3}]}>{replyInfo.reply_contents}</Text>
               </SpaceView>
@@ -251,7 +251,7 @@ const _styles = StyleSheet.create({
     color: '#333333',
   },
   mainNicknameText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 14,
     color: '#333333',
   },
@@ -296,7 +296,7 @@ const _styles = StyleSheet.create({
     marginLeft: 8,
   },
   openBtn: {
-    fontFamily: 'AppleSDGothicNeoSB00',
+    fontFamily: 'Pretendard-SemiBold',
     fontSize: 14,
     color: '#fff',
     backgroundColor: '#FF4381',
