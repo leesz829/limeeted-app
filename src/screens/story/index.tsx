@@ -274,15 +274,25 @@ export const Story = () => {
       _height = (width - 45) / 2;
     }
 
+    let isNoImageLayout = (storyType == 'SECRET' || storyType == 'STORY') && !isEmptyData(imgPath) ? true : false; // 노이미지 레이아웃 여부
+    let bgColor:any = []; // 배경색
+
+    if(storyType == 'SECRET') {
+      bgColor = ['#8E1DFF', '#000000'];
+    } else if(storyType == 'STORY') {
+      bgColor = ['#FFD76B', '#FFB801'];
+    } else if(storyType == 'VOTE') {
+      bgColor = ['#A9DBFF', '#7B81EC'];
+    }
+
     return (
       <>
         <SpaceView mb={type == 'SMALL' ? 0 : 5} viewStyle={_styles.itemArea02(_width, _height)}>
           <TouchableOpacity activeOpacity={0.7} onPress={() => { goStoryDetail(storyBoardSeq); }}>
-
-            {((storyType == 'SECRET' || storyType == 'STORY') && !isEmptyData(imgPath)) ? (
+            {isNoImageLayout ? (
               <>
                 <LinearGradient
-                  colors={storyType == 'SECRET' ? ['#8E1DFF', '#000000'] : item?.gender == 'M' ? ['#D5DAFC', '#D5DAFC'] : ['#FEEFF2', '#FEEFF2']}
+                  colors={bgColor}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 0.5, y: 1 }}
                   style={_styles.noImageArea(item?.gender, storyType)} >
@@ -330,15 +340,30 @@ export const Story = () => {
 
                         {/* 프로필 평점, 인증 레벨 */}
                         {(storyType != 'SECRET' && ((isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) || item?.profile_score >= 7.0)) && (
-                          <Text style={_styles.activeText('#333333')}>
-                            {item?.profile_score >= 7.0 && item?.profile_score}
-                            {((isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && item?.profile_score >= 7.0) && ' | '}
-                            {(isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && 'Lv ' + item?.auth_acct_cnt}
-                          </Text>
+                          <>
+                            <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                              {(storyType != 'SECRET' && (item?.profile_score >= 7.0 || (isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5))) && (
+                                <>
+                                  {item?.profile_score >= 7.0 && (
+                                    <SpaceView mr={5} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                                      <Image source={ICON.starBlack} style={styles.iconSquareSize(13)} resizeMode={'cover'} />
+                                      <SpaceView ml={2}><Text style={_styles.activeText('#555555')}>{item?.profile_score}</Text></SpaceView>
+                                    </SpaceView>
+                                  )}
+                                  {(isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && (
+                                    <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                                      <Image source={ICON.bookmarkBlack} style={styles.iconSquareSize(13)} resizeMode={'cover'} />
+                                      <SpaceView ml={2}><Text style={_styles.activeText('#555555')}>20</Text></SpaceView>
+                                    </SpaceView>
+                                  )}
+                                </>
+                              )}
+                            </SpaceView>
+                          </>
                         )}
 
                         {/* 닉네임 */}
-                        <Text style={[_styles.nicknameText(storyType == 'SECRET' ? '#ffffff' : '#333333', type == 'SMALL' ? 13 : 15, type), {textAlign: 'center'}]}>{item?.nickname}</Text>
+                        <SpaceView mt={3}><Text style={[_styles.nicknameText(storyType == 'SECRET' ? '#ffffff' : '#333333', 12, type), {textAlign: 'center'}]}>{item?.nickname}</Text></SpaceView>
                       </SpaceView>
 
                       {/* 내용 */}
@@ -351,6 +376,13 @@ export const Story = () => {
               </>
             ) : (
               <>
+                {/* 이미지가 2개 이상인 경우 표시 */}
+                {item.img_cnt > 1 && (
+                  <SpaceView viewStyle={_styles.multiImageArea}>
+                    <Image source={ICON.murtipleImage} style={styles.iconSquareSize(18)} resizeMode={'cover'} />
+                  </SpaceView>
+                )}
+
                 {/* 썸네일 이미지 */}
                 <SpaceView>
                   {item?.story_type == 'VOTE' ? (
@@ -376,13 +408,24 @@ export const Story = () => {
                   </SpaceView>
 
                   <SpaceView>
-                    {(storyType != 'SECRET' && (item?.profile_score >= 7.0 || (isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5))) && (
-                      <Text style={_styles.activeText('#ffffff')}>
-                        {item?.profile_score >= 7.0 && item?.profile_score}
-                        {((isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && item?.profile_score >= 7.0) && ' | '}
-                        {(isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && 'Lv ' + item?.auth_acct_cnt}
-                      </Text>
-                    )}
+                    <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                      {(storyType != 'SECRET' && (item?.profile_score >= 7.0 || (isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5))) && (
+                        <>
+                          {item?.profile_score >= 7.0 && (
+                            <SpaceView mr={5} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                              <Image source={ICON.starYellow} style={styles.iconSquareSize(13)} resizeMode={'cover'} />
+                              <SpaceView ml={2}><Text style={_styles.activeText('#ffffff')}>{item?.profile_score}</Text></SpaceView>
+                            </SpaceView>
+                          )}
+                          {(isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && (
+                            <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                              <Image source={ICON.bookmarkPurple} style={styles.iconSquareSize(13)} resizeMode={'cover'} />
+                              <SpaceView ml={2}><Text style={_styles.activeText('#ffffff')}>{item?.auth_acct_cnt}</Text></SpaceView>
+                            </SpaceView>
+                          )}
+                        </>
+                      )}
+                    </SpaceView>
 
                     {storyType == 'SECRET' ? (
                       <>
@@ -390,7 +433,7 @@ export const Story = () => {
                         <Text style={_styles.nicknameText('#ffffff', 13, type)}>{item?.nickname_noun}</Text>
                       </>                    
                     ) : (
-                      <Text style={_styles.nicknameText('#ffffff', 13, type)}>{item?.nickname}</Text>
+                      <Text style={_styles.nicknameText('#ffffff', 12, type)}>{item?.nickname}</Text>
                     )}
                   </SpaceView>
                 </SpaceView>
@@ -759,28 +802,30 @@ const _styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   typeArea: (type:string) => {
-    let bgColor = '#7986EE';
+    let bgColor = '#FF9900';
 
     if(type == 'VOTE') {
-      bgColor = '#19DBE0';
+      bgColor = '#7B81EC';
     } else if(type == 'SECRET') {
-      bgColor = '#FE0456';
+      bgColor = '#B873FF';
     }
 
     return {
       position: 'absolute',
       top: 10,
       left: 10,
-      backgroundColor: 'rgba(0,0,0,0.5)',
-      borderRadius: 13,
-      paddingVertical: 3,
-      paddingHorizontal: 8,
+      //backgroundColor: 'rgba(0,0,0,0.5)',
+      backgroundColor: bgColor,
+      borderRadius: 15,
+      paddingVertical: 4,
+      width: 45,
     };
   },
   typeText: {
-    fontFamily: 'AppleSDGothicNeoR00',
-    fontSize: 13,
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 12,
     color: '#fff',
+    textAlign: 'center',
   },
   mstImgStyle: (size:number, bdRadius:number) => {
     return {
@@ -793,10 +838,10 @@ const _styles = StyleSheet.create({
     };
   },
   secretIconStyle: (sizeType:string) => {
-    let size = 200;
+    let size = 230;
 
     if(sizeType == 'MEDIUM') {
-      size = 170;
+      size = 160;
     } else if(sizeType == 'SMALL') {
       size = 120;
     }
@@ -816,17 +861,16 @@ const _styles = StyleSheet.create({
   },
   activeText: (_color:string) => {
     return {
-      fontFamily: 'AppleSDGothicNeoH00',
-      fontSize: 13,
+      fontFamily: 'Pretendard-SemiBold',
+      fontSize: 12,
       color: _color,
     };
   },
   nicknameText: (_color:string, _fontSize:number, _sizeType:string) => {
     return {
-      fontFamily: 'AppleSDGothicNeoEB00',
+      fontFamily: 'Pretendard-Bold',
       fontSize: _fontSize,
       color: _color,
-      marginTop: -3,
       width: _sizeType == 'LARGE' ? '100%' : width - 260,
     };
   },
@@ -878,6 +922,12 @@ const _styles = StyleSheet.create({
     fontFamily: 'AppleSDGothicNeoM00',
     color: '#555555',
     fontSize: 15,
+  },
+  multiImageArea: {
+    position: 'absolute',
+    top: 13,
+    right: 13,
+    zIndex: 1,
   },
 
 });
