@@ -547,9 +547,7 @@ export default function StoryDetail(props: Props) {
             <SpaceView>
               <SpaceView viewStyle={_styles.voteSelectArea}>
 
-                <SpaceView viewStyle={_styles.voteVsArea}>
-                  <Text style={_styles.voteVsText}>VS</Text>
-                </SpaceView>
+
 
                 <SpaceView viewStyle={{flexDirection:'row', zIndex:1}}>
                   {storyData.voteList?.map((item, index) => {
@@ -574,7 +572,9 @@ export default function StoryDetail(props: Props) {
                           textColor = '#FFF'
                         };
                       } else {
-                        bgColorArr = ['#FFF', '#FFF'];
+                        baseColor = '#999999';
+                        bgColorArr = ['#EEE', '#EEE'];
+                        textColor = '#999999';
                       }
                     } else {
                         if(isVote) {
@@ -585,62 +585,66 @@ export default function StoryDetail(props: Props) {
                           bgColorArr = ['#FFF', '#FFF'];
                         } 
                         
-                        if(storyData.board?.vote_end_yn == 'Y') {
-                          if(storyData.board?.vote_end_yn == 'Y') {
-                              baseColor = '#999999';
-                              bgColorArr = ['#EEE', '#EEE'];
-                              textColor = '#999999';
-                          }
+                        if(storyData.board?.vote_end_yn == 'Y' && (firVoteMmbrCntVal == secVoteMmbrCntVal)) {
+                          baseColor = '#999999';
+                          bgColorArr = ['#EEE', '#EEE'];
+                          textColor = '#999999';
                         }
                     };
                     
                     return (
-                      <SpaceView key={index}>
-                        <TouchableOpacity
-                          disabled={isRegiMember || isVote || isVoteEndYn}
-                          onPress={() => { voteProc(item?.story_vote_seq) }} >
+                      <>
+                        <SpaceView viewStyle={_styles.voteVsArea}>
+                          <Text style={_styles.voteVsText}>{isVoteEndYn && (firVoteMmbrCntVal == secVoteMmbrCntVal) ? 'DRAW' : 'VS'}</Text>
+                        </SpaceView>
+                     
+                        <SpaceView key={index}>
+                          <TouchableOpacity
+                            disabled={isRegiMember || isVote || isVoteEndYn}
+                            onPress={() => { voteProc(item?.story_vote_seq) }} >
 
-                          <LinearGradient
-                            colors={bgColorArr}
-                            start={{ x: 1, y: 1 }}
-                            end={{ x: 1, y: 0 }}
-                            style={_styles.voteArea(baseColor, bgColorArr)}>
+                            <LinearGradient
+                              colors={bgColorArr}
+                              start={{ x: 1, y: 1 }}
+                              end={{ x: 1, y: 0 }}
+                              style={_styles.voteArea(baseColor, bgColorArr)}>
 
-                            {/* 투표 이미지 */}
-                            <SpaceView mt={5}>
-                              <Image source={findSourcePathLocal(item?.file_path)} style={_styles.voteImgStyle} resizeMode={'cover'} />
-                            </SpaceView>
+                              {/* 투표 이미지 */}
+                              <SpaceView mt={5}>
+                                <Image source={findSourcePathLocal(item?.file_path)} style={_styles.voteImgStyle} resizeMode={'cover'} />
+                              </SpaceView>
 
-                            {/* 투표 명 */}
-                            <SpaceView mt={15} mb={20} viewStyle={{zIndex:2}}>
-                              <Text numberOfLines={3} style={_styles.voteNameText(textColor)}>{item?.vote_name}</Text>
-                            </SpaceView>
-                            
-                            {/* PICK 텍스트 및 이미지 */}
-                            {isVoteEndYn && isRegiMember && (storyData.board?.selected_vote_seq == item?.story_vote_seq) && (firVoteMmbrCntVal != secVoteMmbrCntVal) ?
-                              <> 
-                                <View style={_styles.voteMmbrCntArea}>
-                                  <Text style={_styles.votePickText}>PICK</Text>
-                                </View>
-                                <Image source={ICON.confetti} style={_styles.votePickImg} />
-                              </>
-                              : 
-                              <>
-                                {(!isVoteEndYn || (isVoteEndYn && firVoteMmbrCntVal == secVoteMmbrCntVal)) &&
-                                  <>
-                                    <View style={[_styles.voteMmbrCntArea, {opacity: (isRegiMember) ? 0.7 : 0, backgroundColor: '#664EDB'}]}></View>
-                                    <View style={[_styles.voteMmbrCntArea, {opacity: (isRegiMember) ? 1 : 0}]}>
-                                      <Text style={_styles.voteCntText}>{item?.vote_member_cnt}표</Text>
-                                    </View>
-                                  </>
-                                }
-                              </>
-                            }
-                          </LinearGradient>
-                        </TouchableOpacity>
+                              {/* 투표 명 */}
+                              <SpaceView mt={15} mb={20} viewStyle={{zIndex:2}}>
+                                <Text numberOfLines={3} style={_styles.voteNameText(textColor)}>{item?.vote_name}</Text>
+                              </SpaceView>
+                              
+                              {/* PICK 텍스트 및 이미지 */}
+                              {isVoteEndYn && (storyData.board?.selected_vote_seq == item?.story_vote_seq) && (firVoteMmbrCntVal != secVoteMmbrCntVal) ?
+                                <> 
+                                  <View style={_styles.voteMmbrCntArea}>
+                                    <Text style={_styles.votePickText}>PICK</Text>
+                                  </View>
+                                  <Image source={ICON.confetti} style={_styles.votePickImg} />
+                                </>
+                                : 
+                                <>
+                                  {(!isVoteEndYn) &&
+                                    <>
+                                      <View style={[_styles.voteMmbrCntArea, {opacity: (isRegiMember) ? 0.75 : 0, backgroundColor: '#664EDB'}]}></View>
+                                      <View style={[_styles.voteMmbrCntArea, {opacity: (isRegiMember) ? 1 : 0}]}>
+                                        <Text style={_styles.voteCntText}>{item?.vote_member_cnt}표</Text>
+                                      </View>
+                                    </>
+                                  }
+                                </>
+                              }
+                            </LinearGradient>
+                          </TouchableOpacity>
 
-                        <SpaceView viewStyle={_styles.votePickShadow(baseColor)} />
-                      </SpaceView>
+                          <SpaceView viewStyle={_styles.votePickShadow(baseColor)} />
+                        </SpaceView>
+                      </>
                     )}
                   )}
 
@@ -699,11 +703,20 @@ export default function StoryDetail(props: Props) {
                         </TouchableOpacity>
 
                         <SpaceView viewStyle={{flexDirection: 'column'}}>
-                          <Text style={_styles.scoreText}>
-                            {storyData.board?.profile_score}
-                            {(isEmptyData(storyData.board?.auth_level) && storyData.board?.auth_level >= 1) && ' | '}
-                            {(isEmptyData(storyData.board?.auth_level) && storyData.board?.auth_level >= 1) && 'Lv ' + storyData.board?.auth_level}
-                          </Text>
+                          <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                            <Image source={ICON.starYellow} style={styles.iconSize16} />
+                            <Text style={_styles.scoreText}>
+                              {storyData.board?.profile_score}
+                            </Text>
+                            {storyData.board?.auth_acct_cnt > 0 && (
+                              <>
+                                <Image source={ICON.bookmarkPurple} style={[styles.iconSize16, {marginLeft: 5}]} />
+                                <Text style={_styles.scoreText}>
+                                  {storyData.board?.auth_acct_cnt}
+                                </Text>
+                              </>
+                            )}
+                          </SpaceView>
                           <Text style={_styles.nicknameText(storyData.board?.story_type, storyData.board?.gender)}>{storyData.board?.nickname}</Text>
                         </SpaceView>
                       </>
@@ -757,10 +770,10 @@ export default function StoryDetail(props: Props) {
                 </TouchableOpacity> */}
 
               <SpaceView mt={15} mb={10} viewStyle={{flexDirection:'row'}}>
-                  <Text style={_styles.replyLengthText}>댓글{storyData.replyList?.length}개</Text>
+                  <Text style={_styles.replyLengthText}>댓글{storyData.replyList?.length > 0 && storyData.replyList?.length + '개'}</Text>
                   <TouchableOpacity 
                     hitSlop={commonStyle.hipSlop10}
-                    style={{marginLeft: 5}}
+                    style={{marginLeft: 15}}
                     onPress={() => { popupStoryBoardActive(); }}>
                     <Text style={_styles.likeCntText}>좋아요{storyData.board?.like_cnt > 0 && storyData.board?.like_cnt + '개'}</Text>
                   </TouchableOpacity>  
@@ -980,14 +993,14 @@ const _styles = StyleSheet.create({
   },
   contentsText: {
     fontFamily: 'Pretendard-Regular',
-    fontSize: 14,
+    fontSize: 16,
     color: '#333',
   },
   timeText: {
     fontFamily: 'Pretendard-Regular',
-    fontSize: 14,
+    fontSize: 16,
     color: '#999',
-    marginTop: 10
+    marginTop: 10,
   },
   replyEtcArea: {
     flexDirection: 'row',
@@ -1016,13 +1029,13 @@ const _styles = StyleSheet.create({
   },
   replyNickname: {
     fontFamily: 'Pretendard-Bold',
-    fontSize: 14,
+    fontSize: 16,
     color: '#000',
     marginRight: 8,
   },
   replyContents: {
     fontFamily: 'Pretendard-Regular',
-    fontSize: 14,
+    fontSize: 16,
     color: '#333',
     marginTop: 6,
     //flex: 0.8,
@@ -1045,7 +1058,7 @@ const _styles = StyleSheet.create({
   replyTimeText: {
     fontFamily: 'Pretendard-Regular',
     color: '#999',
-    fontSize: 14,
+    fontSize: 16,
   },
   replyItemEtcWrap: {
     width: '97%',
@@ -1054,31 +1067,26 @@ const _styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  replyLikeIcon: {
-    fontFamily: 'Pretendard-Regular',
-    color: '#000',
-    fontSize: 12,
-  },
   replyTextStyle: {
     fontFamily: 'Pretendard-Regular',
     color: '#555',
-    fontSize: 12,
+    fontSize: 14,
   },
   replyLengthText: {
     fontFamily: 'Pretendard-Regular',
     color: '#555',
-    fontSize: 13,
+    fontSize: 16,
     marginLeft: 1,
   },
   likeCntText: {
     fontFamily: 'Pretendard-Regular',
     color: '#555',
-    fontSize: 13,
+    fontSize: 16,
   },
   replyLikeCntText: {
     fontFamily: 'Pretendard-Regular',
     color: '#555',
-    fontSize: 12,
+    fontSize: 14,
     marginLeft: 6,
   },
   likeArea: {
@@ -1101,14 +1109,13 @@ const _styles = StyleSheet.create({
 
     return {
       fontFamily: 'Pretendard-Bold',
-      fontSize: 14,
+      fontSize: 12,
       color: clr,
-      marginTop: -3,
     };
   },
   scoreText: {
     fontFamily: 'Pretendard-Bold',
-    fontSize: 14,
+    fontSize: 12,
     color: '#333333',
   },
   voteSelectArea: {
@@ -1135,7 +1142,6 @@ const _styles = StyleSheet.create({
     color: '#FFF',
     fontFamily: 'Pretendard-Regular',
     fontSize: 14,
-    letterSpacing: 2,
   },
   voteArea: (bdColor: string, bgColor: string) => {
     return {
@@ -1174,7 +1180,7 @@ const _styles = StyleSheet.create({
     return {
       fontFamily: 'Pretendard-Regular',
       color: textColor,
-      fontSize: 15,
+      fontSize: 16,
       textAlign: 'center',
     }
   },
@@ -1268,7 +1274,7 @@ const _styles = StyleSheet.create({
   },
   voteCntText: {
     color: '#FFF',
-    fontSize: 19,
+    fontSize: 20,
     fontFamily: 'Pretendard-Medium',
   },
   blackDot: {
