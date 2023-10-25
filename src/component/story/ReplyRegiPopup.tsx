@@ -186,8 +186,8 @@ export default function ReplyRegiPopup({ isVisible, storyBoardSeq, storyReplySeq
                         value={inputReplyText}
                         onChangeText={(text) => setInputReplyText(text)}
                         multiline={true}
-                        textAlignVertical="top"
-                        autoCapitalize="none"
+                        textAlignVertical={'top'}
+                        autoCapitalize={'none'}
                         style={_styles.replyTextStyle}
                         placeholder={'댓글을 입력해 주세요.'}
                         placeholderTextColor={'#c7c7c7'}
@@ -233,8 +233,8 @@ export default function ReplyRegiPopup({ isVisible, storyBoardSeq, storyReplySeq
                       value={inputReplyText}
                       onChangeText={(text) => setInputReplyText(text)}
                       multiline={true}
-                      textAlignVertical="top"
-                      autoCapitalize="none"
+                      textAlignVertical={'top'}
+                      autoCapitalize={'none'}
                       style={_styles.replyTextStyle}
                       placeholder={'댓글을 입력해 주세요.'}
                       placeholderTextColor={'#c7c7c7'}

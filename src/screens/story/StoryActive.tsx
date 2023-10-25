@@ -324,6 +324,7 @@ export default function StoryActive(props: Props) {
             <SpaceView>
               {item?.dataList?.map((_item, _index) => {
 
+                const storyType = _item?.story_type; // 스토리 유형
                 const storyAlarmType = _item?.story_alarm_type; // 스토리 알림 유형
                 const storyBoardSeq = _item?.story_board_seq; // 스토리 게시글 번호
                 const storyReplySeq = _item?.story_reply_seq; // 스토리 댓글 번호
@@ -336,16 +337,27 @@ export default function StoryActive(props: Props) {
                 //const boardImgPath = findSourcePath(_item?.story_img_path); // 운영 오픈시 반영
                 const boardImgPath = findSourcePathLocal(_item?.story_img_path);
 
+                const expNickname = storyType == 'SECRET' ? _item?.nickname_modifier + " " + _item?.nickname_noun : _item?.nickname; // 노출 닉네임
+                let expMstImg = findSourcePath(_item?.mst_img_path); // 노출 대표 이미지
+
+                if(storyType == 'SECRET') {
+                  if(_item?.gender == 'M') {
+                    expMstImg = ICON.maleIcon;
+                  } else {
+                    expMstImg = ICON.femaleIcon;
+                  }
+                }
+
                 return (
                   <SpaceView viewStyle={_styles.alarmItemWrap('ALARM')} key={'item' + _index}>
 
-                    {/* 회원 대표사진 */}
+                    {/* 대표사진 */}
                     <TouchableOpacity
                       style={_styles.alarmItemMember}
                       disabled={memberBase?.gender === _item?.gender || memberBase?.member_seq === _item?.reg_seq}
                       onPress={() => { profileCardOpenPopup(_item?.reg_seq, _item?.open_cnt); }} >
 
-                      <Image source={findSourcePath(_item?.mst_img_path)} style={_styles.alarmItemMemberThum} resizeMode={'cover'} />
+                      <Image source={expMstImg} style={_styles.alarmItemMemberThum} resizeMode={'cover'} />
                     </TouchableOpacity>
 
                     <SpaceView viewStyle={{flex:2.5}}>
@@ -357,7 +369,7 @@ export default function StoryActive(props: Props) {
                         {/* 내용 */}
                         <SpaceView viewStyle={_styles.alarmItemContent}>
                           <Text style={_styles.alarmContentText} numberOfLines={3}>
-                            <Text style={_styles.alarmNickname}>{_item?.nickname}</Text>
+                            <Text style={_styles.alarmNickname}>{expNickname}</Text>
                             {storyAlarmType == 'REPLY' ? (
                               <>
                                 님이 {depth == 1 ? '게시글에 댓글' : '답글'}을 남겼습니다 : <Text>{replyContents}</Text>
@@ -368,7 +380,6 @@ export default function StoryActive(props: Props) {
                                 님이 내 {isEmptyData(storyReplyLikeSeq) ? '댓글' : '게시물'}을 좋아합니다.
                               </>
                             )}
-                            
                           </Text>
 
                           {storyAlarmType == 'LIKE' && (

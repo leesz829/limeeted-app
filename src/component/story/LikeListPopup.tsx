@@ -94,51 +94,64 @@ export default function LikeListPopup({ isVisible, closeModal, type, _storyBoard
 
   // ############################################################################# 좋아요 목록 렌더링
   const LikeListRender = ({ item, index }) => {
-    const memberMstImgPath = findSourcePath(item?.mst_img_path); // 회원 대표 이미지 경로
+    const storyType = item?.story_type;
+    const expNickname = storyType == 'SECRET' ? item?.nickname_modifier + " " + item?.nickname_noun : item?.nickname; // 노출 닉네임
+
+    let expMstImg = findSourcePath(item?.mst_img_path); // 노출 대표 이미지
+    if(storyType == 'SECRET') {
+      if(item?.gender == 'M') {
+        expMstImg = ICON.maleIcon;
+      } else {
+        expMstImg = ICON.femaleIcon;
+      }
+    }
 
     return (
       <>
         <SpaceView mt={15} mb={5} viewStyle={_styles.likeListArea}>
           <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+
+            {/* 대표 이미지 */}
             <TouchableOpacity
               disabled={memberBase?.gender === item?.gender || memberBase?.member_seq === item?.member_seq}
               onPress={() => { profileOpen(item?.member_seq, item?.open_cnt); }} >
-
-              <Image source={ memberMstImgPath } style={_styles.imageStyle(40)} resizeMode={'cover'} />
+              <Image source={expMstImg} style={_styles.imageStyle(40)} resizeMode={'cover'} />
             </TouchableOpacity>
-            {/* <Text style={_styles.likeListText}>{item.nickname}, {item.age}</Text> */}
+
             <SpaceView ml={3}>
               <SpaceView viewStyle={{flexDirection: 'row'}}>
-              {/* 프로필 평점, 인증 레벨 */}
-              {/* {(isEmptyData(item?.auth_acct_cnt) || item?.profile_score > 0.0) && (
-                <Text style={_styles.profileText}>
-                  {item?.profile_score}
-                  {(isEmptyData(item?.auth_acct_cnt) && item?.profile_score > 0.0) && ' | '}
-                  {isEmptyData(item?.auth_acct_cnt) && 'Lv ' + item?.auth_acct_cnt}
-                </Text>
-              )} */}
-              {(isEmptyData(item?.auth_acct_cnt) || item?.profile_score > 0.0) && (
-                <Text style={_styles.profileText}>
-                  <SpaceView mt={-2} mr={1}>
-                    <Image source={ICON.starYellow} style={styles.iconSize16} resizeMode={'cover'} />
-                  </SpaceView>
-                  {item?.profile_score}
-                  {isEmptyData(item?.auth_acct_cnt) && (
-                    <>
-                      <SpaceView mt={-2} mr={1} pl={5}>
-                        <Image source={ICON.bookmarkPurple} style={styles.iconSize16} resizeMode={'cover'} />
+
+                {/* 프로필 평점, 인증 레벨 */}
+                {(storyType != 'SECRET' && (item?.profile_score >= 7.0 || (isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5))) && (
+                  <>
+                    {item?.profile_score >= 7.0 && (
+                      <SpaceView mr={1} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                        <Image source={ICON.starYellow} style={styles.iconSquareSize(15)} resizeMode={'cover'} />
+                        <Text style={_styles.profileText}>{item?.profile_score}</Text>
                       </SpaceView>
-                      {item?.auth_acct_cnt}
-                    </>
-                  )}
-                </Text>
-              )}              
+                    )}
+                      
+                    {(isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && (
+                      <>
+                        <SpaceView mr={1} pl={5} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                          <Image source={ICON.bookmarkPurple} style={styles.iconSquareSize(15)} resizeMode={'cover'} />
+                          <Text style={_styles.profileText}>{item?.auth_acct_cnt}</Text>
+                        </SpaceView>
+                      </>
+                    )}
+                  </>
+                )}
               </SpaceView>
-              <Text style={_styles.nicknameText}>{item.nickname}</Text>
+
+              {/* 닉네임 */}
+              <SpaceView ml={2}>
+                <Text style={_styles.nicknameText}>{expNickname}</Text>
+              </SpaceView>
             </SpaceView>
           </SpaceView>
           
-          {(memberBase?.gender != item?.gender && memberBase?.member_seq != item?.member_seq) && (
+          {/* 프로필 카드 열기 버튼 */}
+          {(storyType != 'SECRET' && memberBase?.gender != item?.gender && memberBase?.member_seq != item?.member_seq) && (
             <TouchableOpacity
               disabled={memberBase?.gender === item?.gender || memberBase?.member_seq === item?.member_seq}
               onPress={() => { profileOpen(item?.member_seq, item?.open_cnt); }}>
@@ -207,7 +220,6 @@ export default function LikeListPopup({ isVisible, closeModal, type, _storyBoard
           </SpaceView>
           
         </SafeAreaView>
-
       </View>
     </Modal>
   );
@@ -264,8 +276,9 @@ const _styles = StyleSheet.create({
   },
   profileText: {
     fontFamily: 'Pretendard-SemiBold',
-    fontSize: 14,
+    fontSize: 13,
     color: '#333333',
+    marginLeft: 2,
   },
   mainNicknameText: {
     fontFamily: 'Pretendard-Bold',
@@ -274,8 +287,8 @@ const _styles = StyleSheet.create({
   },
   nicknameText: {
     fontFamily: 'Pretendard-Bold',
-    fontSize: 14,
-    marginTop: 5,
+    fontSize: 13,
+    marginTop: 1,
     color: '#333333',
   },
   replyArea: {
