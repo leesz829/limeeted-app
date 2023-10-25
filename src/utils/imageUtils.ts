@@ -200,6 +200,8 @@ export const ICON = {
   bookmarkPurple: require('assets/icon/icon-bookmark-purple.png'),
   bookmarkWhite: require('assets/icon/icon-bookmark-white.png'),
   murtipleImage: require('assets/icon/icon-murtiple-image.png'),
+  speechDotline: require('assets/icon/icon-speech-dotline.png'),
+  speechQuestion: require('assets/icon/icon-speech-question.png'),
 };
 
 export const GIF_IMG = {

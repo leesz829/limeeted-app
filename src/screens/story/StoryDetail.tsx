@@ -82,6 +82,21 @@ export default function StoryDetail(props: Props) {
     setCurrentIndex(index);
   };
 
+  // ############################################################ 비공개 프로필 열람 팝업 활성화
+  const secretPropfilePopupOpen = async () => {
+    show({
+      title: '비공개 프로필 열람',
+      content: '(7일간)비밀 프로필을 열람하시겠습니까?', 
+      passAmt: 15,
+      cancelCallback: function() {
+        
+      },
+      confirmCallback: function () {
+
+      },
+    });
+  }
+
   // 댓글 모달 열기
   const replyModalOpen = async (_storyReplySeq:number, _depth:number) => {
     setSelectedReplyData({
@@ -669,7 +684,11 @@ export default function StoryDetail(props: Props) {
                 ) : (
                   <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
                     {storyData.board?.story_type == 'SECRET' ? (
-                      <Text style={_styles.nicknameText(storyData.board?.story_type, storyData.board?.gender)}>{storyData.board?.nickname}</Text>
+                      <TouchableOpacity
+                        disabled={memberBase.gender === storyData.board?.gender}
+                        onPress={() => { secretPropfilePopupOpen(); }}>
+                        <Text style={_styles.nicknameText(storyData.board?.story_type, storyData.board?.gender)}>{storyData.board?.nickname}</Text>
+                      </TouchableOpacity>
                     ) : (
                       <>
                         <TouchableOpacity
@@ -704,6 +723,10 @@ export default function StoryDetail(props: Props) {
                     ) : (
                       <Image source={ICON.heartOnIcon} style={styles.iconSquareSize(20)} />
                     )}
+                  </TouchableOpacity>
+
+                  <TouchableOpacity style={{marginLeft: 12}}>
+                    <Image source={ICON.speechDotline} style={styles.iconSquareSize(20)} />
                   </TouchableOpacity>
 
                   <TouchableOpacity 

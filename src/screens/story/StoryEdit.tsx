@@ -145,6 +145,22 @@ export default function StoryEdit(props: Props) {
     });
   };
 
+  // ############################################################ 프로필 감추기 팝업 활성화
+  const hideProfilePopupOpen = async () => {
+    show({
+      title: '프로필 감추기',
+      content: '프로필 열람을 위해 로얄패스를 사용해야 하는\n비공개 프로필로 변경합니다.',
+      passAmt: 6,
+      confirmBtnText: '변경하기',
+      cancelCallback: function() {
+        
+      },
+      confirmCallback: function () {
+
+      },
+    });
+  }
+
   // ############################################################################# 사진 변경/삭제 팝업
   const imgDel_modalizeRef = useRef<Modalize>(null);
 
@@ -452,7 +468,26 @@ export default function StoryEdit(props: Props) {
                   })}
                 </SpaceView>
 
-                <SpaceView mt={20}>
+                {(storyData.storyType == 'STORY' && (
+                  <>
+                    <SpaceView mt={20} viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                      <SpaceView>
+                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                          <Text style={_styles.hideProfileTitle}>내 프로필 감추기</Text>                      
+                          <Image source={ICON.speechQuestion} style={styles.iconSize20} />
+                        </View>
+                        <Text style={_styles.hideProfileDesc}>대표사진 대신 랜덤 닉네임으로 대체되어 게시글이 등록되요.</Text>
+                      </SpaceView>
+                      <TouchableOpacity 
+                        onPress={() => { hideProfilePopupOpen(); }} >
+                        <Text style={_styles.hideProfileBtn}>프로필 감추기</Text>
+                      </TouchableOpacity>
+                    </SpaceView>
+                  </>
+                  )
+                )}
+
+                <SpaceView mt={15}>
                   <CommonTextarea
                     value={storyData.contents}
                     onChangeText={(text) => setStoryData({...storyData, contents: text})}
@@ -534,6 +569,20 @@ export default function StoryEdit(props: Props) {
                     <Text style={_styles.subTitleText}>투표 내용을 작성해 주세요.</Text>
                   </SpaceView>
 
+                  <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                    <SpaceView>
+                      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <Text style={_styles.hideProfileTitle}>내 프로필 감추기</Text>                      
+                        <Image source={ICON.speechQuestion} style={styles.iconSize20} />
+                      </View>
+                      <Text style={_styles.hideProfileDesc}>대표사진 대신 랜덤 닉네임으로 대체되어 게시글이 등록되요.</Text>
+                    </SpaceView>
+                    <TouchableOpacity 
+                      onPress={() => { hideProfilePopupOpen(); }} >
+                      <Text style={_styles.hideProfileBtn}>프로필 감추기</Text>
+                    </TouchableOpacity>
+                  </SpaceView>
+
                   <SpaceView>
                     <CommonTextarea
                       value={storyData.contents}
@@ -543,13 +592,14 @@ export default function StoryEdit(props: Props) {
                       maxLength={1000}
                       exceedCharCountColor={'#990606'}
                       fontSize={13}
-                      height={250}
+                      height={220}
                       backgroundColor={'#fff'}
                       fontColor={'#000'}
                       borderColor={isEmptyData(storyData.contents) ? '#7986EE' : '#ebe9ef'}
                       borderRadius={10}
                       padding={20}
                       paddingTop={20}
+                      marginTop={15}
                     />
 
                       {/* <TextInput
@@ -850,5 +900,25 @@ const _styles = StyleSheet.create({
       height: 240,
     };
   },
-
+  hideProfileTitle: {
+    fontFamily: 'Pretendard-SemiBold',
+    color: '#747474',
+    fontSize: 16,
+  },
+  hideProfileDesc: {
+    fontFamily: 'Pretendard-Regular',
+    color: '#A9A9A9',
+    fontSize: 10,
+    marginTop: 5,
+  },
+  hideProfileBtn: {
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 10,
+    color: '#7986EE',
+    borderWidth: 1,
+    borderColor: '#7986EE',
+    borderRadius: 18,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+  },
 });

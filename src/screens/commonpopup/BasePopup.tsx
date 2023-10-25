@@ -70,7 +70,7 @@ export const BasePopup = (props: Props) => {
               {isEmptyData(props.passAmt) && (
                 <SpaceView mt={5} viewStyle={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
                   <Image style={styles.iconSquareSize(25)} source={ICON.passCircle} resizeMode={'contain'} />
-                  <Text style={_styles.openPopupDescIcon}>X 15</Text>
+                  <Text style={_styles.openPopupDescIcon}>{!props.passAmt ? 'X 15' : 'X ' + props.passAmt}</Text>
                 </SpaceView>
               )}
 
