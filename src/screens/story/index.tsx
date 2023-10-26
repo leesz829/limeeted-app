@@ -257,6 +257,7 @@ export const Story = () => {
     const imgPath = findSourcePathLocal(item?.story_img_path);
     const voteImgPath01 = findSourcePathLocal(item?.vote_img_path_01);
     const voteImgPath02 = findSourcePathLocal(item?.vote_img_path_02);
+    const secretYn = item?.secret_yn;
 
     let _width = 0; // 가로길이
     let _height = 0; // 세로길이
@@ -276,6 +277,7 @@ export const Story = () => {
 
     let isNoImageLayout = (storyType == 'SECRET' || storyType == 'STORY') && !isEmptyData(imgPath) ? true : false; // 노이미지 레이아웃 여부
     let bgColor:any = []; // 배경색
+    let applyMstImg = findSourcePath(item?.mst_img_path); // 적용 대표 이미지
 
     if(storyType == 'SECRET') {
       bgColor = ['#8E1DFF', '#000000'];
@@ -283,6 +285,10 @@ export const Story = () => {
       bgColor = ['#FFD76B', '#FFB801'];
     } else if(storyType == 'VOTE') {
       bgColor = ['#A9DBFF', '#7B81EC'];
+    }
+
+    if(storyType == 'SECRET' || secretYn == 'Y') {
+      applyMstImg = ICON.storyNoIcon;
     }
 
     return (
@@ -325,10 +331,10 @@ export const Story = () => {
                     <>
                       {/* 썸네일 이미지 */}
                       <TouchableOpacity 
-                        disabled={memberBase?.gender === item?.gender || memberBase?.member_seq === item?.member_seq || storyType == 'SECRET'}
+                        disabled={memberBase?.gender === item?.gender || memberBase?.member_seq === item?.member_seq || secretYn === 'Y'}
                         onPress={() => { profileCardOpenPopup(item?.member_seq, item?.open_cnt); }} >
 
-                        <Image source={findSourcePath(item?.mst_img_path)} style={_styles.mstImgStyle(type == 'SMALL' ? 50 : 80, 40)} resizeMode={'cover'} />
+                        <Image source={applyMstImg} style={_styles.mstImgStyle(type == 'SMALL' ? 50 : 80, 40)} resizeMode={'cover'} />
                       </TouchableOpacity>
 
                       {/* 스토리 유형 */}
@@ -363,7 +369,15 @@ export const Story = () => {
                         )}
 
                         {/* 닉네임 */}
-                        <SpaceView mt={3}><Text style={[_styles.nicknameText(storyType == 'SECRET' ? '#ffffff' : '#333333', 12, type), {textAlign: 'center'}]}>{item?.nickname}</Text></SpaceView>
+                        <SpaceView mt={3}>
+                          <Text style={[_styles.nicknameText(storyType == 'SECRET' ? '#ffffff' : '#333333', 12, type), {textAlign: 'center'}]}>
+                            {secretYn == 'Y' ? (
+                              <>{item?.nickname_modifier}{'\n'}{item?.nickname_noun}</>
+                            ) : (
+                              <>{item?.nickname}</>
+                            )}
+                          </Text>
+                        </SpaceView>
                       </SpaceView>
 
                       {/* 내용 */}
@@ -403,7 +417,7 @@ export const Story = () => {
                     <TouchableOpacity 
                       disabled={memberBase?.gender === item?.gender || memberBase?.member_seq === item?.member_seq}
                       onPress={() => { profileCardOpenPopup(item?.member_seq, item?.open_cnt); }}>
-                      <Image source={storyType == 'SECRET' ? ICON.storyNoIcon : findSourcePath(item?.mst_img_path)} style={_styles.mstImgStyle(30, 20)} resizeMode={'cover'} />
+                      <Image source={applyMstImg} style={_styles.mstImgStyle(30, 20)} resizeMode={'cover'} />
                     </TouchableOpacity>
                   </SpaceView>
 
@@ -427,7 +441,7 @@ export const Story = () => {
                       )}
                     </SpaceView>
 
-                    {storyType == 'SECRET' ? (
+                    {(storyType == 'SECRET' || secretYn == 'Y') ? (
                       <>
                         <Text style={_styles.nicknameText('#ffffff', 13, type)}>{item?.nickname_modifier}</Text>
                         <Text style={_styles.nicknameText('#ffffff', 13, type)}>{item?.nickname_noun}</Text>

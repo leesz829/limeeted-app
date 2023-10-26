@@ -608,6 +608,7 @@ export async function match_check_all(body: {
 export async function profile_open(body: {
   type: string;
   trgt_member_seq: number;
+  secret_yn: string;
 }) {
   return send(PROFILE_OPEN, 'POST', body, true, false);
 }
@@ -909,6 +910,7 @@ export async function save_story_board(body: {
   vote_list: any;
   vote_end_type: string;
   secret_yn: string;
+  del_yn: string;
 }) {
   return send(SAVE_STORY_BOARD, 'POST', body, true, false);
 };
@@ -927,6 +929,7 @@ export async function save_story_reply(body: {
   reply_contents: string;
   group_seq: number;
   depth: number;
+  secret_yn: string;
 }) {
   return send(SAVE_STORY_REPLY, 'POST', body, true, false);
 };

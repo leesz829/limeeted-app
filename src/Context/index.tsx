@@ -25,6 +25,7 @@ interface PopupContextProps {
   etcCallback: Function | undefined; // 기타 콜백 함수
   popupDuration: any | undefined; // 팝업 지속 시간
   prodList: any | undefined; // 상품 목록
+  passType: string | undefined; // 패스 종류
   passAmt: string | undefined; // 패스 금액
   isCross: boolean | undefined; // 교차 여부
 }
@@ -51,6 +52,7 @@ export const PopupProvider = ({ children }: any) => {
     etcCallback: undefined,
     popupDuration: undefined,
     prodList: [],
+    passType: '',
     passAmt: '',
     isCross: false,
   });
@@ -92,6 +94,7 @@ export const PopupProvider = ({ children }: any) => {
       etcCallback: undefined,
       popupDuration: undefined,
       prodList: [],
+      passType: '',
       passAmt: '',
       isCross: false,
     });
@@ -151,6 +154,7 @@ export const PopupProvider = ({ children }: any) => {
           confirmBtnText={contents.confirmBtnText}
           cancelBtnText={contents.cancelBtnText}
           btnExpYn={contents.btnExpYn}
+          passType={contents.passType}
           passAmt={contents.passAmt}
         />
       )}

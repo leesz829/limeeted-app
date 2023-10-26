@@ -27,6 +27,7 @@ interface Props {
   confirmBtnText?: string;
   cancelBtnText?: string;
   btnExpYn?: string;
+  passType?: string;
   passAmt?: string;
 }
 
@@ -69,8 +70,8 @@ export const BasePopup = (props: Props) => {
 
               {isEmptyData(props.passAmt) && (
                 <SpaceView mt={5} viewStyle={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                  <Image style={styles.iconSquareSize(25)} source={ICON.passCircle} resizeMode={'contain'} />
-                  <Text style={_styles.openPopupDescIcon}>{!props.passAmt ? 'X 15' : 'X ' + props.passAmt}</Text>
+                  <Image style={styles.iconSquareSize(25)} source={isEmptyData(props.passType) && props.passType == 'ROYAL' ? ICON.royalPassCircle : ICON.passCircle} resizeMode={'contain'} />
+                  <Text style={_styles.openPopupDescIcon(props.passType)}>{!props.passAmt ? 'X 15' : 'X ' + props.passAmt}</Text>
                 </SpaceView>
               )}
 
@@ -131,10 +132,12 @@ export const BasePopup = (props: Props) => {
 ####################################################################################################### */}
 
 const _styles = StyleSheet.create({
-  openPopupDescIcon: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 16,
-    color: '#697AE6',
-    marginLeft: 3,
+  openPopupDescIcon: (passType: string) => {
+    return {
+      fontFamily: 'AppleSDGothicNeoEB00',
+      fontSize: 16,
+      color: passType == 'ROYAL' ? '#FE0456' : '#697AE6',
+      marginLeft: 3,
+    };
   },
 });

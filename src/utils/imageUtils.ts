@@ -204,6 +204,8 @@ export const ICON = {
   speechQuestion: require('assets/icon/icon-speech-question.png'),
   storyMale: require('assets/icon/icon-story-male.png'),
   storyFemale: require('assets/icon/icon-story-female.png'),
+  padlockMale: require('assets/icon/icon-padlock-male.png'),
+  padlockFemale: require('assets/icon/icon-padlock-female.png'),
 };
 
 export const GIF_IMG = {

@@ -17,6 +17,8 @@ import { isEmptyData } from 'utils/functions';
 import { SUCCESS, NODATA } from 'constants/reusltcode';
 import { useProfileImg } from 'hooks/useProfileImg';
 import { ScrollView } from 'react-native-gesture-handler';
+import { myProfile } from 'redux/reducers/authReducer';
+import { useDispatch } from 'react-redux';
 
 
 
@@ -25,12 +27,14 @@ interface Props {
   storyBoardSeq: number;
   storyReplySeq: number;
   depth: number;
+  isSecret: boolean;
   callbackFunc: (isRegi:boolean) => void;
 }
 
 const { width, height } = Dimensions.get('window');
 
-export default function ReplyRegiPopup({ isVisible, storyBoardSeq, storyReplySeq, depth, callbackFunc }: Props) {
+export default function ReplyRegiPopup({ isVisible, storyBoardSeq, storyReplySeq, depth, isSecret, callbackFunc }: Props) {
+  const dispatch = useDispatch();
 
   const mbrProfileImgList = useProfileImg(); // 회원 프로필 이미지 목록
 
@@ -45,8 +49,6 @@ export default function ReplyRegiPopup({ isVisible, storyBoardSeq, storyReplySeq
     setInputReplyText('');
     callbackFunc(false);
   };
-
-
 
   // ############################################################################# 댓글 등록
   const replyRegister = async () => {
@@ -69,12 +71,17 @@ export default function ReplyRegiPopup({ isVisible, storyBoardSeq, storyReplySeq
           reply_contents: inputReplyText,
           group_seq: storyReplySeq,
           depth: depth+1,
+          secret_yn: isEmptyData(isSecret) && isSecret ? 'Y' : 'N',
         };
 
         const { success, data } = await save_story_reply(body);
         if(success) {
           switch (data.result_code) {
           case SUCCESS:
+
+            if(isSecret) {
+              dispatch(myProfile());
+            }
 
             /* navigation.navigate(STACK.TAB, {
               screen: 'Story',

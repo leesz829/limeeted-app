@@ -26,7 +26,7 @@ interface Props {
   _storyBoardSeq: Number;
   storyReplyData: {};
   replyInfo: {};
-  profileOpenFn: (memberSeq:number, openCnt:number) => void;
+  profileOpenFn: (memberSeq:number, openCnt:number, isSecret:boolean) => void;
 }
 
 export default function LikeListPopup({ isVisible, closeModal, type, _storyBoardSeq, storyReplyData, replyInfo, profileOpenFn }: Props) {
@@ -81,9 +81,9 @@ export default function LikeListPopup({ isVisible, closeModal, type, _storyBoard
 	};
 
   // 프로필 카드 열기
-  const profileOpen = async (memberSeq:number, opcnCnt:number) => {
+  const profileOpen = async (memberSeq:number, openCnt:number) => {
     closeModal();
-    profileOpenFn(memberSeq, opcnCnt);
+    profileOpenFn(memberSeq, openCnt, false);
   };
 
   React.useEffect(() => {

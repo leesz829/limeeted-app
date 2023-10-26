@@ -171,7 +171,7 @@ export default function StoryActive(props: Props) {
   };
 
   // ##################################################################################### 프로필 카드 열람 팝업 활성화
-  const profileCardOpenPopup = (memberSeq:number, openCnt:number) => {
+  const profileCardOpenPopup = (memberSeq:number, openCnt:number, isSecret:boolean) => {
     if(openCnt > 0) {
       navigation.navigate(STACK.COMMON, { 
         screen: 'MatchDetail',

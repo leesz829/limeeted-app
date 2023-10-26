@@ -6,7 +6,7 @@ import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
 import { RefreshControl, ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity, Animated, Easing, PanResponder, Platform, TouchableWithoutFeedback, KeyboardAvoidingView } from 'react-native';
-import { get_story_detail, save_story_like, save_story_vote_member, profile_open } from 'api/models';
+import { get_story_detail, save_story_like, save_story_vote_member, profile_open, save_story_board } from 'api/models';
 import { findSourcePath, IMAGE, GIF_IMG, findSourcePathLocal } from 'utils/imageUtils';
 import { usePopup } from 'Context';
 import { SUCCESS, NODATA, EXIST } from 'constants/reusltcode';
@@ -63,6 +63,7 @@ export default function StoryDetail(props: Props) {
   const [selectedReplyData, setSelectedReplyData] = React.useState({
     storyReplySeq: 0,
     depth: 0,
+    isSecret: false,
   });
 
   // 스토리 데이터
@@ -83,39 +84,56 @@ export default function StoryDetail(props: Props) {
     setCurrentIndex(index);
   };
 
-  // 비공개 프로필 열람 팝업 활성화
-  const secretPropfilePopupOpen = async () => {
-    show({
-      title: '비공개 프로필 열람',
-      content: '(7일간)비밀 프로필을 열람하시겠습니까?', 
-      passAmt: 15,
-      cancelCallback: function() {
-        
-      },
-      confirmCallback: function () {
+  // 게시글 수정/삭제 팝업 활성화
+  const storyMod_modalizeRef = useRef<Modalize>(null);
 
-      },
-    });
-  }
+  const storyMod_onOpen = (imgSeq: any, orderSeq: any, type: string) => {
+    storyMod_modalizeRef.current?.open();
+  };
+  const storyMod_onClose = () => {
+    storyMod_modalizeRef.current?.close();
+  };
 
-    // 게시글 수정/삭제 팝업 활성화
-    const storyMod_modalizeRef = useRef<Modalize>(null);
-
-    const storyMod_onOpen = (imgSeq: any, orderSeq: any, type: string) => {
-      storyMod_modalizeRef.current?.open();
-    };
-    const storyMod_onClose = () => {
-      storyMod_modalizeRef.current?.close();
-    };
+  /* #########################################################################################################
+  ######## 댓글 모달 관련
+  ######################################################################################################### */
 
   // 댓글 모달 열기
-  const replyModalOpen = async (_storyReplySeq:number, _depth:number) => {
-    setSelectedReplyData({
-      storyReplySeq: _storyReplySeq,
-      depth: _depth,
-    });
+  const replyModalOpen = async (_storyReplySeq:number, _depth:number, _isSecret:boolean) => {
 
-    setIsReplyVisible(true);
+    // 비밀 댓글 여부 구분 처리
+    if(_isSecret) {
+      show({
+        title: '비밀 댓글 달기',
+        content: '게시글 등록자만 볼 수 있는 댓글을 등록합니다.', 
+        passAmt: 10,
+        confirmBtnText: '변경하기',
+        cancelCallback: function() {
+          
+        },
+        confirmCallback: function () {
+          if(memberBase?.pass_has_amt >= 10) {
+            setSelectedReplyData({
+              storyReplySeq: _storyReplySeq,
+              depth: _depth,
+              isSecret: _isSecret,
+            });
+            setIsReplyVisible(true);
+
+          } else {
+            show({ content: '패스가 부족합니다.', isCross: true });
+          }
+        },
+      });
+
+    } else {
+      setSelectedReplyData({
+        storyReplySeq: _storyReplySeq,
+        depth: _depth,
+        isSecret: _isSecret,
+      });
+      setIsReplyVisible(true);
+    }
   };
 
   // 댓글 모달 닫기
@@ -133,7 +151,7 @@ export default function StoryDetail(props: Props) {
   };
 
   // ############################################################################# 수정하기 이동
-  const goStoryModfy = async () => {
+  const goStoryModify = async () => {
     navigation.navigate(STACK.COMMON, {
       screen: 'StoryEdit',
       params: {
@@ -143,7 +161,7 @@ export default function StoryDetail(props: Props) {
   };
 
   // ############################################################################# 스토리 조회
-  const getStoryBoard = async (_type:string, _pageNum:number) => {
+  const getStoryBoard = async (_type:string) => {
     try {
       if(_type == 'REFRESH') {
         setIsRefreshing(true);
@@ -284,7 +302,7 @@ export default function StoryDetail(props: Props) {
   };
 
   // ##################################################################################### 프로필 카드 열람 팝업 활성화
-  const profileCardOpenPopup = async (memberSeq:number, openCnt:number) => {
+  const profileCardOpenPopup = async (memberSeq:number, openCnt:number, isSecret:boolean) => {
     if(openCnt > 0) {
       navigation.navigate(STACK.COMMON, { 
         screen: 'MatchDetail',
@@ -297,17 +315,24 @@ export default function StoryDetail(props: Props) {
 
     } else {
       show({
-        title: '프로필 카드 열람',
-        content: '(7일간)프로필을 열람하시겠습니까?',
+        title: isSecret ? '비공개 프로필 열람' : '프로필 카드 열람',
+        content: isSecret ? '(7일간)비밀 프로필을 열람하시겠습니까?' : '(7일간)프로필을 열람하시겠습니까?',
+        passType: isSecret ? 'ROYAL' : 'PASS',
         passAmt: '15',
         confirmCallback: function() {
-          if(memberBase?.pass_has_amt >= 15) {
-            profileCardOpen(memberSeq);
+
+          if(isSecret) {
+            if(memberBase?.royal_pass_has_amt >= 15) {
+              profileCardOpen(memberSeq, isSecret);
+            } else {
+              show({ content: '로얄패스가 부족합니다.', isCross: true });
+            }
           } else {
-            show({
-              content: '패스가 부족합니다.',
-              isCross: true,
-            });
+            if(memberBase?.pass_has_amt >= 15) {
+              profileCardOpen(memberSeq, isSecret);
+            } else {
+              show({ content: '패스가 부족합니다.', isCross: true });
+            }
           }
         },
         cancelCallback: function() {
@@ -317,7 +342,7 @@ export default function StoryDetail(props: Props) {
   };
 
   // ##################################################################################### 프로필 카드 열람
-  const profileCardOpen =  async (memberSeq:number) => {
+  const profileCardOpen =  async (memberSeq:number, isSecret:boolean) => {
 
     // 중복 클릭 방지 설정
     if(isClickable) {
@@ -327,7 +352,8 @@ export default function StoryDetail(props: Props) {
   
         const body = {
           type: 'STORY',
-          trgt_member_seq: memberSeq
+          trgt_member_seq: memberSeq,
+          secret_yn: isSecret ? 'Y' : 'N',
         };
   
         const { success, data } = await profile_open(body);
@@ -365,13 +391,58 @@ export default function StoryDetail(props: Props) {
     }
   };
 
+  // ##################################################################################### 스토리 게시물 삭제
+  const deleteStoryBoard =  async () => {
+
+    // 중복 클릭 방지 설정
+    if(isClickable) {
+      try {
+        setIsClickable(false);
+        setIsLoading(true);
+  
+        const body = {
+          story_board_seq: storyBoardSeq,
+          del_yn: 'Y',
+        };
+        const { success, data } = await save_story_board(body);
+        if(success) {
+          switch (data.result_code) {
+            case SUCCESS:
+              show({
+                title: '스토리 삭제',
+                content: '스토리 게시물이 삭제되었습니다.', 
+                confirmCallback: function () {
+                  navigation.navigate(STACK.TAB, {
+                    screen: 'Story',
+                  });
+                },
+              });
+              break;
+            default:
+              show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+              break;
+          }
+        } else {
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsClickable(true);
+        setIsLoading(false);
+      }
+    }
+  }
+
   // ############################################################################# 댓글 렌더링
   const ReplyRender = ({ item, index, likeFunc, replyModalOpenFunc }) => {
     const memberMstImgPath = findSourcePath(item?.mst_img_path); // 회원 대표 이미지 경로
     const storyReplySeq = item?.story_reply_seq; // 댓글 번호
     const depth = item?.depth;
-    const gender = item?.gender;
+    const gender = item?.gender; // 성별
+    const secretYn = item?.secret_yn; // 비밀 여부
 
+    // 영역 사이즈 설정
     let _w = width - 70;
     let depthStyleSize = 0;
 
@@ -382,7 +453,15 @@ export default function StoryDetail(props: Props) {
 
     if(storyData.board?.story_type == 'SECRET') {
       _w = _w + 15;
-    }
+    };
+
+    // 비밀 댓글 노출
+    let isApplySecret = false;
+    if(secretYn == 'Y') {
+      if(memberBase?.member_seq != storyData.board?.member_seq && memberBase?.member_seq != item?.member_seq) {
+        isApplySecret = true;
+      }
+    };
     
     return (
       <>
@@ -390,38 +469,53 @@ export default function StoryDetail(props: Props) {
           <SpaceView ml={depthStyleSize} viewStyle={_styles.replyItemTopArea}>
             <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'flex-start'}}>
 
-              {storyData.board?.story_type != 'SECRET' ? (
+              {/* 썸네일 */}
+              {(storyData.board?.story_type == 'SECRET' || isApplySecret) ? (
+                <>
+                  {storyData.board?.story_type == 'SECRET' ? (
+                    <SpaceView mt={5} viewStyle={{width:15}}>
+                      {(storyData.board?.story_type == 'SECRET' && memberBase?.member_seq === item?.member_seq) && (
+                        <Image source={gender == 'M' ? ICON.maleIcon : ICON.femaleIcon} style={styles.iconSquareSize(15)} resizeMode={'cover'} />
+                      )}
+                    </SpaceView>
+                  ) : (
+                    <SpaceView mt={5}>
+                      <Image source={gender == 'M' ? ICON.padlockMale : ICON.padlockFemale} style={_styles.replyImageStyle} resizeMode={'cover'} />
+                    </SpaceView>
+                  )}
+                </>                
+              ) : (
                 <TouchableOpacity 
                   disabled={memberBase?.gender === item?.gender || memberBase?.member_seq === item?.member_seq}
-                  onPress={() => { profileCardOpenPopup(item?.member_seq, item?.open_cnt); }}>
+                  onPress={() => { profileCardOpenPopup(item?.member_seq, item?.open_cnt, false); }}>
 
                   <Image source={memberMstImgPath} style={_styles.replyImageStyle} resizeMode={'cover'} />
                 </TouchableOpacity>
-              ) : (
-                <SpaceView mt={5} viewStyle={{width:15}}>
-                  {memberBase?.member_seq === item?.member_seq && (
-                    <Image source={gender == 'M' ? ICON.maleIcon : ICON.femaleIcon} style={styles.iconSquareSize(15)} resizeMode={'cover'} />
-                  )}
-                </SpaceView>
               )}
               
               <SpaceView ml={5} pt={3} viewStyle={{flexDirection: 'column', width: _w}}>
+
+                {/* 닉네임, 타임 텍스트 */}
                 <Text style={_styles.replyNickname}>
-                  <Text style={_styles.replyNicknameText(storyData.board?.story_type, item.gender)}>{item.nickname}</Text>{' '}
-                  <Text style={_styles.replyTimeText}> {item.time_text}</Text>
+                  <Text style={_styles.replyNicknameText(storyData.board?.story_type, item.gender)}>{isApplySecret ? '비밀글' : item.nickname}</Text>{' '}
+                  <Text style={_styles.replyTimeText}>{item.time_text}</Text>
                 </Text>
 
-                <Text style={_styles.replyContents}>{item.reply_contents}</Text>
+                {/* 댓글 내용 */}
+                <Text style={_styles.replyContents}>{isApplySecret ? '게시글 작성자에게만 보이는 글입니다.' : item.reply_contents}</Text>
 
                 {/* 버튼 영역 */}
                 <SpaceView pt={2} mt={10} viewStyle={{alignItems: 'flex-start'}}>
                   <SpaceView viewStyle={_styles.replyItemEtcWrap}>
+
+                    {/* 댓글달기 버튼 */}
                     {depth == 1 && (
-                      <TouchableOpacity onPress={() => { replyModalOpenFunc(storyReplySeq, depth); }}>
+                      <TouchableOpacity onPress={() => { replyModalOpenFunc(storyReplySeq, depth, false); }}>
                         <Text style={_styles.replyTextStyle}>댓글달기</Text>
                       </TouchableOpacity>
                     )}
 
+                    {/* 좋아용 버튼 */}
                     <SpaceView viewStyle={_styles.likeArea}>
                       <TouchableOpacity 
                         onPress={() => { likeFunc('REPLY', storyReplySeq); }}
@@ -694,7 +788,7 @@ export default function StoryDetail(props: Props) {
                 {memberBase?.member_seq == storyData.board?.member_seq ? (
                   <SpaceView viewStyle={_styles.btnArea}>
                     <Image source={findSourcePath(storyData.board?.mst_img_path)} style={_styles.mstImgStyle} />
-                    <Text style={_styles.nicknameText(storyData.board?.story_type, storyData.board?.gender)}>{storyData.board?.nickname}</Text>
+                    <Text style={_styles.nicknameText(storyData.board?.story_type == 'SECRET' || storyData.board?.secret_yn == 'Y', storyData.board?.gender, 12)}>{storyData.board?.nickname}</Text>
                     {/* <TouchableOpacity
                       onPress={() => { goStoryModfy(); }}
                       style={_styles.regiBtn}>
@@ -709,17 +803,21 @@ export default function StoryDetail(props: Props) {
                   </SpaceView>
                 ) : (
                   <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                    {storyData.board?.story_type == 'SECRET' ? (
+                    {((memberBase?.member_seq != storyData.board?.member_seq && storyData.board?.secret_yn == 'Y') || storyData.board?.story_type == 'SECRET') ? (
                       <TouchableOpacity
                         disabled={memberBase.gender === storyData.board?.gender || memberBase?.member_seq === storyData.board?.member_seq}
-                        onPress={() => { secretPropfilePopupOpen(); }}>
-                        <Text style={_styles.nicknameText(storyData.board?.story_type, storyData.board?.gender)}>{storyData.board?.nickname}</Text>
+                        //onPress={() => { secretPropfilePopupOpen(); }}
+                        onPress={() => { profileCardOpenPopup(storyData.board?.member_seq, storyData.board?.open_cnt, true); }} 
+                      >
+                        <Text style={_styles.nicknameText(storyData.board?.story_type == 'SECRET' || storyData.board?.secret_yn == 'Y', storyData.board?.gender, 14)}>
+                          {storyData.board?.nickname_modifier}{' '}{storyData.board?.nickname_noun}
+                        </Text>
                       </TouchableOpacity>
                     ) : (
                       <>
                         <TouchableOpacity
                           disabled={memberBase?.gender === storyData.board?.gender || memberBase?.member_seq === storyData.board?.member_seq}
-                          onPress={() => { profileCardOpenPopup(storyData.board?.member_seq, storyData.board?.open_cnt); }} >
+                          onPress={() => { profileCardOpenPopup(storyData.board?.member_seq, storyData.board?.open_cnt, false); }} >
 
                           <Image source={findSourcePath(storyData.board?.mst_img_path)} style={_styles.mstImgStyle} />
                         </TouchableOpacity>
@@ -749,7 +847,7 @@ export default function StoryDetail(props: Props) {
 
                           {/* 닉네임 */}
                           <SpaceView ml={3}>
-                            <Text style={_styles.nicknameText(storyData.board?.story_type, storyData.board?.gender)}>{storyData.board?.nickname}</Text>
+                            <Text style={_styles.nicknameText(storyData.board?.story_type == 'SECRET' || storyData.board?.secret_yn == 'Y', storyData.board?.gender, 12)}>{storyData.board?.nickname}</Text>
                           </SpaceView>
                         </SpaceView>
                       </>
@@ -757,9 +855,10 @@ export default function StoryDetail(props: Props) {
                   </SpaceView>
                 )}
 
-
-                {/* 좋아요 영역 */}
+                {/* ################################################################################################# 버튼 영역 */}
                 <SpaceView viewStyle={{flexDirection: 'row', position: 'absolute', top: 0, right: 0,}}>
+
+                  {/* 좋아요 버튼 */}
                   <TouchableOpacity 
                     onPress={() => { storyLikeProc('BOARD', 0); }} 
                     hitSlop={commonStyle.hipSlop20}>
@@ -771,16 +870,19 @@ export default function StoryDetail(props: Props) {
                     )}
                   </TouchableOpacity>
 
-                  <TouchableOpacity style={{marginLeft: 12}}>
-                    <Image source={ICON.speechDotline} style={styles.iconSquareSize(20)} />
-                  </TouchableOpacity>
+                  {/* 비밀 댓글 버튼 */}
+                  {(memberBase?.member_seq != storyData.board?.member_seq && storyData.board?.storyType != 'SECRET') && (
+                    <TouchableOpacity style={{marginLeft: 12}} onPress={() => { replyModalOpen(0, 0, true); }}>
+                      <Image source={ICON.speechDotline} style={styles.iconSquareSize(20)} />
+                    </TouchableOpacity>
+                  )}
 
-                  <TouchableOpacity 
-                    style={{flexDirection: 'row', marginLeft: 12}}
-                    onPress={() => { replyModalOpen(0, 0); }}>
+                  {/* 일반 댓글 버튼 */}
+                  <TouchableOpacity style={{flexDirection: 'row', marginLeft: 12}} onPress={() => { replyModalOpen(0, 0, false); }}>
                     <Image source={ICON.reply} style={styles.iconSquareSize(21)} />
                   </TouchableOpacity>
-
+                  
+                  {/* 메뉴바 버튼 */}
                   {(memberBase?.member_seq == storyData.board?.member_seq) && (
                     <TouchableOpacity onPress={() => { storyMod_onOpen(); }} style={{flexDirection:'row', marginTop: 8, marginLeft: 12}}>
                       <View style={[_styles.blackDot, {marginRight: 3}]}></View>
@@ -845,6 +947,7 @@ export default function StoryDetail(props: Props) {
         storyBoardSeq={storyData?.board?.story_board_seq}
         storyReplySeq={selectedReplyData.storyReplySeq}
         depth={selectedReplyData.depth}
+        isSecret={selectedReplyData.isSecret}
         callbackFunc={replyRegiCallback} 
       />
 
@@ -872,7 +975,7 @@ export default function StoryDetail(props: Props) {
 
         <View style={modalStyle.modalHeaderContainer}>
           <CommonText fontWeight={'700'} type={'h3'}>
-            스토리 수정
+            스토리 관리
           </CommonText>
           <TouchableOpacity onPress={storyMod_onClose} hitSlop={commonStyle.hipSlop20}>
             <Image source={ICON.xBtn2} style={styles.iconSize20} />
@@ -881,10 +984,10 @@ export default function StoryDetail(props: Props) {
 
         <View style={[modalStyle.modalBody, layoutStyle.flex1]}>
           <SpaceView mt={10}>
-            <CommonBtn value={'변경 하기'} type={'primary2'} borderRadius={12} onPress={ goStoryModfy } />
+            <CommonBtn value={'변경'} type={'primary2'} borderRadius={12} onPress={ goStoryModify } />
           </SpaceView>
           <SpaceView mt={10}>
-            <CommonBtn value={'삭제 하기'} type={'primary2'} borderRadius={12} />
+            <CommonBtn value={'삭제'} type={'primary2'} borderRadius={12} onPress={ deleteStoryBoard } />
           </SpaceView>
         </View>
 
@@ -1129,7 +1232,7 @@ const _styles = StyleSheet.create({
   },
   replyItemEtcWrap: {
     width: '97%',
-    height: 14,
+    height: 17,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -1164,9 +1267,9 @@ const _styles = StyleSheet.create({
     right: 0,
     //width: 80,
   },
-  nicknameText: (storyType:string, gender:string) => {
+  nicknameText: (isSecret:boolean, gender:string, _frSize:number) => {
     let clr = '#333333';
-    if(storyType == 'SECRET') {
+    if(isSecret) {
       if(gender == 'M') {
         clr = '#7986EE';
       } else {
@@ -1176,7 +1279,7 @@ const _styles = StyleSheet.create({
 
     return {
       fontFamily: 'Pretendard-Bold',
-      fontSize: 12,
+      fontSize: _frSize,
       color: clr,
     };
   },
