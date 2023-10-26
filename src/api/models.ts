@@ -908,6 +908,7 @@ export async function save_story_board(body: {
   img_del_seq_str: string;
   vote_list: any;
   vote_end_type: string;
+  secret_yn: string;
 }) {
   return send(SAVE_STORY_BOARD, 'POST', body, true, false);
 };

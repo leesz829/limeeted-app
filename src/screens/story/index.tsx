@@ -574,7 +574,7 @@ export const Story = () => {
                               )
                             })}
 
-                            {innerItem.medium_list.length < 2 && (
+                            {innerItem.small_list.length < 2 && (
                               <LinearGradient colors={['#7984ED', '#8759D5']} style={_styles.dummyArea('S')} start={{ x: 1, y: 0 }} end={{ x: 1, y: 1 }} >
                                 <Image source={IMAGE.logoStoryTmp} style={{width: 150, height: 45}} resizeMode={'cover'} />
                               </LinearGradient>

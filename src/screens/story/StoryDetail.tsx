@@ -547,8 +547,6 @@ export default function StoryDetail(props: Props) {
             <SpaceView>
               <SpaceView viewStyle={_styles.voteSelectArea}>
 
-
-
                 <SpaceView viewStyle={{flexDirection:'row', zIndex:1}}>
                   {storyData.voteList?.map((item, index) => {
                     const isVote = item?.vote_yn == 'Y' ? true : false; // 투표 여부
@@ -601,7 +599,8 @@ export default function StoryDetail(props: Props) {
                         <SpaceView key={index}>
                           <TouchableOpacity
                             disabled={isRegiMember || isVote || isVoteEndYn}
-                            onPress={() => { voteProc(item?.story_vote_seq) }} >
+                            onPress={() => { voteProc(item?.story_vote_seq) }}
+                          >
 
                             <LinearGradient
                               colors={bgColorArr}
@@ -642,7 +641,7 @@ export default function StoryDetail(props: Props) {
                             </LinearGradient>
                           </TouchableOpacity>
 
-                          <SpaceView viewStyle={_styles.votePickShadow(baseColor)} />
+                          {/* <SpaceView viewStyle={_styles.votePickShadow(baseColor)} /> */}
                         </SpaceView>
                       </>
                     )}
@@ -689,7 +688,7 @@ export default function StoryDetail(props: Props) {
                   <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
                     {storyData.board?.story_type == 'SECRET' ? (
                       <TouchableOpacity
-                        disabled={memberBase.gender === storyData.board?.gender}
+                        disabled={memberBase.gender === storyData.board?.gender || memberBase?.member_seq === storyData.board?.member_seq}
                         onPress={() => { secretPropfilePopupOpen(); }}>
                         <Text style={_styles.nicknameText(storyData.board?.story_type, storyData.board?.gender)}>{storyData.board?.nickname}</Text>
                       </TouchableOpacity>
@@ -703,21 +702,32 @@ export default function StoryDetail(props: Props) {
                         </TouchableOpacity>
 
                         <SpaceView viewStyle={{flexDirection: 'column'}}>
-                          <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                            <Image source={ICON.starYellow} style={styles.iconSize16} />
-                            <Text style={_styles.scoreText}>
-                              {storyData.board?.profile_score}
-                            </Text>
-                            {storyData.board?.auth_acct_cnt > 0 && (
-                              <>
-                                <Image source={ICON.bookmarkPurple} style={[styles.iconSize16, {marginLeft: 5}]} />
-                                <Text style={_styles.scoreText}>
-                                  {storyData.board?.auth_acct_cnt}
-                                </Text>
-                              </>
-                            )}
+
+                          {/* 프로필 평점, 인증 레벨 */}
+                          {((isEmptyData(storyData.board?.auth_acct_cnt) && storyData.board?.auth_acct_cnt >= 5) || storyData.board?.profile_score >= 7.0) && (
+                            <>
+                              <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                                {storyData.board?.profile_score >= 7.0 && (
+                                  <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                                    <Image source={ICON.starYellow} style={styles.iconSize16} />
+                                    <Text style={_styles.scoreText}>{storyData.board?.profile_score}</Text>
+                                  </SpaceView>
+                                )}
+
+                                {(isEmptyData(storyData.board?.auth_acct_cnt) && storyData.board?.auth_acct_cnt >= 5) && (
+                                  <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                                    <Image source={ICON.bookmarkPurple} style={[styles.iconSize16, {marginLeft: 5}]} />
+                                    <Text style={_styles.scoreText}>{storyData.board?.auth_acct_cnt}</Text>
+                                  </SpaceView>
+                                )}
+                              </SpaceView>
+                            </>
+                          )}
+
+                          {/* 닉네임 */}
+                          <SpaceView ml={3}>
+                            <Text style={_styles.nicknameText(storyData.board?.story_type, storyData.board?.gender)}>{storyData.board?.nickname}</Text>
                           </SpaceView>
-                          <Text style={_styles.nicknameText(storyData.board?.story_type, storyData.board?.gender)}>{storyData.board?.nickname}</Text>
                         </SpaceView>
                       </>
                     )}
@@ -1156,6 +1166,10 @@ const _styles = StyleSheet.create({
       paddingHorizontal: 13,
       marginHorizontal: 3,
       overflow: 'hidden',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.3,
+      shadowRadius: 8,
+      elevation: 10,
     };
   },
   voteViewArea: (bgColor: string) => {

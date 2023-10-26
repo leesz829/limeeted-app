@@ -342,9 +342,9 @@ export default function StoryActive(props: Props) {
 
                 if(storyType == 'SECRET') {
                   if(_item?.gender == 'M') {
-                    expMstImg = ICON.maleIcon;
+                    expMstImg = ICON.storyMale;
                   } else {
-                    expMstImg = ICON.femaleIcon;
+                    expMstImg = ICON.storyFemale;
                   }
                 }
 

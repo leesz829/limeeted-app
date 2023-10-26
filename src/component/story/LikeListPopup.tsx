@@ -100,9 +100,9 @@ export default function LikeListPopup({ isVisible, closeModal, type, _storyBoard
     let expMstImg = findSourcePath(item?.mst_img_path); // 노출 대표 이미지
     if(storyType == 'SECRET') {
       if(item?.gender == 'M') {
-        expMstImg = ICON.maleIcon;
+        expMstImg = ICON.storyMale;
       } else {
-        expMstImg = ICON.femaleIcon;
+        expMstImg = ICON.storyFemale;
       }
     }
 
@@ -186,12 +186,16 @@ export default function LikeListPopup({ isVisible, closeModal, type, _storyBoard
                 disabled={memberBase?.gender === replyInfo?.gender || memberBase?.member_seq === replyInfo?.reg_seq}
                 onPress={() => { profileOpen(replyInfo?.reg_seq, replyInfo?.open_cnt); }} >
 
-                <Image source={findSourcePath(replyInfo.mst_img_path)} style={[_styles.imageStyle(40), {marginTop: 15}]} resizeMode={'cover'} />
+                {replyInfo.story_type == 'SECRET' ? (
+                  <Image source={replyInfo.gender == 'M' ? ICON.maleIcon : ICON.femaleIcon} style={[_styles.imageStyle(40), {marginTop: 15}]} resizeMode={'cover'} />
+                ) : (
+                  <Image source={findSourcePath(replyInfo.mst_img_path)} style={[_styles.imageStyle(40), {marginTop: 15}]} resizeMode={'cover'} />
+                )}
               </TouchableOpacity>
               <SpaceView mt={10} ml={5} pt={3} viewStyle={{flexDirection: 'column', flex: 1}}>
                 <Text style={[_styles.mainNicknameText]}>
                   {replyInfo.nickname}
-                  <Text style={{fontFamily: 'Pretendard-Medium', fontSize: 14, color: '#999'}}> {replyInfo.time_text}</Text>
+                  <Text style={_styles.timeText}> {replyInfo.time_text}</Text>
                 </Text>
                 <Text style={[_styles.replyText, {marginTop: 3}]}>{replyInfo.reply_contents}</Text>
               </SpaceView>
@@ -295,6 +299,11 @@ const _styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     marginBottom: 20,
+  },
+  timeText: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 14,
+    color: '#999',
   },
   replyText: {
     fontFamily: 'Pretendard-Regular',

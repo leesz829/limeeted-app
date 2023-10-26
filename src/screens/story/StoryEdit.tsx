@@ -27,6 +27,7 @@ import { CommonLoading } from 'component/CommonLoading';
 import { CommonInput } from 'component/CommonInput';
 import { VoteEndRadioBox } from 'component/story/VoteEndRadioBox';
 import { CommonBtn } from 'component/CommonBtn';
+import { myProfile } from 'redux/reducers/authReducer';
 
 
 /* ################################################################################################################
@@ -50,6 +51,8 @@ export default function StoryEdit(props: Props) {
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태 체크
   const [isClickable, setIsClickable] = useState(true); // 클릭 여부
   const inputRef = React.useRef();
+
+  const [isSecret, setIsSecret] = useState(false); // 비밀 여부
   
   const [storyBoardSeq, setStoryBoardSeq] = useState(props.route.params.storyBoardSeq);
   const [imageList, setImageList] = useState([]); // 이미지 목록
@@ -147,19 +150,27 @@ export default function StoryEdit(props: Props) {
 
   // ############################################################ 프로필 감추기 팝업 활성화
   const hideProfilePopupOpen = async () => {
-    show({
-      title: '프로필 감추기',
-      content: '프로필 열람을 위해 로얄패스를 사용해야 하는\n비공개 프로필로 변경합니다.',
-      passAmt: 6,
-      confirmBtnText: '변경하기',
-      cancelCallback: function() {
-        
-      },
-      confirmCallback: function () {
-
-      },
-    });
-  }
+    if(isSecret) {
+      setIsSecret(false);
+    } else {
+      if(memberBase?.pass_has_amt >= 6) {
+        show({
+          title: '프로필 감추기',
+          content: '프로필 열람을 위해 로얄패스를 사용해야 하는\n비공개 프로필로 변경합니다.',
+          passAmt: 6,
+          confirmBtnText: '변경하기',
+          cancelCallback: function() {
+            
+          },
+          confirmCallback: function () {
+            setIsSecret(true);
+          },
+        });
+      } else {
+        show({ content: '보유 패스가 부족합니다.' });
+      }
+    }
+  };
 
   // ############################################################################# 사진 변경/삭제 팝업
   const imgDel_modalizeRef = useRef<Modalize>(null);
@@ -281,12 +292,17 @@ export default function StoryEdit(props: Props) {
           img_del_seq_str: storyData.storyType == 'STORY' ? imgDelSeqStr : '',
           vote_list: voteList,
           vote_end_type: storyData.voteEndType,
+          secret_yn: isSecret ? 'Y' : 'N',
         };
 
         const { success, data } = await save_story_board(body);
         if(success) {
           switch (data.result_code) {
           case SUCCESS:
+
+            if(!isEmptyData(storyBoardSeq) && isSecret) {
+              dispatch(myProfile());
+            }
 
             if(isEmptyData(storyBoardSeq)) {
               navigation.goBack();
@@ -470,17 +486,20 @@ export default function StoryEdit(props: Props) {
 
                 {(storyData.storyType == 'STORY' && (
                   <>
-                    <SpaceView mt={20} viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                    <SpaceView mt={20} viewStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
                       <SpaceView>
-                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                          <Text style={_styles.hideProfileTitle}>내 프로필 감추기</Text>                      
+                        <SpaceView mb={-3} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                          <Text style={_styles.hideProfileTitle}>내 프로필 감추기</Text>
                           <Image source={ICON.speechQuestion} style={styles.iconSize20} />
-                        </View>
+                        </SpaceView>
                         <Text style={_styles.hideProfileDesc}>대표사진 대신 랜덤 닉네임으로 대체되어 게시글이 등록되요.</Text>
                       </SpaceView>
                       <TouchableOpacity 
-                        onPress={() => { hideProfilePopupOpen(); }} >
-                        <Text style={_styles.hideProfileBtn}>프로필 감추기</Text>
+                        disabled={isEmptyData(storyBoardSeq) ? true : false}
+                        style={_styles.hideProfileArea(isSecret)} 
+                        onPress={() => { hideProfilePopupOpen(); }}
+                      >
+                        <Text style={_styles.hideProfileBtn(isSecret)}>프로필 감추기</Text>
                       </TouchableOpacity>
                     </SpaceView>
                   </>
@@ -495,7 +514,7 @@ export default function StoryEdit(props: Props) {
                       storyData.storyType == 'SECRET' ? '10글자 이상 입력해 주세요.\n\n이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 작성자의 동의없이 게시글이 삭제 될 수 있으며, 이용 제재 대상이 될 수 있습니다.\n\n상대를 배려하는 마음으로 이용해 주세요.' :
                       '10글자 이상 입력해 주세요.\n\n이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 작성자의 동의없이 게시글이 삭제 될 수 있으며, 이용 제재 대상이 될 수 있습니다.\n\n상대를 배려하는 마음으로 이용해 주세요.'
                     }
-                    placeholderTextColor={'#A9A9A9'}
+                    placeholderTextColor={'#999999'}
                     maxLength={1000}
                     exceedCharCountColor={'#990606'}
                     fontSize={13}
@@ -569,17 +588,20 @@ export default function StoryEdit(props: Props) {
                     <Text style={_styles.subTitleText}>투표 내용을 작성해 주세요.</Text>
                   </SpaceView>
 
-                  <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                  <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
                     <SpaceView>
-                      <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <Text style={_styles.hideProfileTitle}>내 프로필 감추기</Text>                      
+                      <SpaceView mb={-3} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                        <Text style={_styles.hideProfileTitle}>내 프로필 감추기</Text>
                         <Image source={ICON.speechQuestion} style={styles.iconSize20} />
-                      </View>
+                      </SpaceView>
                       <Text style={_styles.hideProfileDesc}>대표사진 대신 랜덤 닉네임으로 대체되어 게시글이 등록되요.</Text>
                     </SpaceView>
                     <TouchableOpacity 
-                      onPress={() => { hideProfilePopupOpen(); }} >
-                      <Text style={_styles.hideProfileBtn}>프로필 감추기</Text>
+                      disabled={isEmptyData(storyBoardSeq) ? true : false}
+                      style={_styles.hideProfileArea(isSecret)} 
+                      onPress={() => { hideProfilePopupOpen(); }} 
+                    >
+                      <Text style={_styles.hideProfileBtn(isSecret)}>프로필 감추기</Text>
                     </TouchableOpacity>
                   </SpaceView>
 
@@ -588,7 +610,7 @@ export default function StoryEdit(props: Props) {
                       value={storyData.contents}
                       onChangeText={(text) => setStoryData({...storyData, contents: text})}
                       placeholder={'10글자 이상 입력해 주세요.\n\n이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 작성자의 동의없이 게시글이 삭제 될 수 있으며, 이용 제재 대상이 될 수 있습니다.\n\n상대를 배려하는 마음으로 이용해 주세요.'}
-                      placeholderTextColor={'#C7C7C7'}
+                      placeholderTextColor={'#999999'}
                       maxLength={1000}
                       exceedCharCountColor={'#990606'}
                       fontSize={13}
@@ -911,14 +933,22 @@ const _styles = StyleSheet.create({
     fontSize: 10,
     marginTop: 5,
   },
-  hideProfileBtn: {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 10,
-    color: '#7986EE',
-    borderWidth: 1,
-    borderColor: '#7986EE',
-    borderRadius: 18,
-    paddingHorizontal: 15,
-    paddingVertical: 10,
+  hideProfileArea: (isOn:boolean) => {
+    return {
+      borderWidth: 1,
+      borderColor: '#7986EE',
+      backgroundColor: isOn ? '#7986EE' : 'transparent',
+      borderRadius: 20,
+      paddingHorizontal: 11,
+      paddingVertical: 5,
+    };
+  },
+  hideProfileBtn: (isOn:boolean) => {
+    return {
+      fontFamily: 'Pretendard-Regular',
+      fontSize: 11,
+      color: isOn ? '#ffffff' : '#7986EE',
+      overflow: 'hidden',
+    };
   },
 });

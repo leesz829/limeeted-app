@@ -202,6 +202,8 @@ export const ICON = {
   murtipleImage: require('assets/icon/icon-murtiple-image.png'),
   speechDotline: require('assets/icon/icon-speech-dotline.png'),
   speechQuestion: require('assets/icon/icon-speech-question.png'),
+  storyMale: require('assets/icon/icon-story-male.png'),
+  storyFemale: require('assets/icon/icon-story-female.png'),
 };
 
 export const GIF_IMG = {
