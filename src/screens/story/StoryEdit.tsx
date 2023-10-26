@@ -46,6 +46,7 @@ export default function StoryEdit(props: Props) {
   const isFocus = useIsFocused();
   const dispatch = useDispatch();
 
+
   const memberBase = useUserInfo(); // 회원 기본 데이터
   const { show } = usePopup(); // 공통 팝업
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태 체크
@@ -65,6 +66,7 @@ export default function StoryEdit(props: Props) {
     storyType: isEmptyData(props.route.params.storyType) ? props.route.params.storyType : '',
     contents: '',
     voteEndType: '',
+    voteEndYn: props.route.params.voteEndYn,
   });
 
   const [inputVoteName01, setInputVoteName01] = useState('');
@@ -548,7 +550,7 @@ export default function StoryEdit(props: Props) {
                                 style={_styles.voteInput(isEmptyData(voteData[`voteName0${i+1}`]))}
                                 placeholder={'선택지 입력'}
                                 placeholderTextColor={'#c7c7c7'}
-                                editable={true}
+                                editable={(storyData.storyType == 'VOTE' && storyData.voteEndYn == 'Y') ? false : true}
                                 secureTextEntry={false}
                                 maxLength={50}
                                 numberOfLines={1}
