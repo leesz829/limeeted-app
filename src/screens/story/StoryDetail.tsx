@@ -26,6 +26,7 @@ import Modal from 'react-native-modal';
 import ReplyRegiPopup from 'component/story/ReplyRegiPopup';
 import LikeListPopup from 'component/story/LikeListPopup';
 import { useEffect, useRef, useState } from 'react';
+import { CommonBtn } from 'component/CommonBtn';
 
 
 /* ################################################################################################################
@@ -82,7 +83,7 @@ export default function StoryDetail(props: Props) {
     setCurrentIndex(index);
   };
 
-  // ############################################################ 비공개 프로필 열람 팝업 활성화
+  // 비공개 프로필 열람 팝업 활성화
   const secretPropfilePopupOpen = async () => {
     show({
       title: '비공개 프로필 열람',
@@ -96,6 +97,16 @@ export default function StoryDetail(props: Props) {
       },
     });
   }
+
+    // 게시글 수정/삭제 팝업 활성화
+    const storyMod_modalizeRef = useRef<Modalize>(null);
+
+    const storyMod_onOpen = (imgSeq: any, orderSeq: any, type: string) => {
+      storyMod_modalizeRef.current?.open();
+    };
+    const storyMod_onClose = () => {
+      storyMod_modalizeRef.current?.close();
+    };
 
   // 댓글 모달 열기
   const replyModalOpen = async (_storyReplySeq:number, _depth:number) => {
@@ -575,13 +586,23 @@ export default function StoryDetail(props: Props) {
                         textColor = '#999999';
                       }
                     } else {
-                        if(isVote) {
-                          baseColor = '#3616CF';
-                          bgColorArr = ['#7984ED', '#7984ED'];
-                          textColor = '#FFF';
-                        } else {
-                          bgColorArr = ['#FFF', '#FFF'];
-                        } 
+                        if(storyData.board?.vote_end_yn == 'N'){
+                          if(isVote) {
+                            baseColor = '#3616CF';
+                            bgColorArr = ['#7984ED', '#7984ED'];
+                            textColor = '#FFF';
+                          }else {
+                            bgColorArr = ['#FFF', '#FFF'];
+                          }
+                        }else {
+                          if(storyData.board?.selected_vote_seq == item?.story_vote_seq) {
+                            baseColor = '#3616CF';
+                            bgColorArr = ['#7984ED', '#7984ED'];
+                            textColor = '#FFF';
+                          }else {
+                            bgColorArr = ['#FFF', '#FFF'];
+                          }
+                        }
                         
                         if(storyData.board?.vote_end_yn == 'Y' && (firVoteMmbrCntVal == secVoteMmbrCntVal)) {
                           baseColor = '#999999';
@@ -672,12 +693,14 @@ export default function StoryDetail(props: Props) {
                 {/* 수정하기 버튼 */}
                 {memberBase?.member_seq == storyData.board?.member_seq ? (
                   <SpaceView viewStyle={_styles.btnArea}>
-                    <TouchableOpacity
+                    <Image source={findSourcePath(storyData.board?.mst_img_path)} style={_styles.mstImgStyle} />
+                    <Text style={_styles.nicknameText(storyData.board?.story_type, storyData.board?.gender)}>{storyData.board?.nickname}</Text>
+                    {/* <TouchableOpacity
                       onPress={() => { goStoryModfy(); }}
                       style={_styles.regiBtn}>
                       <Image source={ICON.modfyIcon} style={styles.iconSquareSize(20)} />
                       <Text style={_styles.regiBtnText}>수정하기</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                     {/* <TouchableOpacity
                       onPress={() => { reply_onOpen(); }}
                       style={_styles.regiBtn}>
@@ -753,16 +776,18 @@ export default function StoryDetail(props: Props) {
                   </TouchableOpacity>
 
                   <TouchableOpacity 
-                    style={{flexDirection: 'row', marginHorizontal: 12}}
+                    style={{flexDirection: 'row', marginLeft: 12}}
                     onPress={() => { replyModalOpen(0, 0); }}>
                     <Image source={ICON.reply} style={styles.iconSquareSize(21)} />
                   </TouchableOpacity>
 
-                  <TouchableOpacity style={{flexDirection:'row', marginTop: 8}}>
-                    <View style={[_styles.blackDot, {marginRight: 3}]}></View>
-                    <View style={[_styles.blackDot, {marginRight: 3}]}></View>
-                    <View style={_styles.blackDot}></View>
-                  </TouchableOpacity>
+                  {(memberBase?.member_seq == storyData.board?.member_seq) && (
+                    <TouchableOpacity onPress={() => { storyMod_onOpen(); }} style={{flexDirection:'row', marginTop: 8, marginLeft: 12}}>
+                      <View style={[_styles.blackDot, {marginRight: 3}]}></View>
+                      <View style={[_styles.blackDot, {marginRight: 3}]}></View>
+                      <View style={_styles.blackDot}></View>
+                    </TouchableOpacity>
+                  )}
                 </SpaceView>
               </SpaceView>
             </SpaceView>
@@ -835,6 +860,38 @@ export default function StoryDetail(props: Props) {
         replyInfo={replyInfo}
         profileOpenFn={profileCardOpenPopup}
       />
+
+      {/* ###############################################
+			게시글 수정/삭제 팝업
+			############################################### */}
+      <Modalize
+        ref={storyMod_modalizeRef}
+        adjustToContentHeight={true}
+        handleStyle={modalStyle.modalHandleStyle}
+        modalStyle={[modalStyle.modalContainer]} >
+
+        <View style={modalStyle.modalHeaderContainer}>
+          <CommonText fontWeight={'700'} type={'h3'}>
+            스토리 수정
+          </CommonText>
+          <TouchableOpacity onPress={storyMod_onClose} hitSlop={commonStyle.hipSlop20}>
+            <Image source={ICON.xBtn2} style={styles.iconSize20} />
+          </TouchableOpacity>
+        </View>
+
+        <View style={[modalStyle.modalBody, layoutStyle.flex1]}>
+          <SpaceView mt={10}>
+            <CommonBtn value={'변경 하기'} type={'primary2'} borderRadius={12} onPress={ goStoryModfy } />
+          </SpaceView>
+          <SpaceView mt={10}>
+            <CommonBtn value={'삭제 하기'} type={'primary2'} borderRadius={12} />
+          </SpaceView>
+        </View>
+
+        <TouchableOpacity style={_styles.modalCloseText} onPress={storyMod_onClose} hitSlop={commonStyle.hipSlop20}>
+          <Text style={{color: '#fff', fontFamily: 'Pretendard-Bold', fontSize: 16}}>확인</Text>
+        </TouchableOpacity>
+      </Modalize>
     </>
   );
 
@@ -1003,12 +1060,12 @@ const _styles = StyleSheet.create({
   },
   contentsText: {
     fontFamily: 'Pretendard-Regular',
-    fontSize: 16,
+    fontSize: 14,
     color: '#333',
   },
   timeText: {
     fontFamily: 'Pretendard-Regular',
-    fontSize: 16,
+    fontSize: 14,
     color: '#999',
     marginTop: 10,
   },
@@ -1039,13 +1096,13 @@ const _styles = StyleSheet.create({
   },
   replyNickname: {
     fontFamily: 'Pretendard-Bold',
-    fontSize: 16,
+    fontSize: 14,
     color: '#000',
     marginRight: 8,
   },
   replyContents: {
     fontFamily: 'Pretendard-Regular',
-    fontSize: 16,
+    fontSize: 14,
     color: '#333',
     marginTop: 6,
     //flex: 0.8,
@@ -1068,7 +1125,7 @@ const _styles = StyleSheet.create({
   replyTimeText: {
     fontFamily: 'Pretendard-Regular',
     color: '#999',
-    fontSize: 16,
+    fontSize: 14,
   },
   replyItemEtcWrap: {
     width: '97%',
@@ -1085,13 +1142,13 @@ const _styles = StyleSheet.create({
   replyLengthText: {
     fontFamily: 'Pretendard-Regular',
     color: '#555',
-    fontSize: 16,
+    fontSize: 14,
     marginLeft: 1,
   },
   likeCntText: {
     fontFamily: 'Pretendard-Regular',
     color: '#555',
-    fontSize: 16,
+    fontSize: 14,
   },
   replyLikeCntText: {
     fontFamily: 'Pretendard-Regular',
@@ -1194,7 +1251,7 @@ const _styles = StyleSheet.create({
     return {
       fontFamily: 'Pretendard-Regular',
       color: textColor,
-      fontSize: 16,
+      fontSize: 14,
       textAlign: 'center',
     }
   },
@@ -1296,6 +1353,13 @@ const _styles = StyleSheet.create({
     height: 4,
     backgroundColor: '#000',
     borderRadius: 50,
+  },
+  modalCloseText: {
+    width: '100%',
+    backgroundColor: '#7984ED',
+    paddingVertical: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
 });
