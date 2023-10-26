@@ -68,7 +68,7 @@ export default function StoryRegi(props: Props) {
         <SpaceView mt={20} pl={20} pr={20}>
 
           <SpaceView mb={30} viewStyle={_styles.titleArea}>
-            <Text style={_styles.titleText}><Text style={{color: '#7B81EC', fontFamily: 'Pretendard-Bold', fontSize: 20}}>{memberBase?.nickname}님</Text>의 이야기로{'\n'}리미티드에 일상을공유하고 소통해보세요.</Text>
+            <Text style={_styles.titleText}><Text style={{color: '#7B81EC', fontFamily: 'Pretendard-Bold', fontSize: 20}}>{memberBase?.nickname}님</Text>의 이야기를{'\n'}스토리에 일상을 공유하고 소통해보세요.</Text>
           </SpaceView>
 
           <SpaceView>
@@ -84,7 +84,7 @@ export default function StoryRegi(props: Props) {
             
             <LinearGradient colors={['#A9DBFF', '#7B81EC']} style={_styles.contentItem} >
               <TouchableOpacity onPress={() => { selectedStoryType('VOTE'); }}>
-                <Text style={_styles.contentTitle}>투표형</Text>
+                <Text style={_styles.contentTitle}>투표</Text>
                 <Text style={_styles.contentSubTitle}>왼 VS 오 어떤 것? 밸런스 게임으로{'\n'}사람들의 성향을 알아가요.</Text>
                 <Image source={ICON.voteIcon} style={_styles.contentImg} resizeMode={'cover'} />
               </TouchableOpacity>
@@ -138,7 +138,7 @@ const _styles = StyleSheet.create({
     marginBottom: 15,
   },
   contentSubTitle: {
-    fontFamily: 'Pretendard-Regular',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 15,
     color: '#FFF',
   },

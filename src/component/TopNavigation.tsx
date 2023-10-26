@@ -94,10 +94,10 @@ function NaviButtons({ navName, theme }: { navName: string; theme?: string }) {
   }, [navName, theme]);
   const betaIcon = React.useMemo(() => {
     return navName === 'Story'
-      ? ICON.betaBlueIcon
-      : theme != undefined
-      ? ICON.betaWhiteIcon
-      : ICON.betaGrayIcon;
+      // ? ICON.betaBlueIcon
+      // : theme != undefined
+      // ? ICON.betaWhiteIcon
+      // : ICON.betaGrayIcon;
   }, [navName, theme]);
 
   return (
@@ -113,9 +113,9 @@ function NaviButtons({ navName, theme }: { navName: string; theme?: string }) {
       <TouchableOpacity style={[_styles.tab]} onPress={onPressStory} disabled={navName == 'Story' ? true : false}>
         <Text style={_styles.storyTxt(navName == 'Story', theme != undefined)}>STORY</Text>
         <View style={{borderBottomWidth: navName == 'Story' ? 2 : 0, borderBottomColor: '#7986EE', position: 'absolute', bottom: 1, left: 0, right: 17}} />
-        <View style={{position: 'absolute', top: -8, right: 16}}>
+        {/* <View style={{position: 'absolute', top: -8, right: 16}}>
           <Image style={_styles.betaIcon} source={betaIcon} resizeMode="contain" />
-        </View>
+        </View> */}
       </TouchableOpacity>
     </View>
   );

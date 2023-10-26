@@ -796,7 +796,7 @@ export default function StoryDetail(props: Props) {
                       <Text style={_styles.regiBtnText}>수정하기</Text>
                     </TouchableOpacity> */}
                     {/* <TouchableOpacity
-                      onPress={() => { reply_onOpen(); }}
+                      onPress={() => { reply_onOpen(); }}__11
                       style={_styles.regiBtn}>
                       <Text style={_styles.regiBtnText}>댓글달기</Text>
                     </TouchableOpacity> */}
@@ -884,7 +884,7 @@ export default function StoryDetail(props: Props) {
                   
                   {/* 메뉴바 버튼 */}
                   {(memberBase?.member_seq == storyData.board?.member_seq) && (
-                    <TouchableOpacity onPress={() => { storyMod_onOpen(); }} style={{flexDirection:'row', marginTop: 8, marginLeft: 12}}>
+                    <TouchableOpacity onPress={() => { storyMod_onOpen(); }} style={{flexDirection:'row', alignItems: 'center', marginLeft: 12}}>
                       <View style={[_styles.blackDot, {marginRight: 3}]}></View>
                       <View style={[_styles.blackDot, {marginRight: 3}]}></View>
                       <View style={_styles.blackDot}></View>
@@ -984,10 +984,10 @@ export default function StoryDetail(props: Props) {
 
         <View style={[modalStyle.modalBody, layoutStyle.flex1]}>
           <SpaceView mt={10}>
-            <CommonBtn value={'변경'} type={'primary2'} borderRadius={12} onPress={ goStoryModify } />
+            <CommonBtn value={'스토리 수정하기'} type={'primary2'} borderRadius={12} onPress={ goStoryModify } />
           </SpaceView>
           <SpaceView mt={10}>
-            <CommonBtn value={'삭제'} type={'primary2'} borderRadius={12} onPress={ deleteStoryBoard } />
+            <CommonBtn value={'스토리 삭제하기'} type={'primary2'} borderRadius={12} onPress={ deleteStoryBoard } />
           </SpaceView>
         </View>
 

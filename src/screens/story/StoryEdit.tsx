@@ -157,8 +157,8 @@ export default function StoryEdit(props: Props) {
     } else {
       if(memberBase?.pass_has_amt >= 6) {
         show({
-          title: '프로필 감추기',
-          content: '프로필 열람을 위해 로얄패스를 사용해야 하는\n비공개 프로필로 변경합니다.',
+          title: '블라인드 모드',
+          content: '블라인드 모드로 변경 하시겠습니까?\n회원님의 프로필은 로얄패스로만 열람 가능합니다.',
           passAmt: 6,
           confirmBtnText: '변경하기',
           cancelCallback: function() {
@@ -458,14 +458,14 @@ export default function StoryEdit(props: Props) {
             <SpaceView mb={25}>
               <Text style={_styles.titleText}>
                 {storyData.storyType == 'SECRET' ? (
-                  <>이야기 앞에 <Text style={_styles.titleHightText}>"비밀"</Text>이 붙으면{'\n'}더 재밌어지는 법이죠!</>
+                  <>이야기 앞에 "비밀"이 붙으면{'\n'}더 재밌어지는 법이죠!</>
                 ) : storyData.storyType == 'VOTE' ? (
                   <><Text style={[_styles.titleHightText, {fontFamily: 'Pretendard-Bold'}]}>왼 VS 오 어떤것?</Text>{'\n'}<Text style={{fontFamily: 'Pretendard-SemiBold'}}>선택 장애 해결! 밸런스 게임 즐기기!</Text></>
                 ) : (
-                  <>소소한 일상부터 음식, 여행 등{'\n'}<Text style={_styles.titleHightText}>주제에 관계없이 자유롭게</Text> 소통해 보세요.</>
+                  <>소소한 일상부터 음식, 여행 등{'\n'}주제에 관계없이 자유롭게 소통해 보세요.</>
                 )}
               </Text>
-              {/* <View style={_styles.titleUnderline(storyData.storyType)} /> */}
+              <View style={_styles.titleUnderline(storyData.storyType)} />
             </SpaceView>
 
             {/* ##############################################################################################################
@@ -486,12 +486,12 @@ export default function StoryEdit(props: Props) {
                   })}
                 </SpaceView>
 
-                {(storyData.storyType == 'STORY' && (
+                {(storyData.storyType == 'STORY' && !storyBoardSeq && (
                   <>
                     <SpaceView mt={20} viewStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
                       <SpaceView>
                         <SpaceView mb={-3} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                          <Text style={_styles.hideProfileTitle}>내 프로필 감추기</Text>
+                          <Text style={_styles.hideProfileTitle}>블라인드 모드</Text>
                           <Image source={ICON.speechQuestion} style={styles.iconSize20} />
                         </SpaceView>
                         <Text style={_styles.hideProfileDesc}>대표사진 대신 랜덤 닉네임으로 대체되어 게시글이 등록되요.</Text>
@@ -501,7 +501,7 @@ export default function StoryEdit(props: Props) {
                         style={_styles.hideProfileArea(isSecret)} 
                         onPress={() => { hideProfilePopupOpen(); }}
                       >
-                        <Text style={_styles.hideProfileBtn(isSecret)}>프로필 감추기</Text>
+                        <Text style={_styles.hideProfileBtn(isSecret)}>{isSecret ? 'ON' : 'OFF'}</Text>
                       </TouchableOpacity>
                     </SpaceView>
                   </>
@@ -513,8 +513,8 @@ export default function StoryEdit(props: Props) {
                     value={storyData.contents}
                     onChangeText={(text) => setStoryData({...storyData, contents: text})}
                     placeholder={
-                      storyData.storyType == 'SECRET' ? '10글자 이상 입력해 주세요.\n\n이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 작성자의 동의없이 게시글이 삭제 될 수 있으며, 이용 제재 대상이 될 수 있습니다.\n\n상대를 배려하는 마음으로 이용해 주세요.' :
-                      '10글자 이상 입력해 주세요.\n\n이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 작성자의 동의없이 게시글이 삭제 될 수 있으며, 이용 제재 대상이 될 수 있습니다.\n\n상대를 배려하는 마음으로 이용해 주세요.'
+                      storyData.storyType == 'SECRET' ? '최소 10글자 이상 입력해 주세요.\n\n이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 작성자의 동의없이 게시글이 삭제 될 수 있으며, 이용 제재 대상이 될 수 있습니다.\n\n상대를 배려하는 마음으로 이용해 주세요.' :
+                      '최소 10글자 이상 입력해 주세요.\n\n이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 작성자의 동의없이 게시글이 삭제 될 수 있으며, 이용 제재 대상이 될 수 있습니다.\n\n상대를 배려하는 마음으로 이용해 주세요.'
                     }
                     placeholderTextColor={'#999999'}
                     maxLength={1000}
@@ -590,28 +590,30 @@ export default function StoryEdit(props: Props) {
                     <Text style={_styles.subTitleText}>투표 내용을 작성해 주세요.</Text>
                   </SpaceView>
 
-                  <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-                    <SpaceView>
-                      <SpaceView mb={-3} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                        <Text style={_styles.hideProfileTitle}>내 프로필 감추기</Text>
-                        <Image source={ICON.speechQuestion} style={styles.iconSize20} />
+                  {(!storyBoardSeq && (
+                    <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                      <SpaceView>
+                        <SpaceView mb={-3} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                          <Text style={_styles.hideProfileTitle}>블라인드 모드</Text>
+                          <Image source={ICON.speechQuestion} style={styles.iconSize20} />
+                        </SpaceView>
+                        <Text style={_styles.hideProfileDesc}>대표사진 대신 랜덤 닉네임으로 대체되어 게시글이 등록되요.</Text>
                       </SpaceView>
-                      <Text style={_styles.hideProfileDesc}>대표사진 대신 랜덤 닉네임으로 대체되어 게시글이 등록되요.</Text>
+                      <TouchableOpacity 
+                        disabled={isEmptyData(storyBoardSeq) ? true : false}
+                        style={_styles.hideProfileArea(isSecret)} 
+                        onPress={() => { hideProfilePopupOpen(); }} 
+                      >
+                        <Text style={_styles.hideProfileBtn(isSecret)}>{isSecret ? 'ON' : 'OFF'}</Text>
+                      </TouchableOpacity>
                     </SpaceView>
-                    <TouchableOpacity 
-                      disabled={isEmptyData(storyBoardSeq) ? true : false}
-                      style={_styles.hideProfileArea(isSecret)} 
-                      onPress={() => { hideProfilePopupOpen(); }} 
-                    >
-                      <Text style={_styles.hideProfileBtn(isSecret)}>프로필 감추기</Text>
-                    </TouchableOpacity>
-                  </SpaceView>
+                  ))}
 
                   <SpaceView>
                     <CommonTextarea
                       value={storyData.contents}
                       onChangeText={(text) => setStoryData({...storyData, contents: text})}
-                      placeholder={'10글자 이상 입력해 주세요.\n\n이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 작성자의 동의없이 게시글이 삭제 될 수 있으며, 이용 제재 대상이 될 수 있습니다.\n\n상대를 배려하는 마음으로 이용해 주세요.'}
+                      placeholder={'최소 10글자 이상 입력해 주세요.\n\n이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 작성자의 동의없이 게시글이 삭제 될 수 있으며, 이용 제재 대상이 될 수 있습니다.\n\n상대를 배려하는 마음으로 이용해 주세요.'}
                       placeholderTextColor={'#999999'}
                       maxLength={1000}
                       exceedCharCountColor={'#990606'}
@@ -623,7 +625,7 @@ export default function StoryEdit(props: Props) {
                       borderRadius={10}
                       padding={20}
                       paddingTop={20}
-                      marginTop={15}
+                      marginTop={(!storyBoardSeq ? 15 : 0)}
                     />
 
                       {/* <TextInput
@@ -801,18 +803,17 @@ const _styles = StyleSheet.create({
     color: '#333333',
   },
   titleUnderline: (storyType:string) => {
-    let _top = 42;
-    let _left = -2;
-    let _width = width-195;
+    let _top = 49;
+    let _left = -1;
+    let _width = 201;
+    let _display = 'flex';
 
     if(storyType == 'SECRET') {
-      _top = 17;
-      _left = 95;
-      _width = width-345;
+      _top = 19;
+      _left = 96;
+      _width = 51;
     } else if(storyType == 'VOTE') {
-      _top = 17;
-      _left = 0;
-      _width = width-262;
+      _display = 'none';
     }
 
     return {
@@ -820,9 +821,10 @@ const _styles = StyleSheet.create({
       top: _top,
       left: _left,
       width: _width,
-      height: 10,
+      height: 8,
       backgroundColor: '#7986EE',
       zIndex: -1,
+      display: _display,
     };
   },
   imgArea: {
