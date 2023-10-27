@@ -191,14 +191,14 @@ export default function LikeListPopup({ isVisible, closeModal, type, _storyBoard
                 onPress={() => { profileOpen(replyInfo?.reg_seq, replyInfo?.open_cnt); }} >
 
                 {replyInfo.story_type == 'SECRET' ? (
-                  <Image source={replyInfo.gender == 'M' ? ICON.maleIcon : ICON.femaleIcon} style={[_styles.imageStyle(40), {marginTop: 15}]} resizeMode={'cover'} />
+                  <Image source={replyInfo.gender == 'M' ? ICON.storyMale : ICON.storyFemale} style={[_styles.imageStyle(40), {marginTop: 15}]} resizeMode={'cover'} />
                 ) : (
                   <Image source={findSourcePath(replyInfo.mst_img_path)} style={[_styles.imageStyle(40), {marginTop: 15}]} resizeMode={'cover'} />
                 )}
               </TouchableOpacity>
               <SpaceView mt={10} ml={5} pt={3} viewStyle={{flexDirection: 'column', flex: 1}}>
                 <Text style={[_styles.mainNicknameText]}>
-                  {replyInfo.nickname}
+                  {replyInfo.story_type == 'SECRET' ? replyInfo.nickname_modifier + ' ' + replyInfo.nickname_noun : replyInfo.nickname}
                   <Text style={_styles.timeText}> {replyInfo.time_text}</Text>
                 </Text>
                 <Text style={[_styles.replyText, {marginTop: 3}]}>{replyInfo.reply_contents}</Text>
