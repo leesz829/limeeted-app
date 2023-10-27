@@ -170,7 +170,7 @@ export default function StoryEdit(props: Props) {
         });
       } else {
         show({
-          title: '프로필 감추기',
+          title: '블라인드 모드',
           content: '보유 패스가 부족합니다.',
           confirmBtnText: '상점 이동',
           cancelCallback: function() {

@@ -162,6 +162,9 @@ export default function StoryDetail(props: Props) {
 
   // ############################################################################# 수정하기 이동
   const goStoryModify = async () => {
+    // 팝업 닫기
+    storyMod_onClose();
+
     navigation.navigate(STACK.COMMON, {
       screen: 'StoryEdit',
       params: {
@@ -473,7 +476,7 @@ export default function StoryDetail(props: Props) {
     const secretYn = item?.secret_yn; // 비밀 여부
 
     // 영역 사이즈 설정
-    let _w = width - 70;
+    let _w = width - 73;
     let depthStyleSize = 0;
 
     if(depth == 2) {
@@ -492,8 +495,12 @@ export default function StoryDetail(props: Props) {
         isApplySecret = true;
       }
     };
-    
-    console.log('item::', item)
+
+    // 노출 대표 이미지
+    let applyMsgImg = findSourcePath(item?.mst_img_path);
+    if(storyData.board?.story_type == 'SECRET' || isApplySecret) {
+      applyMsgImg = gender == 'M' ? ICON.storyMale : ICON.storyFemale;
+    };
 
     return (
       <>
@@ -502,28 +509,18 @@ export default function StoryDetail(props: Props) {
             <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'flex-start'}}>
 
               {/* 썸네일 */}
-              {(storyData.board?.story_type == 'SECRET' || isApplySecret) ? (
-                <>
-                  {storyData.board?.story_type == 'SECRET' ? (
-                    <SpaceView mt={5} viewStyle={{width:15}}>
-                      {(storyData.board?.story_type == 'SECRET' && memberBase?.member_seq === item?.member_seq) && (
-                        <Image source={gender == 'M' ? ICON.maleIcon : ICON.femaleIcon} style={styles.iconSquareSize(15)} resizeMode={'cover'} />
-                      )}
-                    </SpaceView>
-                  ) : (
-                    <SpaceView mt={5}>
-                      <Image source={gender == 'M' ? ICON.padlockMale : ICON.padlockFemale} style={_styles.replyImageStyle} resizeMode={'cover'} />
-                    </SpaceView>
-                  )}
-                </>                
-              ) : (
-                <TouchableOpacity 
-                  disabled={memberBase?.gender === item?.gender || memberBase?.member_seq === item?.member_seq}
-                  onPress={() => { profileCardOpenPopup(item?.member_seq, item?.open_cnt, false); }}>
+              <TouchableOpacity 
+                disabled={memberBase?.gender === item?.gender || memberBase?.member_seq === item?.member_seq || storyData.board?.story_type == 'SECRET' || isApplySecret}
+                onPress={() => { profileCardOpenPopup(item?.member_seq, item?.open_cnt, false); }}>
 
-                  <Image source={memberMstImgPath} style={_styles.replyImageStyle} resizeMode={'cover'} />
-                </TouchableOpacity>
-              )}
+                <Image source={applyMsgImg} style={_styles.replyImageStyle} resizeMode={'cover'} />
+
+                {memberBase?.member_seq === item?.member_seq && (
+                  <SpaceView viewStyle={_styles.myReplyChk}>
+                    <Image source={gender == 'M' ? ICON.maleIcon : ICON.femaleIcon} style={styles.iconSquareSize(13)} resizeMode={'cover'} />
+                  </SpaceView>
+                )}
+              </TouchableOpacity>
               
               <SpaceView ml={5} pt={3} viewStyle={{flexDirection: 'column', width: _w}}>
 
@@ -537,7 +534,6 @@ export default function StoryDetail(props: Props) {
                     {secretYn == 'Y' && (<Image source={item.gender == 'W' ? ICON.padlockFemale : ICON.padlockMale} style={{width: 14, height: 14,}} />)}
                   </View>
                 </SpaceView>
-
 
                 {/* 댓글 내용 */}
                 <Text style={_styles.replyContents}>{isApplySecret ? '게시글 작성자에게만 보이는 글입니다.' : item.reply_contents}</Text>
@@ -636,7 +632,7 @@ export default function StoryDetail(props: Props) {
             progressBackgroundColor="#ffffff" >
           </RefreshControl>
         }
-        >
+      >
 
         <SpaceView mb={20}>
 
@@ -1518,6 +1514,14 @@ const _styles = StyleSheet.create({
     paddingVertical: 15,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  myReplyChk: {
+    position: 'absolute',
+    bottom: -5,
+    left: 0,
+    zIndex: 1,
+    backgroundColor: '#fff',
+    borderRadius: 50,
   },
 
 });
