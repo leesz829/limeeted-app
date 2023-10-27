@@ -442,7 +442,7 @@ export default function StoryActive(props: Props) {
     );
   };
 
-  // ############################################################################# 스토리 렌더링
+  // ############################################################################# 나의 스토리 렌더링
   const MyStoryRender = ({ item, index }) => {
 
     return (
@@ -459,6 +459,7 @@ export default function StoryActive(props: Props) {
             <SpaceView>
               
               {item?.dataList?.map((_item, _index) => {
+                const _type = _item?.type; // BOARD, REPLY
 
                 const storyBoardSeq = _item?.story_board_seq; // 스토리 댓글 번호
                 const contents = _item?.contents; // 내용
@@ -499,14 +500,15 @@ export default function StoryActive(props: Props) {
                               <Image source={ICON.heartOnIcon} style={styles.iconSquareSize(20)} />
                             )}
 
-
                             <Text style={_styles.storyCntText}>{likeCnt}</Text>
                           </SpaceView>
 
-                          <SpaceView viewStyle={{flexDirection: 'row'}}>
-                            <Image source={ICON.reply} style={styles.iconSquareSize(20)} />
-                            <Text style={_styles.storyCntText}>{replyCnt}</Text>
-                          </SpaceView>
+                          {_type == 'BOARD' && (
+                            <SpaceView viewStyle={{flexDirection: 'row'}}>
+                              <Image source={ICON.reply} style={styles.iconSquareSize(20)} />
+                              <Text style={_styles.storyCntText}>{replyCnt}</Text>
+                            </SpaceView>
+                          )}
                         </SpaceView>
 
                         {/* 타임스탬프 */}

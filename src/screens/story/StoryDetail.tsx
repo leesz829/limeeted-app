@@ -1021,7 +1021,7 @@ export default function StoryDetail(props: Props) {
                     hitSlop={commonStyle.hipSlop10}
                     style={{marginLeft: 15}}
                     onPress={() => { popupStoryBoardActive(); }}>
-                    <Text style={_styles.likeCntText}>좋아요{storyData.board?.like_cnt + '개'}</Text>
+                    <Text style={_styles.likeCntText}>좋아요{isEmptyData(storyData.board?.like_cnt) ? storyData.board?.like_cnt + '개' : '0개'}</Text>
                   </TouchableOpacity>  
               </SpaceView>
 
