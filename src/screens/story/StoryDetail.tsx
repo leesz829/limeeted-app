@@ -582,8 +582,12 @@ export default function StoryDetail(props: Props) {
 
                 {/* 댓글 내용 */}
                 <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Text style={_styles.replyContents}>{isApplySecret ? '게시글 작성자에게만 보이는 글입니다.' : item.reply_contents}</Text>
-                  {memberBase?.member_seq === item?.member_seq && (
+                  <Text style={_styles.replyContents}>
+                    {
+                      (isApplySecret) ? '게시글 작성자에게만 보이는 글입니다.' : (item.del_yn == 'Y') ? '삭제된 댓글입니다.' : item.reply_contents
+                    }
+                  </Text>
+                  {(memberBase?.member_seq === item?.member_seq) && (item.del_yn == 'N') && (
                     <TouchableOpacity style={{marginTop: 6, marginLeft: 4}} onPress={() => { replyDelPopupOpen(storyReplySeq); }}>
                       <Text style={_styles.replyTextDel}>삭제</Text>
                     </TouchableOpacity>
