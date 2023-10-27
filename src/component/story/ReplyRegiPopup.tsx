@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { RouteProp, useIsFocused, useNavigation, useFocusEffect } from '@react-navigation/native';
 import { StackParamList, ScreenNavigationProp } from '@types';
-import { Dimensions, Image, StyleSheet, Text, View, TouchableOpacity, FlatList, Platform, KeyboardAvoidingView, InputAccessoryView, TextInput, Keyboard  } from 'react-native';
+import { Dimensions, Image, StyleSheet, Text, View, TouchableOpacity, FlatList, Platform, KeyboardAvoidingView, InputAccessoryView, TextInput, Keyboard, Modal, Pressable  } from 'react-native';
 import { findSourcePath, ICON, IMAGE, GUIDE_IMAGE } from 'utils/imageUtils';
 import { Watermark } from 'component/Watermark';
 import LinearGradient from 'react-native-linear-gradient';
@@ -9,7 +9,7 @@ import { useUserInfo } from 'hooks/useUserInfo';
 import SpaceView from 'component/SpaceView';
 import Animated, { useAnimatedStyle, withTiming, useSharedValue, withSpring, withSequence, withDelay, Easing, withRepeat, interpolate, Extrapolate, cancelAnimation, stopClock } from 'react-native-reanimated';
 import { ROUTES, STACK } from 'constants/routes';
-import Modal from 'react-native-modal';
+//import Modal from 'react-native-modal';
 import { CommonTextarea } from 'component/CommonTextarea';
 import { styles, layoutStyle, commonStyle, modalStyle } from 'assets/styles/Styles';
 import { save_story_reply } from 'api/models';
@@ -19,6 +19,7 @@ import { useProfileImg } from 'hooks/useProfileImg';
 import { ScrollView } from 'react-native-gesture-handler';
 import { myProfile } from 'redux/reducers/authReducer';
 import { useDispatch } from 'react-redux';
+import { Modalize } from 'react-native-modalize';
 
 
 
@@ -45,7 +46,7 @@ export default function ReplyRegiPopup({ isVisible, storyBoardSeq, storyReplySeq
 
   const inputRef = React.useRef();
 
-  const closeMoadal = async () => {
+  const closeModal = async () => {
     setInputReplyText('');
     callbackFunc(false);
   };
@@ -169,14 +170,17 @@ export default function ReplyRegiPopup({ isVisible, storyBoardSeq, storyReplySeq
   return (
     <>
         <Modal 
-          isVisible={isVisible} 
+          visible={isVisible}
+          transparent={true} // 배경을 불투명하게 설정
+          //isVisible={isVisible} 
           style={_styles.replyModalWrap}
           //onSwipeComplete={toggleModal}
-          onBackdropPress={() => { closeMoadal(); }}
+          //onBackdropPress={() => { closeMoadal(); }}
           //swipeDirection="down" // 아래 방향으로 스와이프
           //propagateSwipe={true}
-          onRequestClose={() => { closeMoadal(); }}
+          //onRequestClose={() => { closeMoadal(); }}
         >
+          <Pressable style={{flex: 1, backgroundColor: 'rgba(0,0,0,0.7)',}} onPress={()=> { closeModal(); }} />
 
           <ScrollView style={{position: 'absolute', bottom: 0, left: 0, right: 0}}>
             {Platform.OS == 'ios' ? (

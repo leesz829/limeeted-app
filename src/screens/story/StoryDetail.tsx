@@ -121,7 +121,17 @@ export default function StoryDetail(props: Props) {
             setIsReplyVisible(true);
 
           } else {
-            show({ content: '패스가 부족합니다.', isCross: true });
+            show({
+              title: '비밀 댓글 달기',
+              content: '보유 패스가 부족합니다.',
+              confirmBtnText: '상점 이동',
+              isCross: true,
+              cancelCallback: function() { 
+              },
+              confirmCallback: function () {
+                navigation.navigate(STACK.TAB, { screen: 'Cashshop' });
+              },
+            });
           }
         },
       });
@@ -325,13 +335,33 @@ export default function StoryDetail(props: Props) {
             if(memberBase?.royal_pass_has_amt >= 15) {
               profileCardOpen(memberSeq, isSecret);
             } else {
-              show({ content: '로얄패스가 부족합니다.', isCross: true });
+              show({
+                title: isSecret ? '비공개 프로필 열람' : '프로필 카드 열람',
+                content: '보유 로얄패스가 부족합니다.',
+                confirmBtnText: '상점 이동',
+                isCross: true,
+                cancelCallback: function() { 
+                },
+                confirmCallback: function () {
+                  navigation.navigate(STACK.TAB, { screen: 'Cashshop' });
+                },
+              });
             }
           } else {
             if(memberBase?.pass_has_amt >= 15) {
               profileCardOpen(memberSeq, isSecret);
             } else {
-              show({ content: '패스가 부족합니다.', isCross: true });
+              show({
+                title: isSecret ? '비공개 프로필 열람' : '프로필 카드 열람',
+                content: '보유 패스가 부족합니다.',
+                confirmBtnText: '상점 이동',
+                isCross: true,
+                cancelCallback: function() { 
+                },
+                confirmCallback: function () {
+                  navigation.navigate(STACK.TAB, { screen: 'Cashshop' });
+                },
+              });
             }
           }
         },

@@ -317,7 +317,7 @@ export const Story = () => {
 
                       <SpaceView pr={10} pl={10} viewStyle={{position: 'absolute', bottom: 10, left: 0, right: 0}}>
                         <SpaceView>
-                          <Text style={_styles.contentsText('#ffffff')} numberOfLines={type == 'SMALL' ? 4 : 10}>{item?.contents}</Text>
+                          <Text style={_styles.contentsText('#D4CBEE')} numberOfLines={type == 'SMALL' ? 4 : 10}>{item?.contents}</Text>
                         </SpaceView>
 
                         <SpaceView mt={15}>
@@ -352,14 +352,14 @@ export const Story = () => {
                                 <>
                                   {item?.profile_score >= 7.0 && (
                                     <SpaceView mr={5} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                                      <Image source={ICON.starBlack} style={styles.iconSquareSize(13)} resizeMode={'cover'} />
-                                      <SpaceView ml={2}><Text style={_styles.activeText('#555555')}>{item?.profile_score}</Text></SpaceView>
+                                      <Image source={ICON.starWhite} style={styles.iconSquareSize(13)} resizeMode={'cover'} />
+                                      <SpaceView ml={2}><Text style={_styles.activeText('#ffffff')}>{item?.profile_score}</Text></SpaceView>
                                     </SpaceView>
                                   )}
                                   {(isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && (
                                     <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                                      <Image source={ICON.bookmarkBlack} style={styles.iconSquareSize(13)} resizeMode={'cover'} />
-                                      <SpaceView ml={2}><Text style={_styles.activeText('#555555')}>20</Text></SpaceView>
+                                      <Image source={ICON.bookmarkWhite} style={styles.iconSquareSize(13)} resizeMode={'cover'} />
+                                      <SpaceView ml={2}><Text style={_styles.activeText('#ffffff')}>20</Text></SpaceView>
                                     </SpaceView>
                                   )}
                                 </>
@@ -370,7 +370,7 @@ export const Story = () => {
 
                         {/* 닉네임 */}
                         <SpaceView mt={3}>
-                          <Text style={[_styles.nicknameText(storyType == 'SECRET' ? '#ffffff' : '#333333', 12, type), {textAlign: 'center'}]}>
+                          <Text style={[_styles.nicknameText('#ffffff', 12, type), {textAlign: 'center'}]}>
                             {secretYn == 'Y' ? (
                               <>{item?.nickname_modifier}{'\n'}{item?.nickname_noun}</>
                             ) : (
@@ -382,7 +382,7 @@ export const Story = () => {
 
                       {/* 내용 */}
                       <SpaceView mt={type == 'SMALL' ? 10 : 20} pl={10} pr={10}>
-                        <Text style={_styles.contentsText(storyType == 'SECRET' ? '#ffffff' : '#333333')} numberOfLines={type == 'SMALL' ? 2 : 6}>{item?.contents}</Text>
+                        <Text style={_styles.contentsText('#333333')} numberOfLines={type == 'SMALL' ? 1 : 6}>{item?.contents}</Text>
                       </SpaceView>
                     </>
                   )}

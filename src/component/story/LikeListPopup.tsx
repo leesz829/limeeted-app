@@ -1,6 +1,6 @@
 //import Modal from 'react-native-modal';
 import React, { useRef, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions, TextInput, Modal } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions, TextInput, Modal, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Image from 'react-native-fast-image';
 import { findSourcePath, IMAGE, GIF_IMG, ICON } from 'utils/imageUtils';
@@ -168,10 +168,14 @@ export default function LikeListPopup({ isVisible, closeModal, type, _storyBoard
     <Modal
       visible={isVisible}
       transparent={true} // 배경을 불투명하게 설정
-      //onRequestClose={() => { closeModal(); }}
+      //onRequestClose={closeModal}
+      onRequestClose={() => { closeModal(); }}
       //onBackdropPress={closeModal} 
     >
-      <View style={{ height, backgroundColor: 'rgba(0,0,0,0.7)', alignItems: 'center', justifyContent: 'center' }}>
+      <View style={{ height, alignItems: 'center', justifyContent: 'center' }}>
+
+        <Pressable style={{flex: 1, backgroundColor: 'rgba(0,0,0,0.7)', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0}} onPress={()=> { closeModal(); }} />
+
         <SafeAreaView style={_styles.container}>
           <View style={_styles.titleBox}>
             <Text style={_styles.titleText}>좋아요 목록</Text>
