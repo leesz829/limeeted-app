@@ -460,7 +460,7 @@ export default function StoryEdit(props: Props) {
                 {storyData.storyType == 'SECRET' ? (
                   <>이야기 앞에 "비밀"이 붙으면{'\n'}더 재밌어지는 법이죠!</>
                 ) : storyData.storyType == 'VOTE' ? (
-                  <><Text style={[_styles.titleHightText, {fontFamily: 'Pretendard-Bold'}]}>왼 VS 오 어떤것?</Text>{'\n'}<Text style={{fontFamily: 'Pretendard-SemiBold'}}>선택 장애 해결! 밸런스 게임 즐기기!</Text></>
+                  <>왼 VS 오 어떤것?{'\n'}선택 장애 해결! 밸런스 게임 즐기기!</>
                 ) : (
                   <>소소한 일상부터 음식, 여행 등{'\n'}주제에 관계없이 자유롭게 소통해 보세요.</>
                 )}
@@ -486,7 +486,7 @@ export default function StoryEdit(props: Props) {
                   })}
                 </SpaceView>
 
-                {(storyData.storyType == 'STORY' && !storyBoardSeq && (
+                {(storyData.storyType == 'STORY' && !storyBoardSeq ? (
                   <>
                     <SpaceView mt={20} viewStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
                       <SpaceView>
@@ -505,8 +505,14 @@ export default function StoryEdit(props: Props) {
                       </TouchableOpacity>
                     </SpaceView>
                   </>
-                  )
+                  ):
+                  <SpaceView mt={20}>
+                    <Text style={_styles.hideProfileTitle}>누구에게도 내 정체를 밝히고 싶지 않다면?</Text>
+                    <Text style={_styles.hideProfileDesc}>내가 올린 시크릿은 다른 회원에 의한 프로필 열람이 불가능하니 안심하세요:)</Text>
+                  </SpaceView>
                 )}
+
+
 
                 <SpaceView mt={15}>
                   <CommonTextarea
@@ -794,9 +800,6 @@ const _styles = StyleSheet.create({
     color: '#333333',
     lineHeight: 30,
   },
-  titleHightText: {
-    color: '#7B81EC',
-  },
   subTitleText: {
     fontFamily: 'Pretendard-SemiBold',
     fontSize: 19,
@@ -806,14 +809,15 @@ const _styles = StyleSheet.create({
     let _top = 49;
     let _left = -1;
     let _width = 201;
-    let _display = 'flex';
 
     if(storyType == 'SECRET') {
       _top = 19;
       _left = 96;
       _width = 51;
     } else if(storyType == 'VOTE') {
-      _display = 'none';
+      _top = 19;
+      _left = 0;
+      _width = 140;
     }
 
     return {
@@ -824,7 +828,6 @@ const _styles = StyleSheet.create({
       height: 8,
       backgroundColor: '#7986EE',
       zIndex: -1,
-      display: _display,
     };
   },
   imgArea: {
