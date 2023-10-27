@@ -240,12 +240,22 @@ export default function StoryDetail(props: Props) {
       if(success) {
         switch (data.result_code) {
           case SUCCESS:
-            setStoryData({
-              board: data.story,
-              imageList: data.story_img_list,
-              replyList: data.story_reply_list,
-              voteList: data.story_vote_list,
-            });
+
+            if(isEmptyData(data.story?.story_board_seq)) {
+              setStoryData({
+                board: data.story,
+                imageList: data.story_img_list,
+                replyList: data.story_reply_list,
+                voteList: data.story_vote_list,
+              });
+            } else {
+              show({
+                content: '삭제된 스토리 입니다.',
+                confirmCallback: function () {
+                  navigation.goBack()
+                },
+              });
+            }
           
             break;
           default:

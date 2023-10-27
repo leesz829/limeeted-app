@@ -117,6 +117,13 @@ export const Message = (props: Props) => {
 					  loadPage: 'MATCH',
 					},
 				});
+			} else if(type == 'MSG_TP_30' || type == 'MSG_TP_31' || type == 'MSG_TP_32' || type == 'MSG_TP_33') {
+				navigation.navigate(STACK.COMMON, {
+					screen: 'StoryDetail',
+					params: {
+						storyBoardSeq: item.story_board_seq,
+					}
+				});
 			}
 		}
 	};
@@ -168,6 +175,7 @@ export const Message = (props: Props) => {
 									item.msg_type == 'MSG_TP_02' || item.msg_type == 'MSG_TP_03' || item.msg_type == 'MSG_TP_04' || item.msg_type == 'MSG_TP_05' 
 									|| item.msg_type == 'MSG_TP_06' || item.msg_type == 'MSG_TP_07' || item.msg_type == 'MSG_TP_08' || item.msg_type == 'MSG_TP_09'
 									|| item.msg_type == 'MSG_TP_10' || item.msg_type == 'MSG_TP_14' || item.msg_type == 'MSG_TP_16' || item.msg_type == 'MSG_TP_28'
+									|| item.msg_type == 'MSG_TP_30' || item.msg_type == 'MSG_TP_31' || item.msg_type == 'MSG_TP_32' || item.msg_type == 'MSG_TP_33'
 								) &&
 									<SpaceView mt={10}>
 										<TouchableOpacity 
