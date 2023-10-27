@@ -463,6 +463,8 @@ export default function StoryDetail(props: Props) {
       }
     };
     
+    console.log('item::', item)
+
     return (
       <>
         <SpaceView viewStyle={_styles.replyItemWarp}>
@@ -496,10 +498,16 @@ export default function StoryDetail(props: Props) {
               <SpaceView ml={5} pt={3} viewStyle={{flexDirection: 'column', width: _w}}>
 
                 {/* 닉네임, 타임 텍스트 */}
-                <Text style={_styles.replyNickname}>
-                  <Text style={_styles.replyNicknameText(storyData.board?.story_type, item.gender)}>{isApplySecret ? '비밀글' : item.nickname}</Text>{' '}
-                  <Text style={_styles.replyTimeText}>{item.time_text}</Text>
-                </Text>
+                <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                  <Text style={_styles.replyNickname}>
+                    <Text style={_styles.replyNicknameText(storyData.board?.story_type, item.gender)}>{isApplySecret ? '비밀글' : item.nickname}</Text>{' '}
+                    <Text style={[_styles.replyTimeText, {justifyContent: 'center'}]}>{item.time_text}</Text>     
+                  </Text>
+                  <View>
+                    {secretYn == 'Y' && (<Image source={item.gender == 'W' ? ICON.padlockFemale : ICON.padlockMale} style={{width: 14, height: 14,}} />)}
+                  </View>
+                </SpaceView>
+
 
                 {/* 댓글 내용 */}
                 <Text style={_styles.replyContents}>{isApplySecret ? '게시글 작성자에게만 보이는 글입니다.' : item.reply_contents}</Text>
@@ -664,37 +672,49 @@ export default function StoryDetail(props: Props) {
                     let baseColor = '#3616CF';
                     let textColor = '#333333';
                     let bgColorArr = ['#8759D5', '#7984ED'];
+                    let _display = 'none';
+                    let iconName = ICON.pickWhite;
 
                     // 작성자 여부 구분 처리
                     if(memberBase?.member_seq == storyData.board?.member_seq) {
                       if(storyData.board?.vote_end_yn == 'Y' && (firVoteMmbrCntVal != secVoteMmbrCntVal)) {
-                        if(storyData.board?.selected_vote_seq != item?.story_vote_seq) {
+                        if(storyData.board?.selected_vote_seq != item?.story_vote_seq) {                      
                           baseColor = '#3616CF';
                           bgColorArr = ['#FFF', '#FFF'];
+                          _display = isVote ? 'flex' : 'none';
+                          iconName = isVoteEndYn ? ICON.pickPurple : ICON.pickWhite;
                         } else {
-                          textColor = '#FFF'
+                          textColor = '#FFF';
+                          _display = isVote ? 'flex' : 'none';
                         };
                       } else {
                         baseColor = '#999999';
                         bgColorArr = ['#EEE', '#EEE'];
                         textColor = '#999999';
-                      }
+                        _display = isVote ? 'flex' : 'none';
+                        iconName = isVoteEndYn ? ICON.pickPurple : ICON.pickWhite;
+                      } 
                     } else {
                         if(storyData.board?.vote_end_yn == 'N'){
                           if(isVote) {
                             baseColor = '#3616CF';
                             bgColorArr = ['#7984ED', '#7984ED'];
                             textColor = '#FFF';
+                            _display ='flex';
                           }else {
                             bgColorArr = ['#FFF', '#FFF'];
                           }
                         }else {
                           if(storyData.board?.selected_vote_seq == item?.story_vote_seq) {
                             baseColor = '#3616CF';
-                            bgColorArr = ['#7984ED', '#7984ED'];
+                            bgColorArr = ['#8759D5', '#7984ED'];
                             textColor = '#FFF';
+                            _display = isVote ? 'flex' : 'none';
+                            iconName = isVote ? ICON.pickWhite : ICON.pickPurple;
                           }else {
                             bgColorArr = ['#FFF', '#FFF'];
+                            _display = isVote ? 'flex' : 'none';
+                            iconName = isVote ? ICON.pickPurple : ICON.pickWhite;
                           }
                         }
                         
@@ -702,6 +722,8 @@ export default function StoryDetail(props: Props) {
                           baseColor = '#999999';
                           bgColorArr = ['#EEE', '#EEE'];
                           textColor = '#999999';
+                          _display = isVote ? 'flex' : 'none';
+                          iconName = ICON.pickPurple;
                         }
                     };
                     
@@ -713,16 +735,19 @@ export default function StoryDetail(props: Props) {
                      
                         <SpaceView key={index}>
                           <TouchableOpacity
-                            disabled={isRegiMember || isVote || isVoteEndYn}
+                            disabled={isVote || isVoteEndYn}
                             onPress={() => { voteProc(item?.story_vote_seq) }}
                           >
-
+                    
                             <LinearGradient
                               colors={bgColorArr}
                               start={{ x: 1, y: 1 }}
                               end={{ x: 1, y: 0 }}
                               style={_styles.voteArea(baseColor, bgColorArr)}>
+                              
 
+                              <Image source={iconName} style={[styles.iconSize20, {display: _display, position: 'absolute', top: 10, right: 10, zIndex: 15}]} />
+                              
                               {/* 투표 이미지 */}
                               <SpaceView mt={5}>
                                 <Image source={findSourcePathLocal(item?.file_path)} style={_styles.voteImgStyle} resizeMode={'cover'} />
@@ -871,7 +896,7 @@ export default function StoryDetail(props: Props) {
                   </TouchableOpacity>
 
                   {/* 비밀 댓글 버튼 */}
-                  {(memberBase?.member_seq != storyData.board?.member_seq && storyData.board?.storyType != 'SECRET') && (
+                  {(memberBase?.member_seq != storyData.board?.member_seq && storyData.board?.story_type != 'SECRET') && (
                     <TouchableOpacity style={{marginLeft: 12}} onPress={() => { replyModalOpen(0, 0, true); }}>
                       <Image source={ICON.speechDotline} style={styles.iconSquareSize(20)} />
                     </TouchableOpacity>
@@ -1201,7 +1226,7 @@ const _styles = StyleSheet.create({
     fontFamily: 'Pretendard-Bold',
     fontSize: 14,
     color: '#000',
-    marginRight: 8,
+    marginRight: 5,
   },
   replyContents: {
     fontFamily: 'Pretendard-Regular',
