@@ -160,6 +160,21 @@ export default function StoryDetail(props: Props) {
     setIsReplyVisible(false);
   };
 
+    // ############################################################ 댓글 삭제 팝업
+    const replyDelPopupOpen = async () => {
+      show({
+        title: '댓글 삭제',
+        content: '댓글을 삭제하시겠습니까?',
+        confirmBtnText: '삭제하기',
+        cancelCallback: function() {
+          
+        },
+        confirmCallback: function () {
+
+        },
+      });
+    };
+
   // ############################################################################# 수정하기 이동
   const goStoryModify = async () => {
     // 팝업 닫기
@@ -532,7 +547,14 @@ export default function StoryDetail(props: Props) {
                 </SpaceView>
 
                 {/* 댓글 내용 */}
-                <Text style={_styles.replyContents}>{isApplySecret ? '게시글 작성자에게만 보이는 글입니다.' : item.reply_contents}</Text>
+                <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                  <Text style={_styles.replyContents}>{isApplySecret ? '게시글 작성자에게만 보이는 글입니다.' : item.reply_contents}</Text>
+                  {memberBase?.member_seq === item?.member_seq && (
+                    <TouchableOpacity style={{marginTop: 6, marginLeft: 4}} onPress={() => { replyDelPopupOpen(); }}>
+                      <Text style={_styles.replyTextDel}>삭제</Text>
+                    </TouchableOpacity>
+                  )}
+                </SpaceView>
 
                 {/* 버튼 영역 */}
                 <SpaceView pt={2} mt={10} viewStyle={{alignItems: 'flex-start'}}>
@@ -540,9 +562,11 @@ export default function StoryDetail(props: Props) {
 
                     {/* 댓글달기 버튼 */}
                     {depth == 1 && (
+                      <>
                       <TouchableOpacity onPress={() => { replyModalOpenFunc(storyReplySeq, depth, false); }}>
                         <Text style={_styles.replyTextStyle}>댓글달기</Text>
                       </TouchableOpacity>
+                      </>
                     )}
 
                     {/* 좋아용 버튼 */}
@@ -954,12 +978,12 @@ export default function StoryDetail(props: Props) {
                 </TouchableOpacity> */}
 
               <SpaceView mt={15} mb={10} viewStyle={{flexDirection:'row'}}>
-                  <Text style={_styles.replyLengthText}>댓글{storyData.replyList?.length > 0 && storyData.replyList?.length + '개'}</Text>
+                  <Text style={_styles.replyLengthText}>댓글{storyData.replyList?.length + '개'}</Text>
                   <TouchableOpacity 
                     hitSlop={commonStyle.hipSlop10}
                     style={{marginLeft: 15}}
                     onPress={() => { popupStoryBoardActive(); }}>
-                    <Text style={_styles.likeCntText}>좋아요{storyData.board?.like_cnt > 0 && storyData.board?.like_cnt + '개'}</Text>
+                    <Text style={_styles.likeCntText}>좋아요{storyData.board?.like_cnt + '개'}</Text>
                   </TouchableOpacity>  
               </SpaceView>
 
@@ -1257,6 +1281,10 @@ const _styles = StyleSheet.create({
     marginTop: 6,
     //flex: 0.8,
   }, 
+  replyTextDel: {
+    fontFamily: 'Pretendard-Regular',
+    color: '#999',
+  },
   replyNicknameText: (storyType:string, gender:string) => {
     let clr = '#000';
 
@@ -1282,7 +1310,7 @@ const _styles = StyleSheet.create({
     height: 17,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
   },
   replyTextStyle: {
     fontFamily: 'Pretendard-Regular',
