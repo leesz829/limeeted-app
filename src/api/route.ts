@@ -152,4 +152,5 @@ export const SAVE_STORY_REPLY = '/story/saveStoryReply';
 export const GET_STORY_ACTIVE = '/story/getStoryActive';
 export const GET_STORY_LIKE_LIST = '/story/getStoryLikeList';
 export const SAVE_STORY_VOTE_MEMBER = '/story/saveStoryVoteMember';
+export const STORY_PROFILE_SECRET_PROC = '/story/profileSecretProc';
 

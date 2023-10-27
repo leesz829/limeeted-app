@@ -8,7 +8,7 @@ import TopNavigation from 'component/TopNavigation';
 import * as React from 'react';
 import { useState, useRef, useEffect } from 'react';
 import { ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity, TextInput, InputAccessoryView, Platform, KeyboardAvoidingView } from 'react-native';
-import { save_story_board, get_story_detail } from 'api/models';
+import { save_story_board, get_story_detail, story_profile_secret_proc } from 'api/models';
 import { findSourcePath, IMAGE, GIF_IMG, findSourcePathLocal } from 'utils/imageUtils';
 import { usePopup } from 'Context';
 import { SUCCESS, NODATA } from 'constants/reusltcode';
@@ -107,10 +107,6 @@ export default function StoryEdit(props: Props) {
     setStoryData({...storyData, voteEndType: value});
   };
 
-  const handleTextInputClick = async () => {
-    console.log('dddd');
-  }
-
   // ################################################################ 프로필 이미지 파일 콜백 함수
   const fileCallBack1 = async (uri: any, base64: string) => {
     let data = { file_uri: uri, file_base64: base64, order_seq: 1 };
@@ -153,7 +149,7 @@ export default function StoryEdit(props: Props) {
   // ############################################################ 프로필 감추기 팝업 활성화
   const hideProfilePopupOpen = async () => {
     if(isSecret) {
-      setIsSecret(false);
+      //setIsSecret(false);
     } else {
       if(memberBase?.pass_has_amt >= 6) {
         show({
@@ -165,7 +161,8 @@ export default function StoryEdit(props: Props) {
             
           },
           confirmCallback: function () {
-            setIsSecret(true);
+            //setIsSecret(true);
+            blindProcApply();
           },
         });
       } else {
@@ -434,6 +431,49 @@ export default function StoryEdit(props: Props) {
     }
   };
 
+  // ############################################################################# 블라인드 처리 적용
+  const blindProcApply = async () => {
+
+    // 중복 클릭 방지 설정
+    if(isClickable) {
+      setIsClickable(false);
+      setIsLoading(true);
+
+      try {
+        const body = {          
+        };
+
+        const { success, data } = await story_profile_secret_proc(body);
+        if(success) {
+          switch (data.result_code) {
+          case SUCCESS:
+
+            dispatch(myProfile());
+            setIsSecret(true);
+
+            show({
+              type: 'RESPONSIVE',
+              content: '패스가 사용되었습니다.',
+            });
+            
+            break;
+          default:
+            show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+            break;
+          }
+        } else {
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsClickable(true);
+        setIsLoading(false);
+      }
+
+    }
+  };
+
   /* ##################################################################################################################################
   ################## 초기 실행 함수
   ################################################################################################################################## */
@@ -568,7 +608,7 @@ export default function StoryEdit(props: Props) {
                     <Text style={_styles.hideProfileDesc}>대표사진 대신 랜덤 닉네임으로 대체되어 게시글이 등록되요.</Text>
                   </SpaceView>
                   <TouchableOpacity 
-                    disabled={isEmptyData(storyBoardSeq) ? true : false}
+                    disabled={isEmptyData(storyBoardSeq) ? true : false || isSecret}
                     style={_styles.hideProfileArea(isSecret)} 
                     onPress={() => { hideProfilePopupOpen(); }}
                   >

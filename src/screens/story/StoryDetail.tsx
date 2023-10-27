@@ -6,7 +6,7 @@ import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
 import { RefreshControl, ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity, Animated, Easing, PanResponder, Platform, TouchableWithoutFeedback, KeyboardAvoidingView } from 'react-native';
-import { get_story_detail, save_story_like, save_story_vote_member, profile_open, save_story_board } from 'api/models';
+import { get_story_detail, save_story_like, save_story_vote_member, profile_open, save_story_board, save_story_reply } from 'api/models';
 import { findSourcePath, IMAGE, GIF_IMG, findSourcePathLocal } from 'utils/imageUtils';
 import { usePopup } from 'Context';
 import { SUCCESS, NODATA, EXIST } from 'constants/reusltcode';
@@ -160,20 +160,55 @@ export default function StoryDetail(props: Props) {
     setIsReplyVisible(false);
   };
 
-    // ############################################################ 댓글 삭제 팝업
-    const replyDelPopupOpen = async () => {
-      show({
-        title: '댓글 삭제',
-        content: '댓글을 삭제하시겠습니까?',
-        confirmBtnText: '삭제하기',
-        cancelCallback: function() {
-          
-        },
-        confirmCallback: function () {
+  // ############################################################################# 댓글 삭제 팝업
+  const replyDelPopupOpen = async (_storyReplySeq:number) => {
+    show({
+      title: '댓글 삭제',
+      content: '댓글을 삭제하시겠습니까?',
+      confirmBtnText: '삭제하기',
+      cancelCallback: function() {  
+      },
+      confirmCallback: function () {
+        replyDelProc(_storyReplySeq);
+      },
+    });
+  };
 
-        },
-      });
-    };
+  // ############################################################################# 댓글 삭제 처리
+  const replyDelProc = async (_storyReplySeq:number) => {
+    // 중복 클릭 방지 설정
+    if(isClickable) {
+      try {
+        setIsClickable(false);
+        setIsLoading(true);
+  
+        const body = {
+          story_board_seq: storyBoardSeq,
+          story_reply_seq: _storyReplySeq,
+          del_yn: 'Y',
+        };
+  
+        const { success, data } = await save_story_reply(body);
+        if(success) {
+          switch (data.result_code) {
+            case SUCCESS:
+              getStoryBoard();
+              break;
+            default:
+              show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+              break;
+          }
+        } else {
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsClickable(true);
+        setIsLoading(false);
+      }
+    }
+  };
 
   // ############################################################################# 수정하기 이동
   const goStoryModify = async () => {
@@ -266,7 +301,6 @@ export default function StoryDetail(props: Props) {
         setIsLoading(false);
       }
     }
-
   };
 
   const [likeListPopup, setLikeListPopup] = useState(false);
@@ -550,7 +584,7 @@ export default function StoryDetail(props: Props) {
                 <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
                   <Text style={_styles.replyContents}>{isApplySecret ? '게시글 작성자에게만 보이는 글입니다.' : item.reply_contents}</Text>
                   {memberBase?.member_seq === item?.member_seq && (
-                    <TouchableOpacity style={{marginTop: 6, marginLeft: 4}} onPress={() => { replyDelPopupOpen(); }}>
+                    <TouchableOpacity style={{marginTop: 6, marginLeft: 4}} onPress={() => { replyDelPopupOpen(storyReplySeq); }}>
                       <Text style={_styles.replyTextDel}>삭제</Text>
                     </TouchableOpacity>
                   )}

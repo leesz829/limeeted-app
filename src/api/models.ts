@@ -98,6 +98,7 @@ import {
   SAVE_STORY_VOTE_MEMBER,
   PROFILE_OPEN,
   GET_MATCH_DETAIL,
+  STORY_PROFILE_SECRET_PROC,
 } from './route';
 
 /* ========================================================================================================
@@ -930,6 +931,7 @@ export async function save_story_reply(body: {
   group_seq: number;
   depth: number;
   secret_yn: string;
+  del_yn: string;
 }) {
   return send(SAVE_STORY_REPLY, 'POST', body, true, false);
 };
@@ -963,4 +965,11 @@ export async function save_story_vote_member(body: {
   story_vote_seq: number;
 }) {
   return send(SAVE_STORY_VOTE_MEMBER, 'POST', body, true, false);
+};
+
+// 스토리 프로필을 블라인드 되도록 적용한다.
+export async function story_profile_secret_proc(body: {
+
+}) {
+  return send(STORY_PROFILE_SECRET_PROC, 'POST', body, true, false);
 };

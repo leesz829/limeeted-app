@@ -144,9 +144,12 @@ function CommonHeader({
             <SpaceView>
               {type == 'STORY_REGI' ? (
                 <>
-                  <TouchableOpacity onPress={callbackFunc} hitSlop={commonStyle.hipSlop20}>
-                    <Text style={_styles.regiText}>등록</Text>
-                  </TouchableOpacity>
+                  <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                    {/* <SpaceView mr={15}>{right || <Wallet textStyle={walletTextStyle} />}</SpaceView> */}
+                    <TouchableOpacity onPress={callbackFunc} hitSlop={commonStyle.hipSlop20}>
+                      <Text style={_styles.regiText}>등록</Text>
+                    </TouchableOpacity>
+                  </SpaceView>
                 </>
               ) : (
                 <>
