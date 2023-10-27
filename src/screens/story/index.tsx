@@ -359,7 +359,7 @@ export const Story = () => {
                                   {(isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && (
                                     <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
                                       <Image source={ICON.bookmarkWhite} style={styles.iconSquareSize(13)} resizeMode={'cover'} />
-                                      <SpaceView ml={2}><Text style={_styles.activeText('#ffffff')}>20</Text></SpaceView>
+                                      <SpaceView ml={2}><Text style={_styles.activeText('#ffffff')}>{item?.auth_acct_cnt}</Text></SpaceView>
                                     </SpaceView>
                                   )}
                                 </>
