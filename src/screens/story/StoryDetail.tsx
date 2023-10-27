@@ -484,10 +484,6 @@ export default function StoryDetail(props: Props) {
       depthStyleSize = 15;
     }
 
-    if(storyData.board?.story_type == 'SECRET') {
-      _w = _w + 15;
-    };
-
     // 비밀 댓글 노출
     let isApplySecret = false;
     if(secretYn == 'Y') {
