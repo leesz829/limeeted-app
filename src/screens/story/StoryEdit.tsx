@@ -699,7 +699,7 @@ export default function StoryEdit(props: Props) {
 // ############################################################################# 이미지 렌더링 아이템
 function ImageRenderItem ({ index, _imgData, delFn, fileCallBackFn, storyType }) {
 
-  const imgUrl = findSourcePathLocal(_imgData?.imgPath);
+  const imgUrl = findSourcePath(_imgData?.imgPath);
   const imgDelYn = _imgData?.delYn;
 
   return (
@@ -741,7 +741,7 @@ function ImageRenderItem ({ index, _imgData, delFn, fileCallBackFn, storyType })
 // ############################################################################# 투표 이미지 렌더링 아이템
 function VoteImageRenderItem ({ index, _imgData, delFn, fileCallBackFn, storyType }) {
 
-  const imgUrl = findSourcePathLocal(_imgData);
+  const imgUrl = findSourcePath(_imgData);
   const imgDelYn = _imgData?.delYn;
 
   return (

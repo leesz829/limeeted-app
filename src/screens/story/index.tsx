@@ -254,9 +254,9 @@ export const Story = () => {
   const RenderListItem = React.memo(({ item, type }) => {
     const storyBoardSeq = item.story_board_seq; // 스토리 게시글 번호
     const storyType = item?.story_type; // 스토리 유형
-    const imgPath = findSourcePathLocal(item?.story_img_path);
-    const voteImgPath01 = findSourcePathLocal(item?.vote_img_path_01);
-    const voteImgPath02 = findSourcePathLocal(item?.vote_img_path_02);
+    const imgPath = findSourcePath(item?.story_img_path);
+    const voteImgPath01 = findSourcePath(item?.vote_img_path_01);
+    const voteImgPath02 = findSourcePath(item?.vote_img_path_02);
     const secretYn = item?.secret_yn;
 
     let _width = 0; // 가로길이

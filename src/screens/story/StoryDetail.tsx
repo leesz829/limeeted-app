@@ -844,7 +844,7 @@ export default function StoryDetail(props: Props) {
                               
                               {/* 투표 이미지 */}
                               <SpaceView mt={5}>
-                                <Image source={findSourcePathLocal(item?.file_path)} style={_styles.voteImgStyle} resizeMode={'cover'} />
+                                <Image source={findSourcePath(item?.file_path)} style={_styles.voteImgStyle} resizeMode={'cover'} />
                               </SpaceView>
 
                               {/* 투표 명 */}
@@ -1130,9 +1130,9 @@ export default function StoryDetail(props: Props) {
     // let btnText = '투표하기';
 
     if(isEmptyData(item?.img_file_path)) {
-      url = findSourcePathLocal(item?.img_file_path);
+      url = findSourcePath(item?.img_file_path);
     } else {
-      url = findSourcePathLocal(item?.file_path);
+      url = findSourcePath(item?.file_path);
     };
 
     // 작성자 여부 구분 처리
