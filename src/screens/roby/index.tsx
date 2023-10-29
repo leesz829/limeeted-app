@@ -632,57 +632,63 @@ export const Roby = (props: Props) => {
               </View>
             </TouchableOpacity> */}
 
-            <View style={_styles.cardContainer}>
+            {/* ################################################################################ 라이브 평점, 소셜평점 노출 영역 */}
+            {memberBase?.member_seq != 905 && (
+              <SpaceView>
+                <View style={_styles.cardContainer}>
 
-              {memberBase?.reex_yn == 'Y' ? (
+                {memberBase?.reex_yn == 'Y' ? (
+                  <RatingCard
+                    title={'라이브 심사중'}
+                    //desc={'내 프로필에 ' + memberBase?.profile_eval_cnt + '명의 회원님이\n평가를 남겨 주셨어요.'}
+                    desc={'LIVE에서 노출되고 있는 내 프로필을 회원님들이 직접 평가 진행중 이에요.'}
+                    value={memberBase?.profile_score}
+                    preScore={memberBase?.prev_profile_score}
+                    isPennding={true}
+                    guideOnPress={popupProfileGuideOpen}
+                  />
+                ) : (
+                  <RatingCard
+                    title={'라이브 평점'}
+                    desc={'"LIVE"에서 내 프로필에 부여된 평균 점수입니다.'}
+                    value={memberBase?.profile_score}
+                    isPennding={reassessment}
+                    guideOnPress={popupProfileGuideOpen}
+                  />
+                )}
                 <RatingCard
-                  title={'라이브 심사중'}
-                  //desc={'내 프로필에 ' + memberBase?.profile_eval_cnt + '명의 회원님이\n평가를 남겨 주셨어요.'}
-                  desc={'LIVE에서 노출되고 있는 내 프로필을 회원님들이 직접 평가 진행중 이에요.'}
-                  value={memberBase?.profile_score}
-                  preScore={memberBase?.prev_profile_score}
-                  isPennding={true}
-                  guideOnPress={popupProfileGuideOpen}
-                />
-              ) : (
-                <RatingCard
-                  title={'라이브 평점'}
-                  desc={'"LIVE"에서 내 프로필에 부여된 평균 점수입니다.'}
-                  value={memberBase?.profile_score}
+                  title={'소셜 평점'}
+                  desc={
+                    memberBase?.social_grade > 9 && '천상계와 신계 그 어딘가의 존재' ||
+                    memberBase?.social_grade > 8 && memberBase?.social_grade <= 9 && '미세먼지없이 맑은 하늘 위에 숨쉬는 존재' ||
+                    memberBase?.social_grade > 7 && memberBase?.social_grade <= 8 && '쾌청한 하늘 아래 맑은 바닷물과 어울리는 분' ||
+                    memberBase?.social_grade > 6 && memberBase?.social_grade <= 7 && '따사로운 햇살이 비치는 꽃길을 걷는 분' ||
+                    memberBase?.social_grade > 5 && memberBase?.social_grade <= 6 && '어두운 골목과 화려한 조명의 조화 속에 숨은 사람' ||
+                    memberBase?.social_grade > 4 && memberBase?.social_grade <= 5 && '심해로 통하는 어두운 바다에 몸을 담근 자' ||
+                    memberBase?.social_grade <= 4 && '깊은 심해를 탐험하는 자'
+                  }
+                  value={memberBase?.social_grade.toFixed(1)}
                   isPennding={reassessment}
-                  guideOnPress={popupProfileGuideOpen}
+                  type={'GRADE'}
+                  guideOnPress={popupGradeGuideOpen}
                 />
-              )}
-              <RatingCard
-                title={'소셜 평점'}
-                desc={
-                  memberBase?.social_grade > 9 && '천상계와 신계 그 어딘가의 존재' ||
-                  memberBase?.social_grade > 8 && memberBase?.social_grade <= 9 && '미세먼지없이 맑은 하늘 위에 숨쉬는 존재' ||
-                  memberBase?.social_grade > 7 && memberBase?.social_grade <= 8 && '쾌청한 하늘 아래 맑은 바닷물과 어울리는 분' ||
-                  memberBase?.social_grade > 6 && memberBase?.social_grade <= 7 && '따사로운 햇살이 비치는 꽃길을 걷는 분' ||
-                  memberBase?.social_grade > 5 && memberBase?.social_grade <= 6 && '어두운 골목과 화려한 조명의 조화 속에 숨은 사람' ||
-                  memberBase?.social_grade > 4 && memberBase?.social_grade <= 5 && '심해로 통하는 어두운 바다에 몸을 담근 자' ||
-                  memberBase?.social_grade <= 4 && '깊은 심해를 탐험하는 자'
-                }
-                value={memberBase?.social_grade.toFixed(1)}
-                isPennding={reassessment}
-                type={'GRADE'}
-                guideOnPress={popupGradeGuideOpen}
-              />
-            </View>
-          </View>
+                </View>
 
-          {memberBase?.reex_yn == 'Y' ? (
-            <View style={[_styles.pennding, layoutStyle.mb20]}>
-              <Text style={_styles.submitText}>내 프로필 사진이 라이브에 공개되고 있어요.</Text>
-            </View>
-          ) : (
-            <TouchableOpacity
-              onPress={() => profileReexPopupOpen()}
-              style={_styles.submitBtn}>
-              <Text style={_styles.submitText}>라이브 재심사</Text>
-            </TouchableOpacity>
-          )}
+                {memberBase?.reex_yn == 'Y' ? (
+                <View style={[_styles.pennding, layoutStyle.mb20]}>
+                  <Text style={_styles.submitText}>내 프로필 사진이 라이브에 공개되고 있어요.</Text>
+                </View>
+                ) : (
+                <TouchableOpacity
+                  onPress={() => profileReexPopupOpen()}
+                  style={_styles.submitBtn}>
+                  <Text style={_styles.submitText}>라이브 재심사</Text>
+                </TouchableOpacity>
+                )}
+              </SpaceView>
+            )}
+
+          </View>
 
           {/* ################################################################################ 보관함 영역 */}
           <SpaceView mt={40}>
