@@ -841,52 +841,52 @@ export const Profile1 = (props: Props) => {
                       ))}
                     </View>
                   </SpaceView>
+
+                  <SpaceView mt={30} mb={30} viewStyle={_styles.myImpressionContainer}>
+                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 25}}>
+                      <Text style={_styles.title}>내 평점은?</Text>
+                    </View>
+
+                    <View style={_styles.profileScoreContainer}>
+                      <View style={[_styles.scoreContainer, { left: memberBase?.profile_score == 0 ? 0 : memberBase?.profile_score * 10 - 5 + '%' }]}>
+                        <Text style={_styles.scoreText}>{memberBase?.profile_score}</Text>
+                        <View style={_styles.triangle}></View>
+                      </View>
+
+                      <View>
+                        <LinearGradient
+                          colors={['#7986EE', '#8854D2']}
+                          start={{ x: 0, y: 0 }}
+                          end={{ x: 1, y: 0 }}
+                          style={_styles.gradient(memberBase?.profile_score / 10)}>
+                        </LinearGradient>
+
+                        <Slider
+                          //value={memberBase?.profile_score / 10}
+                          animateTransitions={true}
+                          renderThumbComponent={() => null}
+                          /* maximumTrackTintColor={'#e3e3e3'}
+                          minimumTrackTintColor={'#8854d2'} */
+                          maximumTrackTintColor={'transparent'}
+                          minimumTrackTintColor={'transparent'}
+                          containerStyle={_styles.sliderContainerStyle}
+                          trackStyle={_styles.trackStyle}
+                          trackClickable={false}
+                          disabled
+                        />
+                      </View>
+                    </View>
+                    
+                    <View style={_styles.gageContainer}>
+                      <Text style={_styles.gageText}>0</Text>
+                      <Text style={_styles.gageText}>5</Text>
+                      <Text style={_styles.gageText}>10</Text>
+                    </View>
+                  </SpaceView>
                 </>
               )}
             </>
           )}
-
-          <SpaceView mt={30} mb={30} viewStyle={_styles.myImpressionContainer}>
-            <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 25}}>
-              <Text style={_styles.title}>내 평점은?</Text>
-            </View>
-
-            <View style={_styles.profileScoreContainer}>
-              <View style={[_styles.scoreContainer, { left: memberBase?.profile_score == 0 ? 0 : memberBase?.profile_score * 10 - 5 + '%' }]}>
-                <Text style={_styles.scoreText}>{memberBase?.profile_score}</Text>
-                <View style={_styles.triangle}></View>
-              </View>
-
-              <View>
-                <LinearGradient
-                  colors={['#7986EE', '#8854D2']}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={_styles.gradient(memberBase?.profile_score / 10)}>
-                </LinearGradient>
-
-                <Slider
-                  //value={memberBase?.profile_score / 10}
-                  animateTransitions={true}
-                  renderThumbComponent={() => null}
-                  /* maximumTrackTintColor={'#e3e3e3'}
-                  minimumTrackTintColor={'#8854d2'} */
-                  maximumTrackTintColor={'transparent'}
-                  minimumTrackTintColor={'transparent'}
-                  containerStyle={_styles.sliderContainerStyle}
-                  trackStyle={_styles.trackStyle}
-                  trackClickable={false}
-                  disabled
-                />
-              </View>
-            </View>
-            
-            <View style={_styles.gageContainer}>
-              <Text style={_styles.gageText}>0</Text>
-              <Text style={_styles.gageText}>5</Text>
-              <Text style={_styles.gageText}>10</Text>
-            </View>
-          </SpaceView>
 
           {/* ####################################################################################
 					####################### 인터뷰 영역
