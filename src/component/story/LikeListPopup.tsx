@@ -121,22 +121,26 @@ export default function LikeListPopup({ isVisible, closeModal, type, _storyBoard
             <SpaceView ml={3}>
               <SpaceView viewStyle={{flexDirection: 'row'}}>
 
-                {/* 프로필 평점, 인증 레벨 */}
-                {(storyType != 'SECRET' && (item?.profile_score >= 7.0 || (isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5))) && (
+                {memberBase?.member_seq != 905 && (
                   <>
-                    {item?.profile_score >= 7.0 && (
-                      <SpaceView mr={1} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                        <Image source={ICON.starYellow} style={styles.iconSquareSize(15)} resizeMode={'cover'} />
-                        <Text style={_styles.profileText}>{item?.profile_score}</Text>
-                      </SpaceView>
-                    )}
-                      
-                    {(isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && (
+                    {/* 프로필 평점, 인증 레벨 */}
+                    {(storyType != 'SECRET' && (item?.profile_score >= 7.0 || (isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5))) && (
                       <>
-                        <SpaceView mr={1} pl={5} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                          <Image source={ICON.bookmarkPurple} style={styles.iconSquareSize(15)} resizeMode={'cover'} />
-                          <Text style={_styles.profileText}>{item?.auth_acct_cnt}</Text>
-                        </SpaceView>
+                        {item?.profile_score >= 7.0 && (
+                          <SpaceView mr={1} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                            <Image source={ICON.starYellow} style={styles.iconSquareSize(15)} resizeMode={'cover'} />
+                            <Text style={_styles.profileText}>{item?.profile_score}</Text>
+                          </SpaceView>
+                        )}
+                          
+                        {(isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && (
+                          <>
+                            <SpaceView mr={1} pl={5} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                              <Image source={ICON.bookmarkPurple} style={styles.iconSquareSize(15)} resizeMode={'cover'} />
+                              <Text style={_styles.profileText}>{item?.auth_acct_cnt}</Text>
+                            </SpaceView>
+                          </>
+                        )}
                       </>
                     )}
                   </>

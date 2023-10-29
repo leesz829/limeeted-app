@@ -10,6 +10,7 @@ import { modalStyle, layoutStyle, commonStyle } from 'assets/styles/Styles';
 import { isEmptyData } from 'utils/functions';
 import AuthLevel from 'component/common/AuthLevel';
 import ProfileGrade from 'component/common/ProfileGrade';
+import { useUserInfo } from 'hooks/useUserInfo';
 
 
 
@@ -18,6 +19,8 @@ const { width, height } = Dimensions.get('window');
 
 export default function MemberIntro({ memberData, imgList, interestList, isNoDataArea }) {
   const navigation = useNavigation<ScreenNavigationProp>();
+
+  const memberBase = useUserInfo();
 
   return (
     <>
@@ -41,17 +44,19 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                 <Text style={_styles.commentText}>"{memberData?.comment}"</Text>
               </SpaceView>
 
-              <SpaceView mt={10} viewStyle={{flexDirection: 'row'}}>
-                {/* ####################################################################################################
-                ##################################### 인증 레벨 노출 영역
-                #################################################################################################### */}
-                <AuthLevel authAcctCnt={memberData?.auth_acct_cnt} type={'BASE'} />
+              {memberBase?.member_seq != 905 && (
+                <SpaceView mt={10} viewStyle={{flexDirection: 'row'}}>
+                  {/* ####################################################################################################
+                  ##################################### 인증 레벨 노출 영역
+                  #################################################################################################### */}
+                  <AuthLevel authAcctCnt={memberData?.auth_acct_cnt} type={'BASE'} />
 
-                {/* ####################################################################################################
-                ##################################### 라이브 평점 노출 영역
-                #################################################################################################### */}
-                <ProfileGrade profileScore={memberData?.profile_score} type={'BASE'} />
-              </SpaceView>
+                  {/* ####################################################################################################
+                  ##################################### 라이브 평점 노출 영역
+                  #################################################################################################### */}
+                  <ProfileGrade profileScore={memberData?.profile_score} type={'BASE'} />
+                </SpaceView>
+              )}
 
               {/* ############################################################################################### 프로필 소개 영역 */}
               {isEmptyData(memberData?.introduce_comment) && (

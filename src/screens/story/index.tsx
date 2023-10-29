@@ -344,27 +344,31 @@ export const Story = () => {
 
                       <SpaceView mt={10} viewStyle={{flexDirection: 'column', alignItems: 'center'}}>
 
-                        {/* 프로필 평점, 인증 레벨 */}
-                        {(storyType != 'SECRET' && ((isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) || item?.profile_score >= 7.0)) && (
+                        {memberBase?.member_seq != 905 && (
                           <>
-                            <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                              {(storyType != 'SECRET' && (item?.profile_score >= 7.0 || (isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5))) && (
-                                <>
-                                  {item?.profile_score >= 7.0 && (
-                                    <SpaceView mr={5} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                                      <Image source={ICON.starWhite} style={styles.iconSquareSize(13)} resizeMode={'cover'} />
-                                      <SpaceView ml={2}><Text style={_styles.activeText('#ffffff')}>{item?.profile_score}</Text></SpaceView>
-                                    </SpaceView>
+                            {/* 프로필 평점, 인증 레벨 */}
+                            {(storyType != 'SECRET' && ((isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) || item?.profile_score >= 7.0)) && (
+                              <>
+                                <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                                  {(storyType != 'SECRET' && (item?.profile_score >= 7.0 || (isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5))) && (
+                                    <>
+                                      {item?.profile_score >= 7.0 && (
+                                        <SpaceView mr={5} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                                          <Image source={ICON.starWhite} style={styles.iconSquareSize(13)} resizeMode={'cover'} />
+                                          <SpaceView ml={2}><Text style={_styles.activeText('#ffffff')}>{item?.profile_score}</Text></SpaceView>
+                                        </SpaceView>
+                                      )}
+                                      {(isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && (
+                                        <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                                          <Image source={ICON.bookmarkWhite} style={styles.iconSquareSize(13)} resizeMode={'cover'} />
+                                          <SpaceView ml={2}><Text style={_styles.activeText('#ffffff')}>{item?.auth_acct_cnt}</Text></SpaceView>
+                                        </SpaceView>
+                                      )}
+                                    </>
                                   )}
-                                  {(isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && (
-                                    <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                                      <Image source={ICON.bookmarkWhite} style={styles.iconSquareSize(13)} resizeMode={'cover'} />
-                                      <SpaceView ml={2}><Text style={_styles.activeText('#ffffff')}>{item?.auth_acct_cnt}</Text></SpaceView>
-                                    </SpaceView>
-                                  )}
-                                </>
-                              )}
-                            </SpaceView>
+                                </SpaceView>
+                              </>
+                            )}
                           </>
                         )}
 
@@ -422,24 +426,29 @@ export const Story = () => {
                   </SpaceView>
 
                   <SpaceView>
-                    <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                      {(storyType != 'SECRET' && (item?.profile_score >= 7.0 || (isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5))) && (
-                        <>
-                          {item?.profile_score >= 7.0 && (
-                            <SpaceView mr={5} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                              <Image source={ICON.starYellow} style={styles.iconSquareSize(13)} resizeMode={'cover'} />
-                              <SpaceView ml={2}><Text style={_styles.activeText('#ffffff')}>{item?.profile_score}</Text></SpaceView>
-                            </SpaceView>
+                    {memberBase?.member_seq != 905 && (
+                      <>
+                        {/* 프로필 평점, 인증 레벨 */}
+                        <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                          {(storyType != 'SECRET' && (item?.profile_score >= 7.0 || (isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5))) && (
+                            <>
+                              {item?.profile_score >= 7.0 && (
+                                <SpaceView mr={5} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                                  <Image source={ICON.starYellow} style={styles.iconSquareSize(13)} resizeMode={'cover'} />
+                                  <SpaceView ml={2}><Text style={_styles.activeText('#ffffff')}>{item?.profile_score}</Text></SpaceView>
+                                </SpaceView>
+                              )}
+                              {(isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && (
+                                <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                                  <Image source={ICON.bookmarkPurple} style={styles.iconSquareSize(13)} resizeMode={'cover'} />
+                                  <SpaceView ml={2}><Text style={_styles.activeText('#ffffff')}>{item?.auth_acct_cnt}</Text></SpaceView>
+                                </SpaceView>
+                              )}
+                            </>
                           )}
-                          {(isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && (
-                            <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                              <Image source={ICON.bookmarkPurple} style={styles.iconSquareSize(13)} resizeMode={'cover'} />
-                              <SpaceView ml={2}><Text style={_styles.activeText('#ffffff')}>{item?.auth_acct_cnt}</Text></SpaceView>
-                            </SpaceView>
-                          )}
-                        </>
-                      )}
-                    </SpaceView>
+                        </SpaceView>
+                      </>
+                    )}
 
                     {(storyType == 'SECRET' || secretYn == 'Y') ? (
                       <>

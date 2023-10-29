@@ -8,164 +8,148 @@ import { Slider } from '@miblanchard/react-native-slider';
 import LinearGradient from 'react-native-linear-gradient';
 import { isEmptyData } from 'utils/functions';
 import ProfileGrade from 'component/common/ProfileGrade';
+import { useUserInfo } from 'hooks/useUserInfo';
 
 
 const { width, height } = Dimensions.get('window');
 
 export default function ProfileActive({ memberData }) {
 
+  const memberBase = useUserInfo();
+
   return (
     <>
       <SpaceView mt={30}>
+        {memberBase?.member_seq != 905 && (
+          <>
 
-        <SpaceView viewStyle={{flexDirection: 'row', alignItems: `center`, justifyContent: `flex-start`,}}>
-          <Text style={_styles.title}>프로필 활동지수</Text>
+            <SpaceView viewStyle={{flexDirection: 'row', alignItems: `center`, justifyContent: `flex-start`,}}>
+              <Text style={_styles.title}>프로필 활동지수</Text>
 
-          <View style={[_styles.levelBadge, {marginRight: 0, marginTop: 1}]}>
+              <View style={[_styles.levelBadge, {marginRight: 0, marginTop: 1}]}>
 
-            {/* ####################################################################################################
-            ##################################### 라이브 노출 영역
-            #################################################################################################### */}
-            <ProfileGrade profileScore={memberData?.profile_score} type={'BASE'} />
-          </View>
-
-        </SpaceView>
-
-        {/* ##############################################################################################
-        ############### 라이브 평점 영역
-        ############################################################################################## */}
-        <View style={_styles.profileActivePannel}>
-          <View style={{zIndex: 1}}>
-            <Text style={_styles.profileEverageText}>라이브 평점</Text>
-            <Text style={_styles.profileActiveText1}>
-              <Text style={{ fontFamily: 'AppleSDGothicNeoEB00' }}>{memberData.nickname}</Text>
-              님의 리미티드 대표 인상
-            </Text>
-            <Text style={_styles.profileActiveText2}>{memberData.face_code_name}</Text>
-            <View style={_styles.sliderContainer}>
-              <Text style={_styles.sliderText}>라이브 평점 {memberData.profile_score}</Text>
-
-              {(isEmptyData(memberData?.profile_score) && memberData?.profile_score > 3) &&
-                <View style={[_styles.scoreContainer, { left: memberData?.profile_score == 0 ? 0 : memberData?.profile_score * 10 - 5 + '%' }]}>
-                  <Text style={_styles.scoreText}>{memberData?.profile_score}</Text>
-                  <View style={_styles.triangle}></View>
-                </View>
-              }
-
-              <SpaceView mt={5} viewStyle={{zIndex: 1}}>
-                <LinearGradient
-                  colors={['#7986EE', '#8854D2']}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={_styles.gradient(memberData?.profile_score/10)}>
-                </LinearGradient>
-              </SpaceView>
-
-              <Slider
-                animateTransitions={true}
-                renderThumbComponent={() => null}
-                containerStyle={_styles.sliderContainerStyle}
-                trackStyle={_styles.sliderThumbStyle}
-                trackClickable={false}
-                disabled
-              />
-
-              <View style={_styles.gageContainer}>
-                <Text style={_styles.gageText}>0</Text>
-                <Text style={_styles.gageText}>5</Text>
-                <Text style={_styles.gageText}>10</Text>
+                {/* ####################################################################################################
+                ##################################### 라이브 노출 영역
+                #################################################################################################### */}
+                <ProfileGrade profileScore={memberData?.profile_score} type={'BASE'} />
               </View>
-            </View>
-          </View>
-          
-          {/* {memberData?.profile_score >= 7.0 && memberData?.profile_score < 8.0 &&
-            <View style={{position: 'absolute', top: -10, right: 10}}>
-              <Image source={ICON.score7BigIcon} style={[{width: 180, height: 180, opacity: 0.6}]} />
-            </View>
-          }
-          {memberData?.profile_score >= 8.0 && memberData?.profile_score < 9.0 &&
-            <View style={{position: 'absolute', top: -5, right: 15}}>
-              <Image source={ICON.scoreKingIcon} style={[{width: 180, height: 180, opacity: 0.6}]} />
-            </View>
-          }
-          {memberData?.profile_score >= 9.0 && memberData?.profile_score < 10.0 &&
-            <View style={{position: 'absolute', top: 15, right: 5}}>
-              <Image source={ICON.scoreDiamondIcon} style={[{width: 180, height: 180, opacity: 0.6}]} />
-            </View>
-          }
-          {memberData?.profile_score >= 10.0 &&
-            <View style={{position: 'absolute', top: 0, right: 5}}>
-              <Image source={ICON.score10Icon} style={[{width: 180, height: 180, opacity: 0.6}]} />
-            </View>
-          } */}
-          
-        </View>
-
-
-        {/* ##############################################################################################
-        ############### 소셜 평점 영역
-        ############################################################################################## */}
-        <View style={_styles.socialContainer}>
-          <Text style={_styles.socialEverageText}>소셜 평점</Text>
-          <Text style={[_styles.socialText1, { fontFamily: 'AppleSDGothicNeoEB00' }]}>
-            {isEmptyData(memberData?.social_grade) ? (
-              <>
-                {memberData?.social_grade > 9 && '천상계와 신계 그 어딘가의 존재'}
-                {memberData?.social_grade > 8 && memberData?.social_grade <= 9 && '미세먼지없이 맑은 하늘 위에 숨쉬는 존재'}
-                {memberData?.social_grade > 7 && memberData?.social_grade <= 8 && '쾌청한 하늘 아래 맑은 바닷물과 어울리는 분'}
-                {memberData?.social_grade > 6 && memberData?.social_grade <= 7 && '따사로운 햇살이 비치는 꽃길을 걷는 분'}
-                {memberData?.social_grade > 5 && memberData?.social_grade <= 6 && '어두운 골목과 화려한 조명의 조화 속에 숨은 사람'}
-                {memberData?.social_grade > 4 && memberData?.social_grade <= 5 && '심해로 통하는 어두운 바다에 몸을 담근 자'}
-                {memberData?.social_grade <= 4 && '깊은 심해를 탐험하는 자'}
-              </>
-            ) : (
-              <>깊은 심해를 탐험하는 자</>
-            )}
-          </Text>
-          {/* <Text style={styles.socialText1}>매칭되면</Text>
-          <Text style={styles.socialText1}>
-            <Text style={{ fontFamily: 'AppleSDGothicNeoEB00' }}>
-              후회하지 않을듯한
-            </Text>{' '}
-            느낌이 들어요
-          </Text> */}
-          <View style={_styles.sliderContainer}>
-            <Text style={_styles.sliderText}>소셜 평점 {memberData?.social_grade.toFixed(1)}</Text>
-
-            {(isEmptyData(memberData?.social_grade) && memberData?.social_grade > 3) &&
-              <View style={[_styles.scoreContainer, { left: memberData?.social_grade == 0 ? 0 : memberData?.social_grade * 10 - 5 + '%' }]}>
-                <Text style={_styles.scoreText}>{memberData?.social_grade}</Text>
-                <View style={_styles.triangle}></View>
-              </View>
-            }
-
-            <SpaceView mt={5} viewStyle={{zIndex: 1}}>
-              <LinearGradient
-                colors={['#FF9FBE', '#FE0456']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={_styles.gradient(memberData?.social_grade/10)}>
-              </LinearGradient>
             </SpaceView>
 
-            <Slider
-              //value={memberData?.social_grade/10}
-              animateTransitions={true}
-              renderThumbComponent={() => null}
-              /* maximumTrackTintColor={'#fe0456'}
-              minimumTrackTintColor={'#ff9fbe'} */
-              containerStyle={_styles.socialSliderContainerStyle}
-              trackStyle={_styles.socialSliderThumbStyle}
-              trackClickable={false}
-              disabled
-            />
-            <View style={_styles.gageContainer}>
-              <Text style={_styles.gageText}>0</Text>
-              <Text style={_styles.gageText}>5</Text>
-              <Text style={_styles.gageText}>10</Text>
+            {/* ##############################################################################################
+            ############### 라이브 평점 영역
+            ############################################################################################## */}
+            <View style={_styles.profileActivePannel}>
+              <View style={{zIndex: 1}}>
+                <Text style={_styles.profileEverageText}>라이브 평점</Text>
+                <Text style={_styles.profileActiveText1}>
+                  <Text style={{ fontFamily: 'AppleSDGothicNeoEB00' }}>{memberData.nickname}</Text>
+                  님의 리미티드 대표 인상
+                </Text>
+                <Text style={_styles.profileActiveText2}>{memberData.face_code_name}</Text>
+                <View style={_styles.sliderContainer}>
+                  <Text style={_styles.sliderText}>라이브 평점 {memberData.profile_score}</Text>
+
+                  {(isEmptyData(memberData?.profile_score) && memberData?.profile_score > 3) &&
+                    <View style={[_styles.scoreContainer, { left: memberData?.profile_score == 0 ? 0 : memberData?.profile_score * 10 - 5 + '%' }]}>
+                      <Text style={_styles.scoreText}>{memberData?.profile_score}</Text>
+                      <View style={_styles.triangle}></View>
+                    </View>
+                  }
+
+                  <SpaceView mt={5} viewStyle={{zIndex: 1}}>
+                    <LinearGradient
+                      colors={['#7986EE', '#8854D2']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      style={_styles.gradient(memberData?.profile_score/10)}>
+                    </LinearGradient>
+                  </SpaceView>
+
+                  <Slider
+                    animateTransitions={true}
+                    renderThumbComponent={() => null}
+                    containerStyle={_styles.sliderContainerStyle}
+                    trackStyle={_styles.sliderThumbStyle}
+                    trackClickable={false}
+                    disabled
+                  />
+
+                  <View style={_styles.gageContainer}>
+                    <Text style={_styles.gageText}>0</Text>
+                    <Text style={_styles.gageText}>5</Text>
+                    <Text style={_styles.gageText}>10</Text>
+                  </View>
+                </View>
+              </View>          
             </View>
-          </View>
-        </View>
+
+            {/* ##############################################################################################
+            ############### 소셜 평점 영역
+            ############################################################################################## */}
+            <View style={_styles.socialContainer}>
+              <Text style={_styles.socialEverageText}>소셜 평점</Text>
+              <Text style={[_styles.socialText1, { fontFamily: 'AppleSDGothicNeoEB00' }]}>
+                {isEmptyData(memberData?.social_grade) ? (
+                  <>
+                    {memberData?.social_grade > 9 && '천상계와 신계 그 어딘가의 존재'}
+                    {memberData?.social_grade > 8 && memberData?.social_grade <= 9 && '미세먼지없이 맑은 하늘 위에 숨쉬는 존재'}
+                    {memberData?.social_grade > 7 && memberData?.social_grade <= 8 && '쾌청한 하늘 아래 맑은 바닷물과 어울리는 분'}
+                    {memberData?.social_grade > 6 && memberData?.social_grade <= 7 && '따사로운 햇살이 비치는 꽃길을 걷는 분'}
+                    {memberData?.social_grade > 5 && memberData?.social_grade <= 6 && '어두운 골목과 화려한 조명의 조화 속에 숨은 사람'}
+                    {memberData?.social_grade > 4 && memberData?.social_grade <= 5 && '심해로 통하는 어두운 바다에 몸을 담근 자'}
+                    {memberData?.social_grade <= 4 && '깊은 심해를 탐험하는 자'}
+                  </>
+                ) : (
+                  <>깊은 심해를 탐험하는 자</>
+                )}
+              </Text>
+              {/* <Text style={styles.socialText1}>매칭되면</Text>
+              <Text style={styles.socialText1}>
+                <Text style={{ fontFamily: 'AppleSDGothicNeoEB00' }}>
+                  후회하지 않을듯한
+                </Text>{' '}
+                느낌이 들어요
+              </Text> */}
+              <View style={_styles.sliderContainer}>
+                <Text style={_styles.sliderText}>소셜 평점 {memberData?.social_grade.toFixed(1)}</Text>
+
+                {(isEmptyData(memberData?.social_grade) && memberData?.social_grade > 3) &&
+                  <View style={[_styles.scoreContainer, { left: memberData?.social_grade == 0 ? 0 : memberData?.social_grade * 10 - 5 + '%' }]}>
+                    <Text style={_styles.scoreText}>{memberData?.social_grade}</Text>
+                    <View style={_styles.triangle}></View>
+                  </View>
+                }
+
+                <SpaceView mt={5} viewStyle={{zIndex: 1}}>
+                  <LinearGradient
+                    colors={['#FF9FBE', '#FE0456']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={_styles.gradient(memberData?.social_grade/10)}>
+                  </LinearGradient>
+                </SpaceView>
+
+                <Slider
+                  //value={memberData?.social_grade/10}
+                  animateTransitions={true}
+                  renderThumbComponent={() => null}
+                  /* maximumTrackTintColor={'#fe0456'}
+                  minimumTrackTintColor={'#ff9fbe'} */
+                  containerStyle={_styles.socialSliderContainerStyle}
+                  trackStyle={_styles.socialSliderThumbStyle}
+                  trackClickable={false}
+                  disabled
+                />
+                <View style={_styles.gageContainer}>
+                  <Text style={_styles.gageText}>0</Text>
+                  <Text style={_styles.gageText}>5</Text>
+                  <Text style={_styles.gageText}>10</Text>
+                </View>
+              </View>
+            </View>
+
+          </>
+        )}
       </SpaceView>
     </>
   );

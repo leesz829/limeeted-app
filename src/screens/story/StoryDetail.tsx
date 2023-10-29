@@ -943,24 +943,28 @@ export default function StoryDetail(props: Props) {
 
                         <SpaceView viewStyle={{flexDirection: 'column'}}>
 
-                          {/* 프로필 평점, 인증 레벨 */}
-                          {((isEmptyData(storyData.board?.auth_acct_cnt) && storyData.board?.auth_acct_cnt >= 5) || storyData.board?.profile_score >= 7.0) && (
+                          {memberBase?.member_seq != 905 && (
                             <>
-                              <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                                {storyData.board?.profile_score >= 7.0 && (
+                              {/* 프로필 평점, 인증 레벨 */}
+                              {((isEmptyData(storyData.board?.auth_acct_cnt) && storyData.board?.auth_acct_cnt >= 5) || storyData.board?.profile_score >= 7.0) && (
+                                <>
                                   <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                                    <Image source={ICON.starYellow} style={styles.iconSize16} />
-                                    <Text style={_styles.scoreText}>{storyData.board?.profile_score}</Text>
-                                  </SpaceView>
-                                )}
+                                    {storyData.board?.profile_score >= 7.0 && (
+                                      <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                                        <Image source={ICON.starYellow} style={styles.iconSize16} />
+                                        <Text style={_styles.scoreText}>{storyData.board?.profile_score}</Text>
+                                      </SpaceView>
+                                    )}
 
-                                {(isEmptyData(storyData.board?.auth_acct_cnt) && storyData.board?.auth_acct_cnt >= 5) && (
-                                  <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                                    <Image source={ICON.bookmarkPurple} style={[styles.iconSize16, {marginLeft: 5}]} />
-                                    <Text style={_styles.scoreText}>{storyData.board?.auth_acct_cnt}</Text>
+                                    {(isEmptyData(storyData.board?.auth_acct_cnt) && storyData.board?.auth_acct_cnt >= 5) && (
+                                      <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                                        <Image source={ICON.bookmarkPurple} style={[styles.iconSize16, {marginLeft: 5}]} />
+                                        <Text style={_styles.scoreText}>{storyData.board?.auth_acct_cnt}</Text>
+                                      </SpaceView>
+                                    )}
                                   </SpaceView>
-                                )}
-                              </SpaceView>
+                                </>
+                              )}
                             </>
                           )}
 

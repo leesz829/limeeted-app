@@ -18,7 +18,7 @@ const { width, height } = Dimensions.get('window');
 export default function VisualImage({ imgList, memberData, isButton, isAnimation }) {
   const navigation = useNavigation<ScreenNavigationProp>();
 
-  const memberBase = useUserInfo(); //hooksMember.getBase();
+  const memberBase = useUserInfo();
 
   const imgRef = React.useRef();
 
@@ -146,12 +146,16 @@ export default function VisualImage({ imgList, memberData, isButton, isAnimation
               {/* ####################################################################################################
               ##################################### 인증 레벨 노출 영역
               #################################################################################################### */}
-              <AuthLevel authAcctCnt={memberData?.auth_acct_cnt} type={'BASE'} />
+              {memberBase?.member_seq != 905 && (
+                <AuthLevel authAcctCnt={memberData?.auth_acct_cnt} type={'BASE'} />
+              )}
 
               {/* ####################################################################################################
               ##################################### 프로필 평점 노출 영역
               #################################################################################################### */}
-              <ProfileGrade profileScore={memberData?.profile_score} type={'BASE'} />
+              {memberBase?.member_seq != 905 && (
+                <ProfileGrade profileScore={memberData?.profile_score} type={'BASE'} />
+              )}
 
               {/* 고평점 이성 소개받기 구독 아이템 표시 */}
               {/* <View style={styles.redBadge}>

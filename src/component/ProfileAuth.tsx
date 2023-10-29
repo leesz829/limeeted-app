@@ -14,12 +14,15 @@ import { commonStyle } from 'assets/styles/Styles';
 import { isEmptyData } from 'utils/functions';
 import AuthLevel from 'component/common/AuthLevel';
 import { Slider } from '@miblanchard/react-native-slider';
+import { useUserInfo } from 'hooks/useUserInfo';
 
 
 const { width } = Dimensions.get('window');
 
 export default function ProfileAuth({ level, data, isButton, callbackAuthCommentFn }) {
   const navigation = useNavigation<ScreenNavigationProp>();
+
+  const memberBase = useUserInfo();
 
   const authRef = React.useRef();
   const [currentIndex, setCurrentIndex] = React.useState(0);
@@ -35,7 +38,7 @@ export default function ProfileAuth({ level, data, isButton, callbackAuthComment
 
   return (
     <>
-      {data.length > 0 ? (
+      {memberBase?.member_seq != 905 && data.length > 0 ? (
         <>
           <View style={_styles.profileTitleContainer}>
             <SpaceView viewStyle={{flexDirection: `row`, alignItems: `center`, justifyContent: `center`,}}>

@@ -772,70 +772,77 @@ export const Profile1 = (props: Props) => {
 					####################### 프로필 인증 영역
 					#################################################################################### */}
 
-          {profileData.authList.length > 0 ? (
-            <ProfileAuth level={memberBase?.auth_acct_cnt} data={profileData.authList} isButton={true} callbackAuthCommentFn={callbackAuthCommentPopup} />
-          ) : (
-            <View style={{width: '100%', flexDirection: 'column', alignItems: 'flex-start'}}>
-              <Text style={_styles.title}>프로필 인증</Text>
+          {memberBase?.member_seq != 905 && (
+            <>
+              {profileData.authList.length > 0 ? (
+                <ProfileAuth level={memberBase?.auth_acct_cnt} data={profileData.authList} isButton={true} callbackAuthCommentFn={callbackAuthCommentPopup} />
+              ) : (
+                <View style={{width: '100%', flexDirection: 'column', alignItems: 'flex-start'}}>
+                  <Text style={_styles.title}>프로필 인증</Text>
 
-              <View style={_styles.authShadowArea}>
-                <LinearGradient
-                  colors={['#FFFFFF', '#E8FFFE']}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={_styles.authArea(Platform.OS)}>
+                  <View style={_styles.authShadowArea}>
+                    <LinearGradient
+                      colors={['#FFFFFF', '#E8FFFE']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={_styles.authArea(Platform.OS)}>
 
-                  <SpaceView viewStyle={{flexDirection: 'row'}}>
-                    <SpaceView mr={7}><Image source={ICON.jobNew} style={{width: 40, height: 29}} /></SpaceView>
-                    <SpaceView mr={7}><Image source={ICON.degreeNew} style={{width: 40, height: 29}} /></SpaceView>
-                    <SpaceView mr={7}><Image source={ICON.incomeNew} style={{width: 40, height: 29}} /></SpaceView>
-                    <SpaceView mr={7}><Image source={ICON.assetNew} style={{width: 40, height: 29}} /></SpaceView>
-                    <SpaceView mr={7}><Image source={ICON.snsNew} style={{width: 40, height: 29}} /></SpaceView>
-                    <SpaceView><Image source={ICON.vehicleNew} style={{width: 40, height: 29}} /></SpaceView>
-                  </SpaceView>
+                      <SpaceView viewStyle={{flexDirection: 'row'}}>
+                        <SpaceView mr={7}><Image source={ICON.jobNew} style={{width: 40, height: 29}} /></SpaceView>
+                        <SpaceView mr={7}><Image source={ICON.degreeNew} style={{width: 40, height: 29}} /></SpaceView>
+                        <SpaceView mr={7}><Image source={ICON.incomeNew} style={{width: 40, height: 29}} /></SpaceView>
+                        <SpaceView mr={7}><Image source={ICON.assetNew} style={{width: 40, height: 29}} /></SpaceView>
+                        <SpaceView mr={7}><Image source={ICON.snsNew} style={{width: 40, height: 29}} /></SpaceView>
+                        <SpaceView><Image source={ICON.vehicleNew} style={{width: 40, height: 29}} /></SpaceView>
+                      </SpaceView>
 
-                  <SpaceView mt={20} viewStyle={_styles.authEmptyArea}>
-                    <SpaceView mb={13}><Text style={_styles.authEmptyTit}>프로필 인증 변경 심사 후 인증 레벨을 부여 받을 수 있어요.</Text></SpaceView>
-                    <SpaceView mt={5} viewStyle={{paddingHorizontal: 20}}>
-                      <TouchableOpacity 
-                        onPress={() => { navigation.navigate(STACK.COMMON, { screen: 'SecondAuth', }); }}
-                        hitSlop={commonStyle.hipSlop15}>
-                        
-                        <Text style={_styles.authEmptyBtn}>프로필 인증 변경</Text>
-                      </TouchableOpacity>
-                    </SpaceView>
-                  </SpaceView>
-                </LinearGradient>
-              </View>
-            </View>
+                      <SpaceView mt={20} viewStyle={_styles.authEmptyArea}>
+                        <SpaceView mb={13}><Text style={_styles.authEmptyTit}>프로필 인증 변경 심사 후 인증 레벨을 부여 받을 수 있어요.</Text></SpaceView>
+                        <SpaceView mt={5} viewStyle={{paddingHorizontal: 20}}>
+                          <TouchableOpacity 
+                            onPress={() => { navigation.navigate(STACK.COMMON, { screen: 'SecondAuth', }); }}
+                            hitSlop={commonStyle.hipSlop15}>
+                            
+                            <Text style={_styles.authEmptyBtn}>프로필 인증 변경</Text>
+                          </TouchableOpacity>
+                        </SpaceView>
+                      </SpaceView>
+                    </LinearGradient>
+                  </View>
+                </View>
+              )}
+            </>
           )}
 
           {/* ####################################################################################
 					####################### 인상 투표 결과 영역
 					#################################################################################### */}
-
-          {profileData.faceRankList.length > 0 && (
+          {memberBase?.member_seq != 905 && (
             <>
-              <SpaceView mt={30}>
-                <Text style={_styles.title}>내 인상 투표 결과</Text>
-                <View style={_styles.impressionContainer}>
+              {profileData.faceRankList.length > 0 && (
+                <>
+                  <SpaceView mt={30}>
+                    <Text style={_styles.title}>내 인상 투표 결과</Text>
+                    <View style={_styles.impressionContainer}>
 
-                  {profileData.faceRankList.map((item : any, index) => (
-                    <View key={index} style={_styles.itemRow(index === profileData.faceRankList.length - 1 ? true : false)}>
-                      <View style={_styles.subRow}>
-                        {/* <Image source={ICON.fashion} style={_styles.icon} /> */}
-                        <Text style={_styles.rankText(index)}>
-                          {index+1}위
-                        </Text>
-                        <Text style={_styles.contentsText}>{item.face_code_name}</Text>
-                      </View>
-                      <View style={_styles.fashionPercent(index)}>
-                        <Text style={_styles.percentText}>{item.percent}%</Text>
-                      </View>
+                      {profileData.faceRankList.map((item : any, index) => (
+                        <View key={index} style={_styles.itemRow(index === profileData.faceRankList.length - 1 ? true : false)}>
+                          <View style={_styles.subRow}>
+                            {/* <Image source={ICON.fashion} style={_styles.icon} /> */}
+                            <Text style={_styles.rankText(index)}>
+                              {index+1}위
+                            </Text>
+                            <Text style={_styles.contentsText}>{item.face_code_name}</Text>
+                          </View>
+                          <View style={_styles.fashionPercent(index)}>
+                            <Text style={_styles.percentText}>{item.percent}%</Text>
+                          </View>
+                        </View>
+                      ))}
                     </View>
-                  ))}
-                </View>
-              </SpaceView>
+                  </SpaceView>
+                </>
+              )}
             </>
           )}
 
