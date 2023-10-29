@@ -906,7 +906,12 @@ export default function StoryDetail(props: Props) {
                 {/* 수정하기 버튼 */}
                 {memberBase?.member_seq == storyData.board?.member_seq ? (
                   <SpaceView viewStyle={_styles.btnArea}>
-                    <Image source={findSourcePath(storyData.board?.mst_img_path)} style={_styles.mstImgStyle} />
+                    {storyData.board?.story_type == 'SECRET' ? (
+                      <Image source={storyData.board?.gender == 'M' ? ICON.storyMale : ICON.storyFemale} style={_styles.mstImgStyle} />
+                    ) : (
+                      <Image source={findSourcePath(storyData.board?.mst_img_path)} style={_styles.mstImgStyle} />
+                    )}
+
                     <Text style={_styles.nicknameText(storyData.board?.story_type == 'SECRET' || storyData.board?.secret_yn == 'Y', storyData.board?.gender, 12)}>{storyData.board?.nickname}</Text>
                     {/* <TouchableOpacity
                       onPress={() => { goStoryModfy(); }}
