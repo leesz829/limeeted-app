@@ -65,6 +65,8 @@ const TopNavigation: FC<Props> = (props) => {
   );
 };
 function NaviButtons({ navName, theme }: { navName: string; theme?: string }) {
+  const memberBase = useUserInfo(); // 회원 기본정보
+
   function onPressLimeeted() {
     navigation.navigate(STACK.TAB, {
       screen: 'Matching',
@@ -105,10 +107,12 @@ function NaviButtons({ navName, theme }: { navName: string; theme?: string }) {
       <TouchableOpacity style={[_styles.tab]} onPress={onPressLimeeted} disabled={navName == 'LIMEETED' ? true : false}>
         <Image style={_styles.limitedIcon} source={limitedIcon} resizeMode="contain" />
       </TouchableOpacity>
-      
-      <TouchableOpacity style={[_styles.tab]} onPress={onPressLive} disabled={navName == 'LIVE' ? true : false}>
-        <Image style={_styles.liveIcon} source={liveIcon} resizeMode="contain" />
-      </TouchableOpacity>
+
+      {memberBase?.member_seq != 905 && (
+        <TouchableOpacity style={[_styles.tab]} onPress={onPressLive} disabled={navName == 'LIVE' ? true : false}>
+          <Image style={_styles.liveIcon} source={liveIcon} resizeMode="contain" />
+        </TouchableOpacity>
+      )}
 
       <TouchableOpacity style={[_styles.tab]} onPress={onPressStory} disabled={navName == 'Story' ? true : false}>
         <Text style={_styles.storyTxt(navName == 'Story', theme != undefined)}>STORY</Text>
