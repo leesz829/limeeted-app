@@ -390,11 +390,11 @@ export default function StoryDetail(props: Props) {
         title: isSecret ? '비공개 프로필 열람' : '프로필 카드 열람',
         content: isSecret ? '(7일간)비밀 프로필을 열람하시겠습니까?' : '(7일간)프로필을 열람하시겠습니까?',
         passType: isSecret ? 'ROYAL' : 'PASS',
-        passAmt: '15',
+        passAmt: '1',
         confirmCallback: function() {
 
           if(isSecret) {
-            if(memberBase?.royal_pass_has_amt >= 15) {
+            if(memberBase?.royal_pass_has_amt >= 1) {
               profileCardOpen(memberSeq, isSecret);
             } else {
               show({
@@ -553,8 +553,18 @@ export default function StoryDetail(props: Props) {
 
     // 노출 대표 이미지
     let applyMsgImg = findSourcePath(item?.mst_img_path);
-    if(storyData.board?.story_type == 'SECRET' || isApplySecret) {
+    if(storyData.board?.story_type == 'SECRET' || isApplySecret || (storyData.board?.member_seq == item?.member_seq && storyData.board?.secret_yn == 'Y')) {
       applyMsgImg = gender == 'M' ? ICON.storyMale : ICON.storyFemale;
+    };
+
+    // 노출 닉네임
+    let applyNickname = item?.nickname;
+    if(isApplySecret) {
+      applyNickname = '비밀글';
+    } else {
+      if(storyData.board?.member_seq == item?.member_seq && storyData.board?.secret_yn == 'Y') {
+        applyNickname = item?.nickname_modifier + ' ' + item?.nickname_noun;
+      }
     };
 
     return (
@@ -582,7 +592,7 @@ export default function StoryDetail(props: Props) {
                 {/* 닉네임, 타임 텍스트 */}
                 <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
                   <Text style={_styles.replyNickname}>
-                    <Text style={_styles.replyNicknameText(storyData.board?.story_type, item.gender)}>{isApplySecret ? '비밀글' : item.nickname}</Text>{' '}
+                    <Text style={_styles.replyNicknameText(storyData.board?.story_type, item.gender)}>{applyNickname}</Text>{' '}
                     <Text style={[_styles.replyTimeText, {justifyContent: 'center'}]}>{item.time_text}</Text>     
                   </Text>
                   <View>
@@ -904,30 +914,21 @@ export default function StoryDetail(props: Props) {
               <SpaceView viewStyle={{width: '100%', height: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
 
                 {/* 수정하기 버튼 */}
-                {memberBase?.member_seq == storyData.board?.member_seq ? (
+                {memberBase?.member_seq == 999 ? (
                   <SpaceView viewStyle={_styles.btnArea}>
-                    {storyData.board?.story_type == 'SECRET' ? (
+                    {(storyData.board?.secret_yn == 'Y' || storyData.board?.story_type == 'SECRET') ? (
                       <Image source={storyData.board?.gender == 'M' ? ICON.storyMale : ICON.storyFemale} style={_styles.mstImgStyle} />
                     ) : (
                       <Image source={findSourcePath(storyData.board?.mst_img_path)} style={_styles.mstImgStyle} />
                     )}
 
-                    <Text style={_styles.nicknameText(storyData.board?.story_type == 'SECRET' || storyData.board?.secret_yn == 'Y', storyData.board?.gender, 12)}>{storyData.board?.nickname}</Text>
-                    {/* <TouchableOpacity
-                      onPress={() => { goStoryModfy(); }}
-                      style={_styles.regiBtn}>
-                      <Image source={ICON.modfyIcon} style={styles.iconSquareSize(20)} />
-                      <Text style={_styles.regiBtnText}>수정하기</Text>
-                    </TouchableOpacity> */}
-                    {/* <TouchableOpacity
-                      onPress={() => { reply_onOpen(); }}__11
-                      style={_styles.regiBtn}>
-                      <Text style={_styles.regiBtnText}>댓글달기</Text>
-                    </TouchableOpacity> */}
+                    <Text style={_styles.nicknameText(storyData.board?.story_type == 'SECRET' || storyData.board?.secret_yn == 'Y', storyData.board?.gender, 12)}>
+                      {storyData.board?.nickname}
+                    </Text>
                   </SpaceView>
                 ) : (
                   <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                    {((memberBase?.member_seq != storyData.board?.member_seq && storyData.board?.secret_yn == 'Y') || storyData.board?.story_type == 'SECRET') ? (
+                    {(storyData.board?.secret_yn == 'Y' || storyData.board?.story_type == 'SECRET') ? (
                       <TouchableOpacity
                         disabled={memberBase.gender === storyData.board?.gender || memberBase?.member_seq === storyData.board?.member_seq}
                         //onPress={() => { secretPropfilePopupOpen(); }}

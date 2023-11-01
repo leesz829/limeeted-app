@@ -51,6 +51,7 @@ export const Story = () => {
   //const [storyList, setStoryList] = useState<any>([]); // 스토리 목록
   const [storyList, setStoryList] = React.useState<any>([]);
   const [pageNum, setPageNum] = useState(1); // 페이지 번호
+  const [isListFinally, setIsListFinally] = useState(false); // 목록 마지막 여부
 
   // 스토리 등록 이동
   const goStoryRegister = async () => {
@@ -174,65 +175,78 @@ export const Story = () => {
 
   // ############################################################################# 스토리 목록 조회
   const getStoryBoardList = async (_type:string, _pageNum:number) => {
-    try {
-      if(_type == 'REFRESH') {
-        setIsRefreshing(true);
-      } else {
-        setIsLoading(true);
-      };
+    console.log('_type :::::: ' , _type);
 
-      const body = {
-        load_type: _type,
-        page_num: _pageNum,
-      };
+    if(_type == 'ADD' && _pageNum > 1 && isListFinally) {
 
-      console.log('body ::::: ' , body);
-
-      const { success, data } = await get_story_board_list(body);
-      if(success) {
-        switch (data.result_code) {
-          case SUCCESS:
-            /* if(_type == 'ADD') {
-              let dataArray = storyList;
-              data?.story_list.map((item: any) => {
-                dataArray.push(item);
-              })
-              setStoryList(dataArray);
-            } else {
+    } else {
+      try {
+        if(_type == 'REFRESH') {
+          setIsListFinally(false);
+          setIsRefreshing(true);
+        } else {
+          setIsLoading(true);
+        };
+  
+        const body = {
+          load_type: _type,
+          page_num: _pageNum,
+        };
+  
+        console.log('body ::::: ' , body);
+  
+        const { success, data } = await get_story_board_list(body);
+        if(success) {
+          switch (data.result_code) {
+            case SUCCESS:
+              /* if(_type == 'ADD') {
+                let dataArray = storyList;
+                data?.story_list.map((item: any) => {
+                  dataArray.push(item);
+                })
+                setStoryList(dataArray);
+              } else {
+                setStoryList(data?.story_list);
+              }; */
+  
               setStoryList(data?.story_list);
-            }; */
-
-            setStoryList(data?.story_list);
-
-            /* if(data?.story_list.length > 0) {
-              console.log('data?.page_num :::: ' ,data?.page_num);
-              setPageNum(isEmptyData(data?.page_num) ? data?.page_num : 0);
-            } */
-
-            if(_type == 'REFRESH') {
-              setPageNum(1);
-            } else {
-              if(data?.story_list.length > storyList.length) {
+  
+              /* if(data?.story_list.length > 0) {
+                console.log('data?.page_num :::: ' ,data?.page_num);
                 setPageNum(isEmptyData(data?.page_num) ? data?.page_num : 0);
-              }
-            }
+              } */
+  
+              if(_type == 'REFRESH') {
+                setPageNum(1);
+              } else {
+                if(data?.story_list.length > storyList.length) {
+                  setPageNum(isEmptyData(data?.page_num) ? data?.page_num : 0);
+                }
+              };
 
-            break;
-          default:
-            show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-            break;
+              console.log('data?.finally_yn :::::: '  ,data?.finally_yn);
+  
+              if(isEmptyData(data?.finally_yn) && data?.finally_yn == 'Y') {
+                setIsListFinally(true);
+              }
+  
+              break;
+            default:
+              show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+              break;
+          }
+        } else {
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
         }
-      } else {
-        show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      if(_type == 'REFRESH') {
-        setIsRefreshing(false);
-      } else {
-        setIsLoading(false);
-      }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        if(_type == 'REFRESH') {
+          setIsRefreshing(false);
+        } else {
+          setIsLoading(false);
+        }
+      } 
     }
   };
 
@@ -330,12 +344,14 @@ export const Story = () => {
                   ) : (
                     <>
                       {/* 썸네일 이미지 */}
-                      <TouchableOpacity 
+                      {/* <TouchableOpacity 
                         disabled={memberBase?.gender === item?.gender || memberBase?.member_seq === item?.member_seq || secretYn === 'Y'}
                         onPress={() => { profileCardOpenPopup(item?.member_seq, item?.open_cnt); }} >
 
                         <Image source={applyMstImg} style={_styles.mstImgStyle(type == 'SMALL' ? 50 : 80, 40)} resizeMode={'cover'} />
-                      </TouchableOpacity>
+                      </TouchableOpacity> */}
+
+                      <Image source={applyMstImg} style={_styles.mstImgStyle(type == 'SMALL' ? 50 : 80, 40)} resizeMode={'cover'} />
 
                       {/* 스토리 유형 */}
                       <SpaceView viewStyle={_styles.typeArea(storyType)}>
@@ -488,10 +504,9 @@ export const Story = () => {
     if(isFocus) {
       setIsRefreshing(false);
 
-      getStoryBoardList('ADD', pageNum == 0 ? 1 : pageNum);
-
       if(storyList.length == 0) {
         //getStoryBoardList('BASE', 0);
+        getStoryBoardList('ADD', pageNum == 0 ? 1 : pageNum);
       }
     } else {
       //setStoryList([]);
