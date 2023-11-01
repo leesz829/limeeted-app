@@ -390,7 +390,7 @@ export default function StoryDetail(props: Props) {
         title: isSecret ? '비공개 프로필 열람' : '프로필 카드 열람',
         content: isSecret ? '(7일간)비밀 프로필을 열람하시겠습니까?' : '(7일간)프로필을 열람하시겠습니까?',
         passType: isSecret ? 'ROYAL' : 'PASS',
-        passAmt: '1',
+        passAmt: isSecret ? '1' : '15',
         confirmCallback: function() {
 
           if(isSecret) {
