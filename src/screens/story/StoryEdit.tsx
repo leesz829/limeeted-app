@@ -154,7 +154,7 @@ export default function StoryEdit(props: Props) {
       if(memberBase?.pass_has_amt >= 6) {
         show({
           title: '블라인드 모드',
-          content: '블라인드 모드로 변경 하시겠습니까?\n회원님의 프로필은 로얄패스로만 열람 가능합니다.',
+          content: '블라인드 모드로 변경 하시겠습니까?\n회원님의 프로필은 로얄패스로만 열람 가능합니다.\n글 작성 취소 시 소모한 패스는 복구되지 않아요🥺',
           passAmt: 6,
           confirmBtnText: '변경하기',
           cancelCallback: function() {

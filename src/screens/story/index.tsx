@@ -434,11 +434,12 @@ export const Story = () => {
                 {/* 프로필 영역 */}
                 <SpaceView viewStyle={_styles.profileArea}>
                   <SpaceView mr={5}>
-                    <TouchableOpacity 
+                    {/* <TouchableOpacity 
                       disabled={memberBase?.gender === item?.gender || memberBase?.member_seq === item?.member_seq}
                       onPress={() => { profileCardOpenPopup(item?.member_seq, item?.open_cnt); }}>
                       <Image source={applyMstImg} style={_styles.mstImgStyle(30, 20)} resizeMode={'cover'} />
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
+                    <Image source={applyMstImg} style={_styles.mstImgStyle(30, 20)} resizeMode={'cover'} />
                   </SpaceView>
 
                   <SpaceView>
