@@ -913,76 +913,62 @@ export default function StoryDetail(props: Props) {
             <SpaceView pl={20} pr={20} pb={10} mb={8} viewStyle={_styles.replyEtcArea}>
               <SpaceView viewStyle={{width: '100%', height: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
 
-                {/* 수정하기 버튼 */}
-                {memberBase?.member_seq == 999 ? (
-                  <SpaceView viewStyle={_styles.btnArea}>
-                    {(storyData.board?.secret_yn == 'Y' || storyData.board?.story_type == 'SECRET') ? (
-                      <Image source={storyData.board?.gender == 'M' ? ICON.storyMale : ICON.storyFemale} style={_styles.mstImgStyle} />
-                    ) : (
-                      <Image source={findSourcePath(storyData.board?.mst_img_path)} style={_styles.mstImgStyle} />
-                    )}
-
-                    <Text style={_styles.nicknameText(storyData.board?.story_type == 'SECRET' || storyData.board?.secret_yn == 'Y', storyData.board?.gender, 12)}>
-                      {storyData.board?.nickname}
-                    </Text>
-                  </SpaceView>
-                ) : (
-                  <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                    {(storyData.board?.secret_yn == 'Y' || storyData.board?.story_type == 'SECRET') ? (
+                {/* ################################################################################################# 작성자 정보 영역 */}
+                <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                  {(storyData.board?.secret_yn == 'Y' || storyData.board?.story_type == 'SECRET') ? (
+                    <TouchableOpacity
+                      disabled={memberBase.gender === storyData.board?.gender || memberBase?.member_seq === storyData.board?.member_seq}
+                      //onPress={() => { secretPropfilePopupOpen(); }}
+                      onPress={() => { profileCardOpenPopup(storyData.board?.member_seq, storyData.board?.open_cnt, true); }} 
+                    >
+                      <Text style={_styles.nicknameText(storyData.board?.story_type == 'SECRET' || storyData.board?.secret_yn == 'Y', storyData.board?.gender, 14)}>
+                        {storyData.board?.nickname_modifier}{' '}{storyData.board?.nickname_noun}
+                      </Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <>
                       <TouchableOpacity
-                        disabled={memberBase.gender === storyData.board?.gender || memberBase?.member_seq === storyData.board?.member_seq}
-                        //onPress={() => { secretPropfilePopupOpen(); }}
-                        onPress={() => { profileCardOpenPopup(storyData.board?.member_seq, storyData.board?.open_cnt, true); }} 
-                      >
-                        <Text style={_styles.nicknameText(storyData.board?.story_type == 'SECRET' || storyData.board?.secret_yn == 'Y', storyData.board?.gender, 14)}>
-                          {storyData.board?.nickname_modifier}{' '}{storyData.board?.nickname_noun}
-                        </Text>
+                        disabled={memberBase?.gender === storyData.board?.gender || memberBase?.member_seq === storyData.board?.member_seq}
+                        onPress={() => { profileCardOpenPopup(storyData.board?.member_seq, storyData.board?.open_cnt, false); }} >
+
+                        <Image source={findSourcePath(storyData.board?.mst_img_path)} style={_styles.mstImgStyle} />
                       </TouchableOpacity>
-                    ) : (
-                      <>
-                        <TouchableOpacity
-                          disabled={memberBase?.gender === storyData.board?.gender || memberBase?.member_seq === storyData.board?.member_seq}
-                          onPress={() => { profileCardOpenPopup(storyData.board?.member_seq, storyData.board?.open_cnt, false); }} >
 
-                          <Image source={findSourcePath(storyData.board?.mst_img_path)} style={_styles.mstImgStyle} />
-                        </TouchableOpacity>
+                      <SpaceView viewStyle={{flexDirection: 'column'}}>
 
-                        <SpaceView viewStyle={{flexDirection: 'column'}}>
+                        {memberBase?.member_seq != 905 && (
+                          <>
+                            {/* 프로필 평점, 인증 레벨 */}
+                            {((isEmptyData(storyData.board?.auth_acct_cnt) && storyData.board?.auth_acct_cnt >= 5) || storyData.board?.profile_score >= 7.0) && (
+                              <>
+                                <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                                  {storyData.board?.profile_score >= 7.0 && (
+                                    <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                                      <Image source={ICON.starYellow} style={styles.iconSize16} />
+                                      <Text style={_styles.scoreText}>{storyData.board?.profile_score}</Text>
+                                    </SpaceView>
+                                  )}
 
-                          {memberBase?.member_seq != 905 && (
-                            <>
-                              {/* 프로필 평점, 인증 레벨 */}
-                              {((isEmptyData(storyData.board?.auth_acct_cnt) && storyData.board?.auth_acct_cnt >= 5) || storyData.board?.profile_score >= 7.0) && (
-                                <>
-                                  <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                                    {storyData.board?.profile_score >= 7.0 && (
-                                      <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                                        <Image source={ICON.starYellow} style={styles.iconSize16} />
-                                        <Text style={_styles.scoreText}>{storyData.board?.profile_score}</Text>
-                                      </SpaceView>
-                                    )}
+                                  {(isEmptyData(storyData.board?.auth_acct_cnt) && storyData.board?.auth_acct_cnt >= 5) && (
+                                    <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                                      <Image source={ICON.bookmarkPurple} style={[styles.iconSize16, {marginLeft: 5}]} />
+                                      <Text style={_styles.scoreText}>{storyData.board?.auth_acct_cnt}</Text>
+                                    </SpaceView>
+                                  )}
+                                </SpaceView>
+                              </>
+                            )}
+                          </>
+                        )}
 
-                                    {(isEmptyData(storyData.board?.auth_acct_cnt) && storyData.board?.auth_acct_cnt >= 5) && (
-                                      <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                                        <Image source={ICON.bookmarkPurple} style={[styles.iconSize16, {marginLeft: 5}]} />
-                                        <Text style={_styles.scoreText}>{storyData.board?.auth_acct_cnt}</Text>
-                                      </SpaceView>
-                                    )}
-                                  </SpaceView>
-                                </>
-                              )}
-                            </>
-                          )}
-
-                          {/* 닉네임 */}
-                          <SpaceView ml={3}>
-                            <Text style={_styles.nicknameText(storyData.board?.story_type == 'SECRET' || storyData.board?.secret_yn == 'Y', storyData.board?.gender, 12)}>{storyData.board?.nickname}</Text>
-                          </SpaceView>
+                        {/* 닉네임 */}
+                        <SpaceView ml={3}>
+                          <Text style={_styles.nicknameText(storyData.board?.story_type == 'SECRET' || storyData.board?.secret_yn == 'Y', storyData.board?.gender, 12)}>{storyData.board?.nickname}</Text>
                         </SpaceView>
-                      </>
-                    )}
-                  </SpaceView>
-                )}
+                      </SpaceView>
+                    </>
+                  )}
+                </SpaceView>
 
                 {/* ################################################################################################# 버튼 영역 */}
                 <SpaceView viewStyle={{flexDirection: 'row', position: 'absolute', top: 0, right: 0,}}>
