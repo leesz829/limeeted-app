@@ -24,6 +24,8 @@ export const send = (
       const endPoint = api_domain + url;
       const token = await AsyncStorage.getItem(storeKey.JWT_TOKEN);
       const push_token = await AsyncStorage.getItem(storeKey.FCM_TOKEN);
+      const latitude = await AsyncStorage.getItem(storeKey.MEMBER_LAT);
+      const longitude = await AsyncStorage.getItem(storeKey.MEMBER_LON);
       // const member_seq = await AsyncStorage.getItem(storeKey.MEMBER_SEQ);
       let config: AxiosRequestConfig = {
         url: endPoint,
@@ -31,7 +33,9 @@ export const send = (
         headers: {
           'push-token': push_token ? push_token : '',
           ip : await getIpClient(),
-          device_gubun : Platform.OS
+          device_gubun : Platform.OS,
+          latitude: latitude ? latitude : '',
+          longitude: longitude ? longitude : '',
         }
       };
 

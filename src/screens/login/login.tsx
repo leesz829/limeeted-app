@@ -34,7 +34,6 @@ import { Color } from 'assets/styles/Color';
 import Geolocation from 'react-native-geolocation-service';
 import RNExitApp from 'react-native-exit-app';
 import VersionCheck from 'react-native-version-check';
-import { FCM_TOKEN } from 'constants/storeKey';
 import { isEmptyData } from 'utils/functions';
 
 
@@ -156,7 +155,7 @@ export const Login01 = () => {
 
   // ########################################################################## 회원가입 실행
   const joinProc = async () => {
-    const push_token = await AsyncStorage.getItem(FCM_TOKEN);
+    const push_token = await AsyncStorage.getItem(storeKey.FCM_TOKEN);
     const body = {
       push_token : push_token
     };
@@ -332,6 +331,7 @@ export const Login01 = () => {
     }
   };
 
+  // ########################################################################## 알림 권한 요청(AOS만)
   async function requestNotificationPermission() {
     try {
       const granted = await PermissionsAndroid.request(
@@ -348,15 +348,50 @@ export const Login01 = () => {
     }
   };
 
+  // ########################################################################## 위치 권한 요청
+  const requestLocationPermission = async () => {
+    requestPermissions().then((result) => {
+      Geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setLatitude(latitude);
+          setLongitude(longitude);
+          locationStorageSet(latitude, longitude);
+        },
+        (error) => {
+          console.log(error.code, error.message);
+        },
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+      );
+
+      if(Platform.OS == 'android') {
+        requestNotificationPermission();
+      };
+    });
+  };
+
+  // ########################################################################## 위치 데이터 적용
+  const locationStorageSet = async (lat:any, lon:any) => {
+    if(isEmptyData(lat)) {
+      await AsyncStorage.setItem(storeKey.MEMBER_LAT, String(lat));
+    }
+    if(isEmptyData(lon)) {
+      await AsyncStorage.setItem(storeKey.MEMBER_LON, String(lon));
+    }
+  };
+
   // ########################################################################## 초기 실행
   useEffect(() => {
     if(isFocus) {
-      requestPermissions().then((result) => {
+
+      /* requestPermissions().then((result) => {
         Geolocation.getCurrentPosition(
           (position) => {
             const { latitude, longitude } = position.coords;
             setLatitude(latitude);
             setLongitude(longitude);
+
+            //await AsyncStorage.setItem(JWT_TOKEN, data.token_param.jwt_token);
           },
           (error) => {
             console.log(error.code, error.message);
@@ -367,7 +402,9 @@ export const Login01 = () => {
         if(Platform.OS == 'android') {
           requestNotificationPermission();
         };
-      });
+      }); */
+
+      requestLocationPermission();
     };
   }, [isFocus]);
 
