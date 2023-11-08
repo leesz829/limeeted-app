@@ -108,11 +108,9 @@ function NaviButtons({ navName, theme }: { navName: string; theme?: string }) {
         <Image style={_styles.limitedIcon} source={limitedIcon} resizeMode="contain" />
       </TouchableOpacity>
 
-      {memberBase?.member_seq != 905 && (
-        <TouchableOpacity style={[_styles.tab]} onPress={onPressLive} disabled={navName == 'LIVE' ? true : false}>
-          <Image style={_styles.liveIcon} source={liveIcon} resizeMode="contain" />
-        </TouchableOpacity>
-      )}
+      <TouchableOpacity style={[_styles.tab]} onPress={onPressLive} disabled={navName == 'LIVE' ? true : false}>
+        <Image style={_styles.liveIcon} source={liveIcon} resizeMode="contain" />
+      </TouchableOpacity>
 
       <TouchableOpacity style={[_styles.tab]} onPress={onPressStory} disabled={navName == 'Story' ? true : false}>
         <Text style={_styles.storyTxt(navName == 'Story', theme != undefined)}>STORY</Text>

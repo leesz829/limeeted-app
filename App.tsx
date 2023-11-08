@@ -3,16 +3,13 @@ import React, { useEffect, useState } from 'react';
 import { AppState, AppStateStatus, LogBox, SafeAreaView, StatusBar, StyleSheet, Linking, Platform, View, PermissionsAndroid, Dimensions } from 'react-native';
 import { Notifications } from 'react-native-notifications';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-
 import { enableScreens } from 'react-native-screens';
 import { Provider, useDispatch } from 'react-redux';
 import store from 'redux/store';
 import MainNaviagtion from './src/navigation/MainNaviagtion';
-
 import AsyncStorage from '@react-native-community/async-storage';
 import messaging from '@react-native-firebase/messaging';
 import { JWT_TOKEN } from 'constants/storeKey';
-
 import codePush from 'react-native-code-push';
 import { withIAPContext } from 'react-native-iap';
 import { myProfile } from 'redux/reducers/authReducer';
@@ -23,9 +20,12 @@ import { Color } from 'assets/styles/Color';
 import VersionCheck from 'react-native-version-check';
 import { get_app_version } from 'api/models';
 import RNExitApp from 'react-native-exit-app';
-
 import { BasePopup } from 'screens/commonpopup/BasePopup';
 import { GIF_IMG } from 'utils/imageUtils';
+import BackgroundTimer from 'react-native-background-timer';
+
+
+
 
 enableScreens();
 LogBox.ignoreAllLogs();
@@ -243,15 +243,35 @@ function PreFetcher(props) {
     const handleAppStateChange = nextAppState => {
       //console.log('⚽️appState nextAppState', appState.current, nextAppState);
 
+      let bgEndTimerId:any;
+
       // 포그라운드 진입 감지
       if(appState.current.match(/inactive|background/) && nextAppState === 'active') {
         console.log('App has come to the foreground!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
         versionCheck(true);
+        console.log('bgEndTimerId ::::: ' , bgEndTimerId);
+        //BackgroundTimer.clearTimeout(bgEndTimerId);
+        BackgroundTimer.stopBackgroundTimer();
+        BackgroundTimer.stop();
       };
 
       // 백그라운드 진입 감지
       if(appState.current.match(/inactive|active/) && nextAppState === 'background') {
         console.log('App has come to the background!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+
+        /* bgEndTimerId = BackgroundTimer.setTimeout(() => {
+          console.log('timer end!!!!!!!!!!!!!!!!!!! ' , bgEndTimerId);
+          //RNExitApp.exitApp();
+        }, 8000); */
+
+        if(Platform.OS == 'ios') {
+          BackgroundTimer.start();
+        };
+
+        BackgroundTimer.runBackgroundTimer(() => { 
+          console.log('timer end!!!!!!!!!!!!!!!!!!!');
+          RNExitApp.exitApp();
+        }, 5000);
       };
       appState.current = nextAppState;
     };
