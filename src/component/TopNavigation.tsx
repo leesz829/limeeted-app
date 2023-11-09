@@ -69,7 +69,7 @@ function NaviButtons({ navName, theme }: { navName: string; theme?: string }) {
 
   function onPressLimeeted() {
     navigation.navigate(STACK.TAB, {
-      screen: 'Matching',
+      screen: 'MatchingList',
     });
   }
   function onPressLive() {

@@ -14,6 +14,7 @@ import { Message } from 'screens/message';
 
 import CustomTab from '../CustomTab';
 import Matching from 'screens/matching';
+import MatchingList from 'screens/matching/list';
 
 import { Story } from 'screens/story';
 
@@ -24,7 +25,7 @@ const BottomNavigation = () => {
   return (
     <Tab.Navigator
       backBehavior={'history'}
-      initialRouteName={'Matching'}
+      initialRouteName={'MatchingList'}
       tabBar={(props) => <CustomTab {...props} />}
     >
       <Tab.Screen
@@ -101,6 +102,13 @@ const BottomNavigation = () => {
       <Stack.Screen
         name="Matching"
         component={Matching}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="MatchingList"
+        component={MatchingList}
         options={{
           headerShown: false,
         }}

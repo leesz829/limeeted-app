@@ -124,6 +124,7 @@ export type BottomParamList = {
   Live: undefined;
   LiveSearch: undefined;
   Matching: undefined;
+  MatchingList: undefined;
   Shop: undefined;
   Story: undefined;
 };
