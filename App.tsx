@@ -243,35 +243,28 @@ function PreFetcher(props) {
     const handleAppStateChange = nextAppState => {
       //console.log('⚽️appState nextAppState', appState.current, nextAppState);
 
-      let bgEndTimerId:any;
-
       // 포그라운드 진입 감지
       if(appState.current.match(/inactive|background/) && nextAppState === 'active') {
         console.log('App has come to the foreground!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
         versionCheck(true);
-        console.log('bgEndTimerId ::::: ' , bgEndTimerId);
-        //BackgroundTimer.clearTimeout(bgEndTimerId);
         BackgroundTimer.stopBackgroundTimer();
-        BackgroundTimer.stop();
+
+        if(Platform.OS == 'ios') {
+          BackgroundTimer.stop();
+        };
       };
 
       // 백그라운드 진입 감지
       if(appState.current.match(/inactive|active/) && nextAppState === 'background') {
         console.log('App has come to the background!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
 
-        /* bgEndTimerId = BackgroundTimer.setTimeout(() => {
-          console.log('timer end!!!!!!!!!!!!!!!!!!! ' , bgEndTimerId);
-          //RNExitApp.exitApp();
-        }, 8000); */
-
         if(Platform.OS == 'ios') {
           BackgroundTimer.start();
         };
 
-        BackgroundTimer.runBackgroundTimer(() => { 
-          console.log('timer end!!!!!!!!!!!!!!!!!!!');
+        BackgroundTimer.runBackgroundTimer(() => {
           RNExitApp.exitApp();
-        }, 5000);
+        }, 300000);
       };
       appState.current = nextAppState;
     };
