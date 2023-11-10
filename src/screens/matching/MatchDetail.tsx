@@ -1,13 +1,8 @@
+import React, { useEffect, useState, useRef } from 'react';
 import { RouteProp, useIsFocused, useNavigation, useFocusEffect } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { StackParamList, ColorType, ScreenNavigationProp } from '@types';
-import {
-  get_match_detail,
-  regist_match_status,
-  report_matched_user,
-  report_check_user,
-  report_check_user_confirm,
-} from 'api/models';
+import { get_match_detail, regist_match_status, report_matched_user, report_check_user, report_check_user_confirm } from 'api/models';
 import CommonHeader from 'component/CommonHeader';
 import { CommonBtn } from 'component/CommonBtn';
 import { RadioCheckBox_3 } from 'component/RadioCheckBox_3';
@@ -16,17 +11,15 @@ import SpaceView from 'component/SpaceView';
 import TopNavigation from 'component/TopNavigation';
 import { usePopup } from 'Context';
 import { useUserInfo } from 'hooks/useUserInfo';
-import * as React from 'react';
-import { useEffect, useRef, useState } from 'react';
 import { styles, modalStyle, layoutStyle, commonStyle } from 'assets/styles/Styles';
 import { Dimensions, Image, ScrollView, StyleSheet, TouchableOpacity, View, Text } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import { useDispatch } from 'react-redux'; 
 import { myProfile } from 'redux/reducers/authReducer';
 import { findSourcePath, ICON, IMAGE, GIF_IMG } from 'utils/imageUtils';
-import ProfileAuth from 'component/ProfileAuth';
 import { formatNowDate, isEmptyData} from 'utils/functions';
 import VisualImage from 'component/match/VisualImage';
+import ProfileAuth from 'component/match/ProfileAuth';
 import ProfileActive from 'component/match/ProfileActive';
 import InterviewRender from 'component/match/InterviewRender';
 import InterestSendPopup from 'screens/commonpopup/InterestSendPopup';
@@ -41,26 +34,27 @@ interface Props {
   route: RouteProp<StackParamList, 'MatchDetail'>;
 }
 
+/* ################################################################################################################
+###################################################################################################################
+###### 매칭 상세 화면
+###################################################################################################################
+################################################################################################################ */
 export default function MatchDetail(props: Props) {
   const navigation = useNavigation<ScreenNavigationProp>();
   const isFocus = useIsFocused();
   const dispatch = useDispatch();
-  const scrollRef = useRef();
   const { show } = usePopup(); // 공통 팝업
 
-  const [type, setType] = useState(props.route.params.type); // 유형
-  const [matchSeq, setMatchSeq] = useState(props.route.params.matchSeq); // 매칭 번호
-  const [trgtMemberSeq, setTrgtMemberSeq] = useState(props.route.params.trgtMemberSeq); // 대상 회원 번호
-  const [memberSeqList, setMemberSeqList] = useState<[]>(props.route.params.memberSeqList); // 회원 번호 목록
+  const type = props.route.params.type; // 유형
+  const matchSeq = props.route.params.matchSeq; // 매칭 번호
+  const trgtMemberSeq = props.route.params.trgtMemberSeq; // 대상 회원 번호
+  const memberSeqList = props.route.params.memberSeqList; // 회원 번호 목록
 
-  // 로딩 상태 체크
-  const [isLoad, setIsLoad] = useState(false);
-  const [isEmpty, setIsEmpty] = useState(false);
+  const [isLoad, setIsLoad] = useState(false); // 로딩 여부
+  const [isEmpty, setIsEmpty] = useState(false); // 빈값 여부
 
   const [isCardIndex, setIsCardIndex] = useState(0);
-
-  // 본인 데이터
-  const memberBase = useUserInfo();
+  const memberBase = useUserInfo(); // 본인 데이터
 
   // 매칭 회원 관련 데이터
   const [data, setData] = useState<any>({
@@ -69,6 +63,7 @@ export default function MatchDetail(props: Props) {
     second_auth_list: [],
     interview_list: [],
     interest_list: [],
+    face_list: [],
     report_code_list: [],
     safe_royal_pass: Number,
     use_item: {},
@@ -155,6 +150,7 @@ export default function MatchDetail(props: Props) {
             second_auth_list: auth_list,
             interview_list: data?.interview_list,
             interest_list: data?.interest_list,
+            face_list: data?.face_list,
             report_code_list: data?.report_code_list,
             safe_royal_pass: data?.safe_royal_pass,
             use_item: data?.use_item,
@@ -165,7 +161,7 @@ export default function MatchDetail(props: Props) {
             setIsEmpty(true);
           } else {
             setIsLoad(true);
-          }          
+          }
         } else {
           setIsLoad(false);
           setIsEmpty(true);
@@ -395,18 +391,23 @@ export default function MatchDetail(props: Props) {
       <>
         <CommonHeader title={'열람 프로필'} />
 
-        <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
+        <ScrollView style={{ flex: 1, backgroundColor: '#FEBC4C' }}>
 
           {/* ####################################################################################
           ####################### 상단 영역
           #################################################################################### */}
-          <SpaceView mb={10}>
+          <SpaceView mb={35}>
 
             {/* ############################################################## 상단 이미지 영역 */}
-            <VisualImage 
+            {/* <VisualImage 
               imgList={data?.profile_img_list} 
               memberData={data?.match_member_info}
-              isAnimation={false} />
+              isAnimation={false} /> */}
+
+            <SpaceView>
+              <Image source={findSourcePath(data.profile_img_list[0]?.img_file_path)} style={_styles.profileImgStyle} />
+            </SpaceView>
+
 
             {/* ######################### 버튼 영역 */}
             <View style={_styles.absoluteView}>
@@ -445,10 +446,49 @@ export default function MatchDetail(props: Props) {
 
           </SpaceView>
 
-          <View style={_styles.padding}>
+          {/* ############################################################################################################# 프로필 인증 영역 */}
+          <SpaceView pl={20} pr={20} mb={40}>
+            {data.second_auth_list.length > 0 ? (
+              <ProfileAuth data={data.second_auth_list} isButton={false} memberData={data?.match_member_info} />
+            ) : (
+              <SpaceView mt={10} viewStyle={_styles.authNoDataArea}>
+                <SpaceView mb={8}><Text style={_styles.authNoDataTit}>프로필 인증없이 가입한 회원입니다.</Text></SpaceView>
+                <SpaceView><Text style={_styles.authNoDataSubTit}>프로필 인증은 직업, 학업, 소득, 자산, SNS, 차량 등의 인증 항목을 의미합니다.</Text></SpaceView>
+              </SpaceView>
+            )}
+          </SpaceView>
+
+          {/* ############################################################################################################# 2번째 이미지 영역 */}
+          <SpaceView mb={40}>
+            <Image source={findSourcePath(data.profile_img_list[1]?.img_file_path)} style={_styles.profileImgStyle} />
+          </SpaceView>
+
+          {/* ############################################################################################################# 소개 및 관심사 영역 */}
+          <SpaceView pl={20} pr={20} mb={40}>
+            <MemberIntro memberData={data?.match_member_info} imgList={data?.profile_img_list} interestList={data?.interest_list} faceList={data?.face_list} />
+          </SpaceView>
+
+          {/* ############################################################################################################# 3번째 이미지 영역 */}
+          <SpaceView mb={40}>
+            <Image source={findSourcePath(data.profile_img_list[2]?.img_file_path)} style={_styles.profileImgStyle} />
+          </SpaceView>
+
+          {/* ############################################################################################################# 인터뷰 영역 */}
+          <SpaceView>
+            <InterviewRender title={data?.match_member_info?.nickname + '님을\n알려주세요!'} dataList={data?.interview_list} />
+          </SpaceView>
+
+          
+
+
+
+
+
+
+          <SpaceView pl={20} pr={20}>
 
             {/* ############################################################## 부스트 회원 노출 영역 */}
-            {data?.match_member_info?.boost_yn === 'Y' && (
+            {/* {data?.match_member_info?.boost_yn === 'Y' && (
               <View style={_styles.boostPannel}>
                 <View style={_styles.boostBadge}>
                   <Text style={_styles.boostBadgeText}>BOOST</Text>
@@ -458,43 +498,10 @@ export default function MatchDetail(props: Props) {
                   관심이나 찐심을 보내면 소셜 평점 보너스가 부여됩니다.
                 </Text>
               </View>
-            )}
-            
-            {/* ############################################################## 프로필 인증 영역 */}
-            {data.second_auth_list.length > 0 ? (
-              <ProfileAuth level={data.match_member_info.auth_acct_cnt} data={data.second_auth_list} isButton={false} />
-            ) : (
-              <SpaceView mt={10} viewStyle={_styles.authNoDataArea}>
-                <SpaceView mb={8}><Text style={_styles.authNoDataTit}>프로필 인증없이 가입한 회원입니다.</Text></SpaceView>
-                <SpaceView><Text style={_styles.authNoDataSubTit}>프로필 인증은 직업, 학업, 소득, 자산, SNS, 차량 등의 인증 항목을 의미합니다.</Text></SpaceView>
-              </SpaceView>
-            )}
-
-            {/* ############################################################## 관심사 영역 */}
-            {/* {data.interest_list.length > 0 && (
-              <>
-                <Text style={styles.title}>{data.match_member_info.nickname}님의 관심사</Text>
-                <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 13, marginBottom: 10 }}>
-                  {data.interest_list.map((item, index) => {
-                    const isOn = true;
-                    return (
-                      <View key={index} style={styles.interestItem(isOn)}>
-                        <Text style={styles.interestText(isOn)}>{item.code_name}</Text>
-                      </View>
-                    );
-                  })}
-                </View>
-              </>
             )} */}
-
+            
             {/* ############################################################## 추가 정보 영역 */}
             {/* <AddInfo memberData={data?.match_member_info} /> */}
-
-            {/* ############################################################## 프로필 활동지수 영역 */}
-            <ProfileActive memberData={data?.match_member_info} />
-
-            {/* ############################################################## 소개 */}
-            <MemberIntro memberData={data?.match_member_info} imgList={data?.profile_img_list} interestList={data?.interest_list} />
 
             {/* ############################################################## 인터뷰 영역 */}
             <SpaceView mt={30}>
@@ -507,7 +514,7 @@ export default function MatchDetail(props: Props) {
                 <Text style={_styles.reportTextBtn}>신고 및 차단하기</Text>
               </View>
             </TouchableOpacity>
-          </View>
+          </SpaceView>
 
           <View style={{ height: 30 }} />
         </ScrollView>
@@ -648,12 +655,11 @@ const _styles = StyleSheet.create({
     justifyContent: 'flex-end',
     paddingHorizontal: '8%',
     zIndex: 1,
+    display: 'none',
   },
   title: {
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 19,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     letterSpacing: 0,
     textAlign: 'left',
     color: '#333333',
@@ -717,8 +723,6 @@ const _styles = StyleSheet.create({
   boostBadgeText: {
     fontFamily: 'AppleSDGothicNeoH00',
     fontSize: 10,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     lineHeight: 19,
     letterSpacing: 0,
     textAlign: 'left',
@@ -727,8 +731,6 @@ const _styles = StyleSheet.create({
   boostTitle: {
     fontFamily: 'AppleSDGothicNeoEB00',
     fontSize: 14,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     lineHeight: 22,
     letterSpacing: 0,
     textAlign: 'left',
@@ -737,34 +739,10 @@ const _styles = StyleSheet.create({
   boostDescription: {
     fontFamily: 'AppleSDGothicNeoR00',
     fontSize: 14,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     lineHeight: 22,
     letterSpacing: 0,
     textAlign: 'left',
     color: '#8e8e8e',
-  },
-
-  interestItem: (isOn) => {
-    return {
-      borderRadius: 5,
-      backgroundColor: isOn ? 'white' : '#f7f7f7',
-      paddingHorizontal: 15,
-      paddingVertical: 4,
-      marginRight: 6,
-      marginBottom: 6,
-      borderColor: isOn ? '#697AE6' : '#f7f7f7',
-      borderWidth: 1,
-    };
-  },
-  interestText: (isOn) => {
-    return {
-      fontFamily: 'AppleSDGothicNeoR00',
-      fontSize: 12,
-      lineHeight: 22,
-      letterSpacing: 0,
-      color: isOn ? '#697AE6' : '#b1b1b1',
-    };
   },
   reportButton: {
     height: 43,
@@ -778,8 +756,6 @@ const _styles = StyleSheet.create({
   reportTextBtn: {
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 14,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     letterSpacing: 0,
     textAlign: 'left',
     color: '#ffffff',
@@ -818,4 +794,12 @@ const _styles = StyleSheet.create({
     color: '#C3C3C8',
     textAlign: 'center',
   },
+  profileImgStyle: {
+    flex: 1,
+    width: width,
+    height: height * 0.7,
+    borderRadius: 20,
+  },
+
+  
 });

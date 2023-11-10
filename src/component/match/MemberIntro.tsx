@@ -13,11 +13,9 @@ import ProfileGrade from 'component/common/ProfileGrade';
 import { useUserInfo } from 'hooks/useUserInfo';
 
 
-
-
 const { width, height } = Dimensions.get('window');
 
-export default function MemberIntro({ memberData, imgList, interestList, isNoDataArea }) {
+export default function MemberIntro({ memberData, imgList, interestList, isNoDataArea, faceList }) {
   const navigation = useNavigation<ScreenNavigationProp>();
 
   const memberBase = useUserInfo();
@@ -27,53 +25,35 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
       {((isEmptyData(memberData?.height) || isEmptyData(memberData?.form_body) || isEmptyData(memberData?.job_name) || isEmptyData(memberData?.religion) ||
         isEmptyData(memberData?.drinking) || isEmptyData(memberData?.smoking) || interestList.length > 0) || isNoDataArea) ? (
 
-        <SpaceView mt={10}>
-          <Text style={_styles.title}>{memberData?.nickname}님 소개</Text>
+        <SpaceView>
 
-          <SpaceView mt={90} viewStyle={_styles.introWrap}>
-            <SpaceView viewStyle={{alignItems: 'center'}}>
-              <SpaceView viewStyle={_styles.profileImageWrap}>
-                {imgList != null && typeof imgList != 'undefined' && imgList.length > 0 &&
-                  <Image source={findSourcePath(imgList[0]?.img_file_path)} style={_styles.profileImg} />
-                }
+          {/* ############################################################################################### 간단 소개 영역 */}
+          <LinearGradient
+            colors={['#092032', '#344756']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={_styles.introWrap}
+          >
+            <SpaceView>
+              <SpaceView mb={5} viewStyle={{flexDirection: 'row'}}>
+                {interestList.map((item, index) => {
+                  return index == 0 && (
+                    <SpaceView key={index} viewStyle={_styles.faceArea}>
+                      <Text style={_styles.faceText}>#{item.code_name}</Text>
+                    </SpaceView>
+                  );
+                })}
+              </SpaceView>
+              <SpaceView>
+                <Text style={_styles.introTitleText}>{memberData?.nickname}의 간단 소개🙂</Text>
               </SpaceView>
             </SpaceView>
 
-            <SpaceView mt={10} viewStyle={{alignItems: 'center'}}>
-              <SpaceView>
-                <Text style={_styles.commentText}>"{memberData?.comment}"</Text>
-              </SpaceView>
-
-              {memberBase?.member_seq != 905 && (
-                <SpaceView mt={10} viewStyle={{flexDirection: 'row'}}>
-                  {/* ####################################################################################################
-                  ##################################### 인증 레벨 노출 영역
-                  #################################################################################################### */}
-                  <AuthLevel authAcctCnt={memberData?.auth_acct_cnt} type={'BASE'} />
-
-                  {/* ####################################################################################################
-                  ##################################### 라이브 평점 노출 영역
-                  #################################################################################################### */}
-                  <ProfileGrade profileScore={memberData?.profile_score} type={'BASE'} />
-                </SpaceView>
-              )}
-
-              {/* ############################################################################################### 프로필 소개 영역 */}
-              {isEmptyData(memberData?.introduce_comment) && (
-                <SpaceView mt={20} mb={10} viewStyle={_styles.introduceArea}>
-                  <Text style={_styles.introduceText}>{memberData?.introduce_comment}</Text>
-                </SpaceView>
-              )}
-
-              {/* ############################################################################################### 추가 정보 영역 */}
+            <SpaceView>
               {(isEmptyData(memberData?.height) || isEmptyData(memberData?.form_body) || isEmptyData(memberData?.job_name) || isEmptyData(memberData?.religion) ||
                 isEmptyData(memberData?.drinking) || isEmptyData(memberData?.smoking)) ? (
 
                   <SpaceView mt={20}>
-                    <SpaceView mb={5}>
-                      <Text style={_styles.interestTitle}>{memberData?.nickname}님이 더 궁금한가요? : )</Text>
-                    </SpaceView>
-
                     <Text style={_styles.addText}>
     
                       {(isEmptyData(memberData?.height) || isEmptyData(memberData?.form_body) || isEmptyData(memberData?.job_name)) && (
@@ -389,12 +369,14 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                 </>
               )}
             </SpaceView>
+          </LinearGradient>
 
-            {/* ############################################################################################### 관심사 영역 */}
+          {/* ############################################################################################### 관심사 영역 */}
+          <SpaceView>
             {interestList.length > 0 &&
-              <SpaceView mt={20} mb={15} viewStyle={_styles.interestWrap}>
+              <SpaceView mt={30} viewStyle={_styles.interestWrap}>
                 <Text style={_styles.interestTitle}>관심사를 공유해요 : )</Text>
-                <SpaceView viewStyle={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 13, marginBottom: 10 }}>
+                <SpaceView mt={8} viewStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}>
                   {interestList.map((item, index) => {
                     const isOn = item.dup_chk == 0 ? false : true;
                     return (
@@ -406,10 +388,8 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                 </SpaceView>
               </SpaceView>
             }
-
           </SpaceView>
         </SpaceView>
-
       ) : (
         <>
 
@@ -429,52 +409,38 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
 
 const _styles = StyleSheet.create({
 
-  title: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 19,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#333333',
-    marginTop: 20,
-  },
-  profileImageWrap: {
-    width: 140,
-    height: 140,
-    backgroundColor: '#ffffff',
-    borderWidth: 4,
-    borderColor: '#FFDA82',
-    borderRadius: 80,
-    alignItems: `center`,
-    justifyContent: `center`,
-    marginTop: -70,
-  },
-  profileImg: {
-    width: 128,
-    height: 128,
-    borderRadius: 80,
-  },
   introWrap: {
-    backgroundColor: '#FFFCEE',
+    height: 190,
     borderRadius: 20,
-    paddingHorizontal: 25,
+    paddingHorizontal: 15,
+    paddingVertical: 15,
+    justifyContent: 'space-between',
   },
-  commentText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
+  faceArea: {
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    backgroundColor: '#878787',
+    borderRadius: 20,
+  },
+  faceText: {
+    fontFamily: 'Pretendard-SemiBold',
     fontSize: 14,
-    color: '#5A5A5A',
-    textAlign: 'left',
+    color: '#EEEAEB',
+  },
+  introTitleText: {
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 20,
+    color: '#FFF8CC',
   },
   addText: {
-    fontFamily: 'AppleSDGothicNeoR00',
-    fontSize: 14,
-    color: '#5A5A5A',
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 15,
+    color: '#CACBC5',
     textAlign: 'left',
     lineHeight: 20,
   },
   addActiveText: {
-    color: '#7986EE',
+    color: '#FEE05C',
     textAlign: 'left',
   },
   interestTitle: {
@@ -489,20 +455,19 @@ const _styles = StyleSheet.create({
   interestItem: (isOn) => {
     return {
       borderRadius: 5,
-      backgroundColor: '#ffffff',
+      backgroundColor: isOn ? '#0D9BA3' : '#FFF8CC',
       paddingHorizontal: 10,
       paddingVertical: 5,
       marginRight: 6,
       marginBottom: 6,
-      borderColor: isOn ? '#697AE6' : '#A6A9C5',
-      borderWidth: 1,
+      overflow: 'hidden',
     };
   },
   interestText: (isOn) => {
     return {
-      fontFamily: 'AppleSDGothicNeoR00',
+      fontFamily: 'Pretendard-Regular',
       fontSize: 12,
-      color: isOn ? '#697AE6' : '#A6A9C5',
+      color: isOn ? '#FFF8CC' : '#FE8C12',
     };
   },
   authEmptyArea: {
@@ -529,20 +494,6 @@ const _styles = StyleSheet.create({
     borderRadius: 7,
     textAlign: 'center',
     paddingVertical: 8,
-  },
-  introduceArea: {
-    backgroundColor: '#6E6E6E',
-    width: '100%',
-    paddingVertical: 18,
-    paddingHorizontal: 18,
-    borderRadius: 12,
-    overflow: 'hidden',
-  },
-  introduceText: {
-    fontFamily: 'AppleSDGothicNeoM00',
-    fontSize: 13,
-    color: '#FFFCEE',
-    textAlign: 'left',
   },
 
 });

@@ -99,6 +99,7 @@ import {
   PROFILE_OPEN,
   GET_MATCH_DETAIL,
   STORY_PROFILE_SECRET_PROC,
+  GET_DAILY_MATCH_LIST,
 } from './route';
 
 /* ========================================================================================================
@@ -621,6 +622,13 @@ export async function get_match_detail(body: {
   match_seq: number;
 }) {
   return send(GET_MATCH_DETAIL, 'POST', body, true, false);
+}
+
+// 매칭 상세 정보를 조회한다.
+export async function get_daily_match_list(body: {
+  
+}) {
+  return send(GET_DAILY_MATCH_LIST, 'POST', body, true, false);
 }
 
 

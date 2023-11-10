@@ -2,60 +2,52 @@ import { layoutStyle, styles } from 'assets/styles/Styles';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import React, { useEffect, useState } from 'react';
-import { Image, StyleSheet, TouchableOpacity, View, Text, Platform } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, View, Text, Platform, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Color } from 'assets/styles/Color';
 import { useDispatch, useSelector } from 'react-redux';
+import { isEmptyData } from 'utils/functions';
 
-const indexToKr = [
-  '첫',
-  '두',
-  '세',
-  '네',
-  '다섯',
-  '여섯',
-  '일곱',
-  '여덟',
-  '아홉',
-  '열',
-  '열한',
-  '열두',
-  '열세',
-  '열네',
-];
 export default function InterviewRender({ title, dataList }) {
   
   return (
     <>
-      {dataList != null && typeof dataList != 'undefined' && dataList.length > 0 &&
+      {isEmptyData(dataList) && dataList.length > 0 && (
         <SpaceView>
-          <SpaceView viewStyle={[layoutStyle.rowBetween]} mb={16}>
-            <View>
-              <CommonText fontWeight={'700'} type={'h3'}>
-                {title || '인터뷰'}
-              </CommonText>
-            </View>
+          <SpaceView mb={30}>
+            <Text style={_styles.titleText}>인터뷰</Text>
           </SpaceView>
 
-          {dataList.map((e, index) => (
-            <>
-              {e.answer != "" && e.answer != null && 
-                <View key={'interview_' + index} style={[style.contentItemContainer, index % 2 !== 0 && style.itemActive]}>
-                  <View style={style.questionRow}>
-                    <Text style={style.questionText}>Q.</Text>
-                    <Text style={[style.questionBoldText]}> {e?.code_name}</Text>
-                  </View>
-                  <View style={style.answerRow}>
-                    <Text style={style.answerText}>A.</Text>
-                    {/* <Text style={[style.questionBoldText, {marginLeft: 11, color: '#7986EE'}]}> {e?.answer}</Text> */}
-                    <Text style={[style.answerNormalText, Platform.OS == 'ios' ? {marginTop: -5} : {marginTop: 0}]}>{e?.answer}</Text>
-                  </View>
-                </View>
-              }
-            </>
-          ))}
+          <SpaceView mb={30}>
+            <Text style={_styles.mstText}>"리미티드에 오신 것을 정말 정말 환영합니다. 데일리뷰 많이 참여해 주시고 라이브도 잊지 마시고 서로 평점 테러 좀 하지 마세요. 제발"</Text>
+          </SpaceView>
+
+          <SpaceView>
+            {/* <ScrollView 
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={_styles.interviewListWrap}>
+
+              {dataList.map((e, index) => (
+                <>
+                  {e.answer != "" && e.answer != null && 
+                    <SpaceView key={'interview_' + index} viewStyle={[_styles.contentItemContainer, index % 2 !== 0 && _styles.itemActive]}>
+                      <View style={_styles.questionRow}>
+                        <Text style={_styles.questionText}>Q.</Text>
+                        <Text style={[_styles.questionBoldText]}> {e?.code_name}</Text>
+                      </View>
+                      <View style={_styles.answerRow}>
+                        <Text style={_styles.answerText}>A.</Text>
+                        <Text style={[_styles.answerNormalText, Platform.OS == 'ios' ? {marginTop: -5} : {marginTop: 0}]}>{e?.answer}</Text>
+                      </View>
+                    </SpaceView>
+                  }
+                </>
+              ))}
+            </ScrollView> */}
+          </SpaceView>
         </SpaceView>
-      }
+      )}
     </>
   );
 }
@@ -68,7 +60,26 @@ export default function InterviewRender({ title, dataList }) {
 ###########################################################################################################
 ####################################################################################################### */}
 
-const style = StyleSheet.create({
+const _styles = StyleSheet.create({
+
+  titleText: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 27,
+    color: '#FFF8CC',
+  },
+  mstText: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 17,
+    color: '#344756',
+    textAlign: 'center',
+  },
+  interviewListWrap: {
+
+  },
+
+
+
+
   registerButton: {
     borderColor: '#7986ee',
     borderWidth: 1,
@@ -140,8 +151,6 @@ const style = StyleSheet.create({
   questionText: {
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 12,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     lineHeight: 22,
     letterSpacing: 0,
     textAlign: 'left',
@@ -159,8 +168,6 @@ const style = StyleSheet.create({
   questionNormalText: {
     fontFamily: 'AppleSDGothicNeoR00',
     fontSize: 13,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     lineHeight: 19,
     letterSpacing: 0,
     textAlign: 'left',
@@ -175,8 +182,6 @@ const style = StyleSheet.create({
   answerText: {
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 12,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     lineHeight: 22,
     letterSpacing: 0,
     textAlign: 'left',
@@ -185,17 +190,12 @@ const style = StyleSheet.create({
   answerNormalText: {
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 12,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     lineHeight: 22,
     letterSpacing: 0,
     textAlign: 'left',
     color: '#7986ee',
     marginLeft: 12,
     marginTop: -7,
-    
-    /* position: 'absolute',
-    top: 1, */
     textAlignVertical: 'top',
   },
   penPosition: {
@@ -219,8 +219,6 @@ const style = StyleSheet.create({
   selectedDeleteText: {
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 14,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     letterSpacing: 0,
     textAlign: 'left',
     color: '#ffffff',

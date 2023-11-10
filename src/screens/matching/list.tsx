@@ -1,30 +1,19 @@
 import { RouteProp, useIsFocused, useNavigation, useFocusEffect, CommonActions } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { BottomParamList, ColorType, ScreenNavigationProp } from '@types';
-import {
-  get_daily_matched_info,
-  report_check_user,
-  report_check_user_confirm,
-  update_additional,
-} from 'api/models';
+import { get_daily_match_list, report_check_user, report_check_user_confirm, update_additional } from 'api/models';
 import SpaceView from 'component/SpaceView';
 import TopNavigation from 'component/TopNavigation';
 import { usePopup } from 'Context';
 import { useUserInfo } from 'hooks/useUserInfo';
-import * as React from 'react';
 import { styles, modalStyle, layoutStyle, commonStyle } from 'assets/styles/Styles';
-import { Dimensions, Image, ScrollView, StyleSheet, TouchableOpacity, View, Text, FlatList } from 'react-native';
+import { Dimensions, Image, ScrollView, StyleSheet, TouchableOpacity, View, Text, FlatList, RefreshControl } from 'react-native';
 import { useDispatch } from 'react-redux'; 
-import { myProfile } from 'redux/reducers/authReducer';
 import { MatchSearch } from 'screens/matching/MatchSearch';
 import { findSourcePath, ICON, IMAGE, GUIDE_IMAGE, GIF_IMG } from 'utils/imageUtils';
-import { Slider } from '@miblanchard/react-native-slider';
-import ProfileAuth from 'component/ProfileAuth';
 import { formatNowDate, isEmptyData } from 'utils/functions';
 import { Watermark } from 'component/Watermark';
-import InterestSendPopup from 'screens/commonpopup/InterestSendPopup';
-import SincereSendPopup from 'screens/commonpopup/SincereSendPopup';
-import Carousel from 'react-native-snap-carousel';
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
 import { ROUTES, STACK } from 'constants/routes';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -39,6 +28,11 @@ interface Props {
   route: RouteProp<BottomParamList, 'MatchingList'>;
 }
 
+/* ################################################################################################################
+###################################################################################################################
+###### 매칭 목록 화면
+###################################################################################################################
+################################################################################################################ */
 export default function MatchingList(props: Props) {
   const navigation = useNavigation<ScreenNavigationProp>();
   const isFocus = useIsFocused();
@@ -48,81 +42,67 @@ export default function MatchingList(props: Props) {
 
   const { show } = usePopup(); // 공통 팝업
 
-  // 로딩 상태 체크
-  const [isLoad, setIsLoad] = React.useState(false);
-  const [isEmpty, setIsEmpty] = React.useState(false);
-
+  const [isLoad, setIsLoad] = React.useState(false); // 로딩 여부
+  const [isEmpty, setIsEmpty] = React.useState(false); // 빈 데이터 여부
+  const [isRefreshing, setIsRefreshing] = useState(false); // 새로고침 여부
   const [isClickable, setIsClickable] = React.useState(true); // 클릭 여부
+  const memberBase = useUserInfo(); // 본인 데이터
 
-  // 본인 데이터
-  const memberBase = useUserInfo();
+  const [matchList, setMatchList] = React.useState([]); // 매칭 목록 데이터
 
-  // 매칭 회원 관련 데이터
-  const [matchData, setMatchData] = React.useState<any>({
-    match_member_info: {},
-    profile_img_list: [],
-    second_auth_list: [],
-    interview_list: [],
-    interest_list: [],
-    report_code_list: [],
-    safe_royal_pass: Number,
-    use_item: {},
-    refuse_list: [],
-    add_list: [],
-    intro_second_yn: '',
-  });
+  const [data, setData] = React.useState({
+    introSecondYn: '',
+    matchList: [],
+  })
 
   // 팝업 목록
   let popupList = [];
-  let isPopup = true;  
+  let isPopup = true;
 
-  // ############################################################ 데일리 매칭 정보 조회
-  const getDailyMatchInfo = async (isPopupShow:boolean) => {
+  // ##################################################################################### 목록 새로고침
+  const handleRefresh = () => {
+    console.log('refresh!!!!!!!!!!!!!!');
+    getDailyMatchList(false);
+  };
 
-    // 기존 데이터 존재 여부
-    let ordMemberSeq = matchData?.match_member_info?.member_seq;
+  // ############################################################ 데일리 매칭 목록 조회
+  const getDailyMatchList = async (isPopupShow:boolean) => {
 
     try {
       const body = {
-        gender: memberBase.gender
+
       }
-      const { success, data } = await get_daily_matched_info(body);
-      //console.log('get_daily_matched_info data :::: ', data.use_item.FREE_LIKE);
+      const { success, data } = await get_daily_match_list(body);
       
       if (success) {
         if (data.result_code == '0000') {
-
-          const auth_list = data?.second_auth_list.filter(item => item.auth_status == 'ACCEPT');
-          setMatchData({
-            match_member_info: data?.match_member_info,
-            profile_img_list: data?.profile_img_list,
-            second_auth_list: auth_list,
-            interview_list: data?.interview_list,
-            interest_list: data?.interest_list,
-            report_code_list: data?.report_code_list,
-            safe_royal_pass: data?.safe_royal_pass,
-            use_item: data?.use_item,
-            refuse_list: data?.refuse_list,
-            add_list: data?.profile_add_list,
-            intro_second_yn: data?.intro_second_yn,
+          setData({
+            introSecondYn: data?.intro_second_yn,
+            matchList: data?.match_list
           });
 
-          if(data?.match_member_info == null) {
+          if(data?.match_list.length > 0) {
+            setIsEmpty(false);
+          } else {
+            setIsEmpty(true);
+          }
+
+          /* if(data?.match_member_info == null) {
             setIsLoad(false);
             setIsEmpty(true);
           } else {
             setIsLoad(true);
-          }
+          } */
 
           // 이벤트 팝업 노출
-          if(data.popup_list?.length > 0) {
+          /* if(data.popup_list?.length > 0) {
             popupList = data.popup_list;
 
             // 튜토리얼 팝업 닫혀있는 경우 호출
             if(isPopupShow) {
               popupShow();
             }
-          };
+          }; */
 
         } else {
           setIsLoad(false);
@@ -168,38 +148,6 @@ export default function MatchingList(props: Props) {
     }
   };
 
-  // ############################################################ 유저 제제대상 체크
-  const checkUserReport = async () => {
-
-    const body = {
-      report_member_seq: matchData.match_member_info?.member_seq
-    };
-
-    try {
-      const { success, data } = await report_check_user(body);
-      if(success) {
-        if(data.report_cnt < 10) return false;
-
-        show({
-          title: '서비스 이용 경고 알림',
-          content: '회원님의 계정에 다수의 신고건수가 누적되어 알려드립니다.\n상대방을 배려하여 서비스 이용 부탁드립니다.',
-          confirmCallback : reportCheckUserConfirm() 
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      
-    }
-  };
-
-  const reportCheckUserConfirm = () => {
-    const body = {
-      report_member_seq: matchData.match_member_info?.member_seq
-    };
-    report_check_user_confirm(body);
-  };
-
   // ############################################################ 회원 튜토리얼 노출 정보 저장
   const saveMemberTutorialInfo = async () => {
     const body = {
@@ -215,6 +163,16 @@ export default function MatchingList(props: Props) {
     }
   };
 
+  // ############################################################ 매칭 상세 이동
+  const goMatchDetail = async (trgtMemberSeq:number) => {
+    navigation.navigate(STACK.COMMON, { 
+      screen: 'MatchDetail',
+      params: {
+        trgtMemberSeq: trgtMemberSeq,
+        type: 'OPEN',
+      } 
+    });
+  };
 
   // ################################################################ 초기 실행 함수
   React.useEffect(() => {
@@ -229,13 +187,13 @@ export default function MatchingList(props: Props) {
         });
       } else {
 
-        checkUserReport();
+        //checkUserReport();
         setIsEmpty(false);
         
         let isPopupShow = true;
 
         // 튜토리얼 팝업 노출
-        if(!isEmptyData(memberBase?.tutorial_daily_yn) || memberBase?.tutorial_daily_yn == 'Y') {
+        /* if(!isEmptyData(memberBase?.tutorial_daily_yn) || memberBase?.tutorial_daily_yn == 'Y') {
           isPopupShow = false;
 
           show({
@@ -250,10 +208,10 @@ export default function MatchingList(props: Props) {
               popupShow();
             }
           });
-        };
+        }; */
 
         // 데일리 매칭 정보 조회
-        getDailyMatchInfo(isPopupShow);
+        getDailyMatchList(isPopupShow);
       }
     };
   }, [isFocus]);
@@ -273,77 +231,319 @@ export default function MatchingList(props: Props) {
     <>
       <TopNavigation currentPath={'LIMEETED'} />
 
-      <SpaceView pb={50} viewStyle={{backgroundColor:'#fff'}}>
-        <FlatList
-          ref={scrollRef}
-          data={matchData?.profile_img_list}
-          renderItem={RenderItem}
-          //onScroll={handleScroll}
-          pagingEnabled
-          showsVerticalScrollIndicator={false}
-          decelerationRate="fast"
-          snapToInterval={height * 0.75 + 30}
-        />
+      {isEmpty ? (
+        <View style={[layoutStyle.justifyCenter, layoutStyle.flex1, {backgroundColor: 'white'} ]}>
+          <SpaceView mb={50} viewStyle={[layoutStyle.alignCenter]}>
+            <Text style={_styles.emptyText}>
+              {data.introSecondYn == 'Y' ? (
+                <>
+                  오늘 소개하여 드린 <Text style={{color: '#7986EE'}}>데일리 뷰</Text>가 마감되었어요.{"\n"}
+                  <Text style={{color: '#7986EE'}}>데일리 뷰</Text>에서 제공해드리는 프로필 카드는 {"\n"}매일 오후3시와 자정에 확인 가능합니다. 🎁
+                </>
+              ) : (
+                <>
+                  오후 3시에 한번 더 제공해드리는{"\n"}
+                  새로운 <Text style={{color: '#7986EE'}}>데일리 뷰</Text>를 확인해 보세요!
+                </>
+              )}
+            </Text>
+
+            <View style={{position: 'absolute', top: 0, left: 0, bottom: 0, right: 0, justifyContent: 'center', alignItems: 'center'}}>
+              <Image source={IMAGE.logoIcon03} style={styles.iconSquareSize(230)} />
+            </View>
+
+            <View style={{position: 'absolute', top: -50, left: 75}}><Image source={IMAGE.heartImg01} style={styles.iconSquareSize(40)} /></View>
+            <View style={{position: 'absolute', top: 80, right: 75}}><Image source={IMAGE.heartImg01} style={styles.iconSquareSize(40)} /></View>
+          </SpaceView>
+
+          {/* {matchData.add_list?.length > 0 && 
+            <SpaceView mt={40} viewStyle={_styles.profileAddArea}>
+              <Text style={_styles.profileAddText}>20 패스로 열어볼 수 있는 프로필 카드가 더 준비되어 있어요.</Text>
+
+              <TouchableOpacity onPress={() => { profileCardOpenPopup(); }} style={{width: '100%'}}>
+                <Text style={_styles.profileAddBtn}>프로필 카드 열어보기</Text>
+              </TouchableOpacity>
+            </SpaceView>
+          } */}
+        </View>
+      ) : (
+        <SpaceView pb={50} viewStyle={{backgroundColor:'#fff'}}>
+          <FlatList
+            ref={scrollRef}
+            data={data.matchList}
+            //renderItem={MatchRenderItem}
+            renderItem={(props) => {
+              //console.log('props : ', JSON.stringify(props));
+              const { item, index } = props;
+              return (
+                <>
+                  <MatchRenderItem item={item} fnDetail={goMatchDetail} />
+                </>
+              )
+            }}
+            //onScroll={handleScroll}
+            pagingEnabled
+            showsVerticalScrollIndicator={false}
+            decelerationRate="fast"
+            snapToInterval={height * 0.75 + 15}
+            refreshControl={
+              <RefreshControl
+                refreshing={isRefreshing}
+                onRefresh={handleRefresh}
+                tintColor="#ff0000" // Pull to Refresh 아이콘 색상 변경
+                //title="Loading..." // Pull to Refresh 아이콘 아래에 표시될 텍스트
+                titleColor="#ff0000" // 텍스트 색상 변경
+                colors={['#ff0000', '#00ff00', '#0000ff']} // 로딩 아이콘 색상 변경
+                progressBackgroundColor="#ffffff" >
+              </RefreshControl>
+            }
+          />
+        </SpaceView>
+      )}
+    </>
+  );
+};
+
+const MatchRenderItem = ({ item, fnDetail }) => {
+  const imgList = item?.img_list;
+  const [currentImgIdx, setCurrentImgIdx] = useState(0);
+
+  // 이전 이미지
+  const prevImage = async () => {
+    if(currentImgIdx > 0) {
+      setCurrentImgIdx(currentImgIdx-1);
+    }
+  }
+
+  // 다음 이미지
+  const nextImage = async () => {
+    if(currentImgIdx+1 < imgList.length && currentImgIdx < 2) {
+      setCurrentImgIdx(currentImgIdx+1);
+    }
+  }
+
+  return (
+    <>
+      <SpaceView mb={30}>
+        <SpaceView viewStyle={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+
+          <SpaceView viewStyle={{borderRadius: 20, overflow: 'hidden'}}>
+            {imgList.length > 0 && (
+              <Image
+                source={findSourcePath(item?.img_list[currentImgIdx].img_file_path)}
+                style={{ flex: 1, width: width, height: height * 0.73 }}
+                resizeMode={'cover'}
+              />
+            )}
+
+            <TouchableOpacity 
+              onPress={() => { prevImage(); }}
+              style={{position: 'absolute', top: 0, bottom: 0, left: 0, width: (width * 0.85) / 2}} />
+
+            <TouchableOpacity 
+              onPress={() => { nextImage(); }}
+              style={{position: 'absolute', top: 0, bottom: 0, right: 0, width: (width * 0.85) / 2}} />
+
+            <SpaceView viewStyle={_styles.pagingContainer}>
+              {imgList?.map((i, n) => {
+                return n < 3 && (
+                  <View style={_styles.dotContainerStyle} key={'dot' + n}>
+                    <View style={[_styles.pagingDotStyle, n == currentImgIdx && _styles.activeDot]} />
+                  </View>
+                )
+              })}
+            </SpaceView>
+
+            <TouchableOpacity 
+              style={_styles.infoArea}
+              onPress={() => { fnDetail(item?.member_seq); }}
+              activeOpacity={0.8} 
+            >
+              {currentImgIdx == 0 && (
+                <SpaceView viewStyle={{justifyContent: 'center', alignItems: 'center'}}>
+                  <SpaceView mb={5}><Text style={_styles.infoText(14)}>{item.distance}Km</Text></SpaceView>
+                  <SpaceView mb={3}><Text style={_styles.infoText(25)}>{item.nickname}, {item.age}</Text></SpaceView>
+                  <SpaceView><Text style={_styles.infoText(16)}>{item.comment}</Text></SpaceView>
+                </SpaceView>
+              )}
+              {currentImgIdx == 1 && (
+                <SpaceView ml={15} mr={15} viewStyle={{justifyContent: 'center', alignItems: 'flex-start'}}>
+                  <SpaceView mb={8} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                    <Image source={findSourcePath(item?.img_list[0].img_file_path)} style={_styles.mstImgStyle} />
+                    <SpaceView ml={5}><Text style={_styles.infoText(16)}>{item.nickname}</Text></SpaceView>
+                  </SpaceView>
+                  <SpaceView viewStyle={{flexDirection: 'row'}}>
+                    {item?.face_list.length > 0 && (
+                      <>
+                        {item?.face_list?.map((i, n) => {
+                          return isEmptyData(i.face_code_name) && (
+                            <SpaceView mb={7} mr={5} viewStyle={_styles.faceItemWrap}>
+                              <Text style={_styles.faceText}>#{i.face_code_name}</Text>
+                            </SpaceView>
+                          )
+                        })}
+                      </>
+                    )}
+                  </SpaceView>
+                </SpaceView>
+              )}
+              {currentImgIdx == 2 && (
+                <SpaceView ml={15} mr={15} viewStyle={{justifyContent: 'center', alignItems: 'flex-start'}}>
+                  <SpaceView mb={8} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                    <Image source={findSourcePath(item?.img_list[0].img_file_path)} style={_styles.mstImgStyle} />
+                    <SpaceView ml={5}><Text style={_styles.infoText(16)}>{item.nickname}</Text></SpaceView>
+                  </SpaceView>
+                  <SpaceView viewStyle={{flexDirection: 'row', flexWrap: 'wrap'}}>
+                    {item?.auth_list.length > 0 && (
+                      <>
+                        {item?.auth_list?.map((i, n) => {
+                          const authCode = i.common_code;
+                          let authIcon = ICON.authJob;
+
+                          if(authCode == 'EDU') {
+                            authIcon = ICON.authEdu;
+                          } else if(authCode == 'INCOME') {
+                            authIcon = ICON.authAsset;
+                          } else if(authCode == 'ASSET') {
+                            authIcon = ICON.authAsset;
+                          } else if(authCode == 'SNS') {
+                            authIcon = ICON.authAsset;
+                          } else if(authCode == 'VEHICLE') {
+                            authIcon = ICON.authAsset;
+                          }
+
+                          return isEmptyData(i.slogan_name) && (
+                            <SpaceView mb={7} mr={5} viewStyle={_styles.authItemWrap}>
+                              <Image source={authIcon} style={styles.iconSquareSize(16)} />
+                              <SpaceView ml={8}><Text style={_styles.faceText}>{i.slogan_name}</Text></SpaceView>
+                            </SpaceView>
+                          )
+                        })}
+                      </>
+                    )}
+                  </SpaceView>
+                </SpaceView>
+              )}
+            </TouchableOpacity>
+
+            <LinearGradient
+              colors={['transparent', '#000000']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+              style={_styles.thumnailDimArea} />
+
+          </SpaceView>
+
+
+          {/* ############################################################ 슬라이드 형식 */}
+          {/* <FlatList
+            contentContainerStyle={{ overflow: 'visible', paddingHorizontal: 20 }}
+            data={item?.img_list}
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            snapToAlignment="center"
+            decelerationRate="fast"
+            snapToInterval={width * 0.85 + 5}
+            renderItem={({ item: _item, index: _index }) => {
+
+              return _index < 3 && (
+                <TouchableOpacity 
+                  key={_index} 
+                  onPress={() => { fnDetail(item?.member_seq); }}
+                  style={_styles.imgItemWrap}
+                  activeOpacity={0.8} 
+                >
+                  <SpaceView viewStyle={{borderRadius: 20, overflow: 'hidden'}}>
+                    <Image
+                      source={findSourcePath(_item?.img_file_path)}
+                      style={{ flex: 1, width: width * 0.85, height: height * 0.75 }}
+                      resizeMode={'cover'}
+                    />
+
+                    <SpaceView viewStyle={_styles.infoArea}>
+                      {_index == 0 && (
+                        <SpaceView viewStyle={{justifyContent: 'center', alignItems: 'center'}}>
+                          <SpaceView mb={5}><Text style={_styles.infoText(14)}>{item.distance}Km</Text></SpaceView>
+                          <SpaceView mb={3}><Text style={_styles.infoText(25)}>{item.nickname}, {item.age}</Text></SpaceView>
+                          <SpaceView><Text style={_styles.infoText(16)}>{item.comment}</Text></SpaceView>
+                        </SpaceView>
+                      )}
+                      {_index == 1 && (
+                        <SpaceView ml={15} mr={15} viewStyle={{justifyContent: 'center', alignItems: 'flex-start'}}>
+                          <SpaceView mb={8} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                            <Image source={findSourcePath(item?.img_list[0].img_file_path)} style={_styles.mstImgStyle} />
+                            <SpaceView ml={5}><Text style={_styles.infoText(16)}>{item.nickname}</Text></SpaceView>
+                          </SpaceView>
+                          <SpaceView viewStyle={{flexDirection: 'row'}}>
+                            {item?.face_list.length > 0 && (
+                              <>
+                                {item?.face_list?.map((i, n) => {
+                                  return isEmptyData(i.face_code_name) && (
+                                    <SpaceView mb={7} mr={5} viewStyle={_styles.faceItemWrap}>
+                                      <Text style={_styles.faceText}>#{i.face_code_name}</Text>
+                                    </SpaceView>
+                                  )
+                                })}
+                              </>
+                            )}
+                          </SpaceView>
+                        </SpaceView>
+                      )}
+                      {_index == 2 && (
+                        <SpaceView ml={15} mr={15} viewStyle={{justifyContent: 'center', alignItems: 'flex-start'}}>
+                          <SpaceView mb={8} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                            <Image source={findSourcePath(item?.img_list[0].img_file_path)} style={_styles.mstImgStyle} />
+                            <SpaceView ml={5}><Text style={_styles.infoText(16)}>{item.nickname}</Text></SpaceView>
+                          </SpaceView>
+                          <SpaceView viewStyle={{flexDirection: 'row', flexWrap: 'wrap'}}>
+                            {item?.auth_list.length > 0 && (
+                              <>
+                                {item?.auth_list?.map((i, n) => {
+                                  const authCode = i.common_code;
+                                  let authIcon = ICON.authJob;
+
+                                  if(authCode == 'EDU') {
+                                    authIcon = ICON.authEdu;
+                                  } else if(authCode == 'INCOME') {
+                                    authIcon = ICON.authAsset;
+                                  } else if(authCode == 'ASSET') {
+                                    authIcon = ICON.authAsset;
+                                  } else if(authCode == 'SNS') {
+                                    authIcon = ICON.authAsset;
+                                  } else if(authCode == 'VEHICLE') {
+                                    authIcon = ICON.authAsset;
+                                  }
+
+                                  return isEmptyData(i.slogan_name) && (
+                                    <SpaceView mb={7} mr={5} viewStyle={_styles.authItemWrap}>
+                                      <Image source={authIcon} style={styles.iconSquareSize(16)} />
+                                      <SpaceView ml={8}><Text style={_styles.faceText}>{i.slogan_name}</Text></SpaceView>
+                                    </SpaceView>
+                                  )
+                                })}
+                              </>
+                            )}
+                          </SpaceView>
+                        </SpaceView>
+                      )}
+                    </SpaceView>
+
+                    <LinearGradient
+                      colors={['transparent', '#000000']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 0, y: 1 }}
+                      style={_styles.thumnailDimArea} />
+                  </SpaceView>
+                </TouchableOpacity>
+              )
+            }}
+          /> */}
+        </SpaceView>
       </SpaceView>
     </>
   );
-
-  function RenderItem({ item }) {
-    const url = findSourcePath(item?.img_file_path);
-
-    return (
-      <>
-        <SpaceView mb={30}>
-          <SpaceView viewStyle={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <FlatList
-              //style={{width: width - 40}}
-              contentContainerStyle={{ overflow: 'visible', paddingHorizontal: 20 }} // overflow를 visible로 설정
-              data={[0,1,2]}
-              horizontal
-              pagingEnabled
-              showsHorizontalScrollIndicator={false}
-              snapToAlignment="center"
-              decelerationRate="fast"
-              snapToInterval={width * 0.85 + 5}
-              renderItem={({ _item, _index }) => {
-                return (
-                  <View key={_index} style={_styles.imgItemWrap}>
-                    <SpaceView viewStyle={{borderRadius: 20, overflow: 'hidden'}}>
-                      <Image
-                        source={findSourcePath(item?.img_file_path)}
-                        style={{
-                          flex: 1,
-                          width: width * 0.85,
-                          height: height * 0.75,
-                          //marginHorizontal: -10,
-                        }}
-                        resizeMode={'cover'}
-                      />
-
-                      <SpaceView viewStyle={_styles.infoArea}>
-                        <SpaceView viewStyle={{justifyContent: 'center', alignItems: 'center'}}>
-                          <Text style={_styles.distanceText}>12.9Km</Text>
-                          <Text style={_styles.nicknameText}>리미티드, 29</Text>
-                          <Text style={_styles.introText}>리미티드의 여신</Text>
-                        </SpaceView>
-                      </SpaceView>
-
-                      <LinearGradient
-                        colors={['transparent', '#000000']}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 0, y: 1 }}
-                        style={_styles.thumnailDimArea} />
-                    </SpaceView>
-                  </View>
-                )
-              }}
-            />
-          </SpaceView>
-        </SpaceView>
-      </>
-    );
-  }
-}
+};
 
 
 
@@ -365,22 +565,12 @@ const _styles = StyleSheet.create({
     zIndex: 1,
     paddingVertical: 25,
   },
-  distanceText: {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 14,
-    color: '#fff',
-    marginBottom: 5,
-  },
-  nicknameText: {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 25,
-    color: '#fff',
-    marginBottom: 3,
-  },
-  introText: {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 16,
-    color: '#fff',
+  infoText: (fs:number, cr:string) => {
+    return {
+      fontFamily: 'Pretendard-Regular',
+      fontSize: fs,
+      color: isEmptyData(cr) ? cr : '#fff',
+    };
   },
   thumnailDimArea: {
     position: 'absolute',
@@ -389,6 +579,63 @@ const _styles = StyleSheet.create({
     right: 0,
     opacity: 0.8,
     height: height * 0.24,
+  },
+  mstImgStyle: {
+    width: 28,
+    height: 28,
+    borderRadius: 65,
+    overflow: 'hidden',
+  },
+  faceItemWrap: {
+    backgroundColor: 'rgba(135,135,135,0.5)',
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+  },
+  faceText: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 14,
+    color: '#EEEAEB',
+  },
+  authItemWrap: {
+    backgroundColor: 'rgba(135,135,135,0.5)',
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyText: {
+    fontFamily: 'Pretendard-Regular',
+    textAlign: 'center',
+    fontSize: 16,
+    lineHeight: 23,
+    minHeight: 50,
+    textAlignVertical: 'center',
+  },
+  pagingContainer: {
+    position: 'absolute',
+    top: 30,
+    left: 0,
+    right: 0,
+    zIndex: 1,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  pagingDotStyle: {
+    width: 19,
+    height: 2,
+    backgroundColor: 'rgba(255,255,255,0.3)',
+    borderRadius: 4,
+  },
+  dotContainerStyle: {
+    marginRight: 2,
+    marginLeft: 2,
+  },
+  activeDot: {
+    backgroundColor: 'white',
   },
 
 });

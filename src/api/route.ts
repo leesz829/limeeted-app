@@ -83,6 +83,7 @@ export const DAILY_MATCH_ADD_OPEN = '/match/profileCardAddOpen';
 export const MATCH_CHECK_ALL = '/match/matchCheckAllProc';
 export const PROFILE_OPEN = '/match/profileOpen';
 export const GET_MATCH_DETAIL = '/match/getMatchInfoDetail';
+export const GET_DAILY_MATCH_LIST = '/match/getDailyMatchList';
 
 /**
  * ORDER

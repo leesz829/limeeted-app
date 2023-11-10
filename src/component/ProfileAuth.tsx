@@ -75,19 +75,6 @@ export default function ProfileAuth({ level, data, isButton, callbackAuthComment
             renderItem={renderAuthInfo}
           /> */}
 
-          {/* <ScrollView horizontal style={_styles.authWrapper} showsHorizontalScrollIndicator={false}>
-            {data?.map((item, index) => (
-              <>
-                {item.auth_status == 'ACCEPT' &&
-                  <RenderAuthInfoNew
-                    key={`RednerAuth-${index}`}
-                    item={item}
-                  />
-                }
-              </>
-            ))}
-          </ScrollView> */}
-
           <SpaceView mt={8}>
             <SpaceView mt={8} mb={5} viewStyle={{flexDirection: 'row'}}>
                 {data?.map((item, index) => (
