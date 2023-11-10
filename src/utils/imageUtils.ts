@@ -210,6 +210,9 @@ export const ICON = {
   pickPurple: require('assets/icon/icon-pick-purple.png'),
   circleX: require('assets/icon/icon-circle-x.png'),
   digitalClock: require('assets/icon/icon-digital-clock.png'),
+  authAsset: require('assets/icon/icon-auth-asset.png'),
+  authEdu: require('assets/icon/icon-auth-edu.png'),
+  authJob: require('assets/icon/icon-auth-job.png'),
 };
 
 export const GIF_IMG = {
