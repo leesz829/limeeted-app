@@ -208,6 +208,8 @@ export const ICON = {
   padlockFemale: require('assets/icon/icon-padlock-female.png'),
   pickWhite: require('assets/icon/icon-pick-white.png'),
   pickPurple: require('assets/icon/icon-pick-purple.png'),
+  circleX: require('assets/icon/icon-circle-x.png'),
+  digitalClock: require('assets/icon/icon-digital-clock.png'),
 };
 
 export const GIF_IMG = {
