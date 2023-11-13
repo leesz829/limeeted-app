@@ -18,6 +18,7 @@ import { Terms } from 'screens/commonpopup/terms';
 import { Privacy } from 'screens/commonpopup/privacy';
 import { LocationService } from 'screens/commonpopup/locationService';
 import ToggleSwitch from 'toggle-switch-react-native';
+import { ROUTES } from 'constants/routes';
 
 
 
@@ -104,6 +105,23 @@ export const Policy = (props: Props) => {
 
   // 다음 버튼
   const nextBtn = async () => {
+
+    navigation.navigate({
+      name : ROUTES.SIGNUP00_01,
+      params : {
+        birthday: '19900829',
+        ci: 'test',
+        name: '테스터',
+        gender: 'M',
+        marketing_agree_yn: 'Y',
+        mobile: '01051079809',
+      }
+    });
+
+
+    return;
+
+
     if(!termsAgree) {
       show({ content: '이용약관에 동의해 주세요.' });
       return;

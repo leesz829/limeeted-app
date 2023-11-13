@@ -10,6 +10,8 @@ export const ROUTES = {
   TITLE00: 'Title00',
   POLICY: 'Policy',
   SIGNUP00: 'Signup00',
+  SIGNUP00_01: 'Signup00_01',
+  SIGNUP00_02: 'Signup00_02',
   SIGNUP01: 'Signup01',
   SIGNUP02: 'Signup02',
   SIGNUP03: 'Signup03',

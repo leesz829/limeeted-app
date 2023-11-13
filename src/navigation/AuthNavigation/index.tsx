@@ -8,6 +8,8 @@ import { NiceAuth } from 'screens/login/niceAuth';
 import { SearchIdAndPwd } from 'screens/login/SearchIdAndPwd';
 import { Signup00 } from 'screens/signup';
 import { Policy } from 'screens/signup/policy';
+import { Signup00_01 } from 'screens/signup/Signup00_01';
+import { Signup00_02 } from 'screens/signup/Signup00_02';
 import { Signup01 } from 'screens/signup/Signup01';
 import { Signup02 } from 'screens/signup/Signup02';
 import { Signup03 } from 'screens/signup/Signup03';
@@ -30,12 +32,11 @@ export default function AuthNavigation() {
       <AuthStack.Screen name={ROUTES.LOGIN01} component={Login01} />
       <AuthStack.Screen name={ROUTES.TITLE00} component={Title00} />
       <AuthStack.Screen name={ROUTES.SIGNUP00} component={Signup00} />
+      <AuthStack.Screen name={ROUTES.SIGNUP00_01} component={Signup00_01} />
+      <AuthStack.Screen name={ROUTES.SIGNUP00_02} component={Signup00_02} />
       <AuthStack.Screen name={ROUTES.SIGNUP01} component={Signup01} />
       <AuthStack.Screen name={ROUTES.POLICY} component={Policy} />
-      <AuthStack.Screen
-        name={ROUTES.SECOND_AUTH_POPUP}
-        component={SecondAuthPopup}
-      />
+      <AuthStack.Screen name={ROUTES.SECOND_AUTH_POPUP} component={SecondAuthPopup} />
       <AuthStack.Screen name={ROUTES.SIGNUP02} component={Signup02} />
       <AuthStack.Screen name={ROUTES.SIGNUP03} component={Signup03} />
       <AuthStack.Screen name={ROUTES.APPROVAL} component={Approval} />

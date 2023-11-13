@@ -7,11 +7,10 @@ import { WebView } from 'react-native-webview';
 import axios from 'axios';
 import { usePopup } from 'Context';
 import { SUCCESS } from 'constants/reusltcode';
-import { ROUTES } from 'constants/routes';
+import { ROUTES, STACK } from 'constants/routes';
 import { nice_auth, update_phone_number, create_temp_password } from 'api/models';
 import { useUserInfo } from 'hooks/useUserInfo';
 import { myProfile } from 'redux/reducers/authReducer';
-import { STACK } from 'constants/routes';
 import { useDispatch } from 'react-redux';
 
 
@@ -50,6 +49,7 @@ export const NiceAuth = (props: Props) => {
 			
 			if (null != dataJson) {
 
+				// 중복여부 체크
 				if (dataJson.dupYn == 'Y') {
 					const memberStatus = dataJson.member_status;
 					const joinStatus = dataJson.join_status;
@@ -63,7 +63,7 @@ export const NiceAuth = (props: Props) => {
 								CommonActions.reset({
 									index: 1,
 									routes: [
-										{ name: 'Login01' },
+										{ name: ROUTES.LOGIN01 },
 										{
 											name: ROUTES.APPROVAL,
 											params: {
@@ -80,7 +80,7 @@ export const NiceAuth = (props: Props) => {
 										CommonActions.reset({
 											index: 1,
 											routes: [
-												{ name: 'Login01' },
+												{ name: ROUTES.LOGIN01 },
 												{
 													name: ROUTES.SIGNUP00,
 													params: {
@@ -108,7 +108,7 @@ export const NiceAuth = (props: Props) => {
 										CommonActions.reset({
 											index: 1,
 											routes: [
-												{ name: 'Login01' },
+												{ name: ROUTES.LOGIN01 },
 												{
 													name: ROUTES.SIGNUP00,
 													params: {
@@ -143,7 +143,7 @@ export const NiceAuth = (props: Props) => {
 										CommonActions.reset({
 											index: 1,
 											routes: [
-												{ name: 'Login01' },
+												{ name: ROUTES.LOGIN01 },
 												{
 													name: ROUTES.SIGNUP00,
 													params: {
@@ -192,7 +192,7 @@ export const NiceAuth = (props: Props) => {
 									CommonActions.reset({
 										index: 1,
 										routes: [
-											{ name: 'Login01' }
+											{ name: ROUTES.LOGIN01 }
 										],
 									})
 								);
@@ -205,9 +205,9 @@ export const NiceAuth = (props: Props) => {
 						CommonActions.reset({
 							index: 1,
 							routes: [
-								{ name: 'Login01' }
+								{ name: ROUTES.LOGIN01 }
 								, {
-									name: 'Signup00'
+									name: ROUTES.SIGNUP00_01
 									, params: {
 										ci: dataJson.ci,
 										name: dataJson.name,
@@ -278,16 +278,20 @@ export const NiceAuth = (props: Props) => {
 					break;
 				default:
 					show({
-					content: '오류입니다. 관리자에게 문의해주세요.' ,
-					confirmCallback: function() {}
+						content: '오류입니다. 관리자에게 문의해주세요.' ,
+						confirmCallback: function() {
+							navigation.goBack();
+						}
 					});
 					break;
 				}
 				
 			} else {
 				show({
-				content: '오류입니다. 관리자에게 문의해주세요.' ,
-				confirmCallback: function() {}
+					content: '오류입니다. 관리자에게 문의해주세요.' ,
+					confirmCallback: function() {
+						navigation.goBack();
+					}
 				});
 			}
 		} catch (error) {

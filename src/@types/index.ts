@@ -49,6 +49,8 @@ export type StackParamList = {
     memberSeq: Number;
     emailId: string;
   };
+  Signup00_01: undefined;
+  Signup00_02: undefined;
   Signup01: {
     memberSeq: Number;
     gender: string;
