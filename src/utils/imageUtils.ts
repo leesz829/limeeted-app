@@ -213,6 +213,9 @@ export const ICON = {
   authAsset: require('assets/icon/icon-auth-asset.png'),
   authEdu: require('assets/icon/icon-auth-edu.png'),
   authJob: require('assets/icon/icon-auth-job.png'),
+  checkYellow: require('assets/icon/icon-check-yellow.png'),
+  checkGold: require('assets/icon/icon-check-gold.png'),
+  xYellow: require('assets/icon/icon-x-yellow.png'),
 };
 
 export const GIF_IMG = {
