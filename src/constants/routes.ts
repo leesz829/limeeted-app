@@ -12,6 +12,7 @@ export const ROUTES = {
   SIGNUP00: 'Signup00',
   SIGNUP00_01: 'Signup00_01',
   SIGNUP00_02: 'Signup00_02',
+  SIGNUP00_03: 'Signup00_03',
   SIGNUP01: 'Signup01',
   SIGNUP02: 'Signup02',
   SIGNUP03: 'Signup03',

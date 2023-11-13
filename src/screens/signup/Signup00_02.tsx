@@ -64,180 +64,21 @@ export const Signup00_02 = (props: Props) => {
     return isResult;
   };
 
-  // ######################################################################################################## 패스워드 유효성 체크
-  const passwordValidChk = async () => {
-    let isResult = true;
-
-    if(password == '') {
-      show({ content: '비밀번호를 입력해 주세요.' });
-      isResult = false;
-    };
-
-    let regPass = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/;
-    if(!regPass.test(password)) {
-      show({ content: '영문, 숫자, 특수기호(!@#$%^*+=-) 조합으로\n8-25자리 입력해주세요.' });
-      isResult = false;
-    };
-
-    if(passwordChk == '') {
-      show({ content: '비밀번호 확인을 입력해 주세요.' });
-      isResult = false;
-    };
-
-    if(password != passwordChk) {
-      show({ content: '비밀번호 확인이 맞지 않습니다.' });
-      isResult = false;
-    };
-
-    return isResult;
-  };
-
-  // ######################################################################################################## 회원가입
-  const register = async () => {
-
-    // 기존 저장되어 있는 회원 유무 구분 처리
-    if(isEmptyData(memberSeq)) {
-
-      if(orgEmailId != emailId || isEmptyData(password)) {
-        if(orgEmailId != emailId) {
-          const emailChkResult = await emailValidChk();
-          if(!emailChkResult) {
-            return;
-          };
-        };
-  
-        if(isEmptyData(password)) {
-          const passwordChkResult = await passwordValidChk();
-          if(!passwordChkResult) {
-            return;
-          };
-        };
-
-        saveRegistMember();
-
-      } else {
-        navigation.reset({
-          routes: [
-            {
-              name : ROUTES.LOGIN01
-            },
-            {
-              name: ROUTES.SIGNUP00_02,
-              params: {
-                ci: ci,
-                name: name,
-                gender: gender,
-                mobile: mobile,
-                birthday: birthday,
-                memberSeq: memberSeq,
-                emailId: emailId
-              }
-            },
-            {
-              name: ROUTES.SIGNUP01,
-              params: {
-                memberSeq: memberSeq,
-                gender: gender,
-              }
-            }
-          ]
-        });
-      }
-
-    } else {
-
-      if(!isEmptyData(ci)) {
-        show({ content: '본인인증을 다시 진행해 주세요.' });
-        return;
-      };
-
-      const emailChkResult = await emailValidChk();
-      if(!emailChkResult) {
-        return;
-      };
-
-      const passwordChkResult = await passwordValidChk();
-      if(!passwordChkResult) {
-        return;
-      };
-  
-      saveRegistMember();
-    }
-  };
-
-  // ########################################################### 회원가입
-  const saveRegistMember = async () => {
-
-    // 중복 클릭 방지 설정
-    if(isClickable) {
-      setIsClickable(false);
-
-      const body = {
-        email_id: emailId,
-        password: password,
+  // ########################################################### 다음 이동
+  const goNext = async () => {
+    navigation.navigate({
+      name : ROUTES.SIGNUP00_02,
+      params : {
+        birthday: birthday,
+        ci: ci,
         name: name,
         gender: gender,
-        phone_number: mobile,
-        ci: ci,
-        birthday: birthday,
-        device_gubun: Platform.OS,
         marketing_agree_yn: mrktAgreeYn,
-      };
-  
-      try {
-        const { success, data } = await regist_member_base_info(body);
-        if(success) {
-          switch (data.result_code) {
-            case SUCCESS:  
-              navigation.reset({
-                routes: [
-                  {
-                    name : ROUTES.LOGIN01
-                  },
-                  {
-                    name: ROUTES.SIGNUP00_02,
-                    params: {
-                      ci: ci,
-                      name: name,
-                      gender: gender,
-                      mobile: mobile,
-                      birthday: birthday,
-                      memberSeq: data?.member_seq,
-                      emailId: emailId
-                    }
-                  },
-                  {
-                    name: ROUTES.SIGNUP01,
-                    params: {
-                      memberSeq: data?.member_seq,
-                      gender: gender,
-                    }
-                  }
-                ]
-              });
-  
-              break;
-            case MEMBER_EMAIL_DUP:
-              show({ content: '이미 사용하고 있는 이메일 입니다.' });
-              break;
-            default:
-              show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-              break;
-          }
-         
-        } else {
-          show({
-            content: '오류입니다. 관리자에게 문의해주세요.' ,
-            confirmCallback: function() {}
-          });
-        }
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setIsClickable(true);
+        mobile: mobile,
+        emailId: emailId,
       }
-    }
-  }
+    });
+  };
 
   return (
     <>
@@ -259,34 +100,6 @@ export const Signup00_02 = (props: Props) => {
               borderBottomType={'black'}
             />
           </SpaceView>
-
-          <SpaceView mb={24}>
-            <CommonInput
-              label="비밀번호"
-              value={password}
-              onChangeText={(password) => setPassword(password)}
-              isMasking={true}
-              maxLength={20}
-              placeholderTextColor={'#c6ccd3'}
-              placeholder={'영문, 숫자, 특수기호(!@#$%^*+=-) 포함 8글자 이상'}
-              borderBottomType={'black'}
-              fontSize={15}
-            />
-          </SpaceView>
-
-          <SpaceView mb={24}>
-            <CommonInput
-              label="비밀번호 확인"
-              value={passwordChk}
-              onChangeText={(passwordChk) => setPasswordChk(passwordChk)}
-              isMasking={true}
-              maxLength={20}
-              placeholderTextColor={'#c6ccd3'}
-              placeholder={'영문, 숫자, 특수기호(!@#$%^*+=-) 포함 8글자 이상'}
-              borderBottomType={'black'}
-              fontSize={15}
-            />
-          </SpaceView>
         </SpaceView>
       </ScrollView>
 
@@ -297,7 +110,7 @@ export const Signup00_02 = (props: Props) => {
           height={60}
           borderRadius={1}
           onPress={() => {
-            register();
+            goNext();
           }}
         />
       </SpaceView>

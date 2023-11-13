@@ -142,7 +142,7 @@ export const Approval = (props: Props) => {
               }
             },
             {
-              name: ROUTES.SIGNUP00_02,
+              name: ROUTES.SIGNUP00_03,
               params: {
                 ci: apprData.ci,
                 name: apprData.name,
@@ -176,7 +176,7 @@ export const Approval = (props: Props) => {
               }
             },
             {
-              name: ROUTES.SIGNUP00_02,
+              name: ROUTES.SIGNUP00_03,
               params: {
                 ci: apprData.ci,
                 name: apprData.name,
