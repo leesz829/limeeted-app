@@ -305,7 +305,7 @@ export default function MatchingList(props: Props) {
 };
 
 const MatchRenderItem = ({ item, fnDetail }) => {
-  const imgList = item?.img_list;
+  const imgList = item?.img_list; // 이미지 목록
   const [currentImgIdx, setCurrentImgIdx] = useState(0);
 
   // 이전 이미지
@@ -317,6 +317,8 @@ const MatchRenderItem = ({ item, fnDetail }) => {
 
   // 다음 이미지
   const nextImage = async () => {
+    console.log('nexti :::::: '  , imgList.length);
+
     if(currentImgIdx+1 < imgList.length && currentImgIdx < 2) {
       setCurrentImgIdx(currentImgIdx+1);
     }
@@ -330,7 +332,7 @@ const MatchRenderItem = ({ item, fnDetail }) => {
           <SpaceView viewStyle={{borderRadius: 20, overflow: 'hidden'}}>
             {imgList.length > 0 && (
               <Image
-                source={findSourcePath(item?.img_list[currentImgIdx].img_file_path)}
+                source={findSourcePath(imgList[currentImgIdx].img_file_path)}
                 style={{ flex: 1, width: width, height: height * 0.73 }}
                 resizeMode={'cover'}
               />
@@ -369,7 +371,7 @@ const MatchRenderItem = ({ item, fnDetail }) => {
               {currentImgIdx == 1 && (
                 <SpaceView ml={15} mr={15} viewStyle={{justifyContent: 'center', alignItems: 'flex-start'}}>
                   <SpaceView mb={8} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Image source={findSourcePath(item?.img_list[0].img_file_path)} style={_styles.mstImgStyle} />
+                    <Image source={findSourcePath(imgList[0].img_file_path)} style={_styles.mstImgStyle} />
                     <SpaceView ml={5}><Text style={_styles.infoText(16)}>{item.nickname}</Text></SpaceView>
                   </SpaceView>
                   <SpaceView viewStyle={{flexDirection: 'row'}}>
@@ -390,7 +392,7 @@ const MatchRenderItem = ({ item, fnDetail }) => {
               {currentImgIdx == 2 && (
                 <SpaceView ml={15} mr={15} viewStyle={{justifyContent: 'center', alignItems: 'flex-start'}}>
                   <SpaceView mb={8} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Image source={findSourcePath(item?.img_list[0].img_file_path)} style={_styles.mstImgStyle} />
+                    <Image source={findSourcePath(imgList[0].img_file_path)} style={_styles.mstImgStyle} />
                     <SpaceView ml={5}><Text style={_styles.infoText(16)}>{item.nickname}</Text></SpaceView>
                   </SpaceView>
                   <SpaceView viewStyle={{flexDirection: 'row', flexWrap: 'wrap'}}>
@@ -438,7 +440,7 @@ const MatchRenderItem = ({ item, fnDetail }) => {
           {/* ############################################################ 슬라이드 형식 */}
           {/* <FlatList
             contentContainerStyle={{ overflow: 'visible', paddingHorizontal: 20 }}
-            data={item?.img_list}
+            data={imgList}
             horizontal
             pagingEnabled
             showsHorizontalScrollIndicator={false}
@@ -472,7 +474,7 @@ const MatchRenderItem = ({ item, fnDetail }) => {
                       {_index == 1 && (
                         <SpaceView ml={15} mr={15} viewStyle={{justifyContent: 'center', alignItems: 'flex-start'}}>
                           <SpaceView mb={8} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                            <Image source={findSourcePath(item?.img_list[0].img_file_path)} style={_styles.mstImgStyle} />
+                            <Image source={findSourcePath(imgList[0].img_file_path)} style={_styles.mstImgStyle} />
                             <SpaceView ml={5}><Text style={_styles.infoText(16)}>{item.nickname}</Text></SpaceView>
                           </SpaceView>
                           <SpaceView viewStyle={{flexDirection: 'row'}}>
@@ -493,7 +495,7 @@ const MatchRenderItem = ({ item, fnDetail }) => {
                       {_index == 2 && (
                         <SpaceView ml={15} mr={15} viewStyle={{justifyContent: 'center', alignItems: 'flex-start'}}>
                           <SpaceView mb={8} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                            <Image source={findSourcePath(item?.img_list[0].img_file_path)} style={_styles.mstImgStyle} />
+                            <Image source={findSourcePath(imgList[0].img_file_path)} style={_styles.mstImgStyle} />
                             <SpaceView ml={5}><Text style={_styles.infoText(16)}>{item.nickname}</Text></SpaceView>
                           </SpaceView>
                           <SpaceView viewStyle={{flexDirection: 'row', flexWrap: 'wrap'}}>
