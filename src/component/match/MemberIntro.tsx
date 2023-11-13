@@ -26,10 +26,13 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
         isEmptyData(memberData?.drinking) || isEmptyData(memberData?.smoking) || interestList.length > 0) || isNoDataArea) ? (
 
         <SpaceView>
+          <SpaceView mb={10}>
+            <Text style={_styles.introTitleText}>{memberData?.nickname}의 간단 소개🙂</Text>
+          </SpaceView>
 
           {/* ############################################################################################### 간단 소개 영역 */}
           <LinearGradient
-            colors={['#092032', '#344756']}
+            colors={['#F1B10E', '#EEC80C']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={_styles.introWrap}
@@ -43,9 +46,6 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                     </SpaceView>
                   );
                 })}
-              </SpaceView>
-              <SpaceView>
-                <Text style={_styles.introTitleText}>{memberData?.nickname}의 간단 소개🙂</Text>
               </SpaceView>
             </SpaceView>
 
@@ -372,7 +372,7 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
           </LinearGradient>
 
           {/* ############################################################################################### 관심사 영역 */}
-          <SpaceView>
+          {/* <SpaceView>
             {interestList.length > 0 &&
               <SpaceView mt={30} viewStyle={_styles.interestWrap}>
                 <Text style={_styles.interestTitle}>관심사를 공유해요 : )</Text>
@@ -388,7 +388,7 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                 </SpaceView>
               </SpaceView>
             }
-          </SpaceView>
+          </SpaceView> */}
         </SpaceView>
       ) : (
         <>
@@ -410,7 +410,7 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
 const _styles = StyleSheet.create({
 
   introWrap: {
-    height: 190,
+    minHeight: 150,
     borderRadius: 20,
     paddingHorizontal: 15,
     paddingVertical: 15,
@@ -419,28 +419,28 @@ const _styles = StyleSheet.create({
   faceArea: {
     paddingHorizontal: 10,
     paddingVertical: 3,
-    backgroundColor: '#878787',
+    backgroundColor: '#FFF8CC',
     borderRadius: 20,
   },
   faceText: {
     fontFamily: 'Pretendard-SemiBold',
     fontSize: 14,
-    color: '#EEEAEB',
+    color: '#4A4846',
   },
   introTitleText: {
     fontFamily: 'Pretendard-Bold',
     fontSize: 20,
-    color: '#FFF8CC',
+    color: '#EEEAEB',
   },
   addText: {
     fontFamily: 'Pretendard-Regular',
     fontSize: 15,
-    color: '#CACBC5',
+    color: '#4A4846',
     textAlign: 'left',
     lineHeight: 20,
   },
   addActiveText: {
-    color: '#FEE05C',
+    color: '#FFF8CC',
     textAlign: 'left',
   },
   interestTitle: {

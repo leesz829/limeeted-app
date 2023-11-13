@@ -83,85 +83,89 @@ function CommonHeader({
 
   return (
     <>
-      {isLogoType ? (
-        <>
-          <View style={{ ..._styles.headerLogoContainer}}>
-            <Image source={IMAGE.logoBanner} resizeMode={'cover'} style={{width: '100%', height: 43}} />
-          </View>
-        </>
-      ) : (
-        <>
-          <View style={{ ..._styles.headerContainer, ...containerStyle, zIndex: 1 }}>
+      <SpaceView viewStyle={{backgroundColor: '#3D4348'}}>
+        {isLogoType ? (
+          <>
+            <View style={{ ..._styles.headerLogoContainer}}>
+              <Image source={IMAGE.logoBanner} resizeMode={'cover'} style={{width: '100%', height: 43}} />
+            </View>
+          </>
+        ) : (
+          <>
+            <View style={{ ..._styles.headerContainer, ...containerStyle, zIndex: 1 }}>
 
-            <SpaceView viewStyle={{flexDirection: 'row'}}>
-              {/* 뒤로가기 버튼 */}
-              <TouchableOpacity
-                onPress={goHome}
-                style={_styles.backContainer}
-                hitSlop={commonStyle.hipSlop10}
-              >
-                <Image source={backIcon || ICON.back} style={_styles.backImg} />
+              <SpaceView viewStyle={{flexDirection: 'row'}}>
+                {/* 뒤로가기 버튼 */}
+                <TouchableOpacity
+                  onPress={goHome}
+                  style={_styles.backContainer}
+                  hitSlop={commonStyle.hipSlop10}
+                >
+                  <SpaceView>
+                    <Image source={backIcon || ICON.back} style={_styles.backImg} />
+                  </SpaceView>
 
-                {/* {type == 'STORY_DETAIL' ? (
+                  {/* {type == 'STORY_DETAIL' ? (
+                    <>
+                      <SpaceView ml={13} viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start'}}>
+
+                        {storyType == 'SECRET' ? (
+                          <Text style={_styles.nicknameText(storyType, gender)}>{nickname}</Text>
+                        ) : (
+                          <>
+                            <SpaceView>
+                              <Image source={mstImgPath} style={_styles.mstImgStyle} />
+                            </SpaceView>
+
+                            <SpaceView viewStyle={{flexDirection: 'column'}}>
+                              <Text style={_styles.scoreText}>
+                                {profileScore}
+                                {(isEmptyData(authLevel) && authLevel >= 1) && ' | '}
+                                {(isEmptyData(authLevel) && authLevel >= 1) && 'Lv ' + authLevel}
+                              </Text>
+                              <Text style={_styles.nicknameText(storyType, gender)}>{nickname}</Text>
+                            </SpaceView>
+                          </>
+                        )}
+                      </SpaceView>
+                    </>
+                  ) : (
+                    <>
+                      <SpaceView ml={13}>
+                        <Text style={_styles.titleStyle}>{title}</Text>
+                      </SpaceView>
+                    </>
+                  )} */}
+
+                  <SpaceView ml={13}>
+                    <Text style={_styles.titleStyle}>{title}</Text>
+                  </SpaceView>
+                </TouchableOpacity>
+
+              </SpaceView>
+
+              <SpaceView>
+                {type == 'STORY_REGI' ? (
                   <>
-                    <SpaceView ml={13} viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start'}}>
-
-                      {storyType == 'SECRET' ? (
-                        <Text style={_styles.nicknameText(storyType, gender)}>{nickname}</Text>
-                      ) : (
-                        <>
-                          <SpaceView>
-                            <Image source={mstImgPath} style={_styles.mstImgStyle} />
-                          </SpaceView>
-
-                          <SpaceView viewStyle={{flexDirection: 'column'}}>
-                            <Text style={_styles.scoreText}>
-                              {profileScore}
-                              {(isEmptyData(authLevel) && authLevel >= 1) && ' | '}
-                              {(isEmptyData(authLevel) && authLevel >= 1) && 'Lv ' + authLevel}
-                            </Text>
-                            <Text style={_styles.nicknameText(storyType, gender)}>{nickname}</Text>
-                          </SpaceView>
-                        </>
-                      )}
+                    <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                      {/* <SpaceView mr={15}>{right || <Wallet textStyle={walletTextStyle} />}</SpaceView> */}
+                      <TouchableOpacity onPress={callbackFunc} hitSlop={commonStyle.hipSlop20}>
+                        <Text style={_styles.regiText}>등록</Text>
+                      </TouchableOpacity>
                     </SpaceView>
                   </>
                 ) : (
                   <>
-                    <SpaceView ml={13}>
-                      <Text style={_styles.titleStyle}>{title}</Text>
-                    </SpaceView>
-                  </>
-                )} */}
+                    {/* 재화 표시 */}
+                    <View>{right || <Wallet textStyle={walletTextStyle} />}</View>
+                  </>  
+                )}
 
-                <SpaceView ml={13}>
-                  <Text style={_styles.titleStyle}>{title}</Text>
-                </SpaceView>
-              </TouchableOpacity>
-
-            </SpaceView>
-
-            <SpaceView>
-              {type == 'STORY_REGI' ? (
-                <>
-                  <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                    {/* <SpaceView mr={15}>{right || <Wallet textStyle={walletTextStyle} />}</SpaceView> */}
-                    <TouchableOpacity onPress={callbackFunc} hitSlop={commonStyle.hipSlop20}>
-                      <Text style={_styles.regiText}>등록</Text>
-                    </TouchableOpacity>
-                  </SpaceView>
-                </>
-              ) : (
-                <>
-                  {/* 재화 표시 */}
-                  <View>{right || <Wallet textStyle={walletTextStyle} />}</View>
-                </>  
-              )}
-
-            </SpaceView>
-          </View>
-        </>
-      )}
+              </SpaceView>
+            </View>
+          </>
+        )}
+      </SpaceView>
     </>
   );
 }
@@ -180,7 +184,7 @@ const _styles = StyleSheet.create({
   headerContainer: {
     height: 56,
     paddingRight: 24,
-    backgroundColor: 'white',
+    //backgroundColor: 'white',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -199,7 +203,8 @@ const _styles = StyleSheet.create({
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 16,
     lineHeight: 32,
-    color: Color.black2222,
+    //color: Color.black2222,
+    color: '#999999',
   },
   mstImgStyle: {
     width: 32,

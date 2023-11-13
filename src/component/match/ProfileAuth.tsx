@@ -43,15 +43,11 @@ export default function ProfileAuth({ data, isButton, callbackAuthCommentFn, mem
 
           {/* ########################################################################################### 타이틀 */}
           <SpaceView mb={15} viewStyle={{flexDirection: 'row'}}>
-            <Text style={_styles.textStyle(18, '#FFFFFF', 'SB')}>
-              {memberData.nickname}
-              <Text style={_styles.textStyle(18, '#4F4A46', 'SB')}>님의</Text>
-              <Text style={_styles.textStyle(30, '#43ABAE', 'EB')}>인증 정보</Text>
-            </Text>
+            <Text style={_styles.textStyle(20, '#EEEAEB', 'B')}>{memberData.nickname}님의 인증 정보🤩</Text>
           </SpaceView>
 
-          {/* ########################################################################################### 인증 목록 */}
-          <SpaceView>
+          {/* ########################################################################################### 인증 목록(세로) */}
+          {/* <SpaceView>
             <ScrollView 
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -99,7 +95,7 @@ export default function ProfileAuth({ data, isButton, callbackAuthCommentFn, mem
                       </SpaceView>
 
                       <SpaceView viewStyle={{justifyContent: 'center'}}>
-                        <Text style={_styles.textStyle(14, '#FEE05C', 'SB')}>{/* {item?.slogan_name} */}중견기업 대표</Text>
+                        <Text style={_styles.textStyle(14, '#FEE05C', 'SB')}>{item?.slogan_name}중견기업 대표</Text>
                       </SpaceView>
 
                     </LinearGradient>
@@ -108,7 +104,64 @@ export default function ProfileAuth({ data, isButton, callbackAuthCommentFn, mem
               })}
 
             </ScrollView>
+          </SpaceView> */}
+
+          {/* ########################################################################################### 인증 목록(가로) */}
+          <SpaceView>
+            {data?.map((item, index) => {
+              const authCode = item.common_code;
+              let authIcon = ICON.authJob;
+
+              if(authCode == 'EDU') {
+                authIcon = ICON.authEdu;
+              } else if(authCode == 'INCOME') {
+                authIcon = ICON.authAsset;
+              } else if(authCode == 'ASSET') {
+                authIcon = ICON.authAsset;
+              } else if(authCode == 'SNS') {
+                authIcon = ICON.authAsset;
+              } else if(authCode == 'VEHICLE') {
+                authIcon = ICON.authAsset;
+              }
+
+              return (
+                <>
+                  <LinearGradient
+                    colors={['#F1B10E', '#EEC80C']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={_styles.authItemWrap}>
+
+                    <SpaceView viewStyle={_styles.itemSubBg} />
+
+                    <SpaceView ml={20} mr={8} mt={8} mb={8} viewStyle={{flexDirection: 'column', justifyContent: 'space-between'}}>
+                      <SpaceView mb={15} viewStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                        <SpaceView>
+                          <Image source={authIcon} style={styles.iconSquareSize(20)} />
+                        </SpaceView>
+
+                        <SpaceView pt={3} viewStyle={{justifyContent: 'center'}}>
+                          <Text style={_styles.sloganText}>중견기업 대표</Text>
+                        </SpaceView>
+                      </SpaceView>
+
+                      <SpaceView>
+                        <Text style={_styles.textStyle(12, '#4A4846', 'L')}>
+                          {isEmptyData(item?.auth_comment) ? (
+                            <>"{item?.auth_comment}"</>
+                          ) : (
+                            <>"작성한 인증 코멘트가 없습니다."</>
+                          )}
+                        </Text>
+                      </SpaceView>
+                    </SpaceView>
+
+                  </LinearGradient>
+                </>
+              )
+            })}
           </SpaceView>
+
         </SpaceView>
       )}
     </>
@@ -128,6 +181,10 @@ const _styles = StyleSheet.create({
       _fontFmaily = 'Pretendard-SemiBold';
     } else if(_fType == 'EB') {
       _fontFmaily = 'Pretendard-ExtraBold';
+    } else if(_fType == 'B') {
+      _fontFmaily = 'Pretendard-Bold';
+    } else if(_fType == 'L') {
+      _fontFmaily = 'Pretendard-Light';
     }
 
     return {
@@ -151,4 +208,35 @@ const _styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginRight: 10,
   },
+
+
+
+
+
+  authItemWrap: {
+    borderTopRightRadius: 15,
+    borderBottomRightRadius: 15,
+    overflow: 'hidden',
+    minHeight: 90,
+  },
+  itemSubBg: {
+    backgroundColor: '#0EE9F1',
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    width: 12,
+  },
+  sloganText: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 14,
+    color: '#FFFFFF',
+    backgroundColor: '#0EE9F1',
+    borderRadius: 15,
+    paddingVertical: 3,
+    paddingHorizontal: 10,
+  },
+
+
+
 });

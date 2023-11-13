@@ -14,37 +14,30 @@ export default function InterviewRender({ title, dataList }) {
     <>
       {isEmptyData(dataList) && dataList.length > 0 && (
         <SpaceView>
-          <SpaceView mb={30}>
-            <Text style={_styles.titleText}>인터뷰</Text>
+          <SpaceView mb={25} viewStyle={{alignItems: 'center'}}>
+            <SpaceView viewStyle={{flexDirection: 'row'}}>
+              <View style={{zIndex:1}}>
+                <Text style={_styles.titText}>{title}</Text>
+              </View>
+              <View style={_styles.titUnderline} />
+            </SpaceView>
           </SpaceView>
 
-          <SpaceView mb={30}>
-            <Text style={_styles.mstText}>"리미티드에 오신 것을 정말 정말 환영합니다. 데일리뷰 많이 참여해 주시고 라이브도 잊지 마시고 서로 평점 테러 좀 하지 마세요. 제발"</Text>
-          </SpaceView>
-
-          <SpaceView>
-            {/* <ScrollView 
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={_styles.interviewListWrap}>
-
-              {dataList.map((e, index) => (
-                <>
-                  {e.answer != "" && e.answer != null && 
-                    <SpaceView key={'interview_' + index} viewStyle={[_styles.contentItemContainer, index % 2 !== 0 && _styles.itemActive]}>
-                      <View style={_styles.questionRow}>
-                        <Text style={_styles.questionText}>Q.</Text>
-                        <Text style={[_styles.questionBoldText]}> {e?.code_name}</Text>
-                      </View>
-                      <View style={_styles.answerRow}>
-                        <Text style={_styles.answerText}>A.</Text>
-                        <Text style={[_styles.answerNormalText, Platform.OS == 'ios' ? {marginTop: -5} : {marginTop: 0}]}>{e?.answer}</Text>
-                      </View>
+          <SpaceView viewStyle={{alignItems:'flex-start', justifyContent: 'flex-start'}}>
+            {dataList.map((e, index) => (
+              <>
+                {e.answer != "" && e.answer != null && 
+                  <SpaceView key={'interview_' + index} viewStyle={_styles.contentItemContainer}>
+                    <SpaceView mb={10} viewStyle={_styles.questionRow}>
+                      <Text style={_styles.questionText}>Q. {e?.code_name}</Text>
                     </SpaceView>
-                  }
-                </>
-              ))}
-            </ScrollView> */}
+                    <SpaceView viewStyle={_styles.answerRow}>
+                      <Text style={_styles.answerText}>"{e?.answer}"</Text>
+                    </SpaceView>
+                  </SpaceView>
+                }
+              </>
+            ))}
           </SpaceView>
         </SpaceView>
       )}
@@ -76,151 +69,48 @@ const _styles = StyleSheet.create({
   interviewListWrap: {
 
   },
-
-
-
-
-  registerButton: {
-    borderColor: '#7986ee',
-    borderWidth: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 3,
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: `center`,
-    borderRadius: 8,
+  titText: {
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 14,
+    color: '#FFFFFF',
+    textAlign: 'center',
   },
-  registerText: {
-    color: Color.primary,
-  },
-  deleteButton: {
-    backgroundColor: '#7986ee',
-    paddingHorizontal: 20,
-    paddingVertical: 3,
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: `center`,
-    borderRadius: 8,
-    marginRight: 8,
-  },
-  deleteText: {
-    color: Color.white,
-  },
-
-  checkIconStyle: {
-    width: 12,
-    height: 8,
-  },
-  checkContainer: {
-    width: 24,
-    height: 24,
-    borderWidth: 1,
-    borderRadius: 12,
-    borderColor: Color.grayDDDD,
-    alignItems: 'center',
-    justifyContent: 'center',
+  titUnderline: {
     position: 'absolute',
-    top: 8,
-    right: 6,
-  },
-  active: {
-    backgroundColor: Color.primary,
-    borderColor: Color.primary,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 7,
+    backgroundColor: '#FE8C12',
   },
   contentItemContainer: {
-    width: '100%',
-    minHeight: 100,
+    //width: '100%',
+    //justifyContent: 'flex-start',
+    //minHeight: 60,
     borderRadius: 10,
-    backgroundColor: '#eff3fe',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderColor: '#f9f9f9',
-    padding: 20,
-    marginBottom: 10,
+    marginBottom: 20,
   },
   itemActive: {
     backgroundColor: '#fff',
     borderColor: '#F7F7F7',
   },
   questionRow: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    width: '90%',
+    
   },
   questionText: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 12,
-    lineHeight: 22,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#7986ee',
-  },
-  questionBoldText: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 13,
-    lineHeight: 17,
-    textAlign: 'left',
-    color: '#272727',
-    marginLeft: 10,
-    marginTop: 3,
-  },
-  questionNormalText: {
-    fontFamily: 'AppleSDGothicNeoR00',
-    fontSize: 13,
-    lineHeight: 19,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#272727',
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 14,
+    color: '#F1B10E',
   },
   answerRow: {
-    flexDirection: 'row',
+    /* flexDirection: 'row',
     width: '80%',
     marginTop: 10,
-    position: 'relative',
+    position: 'relative', */
   },
   answerText: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 12,
-    lineHeight: 22,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#7986ee',
-  },
-  answerNormalText: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 12,
-    lineHeight: 22,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#7986ee',
-    marginLeft: 12,
-    marginTop: -7,
-    textAlignVertical: 'top',
-  },
-  penPosition: {
-    position: 'absolute',
-    top: 8,
-    right: 6,
-  },
-  penImage: {
-    width: 24,
-    height: 24,
-    resizeMode: 'contain',
-  },
-  selectedDelete: {
-    paddingVertical: 15,
-    borderRadius: 22,
-    backgroundColor: '#363636',
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: `center`,
-  },
-  selectedDeleteText: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 14,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#ffffff',
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 20,
+    color: '#F3DEA6',
   },
 });

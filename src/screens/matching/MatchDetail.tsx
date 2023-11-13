@@ -22,10 +22,13 @@ import VisualImage from 'component/match/VisualImage';
 import ProfileAuth from 'component/match/ProfileAuth';
 import ProfileActive from 'component/match/ProfileActive';
 import InterviewRender from 'component/match/InterviewRender';
+import InterestRender from 'component/match/InterestRender';
 import InterestSendPopup from 'screens/commonpopup/InterestSendPopup';
 import SincereSendPopup from 'screens/commonpopup/SincereSendPopup';
 import MemberIntro from 'component/match/MemberIntro';
 import AuthPickRender from 'component/match/AuthPickRender';
+import LinearGradient from 'react-native-linear-gradient';
+
 
 
 const { width, height } = Dimensions.get('window');
@@ -393,130 +396,165 @@ export default function MatchDetail(props: Props) {
 
         <ScrollView style={{ flex: 1, backgroundColor: '#FEBC4C' }}>
 
-          {/* ####################################################################################
-          ####################### 상단 영역
-          #################################################################################### */}
-          <SpaceView mb={35}>
+          <LinearGradient
+            colors={['#3D4348', '#1A1E1C']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={_styles.wrap}
+          >
 
-            {/* ############################################################## 상단 이미지 영역 */}
-            {/* <VisualImage 
-              imgList={data?.profile_img_list} 
-              memberData={data?.match_member_info}
-              isAnimation={false} /> */}
+            {/* ####################################################################################
+            ####################### 상단 영역
+            #################################################################################### */}
+            <SpaceView mb={35}>
 
-            <SpaceView>
-              <Image source={findSourcePath(data.profile_img_list[0]?.img_file_path)} style={_styles.profileImgStyle} />
-            </SpaceView>
-
-
-            {/* ######################### 버튼 영역 */}
-            <View style={_styles.absoluteView}>
-              <View style={_styles.buttonsContainer}>
-
-                {/* ######### 거절 버튼 */}
-                {/* <TouchableOpacity onPress={() => { popupActive('pass'); }}>
-                  <Image source={ICON.closeCircle} style={_styles.smallButton} />
-                </TouchableOpacity> */}
-
-                {/* ######### 관심 버튼 */}
-                <TouchableOpacity onPress={() => { popupActive('interest'); }} style={_styles.freePassContainer}>
-                  <Image source={ICON.passCircle} style={_styles.largeButton} />
-
-                  {/* ############ 부스터 아이템  */}
-                  {isEmptyData(data?.use_item) && isEmptyData(data?.use_item?.FREE_LIKE) && data?.use_item?.FREE_LIKE?.use_yn == 'Y' &&
-                    <View style={_styles.freePassBage}>
-                      <Text style={_styles.freePassText}>자유이용권 ON</Text>
-                    </View>
-                  }
-                </TouchableOpacity>
-
-                {/* ######### 찐심 버튼 */}
-                <TouchableOpacity onPress={() => { popupActive('sincere'); }}>
-                  <Image source={ICON.royalPassCircle} style={_styles.largeButton} />
-                </TouchableOpacity >
-
-                {/* ######### 찜하기 버튼 */}
-                {data?.match_member_info?.zzim_yn == 'Y' && (
-                  <TouchableOpacity onPress={() => { popupActive('zzim'); }}>
-                    <Image source={ICON.zzimIcon} style={_styles.smallButton} />
-                  </TouchableOpacity>
-                )}
-              </View>
-            </View>
-
-          </SpaceView>
-
-          {/* ############################################################################################################# 프로필 인증 영역 */}
-          <SpaceView pl={20} pr={20} mb={40}>
-            {data.second_auth_list.length > 0 ? (
-              <ProfileAuth data={data.second_auth_list} isButton={false} memberData={data?.match_member_info} />
-            ) : (
-              <SpaceView mt={10} viewStyle={_styles.authNoDataArea}>
-                <SpaceView mb={8}><Text style={_styles.authNoDataTit}>프로필 인증없이 가입한 회원입니다.</Text></SpaceView>
-                <SpaceView><Text style={_styles.authNoDataSubTit}>프로필 인증은 직업, 학업, 소득, 자산, SNS, 차량 등의 인증 항목을 의미합니다.</Text></SpaceView>
+              {/* ############################################################## 상단 이미지 영역 */}
+              <SpaceView viewStyle={_styles.profileImgWrap}>
+                <Image source={findSourcePath(data.profile_img_list[0]?.img_file_path)} style={_styles.profileImgStyle} />
               </SpaceView>
-            )}
-          </SpaceView>
-
-          {/* ############################################################################################################# 2번째 이미지 영역 */}
-          <SpaceView mb={40}>
-            <Image source={findSourcePath(data.profile_img_list[1]?.img_file_path)} style={_styles.profileImgStyle} />
-          </SpaceView>
-
-          {/* ############################################################################################################# 소개 및 관심사 영역 */}
-          <SpaceView pl={20} pr={20} mb={40}>
-            <MemberIntro memberData={data?.match_member_info} imgList={data?.profile_img_list} interestList={data?.interest_list} faceList={data?.face_list} />
-          </SpaceView>
-
-          {/* ############################################################################################################# 3번째 이미지 영역 */}
-          <SpaceView mb={40}>
-            <Image source={findSourcePath(data.profile_img_list[2]?.img_file_path)} style={_styles.profileImgStyle} />
-          </SpaceView>
-
-          {/* ############################################################################################################# 인터뷰 영역 */}
-          <SpaceView>
-            <InterviewRender title={data?.match_member_info?.nickname + '님을\n알려주세요!'} dataList={data?.interview_list} />
-          </SpaceView>
-
-          
 
 
+              {/* ######################### 버튼 영역 */}
+              <View style={_styles.absoluteView}>
+                <View style={_styles.buttonsContainer}>
 
+                  {/* ######### 거절 버튼 */}
+                  <TouchableOpacity onPress={() => { popupActive('pass'); }}>
+                    <Image source={ICON.closeCircle} style={_styles.smallButton} />
+                  </TouchableOpacity>
 
+                  {/* ######### 관심 버튼 */}
+                  <TouchableOpacity onPress={() => { popupActive('interest'); }} style={_styles.freePassContainer}>
+                    <Image source={ICON.passCircle} style={_styles.largeButton} />
 
+                    {/* ############ 부스터 아이템  */}
+                    {isEmptyData(data?.use_item) && isEmptyData(data?.use_item?.FREE_LIKE) && data?.use_item?.FREE_LIKE?.use_yn == 'Y' &&
+                      <View style={_styles.freePassBage}>
+                        <Text style={_styles.freePassText}>자유이용권 ON</Text>
+                      </View>
+                    }
+                  </TouchableOpacity>
 
-          <SpaceView pl={20} pr={20}>
+                  {/* ######### 찐심 버튼 */}
+                  <TouchableOpacity onPress={() => { popupActive('sincere'); }}>
+                    <Image source={ICON.royalPassCircle} style={_styles.largeButton} />
+                  </TouchableOpacity >
 
-            {/* ############################################################## 부스트 회원 노출 영역 */}
-            {/* {data?.match_member_info?.boost_yn === 'Y' && (
-              <View style={_styles.boostPannel}>
-                <View style={_styles.boostBadge}>
-                  <Text style={_styles.boostBadgeText}>BOOST</Text>
+                  {/* ######### 찜하기 버튼 */}
+                  {data?.match_member_info?.zzim_yn == 'Y' && (
+                    <TouchableOpacity onPress={() => { popupActive('zzim'); }}>
+                      <Image source={ICON.zzimIcon} style={_styles.smallButton} />
+                    </TouchableOpacity>
+                  )}
                 </View>
-                <Text style={_styles.boostTitle}>부스터 회원을 만났습니다.</Text>
-                <Text style={_styles.boostDescription}>
-                  관심이나 찐심을 보내면 소셜 평점 보너스가 부여됩니다.
-                </Text>
               </View>
-            )} */}
-            
-            {/* ############################################################## 추가 정보 영역 */}
-            {/* <AddInfo memberData={data?.match_member_info} /> */}
 
-            {/* ############################################################## 인터뷰 영역 */}
-            <SpaceView mt={30}>
-              <InterviewRender title={data?.match_member_info?.nickname + '님을\n알려주세요!'} dataList={data?.interview_list} />
             </SpaceView>
-            
-            {/* ############################################################## 신고하기 영역 */}
-            <TouchableOpacity onPress={() => { report_onOpen(); }}>
-              <View style={_styles.reportButton}>
-                <Text style={_styles.reportTextBtn}>신고 및 차단하기</Text>
-              </View>
-            </TouchableOpacity>
-          </SpaceView>
 
-          <View style={{ height: 30 }} />
+            {/* ############################################################################################################# 간단 소개 및 관심사 영역 */}
+            <SpaceView pl={15} pr={15} mb={40}>
+              <MemberIntro memberData={data?.match_member_info} imgList={data?.profile_img_list} interestList={data?.interest_list} faceList={data?.face_list} />
+            </SpaceView>
+
+            {/* ############################################################################################################# 자기 소개 영역 */}
+            <SpaceView pl={15} pr={15} mb={40} viewStyle={_styles.commentWrap}>
+              <SpaceView mb={15} viewStyle={{flexDirection: 'row'}}>
+                <View style={{zIndex:1}}>
+                  <Text style={_styles.commentTitText}>{data?.match_member_info.nickname}님 소개</Text>
+                </View>
+                <View style={_styles.commentUnderline} />
+              </SpaceView>
+              <SpaceView>
+                {/* <Text style={_styles.commentText}>{data?.match_member_info.introduce_comment}</Text> */}
+                <Text style={_styles.commentText}> 리미티드에 오신 것을 정말 정말 환영합니다. 데일리뷰 많이 참여해 주시
+                  고 라이브도 잊지 마시고 서로 평점 테러 좀 하지 마세요. 제발  리미티드에
+                  오신 것을 정말 정말 환영합니다. 데일리뷰 많이 참여해 주시고.
+                  리미티드에 오신 것을 정말 정말 환영합니다. 데일리뷰 많이 참여해 주시
+                  고 라이브도 잊지 마시고 서로 평점 테러 좀 하지 마세요. 제발  리미티드에
+                  오신 것을 정말 정말 환영합니다. 데일리뷰 많이 참여해 주시고.</Text>
+              </SpaceView>
+            </SpaceView>
+
+            {/* ############################################################################################################# 프로필 인증 영역 */}
+            <SpaceView pl={15} pr={15} mb={40}>
+              {data.second_auth_list.length > 0 ? (
+                <ProfileAuth data={data.second_auth_list} isButton={false} memberData={data?.match_member_info} />
+              ) : (
+                <SpaceView mt={10} viewStyle={_styles.authNoDataArea}>
+                  <SpaceView mb={8}><Text style={_styles.authNoDataTit}>프로필 인증없이 가입한 회원입니다.</Text></SpaceView>
+                  <SpaceView><Text style={_styles.authNoDataSubTit}>프로필 인증은 직업, 학업, 소득, 자산, SNS, 차량 등의 인증 항목을 의미합니다.</Text></SpaceView>
+                </SpaceView>
+              )}
+            </SpaceView>
+
+            {/* ############################################################################################################# 2번째 이미지 영역 */}
+            <SpaceView mb={40} viewStyle={_styles.profileImgWrap}>
+              <Image source={findSourcePath(data.profile_img_list[1]?.img_file_path)} style={_styles.profileImgStyle} />
+            </SpaceView>
+
+            {/* ############################################################################################################# 인터뷰 영역 */}
+            <SpaceView pl={15} pr={15} mb={35}>
+              <InterviewRender title={data?.match_member_info?.nickname + '에 대한 필독서'} dataList={data?.interview_list} />
+            </SpaceView>
+
+            {/* ############################################################################################################# 3번째 이미지 영역 */}
+            <SpaceView mb={40} viewStyle={_styles.profileImgWrap}>
+              <Image source={findSourcePath(data.profile_img_list[2]?.img_file_path)} style={_styles.profileImgStyle} />
+            </SpaceView>
+
+            {/* ############################################################################################################# 간단 소개 및 관심사 영역 */}
+            <SpaceView pl={15} pr={15} mb={40}>
+              <InterestRender memberData={data?.match_member_info} interestList={data?.interest_list} />
+            </SpaceView>
+
+            {/* ############################################################################################################# 4,5,6번째 이미지 영역 */}
+            {data.profile_img_list?.length > 3 && (
+              <>
+                <SpaceView mb={40} viewStyle={_styles.profileImgWrap}>
+                  <Image source={findSourcePath(data.profile_img_list[3]?.img_file_path)} style={_styles.profileImgStyle} />
+                </SpaceView>
+
+                {data.profile_img_list?.length > 4 && (
+                  <SpaceView mb={40} viewStyle={_styles.profileImgWrap}>
+                    <Image source={findSourcePath(data.profile_img_list[4]?.img_file_path)} style={_styles.profileImgStyle} />
+                  </SpaceView>
+                )}
+
+                {data.profile_img_list?.length > 5 && (
+                  <SpaceView mb={40} viewStyle={_styles.profileImgWrap}>
+                    <Image source={findSourcePath(data.profile_img_list[5]?.img_file_path)} style={_styles.profileImgStyle} />
+                  </SpaceView>
+                )}
+              </>
+            )}
+
+            <SpaceView pl={20} pr={20} mb={30}>
+
+              {/* ############################################################## 부스트 회원 노출 영역 */}
+              {/* {data?.match_member_info?.boost_yn === 'Y' && (
+                <View style={_styles.boostPannel}>
+                  <View style={_styles.boostBadge}>
+                    <Text style={_styles.boostBadgeText}>BOOST</Text>
+                  </View>
+                  <Text style={_styles.boostTitle}>부스터 회원을 만났습니다.</Text>
+                  <Text style={_styles.boostDescription}>
+                    관심이나 찐심을 보내면 소셜 평점 보너스가 부여됩니다.
+                  </Text>
+                </View>
+              )} */}
+
+              {/* ############################################################## 추가 정보 영역 */}
+              {/* <AddInfo memberData={data?.match_member_info} /> */}
+
+              {/* ############################################################## 신고하기 영역 */}
+              <TouchableOpacity onPress={() => { report_onOpen(); }}>
+                <View style={_styles.reportButton}>
+                  <Text style={_styles.reportTextBtn}>신고 및 차단하기</Text>
+                </View>
+              </TouchableOpacity>
+            </SpaceView>
+
+          </LinearGradient>
         </ScrollView>
 
         {/* ##################################################################################
@@ -646,6 +684,36 @@ export default function MatchDetail(props: Props) {
 ####################################################################################################### */}
 
 const _styles = StyleSheet.create({
+  wrap: {
+    minHeight: height,
+    paddingTop: 10,
+  },
+  profileImgWrap: {
+    alignItems: 'center',
+  },
+  commentWrap: {
+    alignItems: 'center',
+  },
+  commentTitText: {
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 14,
+    color: '#FFFFFF',
+    textAlign: 'center',
+  },
+  commentText: {
+    fontFamily: 'Pretendard-Light',
+    fontSize: 14,
+    color: '#F3DEA6',
+    textAlign: 'center',
+  },
+  commentUnderline: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 7,
+    backgroundColor: '#FE8C12',
+  },
   absoluteView: {
     position: 'absolute',
     left: 0,
@@ -655,7 +723,7 @@ const _styles = StyleSheet.create({
     justifyContent: 'flex-end',
     paddingHorizontal: '8%',
     zIndex: 1,
-    display: 'none',
+    //display: 'none',
   },
   title: {
     fontFamily: 'AppleSDGothicNeoEB00',
@@ -796,7 +864,7 @@ const _styles = StyleSheet.create({
   },
   profileImgStyle: {
     flex: 1,
-    width: width,
+    width: width - 25,
     height: height * 0.7,
     borderRadius: 20,
   },
