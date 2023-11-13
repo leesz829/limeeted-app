@@ -67,7 +67,7 @@ export const Signup00_02 = (props: Props) => {
   // ########################################################### 다음 이동
   const goNext = async () => {
     navigation.navigate({
-      name : ROUTES.SIGNUP00_02,
+      name : ROUTES.SIGNUP00_03,
       params : {
         birthday: birthday,
         ci: ci,
