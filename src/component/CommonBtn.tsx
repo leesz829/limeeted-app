@@ -13,7 +13,7 @@ import SpaceView from './SpaceView';
 import LinearGradient from 'react-native-linear-gradient';
 
 
-type BtnType = 'gray' | 'gray2' | 'gray3' | 'primary' | 'primary2' | 'kakao' | 'purple' | 'white' | 'blue' | 'blue2' | 'g_blue' | 'black' | 'blackW' | 'red';
+type BtnType = 'gray' | 'gray2' | 'gray3' | 'primary' | 'primary2' | 'kakao' | 'purple' | 'white' | 'blue' | 'blue2' | 'g_blue' | 'black' | 'blackW' | 'red' | 'reNewId' | 'reNewPwd' | 'reNewGoBack';
 type Props = {
   onPress?: () => void;
   value: string;
@@ -27,6 +27,7 @@ type Props = {
   isGradient?: boolean;
   borderRadius?: number;
   borderWidth?: number;
+  fontFamily?: string;
 } & StyleProp<TouchableOpacityProps>;
 /**
  * 공통 버튼
@@ -181,6 +182,20 @@ const styles = (props: Props) => {
       backgroundColor = Color.red2;
       textColor = Color.white;
       break;
+    case 'reNewId':
+      backgroundColor = '#FFDD00';
+      textColor = Color.white;
+      borderColor = '#FFDD00';
+      break;
+    case 'reNewPwd':
+      backgroundColor = '#FFF';
+      textColor = '#D5CD9E';
+      break;
+    case 'reNewGoBack':
+      backgroundColor = '(0, 0, 0, 0.5)';
+      textColor = '#D5CD9E';
+      borderColor = '#BBB18B';
+      break;
     default:
       backgroundColor = Color.grayEEEE;
       textColor = Color.black2222;
@@ -197,6 +212,7 @@ const styles = (props: Props) => {
       borderWidth: props.borderWidth ? props.borderWidth : 1,
       borderColor: borderColor,
       flexDirection: 'row',
+      
     },
     btnStyle_gradient: {
       width: props.width ? props.width : '100%',
@@ -213,7 +229,7 @@ const styles = (props: Props) => {
       fontSize: props.fontSize ? props.fontSize : 16,
       lineHeight: 26,
       color: textColor,
-      fontFamily: 'AppleSDGothicNeoM00',
+      fontFamily: props.fontFamily ? props.fontFamily : 'AppleSDGothicNeoM00',
     },
     iconStyle: {
       width: 16,

@@ -10,7 +10,7 @@ import { CommonInput } from 'component/CommonInput';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
-import { Image, ScrollView, StyleSheet, View, Platform, Text } from 'react-native';
+import { Image, ScrollView, StyleSheet, View, Platform, Text, Dimensions, TouchableOpacity } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import * as properties from 'utils/properties';
 import { usePopup } from 'Context';
@@ -18,12 +18,15 @@ import { SUCCESS, MEMBER_EMAIL_DUP } from 'constants/reusltcode';
 import { regist_member_base_info } from 'api/models';
 import { ROUTES } from 'constants/routes';
 import { isEmptyData } from 'utils/functions';
+import LinearGradient from 'react-native-linear-gradient';
 
 
 interface Props {
   navigation: StackNavigationProp<StackParamList, 'Signup00_03'>;
   route: RouteProp<StackParamList, 'Signup00_03'>;
 }
+
+const { width, height } = Dimensions.get('window');
 
 export const Signup00_03 = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
@@ -45,7 +48,8 @@ export const Signup00_03 = (props: Props) => {
   const [emailId, setEmailId] = React.useState(props.route.params?.emailId);
   const [password, setPassword] = React.useState('');
   const [passwordChk, setPasswordChk] = React.useState('');
-
+console.log('ddd', passwordChk)
+console.log('aa', password)
   // ######################################################################################################## 이메일 유효성 체크
   const emailValidChk = async () => {
     let isResult = true;
@@ -241,96 +245,157 @@ export const Signup00_03 = (props: Props) => {
 
   return (
     <>
-      <ScrollView style={[styles.scrollContainerAll]}>
-        <SpaceView>
-          <Text></Text>
-        </SpaceView>
-
-        <SpaceView viewStyle={[commonStyle.paddingHorizontal20, commonStyle.mb70]}>
-
-          <SpaceView mb={24}>
-            <CommonInput
-              label="이메일"
-              value={emailId}
-              onChangeText={(value) => setEmailId(emailId)}
-              maxLength={50}
-              placeholderTextColor={'#c6ccd3'}
-              placeholder={'이메일 주소'}
-              borderBottomType={'black'}
-            />
+      <ScrollView>
+        <LinearGradient
+          colors={['#3D4348', '#1A1E1C']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={_styles.signUpContainer}
+        >
+          <SpaceView mt={30} mb={20} viewStyle={{paddingHorizontal:16}}>
+            <CommonText textStyle={_styles.title}>
+              사용하실{'\n'}비밀번호를 입력해주세요.
+            </CommonText>
           </SpaceView>
 
-          <SpaceView mb={24}>
-            <CommonInput
-              label="비밀번호"
-              value={password}
-              onChangeText={(password) => setPassword(password)}
-              isMasking={true}
-              maxLength={20}
-              placeholderTextColor={'#c6ccd3'}
-              placeholder={'영문, 숫자, 특수기호(!@#$%^*+=-) 포함 8글자 이상'}
-              borderBottomType={'black'}
-              fontSize={15}
-            />
-          </SpaceView>
+          <SpaceView mt={30} viewStyle={[_styles.container]}>
+            <View style={{width: '100%'}}>
+              <Text style={[_styles.emailPwdText, {color: '#D5CD9E'}]}>이메일</Text>
+            </View>
+            <SpaceView mb={30} viewStyle={[commonStyle.width100]}>
+              <CommonInput
+                label=""
+                value={emailId}
+                onChangeText={(emailId) => setEmailId(emailId)}
+                maxLength={50}
+                fontSize={14}
+                disabled={true}
+                style={{color: '#D5CD9E', marginTop: 10}}
+              />
+            </SpaceView>
 
-          <SpaceView mb={24}>
-            <CommonInput
-              label="비밀번호 확인"
-              value={passwordChk}
-              onChangeText={(passwordChk) => setPasswordChk(passwordChk)}
-              isMasking={true}
-              maxLength={20}
-              placeholderTextColor={'#c6ccd3'}
-              placeholder={'영문, 숫자, 특수기호(!@#$%^*+=-) 포함 8글자 이상'}
-              borderBottomType={'black'}
-              fontSize={15}
-            />
+            <View style={{width: '100%'}}>
+              <Text style={_styles.emailPwdText}>비밀번호</Text>
+            </View>
+            <SpaceView viewStyle={[commonStyle.width100]}>
+              <CommonInput
+                label=""
+                value={password}
+                onChangeText={(password) => setPassword(password)}
+                isMasking={true}
+                maxLength={20}
+                borderBottomType={'#F3E270'}
+                fontSize={14}
+                style={{color: '#F3E270', marginTop: 10}}
+              />
+              <TouchableOpacity 
+                style={_styles.removeTextBtn}
+                onPress={() => { setPassword(''); }}
+              >
+                <Image source={ICON.xYellow} style={{width: 10, height: 10}} />
+              </TouchableOpacity>
+            </SpaceView>
+            <View style={{width: '100%'}}>
+              <Text style={_styles.noticeText}><Text style={{color: '#FFDD00'}}>8글자 이상</Text>, 영문포함, <Text style={{color: '#FFDD00'}}>숫자포함</Text>, 특수기호 허용</Text>
+            </View>
+
+            <View style={{marginTop: 30, width: '100%'}}>
+              <Text style={_styles.emailPwdText}>비밀번호 확인</Text>
+            </View>
+            <SpaceView viewStyle={[commonStyle.width100]}>
+              <CommonInput
+                label=""
+                value={passwordChk}
+                onChangeText={(passwordChk) => setPasswordChk(passwordChk)}
+                isMasking={true}
+                maxLength={20}
+                fontSize={14}
+                style={{color: '#F3E270', marginTop: 10}}
+              />
+              <TouchableOpacity 
+                style={_styles.removeTextBtn}
+                onPress={() => { setPasswordChk(''); }}
+              >
+                <Image source={ICON.xYellow} style={{width: 10, height: 10}} />
+              </TouchableOpacity>
+            </SpaceView>
+            <View style={{width: '100%'}}>
+              {
+                passwordChk !== '' && (password !== '' && passwordChk !== '') ? 
+                (
+                  password === passwordChk
+                    ? <Text style={[_styles.noticeText, {color: '#FFDD00'}]}>비밀번호 일치</Text>
+                    : <Text style={_styles.noticeText}>비밀번호 불일치</Text>
+                ) 
+                : <></>
+              }
+            </View>
+            
+            <SpaceView mt={130}>
+              <CommonBtn
+                value={'프로필 사진 등록하기'}
+                type={'reNewId'}
+                borderRadius={5}
+                onPress={() => {
+                  register();
+                }}
+              />
+            </SpaceView>
+
+            <SpaceView mt={20}>
+              <CommonBtn
+                value={'처음으로'}
+                type={'reNewGoBack'}
+                isGradient={false}
+                fontFamily={'Pretendard-Light'}
+                fontSize={14}
+                borderRadius={5}
+                onPress={() => {
+                  navigation.navigate('Login');
+                }}
+              />
+            </SpaceView>
           </SpaceView>
-        </SpaceView>
+        </LinearGradient>
       </ScrollView>
-
-      <SpaceView>
-        <CommonBtn
-          value={'다음 (1/4)'}
-          type={'primary'}
-          height={60}
-          borderRadius={1}
-          onPress={() => {
-            register();
-          }}
-        />
-      </SpaceView>
     </>
   );
 };
 
-const selectStyles = StyleSheet.create({
-  selectImgContainer: {
-    position: 'absolute',
-    height: '100%',
-    justifyContent: 'center',
-    right: 16,
+const _styles = StyleSheet.create({
+  signUpContainer: {
+    minHeight: height,
+    paddingTop: 60,
+    paddingLeft: 16,
+    paddingRight: 16,
+    flexGrow: 1,
   },
-  selectContainer: {},
-  labelContainer: {
-    marginBottom: 8,
+  container: {
+    paddingTop: 24,
+    paddingHorizontal: 16,
+    flex: 1,
   },
-  labelStyle: {
+  title: {
+    fontFamily: 'Pretendard-Bold',
+    color: '#D5CD9E',
+    fontSize: 30,
+    lineHeight: 35,
+    marginBottom: 15,
+  },
+  emailPwdText: {
+    fontFamily: 'Pretendard-Bold',
+    color: '#F3E270',
     fontSize: 14,
-    lineHeight: 20,
-    fontFamily: 'AppleSDGothicNeoR00',
-    color: Color.gray6666,
-    marginBottom: 8,
   },
-  inputContainer: {
-    paddingBottom: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: Color.grayDDDD,
+  noticeText: {
+    fontFamily: 'Pretendard-Light',
+    color: '#D5CD9E',
+    fontSize: 12,
+    marginTop: 5,
   },
-  icon: {
-    width: 16,
-    height: 16,
-    transform: [{ rotate: '90deg' }],
+  removeTextBtn: {
+    position: 'absolute',
+    top: 15,
+    right: 0,
   },
 });

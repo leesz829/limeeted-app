@@ -2,7 +2,7 @@ import { RouteProp, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
 import { Color } from 'assets/styles/Color';
-import { commonStyle, styles } from 'assets/styles/Styles';
+import { commonStyle, styles, layoutStyle, modalStyle } from 'assets/styles/Styles';
 import axios from 'axios';
 import { CommonBtn } from 'component/CommonBtn';
 import CommonHeader from 'component/CommonHeader';
@@ -10,7 +10,7 @@ import { CommonInput } from 'component/CommonInput';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
-import { Image, ScrollView, StyleSheet, View, Platform, Text } from 'react-native';
+import { Image, ScrollView, StyleSheet, View, Platform, Text, Dimensions, TouchableOpacity } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import * as properties from 'utils/properties';
 import { usePopup } from 'Context';
@@ -18,12 +18,16 @@ import { SUCCESS, MEMBER_EMAIL_DUP } from 'constants/reusltcode';
 import { regist_member_base_info } from 'api/models';
 import { ROUTES } from 'constants/routes';
 import { isEmptyData } from 'utils/functions';
+import LinearGradient from 'react-native-linear-gradient';
+
 
 
 interface Props {
   navigation: StackNavigationProp<StackParamList, 'Signup00_02'>;
   route: RouteProp<StackParamList, 'Signup00_02'>;
 }
+
+const { width, height } = Dimensions.get('window');
 
 export const Signup00_02 = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
@@ -61,7 +65,9 @@ export const Signup00_02 = (props: Props) => {
       isResult = false;
     }
 
-    return isResult;
+    if(isResult === true) {
+      goNext();
+    };
   };
 
   // ########################################################### 다음 이동
@@ -82,68 +88,110 @@ export const Signup00_02 = (props: Props) => {
 
   return (
     <>
-      <ScrollView style={[styles.scrollContainerAll]}>
-        <SpaceView>
-          <Text></Text>
-        </SpaceView>
+      <ScrollView>
+        <LinearGradient
+          colors={['#3D4348', '#1A1E1C']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={_styles.signUpContainer}
+        >
 
-        <SpaceView viewStyle={[commonStyle.paddingHorizontal20, commonStyle.mb70]}>
-
-          <SpaceView mb={24}>
-            <CommonInput
-              label="이메일"
-              value={emailId}
-              onChangeText={(value) => setEmailId(emailId)}
-              maxLength={50}
-              placeholderTextColor={'#c6ccd3'}
-              placeholder={'이메일 주소'}
-              borderBottomType={'black'}
-            />
+        
+          <SpaceView mt={30} mb={20} viewStyle={{paddingHorizontal:16}}>
+            <CommonText textStyle={_styles.title}>
+              아이디로 사용하실{'\n'}이메일을 입력해주세요.
+            </CommonText>
           </SpaceView>
-        </SpaceView>
-      </ScrollView>
 
-      <SpaceView>
-        <CommonBtn
-          value={'다음 (1/4)'}
-          type={'primary'}
-          height={60}
-          borderRadius={1}
-          onPress={() => {
-            goNext();
-          }}
-        />
-      </SpaceView>
+          <SpaceView mt={80} viewStyle={[_styles.container]}>
+            <View style={{width: '100%'}}>
+              <Text style={_styles.emailPwdText}>이메일</Text>
+            </View>
+            <SpaceView mb={10} viewStyle={[commonStyle.width100]}>
+              <CommonInput
+                label=""
+                value={emailId}
+                onChangeText={(emailId) => setEmailId(emailId)}
+                maxLength={50}
+                borderBottomType={'#F3E270'}
+                fontSize={14}
+                style={{color: '#F3E270', marginTop: 10,}}
+              />
+              <TouchableOpacity 
+                style={_styles.removeTextBtn}
+                onPress={() => { setEmailId(''); }}
+              >
+                <Image source={ICON.xYellow} style={{width: 10, height: 10}} />
+              </TouchableOpacity>
+            </SpaceView>
+            <View style={{width: '100%'}}>
+              <Text style={_styles.noticeText}>실제 사용하시는 이메일을 입력해주세요.</Text>
+            </View>
+
+            <SpaceView mt={235}>
+              <CommonBtn
+                value={'비밀번호 만들기'}
+                type={'reNewId'}
+                borderRadius={5}
+                onPress={() => {
+                  emailValidChk();
+                  //goNext();
+                }}
+              />
+            </SpaceView>
+            <SpaceView mt={20}>
+              <CommonBtn
+                value={'처음으로'}
+                type={'reNewGoBack'}
+                isGradient={false}
+                fontFamily={'Pretendard-Light'}
+                fontSize={14}
+                borderRadius={5}
+                onPress={() => {
+                  navigation.navigate('Login');
+                }}
+              />
+            </SpaceView>
+          </SpaceView>
+        </LinearGradient>
+      </ScrollView>
     </>
   );
 };
 
-const selectStyles = StyleSheet.create({
-  selectImgContainer: {
-    position: 'absolute',
-    height: '100%',
-    justifyContent: 'center',
-    right: 16,
+const _styles = StyleSheet.create({
+  signUpContainer: {
+    minHeight: height,
+    paddingTop: 60,
+    paddingLeft: 16,
+    paddingRight: 16,
+    flexGrow: 1,
   },
-  selectContainer: {},
-  labelContainer: {
-    marginBottom: 8,
+  container: {
+    paddingTop: 24,
+    paddingHorizontal: 16,
+    flex: 1,
   },
-  labelStyle: {
+  title: {
+    fontFamily: 'Pretendard-Bold',
+    color: '#D5CD9E',
+    fontSize: 30,
+    lineHeight: 35,
+    marginBottom: 15,
+  },
+  emailPwdText: {
+    fontFamily: 'Pretendard-Bold',
+    color: '#F3E270',
     fontSize: 14,
-    lineHeight: 20,
-    fontFamily: 'AppleSDGothicNeoR00',
-    color: Color.gray6666,
-    marginBottom: 8,
   },
-  inputContainer: {
-    paddingBottom: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: Color.grayDDDD,
+  noticeText: {
+    fontFamily: 'Pretendard-Light',
+    color: '#D5CD9E',
+    fontSize: 12,
   },
-  icon: {
-    width: 16,
-    height: 16,
-    transform: [{ rotate: '90deg' }],
+  removeTextBtn: {
+    position: 'absolute',
+    top: 15,
+    right: 0,
   },
 });

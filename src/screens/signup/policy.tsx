@@ -9,7 +9,7 @@ import CommonHeader from 'component/CommonHeader';
 import { CommonInput } from 'component/CommonInput';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
-import { Image, ScrollView, StyleSheet, View, TouchableOpacity, Dimensions, Platform } from 'react-native';
+import { Image, ScrollView, StyleSheet, View, Text, TouchableOpacity, Dimensions, Platform } from 'react-native';
 import { ICON } from 'utils/imageUtils';
 import { usePopup } from 'Context';
 import { CommonSwich } from 'component/CommonSwich';
@@ -19,6 +19,7 @@ import { Privacy } from 'screens/commonpopup/privacy';
 import { LocationService } from 'screens/commonpopup/locationService';
 import ToggleSwitch from 'toggle-switch-react-native';
 import { ROUTES } from 'constants/routes';
+import LinearGradient from 'react-native-linear-gradient';
 
 
 
@@ -30,17 +31,19 @@ interface Props {
   route: RouteProp<StackParamList, 'Policy'>;
 }
 
+const { width, height } = Dimensions.get('window');
+
 export const Policy = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
 
   const { show } = usePopup();  // 공통 팝업
-  const { width, height } = Dimensions.get('window');
-
+  
   const [allAgree, setAllAgree] = useState<boolean>(false);
   const [termsAgree, setTermsAgree] = useState<boolean>(false); // 이용약관
   const [privacyAgree, setPrivacyAgree] = useState<boolean>(false); // 개인정보처리방침
   const [locationAgree, setLocationAgree] = useState<boolean>(false); // 위치기반서비스
   const [mrktAgree, setMrktAgree] = useState<boolean>(false); // 마케팅 수신동의
+  
 
   /* const PLATFORM_FULLPAGE_AD_ID = Platform.select({
     ios: 'ca-app-pub-7259908680706846~2194056790',
@@ -50,12 +53,14 @@ export const Policy = (props: Props) => {
 
   // 전체 동의
   const allAgreeBtn = async (value: boolean) => {
-    if(value) {
+    if(value && (termsAgree === false || privacyAgree === false || locationAgree === false || mrktAgree === false)) {
+      setAllAgree(true);
       setTermsAgree(true);
       setPrivacyAgree(true);
       setLocationAgree(true);
       setMrktAgree(true);
     } else {
+      setAllAgree(false);
       setTermsAgree(false);
       setPrivacyAgree(false);
       setLocationAgree(false);
@@ -144,7 +149,6 @@ export const Policy = (props: Props) => {
         mrktAgreeYn: mrktAgree ? 'Y' : 'N',
       }
     });
-
   }
 
   /* useEffect(() => {
@@ -162,137 +166,169 @@ export const Policy = (props: Props) => {
 
   return (
     <>
-      <CommonHeader title={'서비스 정책'} />
-      <ScrollView contentContainerStyle={[styles.scrollContainerAll]} style={{backgroundColor: '#fff'}}>
-        <SpaceView mb={20} viewStyle={{paddingHorizontal:16}}>
-          <CommonText textStyle={_styles.title}>
-            아래 서비스 정책에 동의해주세요.
-          </CommonText>
-          <CommonText textStyle={_styles.subTitle}>
-            아래 필수 서비스 정책을 모두 동의하셔야만 이용 가능합니다.{'\n'}
-            허위가입 시 민/형사상 법적 조치를 취할 수 있습니다.
-          </CommonText>
-        </SpaceView>
-
-        <SpaceView mb={24} viewStyle={[_styles.container]}>
-          <SpaceView viewStyle={layoutStyle.rowBetween} mb={30}>
-            <View>
-              <CommonText fontWeight={'700'} type={'h4'}>
-                서비스 정책
-              </CommonText>
-            </View>
-            <View style={[layoutStyle.rowBetween]}>
-              <CommonText textStyle={_styles.agreeText}>
-                전체동의  
-              </CommonText>
-
-              <CommonSwich
-                callbackFn={(value: boolean) => { allAgreeBtn(value); }}
-                isOn={allAgree}
-                height={25} />
-            </View> 
+      {/* <CommonHeader title={'서비스 정책'} /> */}
+      <ScrollView>
+          <LinearGradient
+            colors={['#3D4348', '#1A1E1C']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={_styles.policyContainer}
+          >
+          <SpaceView mt={30} mb={20} viewStyle={{paddingHorizontal:16}}>
+            <CommonText textStyle={_styles.title}>
+              리미티드{'\n'}서비스 이용약관
+            </CommonText>
           </SpaceView>
 
-          <SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
-            <View style={[layoutStyle.rowBetween]}>
-              <View style={[styles.statusBtn, commonStyle.mr8]}>
-                <CommonText type={'h6'} color={ColorType.white}>동의</CommonText>
+          <SpaceView mt={80} mb={24} viewStyle={[_styles.container]}>
+            <SpaceView viewStyle={layoutStyle.rowBetween} mb={10}>
+                <TouchableOpacity
+                  style={_styles.allAgreeContainer}
+                  onPress={(value: boolean) => { allAgreeBtn(value); }}
+                >
+                  <Image source={allAgree ? ICON.checkYellow : ICON.checkGold} style={[styles.iconSize16, {marginRight: 5, marginLeft: 'auto'}]} />
+                  <CommonText textStyle={_styles.agreeText}>모두 동의</CommonText>
+                </TouchableOpacity>
+            </SpaceView>
+
+            <View style={_styles.straight}></View>
+
+            <SpaceView viewStyle={layoutStyle.rowBetween} mb={10} mt={20}>
+              <View style={[layoutStyle.rowBetween]}>
+                <TouchableOpacity
+                  style={{flexDirection: 'row'}}
+                  onPress={() => {
+                    if(termsAgree === false) {
+                      setTermsAgree(true);
+                    }else {
+                      setTermsAgree(false);
+                    }
+                  }}
+                >
+                  <Image source={termsAgree ? ICON.checkYellow : ICON.checkGold} style={[styles.iconSize16, {marginRight: 5}]} />
+                  <Text style={_styles.policyTxt}>서비스 이용약관(필수)</Text>
+                </TouchableOpacity> 
               </View>
-              <CommonText type={'h6'} textStyle={commonStyle.fontSize13}>(필수)이용약관</CommonText>
-            </View>
-            <View style={[layoutStyle.rowBetween]}>
-              <ToggleSwitch
-                isOn={termsAgree}
-                onColor={Color.primary}
-                offColor={Color.grayDDDD}
-                size="small"
-                onToggle={(isOn) => toggleActive('terms', isOn)}
-                trackOffStyle={{width: 45 ,height: 25}}
-              />
-            </View>
-          </SpaceView>
-
-          <SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
-            <View style={[layoutStyle.rowBetween]}>
-              <View style={[styles.statusBtn, commonStyle.mr8]}>
-                <CommonText type={'h6'} color={ColorType.white}>동의</CommonText>
+              <View style={[layoutStyle.rowBetween]}>
+                <TouchableOpacity onPress={(isOn) => toggleActive('terms', isOn)}>
+                  <Text style={_styles.viewTxt}>보기</Text>
+                </TouchableOpacity>
               </View>
-              <CommonText type={'h6'} textStyle={commonStyle.fontSize13}>(필수)개인정보처리방침</CommonText>
-            </View>
-            <View style={[layoutStyle.rowBetween]}>
-              <ToggleSwitch
-                isOn={privacyAgree}
-                onColor={Color.primary}
-                offColor={Color.grayDDDD}
-                size="small"
-                onToggle={(isOn) => toggleActive('privacy', isOn)}
-                trackOffStyle={{width: 45 ,height: 25}}
-              />
-            </View>
-          </SpaceView>
+            </SpaceView>
 
-          <SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
-            <View style={[layoutStyle.rowBetween]}>
-              <View style={[styles.statusBtn, commonStyle.mr8]}>
-                <CommonText type={'h6'} color={ColorType.white}>동의</CommonText>
+            <SpaceView viewStyle={layoutStyle.rowBetween} mb={10}>
+              <View style={[layoutStyle.rowBetween]}>
+                <TouchableOpacity
+                  style={{flexDirection: 'row'}}
+                  onPress={() => {
+                    if(privacyAgree === false) {
+                      setPrivacyAgree(true);
+                    }else {
+                      setPrivacyAgree(false);
+                    }                 
+                  }}
+                >
+                  <Image source={privacyAgree ? ICON.checkYellow : ICON.checkGold} style={[styles.iconSize16, {marginRight: 5}]} />
+                  <Text style={_styles.policyTxt}>개인정보처리방침(필수)</Text>
+                </TouchableOpacity>
               </View>
-              <CommonText type={'h6'} textStyle={commonStyle.fontSize13}>(필수)위치기반서비스 이용약관</CommonText>
-            </View>
-
-            <View style={[layoutStyle.rowBetween]}>
-              <ToggleSwitch
-                isOn={locationAgree}
-                onColor={Color.primary}
-                offColor={Color.grayDDDD}
-                size="small"
-                onToggle={(isOn) => toggleActive('location', isOn)}
-                trackOffStyle={{width: 45 ,height: 25}}
-              />
-
-              {/* <TouchableOpacity onPress={location_onOpen}>
-                <CommonText type={'h6'} textStyle={commonStyle.fontSize13}>보기</CommonText>
-              </TouchableOpacity> */}
-            </View>
-          </SpaceView>
-
-          <SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
-            <View style={[layoutStyle.rowBetween]}>
-              <View style={[styles.statusBtn, commonStyle.mr8]}>
-                <CommonText type={'h6'} color={ColorType.white}>동의</CommonText>
+              <View style={[layoutStyle.rowBetween]}>
+                <TouchableOpacity onPress={(isOn) => toggleActive('privacy', isOn)}>
+                  <Text style={_styles.viewTxt}>보기</Text>
+                </TouchableOpacity>
               </View>
-              <CommonText type={'h6'} textStyle={commonStyle.fontSize13}>(선택)마케팅 수신동의</CommonText>
-            </View>
-            <View style={[layoutStyle.rowBetween]}>
-              <ToggleSwitch
-                isOn={mrktAgree}
-                onColor={Color.primary}
-                offColor={Color.grayDDDD}
-                size="small"
-                onToggle={(isOn) => toggleActive('marketing', isOn)}
-                trackOffStyle={{width: 45 ,height: 25}}
-              />
+            </SpaceView>
 
-             {/*  <CommonSwich
-                callbackFn={(value: boolean) => {
-                  allAgreeBtn('MRKT', value);
+            <SpaceView viewStyle={layoutStyle.rowBetween} mb={10}>
+              <View style={[layoutStyle.rowBetween]}>
+                <TouchableOpacity
+                  style={{flexDirection: 'row'}}
+                  onPress={() => {
+                    if(locationAgree === false) {
+                      setLocationAgree(true);
+                    }else {
+                      setLocationAgree(false);
+                    }           
+                  }}
+                >
+                  <Image source={locationAgree ? ICON.checkYellow : ICON.checkGold} style={[styles.iconSize16, {marginRight: 5}]} />
+                  <Text style={_styles.policyTxt}>위치기반서비스 이용약관(필수)</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={[layoutStyle.rowBetween]}>
+                <TouchableOpacity onPress={(isOn) => toggleActive('location', isOn)}>
+                  <Text style={_styles.viewTxt}>보기</Text>
+                </TouchableOpacity>
+
+                {/* <TouchableOpacity onPress={location_onOpen}>
+                  <CommonText type={'h6'} textStyle={commonStyle.fontSize13}>보기</CommonText>
+                </TouchableOpacity> */}
+              </View>
+            </SpaceView>
+
+            <SpaceView viewStyle={layoutStyle.rowBetween} mb={16}>
+              <View style={[layoutStyle.rowBetween]}>
+                <TouchableOpacity
+                    style={{flexDirection: 'row'}}
+                    onPress={() => {
+                      if(mrktAgree === false) {
+                        setMrktAgree(true);
+                      }else {
+                        setMrktAgree(false);
+                      }       
+                    }}
+                  >
+                  <Image source={mrktAgree ? ICON.checkYellow : ICON.checkGold} style={[styles.iconSize16, {marginRight: 5}]} />
+                  <Text style={_styles.policyTxt}>마케팅 수신동의(선택)</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={[layoutStyle.rowBetween]}>
+                {/* <ToggleSwitch
+                  isOn={mrktAgree}
+                  onColor={Color.primary}
+                  offColor={Color.grayDDDD}
+                  size="small"
+                  onToggle={(isOn) => toggleActive('marketing', isOn)}
+                  trackOffStyle={{width: 45 ,height: 25}}
+                /> */}
+
+              {/*  <CommonSwich
+                  callbackFn={(value: boolean) => {
+                    allAgreeBtn('MRKT', value);
+                  }}
+                  isOn={mrktAgree} /> */}
+              </View>
+            </SpaceView>
+            <SpaceView mt={140}>
+              <CommonBtn
+                value={'회원가입 계속'}
+                type={'reNewId'}
+                fontSize={16}
+                fontFamily={'Pretendard-Bold'}
+                borderRadius={5}
+                onPress={() => {
+                  nextBtn();
                 }}
-                isOn={mrktAgree} /> */}
-            </View>
+              />
+            </SpaceView>
+
+            <SpaceView mt={20}>
+              <CommonBtn
+                value={'처음으로'}
+                type={'reNewGoBack'}
+                isGradient={false}
+                fontFamily={'Pretendard-Light'}
+                fontSize={14}
+                borderRadius={5}
+                onPress={() => {
+                  navigation.navigate('Login');
+                }}
+              />
+            </SpaceView>
+
           </SpaceView>
-        </SpaceView>
-
-        <SpaceView>
-          <CommonBtn
-            value={'다음'}
-            type={'blue'}
-            height={60}
-            borderRadius={1}
-            onPress={() => {
-              nextBtn();
-            }}
-          />
-        </SpaceView>
-
+        </LinearGradient>
       </ScrollView>
 
 
@@ -499,12 +535,27 @@ const _styles = StyleSheet.create({
   container: {
     paddingTop: 24,
     paddingHorizontal: 16,
-    backgroundColor: 'white',
     flex: 1,
   },
+  policyContainer: {
+    minHeight: height,
+    paddingTop: 60,
+    paddingLeft: 16,
+    paddingRight: 16,
+    flexGrow: 1,
+  },
   title: {
-    fontSize: 18,
+    fontFamily: 'Pretendard-Bold',
+    color: '#D5CD9E',
+    fontSize: 30,
+    lineHeight: 35,
     marginBottom: 15
+  },
+  allAgreeContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
   },
   subTitle: {
     fontSize: 14,
@@ -512,6 +563,23 @@ const _styles = StyleSheet.create({
     lineHeight: 20
   },
   agreeText: {
-    marginRight: 10
+    fontFamily: 'Pretendard-Regular',
+    color: '#D5CD9E',
+    fontSize: 14,
   },
+  policyTxt: {
+    fontFamily: 'Pretendard-Light',
+    fontSize: 14,
+    color: '#D5CD9E',
+  },
+  viewTxt: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 14,
+    color: '#E1DFD1',
+  },
+  straight: {
+    borderColor: '#E1DFD1',
+    borderBottomWidth: 1,
+    width: '100%',
+  }
 });

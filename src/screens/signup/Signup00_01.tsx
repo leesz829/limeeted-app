@@ -10,7 +10,7 @@ import { CommonInput } from 'component/CommonInput';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
-import { Image, ScrollView, StyleSheet, View, Platform, Text } from 'react-native';
+import { Image, ScrollView, StyleSheet, View, Platform, Text, Dimensions } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import * as properties from 'utils/properties';
 import { usePopup } from 'Context';
@@ -18,12 +18,15 @@ import { SUCCESS, MEMBER_EMAIL_DUP } from 'constants/reusltcode';
 import { regist_member_base_info } from 'api/models';
 import { ROUTES } from 'constants/routes';
 import { isEmptyData } from 'utils/functions';
+import LinearGradient from 'react-native-linear-gradient';
 
 
 interface Props {
   navigation: StackNavigationProp<StackParamList, 'Signup00_01'>;
   route: RouteProp<StackParamList, 'Signup00_01'>;
 }
+
+const { width, height } = Dimensions.get('window');
 
 export const Signup00_01 = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
@@ -67,27 +70,65 @@ export const Signup00_01 = (props: Props) => {
 
   return (
     <>
-      <ScrollView style={[styles.scrollContainerAll]}>
-        <Text>{mobile}로 인증된 회원님의 성함은 {name} 만 {age}세 {gender}이시군요!</Text>
-        <Text>입력된 회원 정보가 맞으신가요?</Text>
+      <ScrollView>
+        <LinearGradient
+          colors={['#3D4348', '#1A1E1C']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={_styles.signUpContainer}
+        >
+          <SpaceView viewStyle={{paddingHorizontal:16, marginTop: 50}}>
+            <Text style={_styles.signUpText}><Text style={_styles.memberInfoText}>{mobile}</Text>로 인증된 회원님의 성함은 <Text style={_styles.memberInfoText}>{name}</Text> <Text style={_styles.memberInfoText}>만 {age}세 {gender === 'M' ? '남자' : '여자'}</Text> 이시군요!</Text>
+            <Text style={[_styles.signUpText, {marginTop: 20}]}>입력된 회원 정보가 맞으신가요?</Text>
+          
+          <SpaceView mt={160}>
+            <CommonBtn
+              value={'네, 맞아요!'}
+              type={'reNewId'}
+              borderRadius={5}
+              onPress={() => {
+                goNext();
+              }}
+            />
+          </SpaceView>
+          <SpaceView mt={20}>
+            <CommonBtn
+              value={'처음으로'}
+              type={'reNewGoBack'}
+              isGradient={false}
+              fontFamily={'Pretendard-Light'}
+              fontSize={14}
+              borderRadius={5}
+              onPress={() => {
+                navigation.navigate('Login');
+              }}
+            />
+          </SpaceView>
+          </SpaceView>
+        </LinearGradient>
       </ScrollView>
-
-      <SpaceView>
-        <CommonBtn
-          value={'다음 (1/4)'}
-          type={'primary'}
-          height={60}
-          borderRadius={1}
-          onPress={() => {
-            goNext();
-          }}
-        />
-      </SpaceView>
     </>
   );
 };
 
 
 const _styles = StyleSheet.create({
-  
+  signUpContainer: {
+    minHeight: height,
+    paddingTop: 60,
+    paddingLeft: 16,
+    paddingRight: 16,
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
+  signUpText: {
+    fontSize: 30,
+    lineHeight: 40,
+    color: '#D5CD9E',
+    fontFamily: 'Pretendard-Medium'
+  },
+  memberInfoText: {
+    fontSize: 30,
+    color: '#F3E270',
+  },
 });

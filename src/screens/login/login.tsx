@@ -24,7 +24,7 @@ import storeKey, { JWT_TOKEN } from 'constants/storeKey';
 import { usePopup } from 'Context';
 import { useUserInfo } from 'hooks/useUserInfo';
 import React, { useEffect, useState } from 'react';
-import { Dimensions, Image, ScrollView, TouchableOpacity, View, Platform, PermissionsAndroid, StyleSheet, Alert, Linking } from 'react-native';
+import { Dimensions, Image, ScrollView, TouchableOpacity, Text, View, Platform, PermissionsAndroid, StyleSheet, Alert, Linking } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { setPrincipal } from 'redux/reducers/authReducer';
 import * as mbrReducer from 'redux/reducers/mbrReducer';
@@ -35,6 +35,8 @@ import Geolocation from 'react-native-geolocation-service';
 import RNExitApp from 'react-native-exit-app';
 import VersionCheck from 'react-native-version-check';
 import { isEmptyData } from 'utils/functions';
+import LinearGradient from 'react-native-linear-gradient';
+import { CommonCheckBox } from 'component/CommonCheckBox';
 
 
 
@@ -50,6 +52,9 @@ GoogleSignin.configure({
   openIdRealm: '', // [iOS] The OpenID2 realm of the home web server. This allows Google to include the user's OpenID Identifier in the OpenID Connect ID token.
   profileImageSize: 120, // [iOS] The desired height (and width) of the profile image. Defaults to 120px
 });
+
+const { width, height } = Dimensions.get('window');
+
 export const Login01 = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -57,13 +62,14 @@ export const Login01 = () => {
   const [id, setId] = React.useState('');
   const [password, setPassword] = React.useState('');
   const me = useUserInfo();
-  const { width, height } = Dimensions.get('window');
   const isFocus = useIsFocused();
 
   const [latitude, setLatitude] = React.useState(); // 위도
   const [longitude, setLongitude] = React.useState(); // 경도
 
   const [granted, setGranted] = React.useState('');
+
+  const [activate, setActivate] = useState<boolean>(false); // 마케팅 수신동의
 
   // ########################################################################## 로그인 실행
   const loginProc = async (isSleepPass:boolean) => {
@@ -404,134 +410,178 @@ export const Login01 = () => {
         };
       }); */
 
+      setActivate(false);
       requestLocationPermission();
     };
   }, [isFocus]);
 
   return (
-    <>
-      <ScrollView contentContainerStyle={[styles.scrollContainer]}>
-        <View style={[_styles.container, layoutStyle.justifyCenter]}>
+    <>    
+      <ScrollView>
+        <LinearGradient
+          colors={['#3D4348', '#1A1E1C']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={_styles.loginContainer}
+        >
+          <View style={[_styles.container, {marginTop: 60}]}>
 
-          {/* ############################################################### 타이틀 */}
-          <View style={[commonStyle.mb70, commonStyle.paddingHorizontal20]}>
-            <SpaceView mb={5}>
-              <Image source={IMAGE.logoRenewText} style={{width: 185, height: 33, marginLeft: 2}} />
-            </SpaceView>
-            <SpaceView>
-              <CommonText type={'h4'} fontWeight={'700'} lineHeight={30}>특별한 사람들의 '리미티드' 에디션</CommonText>
-            </SpaceView>
-          </View>
-
-          {/* ############################################################### 텍스트 입력 */}
-          <View style={[layoutStyle.alignCenter, commonStyle.paddingHorizontal20, commonStyle.mb15]}>
-            <SpaceView mb={10} viewStyle={[commonStyle.width100]}>
-              <CommonInput
-                label=""
-                value={id}
-                onChangeText={(id) => setId(id)}
-                maxLength={50}
-                placeholder={'이메일 주소'}
-                placeholderTextColor={'#c6ccd3'}
-                borderBottomType={'black'}
-                fontSize={14}
-              />
-            </SpaceView>
-
-            {/* <View style={styles.infoContainer}>
-              <SpaceView mt={4}>
-                <Image source={ICON.info} style={styles.iconSize} />
-              </SpaceView>
-              <SpaceView ml={8}>
-                <CommonText color={ColorType.gray6666}>
-                  아이디는 이메일로 입력해 주세요.
-                </CommonText>
-              </SpaceView>
-            </View> */}
-
-            <SpaceView mb={30} mt={10} viewStyle={[commonStyle.width100]}>
-              <CommonInput
-                label=""
-                value={password}
-                onChangeText={(password) => setPassword(password)}
-                isMasking={true}
-                maxLength={20}
-                placeholder={'영문 대소문자, 숫자, 특수기호 허용 8글자 이상'}
-                placeholderTextColor={'#c6ccd3'}
-                borderBottomType={'black'}
-                fontSize={14}
-              />
-            </SpaceView>
-          </View>
-
-          {/* ############################################################### 버튼 */}
-          <SpaceView viewStyle={[commonStyle.paddingHorizontal15]}>
-            {/* {Platform.OS === 'ios' ? (
-							<SpaceView mb={5}>
-								<CommonBtn value={'애플로그인'} onPress={onAppleButtonPress} />
-							</SpaceView>
-						) : null}
-						{Platform.OS === 'android' ? (
-							<SpaceView mb={5}>
-								<CommonBtn value={'구글로그인'} onPress={google_signIn} />
-							</SpaceView>
-						) : null} */}
-            <SpaceView mb={5}>
+            {/* ############################################################### 타이틀 */}
+            <View style={[commonStyle.mb70, commonStyle.paddingHorizontal20]}>
               <SpaceView>
-                <CommonBtn
-                  value={'리미티드 계정으로 로그인'}
-                  type={'g_blue'}
-                  isGradient={true}
-                  fontSize={13}
-                  onPress={() => {
-                    if (id == '') {
-                      return show({ content: '아이디를 입력해 주세요.' });
-                    }
-                    if (password == '') {
-                      return show({ content: '비밀번호를 입력해 주세요.' });
-                    }
-
-                    loginProc(false);
-                    //dispatch(loginReduce(id, password));
-                  }}
-                />
+                <Text style={_styles.loginTitle}>LImeetED{'\n'}RE-NEW,{'\n'}SEASON II</Text>
               </SpaceView>
+            </View>
 
-              <SpaceView mt={15} mb={8}>
-                <CommonBtn
-                  value={'아이디/비밀번호 찾기'}
-                  type={'g_blue'}
-                  isGradient={true}
-                  fontSize={13}
-                  onPress={() => {
-                    navigation.navigate('SearchIdAndPwd');
-                  }}
+            {/* ############################################################### 텍스트 입력 */}
+            <View style={[layoutStyle.alignCenter, commonStyle.paddingHorizontal20, commonStyle.mb15, commonStyle.mt10]}>
+              <View style={{width: '100%'}}>
+                <Text style={_styles.emailPwdText}>이메일</Text>
+              </View>
+              <SpaceView mb={10} viewStyle={[commonStyle.width100]}>
+                <CommonInput
+                  label=""
+                  value={id}
+                  onChangeText={(id) => setId(id)}
+                  maxLength={50}
+                  borderBottomType={'#F3E270'}
+                  fontSize={14}
+                  style={{color: '#F3E270', marginTop: 10}}
                 />
-              </SpaceView>
-
-              <SpaceView viewStyle={_styles.joinText}>
-                <CommonText type={"h5"}>리미티드 계정이 없으신가요?</CommonText>
-                <View style={_styles.joinTextLine} />
-                <TouchableOpacity onPress={() => { joinProc(); }} hitSlop={commonStyle.hipSlop10}>
-                  <CommonText type={"h5"} color={Color.blue01} fontWeight={'700'}>회원가입</CommonText>
+                <TouchableOpacity 
+                  style={_styles.removeTextBtn}
+                  onPress={() => { setId(''); }}
+                >
+                  <Image source={ICON.xYellow} style={{width: 10, height: 10}} />
                 </TouchableOpacity>
               </SpaceView>
 
-            </SpaceView>
 
-            {/* <SpaceView>
-              <CommonBtn
-                value={'처음으로'}
-                type={'white'}
-                iconSize={24}
-                fontSize={13}
-                onPress={() => {
-                  navigation.navigate('Login');
-                }}
-              />
-            </SpaceView> */}
-          </SpaceView>
-        </View>
+              {/* <View style={styles.infoContainer}>
+                <SpaceView mt={4}>
+                  <Image source={ICON.info} style={styles.iconSize} />
+                </SpaceView>
+                <SpaceView ml={8}>
+                  <CommonText color={ColorType.gray6666}>
+                    아이디는 이메일로 입력해 주세요.
+                  </CommonText>
+                </SpaceView>
+              </View> */}
+
+              <View style={{marginTop: 10, width: '100%'}}>
+                <Text style={_styles.emailPwdText}>비밀번호</Text>
+              </View>
+              <SpaceView viewStyle={[commonStyle.width100]}>
+                <CommonInput
+                  label=""
+                  value={password}
+                  onChangeText={(password) => setPassword(password)}
+                  isMasking={true}
+                  maxLength={20}
+                  borderBottomType={'#F3E270'}
+                  fontSize={14}
+                  style={{color: '#F3E270', marginTop: 10}}
+                />
+                <TouchableOpacity
+                  style={_styles.removeTextBtn}
+                  onPress={() => { setPassword(''); }}
+                >
+                  <Image source={ICON.xYellow} style={{width: 10, height: 10}} />
+                </TouchableOpacity>
+              </SpaceView>
+
+              <View style={_styles.saveLogInfoContainer}>
+                <TouchableOpacity
+                  style={_styles.checkWrap}
+                  onPress={() => { 
+                    if(activate === false) {
+                      setActivate(true); 
+                    }else {
+                      setActivate(false); 
+                    }
+                  }}
+                >
+                  <View style={[_styles.checkContainer, {backgroundColor: activate === true ? '#F3E270' : 'rgba(0, 0, 0, 0.1)'}]}></View>
+                  <Text style={_styles.saveLogInfoText}>로그인 정보 저장하기</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {/* ############################################################### 버튼 */}
+            <SpaceView viewStyle={[commonStyle.paddingHorizontal15]}>
+              {/* {Platform.OS === 'ios' ? (
+                <SpaceView mb={5}>
+                  <CommonBtn value={'애플로그인'} onPress={onAppleButtonPress} />
+                </SpaceView>
+              ) : null}
+              {Platform.OS === 'android' ? (
+                <SpaceView mb={5}>
+                  <CommonBtn value={'구글로그인'} onPress={google_signIn} />
+                </SpaceView>
+              ) : null} */}
+              <SpaceView mb={5}>
+                <SpaceView>
+                  <CommonBtn
+                    value={'LOGIN'}
+                    type={'reNewId'}
+                    isGradient={false}
+                    fontFamily={'Pretendard-Bold'}
+                    borderRadius={5}
+                    fontSize={16}
+                    onPress={() => {
+                      if (id == '') {
+                        return show({ content: '아이디를 입력해 주세요.' });
+                      }
+                      if (password == '') {
+                        return show({ content: '비밀번호를 입력해 주세요.' });
+                      }
+                      
+                      loginProc(false);
+                      //dispatch(loginReduce(id, password));
+                    }}
+                  />
+                </SpaceView>
+
+                <SpaceView mt={15} mb={8}>
+                  <CommonBtn
+                    value={'아이디/비밀번호 찾기'}
+                    type={'reNewPwd'}
+                    isGradient={false}
+                    fontFamily={'Pretendard-Regular'}
+                    borderRadius={5}
+                    fontSize={16}
+                    onPress={() => {
+                      navigation.navigate('SearchIdAndPwd');
+                    }}
+                  />
+                </SpaceView>
+
+                <SpaceView viewStyle={_styles.joinText}>
+                  <Text style={[_styles.signInText, {color: '#D5CD9E'}]}>계정이 없으신가요?</Text>
+                  <View style={_styles.joinTextLine} />
+                  <TouchableOpacity onPress={() => { joinProc(); }} hitSlop={commonStyle.hipSlop10}>
+                    <Text style={_styles.signInText}>회원가입</Text>
+                  </TouchableOpacity>
+                </SpaceView>
+
+              </SpaceView>
+
+              <SpaceView mt={40}>
+                <CommonBtn
+                  value={'처음으로'}
+                  type={'reNewGoBack'}
+                  isGradient={false}
+                  fontFamily={'Pretendard-Light'}
+                  fontSize={14}
+                  borderRadius={5}
+                  onPress={() => {
+                    navigation.navigate('Login');
+                  }}
+                />
+              </SpaceView>
+            </SpaceView>
+          </View>
+        </LinearGradient>
       </ScrollView>
     </>
   );
@@ -596,10 +646,39 @@ export const Login01 = () => {
 
 
 const _styles = StyleSheet.create({
+  loginContainer: {
+    minHeight: height,
+    paddingTop: 24,
+    paddingLeft: 16,
+    paddingRight: 16,
+    flexGrow: 1,
+  },
+  loginTitle: {
+    fontFamily: 'Pretendard-Light',
+    fontSize: 30,
+    color: '#D5CD9E',
+    lineHeight: 38,
+  },
   container: {
     paddingTop: 5,
-    backgroundColor: 'white',
     flex: 1,
+  },
+  emailPwdText: {
+    fontFamily: 'Pretendard-Bold',
+    color: '#F3E270',
+  },
+  saveLogInfoContainer: {
+    width: '100%',
+    marginTop: 10,
+    marginBottom: 20,
+    flexDirection: 'row',
+  },
+  saveLogInfoText: {
+    color: '#F3E270', 
+    fontFamily: 'Pretendard-Light',
+    fontSize: 14,
+    fontWeight: '500',
+    marginLeft: 5,
   },
   joinText: {
     width: '100%',
@@ -609,9 +688,33 @@ const _styles = StyleSheet.create({
   },
   joinTextLine: {
     borderRightWidth: 1,
-    borderRightColor: '#656565',
+    borderRightColor: '#F3E270',
     height: 15,
     marginHorizontal: 10,
-    marginTop: 5
-  }
+    marginTop: 2,
+  },
+  signInText: {
+    color: '#F3E270',
+    fontFamily: 'Pretendard-Light',
+    fontWeight: '500',
+  },
+  removeTextBtn: {
+    position: 'absolute',
+    top: 15,
+    right: 0,
+  },
+  checkWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 5,
+  },
+  checkContainer: {
+    width: 12,
+    height: 12,
+    borderWidth: 1,
+    borderRadius: 2,
+    borderColor: '#F3E270',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
