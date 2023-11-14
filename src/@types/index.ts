@@ -49,9 +49,15 @@ export type StackParamList = {
     memberSeq: Number;
     emailId: string;
   };
-  Signup00_01: undefined;
-  Signup00_02: undefined;
-  Signup00_03: undefined;
+  SignUp_Check: undefined;
+  SignUp_ID: undefined;
+  SignUp_Password: undefined;
+  SignUp_Image: undefined;
+  SignUp_Nickname: undefined;
+  SignUp_AddInfo: undefined;
+  SignUp_Interest: undefined;
+  SignUp_Introduce: undefined;
+  SignUp_Auth: undefined;
   Signup01: {
     memberSeq: Number;
     gender: string;

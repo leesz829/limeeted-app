@@ -22,13 +22,13 @@ import LinearGradient from 'react-native-linear-gradient';
 
 
 interface Props {
-  navigation: StackNavigationProp<StackParamList, 'Signup00_03'>;
-  route: RouteProp<StackParamList, 'Signup00_03'>;
+  navigation: StackNavigationProp<StackParamList, 'SignUp_Password'>;
+  route: RouteProp<StackParamList, 'SignUp_Password'>;
 }
 
 const { width, height } = Dimensions.get('window');
 
-export const Signup00_03 = (props: Props) => {
+export const SignUp_Password = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
 
   const { show } = usePopup();  // 공통 팝업
@@ -199,7 +199,7 @@ console.log('aa', password)
                     name : ROUTES.LOGIN01
                   },
                   {
-                    name: ROUTES.SIGNUP00_02,
+                    name: ROUTES.SIGNUP_PASSWORD,
                     params: {
                       ci: ci,
                       name: name,
@@ -211,7 +211,7 @@ console.log('aa', password)
                     }
                   },
                   {
-                    name: ROUTES.SIGNUP01,
+                    name: ROUTES.SIGNUP_IMAGE,
                     params: {
                       memberSeq: data?.member_seq,
                       gender: gender,

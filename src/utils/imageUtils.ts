@@ -216,6 +216,8 @@ export const ICON = {
   checkYellow: require('assets/icon/icon-check-yellow.png'),
   checkGold: require('assets/icon/icon-check-gold.png'),
   xYellow: require('assets/icon/icon-x-yellow.png'),
+  userAdd: require('assets/icon/icon-user-add.png'),
+  userPen: require('assets/icon/icon-user-pen.png'),
 };
 
 export const GIF_IMG = {

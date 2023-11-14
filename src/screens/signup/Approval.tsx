@@ -12,6 +12,7 @@ import { findSourcePath } from 'utils/imageUtils';
 import { ROUTES } from 'constants/routes';
 import { get_member_approval, join_cancel } from 'api/models';
 import { usePopup } from 'Context';
+import { isEmptyData } from 'utils/functions';
 
 
 interface Props {
@@ -48,7 +49,7 @@ export const Approval = (props: Props) => {
     };
     const { success, data } = await get_member_approval(body);
       if(success) {
-        if(typeof data.mbr_base != 'undefined') {
+        if(isEmptyData(data.mbr_base)) {
           setApprData({
             ...apprData,
             result_code: data.result_code,
@@ -142,7 +143,7 @@ export const Approval = (props: Props) => {
               }
             },
             {
-              name: ROUTES.SIGNUP00_03,
+              name: ROUTES.SIGNUP_PASSWORD,
               params: {
                 ci: apprData.ci,
                 name: apprData.name,
@@ -176,7 +177,7 @@ export const Approval = (props: Props) => {
               }
             },
             {
-              name: ROUTES.SIGNUP00_03,
+              name: ROUTES.SIGNUP_PASSWORD,
               params: {
                 ci: apprData.ci,
                 name: apprData.name,
@@ -241,9 +242,11 @@ export const Approval = (props: Props) => {
       <ScrollView style={[styles.scrollContainerAll, { marginBottom: 80 }]}>
         <View style={layoutStyle.alignCenter}>
           <SpaceView mb={40} viewStyle={{position: 'relative'}}>
-            <Image
-              source={findSourcePath(apprData.mstImgPath)}
-              style={styles.tmpImg} />
+            {isEmptyData(apprData.mstImgPath) ? (
+              <Image source={findSourcePath(apprData.mstImgPath)} style={styles.tmpImg} />
+            ) : (
+              <View style={styles.tmpImg} />
+            )}
             <View style={{position: 'absolute', top: 35, left: -30}}>
               <Image
                 source={ICON.heartPurple}
@@ -318,8 +321,6 @@ export const Approval = (props: Props) => {
               <View style={_styles.refuseTextArea}>
                 <CommonText textStyle={_styles.refuseText01}>심사 반려 안내</CommonText>
                 <CommonText textStyle={_styles.refuseText02}>
-                  {/* 가입 기준에 맞지 않거나 증빙 자료가 불충분한 대상이 있어요.{'\n'}
-                  "프로필 수정하기"를 이용해 재심사 신청을 해주세요. */}
                   가입 기준에 맞지 않거나 증빙 자료가 불충분한 항목이 있어요.{'\n'}
                   "프로필 수정하기"를 이용하여 상세 반려 사유 확인 및 재심사 신청을 해주세요.
                 </CommonText>

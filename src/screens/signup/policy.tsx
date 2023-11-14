@@ -111,8 +111,20 @@ export const Policy = (props: Props) => {
   // 다음 버튼
   const nextBtn = async () => {
 
+    /* navigation.navigate({
+      name : ROUTES.SIGNUP_CHECK,
+      params : {
+        birthday: '19900829',
+        ci: 'test',
+        name: '테스터',
+        gender: 'M',
+        marketing_agree_yn: 'Y',
+        mobile: '01051079809',
+      }
+    }); */
+
     navigation.navigate({
-      name : ROUTES.SIGNUP00_01,
+      name : ROUTES.SIGNUP_NICKNAME,
       params : {
         birthday: '19900829',
         ci: 'test',
