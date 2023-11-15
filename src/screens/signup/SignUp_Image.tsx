@@ -39,10 +39,13 @@ export const SignUp_Image = (props: Props) => {
 
   const isFocus = useIsFocused();
   const { show } = usePopup(); // 공통 팝업
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false); // 로딩 여부
   const [isClickable, setIsClickable] = React.useState(true); // 클릭 여부
-  const [currentImgIdx, setCurrentImgIdx] = React.useState(0); // 현재 이미지 인덱스
 
+  const memberSeq = props.route.params?.memberSeq; // 회원 번호
+  const gender = props.route.params?.gender; // 성별
+
+  const [currentImgIdx, setCurrentImgIdx] = React.useState(0); // 현재 이미지 인덱스
   const [profileImageList, setProfileImageList] = React.useState([]); // 프로필 이미지 목록
 
   // 프로필 이미지 삭제 시퀀스 문자열
@@ -275,9 +278,9 @@ export const SignUp_Image = (props: Props) => {
         if (success) {
           switch (data.result_code) {
             case SUCCESS:
-              navigation.navigate(ROUTES.SIGNUP03, {
-                memberSeq: props.route.params.memberSeq,
-                gender: props.route.params.gender,
+              navigation.navigate(ROUTES.SIGNUP_NICKNAME, {
+                memberSeq: memberSeq,
+                gender: gender,
                 mstImgPath: data.mst_img_path,
               });
               break;
@@ -457,6 +460,7 @@ function MasterImageArea({ index, imgData, mngModalFn }) {
   // ############################################################################# 최초 실행
   React.useEffect(() => {
     setProfileImageList([]);
+    setCurrentImgIdx(0);
     setImgDelSeqStr('');
     getProfileImage();
   }, [isFocus]);
@@ -513,7 +517,7 @@ function MasterImageArea({ index, imgData, mngModalFn }) {
 
           <SpaceView ml={20} mr={20} mb={70}>
             <TouchableOpacity onPress={() => { saveProfileImage(); }}>
-              <Text style={_styles.regiBtn}>프로필 사진 등록하기</Text>
+              <Text style={_styles.regiBtn}>닉네임과 한줄소개 작성하기</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => { navigation.goBack(); }}>
               <Text style={_styles.initBtn}>이전으로</Text>
@@ -568,7 +572,6 @@ function MasterImageArea({ index, imgData, mngModalFn }) {
 ##################### Style 영역
 ###########################################################################################################
 ####################################################################################################### */}
-
 const _styles = StyleSheet.create({
   wrap: {
     minHeight: height,

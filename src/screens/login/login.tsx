@@ -209,9 +209,9 @@ export const Login01 = () => {
               CommonActions.reset({
                 index: 1,
                 routes: [
-                  { name: 'Login01' },
+                  { name: ROUTES.LOGIN01 },
                   {
-                    name: ROUTES.SIGNUP00,
+                    name: ROUTES.SIGNUP_PASSWORD,
                     params: {
                       ci: mbr_base.ci,
                       name: mbr_base.name,
@@ -223,7 +223,7 @@ export const Login01 = () => {
                     }
                   },
                   {
-                    name: ROUTES.SIGNUP01,
+                    name: ROUTES.SIGNUP_IMAGE,
                     params: {
                       memberSeq: memberSeq,
                       gender: gender,
@@ -238,9 +238,9 @@ export const Login01 = () => {
               CommonActions.reset({
                 index: 1,
                 routes: [
-                  { name: 'Login01' },
+                  { name: ROUTES.LOGIN01 },
                   {
-                    name: ROUTES.SIGNUP00,
+                    name: ROUTES.SIGNUP_NICKNAME,
                     params: {
                       ci: mbr_base.ci,
                       name: mbr_base.name,
@@ -252,17 +252,18 @@ export const Login01 = () => {
                     }
                   },
                   {
-                    name: ROUTES.SIGNUP01,
+                    name: ROUTES.SIGNUP_INTEREST,
                     params: {
                       memberSeq: memberSeq,
                       gender: gender,
                     }
                   },
                   {
-                    name: ROUTES.SIGNUP02,
+                    name: ROUTES.SIGNUP_INTRODUCE,
                     params: {
                       memberSeq: memberSeq,
                       gender: gender,
+                      nickname: mbr_base.nickname,
                     }
                   },
                 ],
@@ -371,7 +372,7 @@ export const Login01 = () => {
       );
 
       if(Platform.OS == 'android') {
-        requestNotificationPermission();
+        //requestNotificationPermission();
       };
     });
   };
@@ -452,7 +453,7 @@ export const Login01 = () => {
                   style={_styles.removeTextBtn}
                   onPress={() => { setId(''); }}
                 >
-                  <Image source={ICON.xYellow} style={{width: 10, height: 10}} />
+                  <Image source={ICON.xYellow} style={styles.iconSquareSize(10)} />
                 </TouchableOpacity>
               </SpaceView>
 
@@ -486,7 +487,7 @@ export const Login01 = () => {
                   style={_styles.removeTextBtn}
                   onPress={() => { setPassword(''); }}
                 >
-                  <Image source={ICON.xYellow} style={{width: 10, height: 10}} />
+                  <Image source={ICON.xYellow} style={styles.iconSquareSize(10)} />
                 </TouchableOpacity>
               </SpaceView>
 
@@ -566,7 +567,7 @@ export const Login01 = () => {
 
               </SpaceView>
 
-              <SpaceView mt={45}>
+              {/* <SpaceView mt={45}>
                 <CommonBtn
                   value={'처음으로'}
                   type={'reNewGoBack'}
@@ -578,7 +579,7 @@ export const Login01 = () => {
                     navigation.navigate('Login');
                   }}
                 />
-              </SpaceView>
+              </SpaceView> */}
             </SpaceView>
           </View>
         </LinearGradient>

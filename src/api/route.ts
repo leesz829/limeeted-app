@@ -10,8 +10,9 @@ export const PROFILE_ATHENTICATION2 = '/join/getProfileSecondAuth';
 export const PROFILE_IMAGE_GUIDE = '/join/getProfileImage';
 export const MEMBER_INTRODUCE_GUIDE = '/join/getMemberIntro';
 export const REGIST_BASE_INFO = '/join/insertMemberInfo';
+export const REGIST_ADD_INFO = '/join/insertMemberAddInfo';
 export const REGIST_MEMBER_PROFILE_IMAGE = '/join/insertMemberProfileImage';
-export const REGIST_MEMBER_INTEREST = '/join/insertMemberIntro';
+export const REGIST_MEMBER_INTRO = '/join/insertMemberIntro';
 export const REGIST_MEMBER_SECOND_AUTH = '/join/insertMemberSecondAuth';
 
 export const GET_MEMBER_CHK = '/join/getMemberChk';

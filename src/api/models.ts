@@ -22,7 +22,7 @@ import {
   REGIST_MATCHING_INFO,
   REGIST_MEMBER_PROFILE_IMAGE,
   REGIST_PROFILE_EVALUATION,
-  REGIST_MEMBER_INTEREST,
+  REGIST_MEMBER_INTRO,
   REGIST_MEMBER_SECOND_AUTH,
   REPORT,
   RESOLVE_MATCH,
@@ -101,6 +101,7 @@ import {
   STORY_PROFILE_SECRET_PROC,
   GET_DAILY_MATCH_LIST,
   COMMON_CODE_LIST,
+  REGIST_ADD_INFO,
 } from './route';
 
 /* ========================================================================================================
@@ -158,7 +159,7 @@ export async function regist_profile_image(body: {
   return send(REGIST_MEMBER_PROFILE_IMAGE, 'POST', body, false, false);
 }
 
-//회원의 닉네임, 한줄소개, 관심사를 신규 등록한다.
+//회원의 닉네임, 한줄소개, 관심사, 인터뷰, 추가정보 등을 신규 등록한다.
 export async function regist_introduce(body: {
   member_seq: number;
   nickname: string;
@@ -166,7 +167,7 @@ export async function regist_introduce(body: {
   interest_list: any;
   introduce_comment: string;
 }) {
-  return send(REGIST_MEMBER_INTEREST, 'POST', body, false, false);
+  return send(REGIST_MEMBER_INTRO, 'POST', body, false, false);
 }
 
 //회원의 2차 인증정보를 신규 등록한다.
@@ -243,6 +244,20 @@ export async function join_cancel(body: {
   member_seq: number;
 }) {
   return send(JOIN_CANCEL, 'POST', body, false, false);
+}
+
+// 회원의 부가정보를 등록한다.
+export async function regist_member_add_info(body: {
+  member_seq: number;
+  nickname: string;
+  comment: string;
+  interest_list: any;
+  interview_list: any;
+  introduce_comment: string;
+  join_status: string;
+}) {
+  const push_token = await AsyncStorage.getItem(FCM_TOKEN);
+  return send(REGIST_ADD_INFO, 'POST', { ...body, push_token }, false, false);
 }
 
 

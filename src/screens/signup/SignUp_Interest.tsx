@@ -11,15 +11,11 @@ import { ICON } from 'utils/imageUtils';
 import { Modalize } from 'react-native-modalize';
 import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import axios from 'axios';
-import { RadioCheckBox_2 } from 'component/RadioCheckBox_2';
-import * as properties from 'utils/properties';
 import { usePopup } from 'Context';
-import { regist_introduce, get_member_introduce_guide } from 'api/models';
+import { regist_member_add_info, get_member_introduce_guide } from 'api/models';
 import { SUCCESS, MEMBER_NICKNAME_DUP } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
 import { CommonLoading } from 'component/CommonLoading';
-import { CommonTextarea } from 'component/CommonTextarea';
 import { isEmptyData } from 'utils/functions';
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -47,16 +43,31 @@ export const SignUp_Interest = (props : Props) => {
 	const [isLoading, setIsLoading] = React.useState(false);
 	const [isClickable, setIsClickable] = React.useState(true); // 클릭 여부
 
+	const memberSeq = props.route.params?.memberSeq; // 회원 번호
+	const gender = props.route.params?.gender; // 성별
+	const mstImgPath = props.route.params?.mstImgPath; // 대표 사진 경로
+	const nickname = props.route.params?.nickname; // 닉네임
+
+	// ############################################################## 관심사 등록 팝업 관련
+	const int_modalizeRef = useRef<Modalize>(null);
+	const int_onOpen = () => { int_modalizeRef.current?.open(); };
+	const int_onClose = () => {	int_modalizeRef.current?.close(); };
+
 	// 관심사 목록
 	const [intList, setIntList] = React.useState([]);
 
 	// 관심사 체크 목록
 	const [checkIntList, setCheckIntList] = React.useState([{code_name: "", common_code: "", interest_seq: ""}]);
 
+	// 관심사 등록 확인 함수
+	const int_confirm = () => {
+		int_modalizeRef.current?.close();
+	};
+
 	// ############################################################ 회원 소개 정보 조회
 	const getMemberIntro = async() => {
 		const body = {
-			member_seq : 1024
+			member_seq : memberSeq
 		};
 		try {
 			const { success, data } = await get_member_introduce_guide(body);
@@ -78,22 +89,67 @@ export const SignUp_Interest = (props : Props) => {
 					setCheckIntList(setList);
 					break;
 				default:
-					show({
-						content: '오류입니다. 관리자에게 문의해주세요.' ,
-						confirmCallback: function() {}
-					});
+					show({ content: '오류입니다. 관리자에게 문의해주세요.' });
 					break;
 				}
 			} else {
-				show({
-					content: '오류입니다. 관리자에게 문의해주세요.' ,
-					confirmCallback: function() {}
-				});
+				show({ content: '오류입니다. 관리자에게 문의해주세요.' });
 			}
 		} catch (error) {
 			console.log(error);
 		} finally {
 			
+		}
+	};
+
+	// ############################################################################# 저장 함수
+	const saveFn = async () => {
+		if(checkIntList.length < 1){
+			show({ content: '관심사를 입력해 주세요.' });
+			return;
+		}
+
+		// 중복 클릭 방지 설정
+		if(isClickable) {
+			setIsClickable(false);
+			setIsLoading(true);
+
+			const body = {
+				member_seq: memberSeq,
+				interest_list: checkIntList,
+				join_status: '02',
+			};
+			try {
+			const { success, data } = await regist_member_add_info(body);
+			if (success) {
+				switch (data.result_code) {
+					case SUCCESS:
+						navigation.navigate(ROUTES.SIGNUP_INTRODUCE, {
+							memberSeq: memberSeq,
+							gender: gender,
+							mstImgPath: mstImgPath,
+							nickname: nickname,
+						});
+						break;
+					default:
+						show({
+						content: '오류입니다. 관리자에게 문의해주세요.',
+						confirmCallback: function () {},
+						});
+					break;
+				}
+			} else {
+				show({
+				content: '오류입니다. 관리자에게 문의해주세요.',
+				confirmCallback: function () {},
+				});
+			}
+			} catch (error) {
+			console.log(error);
+			} finally {
+			setIsClickable(true);
+			setIsLoading(false);
+			};
 		}
 	};
 
@@ -110,20 +166,35 @@ export const SignUp_Interest = (props : Props) => {
 				end={{ x: 0, y: 1 }}
 				style={_styles.wrap}
 			>
-				<ScrollView>
+				<ScrollView showsVerticalScrollIndicator={false}>
 					<SpaceView mt={20}>
 						<Text style={_styles.title}>관심사 등록하기</Text>
 						<Text style={_styles.subTitle}>나와 관심사를 공유할 수 있는 사람을 찾을 수 있어요.</Text>
 					</SpaceView>
 
-					<SpaceView>
-						<TouchableOpacity style={_styles.regiBtn}>
+					<SpaceView mb={10}>
+						<TouchableOpacity style={_styles.regiBtn} onPress={int_onOpen}>
 							<Text style={_styles.regiBtnText}>관심사 등록</Text>
 						</TouchableOpacity>
 					</SpaceView>
 
 					<SpaceView viewStyle={{flexDirection: 'row', flexWrap: 'wrap'}}>
-						<TouchableOpacity style={_styles.interBox}><Text style={_styles.interText}>캠핑</Text></TouchableOpacity>
+						{checkIntList.map((i, index) => {
+							return isEmptyData(i.code_name) && (
+								<SpaceView mr={5} key={index + 'reg'}>
+									{/* <TouchableOpacity style={[styles.interestBox, styles.boxActive]}>
+										<CommonText color={ColorType.blue697A}>
+											{i.code_name}
+										</CommonText>
+									</TouchableOpacity> */}
+									<TouchableOpacity disabled={true} style={_styles.interBox}>
+										<Text style={_styles.interText}>{i.code_name}</Text>
+									</TouchableOpacity>
+								</SpaceView>	
+							);
+						})}
+
+						{/* <TouchableOpacity style={_styles.interBox}><Text style={_styles.interText}>캠핑</Text></TouchableOpacity>
 						<TouchableOpacity style={_styles.interBox}><Text style={_styles.interText}>집에서 영화보기</Text></TouchableOpacity>
 						<TouchableOpacity style={_styles.interBox}><Text style={_styles.interText}>집에서 영화보기</Text></TouchableOpacity>
 						<TouchableOpacity style={_styles.interBox}><Text style={_styles.interText}>캠핑</Text></TouchableOpacity>
@@ -132,7 +203,7 @@ export const SignUp_Interest = (props : Props) => {
 						<TouchableOpacity style={_styles.interBox}><Text style={_styles.interText}>인스타그램</Text></TouchableOpacity>
 						<TouchableOpacity style={_styles.interBox}><Text style={_styles.interText}>캠핑</Text></TouchableOpacity>
 						<TouchableOpacity style={_styles.interBox}><Text style={_styles.interText}>집에서 영화보기</Text></TouchableOpacity>
-						<TouchableOpacity style={_styles.interBox}><Text style={_styles.interText}>집에서 영화보기</Text></TouchableOpacity>
+						<TouchableOpacity style={_styles.interBox}><Text style={_styles.interText}>집에서 영화보기</Text></TouchableOpacity> */}
 					</SpaceView>
 
 					{/* <SpaceView mb={40} mt={25} viewStyle={_styles.rowStyle}>
@@ -170,7 +241,7 @@ export const SignUp_Interest = (props : Props) => {
 						))}
 					</SpaceView> */}
 
-					<SpaceView mt={245}>
+					<SpaceView mt={205}>
 						<CommonBtn
 							value={'프로필 추가 정보 입력하기(선택)'}
 							type={'reNewId'}
@@ -178,9 +249,7 @@ export const SignUp_Interest = (props : Props) => {
 							fontFamily={'Pretendard-Bold'}
 							borderRadius={5}
 							onPress={() => {
-							navigation.navigate({
-									name : ROUTES.SIGNUP_INTRODUCE
-								});
+								saveFn();
 							}}
 						/>
 					</SpaceView>
@@ -194,21 +263,111 @@ export const SignUp_Interest = (props : Props) => {
 							fontSize={14}
 							borderRadius={5}
 							onPress={() => {
-								navigation.navigate('Login');
+								navigation.goBack();
 							}}
 						/>
 					</SpaceView>
 				</ScrollView>
 			</LinearGradient>
+
+
+			{/* #############################################################################
+											관심사 설정 팝업
+			############################################################################# */}
+
+			<Modalize
+				ref={int_modalizeRef}
+				adjustToContentHeight = {false}
+				handleStyle={modalStyle.modalHandleStyle}
+				modalStyle={modalStyle.modalContainer}
+				modalHeight={height - 150}
+				FooterComponent={
+					<>
+						<SpaceView>
+							<CommonBtn value={'저장(' + checkIntList.length + '/20)'} 
+										type={'primary'}
+										height={60}
+										borderRadius={1}
+										onPress={int_confirm}/>
+						</SpaceView>
+					</>
+				}
+				HeaderComponent={
+					<>
+						<View style={modalStyle.modalHeaderContainer}>
+							<CommonText fontWeight={'700'} type={'h4'}>
+								관심사 등록
+							</CommonText>
+							<TouchableOpacity onPress={int_onClose}>
+								<Image source={ICON.xBtn2} style={styles.iconSize18} />
+							</TouchableOpacity>
+						</View>
+					</>
+				} >	
+
+				<View style={[modalStyle.modalBody]}>
+					{intList.map((item, index) => (
+						<SpaceView mt={20} mb={10} key={item.group_code + '_' + index}>
+							<SpaceView mb={16}>
+								<CommonText fontWeight={'700'}>{item.group_code_name}</CommonText>
+							</SpaceView>
+
+							<View style={[_styles.rowStyle]}>
+								{item.list.map((i, idx) => {
+									let tmpCommonCode = '';
+									let tmpCnt = 0;
+	
+									for (let j = 0; j < checkIntList.length; j++) {
+										if(checkIntList[j].common_code == i.common_code){
+											tmpCommonCode = i.common_code
+											tmpCnt = j;
+											break;
+										}
+									}
+
+									return (
+										<SpaceView key={i.common_code} mr={5}>
+											<TouchableOpacity 
+												style={[styles.interestBox, i.common_code === tmpCommonCode && styles.boxActive]}
+												onPress={() => {
+													console.log('checkIntList.length :::: ' , checkIntList.length);
+
+													if(checkIntList.length > 19 && i.common_code !== tmpCommonCode) {
+
+													} else {
+														if(i.common_code === tmpCommonCode){
+															setCheckIntList(checkIntList.filter(value => value.common_code != tmpCommonCode))
+														} else {
+															setCheckIntList(intValue => [...intValue, i])
+														}
+													}
+												}}
+											>
+												<CommonText
+													fontWeight={'500'}
+													color={i.common_code === tmpCommonCode ? ColorType.blue697A : ColorType.grayb1b1} >
+													{i.code_name}
+												</CommonText>
+											</TouchableOpacity>
+										</SpaceView>
+									)
+								})}	
+							</View>
+						</SpaceView>
+					))}
+				</View>
+			</Modalize>
 		</>
 	);
 };
 
 
 
-/* ################################################################################################################
-###### Style 영역
-################################################################################################################ */
+{/* #######################################################################################################
+###########################################################################################################
+##################### Style 영역
+###########################################################################################################
+####################################################################################################### */}
 const _styles = StyleSheet.create({
 	wrap: {
 		minHeight: height,

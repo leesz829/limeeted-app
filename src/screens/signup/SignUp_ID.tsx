@@ -95,7 +95,6 @@ export const SignUp_ID = (props: Props) => {
           end={{ x: 1, y: 1 }}
           style={_styles.signUpContainer}
         >
-
         
           <SpaceView mt={30} mb={20} viewStyle={{paddingHorizontal:16}}>
             <CommonText textStyle={_styles.title}>
@@ -121,7 +120,7 @@ export const SignUp_ID = (props: Props) => {
                 style={_styles.removeTextBtn}
                 onPress={() => { setEmailId(''); }}
               >
-                <Image source={ICON.xYellow} style={{width: 10, height: 10}} />
+                <Image source={ICON.xYellow} style={styles.iconSquareSize(10)} />
               </TouchableOpacity>
             </SpaceView>
             <View style={{width: '100%'}}>
@@ -159,6 +158,13 @@ export const SignUp_ID = (props: Props) => {
   );
 };
 
+
+
+{/* #######################################################################################################
+###########################################################################################################
+##################### Style 영역
+###########################################################################################################
+####################################################################################################### */}
 const _styles = StyleSheet.create({
   signUpContainer: {
     minHeight: height,

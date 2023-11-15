@@ -48,8 +48,7 @@ export const SignUp_Password = (props: Props) => {
   const [emailId, setEmailId] = React.useState(props.route.params?.emailId);
   const [password, setPassword] = React.useState('');
   const [passwordChk, setPasswordChk] = React.useState('');
-console.log('ddd', passwordChk)
-console.log('aa', password)
+  
   // ######################################################################################################## 이메일 유효성 체크
   const emailValidChk = async () => {
     let isResult = true;
@@ -126,7 +125,7 @@ console.log('aa', password)
               name : ROUTES.LOGIN01
             },
             {
-              name: ROUTES.SIGNUP00_02,
+              name: ROUTES.SIGNUP_PASSWORD,
               params: {
                 ci: ci,
                 name: name,
@@ -138,7 +137,7 @@ console.log('aa', password)
               }
             },
             {
-              name: ROUTES.SIGNUP01,
+              name: ROUTES.SIGNUP_IMAGE,
               params: {
                 memberSeq: memberSeq,
                 gender: gender,
@@ -258,7 +257,7 @@ console.log('aa', password)
             </CommonText>
           </SpaceView>
 
-          <SpaceView mt={30} viewStyle={[_styles.container]}>
+          <SpaceView mt={30} mb={30} viewStyle={[_styles.container]}>
             <View style={{width: '100%'}}>
               <Text style={[_styles.emailPwdText, {color: '#D5CD9E'}]}>이메일</Text>
             </View>
@@ -331,7 +330,7 @@ console.log('aa', password)
               }
             </View>
             
-            <SpaceView mt={130}>
+            <SpaceView mt={50}>
               <CommonBtn
                 value={'프로필 사진 등록하기'}
                 type={'reNewId'}
@@ -342,7 +341,7 @@ console.log('aa', password)
               />
             </SpaceView>
 
-            <SpaceView mt={20}>
+            <SpaceView mt={10}>
               <CommonBtn
                 value={'처음으로'}
                 type={'reNewGoBack'}
@@ -362,6 +361,12 @@ console.log('aa', password)
   );
 };
 
+
+{/* #######################################################################################################
+###########################################################################################################
+##################### Style 영역
+###########################################################################################################
+####################################################################################################### */}
 const _styles = StyleSheet.create({
   signUpContainer: {
     minHeight: height,

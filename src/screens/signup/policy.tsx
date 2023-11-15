@@ -124,10 +124,10 @@ export const Policy = (props: Props) => {
     }); */
 
     navigation.navigate({
-      name : ROUTES.SIGNUP_NICKNAME,
+      name : ROUTES.SIGNUP_CHECK,
       params : {
         birthday: '19900829',
-        ci: 'test',
+        ci: 'test43',
         name: '테스터',
         gender: 'M',
         marketing_agree_yn: 'Y',
@@ -334,7 +334,7 @@ export const Policy = (props: Props) => {
                 fontSize={14}
                 borderRadius={5}
                 onPress={() => {
-                  navigation.navigate('Login');
+                  navigation.navigate(ROUTES.LOGIN01);
                 }}
               />
             </SpaceView>
@@ -541,8 +541,11 @@ export const Policy = (props: Props) => {
 
 
 
-
-
+{/* #######################################################################################################
+###########################################################################################################
+##################### Style 영역
+###########################################################################################################
+####################################################################################################### */}
 const _styles = StyleSheet.create({
   container: {
     paddingTop: 24,
