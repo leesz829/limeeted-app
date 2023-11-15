@@ -132,6 +132,7 @@ export const POPUP_EVENT_LIST = '/event/selectPopupEventList';
  * COMMON
  */
 export const COMMON_CODE = '/common/selectGroupCodeList';
+export const COMMON_CODE_LIST = '/common/selectCommonCodeList';
 export const BOARD_LIST = '/board/selectBoardList';
 export const BOARD_DETAIL_VIEW = '/board/boardDetailView';
 export const NICE_AUTH = '/nice/authToken';

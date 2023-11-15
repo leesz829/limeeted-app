@@ -100,6 +100,7 @@ import {
   GET_MATCH_DETAIL,
   STORY_PROFILE_SECRET_PROC,
   GET_DAILY_MATCH_LIST,
+  COMMON_CODE_LIST,
 } from './route';
 
 /* ========================================================================================================
@@ -847,6 +848,11 @@ export async function get_popup_event_list(body: {
 // #### 공통코드 목록을 조회한다.
 export async function get_common_code(body: { group_code: string }) {
   return send(COMMON_CODE, 'POST', body, true, false);
+}
+
+// #### 공통코드 목록을 조회한다.
+export async function get_common_code_list(body: { group_code: string }) {
+  return send(COMMON_CODE_LIST, 'POST', body, false, false);
 }
 
 // #### 최근소식 목록을 조회한다.
