@@ -76,7 +76,7 @@ export const SignUp_Auth = (props : Props) => {
 				end={{ x: 0, y: 1 }}
 				style={_styles.wrap}
 			>
-				<ScrollView contentContainerStyle={{height: height * 1.5}}>
+				<ScrollView contentContainerStyle={{height: height * 1.2}}>
 					<View>
 						<View style={_styles.authBoxStatus}><Text style={_styles.statusText}>승인</Text></View>
 						<View>
