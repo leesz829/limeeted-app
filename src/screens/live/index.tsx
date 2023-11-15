@@ -69,6 +69,23 @@ export const Live = () => {
     distance: '',
   });
 
+  const imgList = data.live_profile_img;
+  const [currentImgIdx, setCurrentImgIdx] = useState(0);
+
+  // 이전 이미지
+  const prevImage = async () => {
+    if(currentImgIdx > 0) {
+      setCurrentImgIdx(currentImgIdx-1);
+    }
+  }
+
+  // 다음 이미지
+  const nextImage = async () => {
+    if(currentImgIdx+1 < imgList.length && currentImgIdx < 6) {
+      setCurrentImgIdx(currentImgIdx+1);
+    }
+  }
+
   // ####################################################################################### 이미지 스크롤 처리
   const handleScroll = (event) => {
     let contentOffset = event.nativeEvent.contentOffset;
@@ -157,7 +174,7 @@ export const Live = () => {
 
   React.useEffect(() => {
     if(isFocus) {
-
+      setCurrentImgIdx(0);
     };
   }, [isFocus]);
 
@@ -166,11 +183,11 @@ export const Live = () => {
     <>
       <TopNavigation currentPath={'LIVE'} />
 
-        <SpaceView pb={50} viewStyle={{backgroundColor: '#3D4348'}}> 
+        <SpaceView pb={50} viewStyle={{backgroundColor: '#3D4348', minHeight: height}}> 
         {isLoad ? (
-          <SpaceView mb={40}>
+          <SpaceView>
             {/* 라이브 회원 이미지 */}
-            <FlatList
+            {/* <FlatList
               contentContainerStyle={{ overflow: 'visible', paddingHorizontal: 20 }} // overflow를 visible로 설정
               data={data?.live_profile_img}
               horizontal={true}
@@ -182,10 +199,61 @@ export const Live = () => {
               keyExtractor={(item, index) => index.toString()}
               renderItem={RenderItem}
               onScroll={handleScroll}
-            />
+            /> */}
+            <View style={_styles.imgItemWrap}>
+              <View style={_styles.mmbrStatusView}>
+                <Text style={{color: '#A29552', fontSize: 12, fontFamily: 'Pretendard-Bold'}}>NEW</Text>
+              </View>
+
+              <SpaceView viewStyle={{borderRadius: 20, overflow: 'hidden'}}>
+                {imgList.length > 0 && (
+                  <Image
+                    source={{uri: imgList[currentImgIdx]?.url?.uri}}
+                    style={{
+                      width: width,
+                      height: height * 0.64, 
+                    }}
+                    resizeMode={'cover'}
+                  />
+                )}
+
+                <TouchableOpacity 
+                  onPress={() => { prevImage(); }}
+                  style={{position: 'absolute', top: 0, bottom: 0, left: 0, width: (width * 0.85) / 2}} />
+
+                <TouchableOpacity 
+                  onPress={() => { nextImage(); }}
+                  style={{position: 'absolute', top: 0, bottom: 0, right: 0, width: (width * 0.85) / 2}} />
+
+                <SpaceView viewStyle={_styles.pagingContainer}>
+                  {imgList?.map((i, n) => {
+                    return n <= 5 && (
+                      <View style={_styles.dotContainerStyle} key={'dot' + n}>
+                        <View style={[_styles.pagingDotStyle, n == currentImgIdx && _styles.activeDot]} />
+                      </View>
+                    )
+                  })}
+                </SpaceView>
+
+                <SpaceView viewStyle={_styles.infoArea}>
+                  <SpaceView viewStyle={{justifyContent: 'center', alignItems: 'center'}}>
+                    <Text style={_styles.distanceText}>12.9Km</Text>
+                    <Text style={_styles.nicknameText}>{data.live_member_info.nickname}, {data.live_member_info.age}</Text>
+                    <Text style={_styles.introText}>리미티드의 여신</Text>
+                  </SpaceView>
+                </SpaceView>
+
+                <LinearGradient
+                  colors={['transparent', '#000000']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 0, y: 1 }}
+                  style={_styles.thumnailDimArea} />
+                <Watermark value={memberBase?.phone_number}/>
+              </SpaceView>
+            </View>
 
             {/* 최하단 스킵, 인상 선택 버튼 */}
-            <View style={{flexDirection: 'row', justifyContent: 'center', marginTop: 18}}>
+            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
               <TouchableOpacity style={[_styles.bottomBtn,{width: width * 0.36, marginRight: 10}]}>
                 <Text style={[_styles.bottomTxt, {color: '#656565'}]}>스킵</Text>
               </TouchableOpacity>
@@ -200,7 +268,7 @@ export const Live = () => {
             </View>
 
             {/* 인상 선택 모달 */}
-            <Modal isVisible={liveModalVisible} style={{backgroundColor: 'rgba(9, 32, 50, 0.5)', margin: 0}}>
+            <Modal isVisible={liveModalVisible} style={{backgroundColor: 'rgba(9, 32, 50, 0.4)', margin: 0}}>
               <View style={{justifyContent: 'center', alignItems: 'center', marginTop: 120}}>
                 <Text style={_styles.faceModalText}>#웃는게 이뻐요.</Text>
                 <Text style={_styles.faceModalText}>#눈이 이뻐요.</Text>
@@ -236,50 +304,50 @@ export const Live = () => {
   );
 
   /* 이미지 렌더링 */
-  function RenderItem({ item }) {
+  // function RenderItem({ item }) {
 
-    return (
-      <>
-        <View style={_styles.imgItemWrap}>
-          <View style={_styles.mmbrStatusView}>
-            <Text style={{color: '#A29552', fontSize: 12, fontFamily: 'Pretendard-Bold'}}>NEW</Text>
-          </View>
-          <SpaceView viewStyle={{borderRadius: 20, overflow: 'hidden'}}>
-            <Image
-              source={{uri: item?.url?.uri}}
-              style={{
-                width: width * 0.85,
-                height: height * 0.67, 
-              }}
-              resizeMode={'cover'}
-            />
+  //   return (
+  //     <>
+  //       <View style={_styles.imgItemWrap}>
+  //         <View style={_styles.mmbrStatusView}>
+  //           <Text style={{color: '#A29552', fontSize: 12, fontFamily: 'Pretendard-Bold'}}>NEW</Text>
+  //         </View>
+  //         <SpaceView viewStyle={{borderRadius: 20, overflow: 'hidden'}}>
+  //           <Image
+  //             source={{uri: item?.url?.uri}}
+  //             style={{
+  //               width: width * 0.85,
+  //               height: height * 0.67, 
+  //             }}
+  //             resizeMode={'cover'}
+  //           />
             
-            <SpaceView viewStyle={_styles.infoArea}>
-              <SpaceView viewStyle={{justifyContent: 'center', alignItems: 'center'}}>
-                <Text style={_styles.distanceText}>12.9Km</Text>
-                <View>
-                  <View style={_styles.indocatorContainer}>
-                    {data?.live_profile_img.map((e, index) => (
-                      <View style={[ _styles.indicator, { backgroundColor: index === page ? '#A6ABEE' : '#34447A' }, ]} key={index} />
-                    ))}
-                  </View>
-                </View>
-                <Text style={_styles.nicknameText}>{data.live_member_info.nickname}, {data.live_member_info.age}</Text>
-                <Text style={_styles.introText}>리미티드의 여신</Text>
-              </SpaceView>
-            </SpaceView>
+  //           <SpaceView viewStyle={_styles.infoArea}>
+  //             <SpaceView viewStyle={{justifyContent: 'center', alignItems: 'center'}}>
+  //               <Text style={_styles.distanceText}>12.9Km</Text>
+  //               <View>
+  //                 <View style={_styles.indocatorContainer}>
+  //                   {data?.live_profile_img.map((e, index) => (
+  //                     <View style={[ _styles.indicator, { backgroundColor: index === page ? '#A6ABEE' : '#34447A' }, ]} key={index} />
+  //                   ))}
+  //                 </View>
+  //               </View>
+  //               <Text style={_styles.nicknameText}>{data.live_member_info.nickname}, {data.live_member_info.age}</Text>
+  //               <Text style={_styles.introText}>리미티드의 여신</Text>
+  //             </SpaceView>
+  //           </SpaceView>
 
-            <LinearGradient
-              colors={['transparent', '#000000']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0, y: 1 }}
-              style={_styles.thumnailDimArea} />
-            <Watermark value={memberBase?.phone_number}/>
-          </SpaceView>
-        </View>
-      </>
-    );
-  }
+  //           <LinearGradient
+  //             colors={['transparent', '#000000']}
+  //             start={{ x: 0, y: 0 }}
+  //             end={{ x: 0, y: 1 }}
+  //             style={_styles.thumnailDimArea} />
+  //           <Watermark value={memberBase?.phone_number}/>
+  //         </SpaceView>
+  //       </View>
+  //     </>
+  //   );
+  // }
 };
 
 
@@ -292,7 +360,9 @@ export const Live = () => {
 
 const _styles = StyleSheet.create({
   imgItemWrap: {
+    padding: 20,
     marginHorizontal: 5,
+    overflow: 'hidden',
   },
   infoArea: {
     position: 'absolute',
@@ -344,8 +414,8 @@ const _styles = StyleSheet.create({
   },
   mmbrStatusView: {
     position: 'absolute',
-    top: 10,
-    left: 10,
+    top: 30,
+    left: 30,
     zIndex: 10,
     backgroundColor: '#FFF',
     paddingHorizontal: 10,
@@ -360,5 +430,28 @@ const _styles = StyleSheet.create({
   bottomTxt: {
     textAlign: 'center',
     fontFamily: 'pretendard-Bold',
+  },
+  pagingContainer: {
+    position: 'absolute',
+    top: 30,
+    left: 0,
+    right: 0,
+    zIndex: 1,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  pagingDotStyle: {
+    width: 19,
+    height: 2,
+    backgroundColor: 'rgba(255,255,255,0.3)',
+    borderRadius: 4,
+  },
+  dotContainerStyle: {
+    marginRight: 2,
+    marginLeft: 2,
+  },
+  activeDot: {
+    backgroundColor: 'white',
   },
 });

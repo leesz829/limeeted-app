@@ -186,7 +186,7 @@ export const Policy = (props: Props) => {
             end={{ x: 1, y: 1 }}
             style={_styles.policyContainer}
           >
-          <SpaceView mt={30} mb={20} viewStyle={{paddingHorizontal:16}}>
+          <SpaceView mb={20} viewStyle={{paddingHorizontal:16}}>
             <CommonText textStyle={_styles.title}>
               리미티드{'\n'}서비스 이용약관
             </CommonText>
@@ -312,7 +312,7 @@ export const Policy = (props: Props) => {
                   isOn={mrktAgree} /> */}
               </View>
             </SpaceView>
-            <SpaceView mt={140}>
+            <SpaceView mt={190}>
               <CommonBtn
                 value={'회원가입 계속'}
                 type={'reNewId'}
@@ -551,7 +551,7 @@ const _styles = StyleSheet.create({
   },
   policyContainer: {
     minHeight: height,
-    paddingTop: 60,
+    paddingTop: 50,
     paddingLeft: 16,
     paddingRight: 16,
     flexGrow: 1,

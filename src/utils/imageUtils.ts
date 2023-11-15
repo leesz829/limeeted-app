@@ -218,6 +218,8 @@ export const ICON = {
   xYellow: require('assets/icon/icon-x-yellow.png'),
   userAdd: require('assets/icon/icon-user-add.png'),
   userPen: require('assets/icon/icon-user-pen.png'),
+  commentYellow: require('assets/icon/icon-comment-yellow.png'),
+  cloudUpload: require('assets/icon/icon-cloud-upload.png'),
 };
 
 export const GIF_IMG = {

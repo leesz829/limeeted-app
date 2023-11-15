@@ -566,7 +566,7 @@ export const Login01 = () => {
 
               </SpaceView>
 
-              <SpaceView mt={40}>
+              <SpaceView mt={45}>
                 <CommonBtn
                   value={'처음으로'}
                   type={'reNewGoBack'}

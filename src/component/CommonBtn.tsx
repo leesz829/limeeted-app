@@ -184,7 +184,7 @@ const styles = (props: Props) => {
       break;
     case 'reNewId':
       backgroundColor = '#FFDD00';
-      textColor = Color.white;
+      textColor = Color.black0000;
       borderColor = '#FFDD00';
       break;
     case 'reNewPwd':
