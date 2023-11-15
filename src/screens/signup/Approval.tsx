@@ -130,6 +130,15 @@ export const Approval = (props: Props) => {
 
   // ########################################################################## 회원가입 이동
   const goJoin = async (status:string) => {
+
+    navigation.navigate(ROUTES.SIGNUP_IMAGE, {
+      memberSeq: memberSeq,
+      gender: apprData.gender,
+    });
+    
+
+    return;
+
     if(status == '01') {
       navigation.dispatch(
         CommonActions.reset({

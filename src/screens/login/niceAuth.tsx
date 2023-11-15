@@ -82,7 +82,7 @@ export const NiceAuth = (props: Props) => {
 											routes: [
 												{ name: ROUTES.LOGIN01 },
 												{
-													name: ROUTES.SIGNUP00,
+													name: ROUTES.SIGNUP_PASSWORD,
 													params: {
 														ci: dataJson.ci,
 													  	name: dataJson.name,
@@ -110,7 +110,7 @@ export const NiceAuth = (props: Props) => {
 											routes: [
 												{ name: ROUTES.LOGIN01 },
 												{
-													name: ROUTES.SIGNUP00,
+													name: ROUTES.SIGNUP_PASSWORD,
 													params: {
 														ci: dataJson.ci,
 													  	name: dataJson.name,
@@ -145,7 +145,7 @@ export const NiceAuth = (props: Props) => {
 											routes: [
 												{ name: ROUTES.LOGIN01 },
 												{
-													name: ROUTES.SIGNUP00,
+													name: ROUTES.SIGNUP_PASSWORD,
 													params: {
 														ci: dataJson.ci,
 													  	name: dataJson.name,
@@ -207,7 +207,7 @@ export const NiceAuth = (props: Props) => {
 							routes: [
 								{ name: ROUTES.LOGIN01 }
 								, {
-									name: ROUTES.SIGNUP00_01
+									name: ROUTES.SIGNUP_CHECK
 									, params: {
 										ci: dataJson.ci,
 										name: dataJson.name,

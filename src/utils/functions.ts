@@ -1,5 +1,7 @@
 import { Platform } from 'react-native';
 import dayjs from 'dayjs';
+import ImagePicker from 'react-native-image-crop-picker';
+
 
 // 날짜 format
 export const formatDate = (time: string) => {
@@ -138,7 +140,36 @@ export function isEmptyData(data: any) {
   if(data == null) { isChk = false; }
   if(data == '') { isChk = false; }
   return isChk;
-}
+};
+
+// imagePicker 활성화
+export function imagePickerOpen(callbackFn: any) {
+  ImagePicker.openPicker({
+    width: 800,
+    height: 1000,
+    cropping: true,
+    //cropperActiveWidgetColor: '#8E9AEB',  // widget 색상
+    cropperToolbarTitle: '사진 편집',
+    showCropGuidelines: false,
+    hideBottomControls: true,
+    includeBase64: true,
+    mediaType: "photo",
+    //smartAlbums: 'UserLibrary',
+  }).then(image => {
+    //console.log('image ::::::: ' , image.path);
+    //setImgPath(image.path);
+
+    /* props.callbackFn(
+      image.path,
+      image.data
+    ); */
+
+    callbackFn(image.path, image.data);
+
+  }).catch(
+    console.log
+  );
+};
 
 
 export default {
@@ -150,4 +181,5 @@ export default {
   validateEmailChk,
   getRemainTime,
   isEmptyData,
+  imagePickerOpen,
 };
