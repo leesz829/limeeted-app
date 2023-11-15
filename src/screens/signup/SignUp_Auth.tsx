@@ -2,25 +2,19 @@ import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
 import { layoutStyle, styles, modalStyle, commonStyle } from 'assets/styles/Styles';
 import { CommonBtn } from 'component/CommonBtn';
 import CommonHeader from 'component/CommonHeader';
-import { CommonInput } from 'component/CommonInput';
-import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import React, { useRef, useState } from 'react';
 import { View, Image, ScrollView, TouchableOpacity, StyleSheet, FlatList, Text, Dimensions } from 'react-native';
-import { ICON } from 'utils/imageUtils';
+import { ICON, PROFILE_IMAGE, findSourcePath, findSourcePathLocal } from 'utils/imageUtils';
 import { Modalize } from 'react-native-modalize';
 import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import axios from 'axios';
-import { RadioCheckBox_2 } from 'component/RadioCheckBox_2';
-import * as properties from 'utils/properties';
 import { usePopup } from 'Context';
-import { regist_introduce, get_member_introduce_guide } from 'api/models';
+import { regist_second_auth, get_profile_secondary_authentication } from 'api/models';
 import { SUCCESS, MEMBER_NICKNAME_DUP } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
 import { CommonLoading } from 'component/CommonLoading';
-import { CommonTextarea } from 'component/CommonTextarea';
-import { isEmptyData } from 'utils/functions';
+import { isEmptyData, imagePickerOpen } from 'utils/functions';
 import LinearGradient from 'react-native-linear-gradient';
 import { TextInput } from 'react-native-gesture-handler';
 
@@ -45,11 +39,25 @@ export const SignUp_Auth = (props : Props) => {
 	const { show } = usePopup(); // 공통 팝업
 	const [isLoading, setIsLoading] = React.useState(false);
 	const [isClickable, setIsClickable] = React.useState(true); // 클릭 여부
-	const [currentImgIdx, setCurrentImgIdx] = React.useState(0); // 현재 이미지 인덱스
-  
-	const [authImageList, setAuthImageList] = React.useState([]); // 인증 이미지 목록
 
-	const authInfoArr = ['직업', '학력', '소득', '자산', 'SNS', '차량'];
+	const memberSeq = props.route.params?.memberSeq; // 회원 번호
+	const gender = props.route.params?.gender; // 성별
+	const mstImgPath = props.route.params?.mstImgPath; // 대표 사진 경로
+
+	const [currentAuthCode, setCurrentAuthCode] = React.useState('JOB'); // 현재 인증 코드
+	//const [currentImgIdx, setCurrentImgIdx] = React.useState(0); // 현재 이미지 인덱스
+	const [authImageList, setAuthImageList] = React.useState([]); // 인증 이미지 목록
+	const [authComment, setAuthComment] = React.useState([]); // 인증 코멘트
+
+	const authInfoArr = [
+		{ name: '직업', code: 'JOB' },
+		{ name: '학력', code: 'EDU' },
+		{ name: '소득', code: 'INCOME' },
+		{ name: '자산', code: 'ASSET' },
+		{ name: 'SNS', code: 'SNS' },
+		{ name: '차량', code: 'VEHICLE' },
+	];
+
 	const data = [0];
   
 	// 인증 이미지 삭제 시퀀스 문자열
@@ -72,25 +80,19 @@ export const SignUp_Auth = (props : Props) => {
   
 	// ############################################################################# 사진 관리 컨트롤 변수
 	const [imgMngData, setImgMngData] = React.useState<any>({
-	  member_img_seq: 0,
-	  img_file_path: '',
-	  order_seq: '',
-	  status: '',
-	  return_reason: '',
+		member_auth_detail_seq: 0,
+	  	img_file_path: '',
+	  	order_seq: '',
 	});
   
 	// ############################################################################# 사진 관리 팝업 관련 함수
 	const imgMng_modalizeRef = useRef<Modalize>(null);
 	const imgMng_onOpen = (imgData: any, order_seq: any) => {
 	  setImgMngData({
-		member_img_seq: imgData.member_img_seq,
+		member_auth_detail_seq: imgData.member_auth_detail_seq,
 		img_file_path: imgData.img_file_path,
 		order_seq: order_seq,
-		status: imgData.status,
-		return_reason: imgData.return_reason,
 	  });
-  
-	  console.log('imgData ::::: ' , imgData);
 	  imgMng_modalizeRef.current?.open();
 	};
 	const imgMng_onClose = () => {
@@ -102,13 +104,11 @@ export const SignUp_Auth = (props : Props) => {
 	  if(isNew) {
 		imagePickerOpen(function(path:any, data:any) {
 		  let _data = {
-			member_img_seq: 0,
+			member_auth_detail_seq: 0,
 			img_file_path: path,
 			order_seq: authImageList.length+1,
 			org_order_seq: authImageList.length+1,
 			del_yn: 'N',
-			status: 'PROGRESS',
-			return_reason: '',
 			file_base64: data,
 		  };
 	
@@ -116,10 +116,9 @@ export const SignUp_Auth = (props : Props) => {
 			return [...prev, _data];
 		  });
   
-		  setCurrentImgIdx(authImageList.length);
 		});
 	  } else {
-		setCurrentImgIdx(idx);
+
 	  }
 	}
   
@@ -128,7 +127,7 @@ export const SignUp_Auth = (props : Props) => {
 	  imagePickerOpen(function(path:any, data:any) {
   
 		// 삭제 데이터 저장
-		if(isEmptyData(imgMngData.member_img_seq) && 0 != imgMngData.member_img_seq) {
+		if(isEmptyData(imgMngData.member_auth_detail_seq) && 0 != imgMngData.member_auth_detail_seq) {
 		  let delArr = imgDelSeqStr;
 		  if (delArr == '') {
 			delArr = imgMngData.member_img_seq;
@@ -143,7 +142,7 @@ export const SignUp_Auth = (props : Props) => {
 		  const dupChk = prev.some(item => item.order_seq === imgMngData.order_seq);
 		  if(dupChk) {
 			return prev.map((item) => item.order_seq === imgMngData.order_seq 
-				? { ...item, img_file_path: path, file_base64: data, status: 'PROGRESS' }
+				? { ...item, img_file_path: path, file_base64: data }
 				: item
 			);
 		  }
@@ -169,18 +168,16 @@ export const SignUp_Auth = (props : Props) => {
 	  setAuthImageList(_authImgList);
   
 	  // 삭제 데이터 저장
-	  if(isEmptyData(imgMngData.member_img_seq) && 0 != imgMngData.member_img_seq) {
+	  if(isEmptyData(imgMngData.member_auth_detail_seq) && 0 != imgMngData.member_auth_detail_seq) {
 		let delArr = imgDelSeqStr;
 		if (delArr == '') {
-		  delArr = imgMngData.member_img_seq;
+		  delArr = imgMngData.member_auth_detail_seq;
 		} else {
-		  delArr = delArr + ',' + imgMngData.member_img_seq;
+		  delArr = delArr + ',' + imgMngData.member_auth_detail_seq;
 		}
   
 		setImgDelSeqStr(delArr);
 	  }
-  
-	  setCurrentImgIdx(0);
   
 	  // 모달 닫기
 	  imgMng_onClose();
@@ -189,15 +186,18 @@ export const SignUp_Auth = (props : Props) => {
 	// ############################################################################# 인증 이미지 정보 조회
 	const getAuthImage = async () => {
 	  const body = {
-		member_seq: props.route.params.memberSeq,
+		member_seq: memberSeq,
+		second_auth_code: currentAuthCode,
 	  };
 	  try {
-		const { success, data } = await get_second_auth(body);
+		const { success, data } = await get_profile_secondary_authentication(body);
 		if (success) {
 		  switch (data.result_code) {
 			case SUCCESS:
-			  if(isEmptyData(data.imgList)) {
-				let _authImgList:any = [];
+			  if(isEmptyData(data.auth_detail_list)) {
+				setAuthImageList(data?.auth_detail_list);
+
+				/* let _authImgList:any = [];
 				data?.imgList?.map((item, index) => {
 				  let data = {
 					// member_img_seq: item.member_img_seq,
@@ -212,7 +212,7 @@ export const SignUp_Auth = (props : Props) => {
 				  _authImgList.push(data);
 				});
   
-				setAuthImageList(_authImgList);
+				setAuthImageList(_authImgList); */
 			  }
   
 			  break;
@@ -239,12 +239,12 @@ export const SignUp_Auth = (props : Props) => {
 	// ############################################################################# 인증 이미지 저장
 	const saveAuthImage = async () => {
   
-	  let tmpCnt = 0;
+	  /* let tmpCnt = 0;
 	  authImageList.map((item, index) => {
 		if(item.status != 'REFUSE') {
 		  tmpCnt++;
 		}
-	  });
+	  }); */
 
 	  //return;
   
@@ -254,20 +254,21 @@ export const SignUp_Auth = (props : Props) => {
 		setIsLoading(true);
   
 		const body = {
-		  member_seq: props.route.params.memberSeq,
-		  file_list: authImageList,
-		  img_del_seq_str: imgDelSeqStr,
+			member_seq: memberSeq,
+			file_list: authImageList,
+			auth_code: currentAuthCode,
+			auth_comment: authComment,
 		};
 		try {
 		  const { success, data } = await regist_second_auth(body);
 		  if (success) {
 			switch (data.result_code) {
 			  case SUCCESS:
-				navigation.navigate(ROUTES.SIGNUP03, {
+				/* navigation.navigate(ROUTES.SIGNUP03, {
 				  memberSeq: props.route.params.memberSeq,
 				  gender: props.route.params.gender,
 				  mstImgPath: data.mst_img_path,
-				});
+				}); */
 				break;
 			  default:
 				show({
@@ -291,144 +292,50 @@ export const SignUp_Auth = (props : Props) => {
 	  }
 	};
   
-	/* ########################################################################################## 프로필 사진 아이템 렌더링 */
-	function authImageItemNew({ index, imgData, imgSelectedFn }) {
-	  const imgUrl = findSourcePathLocal(imgData?.img_file_path); // 이미지 경로
-	  const imgDelYn = imgData?.del_yn; // 이미지 삭제 여부
-	  const imgStatus = imgData?.status; // 이미지 상태
+	/* ########################################################################################## 인증 사진 렌더링 */
+	function AuthImageRender({ index, imgData, imgSelectedFn, mngModalFn }) {
+		const imgUrl = findSourcePathLocal(imgData?.img_file_path); // 이미지 경로
+	  	const imgDelYn = imgData?.del_yn; // 이미지 삭제 여부
+	  	const imgStatus = imgData?.status; // 이미지 상태
 	  
-	  //console.log('imgData111111 ::::: ' , imgData);
+	  	//console.log('imgData111111 ::::: ' , imgData);
 	
-	  return (
-		<TouchableOpacity 
-		  onPress={() => { imgSelectedFn(index, !isEmptyData(imgData)); }}
-		  activeOpacity={0.9}
-		>
-		  {isEmptyData(imgUrl) && imgDelYn == 'N' ? (
+	  	return (
 			<>
-			  <SpaceView viewStyle={_styles.subImgWrap(index == currentImgIdx)} >
-				<Image
-				  resizeMode="cover"
-				  resizeMethod="scale"
-				  style={_styles.subImgStyle}
-				  key={imgUrl}
-				  source={imgUrl}
-				/>
-				<View style={_styles.imageDisabled(false)}>
-				  <Text style={[_styles.authImageDimText(imgStatus)]}>{imgStatus == 'PROGRESS' ? '심사중' : '반려'}</Text>
-				</View>
-			  </SpaceView>
+				{isEmptyData(imgUrl) ? (
+					<>
+						<TouchableOpacity 
+							style={_styles.uploadBox}
+							onPress={() => { mngModalFn(imgData, index+1, imgUrl); }}
+							activeOpacity={0.9}
+						>
+							<Image
+								resizeMode="cover"
+								resizeMethod="scale"
+								style={_styles.authImgStyle}
+								key={imgUrl}
+								source={imgUrl}
+							/>
+						
+						</TouchableOpacity>
+					</>
+				) : (
+					<>
+						<TouchableOpacity 
+							style={_styles.uploadBox}
+							onPress={() => { imgSelectedFn(index, !isEmptyData(imgData)); }}
+							activeOpacity={0.9}
+						>
+							<Image source={ICON.cloudUpload} style={styles.iconSquareSize(32)} />
+						</TouchableOpacity>
+					</>
+				)}
 			</>
-		  ) : (
-			<>
-			  <SpaceView viewStyle={_styles.subImgNoData}>
-				<Image source={ICON.userAdd} style={styles.iconSquareSize(22)} />
-			  </SpaceView>
-			</>
-		  )}
-		</TouchableOpacity>
-	  );
+		);
 	};
 
-	return (
-		<>
-			<SpaceView mt={20} viewStyle={{backgroundColor: '#445561', padding: 30}}>
-				<Text style={_styles.title}>멤버쉽 인증하고{'\n'}내 강점을 드러내기(선택)</Text>
-				<Text style={_styles.subTitle}>
-					아래 가이드를 참고하시고 멤버쉽 인증 자료를 올려 주세요.{'\n'}
-					심사 기준에 따라 프로필에 인증 뱃지가 부여되며{'\n'}
-					이성과의 매칭에 유리할 수 있습니다.
-				</Text>
-				<ScrollView horizontal={true} contentContainerStyle={{justifyContent: 'space-between', width: width * 1.2}}>
-					{authInfoArr.map((item, index) => (
-						<TouchableOpacity style={_styles.authBox} key={index}>
-							<Text style={_styles.authBoxTitle}>{item}</Text>
-						</TouchableOpacity>
-					))}
-				</ScrollView>
-			</SpaceView>
-
-			<LinearGradient
-				colors={['#3D4348', '#1A1E1C']}
-				start={{ x: 0, y: 0 }}
-				end={{ x: 0, y: 1 }}
-				style={_styles.wrap}
-			>
-				<ScrollView contentContainerStyle={{height: height * 1.2}}>
-					<View>
-						<View style={_styles.authBoxStatus}><Text style={_styles.statusText}>승인</Text></View>
-						<View>
-							<View style={{flexDirection: 'row', alignItems: 'center'}}>
-								<Image source={ICON.commentYellow} style={styles.iconSize16} />
-								<Text style={_styles.contentsTitle}>심사에 요구되는 증명자료를 올려주세요.</Text>
-							</View>			
-							<Text style={_styles.contentsSubtitle}>• 소득 금액 증명원, 근로 소득 원천 징수증, 부가 가치세 증명원, 기타소득 입증자료, 근로계약서</Text>
-							<View style={_styles.uploadBoxContainer}>
-								{[0, 1, 2].map(() => (
-									<TouchableOpacity style={_styles.uploadBox}>
-										<Image source={ICON.cloudUpload} style={styles.iconSize32} />
-									</TouchableOpacity>
-								))}
-							</View>
-						</View>
-						<View>
-							<View style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
-								<Image source={ICON.commentYellow} style={styles.iconSize16} />
-								<Text style={_styles.contentsTitle}>인증 소개글(선택)</Text>
-							</View>
-							<TextInput 
-								placeholder='인증 소개글 입력(가입 후 변경 가능)'
-								placeholderTextColor={'#FFFDEC'}
-								style={_styles.inputContainer}
-							/>
-						</View>
-
-						<View>
-							<View style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
-								<Image source={ICON.commentYellow} style={styles.iconSize16} />
-								<Text style={_styles.contentsTitle}>심사에 요구되는 증명자료를 올려주세요.</Text>
-							</View>
-							<FlatList
-								data={data}
-								renderItem={renderItem}
-							/>
-						</View>
-					</View>
-
-					<SpaceView mt={50}>
-						<CommonBtn
-							value={'가입 신청하기'}
-							type={'reNewId'}
-							fontSize={16}
-							fontFamily={'Pretendard-Bold'}
-							borderRadius={5}
-							onPress={() => {
-							navigation.navigate({
-								name : ROUTES.SIGNUP_AUTH
-								});
-							}}
-						/>
-					</SpaceView>
-
-					<SpaceView mt={20}>
-						<CommonBtn
-							value={'이전으로'}
-							type={'reNewGoBack'}
-							isGradient={false}
-							fontFamily={'Pretendard-Light'}
-							fontSize={14}
-							borderRadius={5}
-							onPress={() => {
-								navigation.navigate('Login');
-							}}
-						/>
-					</SpaceView>
-				</ScrollView>
-			</LinearGradient>
-		</>
-	);
-
-	function renderItem(item) {
+	/* ########################################################################################## 인증 사진 렌더링 */
+	function MaterialRender({ authCode }) {
 		
 		return (
 			<>
@@ -457,13 +364,160 @@ export const SignUp_Auth = (props : Props) => {
 			</>
 		)
 	};
+
+	// ############################################################ 최초 실행
+	React.useEffect(() => {
+		getAuthImage();
+	}, [isFocus]);
+
+	return (
+		<>
+			{/* #############################################################################################################
+			######### 상단 영역
+			############################################################################################################# */}
+			<SpaceView mt={20} viewStyle={{backgroundColor: '#445561', padding: 30}}>
+				<Text style={_styles.title}>멤버쉽 인증하고{'\n'}내 강점을 드러내기(선택)</Text>
+				<Text style={_styles.subTitle}>
+					아래 가이드를 참고하시고 멤버쉽 인증 자료를 올려 주세요.{'\n'}
+					심사 기준에 따라 프로필에 인증 뱃지가 부여되며{'\n'}
+					이성과의 매칭에 유리할 수 있습니다.
+				</Text>
+				<ScrollView horizontal={true} contentContainerStyle={{justifyContent: 'space-between', width: width * 1.2}} showsHorizontalScrollIndicator={false}>
+					{authInfoArr.map((item, index) => (
+						<TouchableOpacity style={_styles.authBox} key={index}>
+							<Text style={_styles.authBoxTitle(item?.code == currentAuthCode)}>{item.name}</Text>
+						</TouchableOpacity>
+					))}
+				</ScrollView>
+			</SpaceView>
+
+			{/* #############################################################################################################
+			######### 컨텐츠 영역
+			############################################################################################################# */}
+			<LinearGradient
+				colors={['#3D4348', '#1A1E1C']}
+				start={{ x: 0, y: 0 }}
+				end={{ x: 0, y: 1 }}
+				style={_styles.wrap}
+			>
+				<ScrollView contentContainerStyle={{height: height * 1.2}} showsVerticalScrollIndicator={false}>
+					<View>
+						<View style={_styles.authBoxStatus}><Text style={_styles.statusText}>승인</Text></View>
+						<View>
+							<View style={{flexDirection: 'row', alignItems: 'center'}}>
+								<Image source={ICON.commentYellow} style={styles.iconSize16} />
+								<Text style={_styles.contentsTitle}>심사에 요구되는 증명자료를 올려주세요.</Text>
+							</View>			
+							<Text style={_styles.contentsSubtitle}>• 소득 금액 증명원, 근로 소득 원천 징수증, 부가 가치세 증명원, 기타소득 입증자료, 근로계약서</Text>
+							<View style={_styles.uploadBoxContainer}>
+								<AuthImageRender index={0} imgData={authImageList.length > 0 ? authImageList[0] : null} imgSelectedFn={imgSelected} mngModalFn={imgMng_onOpen} />
+								<AuthImageRender index={1} imgData={authImageList.length > 1 ? authImageList[1] : null} imgSelectedFn={imgSelected} mngModalFn={imgMng_onOpen} />
+								<AuthImageRender index={2} imgData={authImageList.length > 2 ? authImageList[2] : null} imgSelectedFn={imgSelected} mngModalFn={imgMng_onOpen} />
+							</View>
+						</View>
+						<View>
+							<View style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
+								<Image source={ICON.commentYellow} style={styles.iconSquareSize(16)} />
+								<Text style={_styles.contentsTitle}>인증 소개글(선택)</Text>
+							</View>
+							<TextInput 
+								placeholder='인증 소개글 입력(가입 후 변경 가능)'
+								placeholderTextColor={'#FFFDEC'}
+								style={_styles.inputContainer}
+							/>
+						</View>
+
+						<View>
+							<View style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
+								<Image source={ICON.commentYellow} style={styles.iconSquareSize(16)} />
+								<Text style={_styles.contentsTitle}>심사에 요구되는 증명자료를 올려주세요.</Text>
+							</View>
+							{/* <FlatList
+								data={data}
+								renderItem={renderItem}
+							/> */}
+
+							<MaterialRender authCode={currentAuthCode} />
+						</View>
+					</View>
+
+					<SpaceView mt={50}>
+						<CommonBtn
+							value={'가입 신청하기'}
+							type={'reNewId'}
+							fontSize={16}
+							fontFamily={'Pretendard-Bold'}
+							borderRadius={5}
+							onPress={() => {
+							navigation.navigate({
+								name : ROUTES.SIGNUP_AUTH
+								});
+							}}
+						/>
+					</SpaceView>
+
+					<SpaceView mt={20}>
+						<CommonBtn
+							value={'이전으로'}
+							type={'reNewGoBack'}
+							isGradient={false}
+							fontFamily={'Pretendard-Light'}
+							fontSize={14}
+							borderRadius={5}
+							onPress={() => {
+								navigation.goBack();
+							}}
+						/>
+					</SpaceView>
+				</ScrollView>
+			</LinearGradient>
+
+			{/* ###############################################
+			##### 사진 관리 팝업
+			############################################### */}
+			<Modalize
+				ref={imgMng_modalizeRef}
+				adjustToContentHeight={true}
+				handleStyle={modalStyle.modalHandleStyle}
+				modalStyle={[modalStyle.modalContainer, {backgroundColor: '#333B41'}]}
+			>
+				<SpaceView pl={30} pr={30} mb={30} viewStyle={_styles.imgMngModalWrap}>
+					<SpaceView mb={15} viewStyle={{flexDirection: 'row'}}>
+						{isEmptyData(imgMngData.img_file_path) && (
+						<SpaceView mr={10}>
+							<Image source={findSourcePathLocal(imgMngData.img_file_path)} style={[styles.iconSquareSize(64), {borderRadius:5}]} />
+						</SpaceView>
+						)}
+						<SpaceView>
+							<Text style={_styles.imgMngModalTit}>인증 자료 수정</Text>
+							<Text style={_styles.imgMngModalDesc}>인증 자료를 변경하거나 삭제할 수 있어요.</Text>
+						</SpaceView>
+					</SpaceView>
+
+					<SpaceView>
+						<TouchableOpacity onPress={() => { imgModfyProc(); }} style={{marginBottom: 8}}>
+							<Text style={_styles.imgMngModalBtn('#FFDD00', 16, '#3D4348')}>변경</Text>
+						</TouchableOpacity>
+						<TouchableOpacity onPress={() => { imgDelProc(); }} style={{marginBottom: 8}}>
+							<Text style={_styles.imgMngModalBtn('#FFFFFF', 16, '#FF4D29')}>삭제</Text>
+						</TouchableOpacity>
+						<TouchableOpacity onPress={() => { imgMng_onClose(); }}>
+							<Text style={_styles.imgMngModalBtn('transparent', 16, '#D5CD9E', '#BBB18B')}>취소</Text>
+						</TouchableOpacity>
+					</SpaceView>
+				</SpaceView>
+			</Modalize>
+		</>
+	);
 };
 
 
 
-/* ################################################################################################################
-###### Style 영역
-################################################################################################################ */
+{/* #######################################################################################################
+###########################################################################################################
+##################### Style 영역
+###########################################################################################################
+####################################################################################################### */}
 const _styles = StyleSheet.create({
 	wrap: {
 		minHeight: height,
@@ -482,17 +536,20 @@ const _styles = StyleSheet.create({
 	},
 	authBox: {
 		marginTop: 20,
-		borderRadius: 50,
-		borderWidth: 1,
-		borderColor: '#D5CD9E',
 	},
-	authBoxTitle: {
-		fontFamily: 'AppleSDGothicNeoB00',
-		fontSize: 16,
-		color: '#D5CD9E',
-		textAlign: 'center',
-		paddingHorizontal: 20,
-		paddingVertical: 3,
+	authBoxTitle: (isOn: boolean) => {
+		return {
+			fontFamily: 'AppleSDGothicNeoB00',
+			fontSize: 16,
+			color: '#D5CD9E',
+			textAlign: 'center',
+			paddingHorizontal: 20,
+			paddingVertical: 3,
+			borderRadius: 50,
+			borderWidth: 1,
+			borderColor: isOn ? '#FFFFFF' : '#D5CD9E',
+			backgroundColor: isOn ? '#FFFFFF' : 'transparent',
+		};
 	},
 	authBoxStatus: {
 		position: 'absolute',
@@ -566,5 +623,51 @@ const _styles = StyleSheet.create({
 		fontFamily: 'Pretendard-Regular',
 		fontSize: 15,
 		color: '#D5CD9E',
+	},
+	authImgStyle: {
+		width: 100,
+		height: 100,
+		borderRadius: 5,
+	},
+	imgMngModalWrap: {
+		backgroundColor: '#333B41',
+	  },
+	imgMngModalTit: {
+		fontFamily: 'Pretendard-SemiBold',
+		fontSize: 20,
+		color: '#F3E270',
+	},
+	imgMngModalDesc: {
+		fontFamily: 'Pretendard-Light',
+		fontSize: 12,
+		color: '#D5CD9E',
+	},
+	imgMngModalBtn: (_bg:string, _fs:number, _cr:string, _bdcr) => {
+		return {
+			backgroundColor: _bg,
+			fontFamily: 'Pretendard-Bold',
+			fontSize: _fs,
+			color: _cr,
+			textAlign: 'center',
+			paddingVertical: 10,
+			borderRadius: 5,
+			borderWidth: isEmptyData(_bdcr) ? 1 : 0,
+			borderColor: isEmptyData(_bdcr) ? _bdcr : _bg,
+		};
+	},
+	imageDisabled: (isMaster: boolean) => {
+		return {
+			position: 'absolute',
+			left: 0,
+			right: 0,
+			bottom: -1,
+			borderBottomLeftRadius: 5,
+			borderBottomRightRadius: 5,
+			flexDirection: 'column',
+			alignItems: 'center',
+			justifyContent: 'flex-end',
+			overflow: 'hidden',
+			backgroundColor: !isMaster ? 'rgba(0, 0, 0, 0.5)' : 'transparent',
+		};
 	},
 });

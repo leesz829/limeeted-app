@@ -186,71 +186,29 @@ export const SignUp_Introduce = (props : Props) => {
 					</SpaceView>
 
 					<SpaceView mt={50}>
-						{interviewList.map((item, index) => {
-							/* let tmpCommonCode = '';
-							let tmpCnt = 0;
+						{interviewList.length > 0 && (
+							<>
+								{interviewList.map((item, index) => {
 
-							for (let j = 0; j < checkIntList.length; j++) {
-								if(checkIntList[j].common_code == i.common_code){
-									tmpCommonCode = i.common_code
-									tmpCnt = j;
-									break;
-								}
-							} */
-
-							//console.log('item :::: ' , item);
-
-							return (
-								<SpaceView mb={15}>
-									<Text style={_styles.introduceText}>Q. {item?.code_name}</Text>
-									{/* <TextInput
-										placeholder='인터뷰 답변 입력(가입 후 변경 가능)'
-										placeholderTextColor={'#FFFDEC'}
-										style={_styles.textInputBox(70)}
-									/> */}
-
-									<TextInput
-										//value={item?.answer}
-										//onChangeText={(text) => setIntroduceComment(text)}
-										defaultValue={item?.answer}
-										onChangeText={(text) => answerChangeHandler(item?.common_code, text) }
-										autoCapitalize={'none'}
-										multiline={true}
-										style={_styles.textInputBox(70)}
-										placeholder={'인터뷰 답변 입력(가입 후 변경 가능)'}
-										placeholderTextColor={'#FFFDEC'}
-										maxLength={200}
-										caretHidden={true}
-									/>
-								</SpaceView>
-							)
-						})}	
-
-
-						{/* <SpaceView>
-							<Text style={_styles.introduceText}>Q. 나의 이상형에 대해 구체적으로 알려주세요.</Text>
-							<TextInput
-								placeholder='인터뷰 답변 입력(가입 후 변경 가능)'
-								placeholderTextColor={'#FFFDEC'}
-								style={_styles.textInputBox(70)}
-							/>
-						</SpaceView>
-						<SpaceView mt={10}>
-							<Text style={_styles.introduceText}>Q. 자랑하고 싶은 나의 장점은 무엇인가요.</Text>
-							<TextInput
-								placeholder='인터뷰 답변 입력(가입 후 변경 가능)'
-								placeholderTextColor={'#FFFDEC'}
-								style={_styles.textInputBox(70)}
-							/>
-						</SpaceView>
-						<SpaceView mt={10}>
-							<Text style={_styles.introduceText}>Q. 최근에 하는 취미 활동이 있다면 무엇인가요?</Text>
-							<TextInput
-								placeholder='인터뷰 답변 입력(가입 후 변경 가능)'
-								placeholderTextColor={'#FFFDEC'}
-								style={_styles.textInputBox(70)}
-							/>
-						</SpaceView> */}
+									return (
+										<SpaceView mb={15}>
+											<Text style={_styles.introduceText}>Q. {item?.code_name}</Text>
+											<TextInput
+												defaultValue={item?.answer}
+												onChangeText={(text) => answerChangeHandler(item?.common_code, text) }
+												autoCapitalize={'none'}
+												multiline={true}
+												style={_styles.textInputBox(70)}
+												placeholder={'인터뷰 답변 입력(가입 후 변경 가능)'}
+												placeholderTextColor={'#FFFDEC'}
+												maxLength={200}
+												caretHidden={true}
+											/>
+										</SpaceView>
+									)
+								})}
+							</>
+						)}
 					</SpaceView>
 
 					<SpaceView>
