@@ -3,8 +3,8 @@ import { CommonBtn } from 'component/CommonBtn';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
-import { View, Image, StyleSheet, ScrollView, TouchableOpacity, Text } from 'react-native';
-import { IMAGE, PROFILE_IMAGE, ICON } from 'utils/imageUtils';
+import { View, Image, StyleSheet, ScrollView, TouchableOpacity, Text, Dimensions } from 'react-native';
+import { IMAGE, PROFILE_IMAGE, ICON, findSourcePathLocal } from 'utils/imageUtils';
 import { RouteProp, useNavigation, useIsFocused, CommonActions } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
@@ -13,6 +13,9 @@ import { ROUTES } from 'constants/routes';
 import { get_member_approval, join_cancel } from 'api/models';
 import { usePopup } from 'Context';
 import { isEmptyData } from 'utils/functions';
+import { SUCCESS } from 'constants/reusltcode';
+import LinearGradient from 'react-native-linear-gradient';
+import { get_profile_imgage_guide, regist_profile_image, delete_profile_image, update_join_master_image } from 'api/models';
 
 
 interface Props {
@@ -20,12 +23,17 @@ interface Props {
   route: RouteProp<StackParamList, 'Approval'>;
 }
 
+const { width, height } = Dimensions.get('window');
+
 export const Approval = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
   const { show } = usePopup();
   const isFocus = useIsFocused();
+  const [isLoading, setIsLoading] = React.useState(false);
   
   const memberSeq = props.route.params.memberSeq;         // 회원 번호
+
+  const [profileImageList, setProfileImageList] = React.useState([]); // 프로필 이미지 목록
 
   // 심사 데이터
   const [apprData, setApprData] = React.useState({
@@ -41,6 +49,115 @@ export const Approval = (props: Props) => {
     birthday: '',
     emailId: '',
   });
+
+  // ############################################################################# 프로필 이미지 정보 조회
+  const getProfileImage = async () => {
+    const body = {
+      member_seq: memberSeq,
+    };
+    try {
+      const { success, data } = await get_profile_imgage_guide(body);
+      if (success) {
+        switch (data.result_code) {
+          case SUCCESS:
+            if(isEmptyData(data.imgList)) {
+              let _profileImgList:any = [];
+              data?.imgList?.map((item, index) => {
+                let data = {
+                  member_img_seq: item.member_img_seq,
+                  img_file_path: item.img_file_path,
+                  order_seq: index+1,
+                  org_order_seq: item.org_order_seq,
+                  del_yn: 'N',
+                  status: item.status,
+                  return_reason: item.return_reason,
+                  file_base64: null,
+                };                
+                _profileImgList.push(data);
+              });
+
+              setProfileImageList(_profileImgList);
+            }
+
+            break;
+          default:
+            show({
+              content: '오류입니다. 관리자에게 문의해주세요.',
+              confirmCallback: function () {},
+            });
+            break;
+        }
+      } else {
+        show({
+          content: '오류입니다. 관리자에게 문의해주세요.',
+          confirmCallback: function () {},
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // ############################################################################# 사진 선택
+  const imgSelected = (idx:number, isNew:boolean) => {
+    if(isNew) {
+      imagePickerOpen(function(path:any, data:any) {
+        let _data = {
+          member_img_seq: 0,
+          img_file_path: path,
+          order_seq: profileImageList.length+1,
+          org_order_seq: profileImageList.length+1,
+          del_yn: 'N',
+          status: 'PROGRESS',
+          return_reason: '',
+          file_base64: data,
+        };
+  
+        setProfileImageList((prev) => {
+          return [...prev, _data];
+        });
+
+        setCurrentImgIdx(profileImageList.length);
+      });
+    } else {
+      setCurrentImgIdx(idx);
+    }
+  }
+
+  /* ########################################################################################## 프로필 사진 아이템 렌더링 */
+  function ProfileImageItemNew({ index, imgData }) {
+    const imgUrl = findSourcePathLocal(imgData?.img_file_path); // 이미지 경로
+    const imgDelYn = imgData?.del_yn; // 이미지 삭제 여부
+    const imgStatus = imgData?.status; // 이미지 상태
+    
+    //console.log('imgData111111 ::::: ' , imgData);
+  
+    return (
+      <SpaceView>
+        {isEmptyData(imgUrl) && imgDelYn == 'N' ? (
+          <>
+            <SpaceView>
+              <Image
+                resizeMode="cover"
+                resizeMethod="scale"
+                style={_styles.profileImg}
+                key={imgUrl}
+                source={imgUrl}
+              />
+            </SpaceView>
+          </>
+        ) : (
+          <>
+            <SpaceView viewStyle={_styles.subImgNoData}>
+              <Image source={ICON.userAdd} style={styles.iconSquareSize(22)} />
+            </SpaceView>
+          </>
+        )}
+      </SpaceView>
+    );
+  };
 
   // ############################################################ 가입심사 정보 조회
   const getApprovalInfo = async () => {
@@ -220,7 +337,7 @@ export const Approval = (props: Props) => {
   // ########################################################################## 탈퇴 처리
   const exitProc = async () => {
     const body = {
-      member_seq : memberSeq
+      member_seq : memberSeq,
     };
     const { success, data } = await join_cancel(body);
     if(success) {
@@ -241,147 +358,66 @@ export const Approval = (props: Props) => {
   React.useEffect(() => {
     if(isFocus) {
       getApprovalInfo();
+      getProfileImage();
     };
 
   }, [isFocus]);
 
   return (
-    <View style={[styles.container, layoutStyle.justifyCenter]}>
-
-      <ScrollView style={[styles.scrollContainerAll, { marginBottom: 80 }]}>
-        <View style={layoutStyle.alignCenter}>
-          <SpaceView mb={40} viewStyle={{position: 'relative'}}>
-            {isEmptyData(apprData.mstImgPath) ? (
-              <Image source={findSourcePath(apprData.mstImgPath)} style={styles.tmpImg} />
-            ) : (
-              <View style={styles.tmpImg} />
-            )}
-            <View style={{position: 'absolute', top: 35, left: -30}}>
-              <Image
-                source={ICON.heartPurple}
-                style={[styles.iconSize60]} />
-            </View>
-            <View style={{position: 'absolute', bottom: 35, right: -30}}>
-              <Image
-                source={ICON.heartPurple}
-                style={[styles.iconSize60]} />
-            </View>
-          </SpaceView>
-
-          <SpaceView mb={apprData.refuseImgCnt > 0 || apprData.refuseAuthCnt > 0 ? 30 : 150}>
-            <View style={commonStyle.mb15}>
-              <CommonText textStyle={layoutStyle.textCenter} type={'h3'} fontWeight={'700'} color={'#697AE6'}>
-                가입 심사 진행중
-              </CommonText>
-              <CommonText textStyle={layoutStyle.textCenter} type={'h3'} fontWeight={'700'} color={'#000000'}>
-                심사 기간은 1 ~ 3일 이며,
-              </CommonText>
-            </View>
-            <View style={commonStyle.mb15}>
-              <CommonText textStyle={layoutStyle.textCenter} type={'h5'} color={'#818181'} fontWeight={'500'}>
-                결과는 PUSH 메세지로 전송됩니다.
-              </CommonText>
-            </View>
-
-            {/* {accessType == 'REFUSE' ? (
-              <>
-                <View style={commonStyle.mb15}>
-                  <CommonText textStyle={layoutStyle.textCenter} type={'h3'} fontWeight={'700'}>심사 결과</CommonText>
-                  <SpaceView mt={5}>
-                    <CommonText textStyle={layoutStyle.textCenter} type={'h3'} fontWeight={'700'} color={ColorType.primary}>반려</CommonText>
-                  </SpaceView>
-                </View>
-                <View style={commonStyle.mb15}>
-                  <CommonText textStyle={_styles.refuseText} type={'h5'} color={'#6E6E6E'}>
-                    심사 진행 결과 아쉽게도 반려되었음을 안내드립니다.{'\n'}
-                    아래 '프로필 수정하기'를 메뉴에 반려 사유 확인 및{'\n'}
-                    재심사 요청을 해주시면 재심사가 진행됩니다.
-                  </CommonText>
-                </View>
-                <View>
-                  <CommonText textStyle={layoutStyle.textCenter} type={'h5'}>
-                    반려사유 : {getRefuseData().text}
-                  </CommonText>
-                </View>
-              </>
-            ) : (
-              <>
-                <View style={commonStyle.mb15}>
-                  <CommonText textStyle={layoutStyle.textCenter} type={'h3'} fontWeight={'700'} color={'#697AE6'}>
-                    가입 심사가 진행중
-                  </CommonText>
-                  <CommonText textStyle={layoutStyle.textCenter} type={'h3'} fontWeight={'700'} color={'#000000'}>
-                    심사 기간은 1 ~ 3일 이며,
-                  </CommonText>
-                </View>
-                <View style={commonStyle.mb15}>
-                  <CommonText textStyle={layoutStyle.textCenter} type={'h5'} color={'#818181'} fontWeight={'500'}>
-                    결과는 PUSH 메세지로 전송됩니다.
-                  </CommonText>
-                </View>
-              </>
-            )} */}
-          </SpaceView>
-        </View>
-
-        {(apprData.refuseImgCnt > 0 || (apprData.refuseAuthCnt > 0)) && (
-          <>
-            <SpaceView mb={30}>
-              <View style={_styles.refuseTextArea}>
-                <CommonText textStyle={_styles.refuseText01}>심사 반려 안내</CommonText>
-                <CommonText textStyle={_styles.refuseText02}>
-                  가입 기준에 맞지 않거나 증빙 자료가 불충분한 항목이 있어요.{'\n'}
-                  "프로필 수정하기"를 이용하여 상세 반려 사유 확인 및 재심사 신청을 해주세요.
-                </CommonText>
-
-                <ScrollView horizontal style={_styles.refuseIconArea}>
-                  {apprData.refuseImgCnt > 0 &&
-                    <>
-                      <View style={_styles.refuseIconItem}>
-                        <Image source={apprData.gender == 'W' ? ICON.refuseFemaleIcon : ICON.refuseMaleIcon} style={_styles.refuseIcon} />
-                        <CommonText textStyle={_styles.refuseIconText}>사진</CommonText>
-                      </View>
-                    </>
-                  }
-
-                  {apprData.authList.map((item:any, index) => {
-                    if(item.auth_status == 'REFUSE') {
-                      return (
-                        <View key={index} style={_styles.refuseIconItem}>
-                          {item.common_code == 'JOB' && <Image source={ICON.refuseJobIcon} style={_styles.refuseIcon} />}
-                          {item.common_code == 'EDU' && <Image source={ICON.refuseEduIcon} style={_styles.refuseIcon} />}
-                          {item.common_code == 'INCOME' && <Image source={ICON.refuseIncomeIcon} style={_styles.refuseIcon} />}
-                          {item.common_code == 'ASSET' && <Image source={ICON.refuseAssetIcon} style={_styles.refuseIcon} />}
-                          {item.common_code == 'SNS' && <Image source={ICON.refuseSnsIcon} style={_styles.refuseIcon} />}
-                          {item.common_code == 'VEHICLE' && <Image source={ICON.refuseVehicleIcon} style={_styles.refuseIcon} />}
-                          <CommonText textStyle={_styles.refuseIconText}>{item.code_name}</CommonText>
-                        </View>
-                      )
-                    }
-                  })}
-                </ScrollView>
+    <>
+      <LinearGradient
+        colors={['#3D4348', '#1A1E1C']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={_styles.wrap}
+      >
+        <ScrollView>
+          <SpaceView mt={20}>
+            <Text style={_styles.title}>가입 심사 진행중</Text>
+              <View style={{marginTop: 10}}>
+                <Text style={_styles.subTitle}>심사 기간은 1 ~ 3일이며,{'\n'}결과는 PUSH 메세지로 전송됩니다.</Text>
               </View>
-            </SpaceView>
-          </>
-        )}
-      </ScrollView>
+          </SpaceView>
 
-      <SpaceView pl={16} pr={16} viewStyle={styles.bottomBtnContainer}>
-        <SpaceView mb={5}>
-          <TouchableOpacity onPress={() => { modifyBtn(); }}>
-            <Text style={_styles.btnText('MOD')}>프로필 수정하기</Text>
-          </TouchableOpacity>
-        </SpaceView>
-        <SpaceView>
-          <TouchableOpacity onPress={() => { exitBtn(); }}>
-            <Text style={_styles.btnText('EXIT')}>
-              탈퇴하기{'\n'}
-              <Text style={_styles.exitDescText}>가입 시 작성한 회원 정보 삭제 및 탈퇴 처리</Text>
-            </Text>
-          </TouchableOpacity>
-        </SpaceView>
-      </SpaceView>
-    </View>
+          <SpaceView viewStyle={_styles.imgContainer}>
+            <ProfileImageItemNew index={0} imgData={profileImageList.length > 0 ? profileImageList[0] : null} />
+          </SpaceView>
+
+          <SpaceView mt={30}>
+            <View style={_styles.refNoticeContainer}>
+              <Image source={ICON.commentRed} style={styles.iconSize16} />
+              <Text style={_styles.refNoticeText}>반려사유 안내</Text>
+            </View>
+            <View style={_styles.refuseBox}>
+              <Text style={_styles.refBoxText}>가입 기준에 맞지 않거나 증빙 자료가 불충분한 대상이 있어요. '프로필 수정하기' 누르고 반려 내용을 확인해주세요.</Text>
+            </View>
+          </SpaceView>
+
+          {/* {(apprData.refuseImgCnt > 0 || (apprData.refuseAuthCnt > 0)) && (
+            <>
+              <SpaceView mt={30}>
+                <View style={_styles.refNoticeContainer}>
+                  <Image source={ICON.commentRed} style={styles.iconSize16} />
+                  <Text style={_styles.refNoticeText}>반려사유 안내</Text>
+                </View>
+                <View style={_styles.refuseBox}>
+                  <Text style={_styles.refBoxText}>가입 기준에 맞지 않거나 증빙 자료가 불충분한 대상이 있어요. '프로필 수정하기' 누르고 반려 내용을 확인해주세요.</Text>
+                </View>
+              </SpaceView>
+            </>
+          )} */}
+
+          <SpaceView viewStyle={_styles.btnContainer}>
+            <TouchableOpacity style={_styles.exitBtnContainer} onPress={() => { exitBtn(); }}>
+              <Text style={_styles.exitBtn}>가입철회</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={_styles.modBtnContainer} onPress={() => { modifyBtn(); }}>
+              <Text style={_styles.modBtn}>프로필 수정하기</Text>
+            </TouchableOpacity>
+          </SpaceView>
+        </ScrollView>
+      </LinearGradient>      
+    </>
   );
 };
 
@@ -393,69 +429,85 @@ export const Approval = (props: Props) => {
 ####################################################################################################### */}
 
 const _styles = StyleSheet.create({
-  refuseText: {
-    textAlign: 'center',
-    fontFamily: 'AppleSDGothicNeoM00',
-    lineHeight: 20,
+	wrap: {
+		minHeight: height,
+		padding: 30,
+	},
+	title: {
+		fontSize: 30,
+		fontFamily: 'Pretendard-Bold',
+		color: '#D5CD9E',
+	},
+  subTitle: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 19,
+    color: '#E1DFD1',
   },
-  refuseTextArea: {
-    backgroundColor: '#F6F7FE',
-    marginHorizontal: 10,
-    borderRadius: 15,
+  imgContainer: {
+    width: 230,
+    height: 350,
+    borderRadius: 50,
+    backgroundColor: '#FFF',
+    marginLeft: 'auto',
+    marginTop: 10,
     overflow: 'hidden',
-    paddingHorizontal: 20,
-    paddingTop: 10,
-    paddingBottom: 15,
   },
-  refuseText01: {
-    color: '#262626',
-    fontSize: 14,
-    fontFamily: 'AppleSDGothicNeoEB00',
+  profileImg: {
+    width: 230,
+    height: 350,
   },
-  refuseText02: {
-    color: '#8E8E8E',
-    fontSize: 12,
-    fontFamily: 'AppleSDGothicNeoM00',
-    lineHeight: 18,
-  },
-  refuseIconArea: {
+  refNoticeContainer: {
     flexDirection: 'row',
-    marginTop: 15,
-    overflow: 'scroll',
+    alignItems: 'center',
   },
-  refuseIconItem: {
-    marginRight: 18,
+  refNoticeText: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 15,
+    marginLeft: 5,
+    color: '#FF4D29',
   },
-  refuseIcon: {
-    width: 41,
-    height: 42,
-    marginBottom: 5,
-  },
-  refuseIconText: {
-    backgroundColor: '#697AE6',
-    color: '#fff',
-    fontSize: 11,
-    fontFamily: 'AppleSDGothicNeoM00',
-    textAlign: 'center',
-    overflow: 'hidden',
+  refuseBox: {
+    width: '100%',
+    height: 60,
+    backgroundColor: '#445561',
     borderRadius: 10,
-    lineHeight: 20,
+    marginTop: 10,
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  btnText: (type: string) => {
-    return {
-      fontFamily: 'AppleSDGothicNeoB00',
-      fontSize: 15,
-      color: type == 'MOD' ? '#697AE6' : '#707070',
-      textAlign: 'center',
-      borderColor: type == 'MOD' ? '#697AE6' : '#707070',
-      borderWidth: 1,
-      borderRadius: 20,
-      paddingVertical: type == 'MOD' ? 11 : 5,
-    };
+  refBoxText: {
+    fontFamily: 'Pretendard-Light',
+    color: '#FFFDEC',
   },
-  exitDescText: {
-    fontFamily: 'AppleSDGothicNeoM00',
-    fontSize: 10,
-    color: '#B5B5B5',
+  btnContainer: {
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'space-between',
+    marginTop: 50,
+  },
+  modBtnContainer: {
+    width: '62%',
+    height: 40,
+    backgroundColor: '#FFDD00',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+  },
+  modBtn: {
+    fontFamily: 'Pretendard-Regular',
+    color: '#3D4348',
+  },
+  exitBtnContainer: {
+    width: '35%',
+    height: 40,
+    backgroundColor: '#FFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+  },
+  exitBtn: {
+    fontFamily: 'Pretendard-Regular',
+    color: '#FF4D29',
   },
 });

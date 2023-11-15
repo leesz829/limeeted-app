@@ -219,6 +219,7 @@ export const ICON = {
   userAdd: require('assets/icon/icon-user-add.png'),
   userPen: require('assets/icon/icon-user-pen.png'),
   commentYellow: require('assets/icon/icon-comment-yellow.png'),
+  commentRed: require('assets/icon/icon-comment-red.png'),
   cloudUpload: require('assets/icon/icon-cloud-upload.png'),
 };
 

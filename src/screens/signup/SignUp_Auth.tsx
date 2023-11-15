@@ -41,19 +41,297 @@ const { width, height } = Dimensions.get('window');
 
 export const SignUp_Auth = (props : Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
-	const [currentIndex, setCurrentIndex] = React.useState(0);
-
-	const { show } = usePopup();  // 공통 팝업
 	const isFocus = useIsFocused();
+	const { show } = usePopup(); // 공통 팝업
 	const [isLoading, setIsLoading] = React.useState(false);
 	const [isClickable, setIsClickable] = React.useState(true); // 클릭 여부
+	const [currentImgIdx, setCurrentImgIdx] = React.useState(0); // 현재 이미지 인덱스
+  
+	const [authImageList, setAuthImageList] = React.useState([]); // 인증 이미지 목록
 
 	const authInfoArr = ['직업', '학력', '소득', '자산', 'SNS', '차량'];
 	const data = [0];
+  
+	// 인증 이미지 삭제 시퀀스 문자열
+	const [imgDelSeqStr, setImgDelSeqStr] = React.useState('');
+  
+	// ################################################################ 인증 이미지 데이터 적용
+	const imageDataApply = async (data:any) => {
+	  setAuthImageList((prev) => {
+		const dupChk = prev.some(item => item.order_seq === data.order_seq);
+		if (!dupChk) {
+			return [...prev, data];
+		} else {
+			return prev.map((item) => item.order_seq === data.order_seq 
+				? { ...item, uri: data.file_uri, file_base64: data.file_base64 }
+				: item
+			);
+		}
+	  });
+	};
+  
+	// ############################################################################# 사진 관리 컨트롤 변수
+	const [imgMngData, setImgMngData] = React.useState<any>({
+	  member_img_seq: 0,
+	  img_file_path: '',
+	  order_seq: '',
+	  status: '',
+	  return_reason: '',
+	});
+  
+	// ############################################################################# 사진 관리 팝업 관련 함수
+	const imgMng_modalizeRef = useRef<Modalize>(null);
+	const imgMng_onOpen = (imgData: any, order_seq: any) => {
+	  setImgMngData({
+		member_img_seq: imgData.member_img_seq,
+		img_file_path: imgData.img_file_path,
+		order_seq: order_seq,
+		status: imgData.status,
+		return_reason: imgData.return_reason,
+	  });
+  
+	  console.log('imgData ::::: ' , imgData);
+	  imgMng_modalizeRef.current?.open();
+	};
+	const imgMng_onClose = () => {
+	  imgMng_modalizeRef.current?.close();
+	};
+  
+	// ############################################################################# 사진 선택
+	const imgSelected = (idx:number, isNew:boolean) => {
+	  if(isNew) {
+		imagePickerOpen(function(path:any, data:any) {
+		  let _data = {
+			member_img_seq: 0,
+			img_file_path: path,
+			order_seq: authImageList.length+1,
+			org_order_seq: authImageList.length+1,
+			del_yn: 'N',
+			status: 'PROGRESS',
+			return_reason: '',
+			file_base64: data,
+		  };
+	
+		  setAuthImageList((prev) => {
+			return [...prev, _data];
+		  });
+  
+		  setCurrentImgIdx(authImageList.length);
+		});
+	  } else {
+		setCurrentImgIdx(idx);
+	  }
+	}
+  
+	// ############################################################################# 사진 변경
+	const imgModfyProc = () => {
+	  imagePickerOpen(function(path:any, data:any) {
+  
+		// 삭제 데이터 저장
+		if(isEmptyData(imgMngData.member_img_seq) && 0 != imgMngData.member_img_seq) {
+		  let delArr = imgDelSeqStr;
+		  if (delArr == '') {
+			delArr = imgMngData.member_img_seq;
+		  } else {
+			delArr = delArr + ',' + imgMngData.member_img_seq;
+		  }
+		  setImgDelSeqStr(delArr);
+		}
+  
+		// 목록 재구성
+		setAuthImageList((prev) => {
+		  const dupChk = prev.some(item => item.order_seq === imgMngData.order_seq);
+		  if(dupChk) {
+			return prev.map((item) => item.order_seq === imgMngData.order_seq 
+				? { ...item, img_file_path: path, file_base64: data, status: 'PROGRESS' }
+				: item
+			);
+		  }
+		});
+  
+		// 모달 닫기
+		imgMng_onClose();
+	  });
+	};
+  
+	// ############################################################################# 사진 삭제
+	const imgDelProc = () => {
+	  // 인증 이미지 목록 재구성
+	  let _authImgList:any = [];
+	  authImageList.map((item, index) => {
+		if(index+1 != imgMngData.order_seq) {
+		  _authImgList.push(item);
+		}
+	  });
+	  _authImgList.map((item, index) => {
+		item.order_seq = index+1;
+	  });
+	  setAuthImageList(_authImgList);
+  
+	  // 삭제 데이터 저장
+	  if(isEmptyData(imgMngData.member_img_seq) && 0 != imgMngData.member_img_seq) {
+		let delArr = imgDelSeqStr;
+		if (delArr == '') {
+		  delArr = imgMngData.member_img_seq;
+		} else {
+		  delArr = delArr + ',' + imgMngData.member_img_seq;
+		}
+  
+		setImgDelSeqStr(delArr);
+	  }
+  
+	  setCurrentImgIdx(0);
+  
+	  // 모달 닫기
+	  imgMng_onClose();
+	};
+  
+	// ############################################################################# 인증 이미지 정보 조회
+	const getAuthImage = async () => {
+	  const body = {
+		member_seq: props.route.params.memberSeq,
+	  };
+	  try {
+		const { success, data } = await get_second_auth(body);
+		if (success) {
+		  switch (data.result_code) {
+			case SUCCESS:
+			  if(isEmptyData(data.imgList)) {
+				let _authImgList:any = [];
+				data?.imgList?.map((item, index) => {
+				  let data = {
+					// member_img_seq: item.member_img_seq,
+					// img_file_path: item.img_file_path,
+					// order_seq: index+1,
+					// org_order_seq: item.org_order_seq,
+					// del_yn: 'N',
+					// status: item.status,
+					// return_reason: item.return_reason,
+					// file_base64: null,
+				  };                
+				  _authImgList.push(data);
+				});
+  
+				setAuthImageList(_authImgList);
+			  }
+  
+			  break;
+			default:
+			  show({
+				content: '오류입니다. 관리자에게 문의해주세요.',
+				confirmCallback: function () {},
+			  });
+			  break;
+		  }
+		} else {
+		  show({
+			content: '오류입니다. 관리자에게 문의해주세요.',
+			confirmCallback: function () {},
+		  });
+		}
+	  } catch (error) {
+		console.log(error);
+	  } finally {
+		setIsLoading(false);
+	  }
+	};
+  
+	// ############################################################################# 인증 이미지 저장
+	const saveAuthImage = async () => {
+  
+	  let tmpCnt = 0;
+	  authImageList.map((item, index) => {
+		if(item.status != 'REFUSE') {
+		  tmpCnt++;
+		}
+	  });
+
+	  //return;
+  
+	  // 중복 클릭 방지 설정
+	  if(isClickable) {
+		setIsClickable(false);
+		setIsLoading(true);
+  
+		const body = {
+		  member_seq: props.route.params.memberSeq,
+		  file_list: authImageList,
+		  img_del_seq_str: imgDelSeqStr,
+		};
+		try {
+		  const { success, data } = await regist_second_auth(body);
+		  if (success) {
+			switch (data.result_code) {
+			  case SUCCESS:
+				navigation.navigate(ROUTES.SIGNUP03, {
+				  memberSeq: props.route.params.memberSeq,
+				  gender: props.route.params.gender,
+				  mstImgPath: data.mst_img_path,
+				});
+				break;
+			  default:
+				show({
+				  content: '오류입니다. 관리자에게 문의해주세요.',
+				  confirmCallback: function () {},
+				});
+				break;
+			}
+		  } else {
+			show({
+			  content: '오류입니다. 관리자에게 문의해주세요.',
+			  confirmCallback: function () {},
+			});
+		  }
+		} catch (error) {
+		  console.log(error);
+		} finally {
+		  setIsClickable(true);
+		  setIsLoading(false);
+		};
+	  }
+	};
+  
+	/* ########################################################################################## 프로필 사진 아이템 렌더링 */
+	function authImageItemNew({ index, imgData, imgSelectedFn }) {
+	  const imgUrl = findSourcePathLocal(imgData?.img_file_path); // 이미지 경로
+	  const imgDelYn = imgData?.del_yn; // 이미지 삭제 여부
+	  const imgStatus = imgData?.status; // 이미지 상태
+	  
+	  //console.log('imgData111111 ::::: ' , imgData);
+	
+	  return (
+		<TouchableOpacity 
+		  onPress={() => { imgSelectedFn(index, !isEmptyData(imgData)); }}
+		  activeOpacity={0.9}
+		>
+		  {isEmptyData(imgUrl) && imgDelYn == 'N' ? (
+			<>
+			  <SpaceView viewStyle={_styles.subImgWrap(index == currentImgIdx)} >
+				<Image
+				  resizeMode="cover"
+				  resizeMethod="scale"
+				  style={_styles.subImgStyle}
+				  key={imgUrl}
+				  source={imgUrl}
+				/>
+				<View style={_styles.imageDisabled(false)}>
+				  <Text style={[_styles.authImageDimText(imgStatus)]}>{imgStatus == 'PROGRESS' ? '심사중' : '반려'}</Text>
+				</View>
+			  </SpaceView>
+			</>
+		  ) : (
+			<>
+			  <SpaceView viewStyle={_styles.subImgNoData}>
+				<Image source={ICON.userAdd} style={styles.iconSquareSize(22)} />
+			  </SpaceView>
+			</>
+		  )}
+		</TouchableOpacity>
+	  );
+	};
 
 	return (
 		<>
-
 			<SpaceView mt={20} viewStyle={{backgroundColor: '#445561', padding: 30}}>
 				<Text style={_styles.title}>멤버쉽 인증하고{'\n'}내 강점을 드러내기(선택)</Text>
 				<Text style={_styles.subTitle}>
