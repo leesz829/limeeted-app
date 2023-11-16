@@ -221,6 +221,11 @@ export const ICON = {
   commentYellow: require('assets/icon/icon-comment-yellow.png'),
   commentRed: require('assets/icon/icon-comment-red.png'),
   cloudUpload: require('assets/icon/icon-cloud-upload.png'),
+  searchYellow: require('assets/icon/icon-search-yellow.png'),
+  bellYellow: require('assets/icon/icon-bell-yellow.png'),
+  moneyBill: require('assets/icon/icon-money-bill.png'),
+  cardGold: require('assets/icon/icon-card-gold.png'),
+  radioYellow: require('assets/icon/icon-radio-yellow.png'),
 };
 
 export const GIF_IMG = {

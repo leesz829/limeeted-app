@@ -159,6 +159,7 @@ export enum ColorType {
   redF20456 = '#fe0456',
   blue697A = '#697AE6',
   blue7986 = '#7986EE',
+  goldD5CD = '#D5CD9E',
 }
 
 export type WeightType =

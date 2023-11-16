@@ -408,8 +408,8 @@ export const styles = StyleSheet.create({
     maxWidth: 300,
   },
   profileImg: {
-    width: 150,
-    height: 150,
+    width: 130,
+    height: 130,
     borderRadius: 80,
   },
   profileTmpImg: {

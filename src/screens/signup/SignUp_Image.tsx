@@ -741,7 +741,7 @@ const _styles = StyleSheet.create({
       backgroundColor: '#000',
       textAlign: 'center',
       paddingVertical: 3,
-      fontFamily: 'AppleSDGothicNeoEB00',
+      fontFamily: 'Pretendard-SemiBold',
       fontSize: 12,
       color: status == 'REFUSE' ? ColorType.redF20456 : '#fff',
     };

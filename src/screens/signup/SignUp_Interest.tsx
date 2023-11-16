@@ -279,28 +279,35 @@ export const SignUp_Interest = (props : Props) => {
 				ref={int_modalizeRef}
 				adjustToContentHeight = {false}
 				handleStyle={modalStyle.modalHandleStyle}
-				modalStyle={modalStyle.modalContainer}
+				modalStyle={[modalStyle.modalContainer, {backgroundColor: '#333B41'}]}
 				modalHeight={height - 150}
 				FooterComponent={
 					<>
-						<SpaceView>
-							<CommonBtn value={'저장(' + checkIntList.length + '/20)'} 
-										type={'primary'}
-										height={60}
-										borderRadius={1}
-										onPress={int_confirm}/>
+						<SpaceView viewStyle={{paddingHorizontal: 20}}>
+							<SpaceView>
+								<CommonBtn	value={'저장(' + checkIntList.length + '/20)'} 
+											type={'reNewId'}
+											borderRadius={5}
+											onPress={int_confirm}/>
+							</SpaceView>
+							<SpaceView mt={10}>
+								<CommonBtn	value={'취소'} 
+								type={'reNewGoBack'}
+								borderRadius={5}
+								onPress={int_onClose}/>
+							</SpaceView>
 						</SpaceView>
 					</>
 				}
 				HeaderComponent={
 					<>
-						<View style={modalStyle.modalHeaderContainer}>
-							<CommonText fontWeight={'700'} type={'h4'}>
-								관심사 등록
+						<View style={[modalStyle.modalHeaderContainer, {paddingHorizontal: 20}]}>
+							<CommonText textStyle={_styles.modalTitle} fontWeight={'700'} type={'h4'}>
+								관심사 선택(최대 20개)
 							</CommonText>
-							<TouchableOpacity onPress={int_onClose}>
+							{/* <TouchableOpacity onPress={int_onClose}>
 								<Image source={ICON.xBtn2} style={styles.iconSize18} />
-							</TouchableOpacity>
+							</TouchableOpacity> */}
 						</View>
 					</>
 				} >	
@@ -309,7 +316,7 @@ export const SignUp_Interest = (props : Props) => {
 					{intList.map((item, index) => (
 						<SpaceView mt={20} mb={10} key={item.group_code + '_' + index}>
 							<SpaceView mb={16}>
-								<CommonText fontWeight={'700'}>{item.group_code_name}</CommonText>
+								<CommonText textStyle={_styles.groupCodeName} fontWeight={'700'}>{item.group_code_name}</CommonText>
 							</SpaceView>
 
 							<View style={[_styles.rowStyle]}>
@@ -328,7 +335,7 @@ export const SignUp_Interest = (props : Props) => {
 									return (
 										<SpaceView key={i.common_code} mr={5}>
 											<TouchableOpacity 
-												style={[styles.interestBox, i.common_code === tmpCommonCode && styles.boxActive]}
+												style={[_styles.interestBox, i.common_code === tmpCommonCode && styles.boxActive]}
 												onPress={() => {
 													console.log('checkIntList.length :::: ' , checkIntList.length);
 
@@ -345,7 +352,7 @@ export const SignUp_Interest = (props : Props) => {
 											>
 												<CommonText
 													fontWeight={'500'}
-													color={i.common_code === tmpCommonCode ? ColorType.blue697A : ColorType.grayb1b1} >
+													color={ColorType.goldD5CD} >
 													{i.code_name}
 												</CommonText>
 											</TouchableOpacity>
@@ -393,7 +400,7 @@ const _styles = StyleSheet.create({
 		alignItems: 'center',
 	},
 	regiBtnText: {
-		fontFamily: 'AppleSDGothicNeoB00',
+		fontFamily: 'Pretendard-Bold',
 		fontSize: 16,
 		color: '#D5CD9E',
 	},
@@ -407,7 +414,7 @@ const _styles = StyleSheet.create({
 	},
 	interText: {
 		color: '#D5CD9E',
-		fontFamily: 'AppleSDGothicNeoR00',
+		fontFamily: 'Pretendard-SemiBold',
 	},
 	interestActive: {
 		height: 40,
@@ -424,17 +431,28 @@ const _styles = StyleSheet.create({
 	interestBox: {
 		height: 40,
 		borderRadius: 8,
-		borderWidth: 2,
-		borderColor: '#697AE6',
+		borderWidth: 1,
+		borderColor: '#D5CD9E',
 		alignItems: 'center',
 		justifyContent: 'center',
 		marginBottom: 5,
-		marginRight: 5,
-		paddingHorizontal: 10,
+		paddingHorizontal: 15,
 	},
-
+	modalTitle: {
+		color: '#F3E270',
+		fontFamily: 'Pretendard-SemiBold',
+		fontSize: 20,
+	},
+	groupCodeName: {
+		fontFamily: 'Pretendard-Bold',
+		fontSize: 19,
+		color: '#F3E270',
+	},
 	rowStyle : {
 		flexDirection: 'row',
-		flexWrap: 'wrap'
+		flexWrap: 'wrap',
+	},
+	boxActive: {
+		backgroundColor: '#FFF',
 	},
 });

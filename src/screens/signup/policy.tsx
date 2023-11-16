@@ -126,12 +126,12 @@ export const Policy = (props: Props) => {
     navigation.navigate({
       name : ROUTES.SIGNUP_CHECK,
       params : {
-        birthday: '19900829',
-        ci: 'test43',
-        name: '테스터',
-        gender: 'M',
+        birthday: '19800714',
+        ci: 'test44',
+        name: '테스터44',
+        gender: 'W',
         marketing_agree_yn: 'Y',
-        mobile: '01051079809',
+        mobile: '01067888099',
       }
     });
 
