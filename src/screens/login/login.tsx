@@ -519,8 +519,8 @@ export const Login01 = () => {
                     }
                   }}
                 >
-                  <View style={[_styles.checkContainer, {backgroundColor: activate === true ? '#F3E270' : 'rgba(0, 0, 0, 0.1)'}]}></View>
-                  <Text style={_styles.saveLogInfoText}>로그인 정보 저장하기</Text>
+                  {/* <View style={[_styles.checkContainer, {backgroundColor: activate === true ? '#F3E270' : 'rgba(0, 0, 0, 0.1)'}]}></View>
+                  <Text style={_styles.saveLogInfoText}>로그인 정보 저장하기</Text> */}
                 </TouchableOpacity>
               </View>
             </View>
