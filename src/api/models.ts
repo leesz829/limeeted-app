@@ -102,12 +102,15 @@ import {
   GET_DAILY_MATCH_LIST,
   COMMON_CODE_LIST,
   REGIST_ADD_INFO,
+  GET_MEMBER_AUTH_LIST,
+  JOIN_SAVE_PROFILE_IMAGE,
+  JOIN_SAVE_PROFILE_AUTH,
 } from './route';
 
 /* ========================================================================================================
 ==================================================== AUTH
 ======================================================================================================== */
-//로그인 체크 및 회원정보를 제공한다.
+// 로그인 체크 및 회원정보를 제공한다.
 export async function signin(body: { 
   email_id: string;
   password: string;
@@ -117,22 +120,33 @@ export async function signin(body: {
   const inventory_connect_dt = await AsyncStorage.getItem('INVENTORY_CONNECT_DT');
   return send(LOGIN, 'POST', { ...body, push_token, inventory_connect_dt }, true, false);
 }
-//회원가입시 프로필 2차 인증에 대한 정보를 제공한다.
+
+// 회원가입시 프로필 2차 인증에 대한 정보를 제공한다.
 export async function get_profile_secondary_authentication(body: {
   member_seq: any;
   second_auth_code: string;
 }) {
   return send(PROFILE_ATHENTICATION2, 'POST', body, false, false);
 }
-//회원가입시 프로필 사진에 대한 정보를 제공한다.
+
+// 회원가입시 프로필 2차 인증 목록 정보를 제공한다.
+export async function get_member_auth_list(body: {
+  member_seq: any;
+}) {
+  return send(GET_MEMBER_AUTH_LIST, 'POST', body, false, false);
+}
+
+// 회원가입시 프로필 사진에 대한 정보를 제공한다.
 export async function get_profile_imgage_guide(body: { member_seq: any }) {
   return send(PROFILE_IMAGE_GUIDE, 'POST', body, false, false);
 }
-//회원가입시 닉네임, 한줄소개, 관심사 정보를 제공한다.
+
+// 회원가입시 닉네임, 한줄소개, 관심사 정보를 제공한다.
 export async function get_member_introduce_guide(body: { member_seq: any }) {
   return send(MEMBER_INTRODUCE_GUIDE, 'POST', body, false, false);
 }
-//회원의 기본정보를 신규 등록한다.
+
+// 회원의 기본정보를 신규 등록한다.
 export async function regist_member_base_info(body: {
   email_id: string;
   password: string;
@@ -150,7 +164,7 @@ export async function regist_member_base_info(body: {
   return send(REGIST_BASE_INFO, 'POST', { ...body, push_token }, false, false);
 }
 
-//회원의 프로필 사진을 신규 등록한다.
+// 회원의 프로필 사진을 신규 등록한다.
 export async function regist_profile_image(body: {
   member_seq: number;
   file_list: any;
@@ -159,7 +173,7 @@ export async function regist_profile_image(body: {
   return send(REGIST_MEMBER_PROFILE_IMAGE, 'POST', body, false, false);
 }
 
-//회원의 닉네임, 한줄소개, 관심사, 인터뷰, 추가정보 등을 신규 등록한다.
+// 회원의 닉네임, 한줄소개, 관심사, 인터뷰, 추가정보 등을 신규 등록한다.
 export async function regist_introduce(body: {
   member_seq: number;
   nickname: string;
@@ -170,12 +184,13 @@ export async function regist_introduce(body: {
   return send(REGIST_MEMBER_INTRO, 'POST', body, false, false);
 }
 
-//회원의 2차 인증정보를 신규 등록한다.
+// 회원의 2차 인증정보를 신규 등록한다.
 export async function regist_second_auth(body: {
   member_seq: number;
   file_list: any;
   auth_code: string;
   auth_comment: string;
+  img_del_seq_str: string;
 }) {
   return send(REGIST_MEMBER_SECOND_AUTH, 'POST', body, false, false);
 }
@@ -254,10 +269,37 @@ export async function regist_member_add_info(body: {
   interest_list: any;
   interview_list: any;
   introduce_comment: string;
+  business: string;
+  job: string;
+  height: string;
+  form_body: string;
+  religion: string;
+  drinking: string;
+  smoking: string;
   join_status: string;
 }) {
   const push_token = await AsyncStorage.getItem(FCM_TOKEN);
   return send(REGIST_ADD_INFO, 'POST', { ...body, push_token }, false, false);
+}
+
+// 회원가입시 프로필 사진을 저장한다.
+export async function join_save_profile_image(body: {
+  member_seq: number;
+  file_list: any;
+  img_del_seq_str: string;
+}) {
+  return send(JOIN_SAVE_PROFILE_IMAGE, 'POST', body, false, false);
+}
+
+// 회원가입시 프로필 인증을 저장한다.
+export async function join_save_profile_auth(body: {
+  member_seq: number;
+  file_list: any;
+  auth_code: string;
+  auth_comment: string;
+  img_del_seq_str: string;
+}) {
+  return send(JOIN_SAVE_PROFILE_AUTH, 'POST', body, false, false);
 }
 
 

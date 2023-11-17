@@ -116,7 +116,7 @@ export const SignUp_Nickname = (props: Props) => {
                 nickname: nickname,
               }); */
 
-              navigation.navigate(ROUTES.SIGNUP_INTEREST, {
+              navigation.navigate(ROUTES.SIGNUP_ADDINFO, {
                 memberSeq: memberSeq,
                 gender: gender,
                 mstImgPath: mstImgPath,

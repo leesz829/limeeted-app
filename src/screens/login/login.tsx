@@ -240,6 +240,13 @@ export const Login01 = () => {
                 routes: [
                   { name: ROUTES.LOGIN01 },
                   {
+                    name: ROUTES.SIGNUP_IMAGE,
+                    params: {
+                      memberSeq: memberSeq,
+                      gender: gender,
+                    }
+                  },
+                  {
                     name: ROUTES.SIGNUP_NICKNAME,
                     params: {
                       ci: mbr_base.ci,
@@ -252,10 +259,20 @@ export const Login01 = () => {
                     }
                   },
                   {
+                    name: ROUTES.SIGNUP_ADDINFO,
+                    params: {
+                      memberSeq: memberSeq,
+                      gender: gender,
+                      nickname: mbr_base.nickname,
+                      mstImgPath: mstImgPath,
+                    }
+                  },
+                  /* {
                     name: ROUTES.SIGNUP_INTEREST,
                     params: {
                       memberSeq: memberSeq,
                       gender: gender,
+                      nickname: mbr_base.nickname,
                     }
                   },
                   {
@@ -265,7 +282,7 @@ export const Login01 = () => {
                       gender: gender,
                       nickname: mbr_base.nickname,
                     }
-                  },
+                  }, */
                 ],
               })
             );

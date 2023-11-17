@@ -163,7 +163,7 @@ export const SignUp_Introduce = (props : Props) => {
 				end={{ x: 0, y: 1 }}
 				style={_styles.wrap}
 			>
-				<ScrollView showsVerticalScrollIndicator={false} style={{flexGrow: 1}}>
+				<ScrollView showsVerticalScrollIndicator={false}>
 					<SpaceView mt={20}>
 						<Text style={_styles.title}><Text style={{color: '#F3E270'}}>{nickname}</Text>님의{'\n'}프로필 소개 작성하기(선택)</Text>
 					</SpaceView>
@@ -186,32 +186,32 @@ export const SignUp_Introduce = (props : Props) => {
 					</SpaceView>
 
 					<SpaceView mt={50}>
-						{interviewList.length > 0 && (
-							<>
-								{interviewList.map((item, index) => {
+						{interviewList.map((item, index) => {
 
-									return (
-										<SpaceView mb={15}>
-											<Text style={_styles.introduceText}>Q. {item?.code_name}</Text>
-											<TextInput
-												defaultValue={item?.answer}
-												onChangeText={(text) => answerChangeHandler(item?.common_code, text) }
-												autoCapitalize={'none'}
-												multiline={true}
-												style={_styles.textInputBox(70)}
-												placeholder={'인터뷰 답변 입력(가입 후 변경 가능)'}
-												placeholderTextColor={'#FFFDEC'}
-												maxLength={200}
-												caretHidden={true}
-											/>
-										</SpaceView>
-									)
-								})}
-							</>
-						)}
+							console.log('item :::::: ',  item);
+
+							return isEmptyData(item?.common_code) && (
+								<>
+									<SpaceView mb={15}>
+										<Text style={_styles.introduceText}>Q. {item?.code_name}</Text>
+										<TextInput
+											defaultValue={item?.answer}
+											onChangeText={(text) => answerChangeHandler(item?.common_code, text) }
+											autoCapitalize={'none'}
+											multiline={true}
+											style={_styles.textInputBox(70)}
+											placeholder={'인터뷰 답변 입력(가입 후 변경 가능)'}
+											placeholderTextColor={'#FFFDEC'}
+											maxLength={200}
+											caretHidden={true}
+										/>
+									</SpaceView>
+								</>
+							)
+						})}
 					</SpaceView>
 
-					<SpaceView>
+					<SpaceView mb={30}>
 						<SpaceView mt={40}>
 							<CommonBtn
 								value={'멤버쉽 인증하기(선택)'}
@@ -247,9 +247,11 @@ export const SignUp_Introduce = (props : Props) => {
 
 
 
-/* ################################################################################################################
-###### Style 영역
-################################################################################################################ */
+{/* #######################################################################################################
+###########################################################################################################
+##################### Style 영역
+###########################################################################################################
+####################################################################################################### */}
 const _styles = StyleSheet.create({
 	wrap: {
 		minHeight: height,

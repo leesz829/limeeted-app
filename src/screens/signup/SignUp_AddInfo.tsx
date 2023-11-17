@@ -2,29 +2,22 @@ import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
 import { layoutStyle, styles, modalStyle, commonStyle } from 'assets/styles/Styles';
 import { CommonBtn } from 'component/CommonBtn';
 import CommonHeader from 'component/CommonHeader';
-import { CommonInput } from 'component/CommonInput';
-import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import React, { useRef, useState } from 'react';
 import { View, Image, ScrollView, TouchableOpacity, StyleSheet, FlatList, Text, Dimensions } from 'react-native';
-import { ICON } from 'utils/imageUtils';
-import { Modalize } from 'react-native-modalize';
 import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import axios from 'axios';
-import { RadioCheckBox_2 } from 'component/RadioCheckBox_2';
-import * as properties from 'utils/properties';
 import { usePopup } from 'Context';
-import { regist_introduce, get_member_introduce_guide, get_common_code_list } from 'api/models';
+import { regist_introduce, get_member_introduce_guide, get_common_code_list, regist_member_add_info } from 'api/models';
 import { SUCCESS, MEMBER_NICKNAME_DUP } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
 import { CommonLoading } from 'component/CommonLoading';
-import { CommonTextarea } from 'component/CommonTextarea';
 import { isEmptyData } from 'utils/functions';
 import LinearGradient from 'react-native-linear-gradient';
 import { TextInput } from 'react-native-gesture-handler';
 import RNPickerSelect from 'react-native-picker-select';
 import { useUserInfo } from 'hooks/useUserInfo';
+import { ICON, PROFILE_IMAGE, findSourcePath, findSourcePathLocal } from 'utils/imageUtils';
 
 
 /* ################################################################################################################
@@ -40,20 +33,41 @@ interface Props {
 
 const { width, height } = Dimensions.get('window');
 
-
 export const SignUp_AddInfo = (props : Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
-	const [currentIndex, setCurrentIndex] = React.useState(0);
 
-	const [value, setValue] = React.useState<any>(null);
 	const { show } = usePopup();  // 공통 팝업
 	const isFocus = useIsFocused();
 	const [isLoading, setIsLoading] = React.useState(false);
 	const [isClickable, setIsClickable] = React.useState(true); // 클릭 여부
 
-	const [business, setBusiness] = React.useState<any>('');
+	const memberSeq = props.route.params?.memberSeq; // 회원 번호
+	const gender = props.route.params?.gender; // 성별
+	const mstImgPath = props.route.params?.mstImgPath; // 대표 사진 경로
+	const nickname = props.route.params?.nickname; // 닉네임
+
+	const [value, setValue] = React.useState<any>(null);
+
+
+	const [addData, setAddData] = React.useState({
+		height: '',
+		business: '',
+		job: '',
+		form_body: '',
+		religion: '',
+		drinking: '',
+		smoking: '',
+	})
+
+	const [mbrHeight, setMbrHeight] = React.useState<any>(); // 키
+	const [business, setBusiness] = React.useState<any>(''); // 직업1
+  	const [job, setJob] = React.useState<any>(''); // 직업2
+	const [form_body, setForm_body] = React.useState<any>(''); // 체형
+	const [religion, setReligion] = React.useState<any>(''); // 종교
+	const [drinking, setDrinking] = React.useState<any>(''); // 음주
+	const [smoking, setSmoking] = React.useState<any>(''); // 흡연
+
 	const [local, setLocal] = React.useState<any>('');
-	const memberBase = useUserInfo(); // 회원 기본정보
 
 	// ############################################################ 업종 그룹 코드 목록
 	const busiGrpCdList = [
@@ -144,65 +158,10 @@ export const SignUp_AddInfo = (props : Props) => {
 	{ label: '자주 흡연', value: 'HARD' },
 	];
 
-	// ############################################################ 직업, 지역 코드 목록 조회 함수
-	const getCommonCodeList = async (value: string) => {
-		const isType = /JOB/.test(value);
-		const body = {
-			group_code: value,
-		};
-		try {
-		setIsLoading(true);
-		const { success, data } = await get_common_code_list(body);
-
-		if(success) {
-			switch (data.result_code) {
-			case SUCCESS:
-			let dataList = new Array();
-			data.code_list?.map(
-				({
-				group_code,
-				common_code,
-				code_name,
-				}: {
-				group_code: any;
-				common_code: any;
-				code_name: any;
-				}) => {
-				let dataMap = { label: code_name, value: common_code };
-				dataList.push(dataMap);
-				}
-			);
-			if(isType) {
-				setJobCdList(dataList);
-			}else {
-				setBLocalCdList(dataList);
-			}
-			
-			break;
-			default:
-			show({
-				content: '오류입니다. 관리자에게 문의해주세요.' ,
-				confirmCallback: function() {}
-			});
-			break;
-			}
-		} else {
-			show({
-			content: '오류입니다. 관리자에게 문의해주세요.' ,
-			confirmCallback: function() {}
-			});
-		}
-		} catch (error) {
-			console.log(error);
-		} finally {
-			setIsLoading(false);
-		}
-
-	};
-
 	// 셀렉트 박스 콜백 함수
 	const busiCdCallbackFn = (value: string) => {
 		setBusiness(value);
+		setAddData({...addData, business: value});
 		getCommonCodeList(value);
 		setValue(value);
 	};
@@ -214,10 +173,137 @@ export const SignUp_AddInfo = (props : Props) => {
 		setValue(value);
 	};
 
+	// ############################################################ 직업, 지역 코드 목록 조회 함수
+	const getCommonCodeList = async (value: string) => {
+		const isType = /JOB/.test(value);
+		const body = {
+			group_code: value,
+		};
+		try {
+			setIsLoading(true);
+			const { success, data } = await get_common_code_list(body);
+
+			if(success) {
+				switch (data.result_code) {
+					case SUCCESS:
+						let dataList = new Array();
+						data.code_list?.map(({group_code, common_code, code_name,}: {group_code: any; common_code: any; code_name: any;}) => {
+							let dataMap = { label: code_name, value: common_code };
+							dataList.push(dataMap);
+						});
+						if(isType) {
+							setJobCdList(dataList);
+						} else {
+							setBLocalCdList(dataList);
+						}
+					
+						break;
+					default:
+						show({content: '오류입니다. 관리자에게 문의해주세요.' });
+						break;
+				}
+			} else {
+				show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+			}
+		} catch (error) {
+			console.log(error);
+		} finally {
+			setIsLoading(false);
+		}
+
+	};
+
+	// ############################################################ 회원 소개 정보 조회
+	const getMemberIntro = async() => {
+		const body = {
+			member_seq : memberSeq
+		};
+		try {
+			const { success, data } = await get_member_introduce_guide(body);
+			if(success) {
+				switch (data.result_code) {
+					case SUCCESS:
+
+						console.log('data?.add_info ::::: ' , data?.add_info);
+						
+						setAddData({
+							height: data?.add_info?.height,
+							business: data?.add_info?.business,
+							job: data?.add_info?.job,
+							form_body: data?.add_info?.form_body,
+							religion: data?.add_info?.religion,
+							drinking: data?.add_info?.drinking,
+							smoking: data?.add_info?.smoking,
+						})
+
+						break;
+					default:
+						show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+					break;
+				}
+			} else {
+				show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+			}
+		} catch (error) {
+			console.log(error);
+		} finally {
+			
+		}
+	};
+
+	// ############################################################################# 저장 함수
+	const saveFn = async () => {
+
+		// 중복 클릭 방지 설정
+		if(isClickable) {
+			setIsClickable(false);
+			setIsLoading(true);
+
+			const body = {
+				member_seq: memberSeq,
+				business: addData.business,
+				job: addData.job,
+				height: addData.height,
+				form_body: addData.form_body,
+				religion: addData.religion,
+				drinking: addData.drinking,
+				smoking: addData.smoking,
+				join_status: '02',
+			};
+
+
+			console.log('body ::::::: ' , body);
+
+			try {
+				const { success, data } = await regist_member_add_info(body);
+				if (success) {
+					switch (data.result_code) {
+						case SUCCESS:
+							navigation.navigate(ROUTES.SIGNUP_INTEREST, {
+								memberSeq: memberSeq,
+								gender: gender,
+								nickname: nickname,
+							});
+							break;
+						default:
+							show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+						break;
+					}
+				} else {
+					show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+				}
+			} catch (error) {
+				console.log(error);
+			} finally {
+				setIsClickable(true);
+				setIsLoading(false);
+			};
+		}
+	};
+
 	// 첫 렌더링 때 실행
 	React.useEffect(() => {
-	
-
+		getMemberIntro();
 	}, [isFocus]);
 
 	return (
@@ -228,22 +314,38 @@ export const SignUp_AddInfo = (props : Props) => {
 				end={{ x: 0, y: 1 }}
 				style={_styles.wrap}
 			>
-				<ScrollView>
+				<ScrollView showsHorizontalScrollIndicator={false}>
 					<SpaceView viewStyle={_styles.titleContainer}>
-						<Image style={_styles.addInfoImg} />
-						<Text style={_styles.title}><Text style={{color: '#F3E270'}}>닉네임</Text>님의{'\n'}간편소개 정보를{'\n'}선택해 주세요.</Text>
+						<Image source={findSourcePathLocal(mstImgPath)} style={_styles.addInfoImg} />
+						<Text style={_styles.title}><Text style={{color: '#F3E270'}}>{nickname}</Text>님의{'\n'}간편소개 정보를{'\n'}선택해 주세요.</Text>
 					</SpaceView>
 
+					{/* ##################################################################################################################
+					###### 필수 정보
+					################################################################################################################## */}
 					<SpaceView mt={30}>
 						<View>
-							<Text style={_styles.essentialTitle}>필수</Text>
+							<Text style={_styles.essentialTitle}>필수 정보</Text>
 						</View>
 						<View style={_styles.underline}></View>
 						<View style={_styles.essentialOption}>
+
+							{/* ############################################################################# 키 */}
 							<View style={_styles.option}>
 								<Text style={_styles.optionTitle}>키(cm)</Text>
-								<TextInput maxLength={3} style={_styles.optionSelect}/>
+								{/* <TextInput maxLength={3} style={_styles.optionSelect}/> */}
+
+								<TextInput
+									value={addData.height}
+									onChangeText={(text) => setAddData({...addData, height: text})}
+									keyboardType="number-pad"
+									autoCapitalize={'none'}
+									style={_styles.optionText}
+									maxLength={3}
+								/>
 							</View>
+
+							{/* ############################################################################# 직업 */}
 							<View style={_styles.option}>
 								<Text style={_styles.optionTitle}>직업</Text>
 								<View style={{flexDirection: 'row', justifyContent: 'space-between', width: '74%'}}>
@@ -261,6 +363,7 @@ export const SignUp_AddInfo = (props : Props) => {
 										}}
 										useNativeAndroidPickerStyle={false}
 										onValueChange={busiCdCallbackFn}
+										value={addData.business}
 										items={busiGrpCdList}
 									/>
 									<RNPickerSelect
@@ -276,31 +379,38 @@ export const SignUp_AddInfo = (props : Props) => {
 											},
 										}}
 										useNativeAndroidPickerStyle={false}
-										onValueChange={(value) => setValue(value)}
+										onValueChange={(value) => setAddData({...addData, job: value})}
+										value={addData.job}
 										items={jobCdList}
 									/>
 								</View>
 							</View>
+
+							{/* ############################################################################# 체형 */}
 							<View style={_styles.option}>
 								<Text style={_styles.optionTitle}>체형</Text>
 								<RNPickerSelect
 									placeholder={{label: '선택', value: ''}}
 									style={pickerSelectStyles}
 									useNativeAndroidPickerStyle={false}
-									onValueChange={(value) => setValue(value)}
-									items={memberBase?.gender == 'M' ? manBodyItemList : womanBodyItemList}
+									onValueChange={(value) => setAddData({...addData, form_body: value})}
+									value={addData.form_body}
+									items={gender == 'M' ? manBodyItemList : womanBodyItemList}
 								/>
 							</View>
 						</View>
 					</SpaceView>
 
+					{/* ##################################################################################################################
+					###### 선택 정보
+					################################################################################################################## */}
 					<SpaceView mt={20}>
 						<View>
-							<Text style={_styles.choiceTitle}>선택</Text>
+							<Text style={_styles.choiceTitle}>선택 정보</Text>
 						</View>
 						<View style={_styles.underline}></View>
 						<View>
-							<View style={_styles.option}>
+							{/* <View style={_styles.option}>
 								<Text style={_styles.optionTitle}>선호지역</Text>
 								<View style={{flexDirection: 'row', justifyContent: 'space-between', width: '62%'}}>
 									<RNPickerSelect
@@ -318,24 +428,30 @@ export const SignUp_AddInfo = (props : Props) => {
 										items={bLocalCdList}
 									/>
 								</View>
-							</View>
+							</View> */}
+
+							{/* ############################################################################# 종교 */}
 							<View style={_styles.option}>
 								<Text style={_styles.optionTitle}>종교</Text>
 								<RNPickerSelect
 									placeholder={{label: '선택', value: ''}}
 									style={pickerSelectStyles}
 									useNativeAndroidPickerStyle={false}
-									onValueChange={(value) => setValue(value)}
+									onValueChange={(value) => setAddData({...addData, religion: value})}
+									value={addData.religion}
 									items={religionItemList}
 								/>
 							</View>
+
+							{/* ############################################################################# 음주 */}
 							<View style={_styles.option}>
 								<Text style={_styles.optionTitle}>음주</Text>
 								<RNPickerSelect
 									placeholder={{label: '선택', value: ''}}
 									style={pickerSelectStyles}
 									useNativeAndroidPickerStyle={false}
-									onValueChange={(value) => setValue(value)}
+									onValueChange={(value) => setAddData({...addData, drinking: value})}
+									value={addData.drinking}
 									items={drinkItemList}
 								/>
 							</View>
@@ -345,7 +461,8 @@ export const SignUp_AddInfo = (props : Props) => {
 									placeholder={{label: '선택', value: ''}}
 									style={pickerSelectStyles}
 									useNativeAndroidPickerStyle={false}
-									onValueChange={(value) => setValue(value)}
+									onValueChange={(value) => setAddData({...addData, smoking: value})}
+									value={addData.smoking}
 									items={smokItemList}
 								/>
 							</View>
@@ -360,9 +477,7 @@ export const SignUp_AddInfo = (props : Props) => {
 							fontFamily={'Pretendard-Bold'}
 							borderRadius={5}
 							onPress={() => {
-							navigation.navigate({
-									name : ROUTES.SIGNUP_INTEREST
-								});
+								saveFn();
 							}}
 						/>
 					</SpaceView>
@@ -376,7 +491,7 @@ export const SignUp_AddInfo = (props : Props) => {
 							fontSize={14}
 							borderRadius={5}
 							onPress={() => {
-								navigation.navigate('Login');
+								navigation.goBack();
 							}}
 						/>
 					</SpaceView>
@@ -388,9 +503,11 @@ export const SignUp_AddInfo = (props : Props) => {
 
 
 
-/* ################################################################################################################
-###### Style 영역
-################################################################################################################ */
+{/* #######################################################################################################
+###########################################################################################################
+##################### Style 영역
+###########################################################################################################
+####################################################################################################### */}
 const _styles = StyleSheet.create({
 	wrap: {
 		minHeight: height,
@@ -454,12 +571,18 @@ const _styles = StyleSheet.create({
 	},
 	optionText: {
 		fontFamily: 'Pretendard-Light',
-		color: '#E1DFD1',
+		fontSize: 12,
+		color: '#F3E270',
 		textAlign: 'center',
+		width: 90,
+		backgroundColor:'#445561',
+		borderRadius: 50,
+		justifyContent: 'center',
+		padding: 0,
 	},
 	optionSelect: {
 		width: 100,
-		height: 30,
+		height: 40,
 		backgroundColor:'#445561',
 		borderRadius: 50,
 		textAlign: 'center',
@@ -479,12 +602,14 @@ const pickerSelectStyles = StyleSheet.create({
 		justifyContent: 'center',
 	},
 	inputAndroid: {
-		width: 100,
-		height: 30,
+		width: 90,
 		backgroundColor:'#445561',
 		borderRadius: 50,
 		textAlign: 'center',
-		color: '#F3E270',
 		justifyContent: 'center',
+		padding: 0,
+		fontFamily: 'Pretendard-Light',
+		fontSize: 12,
+		color: '#F3E270',
 	},
   });

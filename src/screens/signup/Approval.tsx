@@ -33,8 +33,6 @@ export const Approval = (props: Props) => {
   
   const memberSeq = props.route.params.memberSeq;         // 회원 번호
 
-  const [profileImageList, setProfileImageList] = React.useState([]); // 프로필 이미지 목록
-
   // 심사 데이터
   const [apprData, setApprData] = React.useState({
     result_code: '',
@@ -48,116 +46,8 @@ export const Approval = (props: Props) => {
     mobile: '',
     birthday: '',
     emailId: '',
+    nickname: '',
   });
-
-  // ############################################################################# 프로필 이미지 정보 조회
-  const getProfileImage = async () => {
-    const body = {
-      member_seq: memberSeq,
-    };
-    try {
-      const { success, data } = await get_profile_imgage_guide(body);
-      if (success) {
-        switch (data.result_code) {
-          case SUCCESS:
-            if(isEmptyData(data.imgList)) {
-              let _profileImgList:any = [];
-              data?.imgList?.map((item, index) => {
-                let data = {
-                  member_img_seq: item.member_img_seq,
-                  img_file_path: item.img_file_path,
-                  order_seq: index+1,
-                  org_order_seq: item.org_order_seq,
-                  del_yn: 'N',
-                  status: item.status,
-                  return_reason: item.return_reason,
-                  file_base64: null,
-                };                
-                _profileImgList.push(data);
-              });
-
-              setProfileImageList(_profileImgList);
-            }
-
-            break;
-          default:
-            show({
-              content: '오류입니다. 관리자에게 문의해주세요.',
-              confirmCallback: function () {},
-            });
-            break;
-        }
-      } else {
-        show({
-          content: '오류입니다. 관리자에게 문의해주세요.',
-          confirmCallback: function () {},
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // ############################################################################# 사진 선택
-  const imgSelected = (idx:number, isNew:boolean) => {
-    if(isNew) {
-      imagePickerOpen(function(path:any, data:any) {
-        let _data = {
-          member_img_seq: 0,
-          img_file_path: path,
-          order_seq: profileImageList.length+1,
-          org_order_seq: profileImageList.length+1,
-          del_yn: 'N',
-          status: 'PROGRESS',
-          return_reason: '',
-          file_base64: data,
-        };
-  
-        setProfileImageList((prev) => {
-          return [...prev, _data];
-        });
-
-        setCurrentImgIdx(profileImageList.length);
-      });
-    } else {
-      setCurrentImgIdx(idx);
-    }
-  }
-
-  /* ########################################################################################## 프로필 사진 아이템 렌더링 */
-  function ProfileImageItemNew({ index, imgData }) {
-    const imgUrl = findSourcePathLocal(imgData?.img_file_path); // 이미지 경로
-    const imgDelYn = imgData?.del_yn; // 이미지 삭제 여부
-    const imgStatus = imgData?.status; // 이미지 상태
-    
-    //console.log('imgData111111 ::::: ' , imgData);
-  
-    return (
-      <SpaceView>
-        {isEmptyData(imgUrl) && imgDelYn == 'N' ? (
-          <>
-            <SpaceView>
-              <Image
-                resizeMode="cover"
-                resizeMethod="scale"
-                style={_styles.profileImg}
-                key={imgUrl}
-                source={imgUrl}
-              />
-            </SpaceView>
-          </>
-        ) : (
-          <>
-            <SpaceView viewStyle={_styles.subImgNoData}>
-              <Image source={ICON.userAdd} style={styles.iconSquareSize(22)} />
-            </SpaceView>
-          </>
-        )}
-      </SpaceView>
-    );
-  };
 
   // ############################################################ 가입심사 정보 조회
   const getApprovalInfo = async () => {
@@ -180,6 +70,7 @@ export const Approval = (props: Props) => {
             mobile: data.mbr_base.phone_number,
             birthday: data.mbr_base.birthday,
             emailId: data.mbr_base.email_id,
+            nickname: data.mbr_base.nickname,
           });
         };
       } else {
@@ -221,7 +112,9 @@ export const Approval = (props: Props) => {
 
   // ########################################################################## 수정하기 버튼
   const modifyBtn = async () => {
-    if(apprData.result_code == '0003') {
+
+    // 반려인 경우 구분
+    /* if(apprData.result_code == '0003') {
       if(apprData.refuseAuthCnt > 0) {
         goJoin('01');
       } else if(apprData.refuseImgCnt > 0) {
@@ -229,7 +122,9 @@ export const Approval = (props: Props) => {
       }
     } else {
       goJoin('01');
-    };
+    }; */
+
+    goJoin();
   };
 
   // ########################################################################## 탈퇴하기 버튼
@@ -248,11 +143,41 @@ export const Approval = (props: Props) => {
   // ########################################################################## 회원가입 이동
   const goJoin = async (status:string) => {
 
-    navigation.navigate(ROUTES.SIGNUP_IMAGE, {
+    /* navigation.navigate(ROUTES.SIGNUP_IMAGE, {
       memberSeq: memberSeq,
       gender: apprData.gender,
-    });
-    
+    }); */
+
+
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 1,
+        routes: [
+          { name: ROUTES.LOGIN01 },
+          { name: ROUTES.APPROVAL , params: { memberSeq: memberSeq, }},
+          { name: ROUTES.SIGNUP_PASSWORD, params: { ci: apprData.ci, name: apprData.name, gender: apprData.gender, mobile: apprData.mobile, birthday: apprData.birthday, memberSeq: memberSeq, emailId: apprData.emailId }},
+        ],
+      })
+    );
+
+
+    /* navigation.dispatch(
+      CommonActions.reset({
+        index: 1,
+        routes: [
+          { name: ROUTES.LOGIN01 },
+          { name: ROUTES.APPROVAL , params: { memberSeq: memberSeq, }},
+          { name: ROUTES.SIGNUP_PASSWORD, params: { ci: apprData.ci, name: apprData.name, gender: apprData.gender, mobile: apprData.mobile, birthday: apprData.birthday, memberSeq: memberSeq, emailId: apprData.emailId }},
+          { name: ROUTES.SIGNUP_IMAGE, params: { memberSeq: memberSeq, gender: apprData.gender, }},
+          { name: ROUTES.SIGNUP_NICKNAME, params: { memberSeq: memberSeq, gender: apprData.gender, mstImgPath: apprData.mstImgPath, nickname: apprData.nickname }},
+          { name: ROUTES.SIGNUP_ADDINFO, params: { memberSeq: memberSeq, gender: apprData.gender, mstImgPath: apprData.mstImgPath, nickname: apprData.nickname }},
+          { name: ROUTES.SIGNUP_INTEREST, params: { memberSeq: memberSeq, gender: apprData.gender, nickname: apprData.nickname }},
+          { name: ROUTES.SIGNUP_INTRODUCE, params: { memberSeq: memberSeq, gender: apprData.gender, nickname: apprData.nickname }},
+          { name: ROUTES.SIGNUP_AUTH, params: { memberSeq: memberSeq, gender: apprData.gender, mstImgPath: apprData.mstImgPath, nickname: apprData.nickname }},
+        ],
+      })
+    ); */
+
 
     return;
 
@@ -358,7 +283,6 @@ export const Approval = (props: Props) => {
   React.useEffect(() => {
     if(isFocus) {
       getApprovalInfo();
-      getProfileImage();
     };
 
   }, [isFocus]);
@@ -371,7 +295,7 @@ export const Approval = (props: Props) => {
         end={{ x: 0, y: 1 }}
         style={_styles.wrap}
       >
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <SpaceView mt={20}>
             <Text style={_styles.title}>가입 심사 진행중</Text>
               <View style={{marginTop: 10}}>
@@ -380,18 +304,27 @@ export const Approval = (props: Props) => {
           </SpaceView>
 
           <SpaceView viewStyle={_styles.imgContainer}>
-            <ProfileImageItemNew index={0} imgData={profileImageList.length > 0 ? profileImageList[0] : null} />
+              <Image
+                resizeMode="cover"
+                resizeMethod="scale"
+                style={_styles.profileImg}
+                source={findSourcePathLocal(apprData.mstImgPath)}
+              />
           </SpaceView>
 
-          <SpaceView mt={30}>
-            <View style={_styles.refNoticeContainer}>
-              <Image source={ICON.commentRed} style={styles.iconSize16} />
-              <Text style={_styles.refNoticeText}>반려사유 안내</Text>
-            </View>
-            <View style={_styles.refuseBox}>
-              <Text style={_styles.refBoxText}>가입 기준에 맞지 않거나 증빙 자료가 불충분한 대상이 있어요. '프로필 수정하기' 누르고 반려 내용을 확인해주세요.</Text>
-            </View>
-          </SpaceView>
+          {(apprData.refuseImgCnt > 0 || (apprData.refuseAuthCnt > 0)) && (
+            <>
+              <SpaceView mt={30}>
+                <View style={_styles.refNoticeContainer}>
+                  <Image source={ICON.commentRed} style={styles.iconSize16} />
+                  <Text style={_styles.refNoticeText}>반려사유 안내</Text>
+                </View>
+                <View style={_styles.refuseBox}>
+                  <Text style={_styles.refBoxText}>가입 기준에 맞지 않거나 증빙 자료가 불충분한 대상이 있어요. '프로필 수정하기' 누르고 반려 내용을 확인해주세요.</Text>
+                </View>
+              </SpaceView>
+            </>
+          )}
 
           {/* {(apprData.refuseImgCnt > 0 || (apprData.refuseAuthCnt > 0)) && (
             <>
@@ -468,17 +401,19 @@ const _styles = StyleSheet.create({
   },
   refuseBox: {
     width: '100%',
-    height: 60,
     backgroundColor: '#445561',
     borderRadius: 10,
     marginTop: 10,
-    padding: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 13,
     justifyContent: 'center',
     alignItems: 'center',
   },
   refBoxText: {
     fontFamily: 'Pretendard-Light',
+    fontSize: 13,
     color: '#FFFDEC',
+    textAlign: 'center',
   },
   btnContainer: {
     flexDirection: 'row',

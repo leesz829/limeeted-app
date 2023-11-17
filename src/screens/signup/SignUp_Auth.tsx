@@ -3,14 +3,14 @@ import { layoutStyle, styles, modalStyle, commonStyle } from 'assets/styles/Styl
 import { CommonBtn } from 'component/CommonBtn';
 import CommonHeader from 'component/CommonHeader';
 import SpaceView from 'component/SpaceView';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { View, Image, ScrollView, TouchableOpacity, StyleSheet, FlatList, Text, Dimensions } from 'react-native';
 import { ICON, PROFILE_IMAGE, findSourcePath, findSourcePathLocal } from 'utils/imageUtils';
 import { Modalize } from 'react-native-modalize';
 import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { usePopup } from 'Context';
-import { regist_second_auth, get_profile_secondary_authentication } from 'api/models';
+import { join_save_profile_auth, get_member_auth_list } from 'api/models';
 import { SUCCESS, MEMBER_NICKNAME_DUP } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
 import { CommonLoading } from 'component/CommonLoading';
@@ -44,11 +44,13 @@ export const SignUp_Auth = (props : Props) => {
 	const gender = props.route.params?.gender; // 성별
 	const mstImgPath = props.route.params?.mstImgPath; // 대표 사진 경로
 
+	const [selectedAuthCode, setSelectedAuthCode] = React.useState('JOB'); // 선택한 인증 코드
 	const [currentAuthCode, setCurrentAuthCode] = React.useState('JOB'); // 현재 인증 코드
 	//const [currentImgIdx, setCurrentImgIdx] = React.useState(0); // 현재 이미지 인덱스
-	const [authImageList, setAuthImageList] = React.useState([]); // 인증 이미지 목록
-	const [authComment, setAuthComment] = React.useState([]); // 인증 코멘트
-
+	const [authList, setAuthList] = React.useState([]); // 인증 목록
+	
+	const [isMod, setIsMod] = React.useState({status: false}); // 수정 여부
+	
 	const authInfoArr = [
 		{ name: '직업', code: 'JOB' },
 		{ name: '학력', code: 'EDU' },
@@ -58,161 +60,52 @@ export const SignUp_Auth = (props : Props) => {
 		{ name: '차량', code: 'VEHICLE' },
 	];
 
-	const data = [0];
-  
-	// 인증 이미지 삭제 시퀀스 문자열
-	const [imgDelSeqStr, setImgDelSeqStr] = React.useState('');
-  
-	// ################################################################ 인증 이미지 데이터 적용
-	const imageDataApply = async (data:any) => {
-	  setAuthImageList((prev) => {
-		const dupChk = prev.some(item => item.order_seq === data.order_seq);
-		if (!dupChk) {
-			return [...prev, data];
-		} else {
-			return prev.map((item) => item.order_seq === data.order_seq 
-				? { ...item, uri: data.file_uri, file_base64: data.file_base64 }
-				: item
-			);
-		}
-	  });
+	// ############################################################################# 인증 탭 클릭 함수
+	const selectedAuthTab = async (_authCode:string) => {
+		setSelectedAuthCode(_authCode);
 	};
-  
-	// ############################################################################# 사진 관리 컨트롤 변수
-	const [imgMngData, setImgMngData] = React.useState<any>({
-		member_auth_detail_seq: 0,
-	  	img_file_path: '',
-	  	order_seq: '',
-	});
-  
-	// ############################################################################# 사진 관리 팝업 관련 함수
-	const imgMng_modalizeRef = useRef<Modalize>(null);
-	const imgMng_onOpen = (imgData: any, order_seq: any) => {
-	  setImgMngData({
-		member_auth_detail_seq: imgData.member_auth_detail_seq,
-		img_file_path: imgData.img_file_path,
-		order_seq: order_seq,
-	  });
-	  imgMng_modalizeRef.current?.open();
-	};
-	const imgMng_onClose = () => {
-	  imgMng_modalizeRef.current?.close();
-	};
-  
-	// ############################################################################# 사진 선택
-	const imgSelected = (idx:number, isNew:boolean) => {
-	  if(isNew) {
-		imagePickerOpen(function(path:any, data:any) {
-		  let _data = {
-			member_auth_detail_seq: 0,
-			img_file_path: path,
-			order_seq: authImageList.length+1,
-			org_order_seq: authImageList.length+1,
-			del_yn: 'N',
-			file_base64: data,
-		  };
-	
-		  setAuthImageList((prev) => {
-			return [...prev, _data];
-		  });
-  
-		});
-	  } else {
 
-	  }
+	// ############################################################################# 수정 여부 값 변경 함수
+	const modActive = async (isValue:boolean) => {
+		setIsMod((prev) => {
+			return Object.assign({}, prev, {status: isValue});
+		});
+	};
+
+	// ############################################################################# 저장 함수
+	const saveFn = async (_isMod:boolean, _name:string, _authCode:any, _authDetailList:any, _authComment:any, _imgDelSeqStr:any) => {
+		if(_isMod) {
+			if(currentAuthCode != selectedAuthCode) {
+				show({
+					content: '입력하신 ' + _name + '인증 정보를 저장하시겠습니까?',
+					cancelCallback: function() {
+						setCurrentAuthCode(selectedAuthCode);
+						modActive(false);
+					},
+					confirmCallback: function() {
+						saveAuth(true, _authCode, _authDetailList, _authComment, _imgDelSeqStr);
+						setCurrentAuthCode(selectedAuthCode);
+						modActive(false);
+					}
+				});
+			}
+		} else {
+			saveAuth(false, _authCode, _authDetailList, _authComment, _imgDelSeqStr);
+		}
 	}
   
-	// ############################################################################# 사진 변경
-	const imgModfyProc = () => {
-	  imagePickerOpen(function(path:any, data:any) {
-  
-		// 삭제 데이터 저장
-		if(isEmptyData(imgMngData.member_auth_detail_seq) && 0 != imgMngData.member_auth_detail_seq) {
-		  let delArr = imgDelSeqStr;
-		  if (delArr == '') {
-			delArr = imgMngData.member_img_seq;
-		  } else {
-			delArr = delArr + ',' + imgMngData.member_img_seq;
-		  }
-		  setImgDelSeqStr(delArr);
-		}
-  
-		// 목록 재구성
-		setAuthImageList((prev) => {
-		  const dupChk = prev.some(item => item.order_seq === imgMngData.order_seq);
-		  if(dupChk) {
-			return prev.map((item) => item.order_seq === imgMngData.order_seq 
-				? { ...item, img_file_path: path, file_base64: data }
-				: item
-			);
-		  }
-		});
-  
-		// 모달 닫기
-		imgMng_onClose();
-	  });
-	};
-  
-	// ############################################################################# 사진 삭제
-	const imgDelProc = () => {
-	  // 인증 이미지 목록 재구성
-	  let _authImgList:any = [];
-	  authImageList.map((item, index) => {
-		if(index+1 != imgMngData.order_seq) {
-		  _authImgList.push(item);
-		}
-	  });
-	  _authImgList.map((item, index) => {
-		item.order_seq = index+1;
-	  });
-	  setAuthImageList(_authImgList);
-  
-	  // 삭제 데이터 저장
-	  if(isEmptyData(imgMngData.member_auth_detail_seq) && 0 != imgMngData.member_auth_detail_seq) {
-		let delArr = imgDelSeqStr;
-		if (delArr == '') {
-		  delArr = imgMngData.member_auth_detail_seq;
-		} else {
-		  delArr = delArr + ',' + imgMngData.member_auth_detail_seq;
-		}
-  
-		setImgDelSeqStr(delArr);
-	  }
-  
-	  // 모달 닫기
-	  imgMng_onClose();
-	};
-  
-	// ############################################################################# 인증 이미지 정보 조회
-	const getAuthImage = async () => {
+	// ############################################################################# 인증 정보 조회
+	const getAuth = async () => {
 	  const body = {
 		member_seq: memberSeq,
-		second_auth_code: currentAuthCode,
 	  };
 	  try {
-		const { success, data } = await get_profile_secondary_authentication(body);
+		const { success, data } = await get_member_auth_list(body);
 		if (success) {
 		  switch (data.result_code) {
 			case SUCCESS:
-			  if(isEmptyData(data.auth_detail_list)) {
-				setAuthImageList(data?.auth_detail_list);
-
-				/* let _authImgList:any = [];
-				data?.imgList?.map((item, index) => {
-				  let data = {
-					// member_img_seq: item.member_img_seq,
-					// img_file_path: item.img_file_path,
-					// order_seq: index+1,
-					// org_order_seq: item.org_order_seq,
-					// del_yn: 'N',
-					// status: item.status,
-					// return_reason: item.return_reason,
-					// file_base64: null,
-				  };                
-				  _authImgList.push(data);
-				});
-  
-				setAuthImageList(_authImgList); */
+			  if(isEmptyData(data.auth_list)) {
+				setAuthList(data?.auth_list);
 			  }
   
 			  break;
@@ -236,17 +129,8 @@ export const SignUp_Auth = (props : Props) => {
 	  }
 	};
   
-	// ############################################################################# 인증 이미지 저장
-	const saveAuthImage = async () => {
-  
-	  /* let tmpCnt = 0;
-	  authImageList.map((item, index) => {
-		if(item.status != 'REFUSE') {
-		  tmpCnt++;
-		}
-	  }); */
-
-	  //return;
+	// ############################################################################# 인증 저장
+	const saveAuth = async (isTab:boolean, _authCode:any, _authDetailList:any, _authComment:any, _imgDelSeqStr:any) => {
   
 	  // 중복 클릭 방지 설정
 	  if(isClickable) {
@@ -255,33 +139,28 @@ export const SignUp_Auth = (props : Props) => {
   
 		const body = {
 			member_seq: memberSeq,
-			file_list: authImageList,
-			auth_code: currentAuthCode,
-			auth_comment: authComment,
+			file_list: _authDetailList,
+			auth_code: _authCode,
+			auth_comment: _authComment,
+			img_del_seq_str: _imgDelSeqStr,
 		};
 		try {
-		  const { success, data } = await regist_second_auth(body);
+		  const { success, data } = await join_save_profile_auth(body);
 		  if (success) {
 			switch (data.result_code) {
 			  case SUCCESS:
-				/* navigation.navigate(ROUTES.SIGNUP03, {
-				  memberSeq: props.route.params.memberSeq,
-				  gender: props.route.params.gender,
-				  mstImgPath: data.mst_img_path,
-				}); */
+				navigation.navigate(ROUTES.APPROVAL, {
+				  memberSeq: memberSeq,
+				});
+
+				//getAuth();
 				break;
 			  default:
-				show({
-				  content: '오류입니다. 관리자에게 문의해주세요.',
-				  confirmCallback: function () {},
-				});
+				show({ content: '오류입니다. 관리자에게 문의해주세요.' });
 				break;
 			}
 		  } else {
-			show({
-			  content: '오류입니다. 관리자에게 문의해주세요.',
-			  confirmCallback: function () {},
-			});
+			show({ content: '오류입니다. 관리자에게 문의해주세요.' });
 		  }
 		} catch (error) {
 		  console.log(error);
@@ -291,83 +170,12 @@ export const SignUp_Auth = (props : Props) => {
 		};
 	  }
 	};
-  
-	/* ########################################################################################## 인증 사진 렌더링 */
-	function AuthImageRender({ index, imgData, imgSelectedFn, mngModalFn }) {
-		const imgUrl = findSourcePathLocal(imgData?.img_file_path); // 이미지 경로
-	  	const imgDelYn = imgData?.del_yn; // 이미지 삭제 여부
-	  	const imgStatus = imgData?.status; // 이미지 상태
-	  
-	  	//console.log('imgData111111 ::::: ' , imgData);
-	
-	  	return (
-			<>
-				{isEmptyData(imgUrl) ? (
-					<>
-						<TouchableOpacity 
-							style={_styles.uploadBox}
-							onPress={() => { mngModalFn(imgData, index+1, imgUrl); }}
-							activeOpacity={0.9}
-						>
-							<Image
-								resizeMode="cover"
-								resizeMethod="scale"
-								style={_styles.authImgStyle}
-								key={imgUrl}
-								source={imgUrl}
-							/>
-						
-						</TouchableOpacity>
-					</>
-				) : (
-					<>
-						<TouchableOpacity 
-							style={_styles.uploadBox}
-							onPress={() => { imgSelectedFn(index, !isEmptyData(imgData)); }}
-							activeOpacity={0.9}
-						>
-							<Image source={ICON.cloudUpload} style={styles.iconSquareSize(32)} />
-						</TouchableOpacity>
-					</>
-				)}
-			</>
-		);
-	};
 
-	/* ########################################################################################## 인증 사진 렌더링 */
-	function MaterialRender({ authCode }) {
-		
-		return (
-			<>
-				<View style={_styles.authInfoContainer}>
-					<View style={[_styles.authInfoBox, {backgroundColor: '#3D4348'}]}>
-						<Text style={_styles.authInfoTitle}>레벨</Text>
-						<Text style={_styles.authInfoTitle}>연봉</Text>
-						<Text style={_styles.authInfoTitle}>연소득</Text>
-					</View>
-					<View style={_styles.authInfoBox}>
-						<Text style={[_styles.authInfoSubTitle, {marginLeft: 10}]}>1</Text>
-						<Text style={[_styles.authInfoSubTitle, {marginLeft: 15}]}>3,000</Text>
-						<Text style={_styles.authInfoSubTitle}>4,000</Text>
-					</View>
-					<View style={_styles.authInfoBox}>
-						<Text style={[_styles.authInfoSubTitle, {marginLeft: 10}]}>2</Text>
-						<Text style={[_styles.authInfoSubTitle, {marginLeft: 15}]}>5,000</Text>
-						<Text style={_styles.authInfoSubTitle}>6,000</Text>
-					</View>
-					<View style={_styles.authInfoBox}>
-						<Text style={[_styles.authInfoSubTitle, {marginLeft: 10}]}>3</Text>
-						<Text style={[_styles.authInfoSubTitle, {marginLeft: 15}]}>6,000</Text>
-						<Text style={_styles.authInfoSubTitle}>7,000</Text>
-					</View>
-				</View>
-			</>
-		)
-	};
+	
 
 	// ############################################################ 최초 실행
 	React.useEffect(() => {
-		getAuthImage();
+		getAuth();
 	}, [isFocus]);
 
 	return (
@@ -384,8 +192,12 @@ export const SignUp_Auth = (props : Props) => {
 				</Text>
 				<ScrollView horizontal={true} contentContainerStyle={{justifyContent: 'space-between', width: width * 1.2}} showsHorizontalScrollIndicator={false}>
 					{authInfoArr.map((item, index) => (
-						<TouchableOpacity style={_styles.authBox} key={index}>
-							<Text style={_styles.authBoxTitle(item?.code == currentAuthCode)}>{item.name}</Text>
+						<TouchableOpacity 
+							disabled={currentAuthCode == item?.code}
+							style={_styles.authBox} 
+							key={'auth_tab_' + item?.code}
+							onPress={() => { selectedAuthTab(item?.code); }}>
+							<Text style={_styles.authBoxTitle(item?.code == currentAuthCode)}>{item?.name}</Text>
 						</TouchableOpacity>
 					))}
 				</ScrollView>
@@ -394,6 +206,158 @@ export const SignUp_Auth = (props : Props) => {
 			{/* #############################################################################################################
 			######### 컨텐츠 영역
 			############################################################################################################# */}
+			{authList.map((item, index) => {
+				return currentAuthCode == item?.common_code && (
+					<AuthRender 
+						_data={item}
+						_selectedAuthCode={selectedAuthCode} 
+						_modActiveFn={modActive}
+						_setCurrentCode={setCurrentAuthCode} 
+						_isModStatus={isMod.status}
+						_saveFn={saveFn}
+					/>
+				)
+			})}
+		</>
+	);
+};
+
+
+
+
+/* ##########################################################################################
+##### 인증 렌더링
+########################################################################################## */
+function AuthRender({ _data, _selectedAuthCode, _modActiveFn, _setCurrentCode, _isModStatus, _saveFn }) {
+	const _authName = _data?.code_name; // 인증 명
+	const _authCode = _data?.common_code; // 인증 코드
+	const _authStatus = _data?.auth_status; // 인증 상태
+	const _authComment = _data?.auth_comment; // 인증 코멘트
+
+	const [authDetailList, setAuthDetailList] = React.useState<[]>(_data?.auth_detail_list); // 인증 이미지 목록
+	const [authComment, setAuthComment] = React.useState(_data?.auth_comment); // 인증 코멘트 입력 변수
+	const [imgDelSeqStr, setImgDelSeqStr] = React.useState(''); // 인증 이미지 삭제 시퀀스 문자열
+
+	// ############################################################################# 사진 관리 컨트롤 변수
+	const [imgMngData, setImgMngData] = React.useState<any>({
+		member_auth_detail_seq: 0,
+		img_file_path: '',
+		order_seq: '',
+	});
+
+	// ############################################################################# 사진 관리 팝업 관련 함수
+	const imgMng_modalizeRef = useRef<Modalize>(null);
+	const imgMng_onOpen = (imgData: any, order_seq: any) => {
+		setImgMngData({
+			member_auth_detail_seq: imgData.member_auth_detail_seq,
+			img_file_path: imgData.img_file_path,
+			order_seq: order_seq,
+		});
+		imgMng_modalizeRef.current?.open();
+	};
+	const imgMng_onClose = () => {
+		imgMng_modalizeRef.current?.close();
+	};
+
+	// ############################################################################# 사진 선택
+	const imgSelected = (idx:number, isNew:boolean) => {
+		if(isNew) {
+			imagePickerOpen(function(path:any, data:any) {
+				_modActiveFn(true); // 수정 여부 변경
+
+				let _data = {
+					member_auth_detail_seq: 0,
+					img_file_path: path,
+					order_seq: authDetailList.length+1,
+					org_order_seq: authDetailList.length+1,
+					file_base64: data,
+				};
+			
+				setAuthDetailList((prev) => {
+					return [...prev, _data];
+				});
+			});
+		} else {
+
+		}
+	}
+
+	// ############################################################################# 사진 변경
+	const imgModfyProc = () => {
+		imagePickerOpen(function(path:any, data:any) {
+			_modActiveFn(true); // 수정 여부 변경
+	
+			// 삭제 데이터 저장
+			if(isEmptyData(imgMngData.member_auth_detail_seq) && 0 != imgMngData.member_auth_detail_seq) {
+				let delArr = imgDelSeqStr;
+				if (delArr == '') {
+					delArr = imgMngData.member_img_seq;
+				} else {
+					delArr = delArr + ',' + imgMngData.member_img_seq;
+				}
+				setImgDelSeqStr(delArr);
+			}
+	
+			// 목록 재구성
+			setAuthDetailList((prev) => {
+				const dupChk = prev.some(item => item.order_seq === imgMngData.order_seq);
+				if(dupChk) {
+					return prev.map((item) => item.order_seq === imgMngData.order_seq 
+						? { ...item, img_file_path: path, file_base64: data }
+						: item
+					);
+				}
+			});
+	
+			// 모달 닫기
+			imgMng_onClose();
+		});
+	};
+
+	// ############################################################################# 사진 삭제
+	const imgDelProc = () => {
+		_modActiveFn(true); // 수정 여부 변경
+
+		// 인증 이미지 목록 재구성
+		let _authDetailList:any = [];
+		authDetailList.map((item, index) => {
+			if(index+1 != imgMngData.order_seq) {
+				_authDetailList.push(item);
+			}
+		});
+		_authDetailList.map((item, index) => {
+			item.order_seq = index+1;
+		});
+		setAuthDetailList(_authDetailList);
+	
+		// 삭제 데이터 저장
+		if(isEmptyData(imgMngData.member_auth_detail_seq) && 0 != imgMngData.member_auth_detail_seq) {
+			let delArr = imgDelSeqStr;
+			if (delArr == '') {
+				delArr = imgMngData.member_auth_detail_seq;
+			} else {
+				delArr = delArr + ',' + imgMngData.member_auth_detail_seq;
+			}
+	
+			setImgDelSeqStr(delArr);
+		}
+	
+		// 모달 닫기
+		imgMng_onClose();
+	};
+
+	// 선택된 인증 코드 적용
+	useEffect(() => {
+		if(_isModStatus || _authComment != authComment) {
+			_saveFn(true, _authName, _authCode, authDetailList, authComment, imgDelSeqStr);
+		} else {
+			_setCurrentCode(_selectedAuthCode);
+		}
+
+	}, [_selectedAuthCode]);
+	
+	return (
+		<>
 			<LinearGradient
 				colors={['#3D4348', '#1A1E1C']}
 				start={{ x: 0, y: 0 }}
@@ -402,7 +366,15 @@ export const SignUp_Auth = (props : Props) => {
 			>
 				<ScrollView contentContainerStyle={{height: height * 1.2}} showsVerticalScrollIndicator={false}>
 					<View>
-						<View style={_styles.authBoxStatus}><Text style={_styles.statusText}>승인</Text></View>
+						{isEmptyData(_authStatus) && (
+							<View style={_styles.authBoxStatus}>
+								<Text style={_styles.statusText(_authStatus)}>
+									{_authStatus == 'PROGRESS' && '심사중'}
+									{_authStatus == 'ACCEPT' && '승인'}
+									{_authStatus == 'REFUSE' && '반려'}
+								</Text>
+							</View>
+						)}
 						<View>
 							<View style={{flexDirection: 'row', alignItems: 'center'}}>
 								<Image source={ICON.commentYellow} style={styles.iconSize16} />
@@ -410,9 +382,9 @@ export const SignUp_Auth = (props : Props) => {
 							</View>			
 							<Text style={_styles.contentsSubtitle}>• 소득 금액 증명원, 근로 소득 원천 징수증, 부가 가치세 증명원, 기타소득 입증자료, 근로계약서</Text>
 							<View style={_styles.uploadBoxContainer}>
-								<AuthImageRender index={0} imgData={authImageList.length > 0 ? authImageList[0] : null} imgSelectedFn={imgSelected} mngModalFn={imgMng_onOpen} />
-								<AuthImageRender index={1} imgData={authImageList.length > 1 ? authImageList[1] : null} imgSelectedFn={imgSelected} mngModalFn={imgMng_onOpen} />
-								<AuthImageRender index={2} imgData={authImageList.length > 2 ? authImageList[2] : null} imgSelectedFn={imgSelected} mngModalFn={imgMng_onOpen} />
+								<AuthImageRender index={0} imgData={authDetailList.length > 0 ? authDetailList[0] : null} imgSelectedFn={imgSelected} mngModalFn={imgMng_onOpen} />
+								<AuthImageRender index={1} imgData={authDetailList.length > 1 ? authDetailList[1] : null} imgSelectedFn={imgSelected} mngModalFn={imgMng_onOpen} />
+								<AuthImageRender index={2} imgData={authDetailList.length > 2 ? authDetailList[2] : null} imgSelectedFn={imgSelected} mngModalFn={imgMng_onOpen} />
 							</View>
 						</View>
 						<View>
@@ -420,10 +392,17 @@ export const SignUp_Auth = (props : Props) => {
 								<Image source={ICON.commentYellow} style={styles.iconSquareSize(16)} />
 								<Text style={_styles.contentsTitle}>인증 소개글(선택)</Text>
 							</View>
-							<TextInput 
-								placeholder='인증 소개글 입력(가입 후 변경 가능)'
-								placeholderTextColor={'#FFFDEC'}
+
+							<TextInput
+								value={authComment}
+								onChangeText={(text) => setAuthComment(text)}
+								autoCapitalize={'none'}
+								multiline={true}
 								style={_styles.inputContainer}
+								placeholder={'인증 소개글 입력(가입 후 변경 가능)'}
+								placeholderTextColor={'#FFFDEC'}
+								maxLength={50}
+								caretHidden={true}
 							/>
 						</View>
 
@@ -432,12 +411,7 @@ export const SignUp_Auth = (props : Props) => {
 								<Image source={ICON.commentYellow} style={styles.iconSquareSize(16)} />
 								<Text style={_styles.contentsTitle}>심사에 요구되는 증명자료를 올려주세요.</Text>
 							</View>
-							{/* <FlatList
-								data={data}
-								renderItem={renderItem}
-							/> */}
-
-							<MaterialRender authCode={currentAuthCode} />
+							<AuthMaterialRender authCode={_authCode} />
 						</View>
 					</View>
 
@@ -449,9 +423,7 @@ export const SignUp_Auth = (props : Props) => {
 							fontFamily={'Pretendard-Bold'}
 							borderRadius={5}
 							onPress={() => {
-							navigation.navigate({
-								name : ROUTES.SIGNUP_AUTH
-								});
+								_saveFn(false, _authName, _authCode, authDetailList, authComment, imgDelSeqStr);
 							}}
 						/>
 					</SpaceView>
@@ -470,6 +442,7 @@ export const SignUp_Auth = (props : Props) => {
 						/>
 					</SpaceView>
 				</ScrollView>
+
 			</LinearGradient>
 
 			{/* ###############################################
@@ -509,6 +482,79 @@ export const SignUp_Auth = (props : Props) => {
 			</Modalize>
 		</>
 	);
+};
+
+/* ##########################################################################################
+##### 인증 사진 렌더링
+########################################################################################## */
+function AuthImageRender({ index, imgData, imgSelectedFn, mngModalFn }) {
+	const imgUrl = findSourcePathLocal(imgData?.img_file_path); // 이미지 경로
+
+		return (
+		<>
+			{isEmptyData(imgUrl) ? (
+				<>
+					<TouchableOpacity 
+						style={_styles.uploadBox}
+						onPress={() => { mngModalFn(imgData, index+1, imgUrl); }}
+						activeOpacity={0.9}
+					>
+						<Image
+							resizeMode="cover"
+							resizeMethod="scale"
+							style={_styles.authImgStyle}
+							key={imgUrl}
+							source={imgUrl}
+						/>
+					
+					</TouchableOpacity>
+				</>
+			) : (
+				<>
+					<TouchableOpacity 
+						style={_styles.uploadBox}
+						onPress={() => { imgSelectedFn(index, !isEmptyData(imgData)); }}
+						activeOpacity={0.9}
+					>
+						<Image source={ICON.cloudUpload} style={styles.iconSquareSize(32)} />
+					</TouchableOpacity>
+				</>
+			)}
+		</>
+	);
+};
+
+/* ##########################################################################################
+##### 인증 자료 렌더링
+########################################################################################## */
+function AuthMaterialRender({ authCode }) {
+	
+	return (
+		<>
+			<View style={_styles.authInfoContainer}>
+				<View style={[_styles.authInfoBox, {backgroundColor: '#3D4348'}]}>
+					<Text style={_styles.authInfoTitle}>레벨</Text>
+					<Text style={_styles.authInfoTitle}>연봉</Text>
+					<Text style={_styles.authInfoTitle}>연소득</Text>
+				</View>
+				<View style={_styles.authInfoBox}>
+					<Text style={[_styles.authInfoSubTitle, {marginLeft: 10}]}>1</Text>
+					<Text style={[_styles.authInfoSubTitle, {marginLeft: 15}]}>3,000</Text>
+					<Text style={_styles.authInfoSubTitle}>4,000</Text>
+				</View>
+				<View style={_styles.authInfoBox}>
+					<Text style={[_styles.authInfoSubTitle, {marginLeft: 10}]}>2</Text>
+					<Text style={[_styles.authInfoSubTitle, {marginLeft: 15}]}>5,000</Text>
+					<Text style={_styles.authInfoSubTitle}>6,000</Text>
+				</View>
+				<View style={_styles.authInfoBox}>
+					<Text style={[_styles.authInfoSubTitle, {marginLeft: 10}]}>3</Text>
+					<Text style={[_styles.authInfoSubTitle, {marginLeft: 15}]}>6,000</Text>
+					<Text style={_styles.authInfoSubTitle}>7,000</Text>
+				</View>
+			</View>
+		</>
+	)
 };
 
 
@@ -555,17 +601,27 @@ const _styles = StyleSheet.create({
 		position: 'absolute',
 		top: 0,
 		right: 10,
-		width: 40,
-		height: 20,
-		borderRadius: 5,
-		backgroundColor: '#FFF',
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
-	statusText: {
-		fontFamily: 'AppleSDGothicNeoEB00',
-		fontSize: 10,
-		color: '#15F3DC',
+	statusText: (_authCode: string) => {
+		let _cr = '#D5CD9E';
+
+		if(_authCode == 'ACCEPT') {
+			_cr = '#15F3DC';
+		} else if(_authCode == 'REFUSE') {
+			_cr = '#FF4D29';
+		}
+
+		return {
+			fontFamily: 'AppleSDGothicNeoEB00',
+			fontSize: 10,
+			color: _cr,
+			borderRadius: 5,
+			backgroundColor: '#FFF',
+			paddingVertical: 3,
+			paddingHorizontal: 10,
+		};
 	},
 	contentsTitle: {
 		fontFamily: 'Pretendard-Regular',

@@ -12,7 +12,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { ICON, PROFILE_IMAGE, findSourcePath, findSourcePathLocal } from 'utils/imageUtils';
 import { Modalize } from 'react-native-modalize';
 import { usePopup } from 'Context';
-import { get_profile_imgage_guide, regist_profile_image, delete_profile_image, update_join_master_image } from 'api/models';
+import { get_profile_imgage_guide, join_save_profile_image, update_join_master_image } from 'api/models';
 import { SUCCESS } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
 import { CommonLoading } from 'component/CommonLoading';
@@ -269,12 +269,12 @@ export const SignUp_Image = (props: Props) => {
       setIsLoading(true);
 
       const body = {
-        member_seq: props.route.params.memberSeq,
+        member_seq: memberSeq,
         file_list: profileImageList,
         img_del_seq_str: imgDelSeqStr,
       };
       try {
-        const { success, data } = await regist_profile_image(body);
+        const { success, data } = await join_save_profile_image(body);
         if (success) {
           switch (data.result_code) {
             case SUCCESS:

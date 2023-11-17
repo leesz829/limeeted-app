@@ -7,6 +7,7 @@ export const PURCHASE = '/order/payment';
  */
 export const LOGIN = '/login/loginProc';
 export const PROFILE_ATHENTICATION2 = '/join/getProfileSecondAuth';
+export const GET_MEMBER_AUTH_LIST = '/join/getMemberSecondAuthList';
 export const PROFILE_IMAGE_GUIDE = '/join/getProfileImage';
 export const MEMBER_INTRODUCE_GUIDE = '/join/getMemberIntro';
 export const REGIST_BASE_INFO = '/join/insertMemberInfo';
@@ -25,6 +26,10 @@ export const GET_SECOND_AUTH = '/join/getMemberSecondAuth';
 export const DELETE_MEMBER_PROFILE_IMAGE = '/join/deleteMemberProfileImage';
 export const UPDATE_JOIN_MASTER_IMAGE = '/join/updateMemberMasterImage'
 export const JOIN_CANCEL = '/join/joinCancel'
+
+export const JOIN_SAVE_PROFILE_IMAGE = '/join/saveProfileImage'
+export const JOIN_SAVE_PROFILE_AUTH = '/join/saveProfileAuth'
+
 
 
 /**
