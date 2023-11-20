@@ -284,5 +284,5 @@ const _styles = StyleSheet.create({
 		fontSize: 12,
 		color: '#fff',
 		textAlign: 'right',
-	  },
+	},
 });
