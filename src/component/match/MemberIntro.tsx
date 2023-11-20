@@ -6,7 +6,7 @@ import { findSourcePath, ICON, IMAGE, GUIDE_IMAGE } from 'utils/imageUtils';
 import SpaceView from 'component/SpaceView';
 import LinearGradient from 'react-native-linear-gradient';
 import { STACK } from 'constants/routes';
-import { modalStyle, layoutStyle, commonStyle } from 'assets/styles/Styles';
+import { modalStyle, layoutStyle, commonStyle, styles } from 'assets/styles/Styles';
 import { isEmptyData } from 'utils/functions';
 import AuthLevel from 'component/common/AuthLevel';
 import ProfileGrade from 'component/common/ProfileGrade';
@@ -15,7 +15,7 @@ import { useUserInfo } from 'hooks/useUserInfo';
 
 const { width, height } = Dimensions.get('window');
 
-export default function MemberIntro({ memberData, imgList, interestList, isNoDataArea, faceList }) {
+export default function MemberIntro({ memberData, imgList, interestList, isNoDataArea, faceList, type }) {
   const navigation = useNavigation<ScreenNavigationProp>();
 
   const memberBase = useUserInfo();
@@ -26,8 +26,14 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
         isEmptyData(memberData?.drinking) || isEmptyData(memberData?.smoking) || interestList.length > 0) || isNoDataArea) ? (
 
         <SpaceView>
+          {type == 'profile' &&
+            <TouchableOpacity style={_styles.modBtn}>
+              <Image source={ICON.squarePen} style={styles.iconSize16} />
+              <Text style={_styles.modBtnText}>수정</Text>
+            </TouchableOpacity>
+          }
           <SpaceView mb={10}>
-            <Text style={_styles.introTitleText}>{memberData?.nickname}의 간단 소개🙂</Text>
+            <Text style={_styles.introTitleText}>{memberData?.nickname}님의 간단 소개🙂</Text>
           </SpaceView>
 
           {/* ############################################################################################### 간단 소개 영역 */}
@@ -37,7 +43,7 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
             end={{ x: 1, y: 1 }}
             style={_styles.introWrap}
           >
-            <SpaceView>
+            {/* <SpaceView>
               <SpaceView mb={5} viewStyle={{flexDirection: 'row'}}>
                 {interestList.map((item, index) => {
                   return index == 0 && (
@@ -47,7 +53,20 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
                   );
                 })}
               </SpaceView>
-            </SpaceView>
+            </SpaceView> */}
+
+            {faceList.length > 0 &&
+              <SpaceView>
+                <SpaceView mb={5} viewStyle={{flexDirection: 'row'}}>
+                  <SpaceView viewStyle={_styles.faceArea}>
+                    <Text style={_styles.faceText}>#{faceList}</Text>
+                  </SpaceView>
+                </SpaceView>
+                <SpaceView mt={2}>
+                  <Text style={_styles.faceDesc}>LIVE에서 HOT한 반응을 받으셨어요!</Text>
+                </SpaceView>
+              </SpaceView>
+            }
 
             <SpaceView>
               {(isEmptyData(memberData?.height) || isEmptyData(memberData?.form_body) || isEmptyData(memberData?.job_name) || isEmptyData(memberData?.religion) ||
@@ -410,10 +429,10 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
 const _styles = StyleSheet.create({
 
   introWrap: {
-    minHeight: 150,
+
     borderRadius: 20,
     paddingHorizontal: 15,
-    paddingVertical: 15,
+    paddingVertical: 30,
     justifyContent: 'space-between',
   },
   faceArea: {
@@ -426,6 +445,11 @@ const _styles = StyleSheet.create({
     fontFamily: 'Pretendard-SemiBold',
     fontSize: 14,
     color: '#4A4846',
+  },
+  faceDesc: {
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 12,
+    color: '#FFF8CC',
   },
   introTitleText: {
     fontFamily: 'Pretendard-Bold',
@@ -495,5 +519,21 @@ const _styles = StyleSheet.create({
     textAlign: 'center',
     paddingVertical: 8,
   },
-
+  modBtn: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderRadius: 10,
+    paddingVertical: 3,
+    paddingHorizontal: 10,
+  },
+  modBtnText: {
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 14,
+    color: '#D5CD9E',
+    marginLeft: 3,
+  },
 });

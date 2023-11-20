@@ -226,6 +226,10 @@ export const ICON = {
   moneyBill: require('assets/icon/icon-money-bill.png'),
   cardGold: require('assets/icon/icon-card-gold.png'),
   radioYellow: require('assets/icon/icon-radio-yellow.png'),
+  squarePen: require('assets/icon/icon-square-pen.png'),
+  sirenMark: require('assets/icon/icon-siren-mark.png'),
+  hifive: require('assets/icon/icon-hifive.png'),
+  heartFace: require('assets/icon/icon-heart-face.png'),
 };
 
 export const GIF_IMG = {

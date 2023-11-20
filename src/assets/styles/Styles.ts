@@ -203,7 +203,7 @@ export const styles = StyleSheet.create({
   },
   iconSize60: {
     width: 60,
-    height: 45,
+    height: 60,
   },
   iconSize65: {
     width: 65,
@@ -619,12 +619,13 @@ export const modalStyle = StyleSheet.create({
   modalHeader: {
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderColor: '#EDEDED',
+    //borderColor: '#EDEDED',
+    borderColor: '#445561',
   },
   modalBtnContainer: {
     width: width - 32,
-    borderTopWidth: 1,
-    borderTopColor: Color.grayEEEE,
+    //borderTopWidth: 1,
+    //borderTopColor: Color.grayEEEE,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },

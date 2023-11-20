@@ -153,7 +153,7 @@ export default function MatchDetail(props: Props) {
             second_auth_list: auth_list,
             interview_list: data?.interview_list,
             interest_list: data?.interest_list,
-            face_list: data?.face_list,
+            face_list: data?.face_list[0].face_code_name,
             report_code_list: data?.report_code_list,
             safe_royal_pass: data?.safe_royal_pass,
             use_item: data?.use_item,
@@ -388,6 +388,7 @@ export default function MatchDetail(props: Props) {
           })
         );
   }
+  
 
   return (
     data.profile_img_list.length > 0 && isLoad ? (

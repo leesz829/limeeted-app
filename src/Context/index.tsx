@@ -156,6 +156,7 @@ export const PopupProvider = ({ children }: any) => {
           btnExpYn={contents.btnExpYn}
           passType={contents.passType}
           passAmt={contents.passAmt}
+          type={contents.type}
         />
       )}
     </PopupContext.Provider>

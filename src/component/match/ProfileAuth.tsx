@@ -19,7 +19,7 @@ import { useUserInfo } from 'hooks/useUserInfo';
 
 const { width } = Dimensions.get('window');
 
-export default function ProfileAuth({ data, isButton, callbackAuthCommentFn, memberData }) {
+export default function ProfileAuth({ data, isButton, callbackAuthCommentFn, memberData, type }) {
   const navigation = useNavigation<ScreenNavigationProp>();
 
   const memberBase = useUserInfo();
@@ -45,6 +45,13 @@ export default function ProfileAuth({ data, isButton, callbackAuthCommentFn, mem
           <SpaceView mb={15} viewStyle={{flexDirection: 'row'}}>
             <Text style={_styles.textStyle(20, '#EEEAEB', 'B')}>{memberData.nickname}님의 인증 정보🤩</Text>
           </SpaceView>
+
+          {type == 'profile' &&
+            <TouchableOpacity style={_styles.modBtn}>
+              <Image source={ICON.squarePen} style={styles.iconSize16} />
+              <Text style={_styles.modBtnText}>수정</Text>
+            </TouchableOpacity>
+          }
 
           {/* ########################################################################################### 인증 목록(세로) */}
           {/* <SpaceView>
@@ -218,6 +225,7 @@ const _styles = StyleSheet.create({
     borderBottomRightRadius: 15,
     overflow: 'hidden',
     minHeight: 90,
+    marginBottom: 10,
   },
   itemSubBg: {
     backgroundColor: '#0EE9F1',
@@ -236,7 +244,23 @@ const _styles = StyleSheet.create({
     paddingVertical: 3,
     paddingHorizontal: 10,
   },
-
+  modBtn: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderRadius: 10,
+    paddingVertical: 3,
+    paddingHorizontal: 10,
+  },
+  modBtnText: {
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 14,
+    color: '#D5CD9E',
+    marginLeft: 3,
+  },
 
 
 });

@@ -7,9 +7,10 @@ import { useNavigation } from '@react-navigation/native';
 import { Color } from 'assets/styles/Color';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmptyData } from 'utils/functions';
+import { ICON } from 'utils/imageUtils';
 
-export default function InterviewRender({ title, dataList }) {
-  
+export default function InterviewRender({ title, dataList, type }) {
+
   return (
     <>
       {isEmptyData(dataList) && dataList.length > 0 && (
@@ -27,14 +28,22 @@ export default function InterviewRender({ title, dataList }) {
             {dataList.map((e, index) => (
               <>
                 {e.answer != "" && e.answer != null && 
-                  <SpaceView key={'interview_' + index} viewStyle={_styles.contentItemContainer}>
-                    <SpaceView mb={10} viewStyle={_styles.questionRow}>
-                      <Text style={_styles.questionText}>Q. {e?.code_name}</Text>
+                  <>
+                    <SpaceView key={'interview_' + index} viewStyle={_styles.contentItemContainer}>
+                      <SpaceView mb={10} viewStyle={_styles.questionRow}>
+                        <Text style={_styles.questionText}>Q. {e?.code_name}</Text>
+                      </SpaceView>
+                      <SpaceView viewStyle={_styles.answerRow}>
+                        <Text style={_styles.answerText}>"{e?.answer}"</Text>
+                      </SpaceView>
                     </SpaceView>
-                    <SpaceView viewStyle={_styles.answerRow}>
-                      <Text style={_styles.answerText}>"{e?.answer}"</Text>
-                    </SpaceView>
-                  </SpaceView>
+                    {type == 'profile' &&
+                      <TouchableOpacity style={_styles.modBtn}>
+                        <Image source={ICON.squarePen} style={styles.iconSize16} />
+                        <Text style={_styles.modBtnText}>수정</Text>
+                      </TouchableOpacity>
+                    }
+                  </>
                 }
               </>
             ))}
@@ -112,5 +121,22 @@ const _styles = StyleSheet.create({
     fontFamily: 'Pretendard-Regular',
     fontSize: 20,
     color: '#F3DEA6',
+  },
+  modBtn: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderRadius: 10,
+    paddingVertical: 3,
+    paddingHorizontal: 10,
+  },
+  modBtnText: {
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 14,
+    color: '#D5CD9E',
+    marginLeft: 3,
   },
 });

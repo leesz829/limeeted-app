@@ -65,21 +65,36 @@ const styles = ({
       break;
   }
 
+  // switch (fontWeight) {
+  //   case '200':
+  //     fontFamily = 'AppleSDGothicNeoEB00';
+  //     break;
+  //   case '300':
+  //     fontFamily = 'AppleSDGothicNeoT00';
+  //     break;
+  //   case '500':
+  //     fontFamily = 'AppleSDGothicNeoM00';
+  //     break;
+  //   case '600':
+  //     fontFamily = 'AppleSDGothicNeoR00';
+  //     break;
+  //   case '700':
+  //     fontFamily = 'AppleSDGothicNeoB00';
+  //     break;
+  // }
+
   switch (fontWeight) {
     case '200':
-      fontFamily = 'AppleSDGothicNeoEB00';
+      fontFamily = 'Pretendard-Light';
       break;
     case '300':
-      fontFamily = 'AppleSDGothicNeoT00';
+      fontFamily = 'Pretendard-Regular';
       break;
     case '500':
-      fontFamily = 'AppleSDGothicNeoM00';
+      fontFamily = 'Pretendard-SemiBold';
       break;
     case '600':
-      fontFamily = 'AppleSDGothicNeoR00';
-      break;
-    case '700':
-      fontFamily = 'AppleSDGothicNeoB00';
+      fontFamily = 'Pretendard-Bold';
       break;
   }
 

@@ -2,13 +2,13 @@ import { Slider } from '@miblanchard/react-native-slider';
 import { RouteProp, useIsFocused, useNavigation, useFocusEffect } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { StackParamList, ScreenNavigationProp, ColorType } from '@types';
-import { get_member_profile_info, update_profile, update_additional, save_profile_auth_comment, update_member_master_image } from 'api/models';
+import { get_member_introduce_guide, get_member_profile_info, update_profile, update_additional, save_profile_auth_comment, update_member_master_image } from 'api/models';
 import { Color } from 'assets/styles/Color';
 import { CommonBtn } from 'component/CommonBtn';
 import CommonHeader from 'component/CommonHeader';
 import { CommonText } from 'component/CommonText';
 import Interview from 'component/Interview';
-import ProfileAuth from 'component/ProfileAuth';
+import ProfileAuth from 'component/match/ProfileAuth';
 import { usePopup } from 'Context';
 import { commonStyle, layoutStyle, styles, modalStyle } from 'assets/styles/Styles';
 import { useProfileImg } from 'hooks/useProfileImg';
@@ -33,7 +33,7 @@ import {
 } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import ReactNativeModal from 'react-native-modal';
-import { findSourcePath, ICON } from 'utils/imageUtils';
+import { findSourcePath, findSourcePathLocal, ICON } from 'utils/imageUtils';
 import { useUserInfo } from 'hooks/useUserInfo';
 import { useDispatch } from 'react-redux';
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
@@ -44,21 +44,13 @@ import { CommonLoading } from 'component/CommonLoading';
 import SpaceView from 'component/SpaceView';
 import LinearGradient from 'react-native-linear-gradient';
 import Modal from 'react-native-modal';
-import { isEmptyData } from 'utils/functions';
+import { isEmptyData, imagePickerOpen } from 'utils/functions';
+import MemberIntro from 'component/match/MemberIntro';
+import InterviewRender from 'component/match/InterviewRender';
+import InterestRender from 'component/match/InterestRender';
 
+const { width, height } = Dimensions.get('window');
 
-const options = {
-  title: '이미지를 선택해 주세요.',
-  type: 'library',
-  options: {
-    selectionLimit: 0,
-    mediaType: 'photo',
-    includeBase64: true,
-    includeExtra: true,
-  },
-};
-
-const { width } = Dimensions.get('window');
 interface Props {
   navigation: StackNavigationProp<StackParamList, 'Profile1'>;
   route: RouteProp<StackParamList, 'Profile1'>;
@@ -73,302 +65,54 @@ export const Profile1 = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
   const scrollViewRef = useRef();
   const [isLoading, setIsLoading] = useState(false);
+  const memberBase = useUserInfo();
 
-  // 프로필 2차 인증 코멘트 팝업 변수
-  const [popupAuthComment, setPopupAuthComment] = useState({
-    visible: false,
-    auth_seq: '',
-    code: '',
-    name: '',
-    comment: '',
-  });
-
-  const [images, setImages] = useState([]);
-
-  const memberBase = useUserInfo();           // 회원 기본정보
-
-  // 프로필 사진
-  const [imgData, setImgData] = React.useState<any>({
-    orgImgUrl01: { memer_img_seq: '', url: '', delYn: '' },
-    orgImgUrl02: { memer_img_seq: '', url: '', delYn: '' },
-    orgImgUrl03: { memer_img_seq: '', url: '', delYn: '' },
-    orgImgUrl04: { memer_img_seq: '', url: '', delYn: '' },
-    orgImgUrl05: { memer_img_seq: '', url: '', delYn: '' },
-    orgImgUrl06: { memer_img_seq: '', url: '', delYn: '' },
-  });
+  const [currentImgIdx, setCurrentImgIdx] = React.useState(0); // 현재 이미지 인덱스
+  const [profileImageList, setProfileImageList] = React.useState([]); // 프로필 이미지 목록
 
   // 프로필 이미지 삭제 시퀀스 문자열
   const [imgDelSeqStr, setImgDelSeqStr] = React.useState('');
 
-  // 프로필 데이터
-  const [profileData, setProfileData] = React.useState({
-    authList: [],
-    faceRankList: [],
-  })
-
-  // 적용할 인터뷰 목록
-  const [applyInterviewList, setApplyInterviewList] = React.useState<any>([]);
-
-  // 프로필 2차 인증 여부
-  const [isJob, setIsJob] = React.useState<any>(false);
-  const [isEdu, setIsEdu] = React.useState<any>(false);
-  const [isIncome, setIsIncome] = React.useState<any>(false);
-  const [isAsset, setIsAsset] = React.useState<any>(false);
-  const [isSns, setIsSns] = React.useState<any>(false);
-  const [isVehicle, setIsVehicle] = React.useState<any>(false);
-
-  // 이미지 삭제 데이터 저장
-  const [isDelImgData, setIsDelImgData] = React.useState<any>({
-    img_seq: '',
+  // ############################################################################# 사진 관리 컨트롤 변수
+  const [imgMngData, setImgMngData] = React.useState<any>({
+    member_img_seq: 0,
+    img_file_path: '',
     order_seq: '',
     status: '',
     return_reason: '',
   });
 
-  // ################################################################ 프로필 이미지 파일 콜백 함수
-  const fileCallBack1 = (uri: any, base64: string) => {
-    let data = { file_uri: uri, file_base64: base64, order_seq: 1 };
-    imageDataApply(data);
-  };
-    
-  const fileCallBack2 = (uri: any, base64: string) => {
-    let data = { file_uri: uri, file_base64: base64, order_seq: 2 };
-    imageDataApply(data);
-  };
-
-  const fileCallBack3 = (uri: any, base64: string) => {
-    let data = { file_uri: uri, file_base64: base64, order_seq: 3 };
-    imageDataApply(data);
-  };
-
-  const fileCallBack4 = (uri: any, base64: string) => {
-    let data = { file_uri: uri, file_base64: base64, order_seq: 4 };
-    imageDataApply(data);
-  };
-
-  const fileCallBack5 = (uri: any, base64: string) => {
-    let data = { file_uri: uri, file_base64: base64, order_seq: 5 };
-    imageDataApply(data);
-  };
-
-  const fileCallBack6 = (uri: any, base64: string) => {
-    let data = { file_uri: uri, file_base64: base64, order_seq: 6 };
-    imageDataApply(data);
-  };
-
-  // ################################################################ 프로필 이미지 데이터 적용
-  const imageDataApply = (data: any) => {
-    insertProfileImage(data);
-
-    /* let dupChk = false;
-    profileImageList.map(({ order_seq }: { order_seq: any }) => {
-      if (order_seq == data.order_seq) {
-        dupChk = true;
-      }
-    });
-
-    if (!dupChk) {
-      setProfileImageList([...profileImageList, data]);
-    } else {
-      setProfileImageList((prev) =>
-        prev.map((item: any) =>
-          item.order_seq === data.order_seq
-            ? { ...item, uri: data.file_uri, file_base64: data.file_base64 }
-            : item
-        )
-      );
-    } */
-  };
-
-  // ############################################################################# 사진 보기
-  const goImgDetail = () => {
-    navigation.navigate(STACK.COMMON, {
-      screen: 'ImagePreview',
-      params: {
-        imgList: myImages,
-        orderSeq: isDelImgData.order_seq,
-      }
-    });
-  };
-
-  // ############################################################################# 사진 삭제 팝업
-  const imgDel_modalizeRef = useRef<Modalize>(null);
-  const imgDel_onOpen = (imgData: any, order_seq: any) => {
-    setIsDelImgData({
-      img_seq: imgData.member_img_seq,
+  // ############################################################################# 사진 관리 팝업 관련 함수
+  const imgMng_modalizeRef = useRef<Modalize>(null);
+  const imgMng_onOpen = (imgData: any, order_seq: any) => {
+    setImgMngData({
+      member_img_seq: imgData.member_img_seq,
+      img_file_path: imgData.img_file_path,
       order_seq: order_seq,
       status: imgData.status,
       return_reason: imgData.return_reason,
     });
-    imgDel_modalizeRef.current?.open();
+
+    imgMng_modalizeRef.current?.open();
   };
-  const imgDel_onClose = () => {
-    imgDel_modalizeRef.current?.close();
-  };
-
-  // ############################################################################# 사진 삭제
-  const imgDelProc = () => {
-
-    let tmpCnt = 0;
-    for (var key in imgData) {
-      if(isDelImgData.status != 'ACCEPT') {
-        if (imgData[key].delYn == 'N' && (imgData[key].url || imgData[key].uri)) {
-          tmpCnt++;
-        }
-      } else {
-        if (imgData[key].delYn == 'N' && imgData[key].status == 'ACCEPT' && (imgData[key].url || imgData[key].uri)) {
-          tmpCnt++;
-        }
-      }
-    }
-
-    if (tmpCnt <= 3) {
-      show({ content: '승인된 프로필 사진은 최소 3장 등록되어야 합니다.' });
-      return;
-    }
-
-    if (isDelImgData.order_seq == '1') {
-      setImgData({
-        ...imgData,
-        orgImgUrl01: { ...imgData.orgImgUrl01, delYn: 'Y' },
-      });
-    }
-    if (isDelImgData.order_seq == '2') {
-      setImgData({
-        ...imgData,
-        orgImgUrl02: { ...imgData.orgImgUrl02, delYn: 'Y' },
-      });
-    }
-    if (isDelImgData.order_seq == '3') {
-      setImgData({
-        ...imgData,
-        orgImgUrl03: { ...imgData.orgImgUrl03, delYn: 'Y' },
-      });
-    }
-    if (isDelImgData.order_seq == '4') {
-      setImgData({
-        ...imgData,
-        orgImgUrl04: { ...imgData.orgImgUrl04, delYn: 'Y' },
-      });
-    }
-    if (isDelImgData.order_seq == '5') {
-      setImgData({
-        ...imgData,
-        orgImgUrl05: { ...imgData.orgImgUrl05, delYn: 'Y' },
-      });
-    }
-    if (isDelImgData.order_seq == '6') {
-      setImgData({
-        ...imgData,
-        orgImgUrl06: { ...imgData.orgImgUrl06, delYn: 'Y' },
-      });
-    }
-
-    let delArr = imgDelSeqStr;
-    if (!delArr) {
-      delArr = isDelImgData.img_seq;
-    } else {
-      delArr += ',' + isDelImgData.img_seq;
-    }
-
-    deleteProfileImage(isDelImgData.img_seq);
+  const imgMng_onClose = () => {
+    imgMng_modalizeRef.current?.close();
   };
 
-  // ############################################################  프로필 이미지 삭제
-  const deleteProfileImage = async (imgSeq:string) => {
+  // 회원 관련 데이터
+  const [profileData, setProfileData] = useState<any>({
+    member_info: {},
+    profile_img_list: [],
+    second_auth_list: [],
+  });
 
-    const body = {
-      file_list: null
-      , img_del_seq_str: imgSeq
-      , interview_list: null
-    };
+  // 인터뷰 데이터
+  const [interviewData, setInterviewData] = useState([]);
 
-    imgDel_onClose();
-    setIsLoading(true);
-    
-    try {
-      const { success, data } = await update_profile(body);
-      if(success) {
-        switch (data.result_code) {
-          case SUCCESS:
-            dispatch(setPartialPrincipal({
-              mbr_base : data.mbr_base
-              , mbr_img_list : data.mbr_img_list
-              , mbr_interview_list : data.mbr_interview_list
-            }));
-
-            profileDataSet(data.mbr_img_list);
-
-            show({
-              type: 'RESPONSIVE',
-              content: '프로필 사진이 삭제되었습니다.',
-            });
-
-            break;
-          default:
-            show({
-              content: '오류입니다. 관리자에게 문의해주세요.' ,
-              confirmCallback: function() {}
-            });
-            break;
-        }
-      } else {
-        show({
-          content: '오류입니다. 관리자에게 문의해주세요.' ,
-          confirmCallback: function() {}
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // ############################################################  인터뷰 답변 작성 Callback 함수
-  const callbackInterviewAnswer = async (seq: any, answer: any) => {
-    let dupChk = false;
-    let data = {member_interview_seq: seq, answer: answer};
-    applyInterviewList.map(({member_interview_seq} : {member_interview_seq: any;}) => {
-      if(member_interview_seq == seq) { dupChk = true };
-    })
-    if(!dupChk) {
-      setApplyInterviewList([...applyInterviewList, data]);
-    } else {
-      setApplyInterviewList((prev) =>
-        prev.map((item: any) =>
-          item.member_interview_seq === seq ? { ...item, answer: answer } : item
-        )
-      );
-    }
-  }
-
-  // ############################################################  인터뷰 답변 작성 Callback 함수
-  const callbackScrollBottom = async () => {
-    scrollViewRef.current.scrollToEnd({animated: true})
-  }
-
-  const deleteImage = (item) => {
-    const deleted = images.filter((e) => e !== item);
-    deleted.push({});
-    setImages(deleted);
-    // setImages((prev) => prev.filter((e) => e !== item).push({}));
-  };
-  const addImage = async () => {
-    const validCount = images.filter((e) => e.img_file_path).length;
-    const result = await launchImageLibrary(options);
-    if (result.didCancel) {
-      return;
-    }
-    let temp = images.concat();
-
-    temp[validCount] = {
-      ...result.assets[0],
-      img_file_path: result.assets[0].uri,
-    };
-
-    setImages(temp);
-  };
+  // 관심사 목록
+	const [intList, setIntList] = React.useState([]);
+  // 관심사 체크 목록
+	const [checkIntList, setCheckIntList] = React.useState([{code_name: "", common_code: "", interest_seq: ""}]);
 
   // ############################################################  프로필 데이터 조회
   const getMemberProfileData = async () => {
@@ -379,17 +123,11 @@ export const Profile1 = (props: Props) => {
       if (success) {
         const auth_list = data?.mbr_second_auth_list.filter(item => item.auth_status == 'ACCEPT');
         setProfileData({
-          authList: auth_list,
-          faceRankList: data.mbr_face_rank_list,
+            member_info: data?.mbr_base,
+            profile_img_list: data?.mbr_img_list,
+            second_auth_list: auth_list,
         });
 
-        profileDataSet(data.mbr_img_list);
-
-        dispatch(setPartialPrincipal({
-          mbr_base : data.mbr_base
-          , mbr_img_list : data.mbr_img_list
-          , mbr_second_auth_list : data.mbr_second_auth_list
-        }));
       } else {
         show({
           content: '오류입니다. 관리자에게 문의해주세요.',
@@ -400,335 +138,262 @@ export const Profile1 = (props: Props) => {
       console.log(error);
     } finally {
       setIsLoading(false);
-
-      if(typeof props.route.params?.isInterViewMove != 'undefined') {
-        if(props.route.params.isInterViewMove) {
-          setTimeout(() => {
-            scrollViewRef.current.scrollToEnd({animated: false});
-          }, 500);
-          props.route.params.isInterViewMove = false;
-        }
-      }
     }
   }
 
-  // ############################################################  프로필 이미지 등록
-  const insertProfileImage = async (imageData:any) => {
-   
-    let imageList = [];
-    imageList.push(imageData);
+  // ############################################################ 관심사, 인터뷰 정보 조회
+	const getMemberInterestData = async() => {
+		const body = {
+			member_seq : memberBase?.member_seq
+		};
+		try {
+			const { success, data } = await get_member_introduce_guide(body);
+			if(success) {
+				switch (data.result_code) {
+				case SUCCESS:
+					let _interviewList:any = [];
+					data?.interview_list?.map((item, index) => {
+						const data = {
+							common_code: item?.common_code,
+							code_name: item?.code_name,
+							interview_seq: item?.interview_seq,
+							answer: isEmptyData(item?.answer) ? item?.answer : '',
+							order_seq: item?.order_seq,
+						};
+						_interviewList.push(data);
+					});
 
-    const body = {
-      file_list: imageList
-      , img_del_seq_str: null
-      , interview_list: null
-    };
+          setInterviewData(_interviewList,);
 
-    setIsLoading(true);
-    
-    try {
-      const { success, data } = await update_profile(body);
-      if(success) {
-        switch (data.result_code) {
-          case SUCCESS:
-            dispatch(setPartialPrincipal({
-              mbr_base : data.mbr_base
-              , mbr_img_list : data.mbr_img_list
-              , mbr_interview_list : data.mbr_interview_list
-            }));
+          setIntList(data.int_list);
 
-            profileDataSet(data.mbr_img_list);
+          let setList = new Array();
+					data.int_list.map((item, index) => {
+						item.list.map((obj, idx) => {
+							if(obj.interest_seq != null) {
+								setList.push(obj);
+							}
+						})
+					})
+		
+					setCheckIntList(setList);
+					break;
+				default:
+					show({
+						content: '오류입니다. 관리자에게 문의해주세요.' ,
+						confirmCallback: function() {}
+					});
+					break;
+				}
+			} else {
+				show({
+					content: '오류입니다. 관리자에게 문의해주세요.' ,
+					confirmCallback: function() {}
+				});
+			}
+		} catch (error) {
+			console.log(error);
+		} finally {
+			
+		}
+	};
 
-            show({
-              type: 'RESPONSIVE',
-              content: '프로필 사진이 등록되었습니다.\n심사가 진행 중이니 조금 기다려주세요.',
-              popupDuration: 3000,
-            });
-
-            break;
-          default:
-            show({
-              content: '오류입니다. 관리자에게 문의해주세요.' ,
-              confirmCallback: function() {}
-            });
-            break;
-        }
-       
-      } else {
-        show({
-          content: '오류입니다. 관리자에게 문의해주세요.' ,
-          confirmCallback: function() {}
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // ################################################################ 프로필 이미지 구성
-  const profileDataSet = async (imgList:any) => {
-    
-    // ##### 프로필 이미지 구성
-    if (imgList != null && imgList.length > 0) {
-      let imgData: any = {
-        orgImgUrl01: { memer_img_seq: '', url: '', delYn: '' },
-        orgImgUrl02: { memer_img_seq: '', url: '', delYn: '' },
-        orgImgUrl03: { memer_img_seq: '', url: '', delYn: '' },
-        orgImgUrl04: { memer_img_seq: '', url: '', delYn: '' },
-        orgImgUrl05: { memer_img_seq: '', url: '', delYn: '' },
-        orgImgUrl06: { memer_img_seq: '', url: '', delYn: '' },
-        imgFile01: { uri: '', name: '', type: '' },
-        imgFile02: { uri: '', name: '', type: '' },
-        imgFile03: { uri: '', name: '', type: '' },
-        imgFile04: { uri: '', name: '', type: '' },
-        imgFile05: { uri: '', name: '', type: '' },
-        imgFile06: { uri: '', name: '', type: '' },
-      };
-
-      imgList.map(
-        ({
-          member_img_seq,
-          img_file_path,
-          order_seq,
-          org_order_seq,
-          status,
-          return_reason,
-        }: {
-          member_img_seq: any;
-          img_file_path: any;
-          order_seq: any;
-          org_order_seq: any;
-          status: any;
-          return_reason: any;
-        }) => {
-
-          let data = {
-            member_img_seq: member_img_seq,
-            url: findSourcePath(img_file_path),
-            delYn: 'N',
-            status: status,
-            return_reason: return_reason,
-          };
-          if (order_seq == 1) {
-            imgData.orgImgUrl01 = data;
-          }
-          if (order_seq == 2) {
-            imgData.orgImgUrl02 = data;
-          }
-          if (order_seq == 3) {
-            imgData.orgImgUrl03 = data;
-          }
-          if (order_seq == 4) {
-            imgData.orgImgUrl04 = data;
-          }
-          if (order_seq == 5) {
-            imgData.orgImgUrl05 = data;
-          }
-          if (order_seq == 6) {
-            imgData.orgImgUrl06 = data;
-          }
-        }
-      );
-
-      setImgData({ ...imgData, imgData });
-    }
-  };
-
-  // ################################################################ 초기 실행 함수
-  /* useEffect(() => {
-    //init();
-  }, [myImages]);
-
-  const init = () => {
-    getMemberFaceRank();
-    let result = [];
-    let freeCount = 6;
-    freeCount = freeCount - myImages.length;
-
-    for (let i = 0; i < freeCount; i++) {
-      result.push({});
-    }
-    setImages(myImages.concat(result));
-  }; */
-
-  // ############################################################################# 회원 튜토리얼 노출 정보 저장
-  const saveMemberTutorialInfo = async () => {
-    const body = {
-      tutorial_profile_yn: 'N'
-    };
-    const { success, data } = await update_additional(body);
-    if(success) {
-      if(null != data.mbr_base && typeof data.mbr_base != 'undefined') {
-        dispatch(setPartialPrincipal({
-          mbr_base : data.mbr_base
-        }));
-      }
-    }
-  };
-
-  // ############################################################################# 프로필 인증 코멘트 입력 팝업 함수
-  const callbackAuthCommentPopup = async (auth_seq: any, code: any, name: any, comment: any) => {
-    setPopupAuthComment({
-      visible: true,
-      auth_seq: auth_seq,
-      code: code,
-      name: name,
-      comment: comment
-    })
-  }
-
-  // ############################################################################# 프로필 인증 코멘트 저장 함수
-  const saveAuthComment = async () => {
-    Keyboard.dismiss();
-    //setIsLoading(true);
-
-    setPopupAuthComment({
-      ...popupAuthComment,
-      visible: false,
-    });
-
-    const body = {
-      member_auth_seq: popupAuthComment.auth_seq,
-      auth_comment: popupAuthComment.comment,
-    };
-
-    try {
-      const { success, data } = await save_profile_auth_comment(body);
-      if(success) {
-        switch (data.result_code) {
-          case SUCCESS:
-            getMemberProfileData();
-            /* 
-            show({
-              title: '알림',
-              content: '코멘트가 저장되었습니다.' ,
-              confirmCallback: function() {}
-            });   */
-
-            break;
-          default:
-            show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-            break;
-        }
-       
-      } else {
-        show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // ############################################################  대표 사진 설정
-  const updateMasterImage = async () => {
-    const body = {
-      member_img_seq: isDelImgData.img_seq
-    };
-
-    setIsLoading(true);
-
-    try {
-      const { success, data } = await update_member_master_image(body);
-      if(success) {
-        switch (data.result_code) {
-          case SUCCESS:
-
-            dispatch(setPartialPrincipal({
-              mbr_base : data.mbr_base
-              , mbr_img_list : data.mbr_img_list
-              , mbr_interview_list : data.mbr_interview_list
-            }));
-
-            profileDataSet(data.mbr_img_list);
-
-            imgDel_onClose();
-            
-            show({
-              type: 'RESPONSIVE',
-              content: '대표사진이 변경되었어요.',
-            });
-
-            break;
-          default:
-            show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-            break;
-        }
-      } else {
-        show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // ############################################################################# 프로필 이미지 렌더링 아이템
-  const ProfileImageRenderItem = ({ index, _imgData, delFn, fileCallBackFn }) => {
-    const imgUrl = _imgData?.url;
-    const imgDelYn = _imgData?.delYn;
-    const imgStatus = _imgData?.status;
+  // ############################################################################# 사진 선택
+  const imgSelected = (idx:number, isNew:boolean) => {
+    if(isNew) {
+      imagePickerOpen(function(path:any, data:any) {
+        let _data = {
+          member_img_seq: 0,
+          img_file_path: path,
+          order_seq: profileImageList.length+1,
+          org_order_seq: profileImageList.length+1,
+          del_yn: 'N',
+          status: 'PROGRESS',
+          return_reason: '',
+          file_base64: data,
+        };
   
+        setProfileImageList((prev) => {
+          return [...prev, _data];
+        });
+
+        setCurrentImgIdx(profileImageList.length);
+      });
+    } else {
+      setCurrentImgIdx(idx);
+    }
+  }
+
+    // ############################################################################# 사진 변경
+    const imgModfyProc = () => {
+      imagePickerOpen(function(path:any, data:any) {
+  
+        // 삭제 데이터 저장
+        if(isEmptyData(imgMngData.member_img_seq) && 0 != imgMngData.member_img_seq) {
+          let delArr = imgDelSeqStr;
+          if (delArr == '') {
+            delArr = imgMngData.member_img_seq;
+          } else {
+            delArr = delArr + ',' + imgMngData.member_img_seq;
+          }
+          setImgDelSeqStr(delArr);
+        }
+  
+        // 목록 재구성
+        setProfileImageList((prev) => {
+          const dupChk = prev.some(item => item.order_seq === imgMngData.order_seq);
+          if(dupChk) {
+            return prev.map((item) => item.order_seq === imgMngData.order_seq 
+                ? { ...item, img_file_path: path, file_base64: data, status: 'PROGRESS' }
+                : item
+            );
+          }
+        });
+  
+        // 모달 닫기
+        imgMng_onClose();
+      });
+    };
+  
+    // ############################################################################# 사진 삭제
+    const imgDelProc = () => {
+      // 프로필 이미지 목록 재구성
+      let _profileImgList:any = [];
+      profileImageList.map((item, index) => {
+        if(index+1 != imgMngData.order_seq) {
+          _profileImgList.push(item);
+        }
+      });
+      _profileImgList.map((item, index) => {
+        item.order_seq = index+1;
+      });
+      setProfileImageList(_profileImgList);
+  
+      // 삭제 데이터 저장
+      if(isEmptyData(imgMngData.member_img_seq) && 0 != imgMngData.member_img_seq) {
+        let delArr = imgDelSeqStr;
+        if (delArr == '') {
+          delArr = imgMngData.member_img_seq;
+        } else {
+          delArr = delArr + ',' + imgMngData.member_img_seq;
+        }
+  
+        setImgDelSeqStr(delArr);
+      }
+  
+      setCurrentImgIdx(0);
+  
+      // 모달 닫기
+      imgMng_onClose();
+    };
+
+  /* ########################################################################################## 대표사진 영역 렌더링 */
+  function MasterImageArea({ index, imgData, mngModalFn }) {
+    const imgUrl = findSourcePathLocal(imgData?.img_file_path); // 이미지 경로
+    const imgDelYn = imgData?.del_yn; // 이미지 삭제 여부
+    const imgStatus = imgData?.status; // 이미지 상태
+
     return (
-      <View style={_styles.container}>
+      <>
         {isEmptyData(imgUrl) && imgDelYn == 'N' ? (
-          <TouchableOpacity onPress={() => { delFn(_imgData, index+1); }}>
-            <Image
-              resizeMode="cover"
-              resizeMethod="scale"
-              style={_styles.imageStyle}
-              key={imgUrl}
-              source={imgUrl}
-            />
-            {(imgStatus == 'PROGRESS' || imgStatus == 'REFUSE') ? (
-              <View style={_styles.imageDisabled(false)}>
-                <Text style={[_styles.profileImageDimText(imgStatus)]}>{imgStatus == 'PROGRESS' ? '심사중' : '반려'}</Text>
-              </View>
-            ) : (imgStatus == 'ACCEPT' && index == 0) && (
-              <View style={_styles.imageDisabled(true)}>
-                <Text style={[_styles.masterImageDimText]}>대표 사진</Text>
-              </View>
-            )}
-          </TouchableOpacity>
+          <>
+            <SpaceView>
+              <Image 
+                source={imgUrl} 
+                style={_styles.mstImgStyle} 
+                resizeMode="cover" />
+
+              {index == 0 && (
+                <SpaceView viewStyle={_styles.mstMarkWrap}>
+                  <Text style={_styles.mstMarkText}>대표사진</Text>
+                </SpaceView>
+              )}
+
+              <TouchableOpacity 
+                onPress={() => { mngModalFn(imgData, index+1, imgUrl);}} 
+                style={_styles.modBtn}
+              >
+                <Image source={ICON.userPen} style={styles.iconSquareSize(17)} />
+                <Text style={_styles.modBtnText}>수정</Text>
+              </TouchableOpacity>
+            </SpaceView>
+          </>
         ) : (
-          <CommonImagePicker isAuth={false} callbackFn={fileCallBackFn} uriParam={''} />
+          <SpaceView viewStyle={_styles.imgEmptyArea}>
+            <TouchableOpacity
+              onPress={() => {
+                imagePickerOpen(function(path:any, data:any) {
+                  let _data = {
+                    member_img_seq: 0,
+                    img_file_path: path,
+                    order_seq: profileImageList.length+1,
+                    org_order_seq: profileImageList.length+1,
+                    del_yn: 'N',
+                    status: 'PROGRESS',
+                    return_reason: '',
+                    file_base64: data,
+                  };
+            
+                  setProfileImageList((prev) => {
+                    return [...prev, _data];
+                  });
+          
+                  setCurrentImgIdx(0);
+                });
+              }}
+            >
+              <SpaceView mb={10} viewStyle={{alignItems: 'center'}}><Image source={ICON.userAdd} style={styles.iconSquareSize(64)} /></SpaceView>
+              <SpaceView mb={60}><Text style={_styles.imgEmptyText}>대표사진은 얼굴이 뚜렷하게{'\n'}나온 셀카를 권장드려요.</Text></SpaceView>
+              <SpaceView mb={20}><Text style={_styles.imgEmptyText}>다양한 분위기의 내 모습이 담긴{'\n'}사진을 추천드려요.</Text></SpaceView>
+              <SpaceView mb={50}><Text style={_styles.imgEmptyText}>선택 사진을 올리고 더 근사한{'\n'}프로필을 꾸며 보세요.</Text></SpaceView>
+            </TouchableOpacity>
+          </SpaceView>
         )}
-      </View>
+      </>
     );
   };
 
-  // ############################################################################# 초기 실행 실행
-  useFocusEffect(
-    React.useCallback(() => {
-      getMemberProfileData();
+  /* ########################################################################################## 프로필 사진 아이템 렌더링 */
+  function ProfileImageItemNew({ index, imgData, imgSelectedFn }) {
+    const imgUrl = findSourcePathLocal(imgData?.img_file_path); // 이미지 경로
+    const imgDelYn = imgData?.del_yn; // 이미지 삭제 여부
+    const imgStatus = imgData?.status; // 이미지 상태
 
-      return () => {
-        imgDel_onClose();
-      };
-    }, []),
-  );
+    return (
+      <TouchableOpacity 
+        onPress={() => { imgSelectedFn(index, !isEmptyData(imgData)); }}
+        activeOpacity={0.9}
+      >
+        {isEmptyData(imgUrl) && imgDelYn == 'N' ? (
+          <>
+            <SpaceView viewStyle={_styles.subImgWrap(index == currentImgIdx)} >
+              <Image
+                resizeMode="cover"
+                resizeMethod="scale"
+                style={_styles.subImgStyle}
+                key={imgUrl}
+                source={imgUrl}
+              />
+              <View style={_styles.imageDisabled(false)}>
+                <Text style={[_styles.profileImageDimText(imgStatus)]}>{imgStatus == 'PROGRESS' ? '심사중' : imgStatus == 'ACCEPT' ? '승인' : '반려'}</Text>
+              </View>
+            </SpaceView>
+          </>
+        ) : (
+          <>
+            <SpaceView viewStyle={_styles.subImgNoData}>
+              <Image source={ICON.userAdd} style={styles.iconSquareSize(22)} />
+            </SpaceView>
+          </>
+        )}
+      </TouchableOpacity>
+    );
+  };
 
   useEffect(() => {
     if(isFocus) {
-
-      // 튜토리얼 팝업 노출
-      if(!isEmptyData(memberBase?.tutorial_profile_yn) || memberBase?.tutorial_profile_yn == 'Y') {
-        show({
-          type: 'GUIDE',
-          guideType: 'PROFILE',
-          guideSlideYn: 'Y',
-          guideNexBtnExpoYn: 'Y',
-          confirmCallback: function(isNextChk) {
-            if(isNextChk) {
-              saveMemberTutorialInfo();
-            }
-          }
-        });
-      };
+      getMemberProfileData();
+      getMemberInterestData();
     };
   }, [isFocus]);
 
@@ -736,299 +401,88 @@ export const Profile1 = (props: Props) => {
     <>
       {isLoading && <CommonLoading />}
 
-      <CommonHeader
-        title="프로필 관리"
-        /* right={
-          <TouchableOpacity onPress={() => { saveMemberProfile(); }}>
-            <Text style={_styles.saveText}>저장</Text>
-          </TouchableOpacity>
-        } */
-      />
+      <CommonHeader title="프로필 관리" />
+  
+      <ScrollView 
+        bounces={false}
+        showsVerticalScrollIndicator={false}
+        style={{flexGrow: 1}}>
+        <LinearGradient
+          colors={['#3D4348', '#1A1E1C']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+        >
 
-      {/* <KeyboardAwareScrollView behavior={"padding"} style={{flex:1, backgroundColor: 'white'}} extraScrollHeight={70}> */}
-        <ScrollView ref={scrollViewRef} contentContainerStyle ={{ backgroundColor: 'white', flexGrow: 1 }}>
-
-        {/* ####################################################################################
-					####################### 프로필 이미지 영역
-					#################################################################################### */}
-        <View style={_styles.wrapper}>
-          {[0,1,2,3,4,5].map((i, index) => {
-            return (
-              <>
-                {index == 0 && <ProfileImageRenderItem index={index} _imgData={imgData.orgImgUrl01} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack1}  /> }
-                {index == 1 && <ProfileImageRenderItem index={index} _imgData={imgData.orgImgUrl02} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack2}  /> }
-                {index == 2 && <ProfileImageRenderItem index={index} _imgData={imgData.orgImgUrl03} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack3}  /> }
-                {index == 3 && <ProfileImageRenderItem index={index} _imgData={imgData.orgImgUrl04} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack4}  /> }
-                {index == 4 && <ProfileImageRenderItem index={index} _imgData={imgData.orgImgUrl05} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack5}  /> }
-                {index == 5 && <ProfileImageRenderItem index={index} _imgData={imgData.orgImgUrl06} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack6}  /> }
-              </>
-            )
-          })}
-        </View>
-
-        <View style={{ flexDirection: 'column', paddingHorizontal: 20, marginTop: 20 }}>
-
-          {/* ####################################################################################
-					####################### 프로필 인증 영역
-					#################################################################################### */}
-
-          {memberBase?.member_seq != 905 && (
-            <>
-              {profileData.authList.length > 0 ? (
-                <ProfileAuth level={memberBase?.auth_acct_cnt} data={profileData.authList} isButton={true} callbackAuthCommentFn={callbackAuthCommentPopup} />
-              ) : (
-                <View style={{width: '100%', flexDirection: 'column', alignItems: 'flex-start'}}>
-                  <Text style={_styles.title}>프로필 인증</Text>
-
-                  <View style={_styles.authShadowArea}>
-                    <LinearGradient
-                      colors={['#FFFFFF', '#E8FFFE']}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 1 }}
-                      style={_styles.authArea(Platform.OS)}>
-
-                      <SpaceView viewStyle={{flexDirection: 'row'}}>
-                        <SpaceView mr={7}><Image source={ICON.jobNew} style={{width: 40, height: 29}} /></SpaceView>
-                        <SpaceView mr={7}><Image source={ICON.degreeNew} style={{width: 40, height: 29}} /></SpaceView>
-                        <SpaceView mr={7}><Image source={ICON.incomeNew} style={{width: 40, height: 29}} /></SpaceView>
-                        <SpaceView mr={7}><Image source={ICON.assetNew} style={{width: 40, height: 29}} /></SpaceView>
-                        <SpaceView mr={7}><Image source={ICON.snsNew} style={{width: 40, height: 29}} /></SpaceView>
-                        <SpaceView><Image source={ICON.vehicleNew} style={{width: 40, height: 29}} /></SpaceView>
-                      </SpaceView>
-
-                      <SpaceView mt={20} viewStyle={_styles.authEmptyArea}>
-                        <SpaceView mb={13}><Text style={_styles.authEmptyTit}>프로필 인증 변경 심사 후 인증 레벨을 부여 받을 수 있어요.</Text></SpaceView>
-                        <SpaceView mt={5} viewStyle={{paddingHorizontal: 20}}>
-                          <TouchableOpacity 
-                            onPress={() => { navigation.navigate(STACK.COMMON, { screen: 'SecondAuth', }); }}
-                            hitSlop={commonStyle.hipSlop15}>
-                            
-                            <Text style={_styles.authEmptyBtn}>프로필 인증 변경</Text>
-                          </TouchableOpacity>
-                        </SpaceView>
-                      </SpaceView>
-                    </LinearGradient>
-                  </View>
-                </View>
-              )}
-            </>
-          )}
-
-          {/* ####################################################################################
-					####################### 인상 투표 결과 영역
-					#################################################################################### */}
-          {memberBase?.member_seq != 905 && (
-            <>
-              {profileData.faceRankList.length > 0 && (
-                <>
-                  <SpaceView mt={30}>
-                    <Text style={_styles.title}>내 인상 투표 결과</Text>
-                    <View style={_styles.impressionContainer}>
-
-                      {profileData.faceRankList.map((item : any, index) => (
-                        <View key={index} style={_styles.itemRow(index === profileData.faceRankList.length - 1 ? true : false)}>
-                          <View style={_styles.subRow}>
-                            {/* <Image source={ICON.fashion} style={_styles.icon} /> */}
-                            <Text style={_styles.rankText(index)}>
-                              {index+1}위
-                            </Text>
-                            <Text style={_styles.contentsText}>{item.face_code_name}</Text>
-                          </View>
-                          <View style={_styles.fashionPercent(index)}>
-                            <Text style={_styles.percentText}>{item.percent}%</Text>
-                          </View>
-                        </View>
-                      ))}
-                    </View>
-                  </SpaceView>
-
-                  <SpaceView mt={30} mb={30} viewStyle={_styles.myImpressionContainer}>
-                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 25}}>
-                      <Text style={_styles.title}>내 평점은?</Text>
-                    </View>
-
-                    <View style={_styles.profileScoreContainer}>
-                      <View style={[_styles.scoreContainer, { left: memberBase?.profile_score == 0 ? 0 : memberBase?.profile_score * 10 - 5 + '%' }]}>
-                        <Text style={_styles.scoreText}>{memberBase?.profile_score}</Text>
-                        <View style={_styles.triangle}></View>
-                      </View>
-
-                      <View>
-                        <LinearGradient
-                          colors={['#7986EE', '#8854D2']}
-                          start={{ x: 0, y: 0 }}
-                          end={{ x: 1, y: 0 }}
-                          style={_styles.gradient(memberBase?.profile_score / 10)}>
-                        </LinearGradient>
-
-                        <Slider
-                          //value={memberBase?.profile_score / 10}
-                          animateTransitions={true}
-                          renderThumbComponent={() => null}
-                          /* maximumTrackTintColor={'#e3e3e3'}
-                          minimumTrackTintColor={'#8854d2'} */
-                          maximumTrackTintColor={'transparent'}
-                          minimumTrackTintColor={'transparent'}
-                          containerStyle={_styles.sliderContainerStyle}
-                          trackStyle={_styles.trackStyle}
-                          trackClickable={false}
-                          disabled
-                        />
-                      </View>
-                    </View>
-                    
-                    <View style={_styles.gageContainer}>
-                      <Text style={_styles.gageText}>0</Text>
-                      <Text style={_styles.gageText}>5</Text>
-                      <Text style={_styles.gageText}>10</Text>
-                    </View>
-                  </SpaceView>
-                </>
-              )}
-            </>
-          )}
-
-          {/* ####################################################################################
-					####################### 인터뷰 영역
-					#################################################################################### */}
-          <Interview title={memberBase?.nickname + '님을\n알려주세요!'} 
-                      callbackAnswerFn={callbackInterviewAnswer}
-                      callbackScrollBottomFn={callbackScrollBottom} />
-        </View>
-        <View style={{ height: 10 }} />
-      </ScrollView>
-      {/* </KeyboardAwareScrollView> */}
-
-      {/* ###############################################
-							사진 삭제 팝업
-			############################################### */}
-      <Modalize
-        ref={imgDel_modalizeRef}
-        adjustToContentHeight={true}
-        handleStyle={modalStyle.modalHandleStyle}
-        modalStyle={[modalStyle.modalContainer]} >
-
-        <View style={modalStyle.modalHeaderContainer}>
-          <CommonText fontWeight={'700'} type={'h3'}>
-            프로필 사진 관리
-          </CommonText>
-          <TouchableOpacity onPress={imgDel_onClose} hitSlop={commonStyle.hipSlop20}>
-            <Image source={ICON.xBtn2} style={styles.iconSize20} />
-          </TouchableOpacity>
-        </View>
-
-        <View style={[modalStyle.modalBody, layoutStyle.flex1]}>
-          {isDelImgData.status == 'REFUSE' && isDelImgData.return_reason != null && 
-            <SpaceView mb={15}>
-              <SpaceView mb={16} viewStyle={layoutStyle.row}>
-                <Image source={ICON.confirmation} style={[styles.iconSize20, {marginTop: 3}]} />
-                <CommonText 
-                  color={ColorType.blue697A}
-                  fontWeight={'700'}
-                  textStyle={{marginLeft: 5, textAlignVertical: 'center'}}>반려 사유 안내</CommonText>
-              </SpaceView>
-
-              <SpaceView mb={12} viewStyle={_styles.refuseArea}>
-                <CommonText
-                  color={'848484'} 
-                  fontWeight={'500'}
-                  lineHeight={17}
-                  type={'h6'}
-                  textStyle={{marginTop: 4}}>{isDelImgData.return_reason}</CommonText>
-              </SpaceView>
+          {/* ############################################################################################################# 프로필 이미지 영역 */}
+          <SpaceView mb={30} ml={20} mr={15} viewStyle={_styles.contentWrap}>
+            <SpaceView>
+              {[0,1,2,3,4,5].map((i, index) => {
+                return index == currentImgIdx && (
+                  <>
+                    <MasterImageArea index={currentImgIdx} imgData={profileData.profile_img_list[currentImgIdx]} mngModalFn={imgMng_onOpen} />
+                  </>
+                )
+              })}
             </SpaceView>
-          }
 
-          <SpaceView mb={10}>
-            <CommonBtn value={'보기'} type={'primary'} borderRadius={12} onPress={goImgDetail} />
-          </SpaceView>
-
-          {(isDelImgData.status == 'ACCEPT' && isDelImgData.order_seq > 1) &&
-            <SpaceView mb={10}>
-              <CommonBtn value={'대표사진 설정'} type={'primary'} borderRadius={12} onPress={updateMasterImage} />
-            </SpaceView>
-          }
-
-          {/* <SpaceView mb={10}>
-            <CommonBtn 
-              value={'순서 변경'} 
-              type={'primary2'} 
-              borderRadius={12} 
-              onPress={() => { 
-                navigation.navigate(STACK.COMMON, {
-                  screen: 'ProfileImageSetting',
-                });
-              }} />
-          </SpaceView> */}
-
-          <SpaceView>
-            <CommonBtn value={'삭제'} type={'primary2'} borderRadius={12} onPress={imgDelProc} />
-          </SpaceView>
-
-          {/* <SpaceView>
-            <CommonBtn value={'취소'} type={'primary2'} borderRadius={12} onPress={imgDel_onClose} />
-          </SpaceView> */}
-
-        </View>
-      </Modalize>
-
-      {/* ###############################################
-							인증 코멘트 등록 팝업
-			############################################### */}
-      <Modal 
-        isVisible={popupAuthComment.visible} 
-        onBackdropPress={() => { Keyboard.dismiss(); }}>
-
-        <View style={{backgroundColor: '#fff', borderRadius: 20,}}>
-          <SpaceView viewStyle={[modalStyle.modalBody]}>
-            
-            <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-start'}}>
+            <SpaceView viewStyle={{flexDirection: 'column', justifyContent: 'space-between'}}>
               <SpaceView>
-                  {popupAuthComment.code == 'JOB' && <Image source={ICON.jobNew} style={{width: 75, height: 56}} />}
-                  {popupAuthComment.code == 'EDU' && <Image source={ICON.degreeNew} style={{width: 75, height: 56}} />}
-                  {popupAuthComment.code == 'INCOME' && <Image source={ICON.incomeNew} style={{width: 75, height: 56}} />}
-                  {popupAuthComment.code == 'ASSET' && <Image source={ICON.assetNew} style={{width: 75, height: 56}} />}
-                  {popupAuthComment.code == 'SNS' && <Image source={ICON.snsNew} style={{width: 75, height: 56}} />}
-                  {popupAuthComment.code == 'VEHICLE' && <Image source={ICON.vehicleNew} style={{width: 75, height: 56}} />}
+                <SpaceView ml={3}><Text style={_styles.subImgTitle}>필수</Text></SpaceView>
+                <SpaceView><ProfileImageItemNew index={0} imgData={profileData.profile_img_list.length > 0 ? profileData.profile_img_list[0] : null} imgSelectedFn={imgSelected} /></SpaceView>
+                <SpaceView><ProfileImageItemNew index={1} imgData={profileData.profile_img_list.length > 1 ? profileData.profile_img_list[1] : null} imgSelectedFn={imgSelected} /></SpaceView>
+                <SpaceView><ProfileImageItemNew index={2} imgData={profileData.profile_img_list.length > 2 ? profileData.profile_img_list[2] : null} imgSelectedFn={imgSelected} /></SpaceView>
               </SpaceView>
-              <SpaceView ml={15}>
-                <Text style={_styles.authCommentText}>{popupAuthComment.name} 인증{'\n'}코멘트를 남겨 주세요.</Text>
+              <SpaceView>
+                <SpaceView ml={3}><Text style={_styles.subImgTitle}>선택</Text></SpaceView>
+                <SpaceView><ProfileImageItemNew index={3} imgData={profileData.profile_img_list.length > 3 ? profileData.profile_img_list[3] : null} imgSelectedFn={imgSelected} /></SpaceView>
+                <SpaceView><ProfileImageItemNew index={4} imgData={profileData.profile_img_list.length > 4 ? profileData.profile_img_list[4] : null} imgSelectedFn={imgSelected} /></SpaceView>
+                <SpaceView><ProfileImageItemNew index={5} imgData={profileData.profile_img_list.length > 5 ? profileData.profile_img_list[5] : null} imgSelectedFn={imgSelected} /></SpaceView>
               </SpaceView>
-            </SpaceView>
-
-            <SpaceView mt={15}>
-              <TextInput
-                defaultValue={popupAuthComment.comment}
-                onChangeText={(text) => setPopupAuthComment({...popupAuthComment, comment: text})}
-                style={[_styles.authCommentInput]}
-                multiline={true}
-                placeholder={'상대방에게 보여지는 해당 인증 항목에 대한\n소개글을 자유롭게 작성해 주세요.'}
-                placeholderTextColor={'#C7C7C7'}
-                numberOfLines={4}
-                maxLength={200}
-                textAlignVertical={'top'}
-              />
             </SpaceView>
           </SpaceView>
 
-          <View style={{width: width - 39, flexDirection: 'row', justifyContent: 'space-between',}}>
-            <SpaceView viewStyle={{flexDirection: 'row', width: '100%', paddingHorizontal: 20, paddingBottom: 8}}>
-              <TouchableOpacity
-                style={[modalStyle.modalBtn, {backgroundColor: Color.grayD6D3D3, borderBottomLeftRadius: 10, borderTopLeftRadius: 10}]}
-                onPress={() => { setPopupAuthComment({...popupAuthComment, visible: false}) }}>
-                <CommonText type={'h5'} fontWeight={'500'} color={ColorType.white}>취소하기</CommonText>
-              </TouchableOpacity>
+          {/* ############################################################################################################# 간단 소개 및 관심사 영역 */}
+          <SpaceView pl={15} pr={15} mb={40}>
+            <MemberIntro memberData={profileData?.member_info} imgList={profileData?.profile_img_list} interestList={checkIntList} faceList={memberBase?.best_face} type={'profile'} />
+          </SpaceView>
 
-              <TouchableOpacity
-                style={[modalStyle.modalBtn, {backgroundColor: Color.blue02, borderBottomRightRadius: 10, borderTopRightRadius: 10}]}
-                onPress={() => { saveAuthComment(); }}>
-                <CommonText type={'h5'} fontWeight={'500'} color={ColorType.white}>저장하기</CommonText>
-              </TouchableOpacity>
+          {/* ############################################################################################################# 자기 소개 영역 */}
+          <SpaceView pl={15} pr={15} mb={40} viewStyle={_styles.commentWrap}>
+            <SpaceView mb={15} viewStyle={{flexDirection: 'row'}}>
+              <View style={{zIndex:1}}>
+                <Text style={_styles.commentTitText}>{memberBase?.nickname}님 소개</Text>
+              </View>
+              <View style={_styles.commentUnderline} />
             </SpaceView>
-          </View>
-        </View>
-      </Modal>
+            <SpaceView>
+              {/* <Text style={_styles.commentText}>{data?.match_member_info.introduce_comment}</Text> */}
+              <Text style={_styles.commentText}>{profileData?.member_info.comment}</Text>
+            </SpaceView>
+          </SpaceView>
 
+          {/* ############################################################################################################# 프로필 인증 영역 */}
+          <SpaceView pl={15} pr={15} mb={40}>
+            {profileData.second_auth_list.length > 0 ? (
+              <ProfileAuth data={profileData.second_auth_list} isButton={false} memberData={profileData?.member_info} type={'profile'} />
+            ) : (
+              <SpaceView mt={10} viewStyle={_styles.authNoDataArea}>
+                <SpaceView mb={8}><Text style={_styles.authNoDataTit}>프로필 인증없이 가입한 회원입니다.</Text></SpaceView>
+                <SpaceView><Text style={_styles.authNoDataSubTit}>프로필 인증은 직업, 학업, 소득, 자산, SNS, 차량 등의 인증 항목을 의미합니다.</Text></SpaceView>
+              </SpaceView>
+            )}
+          </SpaceView>
+
+          {/* ############################################################################################################# 인터뷰 영역 */}
+          <SpaceView pl={15} pr={15} mb={35}>
+            <InterviewRender title={memberBase?.nickname + '에 대한 필독서'} dataList={interviewData} type={'profile'} />
+          </SpaceView>
+
+          {/* ############################################################################################################# 간단 소개 및 관심사 영역 */}
+          <SpaceView pl={15} pr={15} mb={40}>
+            <InterestRender memberData={profileData?.member_info} interestList={checkIntList} type={'profile'} />
+          </SpaceView>
+        </LinearGradient>
+      </ScrollView>
     </>
   );
 };
@@ -1042,44 +496,127 @@ export const Profile1 = (props: Props) => {
 ####################################################################################################### */}
 
 const _styles = StyleSheet.create({
-  saveText: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 16,
-    textAlign: 'left',
-    color: '#7986ee',
+  mstImgStyle: {
+    width: width - 120,
+    height: 500,
+    borderRadius: 20,
   },
-  wrapper: {
-    width: '100%',
-    padding: 10,
+  contentWrap: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
+    justifyContent: 'space-between',
   },
-  container: {
-    width: (width - 46) / 3,
-    height: (width - 46) / 3,
-    backgroundColor: 'rgba(155, 165, 242, 0.12)',
-    //backgroundColor: '#000',
-    marginHorizontal: 4,
-    marginVertical: 5,
-    borderRadius: 20,
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: `center`,
+  mstMarkWrap: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderRadius: 10,
+    paddingVertical: 3,
+    paddingHorizontal: 10,
   },
-  imageStyle: {
-    width: (width - 46) / 3,
-    height: (width - 46) / 3,
-    margin: 0,
+  mstMarkText: {
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 14,
+    color: '#D5CD9E',
+  },
+  modBtn: {
+    position: 'absolute',
+    bottom: 15,
+    right: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderRadius: 10,
+    paddingVertical: 3,
+    paddingHorizontal: 10,
+  },
+  modBtnText: {
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 14,
+    color: '#D5CD9E',
+    marginLeft: 3,
+  },
+  subImgTitle: {
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 14,
+    color: '#F3E270',
+  },
+  subImgWrap: (isOn: boolean) => {
+    return {
+      width: 64,
+      height: 64,
+      backgroundColor: 'rgba(155, 165, 242, 0.12)',
+      margin: 5,
+      borderRadius: 5,
+      borderWidth: isOn ? 2 : 0,
+      borderColor: '#FFDD00',
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+    };
+  },
+  subImgNoData: {
+    width: 64,
+    height: 64,
+    margin: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderStyle: 'dotted',
+    borderColor: '#E1DFD1',
+    borderRadius: 5,
+  },
+  subImgStyle: {
+    width: 62,
+    height: 62,
+    borderRadius: 5,
+  },
+  regiBtn: {
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 16,
+    color: '#3D4348',
+    textAlign: 'center',
+    backgroundColor: '#FFDD00',
+    borderRadius: 5,
+    paddingVertical: 12,
+    marginBottom: 15
+  },
+  initBtn: {
+    fontFamily: 'Pretendard-Light',
+    fontSize: 14,
+    color: '#D5CD9E',
+    textAlign: 'center',
+    borderWidth: 1,
+    borderColor: '#BBB18B',
+    borderRadius: 5,
+    paddingVertical: 12,
+  },
+  imgEmptyArea: {
+    width: width - 120,
+    height: 500,
+    borderWidth: 1,
+    borderColor: '#E1DFD1',
+    borderStyle: 'dotted',
     borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
+  imgEmptyText: {
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 12,
+    color: '#D5CD9E',
+    textAlign: 'center',
   },
   imageDisabled: (isMaster: boolean) => {
     return {
       position: 'absolute',
       left: 0,
       right: 0,
-      bottom: 0,
-      borderBottomLeftRadius: 20,
-      borderBottomRightRadius: 20,
+      bottom: -1,
+      borderBottomLeftRadius: 5,
+      borderBottomRightRadius: 5,
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'flex-end',
@@ -1087,417 +624,60 @@ const _styles = StyleSheet.create({
       backgroundColor: !isMaster ? 'rgba(0, 0, 0, 0.5)' : 'transparent',
     };
   },
-  masterImageDimText: {
-    width: '100%',
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
-    textAlign: 'center',
-    paddingVertical: 3,
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 13,
-    color: '#fff',
-  },
   profileImageDimText: (status: string) => {
     return {
       width: '100%',
       backgroundColor: '#000',
       textAlign: 'center',
       paddingVertical: 3,
-      fontFamily: 'AppleSDGothicNeoEB00',
+      fontFamily: 'Pretendard-SemiBold',
       fontSize: 12,
       color: status == 'REFUSE' ? ColorType.redF20456 : '#fff',
     };
   },
-  disableArea: {
-    opacity: 0.7,
-  },
-  profileContainer: {
-    backgroundColor: Color.grayF8F8,
-    borderRadius: 16,
-    padding: 24,
-    marginRight: 0,
-    paddingBottom: 30,
-  },
-  title: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 19,
-    lineHeight: 26,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#333333',
-  },
-  impressionContainer: {
-    width: '100%',
-    opacity: 0.78,
-    borderRadius: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0)',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderColor: '#d8d8d8',
-    marginTop: 10,
-    borderTopEndRadius: 10,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-  },
-  itemRow: (isLast: boolean) => {
-    return {
-      width: '100%',
-      paddingVertical: 10,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      borderBottomWidth: isLast ? 0 : 1,
-      borderColor: '#D8D8D8',
-      borderStyle: 'dotted',
-    };
-  },
-  subRow: {
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: `center`,
-  },
-  icon: {
-    width: 30,
-    height: 30,
-    resizeMode: 'contain',
-  },
-  contentsText: {
-    marginLeft: 10,
-    fontFamily: 'AppleSDGothicNeoM00',
-    fontSize: 16,
-    lineHeight: 18,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#333333',
-  },
-  fashionPercent: (idx: number) => {
-    return {
-      width: 48,
-      height: 27,
-      borderRadius: 13.5,
-      backgroundColor: idx == 0 ? '#FE0456' : '#7986ee',
-      flexDirection: `row`,
-      alignItems: `center`,
-      justifyContent: `center`,
-    };
-  },
-  fontPercent: {
-    height: 27,
-    borderRadius: 13.5,
-    backgroundColor: '#fe0456',
-    paddingHorizontal: 10,
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: `center`,
-  },
-  smilePercent: {
-    height: 27,
-    borderRadius: 13.5,
-    backgroundColor: '#eda02b',
-    paddingHorizontal: 10,
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: `center`,
-  },
-  percentText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 13,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#fff',
-  },
-  rankText: (idx: number) => {
-    return {
-      backgroundColor: idx == 0 ? '#FE0456' : '#4472C4',
-      color: Color.white,
-      fontFamily: 'AppleSDGothicNeoEB00',
-      width: 27,
-      textAlign: 'center',
-      fontSize: 12,
-      borderRadius: 8,
-      paddingVertical: 3,
-    };
-  },
-  myImpressionContainer: {
-    width: '100%',
-    marginTop: 10,
-    marginBottom: 0,
-  },
-  sliderContainerStyle: {
-    width: '100%',
-    height: 27,
-    //marginTop: 7,
-    borderRadius: 13,
-    backgroundColor: '#E3E3E3',
-  },
-  trackStyle: {
-    height: 27,
-    borderRadius: 13,
-    position: 'absolute',
-    backgroundColor: 'transparent',
-  },
-  gageContainer: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  commentWrap: {
     alignItems: 'center',
   },
-  gageText: {
-    fontFamily: 'AppleSDGothicNeoM00',
-    fontSize: 10,
-    lineHeight: 20,
-    letterSpacing: 0,
+  commentTitText: {
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 14,
+    color: '#FFFFFF',
     textAlign: 'center',
-    color: '#D0D0D0',
   },
-  imageDimText: {
-    textAlign: 'right',
-    marginTop: 7,
-    marginRight: 10,
+  commentText: {
+    fontFamily: 'Pretendard-Light',
+    fontSize: 14,
+    color: '#F3DEA6',
+    textAlign: 'center',
   },
-  sliderText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 19,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#333333',
-    marginTop: 32,
-  },
-  profileScoreContainer: {
-    flex: 1,
-    //alignItems: 'flex-start',
-    justifyContent: 'center',
-  },
-  scoreContainer: {
+  commentUnderline: {
     position: 'absolute',
-    transform: [{ translateY: -25 }], // 수직 중앙 정렬을 위한 translateY
-    alignItems: 'center',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 7,
+    backgroundColor: '#FE8C12',
   },
-  scoreText: {
-    backgroundColor: '#151515',
-    color: ColorType.white,
-    fontFamily: 'AppleSDGothicNeoM00',
-    fontSize: 10,
-    fontWeight: 'bold',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 5,
-    borderBottomColor: '#151515',
-    overflow: 'hidden',
-  },
-  triangle: {
-    marginTop: -1,
-    width: 0,
-    height: 0,
-    backgroundColor: 'transparent',
-    borderStyle: 'solid',
-    borderLeftWidth: 5,
-    borderRightWidth: 5,
-    borderBottomWidth: 5,
-    borderLeftColor: 'transparent',
-    borderRightColor: 'transparent',
-    borderBottomColor: '#151515',
-    transform: [{ rotate: '180deg' }],
-  },
-  refuseArea: {
-    backgroundColor: '#F4F4F4',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 8,
-    minHeight: 100,
-  },
-  gradient: (value:any) => {
-    let percent = 0;
-
-    if(value != null && typeof value != 'undefined') {
-      percent = value * 100;
-    };
-
-    return {
-      position: 'absolute',
-      width: percent + '%',
-      height: 27,
-      zIndex: 1,
-      borderRadius: 13,
-    };
-  },
-  authCommentText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 19,
-    color: '#333333',
-    lineHeight: 22,
-  },
-  authCommentInput: {
-    fontFamily: 'AppleSDGothicNeoM00',
-    fontSize: 12,
-    color: '#7986EE',
-    borderWidth: 1,
-    borderColor: '#EBE9EF',
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    maxHeight: 80,
-    height: 80,
-  },
-  authShadowArea: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.23,
-    shadowRadius: 5.0,
-    elevation: 5,
-    overflow: 'visible',
+  authNoDataArea: {
     width: '100%',
-  },
-  authArea: (device:any) => {
-    if(device == 'ios') {
-      return {
-        position: 'relative',
-        width: '100%',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 20,
-        marginTop: 17,
-        paddingTop: 30,
-        paddingBottom: 10,
-        marginVertical: 10,
-      };
-    } else {
-      return {
-        position: 'relative',
-        width: '100%',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 20,
-        marginTop: 17,
-        paddingTop: 30,
-        paddingBottom: 10,
-        marginVertical: 10,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 5 },
-        shadowOpacity: 0.23,
-        shadowRadius: 5.0,
-        elevation: 5,
-        overflow: 'visible',
-      };
-    }    
-  },
-  authEmptyArea: {
-    width: '95%',
     backgroundColor: '#ffffff', 
-    paddingVertical: 20,
-    paddingHorizontal: 10, 
-    marginHorizontal: 10, 
+    paddingVertical: 15,
+    paddingHorizontal: 10,
     borderWidth: 1, 
     borderRadius: 10, 
     borderColor: '#8E9AEB', 
     borderStyle: 'dotted',
   },
-  authEmptyTit: {
+  authNoDataTit: {
     fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 11,
+    fontSize: 14,
     color: '#7986EE',
     textAlign: 'center',
   },
-  authEmptyBtn: {
+  authNoDataSubTit: {
     fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 12,
-    color: '#ffffff',
-    backgroundColor: '#697AE6',
-    borderRadius: 7,
+    fontSize: 10,
+    color: '#C3C3C8',
     textAlign: 'center',
-    paddingVertical: 8,
-    overflow: 'hidden',
-  }
-});
-
-
-const profileImage = StyleSheet.create({
-  container: {
-    width: (width - 80) / 3,
-    height: (width - 80) / 3,
-    backgroundColor: 'rgba(155, 165, 242, 0.12)',
-    margin: 10,
-    borderRadius: 10,
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: `center`,
-  },
-  plusStyle: {
-    width: (width - 80) / 10,
-    height: (width - 80) / 10,
-  },
-  imageStyle: {
-    width: (width - 80) / 3,
-    height: (width - 80) / 3,
-    margin: 10,
-    borderRadius: 20,
-  },
-  dim: {
-    position: 'absolute',
-    width: (width - 80) / 3,
-    height: (width - 80) / 3,
-    margin: 10,
-    borderRadius: 10,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-  },
-  text: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 12,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    lineHeight: 26,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#ffffff',
-  },
-  close: {
-    width: 24,
-    height: 24,
-  },
-  modalContainer: {
-    margin: 0,
-    flexDirection: 'column',
-    justifyContent: 'flex-end',
-  },
-  modalInnerView: {
-    width: '100%',
-    backgroundColor: 'white',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 30,
-    paddingBottom: 50,
-  },
-  title: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  titleText: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 20,
   },
 });
-
-function DashSpacer() {
-  return (
-    <View
-      style={{
-        width: '100%',
-        height: 1,
-        borderWidth: 1,
-        borderColor: '#d8d8d8',
-        borderStyle: 'dashed',
-      }}
-    />
-  );
-}

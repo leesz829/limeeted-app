@@ -6,7 +6,7 @@ import { findSourcePath, ICON, IMAGE, GUIDE_IMAGE } from 'utils/imageUtils';
 import SpaceView from 'component/SpaceView';
 import LinearGradient from 'react-native-linear-gradient';
 import { STACK } from 'constants/routes';
-import { modalStyle, layoutStyle, commonStyle } from 'assets/styles/Styles';
+import { modalStyle, layoutStyle, commonStyle, styles } from 'assets/styles/Styles';
 import { isEmptyData } from 'utils/functions';
 import AuthLevel from 'component/common/AuthLevel';
 import ProfileGrade from 'component/common/ProfileGrade';
@@ -15,7 +15,7 @@ import { useUserInfo } from 'hooks/useUserInfo';
 
 const { width, height } = Dimensions.get('window');
 
-export default function InterestRender({ memberData, interestList }) {
+export default function InterestRender({ memberData, interestList, type }) {
   const navigation = useNavigation<ScreenNavigationProp>();
 
   const memberBase = useUserInfo();
@@ -41,6 +41,13 @@ export default function InterestRender({ memberData, interestList }) {
                 </SpaceView>
               </SpaceView>
             </SpaceView>
+
+            {type == 'profile' &&
+                      <TouchableOpacity style={_styles.modBtn}>
+                        <Image source={ICON.squarePen} style={styles.iconSize16} />
+                        <Text style={_styles.modBtnText}>수정</Text>
+                      </TouchableOpacity>
+                    }
 
             <SpaceView>
               {interestList.length > 0 &&
@@ -124,5 +131,21 @@ const _styles = StyleSheet.create({
       color: isOn ? '#08D2F2' : '#EEEAEB',
     };
   },
-
+  modBtn: {
+    position: 'absolute',
+    top: 15,
+    right: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderRadius: 10,
+    paddingVertical: 3,
+    paddingHorizontal: 10,
+  },
+  modBtnText: {
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 14,
+    color: '#D5CD9E',
+    marginLeft: 3,
+  },
 });
