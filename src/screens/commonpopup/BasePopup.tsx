@@ -100,13 +100,14 @@ export const BasePopup = (props: Props) => {
               </SpaceView>
 
               {(!isEmptyData(props.btnExpYn) || props.btnExpYn == 'Y') &&
-                <View style={modalStyle.modalBtnContainer}>
+              <SpaceView viewStyle={{justifyContent: 'center', alignItems: 'center'}}>
+                <View style={props.type != 'AUCTION' ? modalStyle.modalBtnContainer : modalStyle.modalBtnAuctContainer}>
                   {props.isConfirm ? (
                     <>
                       <TouchableOpacity
-                        style={[modalStyle.modalBtn, {backgroundColor: '#FFF', borderBottomLeftRadius: 20}]}
+                        style={[props.type != 'AUCTION' ? modalStyle.modalBtn : modalStyle.modalAuctBtn, {backgroundColor: '#FFF'}]}
                         onPress={onPressCancel}>
-                        <CommonText fontWeight={'500'} color={'#3D4348'} textStyle={{fontSize: 16}}>
+                        <CommonText fontWeight={'600'} color={'#3D4348'} textStyle={{fontSize: 16}}>
                           {typeof props.cancelBtnText != 'undefined' ? props.cancelBtnText : '닫기'}
                         </CommonText>
                       </TouchableOpacity>
@@ -114,9 +115,9 @@ export const BasePopup = (props: Props) => {
                       {/* <View style={modalStyle.modalBtnline} /> */}
 
                       <TouchableOpacity
-                        style={[modalStyle.modalBtn, {backgroundColor: '#FFDD00', borderBottomRightRadius: 20}]}
+                        style={[props.type != 'AUCTION' ? modalStyle.modalBtn : modalStyle.modalAuctBtn, {backgroundColor: '#FFDD00'}]}
                         onPress={onPressConfirm}>
-                        <CommonText fontWeight={'500'} color={'#3D4348'} textStyle={{fontSize: 16}}>
+                        <CommonText fontWeight={'600'} color={'#3D4348'} textStyle={{fontSize: 16}}>
                           {typeof props.confirmBtnText != 'undefined' ? props.confirmBtnText : '확인하기'}
                         </CommonText>
                       </TouchableOpacity>
@@ -141,6 +142,7 @@ export const BasePopup = (props: Props) => {
                     </>
                   )}
                 </View>
+                </SpaceView>
               }
             </LinearGradient>
           </View>
@@ -168,5 +170,12 @@ const _styles = StyleSheet.create({
       color: passType == 'ROYAL' ? '#FE0456' : '#697AE6',
       marginLeft: 3,
     };
+  },
+  modalAuctBtn: {
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 50,
+    borderRadius: 50,
+    marginBottom: 40,
   },
 });

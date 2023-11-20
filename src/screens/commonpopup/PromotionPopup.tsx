@@ -69,31 +69,43 @@ export const PromotionPopup = (props: Props) => {
     <>
       <Modal visible={props.popupVisible} transparent={true}>
         <View style={modalStyle.modalBackground}>
-          <SpaceView viewStyle={_styles.popupContainer}>
-            <SpaceView viewStyle={_styles.speakerIconArea}>
+        <LinearGradient
+            colors={['#1A1E1C', '#333B41']}
+            start={{ x: 0, y: 1 }}
+            end={{ x: 0, y: 0 }} 
+            style={_styles.popupContainer}>
+            {/* <SpaceView viewStyle={_styles.speakerIconArea}>
               <Image source={ICON.speakerIcon} style={styles.iconSquareSize(65)} />
+            </SpaceView> */}
+            <SpaceView viewStyle={_styles.discountBox}>
+              <Text style={_styles.discountText}>할인중</Text>
             </SpaceView>
+            <Text style={_styles.recTitText}>{prodList?.length}개의 추천 상품</Text>
 
-            <SpaceView viewStyle={_styles.popupContent}>
-              {(isEmptyData(prodList[currentIndex]?.discount_rate) && prodList[currentIndex]?.discount_rate != 0) && (
-                <View style={_styles.saleIconArea}>
-                  <Image source={ICON.saleIcon} style={styles.iconSquareSize(65)} />
-                </View>
-              )}
-
-              <SpaceView mb={30} viewStyle={_styles.masterItemArea}>
-                <SpaceView mb={10} viewStyle={{borderRadius: 10, overflow: 'hidden'}}>
-                  <Image source={findSourcePath(prodList[currentIndex]?.img_path)} style={{width: width - 190, height: 150}} resizeMode={'cover'} />
-                </SpaceView>
+            <SpaceView>
+              <SpaceView mb={10} viewStyle={_styles.popupContent}>
                 <SpaceView>
-                  <Text style={_styles.titleText}>{prodList[currentIndex]?.item_name}</Text>
-                  <Text style={_styles.subTitleText}>{prodList[currentIndex]?.item_contents}</Text>
+                  {/* <SpaceView mb={10} viewStyle={{borderRadius: 10, overflow: 'hidden'}}>
+                    <Image source={findSourcePath(prodList[currentIndex]?.img_path)} style={{width: width - 190, height: 150}} resizeMode={'cover'} />
+                  </SpaceView>*/}
+                  <SpaceView mt={20}>
+                    <Text style={_styles.titleText}>{prodList[currentIndex]?.item_name}</Text>
+                    <Text style={_styles.subTitleText}>{prodList[currentIndex]?.item_contents}</Text>
+                  </SpaceView>
                 </SpaceView>
+
+                {(isEmptyData(prodList[currentIndex]?.discount_rate) && prodList[currentIndex]?.discount_rate != 0) && (
+                  <View>
+                    {/* <Image source={ICON.saleIcon} style={styles.iconSquareSize(65)} /> */}
+                    <Image source={ICON.polygonGreen} style={styles.iconSquareSize(110)} />
+                  </View>
+                )}
               </SpaceView>
 
-              <SpaceView ml={15} mb={20} viewStyle={_styles.recItemArea}>
-                <Text style={_styles.recTitText}>{prodList?.length}개의 추천 상품</Text>
-                <SpaceView mt={8} ml={8} mr={30} viewStyle={{height: 40}}>
+
+              <SpaceView mb={20} viewStyle={_styles.recItemArea}>
+                
+                <SpaceView mt={8} mr={30} viewStyle={{height: 50}}>
                   <ScrollView 
                     horizontal
                     showsHorizontalScrollIndicator={false}
@@ -103,7 +115,14 @@ export const PromotionPopup = (props: Props) => {
                       return (
                         <>
                           <TouchableOpacity key={index} style={_styles.prodItem(currentIndex == index)} onPress={() => { onPressItem(index); }}>
-                            <Image source={findSourcePath(item.img_path)} style={{width: 60, height: 45}} resizeMode={'cover'} />
+                            {/* <Image source={findSourcePath(item.img_path)} style={{width: 60, height: 45}} resizeMode={'cover'} /> */}
+                            <Image source={ICON.polygonGreen} style={styles.iconSquareSize(40)} />
+                            <SpaceView viewStyle={_styles.recListBox}>
+                              <SpaceView mr={5} viewStyle={_styles.recDiscountBox}>
+                                <Text style={_styles.recDiscountText}>{item?.discount_rate}%</Text>
+                              </SpaceView>
+                              <Text style={_styles.recItemName}>{item?.item_name}</Text>
+                            </SpaceView>
                           </TouchableOpacity>
                         </>
                       )
@@ -133,17 +152,16 @@ export const PromotionPopup = (props: Props) => {
                   )}
                 </View>
               </TouchableOpacity>
-
             </SpaceView>
+          </LinearGradient>
 
-            <SpaceView viewStyle={_styles.btnArea}>
-              <TouchableOpacity onPress={() => onPressConfirm(true)}>
-                <Text style={_styles.closeBtnText}>오늘은 그만보기</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => onPressConfirm(false)}>
-                <Text style={_styles.closeBtnText}>닫기 X</Text>
-              </TouchableOpacity>
-            </SpaceView>
+          <SpaceView viewStyle={_styles.btnArea}>
+            <TouchableOpacity onPress={() => onPressConfirm(true)}>
+              <Text style={_styles.closeBtnText}>오늘은 그만보기</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => onPressConfirm(false)}>
+              <Text style={_styles.closeBtnText}>닫기 X</Text>
+            </TouchableOpacity>
           </SpaceView>
         </View>
       </Modal>
@@ -166,13 +184,27 @@ const _styles = StyleSheet.create({
       //width: 250,
       backgroundColor: 'white',
       borderRadius: 20,
-      paddingHorizontal: 0,
-      paddingTop: 60,
       marginTop: -40,
+      padding: 15,
       //overflow: 'hidden',
   },
   popupContent: {
-    
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  discountBox: {
+    backgroundColor: '#FFF',
+    paddingVertical: 5,
+    width: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 50,
+  },
+  discountText: {
+    fontFamily: 'Pretendard-Medium',
+    color: '#FF4D29',
+    fontSize: 10,
   },
   speakerIconArea: {
     position: 'absolute',
@@ -183,22 +215,41 @@ const _styles = StyleSheet.create({
     zIndex: 1,
   },
   titleText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 20,
-    color: '#363636',
-    textAlign: 'center',
+    fontFamily: 'Pretendard-SemiBold',
+    color: '#D5CD9E',
     marginBottom: 8,
   },
   subTitleText: {
-    fontFamily: 'AppleSDGothicNeoM00',
-    fontSize: 14,
-    color: '#767997',
-    textAlign: 'center',
-    marginHorizontal: 45,
-    minHeight: 55,
+    fontFamily: 'Pretendard-Light',
+    fontSize: 12,
+    color: '#D5CD9E',
   },
-  masterItemArea: {
+  // masterItemArea: {
+  //   alignItems: 'center',
+  // },
+  recListBox: {
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+  },
+  recDiscountBox: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    width: 40,
+    height: 15,
+    justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: 10,
+  },
+  recDiscountText: {
+    color: '#FF4D29', 
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 10,
+  },
+  recItemName: {
+    width: 60,
+    fontFamily: 'Pretendard-Regular',
+    color: '#D5CD9E',
+    marginTop: 10,
   },
   recItemArea: {
     flexDirection: 'column',
@@ -207,9 +258,10 @@ const _styles = StyleSheet.create({
     overflow: 'hidden',
   },
   recTitText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 13,
-    color: '#767997',
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 10,
+    color: '#D5CD9E',
+    marginTop: 5,
   },
   recList: {
     width: width - 120,
@@ -221,74 +273,69 @@ const _styles = StyleSheet.create({
       flexDirection: 'row',
       justifyContent: isDiscount ? 'space-between' : 'center',
       alignItems: 'center',
-      marginHorizontal: 18,
       marginBottom: 10,
       paddingHorizontal: 10,
-      backgroundColor: '#FE0456',
+      paddingVertical: 5,
+      backgroundColor: '#FFDD00',
       borderRadius: 10,
       overflow: 'hidden',
-      height: 60,
     };
   },
 
   masterPercent: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 30,
-    color: '#FFFFFF',
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 18,
+    color: '#FF4D29',
     marginLeft: 5,
   },
   price: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 25,
-    color: '#FFFFFF',
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 16,
+    color: '#3D4348',
   },
   priceUnit: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 18,
-    color: '#fff',
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 12,
+    color: '#3D4348',
   },
   orgPrice: {
-    fontFamily: 'AppleSDGothicNeoM00',
-    fontSize: 20,
-    color: '#FFBED3',
+    fontFamily: 'Pretendard-Light',
+    fontSize: 10,
+    color: '#FF4D29',
     textDecorationLine: 'line-through',
-    marginTop: -7,
     marginRight: 3,
     marginBottom: 2,
+    marginTop: -2,
   },
   orgPriceUnit: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 15,
-    color: '#FFBED3',
+    fontFamily: 'Pretendard-Light',
+    fontSize: 10,
+    color: '#FF4D29',
   },
   btnArea: {
-    position: 'absolute',
-    bottom: -25,
-    left: 0,
-    right: 0,
+    width: width - 100,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 10,
+    marginTop: 5,
   },
   closeBtnText: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 15,
-    color: '#FFFFFF',
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 12,
+    color: '#D5CD9E',
   },
   prodItem: (isOn:boolean) => {
     return {
       borderRadius: 3,
       borderWidth: isOn ? 1 : 0,
-      borderColor: '#FE0456',
+      borderColor: '#FFDD00',
       overflow: 'hidden',
       marginRight: 10,
+      backgroundColor: '#6A6A6A',
+      width: width - 290,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
     };
-  },
-  saleIconArea: {
-    position: 'absolute',
-    top: 5,
-    left: 8,
-    zIndex: 1,
   },
 
 });

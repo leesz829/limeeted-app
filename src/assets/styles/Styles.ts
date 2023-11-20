@@ -629,10 +629,23 @@ export const modalStyle = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  modalBtnAuctContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: width - 125,
+  },
   modalBtn: {
     flex: 2,
     alignItems: 'center',
     paddingVertical: 15,
+  },
+  modalAuctBtn: {
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 50,
+    borderRadius: 50,
+    marginBottom: 40,
   },
   modalBtnline: {
     borderRightWidth: 1,
@@ -644,7 +657,6 @@ export const modalStyle = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: Color.grayF8F8,
   },
-
   guideModalBtnContainer: {
     flexDirection: 'row',
     justifyContent: 'center',

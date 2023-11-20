@@ -1,5 +1,5 @@
 import { Color } from 'assets/styles/Color';
-import { commonStyle, layoutStyle, modalStyle } from 'assets/styles/Styles';
+import { commonStyle, layoutStyle, modalStyle, styles } from 'assets/styles/Styles';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
@@ -334,23 +334,37 @@ export const GuidePopup = (props: Props) => {
                   <>
                     {props.guideType == 'STORAGE_GUIDE' ? (
                       <LinearGradient 
-                        colors={['#DBEEEE', '#FFF']}
+                        //colors={['#DBEEEE', '#FFF']}
+                        colors={['#3D4348', '#1A1E1C']}
                         start={{ x: 0.5, y: 0 }}
                         end={{ x: 0.5, y: 1 }}>
                         <SpaceView mb={10} ml={15} mt={20} viewStyle={layoutStyle.alignStart}><Text style={_styles.liveTxt01}>첫 "매칭 성공"을 축하 드려요!</Text></SpaceView>
-                        <SpaceView viewStyle={layoutStyle.alignCenter} mb={10}>
-                          <Image source={GUIDE_IMAGE.storageContent} style={{width: 300, height: 120}} resizeMode={'cover'} />
+                        <SpaceView viewStyle={{padding: 15}}>
+                          <SpaceView viewStyle={[layoutStyle.alignCenter, {padding: 20,backgroundColor: '#FFF', borderRadius: 10}]} mt={30} mb={30}>
+                            {/* <Image source={GUIDE_IMAGE.storageContent} style={{width: 300, height: 120}} resizeMode={'cover'} /> */}
+                            <Image source={ICON.heartFace} style={styles.iconSize48} resizeMode={'cover'} />
+                            <CommonText fontWeight={'400'} color='#D5CD9E' textStyle={{fontSize: 13, marginTop: 5}}>리미티드님과 매칭 성공!</CommonText>
+                            <SpaceView mt={10} viewStyle={{backgroundColor: '#FFDD00', paddingHorizontal: 20, borderRadius: 5}}>
+                              <CommonText fontWeight={'600'} color='#3D4348' textStyle={{fontSize: 10}}>연락처 확인하기</CommonText>
+                            </SpaceView>
+                          </SpaceView>
                         </SpaceView>
                         <SpaceView viewStyle={commonStyle.paddingHorizontal15}>
                           <Text style={[_styles.liveTxt02, {marginBottom: 8}]}>#연락처 확인하기</Text>
-                          <Text style={_styles.liveTxt03}>
+                          <Text style={[_styles.liveTxt03, {color: '#D5CD9E'}]}>
                             리미티드는 허위 프로필 ZERO 정책! 응답없는 채팅방 NO!{'\n'}
                             진짜 회원의 진짜 연락처로 진짜 매칭을 체험하세요.
                           </Text>
-                          <Text style={[_styles.liveTxt03, {color: '#697AE6'}]}>
+                          <Text style={[_styles.liveTxt03, {color: '#E1DFD1'}]}>
                             TIP 첫 "연락처 확인하기" 비용은 리미티드가 부담할게요.{'\n'}
                             편안함을 주는 메세지로 즐거운 대화하시길 바래요.
                           </Text>
+                        </SpaceView>
+
+                        <SpaceView mt={20} viewStyle={{padding: 15}}>
+                          <TouchableOpacity style={[_styles.checkRadio(true), {paddingVertical: 10, borderRadius: 10, backgroundColor: '#FFDD00', borderColor: '#FFDD00'}]} onPress={() => onPressConfirm(false)}>
+                            <CommonText fontWeight={'600'} color={'#3D4348'} textStyle={{fontSize: 16}}>패스 100개 받기</CommonText>
+                          </TouchableOpacity>
                         </SpaceView>
                       </LinearGradient>
                     ) : (
@@ -390,17 +404,13 @@ export const GuidePopup = (props: Props) => {
 
 
                 {/* ################################################################################### 버튼 영역 */}
-                <SpaceView mt={20} mb={10} viewStyle={modalStyle.guideModalBtnContainer}>
-                  {props.guideType == 'STORAGE_GUIDE' ? (
-                    <TouchableOpacity style={[_styles.checkRadio(true), {backgroundColor: '#FE0456', borderColor: '#FE0456'}]} onPress={() => onPressConfirm(false)}>
-                      <CommonText type={'h5'} fontWeight={'200'} color={'#ffffff'}>패스 100개 받기</CommonText>
-                    </TouchableOpacity>
-                  ) : (
+                {props.guideType != 'STORAGE_GUIDE' && (
+                  <SpaceView mt={20} mb={10} viewStyle={modalStyle.guideModalBtnContainer}>
                     <TouchableOpacity style={[_styles.checkRadio(true)]} onPress={() => onPressConfirm(false)}>
                       <CommonText type={'h5'} fontWeight={'200'} color={'#697AE6'}>확인</CommonText>
                     </TouchableOpacity>
-                  )}
-                </SpaceView>
+                  </SpaceView>
+                )}
 
                 {typeof props.guideNexBtnExpoYn != 'undefined' && props.guideNexBtnExpoYn != null && props.guideNexBtnExpoYn == 'Y' &&
                   <SpaceView mb={10} viewStyle={modalStyle.guideModalBtnContainer}>
@@ -460,19 +470,34 @@ const _styles = StyleSheet.create({
     };
   },
 
+  // liveTxt01: {
+  //   fontFamily: 'AppleSDGothicNeoEB00',
+  //   fontSize: 19,
+  //   color: '#000000',
+  // },
   liveTxt01: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 19,
-    color: '#000000',
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 16,
+    color: '#D5CD9E',
   },
+  // liveTxt02: {
+  //   fontFamily: 'AppleSDGothicNeoB00',
+  //   fontSize: 14,
+  //   color: '#262626',
+  // },
   liveTxt02: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 14,
-    color: '#262626',
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 15,
+    color: '#FFDD00',
   },
+  // liveTxt03: {
+  //   fontFamily: 'AppleSDGothicNeoB00',
+  //   fontSize: 12,
+  //   color: '#8E8E8E',
+  // },
   liveTxt03: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 12,
+    fontFamily: 'Pretendard-Light',
+    fontSize: 13,
     color: '#8E8E8E',
   },
 

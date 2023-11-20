@@ -1,6 +1,6 @@
 import { ColorType } from '@types';
 import { Color } from 'assets/styles/Color';
-import { commonStyle, layoutStyle, modalStyle } from 'assets/styles/Styles';
+import { commonStyle, layoutStyle, modalStyle, styles } from 'assets/styles/Styles';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
@@ -69,6 +69,15 @@ export const EventPopup = (props: Props) => {
     <>
       <Modal visible={props.popupVisible} transparent={true}>
         <View style={modalStyle.modalBackground}>
+          <LinearGradient
+            colors={['#3D4348', '#1A1E1C']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={{borderRadius: 15}}
+          >
+            <SpaceView viewStyle={{justifyContent: 'center', alignItems: 'center', padding: 15, borderRadius: 20}}>
+              <CommonText fontWeight={'600'} color='#D5CD9E' textStyle={{fontSize: 22}}>리미티드 이벤트 대제목</CommonText>
+            </SpaceView>
 
           {props.eventType == 'EVENT' ? (
             <>
@@ -114,7 +123,7 @@ export const EventPopup = (props: Props) => {
 
                               {/* 이미지 영역 */}
                               <View style={{minHeight: 200, overflow: 'hidden'}}>
-                                <Image source={findSourcePath(item?.main_img_path)} style={{width: width - 45, height: 200}} resizeMode={'cover'} />
+                                {/* <Image source={findSourcePath(item?.main_img_path)} style={{width: width - 45, height: 200}} resizeMode={'cover'} /> */}
                               </View>
 
                               {/* 텍스트 영역 */}
@@ -159,14 +168,9 @@ export const EventPopup = (props: Props) => {
 
                 <SpaceView mt={15} mb={12} viewStyle={_styles.eventBtnArea}>
                   <TouchableOpacity onPress={() => onPressConfirm(false)} style={{marginBottom: 5}}>
-                    <LinearGradient 
-                      colors={['#9283A4', '#829BCE']}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 1 }}
-                      style={_styles.eventConfirmBtn}>
-                      
+                    <SpaceView viewStyle={_styles.eventConfirmBtn}>
                       <Text style={_styles.eventConfirmText}>확인</Text>
-                    </LinearGradient>
+                    </SpaceView>
                   </TouchableOpacity>
 
                   <TouchableOpacity onPress={() => onPressConfirm(true)} style={_styles.eventPassBtn}>
@@ -198,6 +202,7 @@ export const EventPopup = (props: Props) => {
             </>
           ) : null}
 
+          </LinearGradient>
         </View>
       </Modal>
     </>
@@ -219,11 +224,11 @@ const _styles = StyleSheet.create({
     flexDirection: `row`,
     alignItems: `center`,
     justifyContent: 'center',
-    marginTop: 15,
+    paddingTop: 15,
   },
   dot: {
-    width: 8,
-    height: 8,
+    width: 10,
+    height: 10,
     backgroundColor: '#707070',
     borderRadius: 5,
     marginHorizontal: 2,
@@ -234,7 +239,7 @@ const _styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
       paddingVertical: 5,
-      backgroundColor: Color.white,
+      //backgroundColor: Color.white,
       borderRadius: 20,
       borderColor: isChk ? '#697AE6' : '#989898',
       borderWidth: 1,
@@ -274,8 +279,6 @@ const _styles = StyleSheet.create({
   popupContainer: () => {
     return {
       width: width - 45,
-      backgroundColor: 'white',
-      borderRadius: 15,
       paddingHorizontal: 0,
       overflow: 'hidden',
     }
@@ -286,7 +289,7 @@ const _styles = StyleSheet.create({
     color: '#9283A4'
   },
   eventContent: {
-    backgroundColor: '#fff',
+    backgroundColor: '#445561',
     //borderRadius: 20,
     //paddingVertical: 15,
     //marginLeft: 4,
@@ -300,9 +303,9 @@ const _styles = StyleSheet.create({
   },
   detailBtn: {
     position: 'absolute',
-    bottom: 10,
+    top: 10,
     right: 7,
-    backgroundColor: '#9F71B2',
+    backgroundColor: '#FFF',
     zIndex: 2,
     height: 20,
     justifyContent: 'center',
@@ -311,9 +314,9 @@ const _styles = StyleSheet.create({
     borderRadius: 6,
   },
   detailBtnText: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Medium',
     fontSize: 10,
-    color: '#fff'
+    color: '#3D4348',
   },
   eventBtnArea: {
     flexDirection: 'column',
@@ -322,24 +325,26 @@ const _styles = StyleSheet.create({
   eventConfirmBtn: {
     paddingVertical: 5,
     borderRadius: 6,
+    backgroundColor: '#FFDD00',
   },
   eventConfirmText: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 12,
-    color: '#fff',
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 16,
+    color: '#3D4348',
     textAlign: 'center',
   },
   eventPassBtn: {
     paddingVertical: 5,
     borderWidth: 1,
-    borderColor: '#BBB1C6',
+    borderColor: '#D5CD9E',
     borderStyle: 'dotted',
     borderRadius: 6,
+    marginBottom: 5,
   },
   eventPassText: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 12,
-    color: '#BBB1C6',
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 16,
+    color: '#D5CD9E',
     textAlign: 'center',
   },
   logoArea: {
@@ -357,15 +362,15 @@ const _styles = StyleSheet.create({
     width: '100%',
   },
   eventSubText: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Regular',
     fontSize: 16,
     //color: '#BEC4FF',
-    color: '#fff',
+    color: '#D5CD9E',
   },
   eventDescText: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Regular',
     fontSize: 12,
-    color: '#fff',
+    color: '#E1DFD1',
     marginTop: 5,
   },
   eventThumnailArea: {

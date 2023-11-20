@@ -230,6 +230,8 @@ export const ICON = {
   sirenMark: require('assets/icon/icon-siren-mark.png'),
   hifive: require('assets/icon/icon-hifive.png'),
   heartFace: require('assets/icon/icon-heart-face.png'),
+  polygonGreen: require('assets/icon/icon-polygon-green.png'),
+  passSquare: require('assets/icon/icon-pass-square.png'),
 };
 
 export const GIF_IMG = {

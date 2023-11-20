@@ -90,6 +90,9 @@ const styles = ({
     case '300':
       fontFamily = 'Pretendard-Regular';
       break;
+    case '400':
+      fontFamily = 'Pretendard-Medium';
+      break;
     case '500':
       fontFamily = 'Pretendard-SemiBold';
       break;
