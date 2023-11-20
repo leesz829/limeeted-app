@@ -10,7 +10,7 @@ import { CommonInput } from 'component/CommonInput';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
-import { Image, ScrollView, StyleSheet, View, Platform, Text, Dimensions, TouchableOpacity } from 'react-native';
+import { Image, ScrollView, StyleSheet, View, Platform, Text, Dimensions, TouchableOpacity, TextInput } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import * as properties from 'utils/properties';
 import { usePopup } from 'Context';
@@ -185,6 +185,7 @@ export const SignUp_Password = (props: Props) => {
         birthday: birthday,
         device_gubun: Platform.OS,
         marketing_agree_yn: mrktAgreeYn,
+        join_status: 'PASSWORD',
       };
   
       try {
@@ -258,77 +259,87 @@ export const SignUp_Password = (props: Props) => {
           </SpaceView>
 
           <SpaceView mt={30} mb={30} viewStyle={[_styles.container]}>
-            <View style={{width: '100%'}}>
-              <Text style={[_styles.emailPwdText, {color: '#D5CD9E'}]}>이메일</Text>
-            </View>
-            <SpaceView mb={30} viewStyle={[commonStyle.width100]}>
-              <CommonInput
-                label=""
-                value={emailId}
-                onChangeText={(emailId) => setEmailId(emailId)}
-                maxLength={50}
-                fontSize={14}
-                disabled={true}
-                style={{color: '#D5CD9E', marginTop: 10}}
-              />
+
+            {/* 이메일 */}
+            <SpaceView mb={30}>
+              <SpaceView mb={10}>
+                <Text style={[_styles.emailPwdText, {color: '#D5CD9E'}]}>이메일</Text>
+              </SpaceView>
+              <SpaceView viewStyle={[commonStyle.width100]}>
+                <TextInput
+                  value={emailId}
+                  onChangeText={(text) => setEmailId(text)}
+                  autoCapitalize={'none'}
+                  style={_styles.textInputStyle}
+                  maxLength={50}
+                  editable={false}
+                />
+              </SpaceView>
             </SpaceView>
 
-            <View style={{width: '100%'}}>
-              <Text style={_styles.emailPwdText}>비밀번호</Text>
-            </View>
-            <SpaceView viewStyle={[commonStyle.width100]}>
-              <CommonInput
-                label=""
-                value={password}
-                onChangeText={(password) => setPassword(password)}
-                isMasking={true}
-                maxLength={20}
-                borderBottomType={'#F3E270'}
-                fontSize={14}
-                style={{color: '#F3E270', marginTop: 10}}
-              />
-              <TouchableOpacity 
-                style={_styles.removeTextBtn}
-                onPress={() => { setPassword(''); }}
-              >
-                <Image source={ICON.xYellow} style={{width: 10, height: 10}} />
-              </TouchableOpacity>
-            </SpaceView>
-            <View style={{width: '100%'}}>
-              <Text style={_styles.noticeText}><Text style={{color: '#FFDD00'}}>8글자 이상</Text>, 영문포함, <Text style={{color: '#FFDD00'}}>숫자포함</Text>, 특수기호 허용</Text>
-            </View>
+            {/* 비밀번호 */}
+            <SpaceView mb={30}>
+              <SpaceView mb={10}>
+                <Text style={_styles.emailPwdText}>비밀번호</Text>
+              </SpaceView>
+              <SpaceView viewStyle={[commonStyle.width100]}>
+                <TextInput
+                  value={password}
+                  onChangeText={(text) => setPassword(text)}
+                  autoCapitalize={'none'}
+                  style={_styles.textInputStyle}
+                  secureTextEntry={true}
+                  maxLength={20}
+                />
 
-            <View style={{marginTop: 30, width: '100%'}}>
-              <Text style={_styles.emailPwdText}>비밀번호 확인</Text>
-            </View>
-            <SpaceView viewStyle={[commonStyle.width100]}>
-              <CommonInput
-                label=""
-                value={passwordChk}
-                onChangeText={(passwordChk) => setPasswordChk(passwordChk)}
-                isMasking={true}
-                maxLength={20}
-                fontSize={14}
-                style={{color: '#F3E270', marginTop: 10}}
-              />
-              <TouchableOpacity 
-                style={_styles.removeTextBtn}
-                onPress={() => { setPasswordChk(''); }}
-              >
-                <Image source={ICON.xYellow} style={{width: 10, height: 10}} />
-              </TouchableOpacity>
+                {password.length > 0 && (
+                  <TouchableOpacity 
+                    style={_styles.removeTextBtn}
+                    onPress={() => { setPassword(''); }}>
+                    <Image source={ICON.xYellow} style={styles.iconSquareSize(10)} />
+                  </TouchableOpacity>
+                )}
+              </SpaceView>
+              <View style={{width: '100%'}}>
+                <Text style={_styles.noticeText}><Text style={{color: '#FFDD00'}}>8글자 이상, 20글자 이하</Text>, 영문포함, <Text style={{color: '#FFDD00'}}>숫자포함</Text>, 특수기호 허용</Text>
+              </View>
             </SpaceView>
-            <View style={{width: '100%'}}>
-              {
-                passwordChk !== '' && (password !== '' && passwordChk !== '') ? 
-                (
-                  password === passwordChk
-                    ? <Text style={[_styles.noticeText, {color: '#FFDD00'}]}>비밀번호 일치</Text>
-                    : <Text style={_styles.noticeText}>비밀번호 불일치</Text>
-                ) 
-                : <></>
-              }
-            </View>
+
+            {/* 비밀번호 확인 */}
+            <SpaceView>
+              <SpaceView mb={10}>
+                <Text style={_styles.emailPwdText}>비밀번호 확인</Text>
+              </SpaceView>
+              <SpaceView viewStyle={[commonStyle.width100]}>
+                <TextInput
+                  value={passwordChk}
+                  onChangeText={(text) => setPasswordChk(text)}
+                  autoCapitalize={'none'}
+                  style={_styles.textInputStyle}
+                  secureTextEntry={true}
+                  maxLength={20}
+                />
+
+                {passwordChk.length > 0 && (
+                  <TouchableOpacity 
+                    style={_styles.removeTextBtn}
+                    onPress={() => { setPasswordChk(''); }}>
+                    <Image source={ICON.xYellow} style={styles.iconSquareSize(10)} />
+                  </TouchableOpacity>
+                )}
+              </SpaceView>
+              <View style={{width: '100%'}}>
+                {
+                  passwordChk !== '' && (password !== '' && passwordChk !== '') ? 
+                  (
+                    password === passwordChk
+                      ? <Text style={[_styles.noticeText, {color: '#FFDD00'}]}>비밀번호 일치</Text>
+                      : <Text style={_styles.noticeText}>비밀번호 불일치</Text>
+                  ) 
+                  : <></>
+                }
+              </View>
+            </SpaceView>
             
             <SpaceView mt={50}>
               <CommonBtn
@@ -343,14 +354,20 @@ export const SignUp_Password = (props: Props) => {
 
             <SpaceView mt={10}>
               <CommonBtn
-                value={'처음으로'}
+                value={'이전으로'}
                 type={'reNewGoBack'}
                 isGradient={false}
                 fontFamily={'Pretendard-Light'}
                 fontSize={14}
                 borderRadius={5}
                 onPress={() => {
-                  navigation.navigate('Login');
+                  navigation.goBack();
+
+                  if(isEmptyData(memberSeq)) {
+
+                  } else {
+                    
+                  }
                 }}
               />
             </SpaceView>
@@ -400,7 +417,16 @@ const _styles = StyleSheet.create({
   },
   removeTextBtn: {
     position: 'absolute',
-    top: 15,
+    bottom: 10,
     right: 0,
   },
+  textInputStyle: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#F3E270',
+    padding: 0,
+    color: '#F3E270',
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 14,
+  },
+
 });

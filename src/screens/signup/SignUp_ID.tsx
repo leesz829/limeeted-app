@@ -10,7 +10,7 @@ import { CommonInput } from 'component/CommonInput';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
-import { Image, ScrollView, StyleSheet, View, Platform, Text, Dimensions, TouchableOpacity } from 'react-native';
+import { Image, ScrollView, StyleSheet, View, Platform, Text, Dimensions, TouchableOpacity, TextInput } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import * as properties from 'utils/properties';
 import { usePopup } from 'Context';
@@ -46,7 +46,7 @@ export const SignUp_ID = (props: Props) => {
   const orgEmailId = props.route.params?.emailId; // 기존 이메일 ID
 
   // 입력 변수
-  const [emailId, setEmailId] = React.useState(props.route.params?.emailId);
+  const [emailId, setEmailId] = React.useState(isEmptyData(props.route.params?.emailId) ? props.route.params?.emailId : '');
   const [password, setPassword] = React.useState('');
   const [passwordChk, setPasswordChk] = React.useState('');
 
@@ -54,15 +54,17 @@ export const SignUp_ID = (props: Props) => {
   const emailValidChk = async () => {
     let isResult = true;
 
-    if(emailId == '') {
+    if(!isEmptyData(emailId)) {
       show({ content: '아이디를 입력해 주세요.' });
       isResult = false;
+      return;
     }
 
     let regEmail = /^([0-9a-zA-Z_\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;
     if(!regEmail.test(emailId)) {
       show({ content: '이메일 형식의 아이디가 아닙니다.' });
       isResult = false;
+      return;
     }
 
     if(isResult === true) {
@@ -103,26 +105,28 @@ export const SignUp_ID = (props: Props) => {
           </SpaceView>
 
           <SpaceView mt={80} viewStyle={[_styles.container]}>
-            <View style={{width: '100%'}}>
+            <SpaceView mb={10}>
               <Text style={_styles.emailPwdText}>이메일</Text>
-            </View>
-            <SpaceView mb={10} viewStyle={[commonStyle.width100]}>
-              <CommonInput
-                label=""
-                value={emailId}
-                onChangeText={(emailId) => setEmailId(emailId)}
-                maxLength={50}
-                borderBottomType={'#F3E270'}
-                fontSize={14}
-                style={{color: '#F3E270', marginTop: 10,}}
-              />
-              <TouchableOpacity 
-                style={_styles.removeTextBtn}
-                onPress={() => { setEmailId(''); }}
-              >
-                <Image source={ICON.xYellow} style={styles.iconSquareSize(10)} />
-              </TouchableOpacity>
             </SpaceView>
+            <SpaceView mb={10} viewStyle={[commonStyle.width100]}>
+              <TextInput
+                value={emailId}
+                onChangeText={(text) => setEmailId(text)}
+                autoCapitalize={'none'}
+                style={_styles.textInputStyle}
+                maxLength={50}
+              />
+
+              {emailId?.length > 0 && (
+                <TouchableOpacity 
+                  style={_styles.removeTextBtn}
+                  onPress={() => { setEmailId(''); }}
+                >
+                  <Image source={ICON.xYellow} style={styles.iconSquareSize(10)} />
+                </TouchableOpacity>
+              )}
+            </SpaceView>
+
             <View style={{width: '100%'}}>
               <Text style={_styles.noticeText}>실제 사용하시는 이메일을 입력해주세요.</Text>
             </View>
@@ -140,14 +144,14 @@ export const SignUp_ID = (props: Props) => {
             </SpaceView>
             <SpaceView mt={20}>
               <CommonBtn
-                value={'처음으로'}
+                value={'이전으로'}
                 type={'reNewGoBack'}
                 isGradient={false}
                 fontFamily={'Pretendard-Light'}
                 fontSize={14}
                 borderRadius={5}
                 onPress={() => {
-                  navigation.navigate('Login');
+                  navigation.goBack();
                 }}
               />
             </SpaceView>
@@ -197,7 +201,16 @@ const _styles = StyleSheet.create({
   },
   removeTextBtn: {
     position: 'absolute',
-    top: 15,
+    bottom: 10,
     right: 0,
   },
+  textInputStyle: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#F3E270',
+    padding: 0,
+    color: '#F3E270',
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 14,
+  },
+
 });

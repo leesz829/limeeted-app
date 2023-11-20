@@ -229,6 +229,8 @@ export const SignUp_Auth = (props : Props) => {
 ##### 인증 렌더링
 ########################################################################################## */
 function AuthRender({ _data, _selectedAuthCode, _modActiveFn, _setCurrentCode, _isModStatus, _saveFn }) {
+	const navigation = useNavigation<ScreenNavigationProp>();
+	
 	const _authName = _data?.code_name; // 인증 명
 	const _authCode = _data?.common_code; // 인증 코드
 	const _authStatus = _data?.auth_status; // 인증 상태

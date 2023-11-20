@@ -24,7 +24,7 @@ import storeKey, { JWT_TOKEN } from 'constants/storeKey';
 import { usePopup } from 'Context';
 import { useUserInfo } from 'hooks/useUserInfo';
 import React, { useEffect, useState } from 'react';
-import { Dimensions, Image, ScrollView, TouchableOpacity, Text, View, Platform, PermissionsAndroid, StyleSheet, Alert, Linking } from 'react-native';
+import { Dimensions, Image, ScrollView, TouchableOpacity, Text, View, Platform, PermissionsAndroid, StyleSheet, Alert, Linking, TextInput } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { setPrincipal } from 'redux/reducers/authReducer';
 import * as mbrReducer from 'redux/reducers/mbrReducer';
@@ -169,7 +169,7 @@ export const Login01 = () => {
     if(isEmptyData(push_token)) {
       const { success, data } = await get_member_chk(body);
       if(success) {
-        if(typeof data.mbr_base != 'undefined') {
+        if(isEmptyData(data.mbr_base)) {
           const memberStatus = data.mbr_base.status;
 
           if (memberStatus == 'PROCEED' || memberStatus == 'APPROVAL') {
@@ -199,136 +199,94 @@ export const Login01 = () => {
 
     if(memberStatus == 'PROCEED' || memberStatus == 'APPROVAL') {
       if(memberStatus == 'APPROVAL') {
-        navigation.navigate(ROUTES.APPROVAL, {
-          memberSeq: memberSeq
-        });
+        navigation.navigate(ROUTES.APPROVAL, { memberSeq: memberSeq });
       } else {
-        if (null != joinStatus) {
-          if (joinStatus == '01') {
-            navigation.dispatch(
-              CommonActions.reset({
-                index: 1,
-                routes: [
-                  { name: ROUTES.LOGIN01 },
-                  {
-                    name: ROUTES.SIGNUP_PASSWORD,
-                    params: {
-                      ci: mbr_base.ci,
-                      name: mbr_base.name,
-										  gender: mbr_base.gender,
-										  mobile: mbr_base.phone_number,
-										  birthday: mbr_base.birthday,
-                      memberSeq: memberSeq,
-                      emailId: mbr_base.email_id
-                    }
-                  },
-                  {
-                    name: ROUTES.SIGNUP_IMAGE,
-                    params: {
-                      memberSeq: memberSeq,
-                      gender: gender,
-                    }
-                  },
-                ],
-              })
-            );
+        if (isEmptyData(joinStatus)) {
+          // PASSWORD, IMAGE, NICKNAME, ADD, INTEREST, INTRODUCE, AUTH
 
-          } else if (joinStatus == '02') {
+          if (joinStatus == 'PASSWORD') {
             navigation.dispatch(
               CommonActions.reset({
                 index: 1,
                 routes: [
                   { name: ROUTES.LOGIN01 },
-                  {
-                    name: ROUTES.SIGNUP_IMAGE,
-                    params: {
-                      memberSeq: memberSeq,
-                      gender: gender,
-                    }
-                  },
-                  {
-                    name: ROUTES.SIGNUP_NICKNAME,
-                    params: {
-                      ci: mbr_base.ci,
-                      name: mbr_base.name,
-										  gender: mbr_base.gender,
-										  mobile: mbr_base.phone_number,
-										  birthday: mbr_base.birthday,
-                      memberSeq: memberSeq,
-                      emailId: mbr_base.email_id
-                    }
-                  },
-                  {
-                    name: ROUTES.SIGNUP_ADDINFO,
-                    params: {
-                      memberSeq: memberSeq,
-                      gender: gender,
-                      nickname: mbr_base.nickname,
-                      mstImgPath: mstImgPath,
-                    }
-                  },
-                  /* {
-                    name: ROUTES.SIGNUP_INTEREST,
-                    params: {
-                      memberSeq: memberSeq,
-                      gender: gender,
-                      nickname: mbr_base.nickname,
-                    }
-                  },
-                  {
-                    name: ROUTES.SIGNUP_INTRODUCE,
-                    params: {
-                      memberSeq: memberSeq,
-                      gender: gender,
-                      nickname: mbr_base.nickname,
-                    }
-                  }, */
+                  { name: ROUTES.SIGNUP_PASSWORD, params: { ci: mbr_base.ci, name: mbr_base.name, gender: mbr_base.gender, mobile: mbr_base.mobile, birthday: mbr_base.birthday, memberSeq: memberSeq, emailId: mbr_base.emailId }},
+                  { name: ROUTES.SIGNUP_IMAGE, params: { memberSeq: memberSeq, gender: mbr_base.gender, }},
                 ],
               })
             );
-          } else if (joinStatus == '03' || joinStatus == '04') {
+          } else if (joinStatus == 'IMAGE') {
             navigation.dispatch(
               CommonActions.reset({
                 index: 1,
                 routes: [
-                  { name: 'Login01' },
-                  {
-                    name: ROUTES.SIGNUP00,
-                    params: {
-                      ci: mbr_base.ci,
-                      name: mbr_base.name,
-										  gender: mbr_base.gender,
-										  mobile: mbr_base.phone_number,
-										  birthday: mbr_base.birthday,
-                      memberSeq: memberSeq,
-                      emailId: mbr_base.email_id
-                    }
-                  },
-                  {
-                    name: ROUTES.SIGNUP01,
-                    params: {
-                      memberSeq: memberSeq,
-                      gender: gender,
-                    }
-                  },
-                  {
-                    name: ROUTES.SIGNUP02,
-                    params: {
-                      memberSeq: memberSeq,
-                      gender: gender,
-                    }
-                  },
-                  {
-                    name: ROUTES.SIGNUP03,
-                    params: {
-                      memberSeq: memberSeq,
-                      gender: gender,
-                      mstImgPath: mstImgPath,
-                    }
-                  }
+                  { name: ROUTES.LOGIN01 },
+                  { name: ROUTES.SIGNUP_PASSWORD, params: { ci: mbr_base.ci, name: mbr_base.name, gender: mbr_base.gender, mobile: mbr_base.mobile, birthday: mbr_base.birthday, memberSeq: memberSeq, emailId: mbr_base.emailId }},
+                  { name: ROUTES.SIGNUP_IMAGE, params: { memberSeq: memberSeq, gender: mbr_base.gender, }},
+                  { name: ROUTES.SIGNUP_NICKNAME, params: { memberSeq: memberSeq, gender: mbr_base.gender, mstImgPath: mbr_base.mstImgPath, nickname: mbr_base.nickname }},
                 ],
               })
             );
+          } else if (joinStatus == 'NICKNAME') {
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 1,
+                routes: [
+                  { name: ROUTES.LOGIN01 },
+                  { name: ROUTES.SIGNUP_PASSWORD, params: { ci: mbr_base.ci, name: mbr_base.name, gender: mbr_base.gender, mobile: mbr_base.mobile, birthday: mbr_base.birthday, memberSeq: memberSeq, emailId: mbr_base.emailId }},
+                  { name: ROUTES.SIGNUP_IMAGE, params: { memberSeq: memberSeq, gender: mbr_base.gender, }},
+                  { name: ROUTES.SIGNUP_NICKNAME, params: { memberSeq: memberSeq, gender: mbr_base.gender, mstImgPath: mbr_base.mstImgPath, nickname: mbr_base.nickname }},
+                  { name: ROUTES.SIGNUP_ADDINFO, params: { memberSeq: memberSeq, gender: mbr_base.gender, mstImgPath: mbr_base.mstImgPath, nickname: mbr_base.nickname }},
+                ],
+              })
+            );
+          } else if (joinStatus == 'ADD') {
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 1,
+                routes: [
+                  { name: ROUTES.LOGIN01 },
+                  { name: ROUTES.SIGNUP_PASSWORD, params: { ci: mbr_base.ci, name: mbr_base.name, gender: mbr_base.gender, mobile: mbr_base.mobile, birthday: mbr_base.birthday, memberSeq: memberSeq, emailId: mbr_base.emailId }},
+                  { name: ROUTES.SIGNUP_IMAGE, params: { memberSeq: memberSeq, gender: mbr_base.gender, }},
+                  { name: ROUTES.SIGNUP_NICKNAME, params: { memberSeq: memberSeq, gender: mbr_base.gender, mstImgPath: mbr_base.mstImgPath, nickname: mbr_base.nickname }},
+                  { name: ROUTES.SIGNUP_ADDINFO, params: { memberSeq: memberSeq, gender: mbr_base.gender, mstImgPath: mbr_base.mstImgPath, nickname: mbr_base.nickname }},
+                  { name: ROUTES.SIGNUP_INTEREST, params: { memberSeq: memberSeq, gender: mbr_base.gender, nickname: mbr_base.nickname }},
+                ],
+              })
+            );
+          } else if (joinStatus == 'INTEREST') {
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 1,
+                routes: [
+                  { name: ROUTES.LOGIN01 },
+                  { name: ROUTES.SIGNUP_PASSWORD, params: { ci: mbr_base.ci, name: mbr_base.name, gender: mbr_base.gender, mobile: mbr_base.mobile, birthday: mbr_base.birthday, memberSeq: memberSeq, emailId: mbr_base.emailId }},
+                  { name: ROUTES.SIGNUP_IMAGE, params: { memberSeq: memberSeq, gender: mbr_base.gender, }},
+                  { name: ROUTES.SIGNUP_NICKNAME, params: { memberSeq: memberSeq, gender: mbr_base.gender, mstImgPath: mbr_base.mstImgPath, nickname: mbr_base.nickname }},
+                  { name: ROUTES.SIGNUP_ADDINFO, params: { memberSeq: memberSeq, gender: mbr_base.gender, mstImgPath: mbr_base.mstImgPath, nickname: mbr_base.nickname }},
+                  { name: ROUTES.SIGNUP_INTEREST, params: { memberSeq: memberSeq, gender: mbr_base.gender, nickname: mbr_base.nickname }},
+                  { name: ROUTES.SIGNUP_INTRODUCE, params: { memberSeq: memberSeq, gender: mbr_base.gender, nickname: mbr_base.nickname }},
+                ],
+              })
+            );
+          } else if (joinStatus == 'INTRODUCE') {
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 1,
+                routes: [
+                  { name: ROUTES.LOGIN01 },
+                  { name: ROUTES.SIGNUP_PASSWORD, params: { ci: mbr_base.ci, name: mbr_base.name, gender: mbr_base.gender, mobile: mbr_base.mobile, birthday: mbr_base.birthday, memberSeq: memberSeq, emailId: mbr_base.emailId }},
+                  { name: ROUTES.SIGNUP_IMAGE, params: { memberSeq: memberSeq, gender: mbr_base.gender, }},
+                  { name: ROUTES.SIGNUP_NICKNAME, params: { memberSeq: memberSeq, gender: mbr_base.gender, mstImgPath: mbr_base.mstImgPath, nickname: mbr_base.nickname }},
+                  { name: ROUTES.SIGNUP_ADDINFO, params: { memberSeq: memberSeq, gender: mbr_base.gender, mstImgPath: mbr_base.mstImgPath, nickname: mbr_base.nickname }},
+                  { name: ROUTES.SIGNUP_INTEREST, params: { memberSeq: memberSeq, gender: mbr_base.gender, nickname: mbr_base.nickname }},
+                  { name: ROUTES.SIGNUP_INTRODUCE, params: { memberSeq: memberSeq, gender: mbr_base.gender, nickname: mbr_base.nickname }},
+                  { name: ROUTES.SIGNUP_AUTH, params: { memberSeq: memberSeq, gender: mbr_base.gender, mstImgPath: mbr_base.mstImgPath, nickname: mbr_base.nickname }},
+                ],
+              })
+            );
+          } else if (joinStatus == 'AUTH') {
+            navigation.navigate(ROUTES.APPROVAL, { memberSeq: memberSeq });
           }
         }
       }
@@ -442,70 +400,67 @@ export const Login01 = () => {
           end={{ x: 1, y: 1 }}
           style={_styles.loginContainer}
         >
-          <View style={[_styles.container, {marginTop: 60}]}>
+          <SpaceView mt={60} viewStyle={[_styles.container]}>
 
             {/* ############################################################### 타이틀 */}
-            <View style={[commonStyle.mb70, commonStyle.paddingHorizontal20]}>
+            <SpaceView mb={100} pl={20} pr={20}>
               <SpaceView>
-                <Text style={_styles.loginTitle}>LImeetED{'\n'}RE-NEW,{'\n'}SEASON II</Text>
+                <Image source={IMAGE.logoLeap} style={{width: 200, height: 57}} />
+                {/* <SpaceView ml={145}><Text style={_styles.loginTitle}>리<Text style={{fontSize:12}}>미티드</Text> 프<Text style={{fontSize:12}}>리미엄</Text></Text></SpaceView> */}
               </SpaceView>
-            </View>
+            </SpaceView>
 
             {/* ############################################################### 텍스트 입력 */}
             <View style={[layoutStyle.alignCenter, commonStyle.paddingHorizontal20, commonStyle.mb15, commonStyle.mt10]}>
-              <View style={{width: '100%'}}>
-                <Text style={_styles.emailPwdText}>이메일</Text>
-              </View>
-              <SpaceView mb={10} viewStyle={[commonStyle.width100]}>
-                <CommonInput
-                  label=""
-                  value={id}
-                  onChangeText={(id) => setId(id)}
-                  maxLength={50}
-                  borderBottomType={'#F3E270'}
-                  fontSize={14}
-                  style={{color: '#F3E270', marginTop: 10}}
-                />
-                <TouchableOpacity 
-                  style={_styles.removeTextBtn}
-                  onPress={() => { setId(''); }}
-                >
-                  <Image source={ICON.xYellow} style={styles.iconSquareSize(10)} />
-                </TouchableOpacity>
+
+              <SpaceView mb={30} viewStyle={{width: '100%'}}>
+                <SpaceView mb={10}>
+                  <Text style={_styles.emailPwdText}>이메일</Text>
+                </SpaceView>
+                <SpaceView>
+                  <TextInput
+                    value={id}
+                    onChangeText={(text) => setId(text)}
+                    autoCapitalize={'none'}
+                    style={_styles.textInputStyle}
+                    maxLength={50}
+                  />
+
+                  {id.length > 0 && (
+                    <TouchableOpacity 
+                      style={_styles.removeTextBtn}
+                      onPress={() => { setId(''); }}
+                      hitSlop={commonStyle.hipSlop20}>
+                      <Image source={ICON.xYellow} style={styles.iconSquareSize(10)} />
+                    </TouchableOpacity>
+                  )}
+                </SpaceView>
               </SpaceView>
 
-
-              {/* <View style={styles.infoContainer}>
-                <SpaceView mt={4}>
-                  <Image source={ICON.info} style={styles.iconSize} />
+              <SpaceView viewStyle={{width: '100%'}}>
+                <SpaceView mb={10}>
+                  <Text style={_styles.emailPwdText}>비밀번호</Text>
                 </SpaceView>
-                <SpaceView ml={8}>
-                  <CommonText color={ColorType.gray6666}>
-                    아이디는 이메일로 입력해 주세요.
-                  </CommonText>
-                </SpaceView>
-              </View> */}
+                <SpaceView>
+                  <TextInput
+                    value={password}
+                    onChangeText={(text) => setPassword(text)}
+                    autoCapitalize={'none'}
+                    style={_styles.textInputStyle}
+                    maxLength={30}
+                    secureTextEntry={true}
+                  />
 
-              <View style={{marginTop: 10, width: '100%'}}>
-                <Text style={_styles.emailPwdText}>비밀번호</Text>
-              </View>
-              <SpaceView viewStyle={[commonStyle.width100]}>
-                <CommonInput
-                  label=""
-                  value={password}
-                  onChangeText={(password) => setPassword(password)}
-                  isMasking={true}
-                  maxLength={20}
-                  borderBottomType={'#F3E270'}
-                  fontSize={14}
-                  style={{color: '#F3E270', marginTop: 10}}
-                />
-                <TouchableOpacity
-                  style={_styles.removeTextBtn}
-                  onPress={() => { setPassword(''); }}
-                >
-                  <Image source={ICON.xYellow} style={styles.iconSquareSize(10)} />
-                </TouchableOpacity>
+                  {password.length > 0 && (
+                    <TouchableOpacity
+                      style={_styles.removeTextBtn}
+                      onPress={() => { setPassword(''); }} 
+                      hitSlop={commonStyle.hipSlop20}>
+                      <Image source={ICON.xYellow} style={styles.iconSquareSize(10)} />
+                    </TouchableOpacity>
+                  )}
+                </SpaceView>
+
               </SpaceView>
 
               <View style={_styles.saveLogInfoContainer}>
@@ -598,7 +553,7 @@ export const Login01 = () => {
                 />
               </SpaceView> */}
             </SpaceView>
-          </View>
+          </SpaceView>
         </LinearGradient>
       </ScrollView>
     </>
@@ -672,10 +627,10 @@ const _styles = StyleSheet.create({
     flexGrow: 1,
   },
   loginTitle: {
-    fontFamily: 'Pretendard-Light',
-    fontSize: 30,
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 25,
     color: '#D5CD9E',
-    lineHeight: 38,
+    //lineHeight: 38,
   },
   container: {
     paddingTop: 5,
@@ -718,7 +673,7 @@ const _styles = StyleSheet.create({
   },
   removeTextBtn: {
     position: 'absolute',
-    top: 15,
+    bottom: 10,
     right: 0,
   },
   checkWrap: {
@@ -734,5 +689,13 @@ const _styles = StyleSheet.create({
     borderColor: '#F3E270',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  textInputStyle: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#F3E270',
+    padding: 0,
+    color: '#F3E270',
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 14,
   },
 });

@@ -12,7 +12,7 @@ import { Modalize } from 'react-native-modalize';
 import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { usePopup } from 'Context';
-import { regist_member_add_info, get_member_introduce_guide } from 'api/models';
+import { join_save_profile_add, get_member_introduce_guide } from 'api/models';
 import { SUCCESS, MEMBER_NICKNAME_DUP } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
 import { CommonLoading } from 'component/CommonLoading';
@@ -117,10 +117,10 @@ export const SignUp_Interest = (props : Props) => {
 			const body = {
 				member_seq: memberSeq,
 				interest_list: checkIntList,
-				join_status: '02',
+				join_status: 'INTEREST',
 			};
 			try {
-			const { success, data } = await regist_member_add_info(body);
+			const { success, data } = await join_save_profile_add(body);
 			if (success) {
 				switch (data.result_code) {
 					case SUCCESS:

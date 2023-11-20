@@ -127,11 +127,11 @@ export const Policy = (props: Props) => {
       name : ROUTES.SIGNUP_CHECK,
       params : {
         birthday: '19800714',
-        ci: 'test44',
-        name: '테스터44',
+        ci: 'test45',
+        name: '테스터45',
         gender: 'W',
         marketing_agree_yn: 'Y',
-        mobile: '01067888099',
+        mobile: '01067888097',
       }
     });
 

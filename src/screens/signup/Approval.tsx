@@ -160,7 +160,6 @@ export const Approval = (props: Props) => {
       })
     );
 
-
     /* navigation.dispatch(
       CommonActions.reset({
         index: 1,

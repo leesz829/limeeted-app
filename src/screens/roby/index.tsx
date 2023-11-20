@@ -47,6 +47,7 @@ import { NoticePopup } from 'screens/commonpopup/NoticePopup';
 import AsyncStorage from '@react-native-community/async-storage';
 import ProfileGrade from 'component/common/ProfileGrade';
 import Modal from 'react-native-modal';
+import { myProfile } from 'redux/reducers/authReducer';
 
 
 
@@ -84,12 +85,19 @@ export const Roby = (props: Props) => {
   const mbrProfileImgList = useProfileImg();
   const likes = useLikeList();
   const matches = useMatches();
+  
+  // 회원 실시간성 데이터
+  const [memberPeekData, setMemberPeekData] = useState({
+    accResCnt: 0,
+    accResSpecailCnt: 0,
+    accResLiveCnt: 0,
+    faceLankList: [],
+  });
 
   const [resLikeList, setResLikeList] = useState([]);
   const [matchTrgtList, setMatchTrgtList] = useState([]);
   const [reassessment, setReassessment] = useState(false);
-  const [friendMatchYn, setFriendMatchYn] = useState(false);
-  const [friendTypeFlag, setFriendTypeFlag] = useState(false);
+  const [isFriendMatch, setIsFriendMatch] = useState(true); // 아는사람 노출 여부
 
   const [modalAnimated, setModalAnimated] = useState(false);
 
@@ -111,6 +119,13 @@ export const Roby = (props: Props) => {
           }));
           setResLikeList(data.res_like_list);
           setMatchTrgtList(data.match_trgt_list);
+
+          setMemberPeekData({
+            accResCnt: data?.real_time_info?.acc_res_cnt,
+            accResSpecailCnt: data?.real_time_info?.acc_res_specail_cnt,
+            accResLiveCnt: data?.real_time_info?.acc_res_live_cnt,
+            faceLankList: data?.mbr_face_rank_list,
+          })
 
           // 공지사항 팝업 노출
           let nowDt = formatNowDate().substring(0, 8);
@@ -151,12 +166,12 @@ export const Roby = (props: Props) => {
       const { success, data } = await set_member_phone_book(body);
     
       if (success) {
+        console.log('data :::::: ', data);
         if (data.result_code != '0000') {
-          show({
-            content: '오류입니다. 관리자에게 문의해주세요.',
-            confirmCallback: function () {},
-          });
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
           return false;
+        } else {
+          setIsFriendMatch(isFriendMatch ? false : true);
         }
       }
     } catch (error) {
@@ -204,16 +219,19 @@ export const Roby = (props: Props) => {
           });
 
           insertMemberPhoneBook(tmp_phone_book_arr.toString(), value);
+
+
+          console.log('000000000000000000000000');
         }).catch(error => {
           // 연락처 가져오기 실패
           console.log(error);
-          setFriendTypeFlag(true);
-          setFriendMatchYn(false);
+          setIsFriendMatch(true);
           insertMemberPhoneBook("", "Y");
+          console.log('11111111111111111111111111');
         });
       } else {
-        setFriendTypeFlag(true);
-        setFriendMatchYn(false);
+        console.log('22222222222222222222222');
+        setIsFriendMatch(true);
         show({ title: '아는 사람 제외', content: '기기에서 연락처 접근이 거부된 상태입니다. \n기기의 앱 설정에서 연락처 접근 가능한 상태로 변경해주세요.'});
         insertMemberPhoneBook("", "Y");
       }
@@ -377,16 +395,12 @@ export const Roby = (props: Props) => {
 
   // 최근 소식 이동
   const onPressRecent = async () => {
-    navigation.navigate(STACK.COMMON, {
-      screen: 'Board0',
-    });
+    navigation.navigate(STACK.COMMON, { screen: 'Board0' });
   };
 
   // 우편함 이동
   const onPressMail = async () => {
-    navigation.navigate(STACK.COMMON, {
-      screen: 'index',
-    });
+    navigation.navigate(STACK.TAB, { screen: 'Message' });
   };
 
   // 가이드 팝업 활성화
@@ -436,7 +450,7 @@ export const Roby = (props: Props) => {
         });
       } else {
         getPeekMemberInfo();
-        setFriendMatchYn(memberBase?.friend_match_yn == 'N' ? true : false);
+        setIsFriendMatch(memberBase?.friend_match_yn == 'N' ? false : true);
 
         // 튜토리얼 팝업 노출
         if(!isEmptyData(memberBase?.tutorial_roby_yn) || memberBase?.tutorial_roby_yn == 'Y') {
@@ -469,6 +483,8 @@ export const Roby = (props: Props) => {
           backgroundColor: 'white',
           flexGrow: 1,
         }}>
+
+        {/* ################################################################################ 상단 메뉴 버튼 영역 */}
         <LinearGradient
           colors={['#1A1E1C', '#333B41']}
           style={{
@@ -477,12 +493,14 @@ export const Roby = (props: Props) => {
           }}
           start={{ x: 1, y: 0 }}
           end={{ x: 0, y: 1 }} >
+
           {/* 햄버거 메뉴 */}
           <TouchableOpacity 
             style={{position: 'absolute', top: 20, right: 20}}
             onPress={() => (
               setIsVisible(true)
             )}
+            hitSlop={commonStyle.hipSlop20}
           >
             {[0,1,2].map(() => (
               <View style={{width: 25, height: 3, backgroundColor: '#FFDD00', marginBottom: 4, borderRadius: 20}}></View>
@@ -490,7 +508,26 @@ export const Roby = (props: Props) => {
           </TouchableOpacity>
         </LinearGradient>
 
+        {/* ################################################################################ 회원 이미지, 닉네임, 인상 영역 */}
+        <SpaceView mt={75} pr={16} pl={16} viewStyle={{ flexDirection: 'row', position: 'absolute', top: 0, left: 0, zIndex: 1, }}>
+          <SpaceView>
+            <TouchableOpacity onPress={onPressMyDailyView}>
+              <View style={_styles.profileImageWrap}>
+                <Image source={{ uri: properties.img_domain + mbrProfileImgList[0]?.img_file_path }} style={styles.profileImg} />
+              </View>
+              <View style={styles.profilePenContainer}>
+                  <Image source={ICON.searchYellow} style={styles.iconSquareSize(36)} />
+              </View>
+            </TouchableOpacity>
+          </SpaceView>
 
+          <View style={_styles.profileInfoContainer}>
+            <View style={_styles.bestFaceContainer}>
+              <Text style={_styles.bestFaceText}>#{memberBase?.best_face}</Text>
+            </View>
+            <Text style={_styles.profileName}>{memberBase?.nickname}</Text>
+          </View>
+        </SpaceView>
 
         <LinearGradient
           colors={['#3D4348', '#1A1E1C']}
@@ -499,6 +536,7 @@ export const Roby = (props: Props) => {
         >
 
           <SpaceView ml={16} mr={16}>
+
             {/* ################################################################################ 멤버십 영역 */}
             <SpaceView mt={60} mb={10}>
               <Text style={_styles.mmbrshipTitle}>멤버십 인증</Text>
@@ -548,13 +586,13 @@ export const Roby = (props: Props) => {
               end={{ x: 0, y: 1 }}
               style={_styles.respectContainer}>
               <SpaceView>
-                <View style={{flexDirection: 'row', alignItems: 'center', padding: 16}}>
-                  <Text style={[_styles.respectText, {marginRight: 5}]}>리스펙트 등급</Text>
+                <SpaceView pl={15} pr={15} pt={16} pb={16}  viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                  <Text style={[_styles.respectText(20), {marginRight: 20}]}>리스펙트 등급</Text>
                   <ProfileGrade profileScore={memberBase?.social_grade} type={'BIG'} />
-                </View>
+                </SpaceView>
                 <View style={_styles.underline}></View>
                 <View style={_styles.respectContents}>
-                  <Text style={[_styles.respectText, {fontSize: 14}]}>등급 효과</Text>
+                  <Text style={[_styles.respectText(14), {fontSize: 14}]}>등급 효과</Text>
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <View>
                       <View style={[_styles.greenDot, {display: memberBase?.social_grade < 6 ? 'flex' : 'none'}]}></View>
@@ -580,11 +618,11 @@ export const Roby = (props: Props) => {
                   <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                     <View style={[_styles.respectBox]}>
                       <Image source={ICON.cardGold} style={styles.iconSize16} />
-                      <Text style={[_styles.respectText, {fontSize: 12, marginLeft: 5}]}>매일 데일리 카드 무료 열람 2회</Text>
+                      <Text style={[_styles.respectText(12), {marginLeft: 5, textAlign: 'center'}]}>매일 데일리 카드{'\n'}무료 열람 2회</Text>
                     </View>
                     <View style={[_styles.respectBox]}>
                       <Image source={ICON.moneyBill} style={styles.iconSize16} />
-                      <Text style={[_styles.respectText, {fontSize: 12, marginLeft: 5}]}>월요일마다 보너스 코인 15개</Text>
+                      <Text style={[_styles.respectText(12), {marginLeft: 5, textAlign: 'center'}]}>월요일마다{'\n'}보너스 코인 15개</Text>
                     </View>
                   </View>
                 </View>
@@ -601,35 +639,36 @@ export const Roby = (props: Props) => {
                       <Text style={_styles.popularTopTitle}>받은 관심</Text>
                       <Text style={_styles.popularTopTitle}>받은 인상</Text>
                     </View>
-                    <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%', marginTop: 10, paddingHorizontal: 15}}>
+                    <SpaceView mt={10} pr={15} pl={15} viewStyle={{flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
                       <Text style={_styles.popularTopDesc}>{resLikeList?.length}</Text>
                       <View style={{borderWidth: 1, borderColor: '#E1DFD1'}}></View>
                       <Text style={_styles.popularTopDesc}>{matchTrgtList?.length}</Text>
-                    </View>
+                    </SpaceView>
                   </View>
                   <View style={{width: '100%', padding: 16}}>
                     <View style={{padding: 5}}>
                       <Text style={[_styles.popularTitle, {fontSize: 14, marginBottom: 5}]}>받은 관심</Text>
-                      <Text style={_styles.popularDesc}>지금까지 {resLikeList?.length}명에게 관심을 받으셨어요.</Text>
-                      <Text style={_styles.popularDesc}>지금까지 {resLikeList?.length}명에게 찐심을 받으셨어요.</Text>
+                      <Text style={_styles.popularDesc}>지금까지 {memberPeekData?.accResCnt}명에게 관심을 받으셨어요.</Text>
+                      <Text style={_styles.popularDesc}>지금까지 {memberPeekData?.accResSpecailCnt}명에게 찐심을 받으셨어요.</Text>
                     </View>
-                    <View style={[_styles.underline, {marginVertical: 15}]}></View>
-                    <View style={{padding: 5}}>
+                    <SpaceView mb={15} mt={15} viewStyle={_styles.underline} />
+                    <SpaceView viewStyle={{padding: 5}}>
                       <Text style={[_styles.popularTitle, {fontSize: 14, marginBottom: 5}]}>받은 인상</Text>
-                      <Text style={_styles.popularDesc}>LIVE에서 {matchTrgtList?.length}명에게 호감을 받으셨어요.</Text>
-                      <Text style={{fontFamily: 'Pretendard-Regular', color: '#FFDD00', marginTop: 20}}>대표 인상 TOP3</Text>
-                      <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 10}}>
-                        <View style={[_styles.bestFaceContainer, {width: '33%', alignItems: 'center'}]}>
-                          <Text style={_styles.bestFaceText}>#{memberBase?.best_face}</Text>
-                        </View>
-                        <View style={[_styles.bestFaceContainer, {width: '33%', alignItems: 'center'}]}>
-                          <Text style={_styles.bestFaceText}>#{memberBase?.best_face}</Text>
-                        </View>
-                        <View style={[_styles.bestFaceContainer, {width: '33%', alignItems: 'center'}]}>
-                          <Text style={_styles.bestFaceText}>#{memberBase?.best_face}</Text>
-                        </View>
-                      </View>
-                    </View>
+                      <Text style={_styles.popularDesc}>LIVE에서 {memberPeekData?.accResLiveCnt}명에게 호감을 받으셨어요.</Text>
+
+                      <SpaceView pb={10}>
+                        <Text style={{fontFamily: 'Pretendard-Regular', color: '#FFDD00', marginTop: 20}}>대표 인상 TOP3</Text>
+                        <SpaceView mt={10} viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                          {memberPeekData.faceLankList.map((item, index) => {
+                            return index < 3 && (
+                              <View style={[_styles.bestFaceContainer, {width: '33%', alignItems: 'center'}]}>
+                                <Text style={_styles.bestFaceText}>#{item?.face_code_name}</Text>
+                              </View>
+                            )
+                          })}
+                        </SpaceView>
+                      </SpaceView>
+                    </SpaceView>
                   </View>
                 </View>
               </View>
@@ -648,14 +687,15 @@ export const Roby = (props: Props) => {
                   </View>
                   <Text style={_styles.manageDesc}>이성들에게 내 프로필이 소개되고 있어요.</Text>
                 </TouchableOpacity>
+
                 <TouchableOpacity 
                   style={_styles.openPhoneBox}
                   onPress={() => {
-                    updateMemberInfo('02', friendMatchYn ? 'N' : 'Y');
+                    updateMemberInfo('02', isFriendMatch ? 'N' : 'Y');
                   }}  
                 >
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Image source={friendMatchYn ? ICON.checkYellow : ICON.checkGold} style={[styles.iconSize16, {marginRight: 5}]} />
+                    <SpaceView mr={5}><Image source={isFriendMatch ? ICON.checkGold : ICON.checkYellow} style={styles.iconSquareSize(16)} /></SpaceView>
                     <Text style={_styles.manageTitle}>아는 사람 제외</Text>
                   </View>
                   <Text style={_styles.manageDesc}>내 연락처에 저장된 사람이 소개되고 있어요.</Text>
@@ -702,26 +742,7 @@ export const Roby = (props: Props) => {
           </Modal>
         </LinearGradient>
 
-        {/* ################################################################################ 회원 이미지, 닉네임, 인상 영역 */}
-        <SpaceView mt={80} pr={16} pl={16} viewStyle={{ flexDirection: 'row', position: 'absolute', top: 0, left: 0 }}>
-          <SpaceView>
-            <TouchableOpacity onPress={onPressMyDailyView}>
-              <View style={_styles.profileImageWrap}>
-                <Image source={{ uri: properties.img_domain + mbrProfileImgList[0]?.img_file_path }} style={styles.profileImg} />
-              </View>
-              <View style={styles.profilePenContainer}>
-                  <Image source={ICON.searchYellow} style={styles.iconSquareSize(36)} />
-              </View>
-            </TouchableOpacity>
-          </SpaceView>
-
-          <View style={_styles.profileInfoContainer}>
-            <View style={_styles.bestFaceContainer}>
-              <Text style={_styles.bestFaceText}>#{memberBase?.best_face}</Text>
-            </View>
-            <Text style={_styles.profileName}>{memberBase?.nickname}</Text>
-          </View>
-        </SpaceView>
+        
       </ScrollView>
 
       {/********************************************************** 프로필 관리 버튼 */}
@@ -835,7 +856,6 @@ export const Roby = (props: Props) => {
 ##################### Style 영역
 ###########################################################################################################
 ####################################################################################################### */}
-
 const _styles = StyleSheet.create({
   profileImageWrap: {
     width: 140,
@@ -935,10 +955,12 @@ const _styles = StyleSheet.create({
     borderRadius: 20,
     paddingVertical: 10,
   },
-  respectText: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 20,
-    color: '#D5CD9E',
+  respectText: (_fs:number) => {
+    return {
+      fontFamily: 'Pretendard-SemiBold',
+      fontSize: _fs,
+      color: '#D5CD9E',
+    };
   },
   respectGradeText: {
     fontFamily: 'Pretendard-SemiBold',
@@ -951,16 +973,17 @@ const _styles = StyleSheet.create({
     borderColor: '#D5CD9E',
   },
   respectContents: {
-    padding: 16,
+    paddingHorizontal: 15,
+    paddingVertical: 16,
   },
   respectBox: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#A8A7A2',
-    padding: 10,
+    padding: 5,
     width: '49%',
-    borderRadius: 10,
+    borderRadius: 7,
     marginTop: 20,
   },
   greenDot: {
@@ -988,7 +1011,6 @@ const _styles = StyleSheet.create({
   },
   popularBox: {
     width: '100%',
-    height: 350,
     backgroundColor: '#445561',
     borderRadius: 30,
     alignItems: 'center',

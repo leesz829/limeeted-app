@@ -267,6 +267,7 @@ export const IMAGE = {
   heartImg02: require('assets/img/heart_img02.png'),
   popupLogo: require('assets/img/popup_logo.png'),
   clothesImg: require('assets/img/clothes.png'),
+  logoLeap: require('assets/img/logo_leap.png'),
 };
 
 export const PROFILE_IMAGE = {

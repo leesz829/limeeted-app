@@ -101,10 +101,10 @@ import {
   STORY_PROFILE_SECRET_PROC,
   GET_DAILY_MATCH_LIST,
   COMMON_CODE_LIST,
-  REGIST_ADD_INFO,
   GET_MEMBER_AUTH_LIST,
   JOIN_SAVE_PROFILE_IMAGE,
   JOIN_SAVE_PROFILE_AUTH,
+  JOIN_SAVE_PROFILE_ADD,
 } from './route';
 
 /* ========================================================================================================
@@ -159,6 +159,7 @@ export async function regist_member_base_info(body: {
   sns_token?: string;
   device_gubun?: string;
   marketing_agree_yn?: string;
+  join_status?: string;
 }) {
   const push_token = await AsyncStorage.getItem(FCM_TOKEN);
   return send(REGIST_BASE_INFO, 'POST', { ...body, push_token }, false, false);
@@ -261,27 +262,6 @@ export async function join_cancel(body: {
   return send(JOIN_CANCEL, 'POST', body, false, false);
 }
 
-// 회원의 부가정보를 등록한다.
-export async function regist_member_add_info(body: {
-  member_seq: number;
-  nickname: string;
-  comment: string;
-  interest_list: any;
-  interview_list: any;
-  introduce_comment: string;
-  business: string;
-  job: string;
-  height: string;
-  form_body: string;
-  religion: string;
-  drinking: string;
-  smoking: string;
-  join_status: string;
-}) {
-  const push_token = await AsyncStorage.getItem(FCM_TOKEN);
-  return send(REGIST_ADD_INFO, 'POST', { ...body, push_token }, false, false);
-}
-
 // 회원가입시 프로필 사진을 저장한다.
 export async function join_save_profile_image(body: {
   member_seq: number;
@@ -300,6 +280,27 @@ export async function join_save_profile_auth(body: {
   img_del_seq_str: string;
 }) {
   return send(JOIN_SAVE_PROFILE_AUTH, 'POST', body, false, false);
+}
+
+// 회원가입시 프로필 추가정보를 저장한다.
+export async function join_save_profile_add(body: {
+  member_seq: number;
+  nickname: string;
+  comment: string;
+  interest_list: any;
+  interview_list: any;
+  introduce_comment: string;
+  business: string;
+  job: string;
+  height: string;
+  form_body: string;
+  religion: string;
+  drinking: string;
+  smoking: string;
+  join_status: string;
+}) {
+  const push_token = await AsyncStorage.getItem(FCM_TOKEN);
+  return send(JOIN_SAVE_PROFILE_ADD, 'POST', { ...body, push_token }, false, false);
 }
 
 

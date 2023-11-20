@@ -110,7 +110,7 @@ const _styles = StyleSheet.create({
       marginRight: type == 'SMALL' ? 0 : 5,
       paddingHorizontal: type  == 'SMALL' ? 3 : 5,
       //borderRadius: 5,
-      borderRadius: 15,
+      borderRadius: 11,
       flexDirection: `row`,
       alignItems: `center`,
       //justifyContent: `space-between`,
