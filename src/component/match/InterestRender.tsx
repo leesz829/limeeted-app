@@ -51,7 +51,7 @@ export default function InterestRender({ memberData, interestList, type }) {
 
             <SpaceView>
               {interestList.length > 0 &&
-                <SpaceView mt={30} viewStyle={_styles.interestWrap}>
+                <SpaceView viewStyle={_styles.interestWrap}>
                   <SpaceView mt={8} viewStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}>
                     {interestList.map((item, index) => {
                       const isOn = item.dup_chk == 0 ? false : true;
@@ -87,7 +87,7 @@ export default function InterestRender({ memberData, interestList, type }) {
 
 const _styles = StyleSheet.create({
   introWrap: {
-    minHeight: 180,
+    minHeight: 150,
     borderRadius: 20,
     paddingHorizontal: 15,
     paddingVertical: 15,

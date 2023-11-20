@@ -19,7 +19,7 @@ import { useUserInfo } from 'hooks/useUserInfo';
 
 const { width } = Dimensions.get('window');
 
-export default function ProfileAuth({ data, isButton, callbackAuthCommentFn, memberData, type }) {
+export default function ProfileAuth({ data, isEditBtn, memberData }) {
   const navigation = useNavigation<ScreenNavigationProp>();
 
   const memberBase = useUserInfo();
@@ -41,17 +41,20 @@ export default function ProfileAuth({ data, isButton, callbackAuthCommentFn, mem
       {data.length > 0 && (
         <SpaceView>
 
-          {/* ########################################################################################### 타이틀 */}
-          <SpaceView mb={15} viewStyle={{flexDirection: 'row'}}>
-            <Text style={_styles.textStyle(20, '#EEEAEB', 'B')}>{memberData.nickname}님의 인증 정보🤩</Text>
-          </SpaceView>
+          <SpaceView mb={15} viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
 
-          {type == 'profile' &&
-            <TouchableOpacity style={_styles.modBtn}>
-              <Image source={ICON.squarePen} style={styles.iconSize16} />
-              <Text style={_styles.modBtnText}>수정</Text>
-            </TouchableOpacity>
-          }
+            {/* ########################################################################################### 타이틀 */}
+            <SpaceView viewStyle={{flexDirection: 'row'}}>
+              <Text style={_styles.textStyle(20, '#EEEAEB', 'B')}>{memberData.nickname}님의 인증 정보🤩</Text>
+            </SpaceView>
+
+            {(isEmptyData(isEditBtn) && isEditBtn) && (
+              <TouchableOpacity style={_styles.modBtn}>
+                <Image source={ICON.squarePen} style={styles.iconSize16} />
+                <Text style={_styles.modBtnText}>수정</Text>
+              </TouchableOpacity>
+            )}
+          </SpaceView>
 
           {/* ########################################################################################### 인증 목록(세로) */}
           {/* <SpaceView>
@@ -245,9 +248,9 @@ const _styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   modBtn: {
-    position: 'absolute',
+    /* position: 'absolute',
     top: 0,
-    right: 0,
+    right: 0, */
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',

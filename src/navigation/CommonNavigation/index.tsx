@@ -45,6 +45,11 @@ import StoryEdit from 'screens/story/StoryEdit';
 import StoryDetail from 'screens/story/StoryDetail';
 import StoryActive from 'screens/story/StoryActive';
 
+import { Profile_AddInfo } from 'screens/profile/Profile_AddInfo';
+import { Profile_Auth } from 'screens/profile/Profile_Auth';
+import { Profile_Interest } from 'screens/profile/Profile_Interest';
+import { Profile_Introduce } from 'screens/profile/Profile_Introduce';
+
 const CommonStack = createStackNavigator<StackParamList>();
 
 const CommonNavigation = () => {
@@ -89,6 +94,10 @@ const CommonNavigation = () => {
       <CommonStack.Screen name="StoryEdit" component={StoryEdit} />
       <CommonStack.Screen name="StoryDetail" component={StoryDetail} />
       <CommonStack.Screen name="StoryActive" component={StoryActive} />
+      <CommonStack.Screen name="Profile_AddInfo" component={Profile_AddInfo} />
+      <CommonStack.Screen name="Profile_Auth" component={Profile_Auth} />
+      <CommonStack.Screen name="Profile_Interest" component={Profile_Interest} />
+      <CommonStack.Screen name="Profile_Introduce" component={Profile_Introduce} />
     </CommonStack.Navigator>
   );
 };

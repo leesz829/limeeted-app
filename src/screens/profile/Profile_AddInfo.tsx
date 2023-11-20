@@ -1,53 +1,58 @@
-import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
-import { layoutStyle, styles, modalStyle, commonStyle } from 'assets/styles/Styles';
-import { CommonBtn } from 'component/CommonBtn';
+import { styles, layoutStyle, modalStyle, commonStyle } from 'assets/styles/Styles';
 import CommonHeader from 'component/CommonHeader';
+import { CommonInput } from 'component/CommonInput';
 import SpaceView from 'component/SpaceView';
-import React, { useRef, useState } from 'react';
-import { View, Image, ScrollView, TouchableOpacity, StyleSheet, FlatList, Text, Dimensions } from 'react-native';
-import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
+import { ScrollView, View, StyleSheet, TouchableOpacity, Image, Dimensions, KeyboardAvoidingView, Platform, Text, TextInput } from 'react-native';
+import * as React from 'react';
+import { CommonBtn } from 'component/CommonBtn';
+import { CommonText } from 'component/CommonText';
+import { CommonTextarea } from 'component/CommonTextarea';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
+import { ColorType, StackParamList, BottomParamList, ScreenNavigationProp } from '@types';
+import { useDispatch } from 'react-redux';
+import { STACK } from 'constants/routes';
+import { useUserInfo } from 'hooks/useUserInfo';
+import { useProfileImg } from 'hooks/useProfileImg';
+import { get_common_code, update_additional, get_member_introduce, save_member_introduce } from 'api/models';
 import { usePopup } from 'Context';
-import { regist_introduce, get_member_introduce_guide, get_common_code_list, join_save_profile_add } from 'api/models';
-import { SUCCESS, MEMBER_NICKNAME_DUP } from 'constants/reusltcode';
-import { ROUTES } from 'constants/routes';
-import { CommonLoading } from 'component/CommonLoading';
+import { Color } from 'assets/styles/Color';
+import { Modalize } from 'react-native-modalize';
+import { SUCCESS } from 'constants/reusltcode';
 import { isEmptyData } from 'utils/functions';
+import { CommonLoading } from 'component/CommonLoading';
+import { setPartialPrincipal } from 'redux/reducers/authReducer';
 import LinearGradient from 'react-native-linear-gradient';
-import { TextInput } from 'react-native-gesture-handler';
 import RNPickerSelect from 'react-native-picker-select';
 import { ICON, PROFILE_IMAGE, findSourcePath, findSourcePathLocal } from 'utils/imageUtils';
 
 
 /* ################################################################################################################
 ###################################################################################################################
-###### 회원가입 - 간편정보
+###### 간편소개, 부가정보 상세
 ###################################################################################################################
 ################################################################################################################ */
 
 interface Props {
-	navigation : StackNavigationProp<StackParamList, 'SignUp_AddInfo'>;
-	route : RouteProp<StackParamList, 'SignUp_AddInfo'>;
+  navigation: StackNavigationProp<StackParamList, 'Profile_AddInfo'>;
+  route: RouteProp<StackParamList, 'Profile_AddInfo'>;
 }
 
 const { width, height } = Dimensions.get('window');
 
-export const SignUp_AddInfo = (props : Props) => {
-	const navigation = useNavigation<ScreenNavigationProp>();
+export const Profile_AddInfo = (props: Props) => {
+  const navigation = useNavigation<ScreenNavigationProp>();
+  const dispatch = useDispatch();
 
-	const { show } = usePopup();  // 공통 팝업
+  const { show } = usePopup();  // 공통 팝업
 	const isFocus = useIsFocused();
-	const [isLoading, setIsLoading] = React.useState(false);
+	const [isLoading, setIsLoading] = React.useState(false); // 로딩 여부
 	const [isClickable, setIsClickable] = React.useState(true); // 클릭 여부
 
-	const memberSeq = props.route.params?.memberSeq; // 회원 번호
-	const gender = props.route.params?.gender; // 성별
-	const mstImgPath = props.route.params?.mstImgPath; // 대표 사진 경로
-	const nickname = props.route.params?.nickname; // 닉네임
+  const memberBase = useUserInfo(); // 회원 기본정보
+  const mbrProfileImgList = useProfileImg(); // 회원 프로필 이미지 목록
 
-	//const [value, setValue] = React.useState<any>(null);
-
-	// 추가 정보 데이터
+  // 추가 정보 데이터
 	const [addData, setAddData] = React.useState({
 		height: '', // 키
 		business: '', // 직업1
@@ -58,103 +63,103 @@ export const SignUp_AddInfo = (props : Props) => {
 		smoking: '', // 흡연
 	});
 
-	const [local, setLocal] = React.useState<any>('');
+  const [local, setLocal] = React.useState<any>('');
 
-	// ############################################################ 업종 그룹 코드 목록
-	const busiGrpCdList = [
-		{ label: '일반', value: 'JOB_00' },
-		{ label: '공군/군사', value: 'JOB_01' },
-		{ label: '교육/지식/연구', value: 'JOB_02' },
-		{ label: '경영/사무', value: 'JOB_03' },
-		{ label: '기획/통계', value: 'JOB_04' },
-		{ label: '건설/전기', value: 'JOB_05' },
-		{ label: '금융/회계', value: 'JOB_06' },
-		{ label: '기계/기술', value: 'JOB_07' },
-		{ label: '보험/부동산', value: 'JOB_08' },
-		{ label: '생활', value: 'JOB_09' },
-		{ label: '식음료/여가/오락', value: 'JOB_10' },
-		{ label: '법률/행정', value: 'JOB_11' },
-		{ label: '생산/제조/가공', value: 'JOB_12' },
-		{ label: '영업/판매/관리', value: 'JOB_13' },
-		{ label: '운송/유통', value: 'JOB_14' },
-		{ label: '예체능/예술/디자인', value: 'JOB_15' },
-		{ label: '의료/건강', value: 'JOB_16' },
-		{ label: '인터넷/IT', value: 'JOB_17' },
-		{ label: '미디어', value: 'JOB_18' },
-		{ label: '기타', value: 'JOB_19' },
-	];
+  // ############################################################ 업종 그룹 코드 목록
+  const busiGrpCdList = [
+    { label: '일반', value: 'JOB_00' },
+    { label: '공군/군사', value: 'JOB_01' },
+    { label: '교육/지식/연구', value: 'JOB_02' },
+    { label: '경영/사무', value: 'JOB_03' },
+    { label: '기획/통계', value: 'JOB_04' },
+    { label: '건설/전기', value: 'JOB_05' },
+    { label: '금융/회계', value: 'JOB_06' },
+    { label: '기계/기술', value: 'JOB_07' },
+    { label: '보험/부동산', value: 'JOB_08' },
+    { label: '생활', value: 'JOB_09' },
+    { label: '식음료/여가/오락', value: 'JOB_10' },
+    { label: '법률/행정', value: 'JOB_11' },
+    { label: '생산/제조/가공', value: 'JOB_12' },
+    { label: '영업/판매/관리', value: 'JOB_13' },
+    { label: '운송/유통', value: 'JOB_14' },
+    { label: '예체능/예술/디자인', value: 'JOB_15' },
+    { label: '의료/건강', value: 'JOB_16' },
+    { label: '인터넷/IT', value: 'JOB_17' },
+    { label: '미디어', value: 'JOB_18' },
+    { label: '기타', value: 'JOB_19' },
+  ];
 
-	// 직업 그룹 코드 목록
-	const [jobCdList, setJobCdList] = React.useState([{ label: '', value: '' }]);
+  // 직업 그룹 코드 목록
+  const [jobCdList, setJobCdList] = React.useState([{ label: '', value: '' }]);
 
-	// 출신지 지역 코드 목록
-	const bLocalGrpCdList = [
-		{ label: '서울', value: 'LOCA_00' },
-		{ label: '경기', value: 'LOCA_01' },
-		{ label: '충북', value: 'LOCA_02' },
-		{ label: '충남', value: 'LOCA_03' },
-		{ label: '강원', value: 'LOCA_04' },
-		{ label: '경북', value: 'LOCA_05' },
-		{ label: '경남', value: 'LOCA_06' },
-		{ label: '전북', value: 'LOCA_07' },
-		{ label: '전남', value: 'LOCA_08' },
-		{ label: '제주', value: 'LOCA_09' },
-	];
+  // 출신지 지역 코드 목록
+  const bLocalGrpCdList = [
+    { label: '서울', value: 'LOCA_00' },
+    { label: '경기', value: 'LOCA_01' },
+    { label: '충북', value: 'LOCA_02' },
+    { label: '충남', value: 'LOCA_03' },
+    { label: '강원', value: 'LOCA_04' },
+    { label: '경북', value: 'LOCA_05' },
+    { label: '경남', value: 'LOCA_06' },
+    { label: '전북', value: 'LOCA_07' },
+    { label: '전남', value: 'LOCA_08' },
+    { label: '제주', value: 'LOCA_09' },
+  ];
 
-	// 지역 코드 목록
+  // 지역 코드 목록
 	const [bLocalCdList, setBLocalCdList] = React.useState([{ label: '', value: '' }]);
 
-	// 남자 체형 항목 목록
-	const manBodyItemList = [
-	{ label: '보통', value: 'NORMAL' },
-	{ label: '마른 체형', value: 'SKINNY' },
-	{ label: '근육질', value: 'FIT' },
-	{ label: '건장한', value: 'GIANT' },
-	{ label: '슬림 근육', value: 'SLIM' },
-	{ label: '통통한', value: 'CHUBBY' },
-	];
+  // 남자 체형 항목 목록
+  const manBodyItemList = [
+    { label: '보통', value: 'NORMAL' },
+    { label: '마른 체형', value: 'SKINNY' },
+    { label: '근육질', value: 'FIT' },
+    { label: '건장한', value: 'GIANT' },
+    { label: '슬림 근육', value: 'SLIM' },
+    { label: '통통한', value: 'CHUBBY' },
+  ];
 
-	// 여자 체형 항목 목록
-	const womanBodyItemList = [
-	{ label: '보통', value: 'NORMAL' },
-	{ label: '마른 체형', value: 'SKINNY' },
-	{ label: '섹시한', value: 'SEXY' },
-	{ label: '글래머', value: 'GLAMOUR' },
-	{ label: '아담한', value: 'COMPACT' },
-	{ label: '모델핏', value: 'MODEL' },
-	{ label: '통통한', value: 'CHUBBY' },
-	];
+  // 여자 체형 항목 목록
+  const womanBodyItemList = [
+    { label: '보통', value: 'NORMAL' },
+    { label: '마른 체형', value: 'SKINNY' },
+    { label: '섹시한', value: 'SEXY' },
+    { label: '글래머', value: 'GLAMOUR' },
+    { label: '아담한', value: 'COMPACT' },
+    { label: '모델핏', value: 'MODEL' },
+    { label: '통통한', value: 'CHUBBY' },
+  ];
 
-	// 종교 항목 목록
-	const religionItemList = [
-	{ label: '무교(무신론자)', value: 'NONE' },
-	{ label: '무교(유신론자)', value: 'THEIST' },
-	{ label: '기독교', value: 'JEJUS' },
-	{ label: '불교', value: 'BUDDHA' },
-	{ label: '이슬람', value: 'ALLAH' },
-	{ label: '천주교', value: 'MARIA' },
-	];
+  // 종교 항목 목록
+  const religionItemList = [
+    { label: '무교(무신론자)', value: 'NONE' },
+    { label: '무교(유신론자)', value: 'THEIST' },
+    { label: '기독교', value: 'JEJUS' },
+    { label: '불교', value: 'BUDDHA' },
+    { label: '이슬람', value: 'ALLAH' },
+    { label: '천주교', value: 'MARIA' },
+  ];
 
-	// 음주 항목 목록
-	const drinkItemList = [
-	{ label: '안마심', value: 'NONE' },
-	{ label: '가볍게 마심', value: 'LIGHT' },
-	{ label: '자주 즐김', value: 'HARD' },
-	];
+  // 음주 항목 목록
+  const drinkItemList = [
+    { label: '안마심', value: 'NONE' },
+    { label: '가볍게 마심', value: 'LIGHT' },
+    { label: '자주 즐김', value: 'HARD' },
+  ];
 
-	// 흡연 항목 목록
-	const smokItemList = [
-	{ label: '비흡연', value: 'NONE' },
-	{ label: '가끔 흡연', value: 'LIGHT' },
-	{ label: '자주 흡연', value: 'HARD' },
-	];
+  // 흡연 항목 목록
+  const smokItemList = [
+    { label: '비흡연', value: 'NONE' },
+    { label: '가끔 흡연', value: 'LIGHT' },
+    { label: '자주 흡연', value: 'HARD' },
+  ];
 
-	// 직업 코드 콜백 함수
+  // 직업 코드 콜백 함수
 	const busiCdCallbackFn = (value: string) => {
-		if(addData.business != value) {
-			setAddData({...addData, business: value});
-			getCommonCodeList(value);
-		}
+    if(addData.business != value) {
+      setAddData({...addData, business: value});
+      getCommonCodeList(value);
+    }
 	};
 
 	// 셀렉트 박스 콜백 함수
@@ -163,7 +168,7 @@ export const SignUp_AddInfo = (props : Props) => {
 		getCommonCodeList(value);
 	}; */
 
-	// ############################################################ 직업, 지역 코드 목록 조회 함수
+  // ############################################################ 직업, 지역 코드 목록 조회 함수
 	const getCommonCodeList = async (value: string) => {
 		const isType = /JOB/.test(value);
 		const body = {
@@ -171,7 +176,7 @@ export const SignUp_AddInfo = (props : Props) => {
 		};
 		try {
 			setIsLoading(true);
-			const { success, data } = await get_common_code_list(body);
+			const { success, data } = await get_common_code(body);
 
 			if(success) {
 				switch (data.result_code) {
@@ -203,111 +208,143 @@ export const SignUp_AddInfo = (props : Props) => {
 
 	};
 
-	// ############################################################ 회원 소개 정보 조회
-	const getMemberIntro = async() => {
-		const body = {
-			member_seq : memberSeq
-		};
-		try {
-			const { success, data } = await get_member_introduce_guide(body);
-			if(success) {
-				switch (data.result_code) {
-					case SUCCESS:
+  // ############################################################ 회원 소개 정보 조회 함수
+  const getMemberIntro = async (group_code: string) => {
+    const body = {
+      group_code: group_code
+    };
+    try {
+      setIsLoading(true);
+      const { success, data } = await get_member_introduce(body);
+      if(success) {
+        switch (data.result_code) {
+          case SUCCESS:
+            
+            setAddData({
+              height: data?.member_add?.height,
+              business: data?.member_add?.business,
+              job: data?.member_add?.job,
+              form_body: data?.member_add?.form_body,
+              religion: data?.member_add?.religion,
+              drinking: data?.member_add?.drinking,
+              smoking: data?.member_add?.smoking,
+            });
 
-						console.log('data?.add_info ::::: ' , data?.add_info);
-						
-						setAddData({
-							height: data?.add_info?.height,
-							business: data?.add_info?.business,
-							job: data?.add_info?.job,
-							form_body: data?.add_info?.form_body,
-							religion: data?.add_info?.religion,
-							drinking: data?.add_info?.drinking,
-							smoking: data?.add_info?.smoking,
-						})
+            let dataList = new Array();
+            data?.code_list?.map(({ group_code, common_code, code_name }: { group_code: any; common_code: any; code_name: any; }) => {
+                let dataMap = { label: code_name, value: common_code };
+                dataList.push(dataMap);
+            });
+            setJobCdList(dataList); // 직업 코드 목록
+          
+          break;
+        default:
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+          break;
+        }
+      } else {
+        show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-						break;
-					default:
-						show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-					break;
-				}
-			} else {
-				show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-			}
-		} catch (error) {
-			console.log(error);
-		} finally {
-			
-		}
-	};
+  // ############################################################ 내 소개하기 저장
+  const saveFn = async () => {
 
-	// ############################################################################# 저장 함수
-	const saveFn = async () => {
+    // 중복 클릭 방지 설정
+    if(isClickable) {
+      setIsClickable(false);
+      setIsLoading(true);
 
-		// 중복 클릭 방지 설정
-		if(isClickable) {
-			setIsClickable(false);
-			setIsLoading(true);
+      try {
+        const body = {
+          business: addData.business,
+          job: addData.job,
+          height: addData.height,
+          form_body: addData.form_body,
+          religion: addData.religion,
+          drinking: addData.drinking,
+          smoking: addData.smoking,
+        };
+    
+        /* const body = {
+          comment: comment,
+          business: business,
+          job: job,
+          job_name: job_name,
+          height: mbrHeight,
+          form_body: form_body,
+          religion: religion,
+          drinking: drinking,
+          smoking: smoking,
+          interest_list : checkIntList,
+          introduce_comment: introduceComment,
+        }; */
 
-			const body = {
-				member_seq: memberSeq,
-				business: addData.business,
-				job: addData.job,
-				height: addData.height,
-				form_body: addData.form_body,
-				religion: addData.religion,
-				drinking: addData.drinking,
-				smoking: addData.smoking,
-				join_status: '02',
-			};
+        const { success, data } = await save_member_introduce(body);
+        if(success) {
+          switch (data.result_code) {
+          case SUCCESS:
 
+            // 갱신된 회원 기본 정보 저장
+            //dispatch(setPartialPrincipal({ mbr_base : data.mbr_base }));
 
-			console.log('body ::::::: ' , body);
+            show({ type: 'RESPONSIVE', content: '내 소개 정보가 저장되었습니다.' });
 
-			try {
-				const { success, data } = await join_save_profile_add(body);
-				if (success) {
-					switch (data.result_code) {
-						case SUCCESS:
-							navigation.navigate(ROUTES.SIGNUP_INTEREST, {
-								memberSeq: memberSeq,
-								gender: gender,
-								nickname: nickname,
-							});
-							break;
-						default:
-							show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-						break;
-					}
-				} else {
-					show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-				}
-			} catch (error) {
-				console.log(error);
-			} finally {
-				setIsClickable(true);
-				setIsLoading(false);
-			};
-		}
-	};
+            /* navigation.navigate(STACK.TAB, {
+              screen: 'Roby',
+            }); */
 
-	// 첫 렌더링 때 실행
-	React.useEffect(() => {
-		getMemberIntro();
-	}, [isFocus]);
+            navigation.goBack();
+            
+            break;
+          default:
+            show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+            break;
+          }
+        } else {
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsClickable(true);
+        setIsLoading(false);
+      }
+    }
+  };
 
-	return (
-		<>
-			<LinearGradient
+  // 첫 렌더링 때 실행
+  React.useEffect(() => {
+    if(isFocus) {
+      getMemberIntro(memberBase.business);
+
+      //if (memberBase.business != '') {
+        //getJobCodeList(memberBase.business);
+        //getMemberIntroduce(memberBase.business);
+      //}
+    }
+
+  }, [isFocus]);
+
+  return (
+    <>
+      {isLoading && <CommonLoading />}
+
+      <LinearGradient
 				colors={['#3D4348', '#1A1E1C']}
 				start={{ x: 0, y: 0 }}
 				end={{ x: 0, y: 1 }}
 				style={_styles.wrap}
 			>
 				<ScrollView showsHorizontalScrollIndicator={false}>
-					<SpaceView viewStyle={_styles.titleContainer}>
-						<Image source={findSourcePathLocal(mstImgPath)} style={_styles.addInfoImg} />
-						<Text style={_styles.title}><Text style={{color: '#F3E270'}}>{nickname}</Text>님의{'\n'}간편소개 정보를{'\n'}선택해 주세요.</Text>
+					<SpaceView mt={10} viewStyle={_styles.titleContainer}>
+						<Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={_styles.addInfoImg} />
+						<Text style={_styles.title}><Text style={{color: '#F3E270'}}>{memberBase.nickname}</Text>님의{'\n'}간편소개 정보를{'\n'}선택해 주세요.</Text>
 					</SpaceView>
 
 					{/* ##################################################################################################################
@@ -385,7 +422,7 @@ export const SignUp_AddInfo = (props : Props) => {
 									useNativeAndroidPickerStyle={false}
 									onValueChange={(value) => setAddData({...addData, form_body: value})}
 									value={addData.form_body}
-									items={gender == 'M' ? manBodyItemList : womanBodyItemList}
+									items={memberBase.gender == 'M' ? manBodyItemList : womanBodyItemList}
 								/>
 							</View>
 						</View>
@@ -459,36 +496,41 @@ export const SignUp_AddInfo = (props : Props) => {
 						</View>
 					</SpaceView>
 
-					<SpaceView mt={30}>
-						<CommonBtn
-							value={'관심사 등록하기'}
-							type={'reNewId'}
-							fontSize={16}
-							fontFamily={'Pretendard-Bold'}
-							borderRadius={5}
-							onPress={() => {
-								saveFn();
-							}}
-						/>
-					</SpaceView>
+          <SpaceView mt={50}>
+            <SpaceView>
+              <CommonBtn
+                value={'저장하기'}
+                type={'reNewId'}
+                fontSize={16}
+                fontFamily={'Pretendard-Bold'}
+                borderRadius={5}
+                onPress={() => {
+                  saveFn();
+                }}
+              />
+            </SpaceView>
 
-					<SpaceView mt={20}>
-						<CommonBtn
-							value={'이전으로'}
-							type={'reNewGoBack'}
-							isGradient={false}
-							fontFamily={'Pretendard-Light'}
-							fontSize={14}
-							borderRadius={5}
-							onPress={() => {
-								navigation.goBack();
-							}}
-						/>
-					</SpaceView>
+            <SpaceView mt={15}>
+              <CommonBtn
+                value={'이전으로'}
+                type={'reNewGoBack'}
+                isGradient={false}
+                fontFamily={'Pretendard-Light'}
+                fontSize={14}
+                borderRadius={5}
+                onPress={() => {
+                  navigation.goBack();
+                }}
+              />
+            </SpaceView>
+          </SpaceView>
+
 				</ScrollView>
 			</LinearGradient>
-		</>
-	);
+
+
+    </>
+  );
 };
 
 
@@ -499,7 +541,7 @@ export const SignUp_AddInfo = (props : Props) => {
 ###########################################################################################################
 ####################################################################################################### */}
 const _styles = StyleSheet.create({
-	wrap: {
+  wrap: {
 		minHeight: height,
 		padding: 30,
 	},
@@ -519,7 +561,7 @@ const _styles = StyleSheet.create({
 		borderColor: '#D5CD9E',
 		borderRadius: 5,
 		backgroundColor: '#FFF',
-		marginRight: 10,
+    marginRight: 10,
 	},
 	essentialCont : {
 
@@ -579,6 +621,7 @@ const _styles = StyleSheet.create({
 		color: '#F3E270',
 		justifyContent: 'center',
 	},
+
 });
 
 const pickerSelectStyles = StyleSheet.create({

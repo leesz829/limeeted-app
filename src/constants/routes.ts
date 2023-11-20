@@ -36,4 +36,9 @@ export const ROUTES = {
   Gifticon_Detail: 'GifticonDetail',
   ItemMatching: 'ItemMatching',
   MatchDetail: 'MatchDetail',
+
+  PROFILE_ADDINFO: 'Profile_AddInfo',
+  PROFILE_AUTH: 'Profile_AddInfo',
+  PROFILE_INTEREST: 'Profile_Interest',
+  PROFILE_INTRODUCE: 'Profile_Introduce',
 };

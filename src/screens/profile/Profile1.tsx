@@ -2,7 +2,7 @@ import { Slider } from '@miblanchard/react-native-slider';
 import { RouteProp, useIsFocused, useNavigation, useFocusEffect } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { StackParamList, ScreenNavigationProp, ColorType } from '@types';
-import { get_member_introduce_guide, get_member_profile_info, update_profile, update_additional, save_profile_auth_comment, update_member_master_image } from 'api/models';
+import { get_member_introduce_guide, get_member_profile_info, insert_member_image, update_member_image, delete_member_image, update_additional, save_profile_auth_comment, update_member_master_image } from 'api/models';
 import { Color } from 'assets/styles/Color';
 import { CommonBtn } from 'component/CommonBtn';
 import CommonHeader from 'component/CommonHeader';
@@ -48,6 +48,8 @@ import { isEmptyData, imagePickerOpen } from 'utils/functions';
 import MemberIntro from 'component/match/MemberIntro';
 import InterviewRender from 'component/match/InterviewRender';
 import InterestRender from 'component/match/InterestRender';
+import IntroduceRender from 'component/match/IntroduceRender';
+
 
 const { width, height } = Dimensions.get('window');
 
@@ -202,90 +204,145 @@ export const Profile1 = (props: Props) => {
   const imgSelected = (idx:number, isNew:boolean) => {
     if(isNew) {
       imagePickerOpen(function(path:any, data:any) {
-        let _data = {
-          member_img_seq: 0,
-          img_file_path: path,
-          order_seq: profileImageList.length+1,
-          org_order_seq: profileImageList.length+1,
-          del_yn: 'N',
-          status: 'PROGRESS',
-          return_reason: '',
-          file_base64: data,
-        };
-  
-        setProfileImageList((prev) => {
-          return [...prev, _data];
-        });
-
-        setCurrentImgIdx(profileImageList.length);
+        insertMemberImage(data, idx);
       });
-    } else {
-      setCurrentImgIdx(idx);
     }
-  }
 
-    // ############################################################################# 사진 변경
-    const imgModfyProc = () => {
-      imagePickerOpen(function(path:any, data:any) {
-  
-        // 삭제 데이터 저장
-        if(isEmptyData(imgMngData.member_img_seq) && 0 != imgMngData.member_img_seq) {
-          let delArr = imgDelSeqStr;
-          if (delArr == '') {
-            delArr = imgMngData.member_img_seq;
-          } else {
-            delArr = delArr + ',' + imgMngData.member_img_seq;
-          }
-          setImgDelSeqStr(delArr);
-        }
-  
-        // 목록 재구성
-        setProfileImageList((prev) => {
-          const dupChk = prev.some(item => item.order_seq === imgMngData.order_seq);
-          if(dupChk) {
-            return prev.map((item) => item.order_seq === imgMngData.order_seq 
-                ? { ...item, img_file_path: path, file_base64: data, status: 'PROGRESS' }
-                : item
-            );
-          }
-        });
-  
-        // 모달 닫기
-        imgMng_onClose();
-      });
-    };
-  
-    // ############################################################################# 사진 삭제
-    const imgDelProc = () => {
-      // 프로필 이미지 목록 재구성
-      let _profileImgList:any = [];
-      profileImageList.map((item, index) => {
-        if(index+1 != imgMngData.order_seq) {
-          _profileImgList.push(item);
-        }
-      });
-      _profileImgList.map((item, index) => {
-        item.order_seq = index+1;
-      });
-      setProfileImageList(_profileImgList);
-  
-      // 삭제 데이터 저장
-      if(isEmptyData(imgMngData.member_img_seq) && 0 != imgMngData.member_img_seq) {
-        let delArr = imgDelSeqStr;
-        if (delArr == '') {
-          delArr = imgMngData.member_img_seq;
-        } else {
-          delArr = delArr + ',' + imgMngData.member_img_seq;
-        }
-  
-        setImgDelSeqStr(delArr);
-      }
-  
-      setCurrentImgIdx(0);
-  
+    setCurrentImgIdx(idx);
+  };
+
+  // ############################################################################# 사진 변경
+  const imgModfyProc = () => {
+    imagePickerOpen(function(path:any, data:any) {
+      updateMemberImage(data);
+
       // 모달 닫기
       imgMng_onClose();
+    });
+  };
+
+  // ################################################################################## 회원 이미지 추가
+  const insertMemberImage = async (fileBase64:string, orderSeq:number) => {
+    const body = {
+      file_base64 : fileBase64,
+      order_seq: orderSeq+1,
     };
+
+    //return;
+
+    imgMng_onClose();
+    setIsLoading(true);
+    
+    try {
+      const { success, data } = await insert_member_image(body);
+      if(success) {
+        switch (data.result_code) {
+          case SUCCESS:
+            getMemberProfileData();
+            show({ type: 'RESPONSIVE', content: '프로필 사진이 추가되었습니다.' });
+
+            break;
+          default:
+            show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+            break;
+        }
+      } else {
+        show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // ################################################################################## 회원 이미지 변경
+  const updateMemberImage = async (fileBase64:string) => {
+
+    const body = {
+      member_img_seq: imgMngData.member_img_seq,
+      file_base64 : fileBase64,
+      order_seq: imgMngData.order_seq,
+    };
+
+    //return;
+
+    imgMng_onClose();
+    setIsLoading(true);
+    
+    try {
+      const { success, data } = await update_member_image(body);
+      if(success) {
+        switch (data.result_code) {
+          case SUCCESS:
+            /* dispatch(setPartialPrincipal({
+              mbr_base : data.mbr_base
+              , mbr_img_list : data.mbr_img_list
+              , mbr_interview_list : data.mbr_interview_list
+            }));
+
+            profileDataSet(data.mbr_img_list); */
+
+            getMemberProfileData();
+
+            show({ type: 'RESPONSIVE', content: '프로필 사진이 삭제되었습니다.' });
+
+            break;
+          default:
+            show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+            break;
+        }
+      } else {
+        show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // ################################################################################## 회원 이미지 삭제
+  const deleteMemberImage = async () => {
+
+    const body = {
+      member_img_seq: imgMngData.member_img_seq,
+    };
+
+    imgMng_onClose();
+    setIsLoading(true);
+    
+    try {
+      const { success, data } = await delete_member_image(body);
+      if(success) {
+        switch (data.result_code) {
+          case SUCCESS:
+            /* dispatch(setPartialPrincipal({
+              mbr_base : data.mbr_base
+              , mbr_img_list : data.mbr_img_list
+              , mbr_interview_list : data.mbr_interview_list
+            }));
+
+            profileDataSet(data.mbr_img_list); */
+
+            getMemberProfileData();
+
+            show({ type: 'RESPONSIVE', content: '프로필 사진이 삭제되었습니다.' });
+
+            break;
+          default:
+            show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+            break;
+        }
+      } else {
+        show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   /* ########################################################################################## 대표사진 영역 렌더링 */
   function MasterImageArea({ index, imgData, mngModalFn }) {
@@ -354,7 +411,7 @@ export const Profile1 = (props: Props) => {
   };
 
   /* ########################################################################################## 프로필 사진 아이템 렌더링 */
-  function ProfileImageItemNew({ index, imgData, imgSelectedFn }) {
+  function ProfileImageItem({ index, imgData, imgSelectedFn }) {
     const imgUrl = findSourcePathLocal(imgData?.img_file_path); // 이미지 경로
     const imgDelYn = imgData?.del_yn; // 이미지 삭제 여부
     const imgStatus = imgData?.status; // 이미지 상태
@@ -414,7 +471,7 @@ export const Profile1 = (props: Props) => {
         >
 
           {/* ############################################################################################################# 프로필 이미지 영역 */}
-          <SpaceView mb={30} ml={20} mr={15} viewStyle={_styles.contentWrap}>
+          <SpaceView mb={40} ml={20} mr={15} viewStyle={_styles.contentWrap}>
             <SpaceView>
               {[0,1,2,3,4,5].map((i, index) => {
                 return index == currentImgIdx && (
@@ -428,42 +485,42 @@ export const Profile1 = (props: Props) => {
             <SpaceView viewStyle={{flexDirection: 'column', justifyContent: 'space-between'}}>
               <SpaceView>
                 <SpaceView ml={3}><Text style={_styles.subImgTitle}>필수</Text></SpaceView>
-                <SpaceView><ProfileImageItemNew index={0} imgData={profileData.profile_img_list.length > 0 ? profileData.profile_img_list[0] : null} imgSelectedFn={imgSelected} /></SpaceView>
-                <SpaceView><ProfileImageItemNew index={1} imgData={profileData.profile_img_list.length > 1 ? profileData.profile_img_list[1] : null} imgSelectedFn={imgSelected} /></SpaceView>
-                <SpaceView><ProfileImageItemNew index={2} imgData={profileData.profile_img_list.length > 2 ? profileData.profile_img_list[2] : null} imgSelectedFn={imgSelected} /></SpaceView>
+                <SpaceView><ProfileImageItem index={0} imgData={profileData.profile_img_list.length > 0 ? profileData.profile_img_list[0] : null} imgSelectedFn={imgSelected} /></SpaceView>
+                <SpaceView><ProfileImageItem index={1} imgData={profileData.profile_img_list.length > 1 ? profileData.profile_img_list[1] : null} imgSelectedFn={imgSelected} /></SpaceView>
+                <SpaceView><ProfileImageItem index={2} imgData={profileData.profile_img_list.length > 2 ? profileData.profile_img_list[2] : null} imgSelectedFn={imgSelected} /></SpaceView>
               </SpaceView>
               <SpaceView>
                 <SpaceView ml={3}><Text style={_styles.subImgTitle}>선택</Text></SpaceView>
-                <SpaceView><ProfileImageItemNew index={3} imgData={profileData.profile_img_list.length > 3 ? profileData.profile_img_list[3] : null} imgSelectedFn={imgSelected} /></SpaceView>
-                <SpaceView><ProfileImageItemNew index={4} imgData={profileData.profile_img_list.length > 4 ? profileData.profile_img_list[4] : null} imgSelectedFn={imgSelected} /></SpaceView>
-                <SpaceView><ProfileImageItemNew index={5} imgData={profileData.profile_img_list.length > 5 ? profileData.profile_img_list[5] : null} imgSelectedFn={imgSelected} /></SpaceView>
+                <SpaceView><ProfileImageItem index={3} imgData={profileData.profile_img_list.length > 3 ? profileData.profile_img_list[3] : null} imgSelectedFn={imgSelected} /></SpaceView>
+                <SpaceView><ProfileImageItem index={4} imgData={profileData.profile_img_list.length > 4 ? profileData.profile_img_list[4] : null} imgSelectedFn={imgSelected} /></SpaceView>
+                <SpaceView><ProfileImageItem index={5} imgData={profileData.profile_img_list.length > 5 ? profileData.profile_img_list[5] : null} imgSelectedFn={imgSelected} /></SpaceView>
               </SpaceView>
             </SpaceView>
           </SpaceView>
 
-          {/* ############################################################################################################# 간단 소개 및 관심사 영역 */}
+          {/* ############################################################################################################# 간단 소개 영역 */}
           <SpaceView pl={15} pr={15} mb={40}>
-            <MemberIntro memberData={profileData?.member_info} imgList={profileData?.profile_img_list} interestList={checkIntList} faceList={memberBase?.best_face} type={'profile'} />
+            <MemberIntro 
+              memberData={profileData?.member_info} 
+              isEditBtn={true}
+              faceList={memberBase?.best_face} />
           </SpaceView>
 
           {/* ############################################################################################################# 자기 소개 영역 */}
-          <SpaceView pl={15} pr={15} mb={40} viewStyle={_styles.commentWrap}>
-            <SpaceView mb={15} viewStyle={{flexDirection: 'row'}}>
-              <View style={{zIndex:1}}>
-                <Text style={_styles.commentTitText}>{memberBase?.nickname}님 소개</Text>
-              </View>
-              <View style={_styles.commentUnderline} />
-            </SpaceView>
-            <SpaceView>
-              {/* <Text style={_styles.commentText}>{data?.match_member_info.introduce_comment}</Text> */}
-              <Text style={_styles.commentText}>{profileData?.member_info.comment}</Text>
-            </SpaceView>
+          <SpaceView pl={15} pr={15} mb={45} viewStyle={_styles.commentWrap}>
+            <IntroduceRender 
+              memberData={profileData?.member_info} 
+              isEditBtn={true}
+              comment={profileData?.member_info.comment} />
           </SpaceView>
 
           {/* ############################################################################################################# 프로필 인증 영역 */}
           <SpaceView pl={15} pr={15} mb={40}>
             {profileData.second_auth_list.length > 0 ? (
-              <ProfileAuth data={profileData.second_auth_list} isButton={false} memberData={profileData?.member_info} type={'profile'} />
+              <ProfileAuth 
+                data={profileData.second_auth_list} 
+                isEditBtn={true} 
+                memberData={profileData?.member_info} />
             ) : (
               <SpaceView mt={10} viewStyle={_styles.authNoDataArea}>
                 <SpaceView mb={8}><Text style={_styles.authNoDataTit}>프로필 인증없이 가입한 회원입니다.</Text></SpaceView>
@@ -474,7 +531,9 @@ export const Profile1 = (props: Props) => {
 
           {/* ############################################################################################################# 인터뷰 영역 */}
           <SpaceView pl={15} pr={15} mb={35}>
-            <InterviewRender title={memberBase?.nickname + '에 대한 필독서'} dataList={interviewData} type={'profile'} />
+            <InterviewRender 
+              title={memberBase?.nickname + '에 대한 필독서'} 
+              dataList={interviewData} type={'profile'} />
           </SpaceView>
 
           {/* ############################################################################################################# 간단 소개 및 관심사 영역 */}
@@ -483,6 +542,42 @@ export const Profile1 = (props: Props) => {
           </SpaceView>
         </LinearGradient>
       </ScrollView>
+
+      {/* ###############################################
+			##### 사진 관리 팝업
+			############################################### */}
+      <Modalize
+        ref={imgMng_modalizeRef}
+        adjustToContentHeight={true}
+        handleStyle={modalStyle.modalHandleStyle}
+        modalStyle={[modalStyle.modalContainer, {backgroundColor: '#333B41'}]}
+      >
+        <SpaceView pl={30} pr={30} mb={30} viewStyle={_styles.imgMngModalWrap}>
+          <SpaceView mb={15} viewStyle={{flexDirection: 'row'}}>
+            {isEmptyData(imgMngData.img_file_path) && (
+              <SpaceView mr={10}>
+                <Image source={findSourcePathLocal(imgMngData.img_file_path)} style={[styles.iconSquareSize(64), {borderRadius:5}]} />
+              </SpaceView>
+            )}
+            <SpaceView>
+              <Text style={_styles.imgMngModalTit}>사진 수정</Text>
+              <Text style={_styles.imgMngModalDesc}>사진을 변경 또는 삭제할 수 있어요.</Text>
+            </SpaceView>
+          </SpaceView>
+
+          <SpaceView>
+            <TouchableOpacity onPress={() => { imgModfyProc(); }} style={{marginBottom: 8}}>
+              <Text style={_styles.imgMngModalBtn('#FFDD00', 16, '#3D4348')}>변경</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => { deleteMemberImage(); }} style={{marginBottom: 8}}>
+              <Text style={_styles.imgMngModalBtn('#FFFFFF', 16, '#FF4D29')}>삭제</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => { imgMng_onClose(); }}>
+              <Text style={_styles.imgMngModalBtn('transparent', 16, '#D5CD9E', '#BBB18B')}>취소</Text>
+            </TouchableOpacity>
+          </SpaceView>
+        </SpaceView>
+      </Modalize>
     </>
   );
 };
@@ -638,26 +733,6 @@ const _styles = StyleSheet.create({
   commentWrap: {
     alignItems: 'center',
   },
-  commentTitText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 14,
-    color: '#FFFFFF',
-    textAlign: 'center',
-  },
-  commentText: {
-    fontFamily: 'Pretendard-Light',
-    fontSize: 14,
-    color: '#F3DEA6',
-    textAlign: 'center',
-  },
-  commentUnderline: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 7,
-    backgroundColor: '#FE8C12',
-  },
   authNoDataArea: {
     width: '100%',
     backgroundColor: '#ffffff', 
@@ -680,4 +755,33 @@ const _styles = StyleSheet.create({
     color: '#C3C3C8',
     textAlign: 'center',
   },
+  imgMngModalWrap: {
+    backgroundColor: '#333B41',
+  },
+  imgMngModalTit: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 20,
+    color: '#F3E270',
+  },
+  imgMngModalDesc: {
+    fontFamily: 'Pretendard-Light',
+    fontSize: 12,
+    color: '#D5CD9E',
+  },
+  imgMngModalBtn: (_bg:string, _fs:number, _cr:string, _bdcr) => {
+    return {
+      backgroundColor: _bg,
+      fontFamily: 'Pretendard-Bold',
+      fontSize: _fs,
+      color: _cr,
+      textAlign: 'center',
+      paddingVertical: 10,
+      borderRadius: 5,
+      borderWidth: isEmptyData(_bdcr) ? 1 : 0,
+      borderColor: isEmptyData(_bdcr) ? _bdcr : _bg,
+    };
+  },
+
+
+
 });

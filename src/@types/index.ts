@@ -121,6 +121,11 @@ export type StackParamList = {
     storyBoardSeq: Number;
   };
   StoryActive: undefined;
+
+  Profile_AddInfo: undefined;
+  Profile_Auth: undefined;
+  Profile_Interest: undefined;
+  Profile_Introduce: undefined;
 };
 
 export type BottomParamList = {

@@ -5,17 +5,15 @@ import { Dimensions, Image, StyleSheet, Text, View, TouchableOpacity, FlatList }
 import { findSourcePath, ICON, IMAGE, GUIDE_IMAGE } from 'utils/imageUtils';
 import SpaceView from 'component/SpaceView';
 import LinearGradient from 'react-native-linear-gradient';
-import { STACK } from 'constants/routes';
+import { STACK, ROUTES } from 'constants/routes';
 import { modalStyle, layoutStyle, commonStyle, styles } from 'assets/styles/Styles';
 import { isEmptyData } from 'utils/functions';
-import AuthLevel from 'component/common/AuthLevel';
-import ProfileGrade from 'component/common/ProfileGrade';
 import { useUserInfo } from 'hooks/useUserInfo';
 
 
 const { width, height } = Dimensions.get('window');
 
-export default function MemberIntro({ memberData, imgList, interestList, isNoDataArea, faceList, type }) {
+export default function MemberIntro({ memberData, isEditBtn, isNoDataArea, faceList }) {
   const navigation = useNavigation<ScreenNavigationProp>();
 
   const memberBase = useUserInfo();
@@ -23,17 +21,23 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
   return (
     <>
       {((isEmptyData(memberData?.height) || isEmptyData(memberData?.form_body) || isEmptyData(memberData?.job_name) || isEmptyData(memberData?.religion) ||
-        isEmptyData(memberData?.drinking) || isEmptyData(memberData?.smoking) || interestList.length > 0) || isNoDataArea) ? (
+        isEmptyData(memberData?.drinking) || isEmptyData(memberData?.smoking)) || isNoDataArea) ? (
 
         <SpaceView>
-          {type == 'profile' &&
-            <TouchableOpacity style={_styles.modBtn}>
-              <Image source={ICON.squarePen} style={styles.iconSize16} />
-              <Text style={_styles.modBtnText}>수정</Text>
-            </TouchableOpacity>
-          }
-          <SpaceView mb={10}>
-            <Text style={_styles.introTitleText}>{memberData?.nickname}님의 간단 소개🙂</Text>
+
+          <SpaceView mb={10} viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+            <SpaceView>
+              <Text style={_styles.introTitleText}>{memberData?.nickname}님의 간단 소개🙂</Text>
+            </SpaceView>
+
+            {(isEmptyData(isEditBtn) && isEditBtn) && (
+              <TouchableOpacity 
+                onPress={() => { navigation.navigate(STACK.COMMON, { screen: ROUTES.PROFILE_ADDINFO }); }} 
+                style={_styles.modBtn}>
+                <Image source={ICON.squarePen} style={styles.iconSize16} />
+                <Text style={_styles.modBtnText}>수정</Text>
+              </TouchableOpacity>
+            )}
           </SpaceView>
 
           {/* ############################################################################################### 간단 소개 영역 */}
@@ -43,18 +47,6 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
             end={{ x: 1, y: 1 }}
             style={_styles.introWrap}
           >
-            {/* <SpaceView>
-              <SpaceView mb={5} viewStyle={{flexDirection: 'row'}}>
-                {interestList.map((item, index) => {
-                  return index == 0 && (
-                    <SpaceView key={index} viewStyle={_styles.faceArea}>
-                      <Text style={_styles.faceText}>#{item.code_name}</Text>
-                    </SpaceView>
-                  );
-                })}
-              </SpaceView>
-            </SpaceView> */}
-
             {faceList.length > 0 &&
               <SpaceView>
                 <SpaceView mb={5} viewStyle={{flexDirection: 'row'}}>
@@ -68,11 +60,11 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
               </SpaceView>
             }
 
-            <SpaceView>
+            <SpaceView mt={40}>
               {(isEmptyData(memberData?.height) || isEmptyData(memberData?.form_body) || isEmptyData(memberData?.job_name) || isEmptyData(memberData?.religion) ||
                 isEmptyData(memberData?.drinking) || isEmptyData(memberData?.smoking)) ? (
 
-                  <SpaceView mt={20}>
+                  <SpaceView>
                     <Text style={_styles.addText}>
     
                       {(isEmptyData(memberData?.height) || isEmptyData(memberData?.form_body) || isEmptyData(memberData?.job_name)) && (
@@ -389,25 +381,6 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
               )}
             </SpaceView>
           </LinearGradient>
-
-          {/* ############################################################################################### 관심사 영역 */}
-          {/* <SpaceView>
-            {interestList.length > 0 &&
-              <SpaceView mt={30} viewStyle={_styles.interestWrap}>
-                <Text style={_styles.interestTitle}>관심사를 공유해요 : )</Text>
-                <SpaceView mt={8} viewStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-                  {interestList.map((item, index) => {
-                    const isOn = item.dup_chk == 0 ? false : true;
-                    return (
-                      <View key={index} style={_styles.interestItem(isOn)}>
-                        <Text style={_styles.interestText(isOn)}>{item.code_name}</Text>
-                      </View>
-                    );
-                  })}
-                </SpaceView>
-              </SpaceView>
-            }
-          </SpaceView> */}
         </SpaceView>
       ) : (
         <>
@@ -429,10 +402,9 @@ export default function MemberIntro({ memberData, imgList, interestList, isNoDat
 const _styles = StyleSheet.create({
 
   introWrap: {
-
-    borderRadius: 20,
+    borderRadius: 7,
     paddingHorizontal: 15,
-    paddingVertical: 30,
+    paddingVertical: 15,
     justifyContent: 'space-between',
   },
   faceArea: {
@@ -520,9 +492,6 @@ const _styles = StyleSheet.create({
     paddingVertical: 8,
   },
   modBtn: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',

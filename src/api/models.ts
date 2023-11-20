@@ -105,6 +105,9 @@ import {
   JOIN_SAVE_PROFILE_IMAGE,
   JOIN_SAVE_PROFILE_AUTH,
   JOIN_SAVE_PROFILE_ADD,
+  INSERT_MEMBER_IMAGE,
+  UPDATE_MEMBER_IMAGE,
+  DELETE_MEMBER_IMAGE,
 } from './route';
 
 /* ========================================================================================================
@@ -307,14 +310,14 @@ export async function join_save_profile_add(body: {
 /* ========================================================================================================
 ==================================================== USER
 ======================================================================================================== */
-//회원의 정보를 조회한다.
+// 회원의 정보를 조회한다.
 export async function get_my_info() {
   const push_token = await AsyncStorage.getItem(FCM_TOKEN);
   const inventory_connect_dt = await AsyncStorage.getItem('INVENTORY_CONNECT_DT');
   return send(ME, 'POST', { push_token, inventory_connect_dt }, true, false);
 }
 
-//회원의 기본 정보를 저장한다.
+// 회원의 기본 정보를 저장한다.
 export async function update_setting(body: {
   nickname: string;
   comment: string;
@@ -326,7 +329,7 @@ export async function update_setting(body: {
   return send(UPDATE_SETTING, 'POST', body, true, false);
 }
 
-//회원의 부가 정보를 저장한다.
+// 회원의 부가 정보를 저장한다.
 export async function update_additional(body: {
   comment: string;
   business: string;
@@ -348,12 +351,12 @@ export async function update_additional(body: {
   return send(UPDATE_ADDITIONAL, 'POST', body, true, false);
 }
 
-//회원의 보관함 정보를 조회한다.
+// 회원의 보관함 정보를 조회한다.
 export async function get_member_storage() {
   const inventory_connect_dt = await AsyncStorage.getItem('INVENTORY_CONNECT_DT');
   return send(STORAGE, 'POST', { inventory_connect_dt }, true, false);
 }
-//회원의 선호이성 정보를 저장한다.
+// 회원의 선호이성 정보를 저장한다.
 export async function update_prefference(body: {
   ideal_type_seq: number;
   want_local1: string;
@@ -373,7 +376,7 @@ export async function update_prefference(body: {
   return send(UPDATE_PREFERENCE, 'POST', body, true, false);
 }
 
-//회원의 프로필을 저장한다.
+// 회원의 프로필을 저장한다.
 export async function update_profile(body: {
   file_list: any;
   img_del_seq_str: string;
@@ -382,7 +385,7 @@ export async function update_profile(body: {
   return send(UPDATE_PROFILE, 'POST', body, true, false);
 }
 
-//회원의 프로필 2차 인증 정보를 저장한다.
+// 회원의 프로필 2차 인증 정보를 저장한다.
 export async function update_profile_authentication(body: {
   job_name?: string;
   edu_ins?: string;
@@ -398,7 +401,7 @@ export async function update_profile_authentication(body: {
   return send(UPDATE_PROFILE_ATHENTICATION2, 'POST', body, true, false);
 }
 
-//회원의 실시간성 정보를 조회한다.
+// 회원의 실시간성 정보를 조회한다.
 export async function peek_member(body: {
   img_acct_cnt: number;
   auth_acct_cnt: number;
@@ -407,22 +410,22 @@ export async function peek_member(body: {
   return send(PEEK_MEMBER, 'POST', { ...body, inventory_connect_dt }, true, false);
 }
 
-//회원의 프로필 2차 인증 정보 및 인증의 부가 정보를 조회한다.
+// 회원의 프로필 2차 인증 정보 및 인증의 부가 정보를 조회한다.
 export async function get_member_profile_authentication() {
   return send(MEMBER_PROFILE_ATHENTICATION2, 'POST', undefined, true, false);
 }
 
-//회원의 인터뷰 정보를 저장한다.
+// 회원의 인터뷰 정보를 저장한다.
 export async function update_interview(body: any) {
   return send(UPDATE_INTERVIEW, 'POST', body, true, false);
 }
 
-//회원의 보유 포인트 정보를 조회한다.
+// 회원의 보유 포인트 정보를 조회한다.
 export async function get_points() {
   return send(GET_POINT, 'POST', undefined, true, false);
 }
 
-//회원의 인터뷰 목록을 조회한다.
+// 회원의 인터뷰 목록을 조회한다.
 export async function get_member_interview(body: {
   use_yn: string;
   disp_yn: string;
@@ -430,8 +433,12 @@ export async function get_member_interview(body: {
   return send(MEMBER_INTERVIEW, 'POST', body, true, false);
 }
 
-//회원의 소개 정보를 조회한다.
-export async function get_member_introduce(body: { group_code: string }) {
+// 회원의 소개 정보를 조회한다.
+export async function get_member_introduce(body: { 
+  group_code: string;
+  exp_interest_yn: string;
+  exp_interview_yn: string;
+}) {
   return send(MEMBER_INTRODUCE, 'POST', body, true, false);
 }
 
@@ -531,6 +538,32 @@ export async function update_member_master_image(body: {
 }) {
   return send(UPDATE_MEMBER_MASTER_IMAGE, 'POST', body, true, false);
 }
+
+// 회원의 사진을 변경한다.
+export async function insert_member_image(body: {
+  file_base64: string;
+  order_seq: number;
+}) {
+  return send(INSERT_MEMBER_IMAGE, 'POST', body, true, false);
+}
+
+// 회원의 사진을 변경한다.
+export async function update_member_image(body: {
+  member_img_seq: number;
+  file_base64: string;
+  order_seq: number;
+}) {
+  return send(UPDATE_MEMBER_IMAGE, 'POST', body, true, false);
+}
+
+// 회원의 사진을 삭제한다.
+export async function delete_member_image(body: {
+  member_img_seq: number;
+}) {
+  return send(DELETE_MEMBER_IMAGE, 'POST', body, true, false);
+}
+
+
 
 
 

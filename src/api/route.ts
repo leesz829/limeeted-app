@@ -63,6 +63,9 @@ export const INSERT_MEMBER_PHONE_BOOK = '/member/insertMemberPhoneBook';
 export const MEMBER_APPLY_ITEM_INFO = '/item/selectMemberApplyItemList';
 export const SAVE_MEMBER_INTRODUCE = '/member/saveMemberIntroduce'
 export const UPDATE_MEMBER_MASTER_IMAGE = '/member/updateMemberMasterImage'
+export const INSERT_MEMBER_IMAGE = '/member/insertMemberImage'
+export const UPDATE_MEMBER_IMAGE = '/member/updateMemberImage'
+export const DELETE_MEMBER_IMAGE = '/member/deleteMemberImage'
 
 /**
  * PROFILE
