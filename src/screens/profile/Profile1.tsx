@@ -104,8 +104,11 @@ export const Profile1 = (props: Props) => {
   // 회원 관련 데이터
   const [profileData, setProfileData] = useState<any>({
     member_info: {},
+    member_add: {},
     profile_img_list: [],
     second_auth_list: [],
+    interview_list: [],
+    interest_list: [],
   });
 
   // 인터뷰 데이터
@@ -126,79 +129,22 @@ export const Profile1 = (props: Props) => {
         const auth_list = data?.mbr_second_auth_list.filter(item => item.auth_status == 'ACCEPT');
         setProfileData({
             member_info: data?.mbr_base,
+            member_add: data?.mbr_add,
             profile_img_list: data?.mbr_img_list,
             second_auth_list: auth_list,
+            interview_list: data?.mbr_interview_list,
+            interest_list: data?.mbr_interest_list,
         });
 
       } else {
-        show({
-          content: '오류입니다. 관리자에게 문의해주세요.',
-          confirmCallback: function () {},
-        });
+        show({ content: '오류입니다. 관리자에게 문의해주세요.' });
       }
     } catch (error) {
       console.log(error);
     } finally {
       setIsLoading(false);
     }
-  }
-
-  // ############################################################ 관심사, 인터뷰 정보 조회
-	const getMemberInterestData = async() => {
-		const body = {
-			member_seq : memberBase?.member_seq
-		};
-		try {
-			const { success, data } = await get_member_introduce_guide(body);
-			if(success) {
-				switch (data.result_code) {
-				case SUCCESS:
-					let _interviewList:any = [];
-					data?.interview_list?.map((item, index) => {
-						const data = {
-							common_code: item?.common_code,
-							code_name: item?.code_name,
-							interview_seq: item?.interview_seq,
-							answer: isEmptyData(item?.answer) ? item?.answer : '',
-							order_seq: item?.order_seq,
-						};
-						_interviewList.push(data);
-					});
-
-          setInterviewData(_interviewList,);
-
-          setIntList(data.int_list);
-
-          let setList = new Array();
-					data.int_list.map((item, index) => {
-						item.list.map((obj, idx) => {
-							if(obj.interest_seq != null) {
-								setList.push(obj);
-							}
-						})
-					})
-		
-					setCheckIntList(setList);
-					break;
-				default:
-					show({
-						content: '오류입니다. 관리자에게 문의해주세요.' ,
-						confirmCallback: function() {}
-					});
-					break;
-				}
-			} else {
-				show({
-					content: '오류입니다. 관리자에게 문의해주세요.' ,
-					confirmCallback: function() {}
-				});
-			}
-		} catch (error) {
-			console.log(error);
-		} finally {
-			
-		}
-	};
+  };
 
   // ############################################################################# 사진 선택
   const imgSelected = (idx:number, isNew:boolean) => {
@@ -355,24 +301,36 @@ export const Profile1 = (props: Props) => {
         {isEmptyData(imgUrl) && imgDelYn == 'N' ? (
           <>
             <SpaceView>
-              <Image 
-                source={imgUrl} 
-                style={_styles.mstImgStyle} 
-                resizeMode="cover" />
 
+              {/* 이미지 */}
+              <Image source={imgUrl} style={_styles.mstImgStyle} resizeMode="cover" />
+
+              {/* 대표사진 표시 */}
               {index == 0 && (
                 <SpaceView viewStyle={_styles.mstMarkWrap}>
                   <Text style={_styles.mstMarkText}>대표사진</Text>
                 </SpaceView>
               )}
 
-              <TouchableOpacity 
-                onPress={() => { mngModalFn(imgData, index+1, imgUrl);}} 
-                style={_styles.modBtn}
-              >
+              {/* 상태 표시 */}
+              {imgStatus != 'ACCEPT' && (
+                <SpaceView viewStyle={_styles.imgStatusArea}>
+                  <Text style={_styles.imgStatusText(imgStatus)}>{imgStatus == 'PROGRESS' ? '심사중' : imgStatus == 'ACCEPT' ? '승인' : '반려'}</Text>
+                </SpaceView>
+              )}
+
+              {/* 수정 버튼 */}
+              <TouchableOpacity onPress={() => { mngModalFn(imgData, index+1, imgUrl);}} style={_styles.modBtn}>
                 <Image source={ICON.userPen} style={styles.iconSquareSize(17)} />
                 <Text style={_styles.modBtnText}>수정</Text>
               </TouchableOpacity>
+
+              {/* 딤 처리 */}
+              <LinearGradient
+                colors={['#ffffff', 'transparent']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 0, y: 1 }}
+                style={_styles.imgDimArea} />
             </SpaceView>
           </>
         ) : (
@@ -431,9 +389,9 @@ export const Profile1 = (props: Props) => {
                 key={imgUrl}
                 source={imgUrl}
               />
-              <View style={_styles.imageDisabled(false)}>
+              {/* <View style={_styles.imageDisabled(false)}>
                 <Text style={[_styles.profileImageDimText(imgStatus)]}>{imgStatus == 'PROGRESS' ? '심사중' : imgStatus == 'ACCEPT' ? '승인' : '반려'}</Text>
-              </View>
+              </View> */}
             </SpaceView>
           </>
         ) : (
@@ -450,7 +408,7 @@ export const Profile1 = (props: Props) => {
   useEffect(() => {
     if(isFocus) {
       getMemberProfileData();
-      getMemberInterestData();
+      //getMemberInterestData();
     };
   }, [isFocus]);
 
@@ -511,7 +469,7 @@ export const Profile1 = (props: Props) => {
             <IntroduceRender 
               memberData={profileData?.member_info} 
               isEditBtn={true}
-              comment={profileData?.member_info.comment} />
+              comment={profileData?.member_add.introduce_comment} />
           </SpaceView>
 
           {/* ############################################################################################################# 프로필 인증 영역 */}
@@ -533,12 +491,16 @@ export const Profile1 = (props: Props) => {
           <SpaceView pl={15} pr={15} mb={35}>
             <InterviewRender 
               title={memberBase?.nickname + '에 대한 필독서'} 
-              dataList={interviewData} type={'profile'} />
+              isEditBtn={false}
+              dataList={profileData.interview_list} />
           </SpaceView>
 
-          {/* ############################################################################################################# 간단 소개 및 관심사 영역 */}
+          {/* ############################################################################################################# 관심사 영역 */}
           <SpaceView pl={15} pr={15} mb={40}>
-            <InterestRender memberData={profileData?.member_info} interestList={checkIntList} type={'profile'} />
+            <InterestRender 
+              memberData={profileData?.member_info} 
+              isEditBtn={true}
+              interestList={profileData.interest_list} />
           </SpaceView>
         </LinearGradient>
       </ScrollView>
@@ -615,6 +577,32 @@ const _styles = StyleSheet.create({
     fontFamily: 'Pretendard-Regular',
     fontSize: 14,
     color: '#D5CD9E',
+  },
+  imgDimArea: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 200,
+    opacity: 0.9,
+    borderRadius: 20,
+  },
+  imgStatusArea: {
+    position: 'absolute',
+    top: 15,
+    right: 15,
+    zIndex: 1,
+  },
+  imgStatusText: (status: string) => {
+    return {
+      fontFamily: 'Pretendard-Regular',
+      fontSize: 14,
+      color: '#D5CD9E',
+      backgroundColor: '#FFFFFF',
+      borderRadius: 10,
+      paddingVertical: 2,
+      paddingHorizontal: 10,
+    };
   },
   modBtn: {
     position: 'absolute',

@@ -52,9 +52,20 @@ export const Profile_Introduce = (props: Props) => {
 
   const memberBase = useUserInfo(); // 회원 기본정보
 
-  const [introduceComment, setIntroduceComment] = React.useState('');	// 자기 소개
   const [comment, setComment] = React.useState(memberBase?.comment);	// 한줄 소개
   const [interviewList, setInterviewList] = React.useState([]); // 인터뷰 목록
+
+  // 추가 정보 데이터
+	const [addData, setAddData] = React.useState({
+		height: '', // 키
+		business: '', // 직업1
+		job: '', // 직업2
+		form_body: '', // 체형
+		religion: '', // 종교
+		drinking: '', // 음주
+		smoking: '', // 흡연
+    introduceComment: '', // 자기소개
+	});
 
 
   /* ############################################################################# 인터뷰 답변 핸들러 */
@@ -82,8 +93,25 @@ export const Profile_Introduce = (props: Props) => {
         switch (data.result_code) {
           case SUCCESS:
 
-            setIntroduceComment(data?.member_add?.introduce_comment);
-            setInterviewList(data?.interview_list);
+            setAddData({
+							height: data?.member_add?.height,
+							business: data?.member_add?.business,
+							job: data?.member_add?.job,
+							form_body: data?.member_add?.form_body,
+							religion: data?.member_add?.religion,
+							drinking: data?.member_add?.drinking,
+							smoking: data?.member_add?.smoking,
+							introduceComment: data?.member_add?.introduce_comment,
+						});
+
+            let _interviewList = new Array();
+            data?.interview_list.map((item, index) => {
+              if(item.use_yn == 'Y') {
+                _interviewList.push(item);
+              }
+            });
+
+            setInterviewList(_interviewList);
           
           break;
         default:
@@ -110,49 +138,38 @@ export const Profile_Introduce = (props: Props) => {
 
       try {
         const body = {
-          business: addData.business,
-          job: addData.job,
-          height: addData.height,
-          form_body: addData.form_body,
-          religion: addData.religion,
-          drinking: addData.drinking,
-          smoking: addData.smoking,
-        };
-    
-        /* const body = {
           comment: comment,
-          business: business,
-          job: job,
-          job_name: job_name,
-          height: mbrHeight,
-          form_body: form_body,
-          religion: religion,
-          drinking: drinking,
-          smoking: smoking,
-          interest_list : checkIntList,
-          introduce_comment: introduceComment,
-        }; */
+          business: addData.business,
+					job: addData.job,
+					height: addData.height,
+					form_body: addData.form_body,
+					religion: addData.religion,
+					drinking: addData.drinking,
+					smoking: addData.smoking,
+					introduce_comment: addData.introduceComment,
+          interview_list: interviewList,
+        };
 
         const { success, data } = await save_member_introduce(body);
         if(success) {
           switch (data.result_code) {
-          case SUCCESS:
+            case SUCCESS:
 
-            // 갱신된 회원 기본 정보 저장
-            //dispatch(setPartialPrincipal({ mbr_base : data.mbr_base }));
+              // 갱신된 회원 기본 정보 저장
+              //dispatch(setPartialPrincipal({ mbr_base : data.mbr_base }));
 
-            show({ type: 'RESPONSIVE', content: '내 소개 정보가 저장되었습니다.' });
+              show({ type: 'RESPONSIVE', content: '내 소개 정보가 저장되었습니다.' });
 
-            /* navigation.navigate(STACK.TAB, {
-              screen: 'Roby',
-            }); */
+              /* navigation.navigate(STACK.TAB, {
+                screen: 'Roby',
+              }); */
 
-            navigation.goBack();
+              navigation.goBack();
             
-            break;
-          default:
-            show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-            break;
+              break;
+            default:
+              show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+              break;
           }
         } else {
           show({ content: '오류입니다. 관리자에게 문의해주세요.' });
@@ -217,8 +234,8 @@ export const Profile_Introduce = (props: Props) => {
             </SpaceView>
             <SpaceView>
               <TextInput
-                value={introduceComment}
-                onChangeText={(text) => setIntroduceComment(text)}
+                value={addData?.introduceComment}
+                onChangeText={(text) => setAddData({...addData, introduceComment: text})}
                 autoCapitalize={'none'}
                 multiline={true}
                 style={_styles.textInputBox(110)}
@@ -228,7 +245,7 @@ export const Profile_Introduce = (props: Props) => {
                 caretHidden={true}
               />
               <SpaceView mt={5}>
-                <Text style={_styles.countText}>({isEmptyData(introduceComment) ? introduceComment.length : 0}/3000)</Text>
+                <Text style={_styles.countText}>({isEmptyData(addData?.introduceComment) ? addData?.introduceComment.length : 0}/3000)</Text>
               </SpaceView>
             </SpaceView>
           </SpaceView>
@@ -236,9 +253,7 @@ export const Profile_Introduce = (props: Props) => {
 					<SpaceView mt={10}>
 						{interviewList.map((item, index) => {
 
-							console.log('item :::::: ',  item);
-
-							return isEmptyData(item?.common_code) && (
+							return (isEmptyData(item?.common_code)) && (
 								<>
 									<SpaceView mb={15}>
 										<Text style={_styles.introduceText}>Q. {item?.code_name}</Text>
@@ -253,6 +268,9 @@ export const Profile_Introduce = (props: Props) => {
 											maxLength={200}
 											caretHidden={true}
 										/>
+                    <SpaceView mt={5}>
+                      <Text style={_styles.countText}>({isEmptyData(item?.answer) ? item?.answer.length : 0}/200)</Text>
+                    </SpaceView>
 									</SpaceView>
 								</>
 							)
@@ -269,7 +287,7 @@ export const Profile_Introduce = (props: Props) => {
               fontFamily={'Pretendard-Bold'}
               borderRadius={5}
               onPress={() => {
-                //saveFn();
+                saveFn();
               }}
             />
           </SpaceView>

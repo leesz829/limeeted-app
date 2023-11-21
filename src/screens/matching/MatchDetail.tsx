@@ -454,7 +454,10 @@ export default function MatchDetail(props: Props) {
 
             {/* ############################################################################################################# 간단 소개 및 관심사 영역 */}
             <SpaceView pl={15} pr={15} mb={40}>
-              <MemberIntro memberData={data?.match_member_info} imgList={data?.profile_img_list} interestList={data?.interest_list} faceList={data?.face_list} />
+              <MemberIntro 
+                memberData={data?.match_member_info} 
+                isEditBtn={false}
+                faceList={data?.face_list} />
             </SpaceView>
 
             {/* ############################################################################################################# 자기 소개 영역 */}

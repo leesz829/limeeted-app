@@ -38,7 +38,7 @@ export const ROUTES = {
   MatchDetail: 'MatchDetail',
 
   PROFILE_ADDINFO: 'Profile_AddInfo',
-  PROFILE_AUTH: 'Profile_AddInfo',
+  PROFILE_AUTH: 'Profile_Auth',
   PROFILE_INTEREST: 'Profile_Interest',
   PROFILE_INTRODUCE: 'Profile_Introduce',
 };

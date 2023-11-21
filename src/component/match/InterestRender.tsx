@@ -5,7 +5,7 @@ import { Dimensions, Image, StyleSheet, Text, View, TouchableOpacity, FlatList }
 import { findSourcePath, ICON, IMAGE, GUIDE_IMAGE } from 'utils/imageUtils';
 import SpaceView from 'component/SpaceView';
 import LinearGradient from 'react-native-linear-gradient';
-import { STACK } from 'constants/routes';
+import { STACK, ROUTES } from 'constants/routes';
 import { modalStyle, layoutStyle, commonStyle, styles } from 'assets/styles/Styles';
 import { isEmptyData } from 'utils/functions';
 import AuthLevel from 'component/common/AuthLevel';
@@ -15,7 +15,7 @@ import { useUserInfo } from 'hooks/useUserInfo';
 
 const { width, height } = Dimensions.get('window');
 
-export default function InterestRender({ memberData, interestList, type }) {
+export default function InterestRender({ memberData, isEditBtn, interestList }) {
   const navigation = useNavigation<ScreenNavigationProp>();
 
   const memberBase = useUserInfo();
@@ -31,7 +31,7 @@ export default function InterestRender({ memberData, interestList, type }) {
             end={{ x: 1, y: 1 }}
             style={_styles.introWrap}
           >
-            <SpaceView>
+            <SpaceView mb={20}>
               <SpaceView mb={5}>
                 <SpaceView mb={8} viewStyle={_styles.titArea}>
                   <Text style={_styles.titText}>{memberData?.nickname}님의 관심사</Text>
@@ -42,12 +42,14 @@ export default function InterestRender({ memberData, interestList, type }) {
               </SpaceView>
             </SpaceView>
 
-            {type == 'profile' &&
-                      <TouchableOpacity style={_styles.modBtn}>
-                        <Image source={ICON.squarePen} style={styles.iconSize16} />
-                        <Text style={_styles.modBtnText}>수정</Text>
-                      </TouchableOpacity>
-                    }
+            {(isEmptyData(isEditBtn) && isEditBtn) && (
+              <TouchableOpacity 
+                onPress={() => { navigation.navigate(STACK.COMMON, { screen: ROUTES.PROFILE_INTEREST }); }} 
+                style={_styles.modBtn}>
+                <Image source={ICON.squarePen} style={styles.iconSize16} />
+                <Text style={_styles.modBtnText}>수정</Text>
+              </TouchableOpacity>
+            )}
 
             <SpaceView>
               {interestList.length > 0 &&

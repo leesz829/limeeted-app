@@ -36,7 +36,7 @@ import {
   UPDATE_PROFILE,
   UPDATE_SETTING,
   COMMON_CODE,
-  SAVE_PROFILE_AUTH,
+  SAVE_PROFILE_SECOND_AUTH,
   MEMBER_AUTH_DETAIL,
   BOARD_LIST,
   BOARD_DETAIL_VIEW,
@@ -108,6 +108,10 @@ import {
   INSERT_MEMBER_IMAGE,
   UPDATE_MEMBER_IMAGE,
   DELETE_MEMBER_IMAGE,
+  GET_MEMBER_PROFILE_AUTH,
+  SAVE_PROFILE_AUTH,
+  GET_MEMBER_INTEREST,
+  SAVE_MEMBER_INTEREST,
 } from './route';
 
 /* ========================================================================================================
@@ -455,12 +459,12 @@ export async function get_member_second_detail(body: {
 }
 
 // 회원 2차 인증을 저장한다.
-export async function save_profile_auth(body: { 
+export async function save_profile_second_auth(body: { 
   file_list: any;
   auth_code: string;
   auth_comment: string;
 }) {
-  return send(SAVE_PROFILE_AUTH, 'POST', body, true, false);
+  return send(SAVE_PROFILE_SECOND_AUTH, 'POST', body, true, false);
 }
 
 // 회원의 전화번호를 저장한다.
@@ -527,6 +531,7 @@ export async function save_member_introduce(body: {
   drinking: string;
   smoking: string;
   interest_list: any;
+  interview_list: any;
   introduce_comment: string;
 }) {
   return send(SAVE_MEMBER_INTRODUCE, 'POST', body, true, false);
@@ -576,24 +581,38 @@ export async function regist_profile_evaluation(body: {
   face_code: string;
 }) {
   return send(REGIST_PROFILE_EVALUATION, 'POST', body, true, false);
-}
+};
 
 // 프로필 재심사를 진행한다.
 export async function request_reexamination() {
   const inventory_connect_dt = await AsyncStorage.getItem('INVENTORY_CONNECT_DT');
   return send(PROFILE_REEXAMINATION, 'POST', { inventory_connect_dt }, true, false);
-}
+};
 
 // 회원 프로필 인상 순위를 조회한다.
 export async function get_member_face_rank() {
   return send(GET_MEMBER_FACE_RANK, 'POST', undefined, true, false);
-}
+};
 
 // 회원 프로필 정보를 조회한다.
 export async function get_member_profile_info() {
   const inventory_connect_dt = await AsyncStorage.getItem('INVENTORY_CONNECT_DT');
   return send(GET_MEMBER_PROFILE_INFO, 'POST', { inventory_connect_dt }, true, false);
-}
+};
+
+// 회원 프로필 정보를 조회한다.
+export async function get_member_profile_auth(body: {
+  
+}) {
+  return send(GET_MEMBER_PROFILE_AUTH, 'POST', body, true, false);
+};
+
+// 회원 관심사 정보를 조회한다.
+export async function get_member_interest(body: {
+  
+}) {
+  return send(GET_MEMBER_INTEREST, 'POST', body, true, false);
+};
 
 // 회원 문의를 등록합니다.
 export async function save_profile_auth_comment(body: {
@@ -601,7 +620,24 @@ export async function save_profile_auth_comment(body: {
   auth_comment: any;
 }) {
   return send(SAVE_PROFILE_AUTH_COMMENT, 'POST', body, true, false);
-}
+};
+
+// 회원 프로필 인증을 저장한다.
+export async function save_profile_auth(body: {
+  file_list: any;
+  auth_code: string;
+  auth_comment: string;
+  img_del_seq_str: string;
+}) {
+  return send(SAVE_PROFILE_AUTH, 'POST', body, true, false);
+};
+
+// 회원 관심사를 저장한다.
+export async function save_member_interest(body: {
+  interest_list: any;
+}) {
+  return send(SAVE_MEMBER_INTEREST, 'POST', body, true, false);
+};
 
 
 /* ========================================================================================================

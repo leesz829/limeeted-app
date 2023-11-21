@@ -8,7 +8,7 @@ import { ICON } from 'utils/imageUtils';
 import { CommonBtn } from 'component/CommonBtn';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
-import { STACK } from 'constants/routes';
+import { STACK, ROUTES } from 'constants/routes';
 import LinearGradient from 'react-native-linear-gradient';
 import Carousel from 'react-native-snap-carousel';
 import { isEmptyData } from 'utils/functions';
@@ -49,7 +49,9 @@ export default function ProfileAuth({ data, isEditBtn, memberData }) {
             </SpaceView>
 
             {(isEmptyData(isEditBtn) && isEditBtn) && (
-              <TouchableOpacity style={_styles.modBtn}>
+              <TouchableOpacity 
+                onPress={() => { navigation.navigate(STACK.COMMON, { screen: ROUTES.PROFILE_AUTH }); }} 
+                style={_styles.modBtn}>
                 <Image source={ICON.squarePen} style={styles.iconSize16} />
                 <Text style={_styles.modBtnText}>수정</Text>
               </TouchableOpacity>
@@ -218,11 +220,6 @@ const _styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginRight: 10,
   },
-
-
-
-
-
   authItemWrap: {
     borderTopRightRadius: 15,
     borderBottomRightRadius: 15,

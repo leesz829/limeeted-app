@@ -49,7 +49,7 @@ export const MEMBER_INTRODUCE = '/member/getMemberIntroduce';
 export const UPDATE_INTERVIEW = '/member/saveMemberInterview';
 export const GET_POINT = '/member/getMemberHasPoint';
 export const MEMBER_LOGOUT = '/member/logoutProc';
-export const SAVE_PROFILE_AUTH = '/member/saveProfileSecondAuth';
+export const SAVE_PROFILE_SECOND_AUTH = '/member/saveProfileSecondAuth';
 export const MEMBER_AUTH_DETAIL = '/member/selectMemberSecondAuthDetailList';
 export const UPDATE_PHONE_NUMBER = '/member/modfyMemberPhoneNumber';
 export const MEMBER_EXIT = '/member/deleteMyAccount';
@@ -74,7 +74,12 @@ export const REGIST_PROFILE_EVALUATION = '/profile/insertProfileAssessment';
 export const PROFILE_REEXAMINATION = '/profile/profileReexProc';
 export const GET_MEMBER_FACE_RANK = '/profile/getMemberFaceRankList';
 export const GET_MEMBER_PROFILE_INFO = '/profile/getMemberProfileData';
+export const GET_MEMBER_PROFILE_AUTH = '/profile/getMemberProfileAuth';
+export const GET_MEMBER_INTEREST = '/profile/getMemberInterest';
 export const SAVE_PROFILE_AUTH_COMMENT = '/profile/saveSecondAuthComment';
+export const SAVE_PROFILE_AUTH = '/profile/saveProfileAuth';
+export const SAVE_MEMBER_INTEREST = '/profile/saveMemberInterest';
+
 
 /**
  * MATCHING

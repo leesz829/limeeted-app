@@ -12,7 +12,7 @@ import SpaceView from 'component/SpaceView';
 import { CommonBtn } from 'component/CommonBtn';
 import { ColorType } from '@types';
 import { ImagePicker } from 'component/ImagePicker';
-import { save_profile_auth, get_member_second_detail } from 'api/models';
+import { save_profile_second_auth, get_member_second_detail } from 'api/models';
 import { usePopup } from 'Context';
 import { useDispatch } from 'react-redux';
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
@@ -204,7 +204,7 @@ export const SecondAuthPopup = (props: Props) => {
       file_list: fileDataList
     };
     try {
-      const { success, data } = await save_profile_auth(body);
+      const { success, data } = await save_profile_second_auth(body);
 
       if (success) {
         if (data.result_code == '0000') {

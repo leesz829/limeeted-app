@@ -400,6 +400,7 @@ export const Roby = (props: Props) => {
 
   // 우편함 이동
   const onPressMail = async () => {
+    setIsVisible(false);
     navigation.navigate(STACK.TAB, { screen: 'Message' });
   };
 
@@ -494,7 +495,6 @@ export const Roby = (props: Props) => {
           start={{ x: 1, y: 0 }}
           end={{ x: 0, y: 1 }} >
 
-          {/* 햄버거 메뉴 */}
           <TouchableOpacity 
             style={{position: 'absolute', top: 20, right: 20}}
             onPress={() => (
@@ -502,8 +502,8 @@ export const Roby = (props: Props) => {
             )}
             hitSlop={commonStyle.hipSlop20}
           >
-            {[0,1,2].map(() => (
-              <View style={{width: 25, height: 3, backgroundColor: '#FFDD00', marginBottom: 4, borderRadius: 20}}></View>
+            {[0,1,2].map((item, index) => (
+              <View key={'menu' + index} style={{width: 25, height: 3, backgroundColor: '#FFDD00', marginBottom: 4, borderRadius: 20}}></View>
             ))}
           </TouchableOpacity>
         </LinearGradient>
@@ -657,13 +657,17 @@ export const Roby = (props: Props) => {
                       <Text style={_styles.popularDesc}>LIVE에서 {memberPeekData?.accResLiveCnt}명에게 호감을 받으셨어요.</Text>
 
                       <SpaceView pb={10}>
-                        <Text style={{fontFamily: 'Pretendard-Regular', color: '#FFDD00', marginTop: 20}}>대표 인상 TOP3</Text>
+                        <SpaceView mt={20}>
+                          <Text style={{fontFamily: 'Pretendard-Regular', color: '#FFDD00'}}>대표 인상 TOP3</Text>
+                        </SpaceView>
                         <SpaceView mt={10} viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
                           {memberPeekData.faceLankList.map((item, index) => {
                             return index < 3 && (
-                              <View style={[_styles.bestFaceContainer, {width: '33%', alignItems: 'center'}]}>
-                                <Text style={_styles.bestFaceText}>#{item?.face_code_name}</Text>
-                              </View>
+                              <>
+                                <View key={'face' + index} style={[_styles.bestFaceContainer, {width: '33%', alignItems: 'center'}]}>
+                                  <Text style={_styles.bestFaceText}>#{item?.face_code_name}</Text>
+                                </View>
+                              </>
                             )
                           })}
                         </SpaceView>
@@ -726,7 +730,7 @@ export const Roby = (props: Props) => {
               <TouchableOpacity onPress={onPressMangeAccount}>
                 <Text style={_styles.modalText}>계정 관리</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={onPressMangeAccount}>
+              <TouchableOpacity onPress={onPressMail}>
                 <Text style={_styles.modalText}>알림 설정</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={onPressCustomerInquiry}>

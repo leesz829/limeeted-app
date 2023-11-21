@@ -15,7 +15,7 @@ import * as properties from 'utils/properties';
 import AsyncStorage from '@react-native-community/async-storage';
 import { useDispatch } from 'react-redux';
 import * as mbrReducer from 'redux/reducers/mbrReducer';
-import { get_member_profile_authentication, get_member_second_detail, save_profile_auth } from 'api/models';
+import { get_member_profile_authentication, get_member_second_detail, save_profile_second_auth } from 'api/models';
 import { usePopup } from 'Context';
 import { useMemberseq } from 'hooks/useMemberseq';
 import { useSecondAth } from 'hooks/useSecondAth';
@@ -280,7 +280,7 @@ export const SecondAuth = () => {
       auth_comment: auth_comment,
     };
     try {
-      const { success, data } = await save_profile_auth(body);
+      const { success, data } = await save_profile_second_auth(body);
 
       if (success) {
         if (data.result_code == '0000') {

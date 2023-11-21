@@ -53,7 +53,7 @@ export const SignUp_Auth = (props : Props) => {
 	
 	const authInfoArr = [
 		{ name: '직업', code: 'JOB' },
-		{ name: '학력', code: 'EDU' },
+		{ name: '학업', code: 'EDU' },
 		{ name: '소득', code: 'INCOME' },
 		{ name: '자산', code: 'ASSET' },
 		{ name: 'SNS', code: 'SNS' },
@@ -92,7 +92,7 @@ export const SignUp_Auth = (props : Props) => {
 		} else {
 			saveAuth(false, _authCode, _authDetailList, _authComment, _imgDelSeqStr);
 		}
-	}
+	};
   
 	// ############################################################################# 인증 정보 조회
 	const getAuth = async () => {
@@ -183,7 +183,7 @@ export const SignUp_Auth = (props : Props) => {
 			{/* #############################################################################################################
 			######### 상단 영역
 			############################################################################################################# */}
-			<SpaceView mt={20} viewStyle={{backgroundColor: '#445561', padding: 30}}>
+			<SpaceView viewStyle={{backgroundColor: '#445561', padding: 30}}>
 				<Text style={_styles.title}>멤버쉽 인증하고{'\n'}내 강점을 드러내기(선택)</Text>
 				<Text style={_styles.subTitle}>
 					아래 가이드를 참고하시고 멤버쉽 인증 자료를 올려 주세요.{'\n'}
@@ -293,9 +293,23 @@ function AuthRender({ _data, _selectedAuthCode, _modActiveFn, _setCurrentCode, _
 			if(isEmptyData(imgMngData.member_auth_detail_seq) && 0 != imgMngData.member_auth_detail_seq) {
 				let delArr = imgDelSeqStr;
 				if (delArr == '') {
-					delArr = imgMngData.member_img_seq;
+					delArr = imgMngData.member_auth_detail_seq;
 				} else {
-					delArr = delArr + ',' + imgMngData.member_img_seq;
+					// 중복 여부 체크
+					let isDup = false;
+
+					if(typeof delArr == 'number') {
+					  if(delArr == imgMngData.member_auth_detail_seq) { isDup = true; }
+					} else {
+					  const delList = delArr.split(',');
+					  delList.map((item, index) => {
+						if(item == imgMngData.member_auth_detail_seq) { isDup = true; }
+					  });
+					}
+		  
+					if(!isDup) {
+					  delArr = delArr + ',' + imgMngData.member_auth_detail_seq;
+					}
 				}
 				setImgDelSeqStr(delArr);
 			}

@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { isEmptyData } from 'utils/functions';
 import { ICON } from 'utils/imageUtils';
 
-export default function InterviewRender({ title, dataList, type }) {
+export default function InterviewRender({ title, isEditBtn, dataList }) {
 
   return (
     <>
@@ -37,12 +37,13 @@ export default function InterviewRender({ title, dataList, type }) {
                         <Text style={_styles.answerText}>"{e?.answer}"</Text>
                       </SpaceView>
                     </SpaceView>
-                    {type == 'profile' &&
+                    
+                    {(isEmptyData(isEditBtn) && isEditBtn) && (
                       <TouchableOpacity style={_styles.modBtn}>
                         <Image source={ICON.squarePen} style={styles.iconSize16} />
                         <Text style={_styles.modBtnText}>수정</Text>
                       </TouchableOpacity>
-                    }
+                    )}
                   </>
                 }
               </>
