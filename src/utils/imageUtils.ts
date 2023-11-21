@@ -232,6 +232,7 @@ export const ICON = {
   heartFace: require('assets/icon/icon-heart-face.png'),
   polygonGreen: require('assets/icon/icon-polygon-green.png'),
   passSquare: require('assets/icon/icon-pass-square.png'),
+  circleArrow: require('assets/icon/icon-circle-arrow.png'),
 };
 
 export const GIF_IMG = {

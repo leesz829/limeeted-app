@@ -19,6 +19,8 @@ import { ROUTES, STACK } from 'constants/routes';
 import { useDispatch } from 'react-redux';
 import { myProfile } from 'redux/reducers/authReducer';
 import { CommonLoading } from 'component/CommonLoading';
+import LinearGradient from 'react-native-linear-gradient';
+import { useUserInfo } from 'hooks/useUserInfo';
 
 
 /* ################################################################################################################
@@ -45,6 +47,8 @@ export const Message = (props: Props) => {
 
 	const isFocus = useIsFocused();
 	const { show } = usePopup();  // 공통 팝업
+
+  const memberBase = useUserInfo(); //hooksMember.getBase();
 
 	const toggleAccordion = (index) => {
 		setActiveIndex(activeIndex === index ? -1 : index);
@@ -140,70 +144,88 @@ export const Message = (props: Props) => {
 			{isLoading && <CommonLoading />}
 
 			<TopNavigation currentPath={''} />
-			<ScrollView contentContainerStyle={styles.scrollContainer} style={{backgroundColor: '#fff'}}>
-				{messageList.map((item : any, index) => (
-					<SpaceView mb={10} key={item.msg_send_seq}>
-						<View style={_styles.rowContainer}>
-							<TouchableOpacity
-								style={_styles.inner}
-								onPress={() => { 
-									toggleAccordion(item.msg_send_seq);
-								}}
-								activeOpacity={0.3}>
-								
-								<View style={[_styles.titleContainer, activeIndex === item.msg_send_seq && _styles.active]}>
-									<CommonText textStyle={_styles.titleText} fontWeight={'500'} type={'h5'}>{item.title}</CommonText>
-								</View>
+      <ScrollView>
+        <LinearGradient
+          colors={['#3D4348', '#1A1E1C']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+        >
+          <SpaceView pt={40} pl={20} pr={20} pb={10}>
+            <Text style={_styles.mainTitle}>
+              <Text style={{color: '#F3E270'}}>{memberBase?.nickname}</Text>
+              님에게{'\n'}전달해드리는 소식
+            </Text>
+          </SpaceView>
 
-								<View style={[_styles.iconContainer, activeIndex === item.msg_send_seq && _styles.activeIcon]}>
-									<Image source={ICON.arrBottom} style={_styles.iconStyle} />
-								</View>
-							</TouchableOpacity>
-						</View>
+          {messageList.map((item : any, index) => (
+            <SpaceView key={item.msg_send_seq}>
+              <View style={_styles.rowContainer}>
+                <TouchableOpacity
+                  style={_styles.inner}
+                  onPress={() => { 
+                    toggleAccordion(item.msg_send_seq);
+                  }}
+                  activeOpacity={0.3}>
+                  
+                  <View style={[_styles.titleContainer, activeIndex === item.msg_send_seq && _styles.active]}>
+                    <CommonText textStyle={_styles.titleText} fontWeight={'500'} type={'h5'}>{item.title}</CommonText>
+                  </View>
 
-						{activeIndex === item.msg_send_seq && (
-							<View style={_styles.descContainer}>
-								<View style={_styles.descText}>
-									<CommonText type={'h5'}>{item.contents}</CommonText>
+                  <View style={[_styles.iconContainer, activeIndex === item.msg_send_seq && _styles.activeIcon]}>
+                    <Image source={ICON.circleArrow} style={_styles.iconStyle} />
+                  </View>
+                </TouchableOpacity>
+              </View>
 
-									<View style={_styles.dateArea}>
-										<CommonText textStyle={_styles.dateText} type={'h5'}>{item.reg_dt}</CommonText>
-									</View>
-								</View>
+              {activeIndex === item.msg_send_seq && (
+                <View style={_styles.descContainer}>
+                  <View style={_styles.descText}>
+                    <CommonText fontWeight={'300'} color={'#E1DFD1'}>{item.contents}</CommonText>
 
-								{(
-									item.msg_type == 'MSG_TP_02' || item.msg_type == 'MSG_TP_03' || item.msg_type == 'MSG_TP_04' || item.msg_type == 'MSG_TP_05' 
-									|| item.msg_type == 'MSG_TP_06' || item.msg_type == 'MSG_TP_07' || item.msg_type == 'MSG_TP_08' || item.msg_type == 'MSG_TP_09'
-									|| item.msg_type == 'MSG_TP_10' || item.msg_type == 'MSG_TP_14' || item.msg_type == 'MSG_TP_16' || item.msg_type == 'MSG_TP_28'
-									|| item.msg_type == 'MSG_TP_30' || item.msg_type == 'MSG_TP_31' || item.msg_type == 'MSG_TP_32' || item.msg_type == 'MSG_TP_33'
-								) &&
-									<SpaceView mt={10}>
-										<TouchableOpacity 
-											disabled={item.link_end_yn == 'Y' ? true : false}
-											onPress={() => { goLink(item); }}>
-											<Text style={_styles.linkText(item.link_end_yn == 'Y' ? true : false)}>{item.link_end_yn == 'Y' ? '기간만료' : '바로가기'}</Text>
-										</TouchableOpacity>
-									</SpaceView>
-								}
-							</View>
-						)}
-					</SpaceView>
-				))}
-			</ScrollView>
+                    <View style={_styles.dateArea}>
+                      <CommonText fontWeight={'300'} color={'#E1DFD1'} textStyle={_styles.dateText}>{item.reg_dt}</CommonText>
+                    </View>
+                  </View>
+
+                  {(
+                    item.msg_type == 'MSG_TP_02' || item.msg_type == 'MSG_TP_03' || item.msg_type == 'MSG_TP_04' || item.msg_type == 'MSG_TP_05' 
+                    || item.msg_type == 'MSG_TP_06' || item.msg_type == 'MSG_TP_07' || item.msg_type == 'MSG_TP_08' || item.msg_type == 'MSG_TP_09'
+                    || item.msg_type == 'MSG_TP_10' || item.msg_type == 'MSG_TP_14' || item.msg_type == 'MSG_TP_16' || item.msg_type == 'MSG_TP_28'
+                    || item.msg_type == 'MSG_TP_30' || item.msg_type == 'MSG_TP_31' || item.msg_type == 'MSG_TP_32' || item.msg_type == 'MSG_TP_33'
+                  ) &&
+                    <SpaceView mt={10}>
+                      <TouchableOpacity 
+                        disabled={item.link_end_yn == 'Y' ? true : false}
+                        onPress={() => { goLink(item); }}>
+                        <Text style={_styles.linkText(item.link_end_yn == 'Y' ? true : false)}>{item.link_end_yn == 'Y' ? '기간만료' : '바로가기'}</Text>
+                      </TouchableOpacity>
+                    </SpaceView>
+                  }
+                </View>
+              )}
+            </SpaceView>
+          ))}
+        </LinearGradient>
+      </ScrollView>
 		</>
 	);
 };
 
 
 const _styles = StyleSheet.create({
+  mainTitle: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 24,
+    color: '#D5CD9E',
+  },
 	iconContainer: {
 		position: 'absolute',
-		top: '45%',
+		top: '38%',
 		right: 20,
 		transform: [{ rotate: '360deg' }],
 	},
 	activeIcon: {
-	  	transform: [{ rotate: '180deg' }],
+	  transform: [{ rotate: '180deg' }],
 	},
 	inner: {
 	  	width: '100%',
@@ -217,17 +239,19 @@ const _styles = StyleSheet.create({
 	},
 	iconStyle: {
 		width: 18,
-		height: 10,
+		height: 18,
 	},
 	titleContainer: {
-		borderWidth: 1,
-		borderColor: Color.grayEBE,
-		borderRadius: 15,
+		borderTopWidth: 1,
+		borderColor: '#E1DFD1',
 		paddingHorizontal: 15,
 		paddingVertical: 15,
 	},
 	titleText: {
 		paddingRight: 35,
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 16,
+    color: '#D5CD9E',
 	},
 	active: {
 		borderBottomWidth: 0,
@@ -238,15 +262,11 @@ const _styles = StyleSheet.create({
 		//padding: 16,
 		paddingHorizontal: 10,
 		paddingBottom: 10,
-		borderWidth: 1,
-		borderTopWidth: 0,
-		borderColor: Color.grayEBE,
-		borderBottomLeftRadius: 15,
-		borderBottomRightRadius: 15,
+    borderTopColor: '#E1DFD1',
+    borderTopWidth: 1,
 	},
 	descText: {
-		backgroundColor: Color.grayF8F8,
-		paddingHorizontal: 15,
+		paddingHorizontal: 5,
 		paddingVertical: 20,
 	},
 	dateArea: {
@@ -257,14 +277,14 @@ const _styles = StyleSheet.create({
 	},
 	linkText: (isDisabled: boolean) => {
 		return {
-		  fontFamily: 'AppleSDGothicNeoEB00',
-		  fontSize: 11,
-		  color: isDisabled ? '#C7C7C7' : '#7986EE',
+		  fontFamily: 'Pretendard-Regular',
+		  fontSize: 10,
+		  color: isDisabled ? '#C7C7C7' : '#D5CD9E',
 		  textAlign: 'center',
-		  borderColor: isDisabled ? '#C7C7C7' : '#7986EE',
+		  borderColor: isDisabled ? '#C7C7C7' : '#D5CD9E',
 		  borderWidth: 1,
 		  borderRadius: 5,
-		  paddingVertical: 5,
+		  paddingVertical: 8,
 		};
 	  },
   });

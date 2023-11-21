@@ -638,7 +638,9 @@ export const modalStyle = StyleSheet.create({
   modalBtn: {
     flex: 2,
     alignItems: 'center',
-    paddingVertical: 15,
+    paddingVertical: 0,
+    height: 60,
+    justifyContent: 'center',
   },
   modalAuctBtn: {
     alignItems: 'center',

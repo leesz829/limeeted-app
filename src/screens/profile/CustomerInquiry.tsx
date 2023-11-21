@@ -18,6 +18,8 @@ import { insert_member_inquiry } from 'api/models';
 import { usePopup } from 'Context';
 import { SUCCESS } from 'constants/reusltcode';
 import { STACK } from 'constants/routes';
+import LinearGradient from 'react-native-linear-gradient';
+import { TextInput } from 'react-native-gesture-handler';
 //import Textarea from 'react-native-textarea';
 
 /* ################################################################################################################
@@ -101,87 +103,113 @@ export const CustomerInquiry = (props : Props) => {
 	return (
 		<>
 			<CommonHeader title={'고객문의'} />
-			<ScrollView style={[styles.scrollContainer]}>
-				<KeyboardAvoidingView>
-					<SpaceView>
-						<View style={layoutStyle.alignStart}>
-							<CommonText	type={'h4'}	textStyle={_styles.titleText}>궁금한점, 불편한점{'\n'}저희에게 문의주세요 :)</CommonText>
-						</View>
-					</SpaceView>
-					
-					<SpaceView>
-						<SpaceView>	
-							<CommonInput
-	//							label={'제목'}
-								value={title}
-								onChangeText={(title) => setTitle(title)}
-								placeholder={'문의 제목'}
-								placeholderTextColor={'#c6ccd3'}
-								maxLength={30}
-							/>
-						</SpaceView>
+      <LinearGradient
+        colors={['#3D4348', '#1A1E1C']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={_styles.wrap}
+      >
+        <ScrollView>
+          <KeyboardAvoidingView>
+            <SpaceView>
+              <View style={layoutStyle.alignStart}>
+                <CommonText	type={'h4'}	textStyle={_styles.mainTitleText}>궁금한점, 불편한점{'\n'}저희에게 문의주세요 :)</CommonText>
+              </View>
+            </SpaceView>
+            
+            <SpaceView mt={20}>
+              <SpaceView viewStyle={_styles.titleArea}>	
+                <TextInput
+                  style={_styles.titleText}
+                  value={title}
+                  onChangeText={(title) => setTitle(title)}
+                  placeholder={'문의 제목'}
+                  placeholderTextColor={'#D5CD9E'}
+                  maxLength={30}
+                />
+              </SpaceView>
 
-						<SpaceView mb={15} mt={15}>
-							<CommonTextarea
-	//							label={'내용'} 
-								value={contents}
-								onChangeText={(contents) => setContents(contents)}
-								placeholder={'문의 내용'}
-								placeholderTextColor={'#c6ccd3'}
-								maxLength={240}
-								exceedCharCountColor={'#990606'}
-							/>
-						</SpaceView>
+              <SpaceView mb={15} mt={15} viewStyle={_styles.contentsArea}>
+                <TextInput
+                  style={_styles.contentsText}
+                  value={contents}
+                  onChangeText={(contents) => setContents(contents)}
+                  placeholder={'문의 내용'}
+                  placeholderTextColor={'#D5CD9E'}
+                  maxLength={240}
+                  autoCapitalize={'none'}
+                  multiline={true}
+                  caretHidden={true}
+                  // exceedCharCountColor={'#990606'}
+                />
+              </SpaceView>
 
-						<SpaceView mb={16}>
-							<CommonBtn
-								value={'저장'}
-								type={'black'}
-								onPress={() => {
-									insertCustomerInquiry();
-								}}
-							/>
-						</SpaceView>
+              <SpaceView mb={16}>
+                <CommonBtn
+                  value={'문의하기'}
+                  type={'reNewId'}
+                  borderRadius={5}
+                  onPress={() => {
+                    insertCustomerInquiry();
+                  }}
+                />
+              </SpaceView>
 
-						<SpaceView mb={45}>
-							<View style={_styles.bottomArea}>
-								<CommonText type={'h3'} textStyle={_styles.bottomText}>등록해주신 문의내용은 관리자 확인 후 우편함으로 답변드립니다.</CommonText>
-							</View>
-						</SpaceView>
-					</SpaceView>
-				</KeyboardAvoidingView>
-			</ScrollView>
+              {/* <SpaceView mb={45}>
+                <View style={_styles.bottomArea}>
+                  <CommonText type={'h3'} textStyle={_styles.bottomText}>등록해주신 문의내용은 관리자 확인 후 우편함으로 답변드립니다.</CommonText>
+                </View>
+              </SpaceView> */}
+            </SpaceView>
+          </KeyboardAvoidingView>
+        </ScrollView>
+      </LinearGradient>
 		</>
 	);
 };
 const { width, height } = Dimensions.get('window');
 const _styles = StyleSheet.create({
-	titleText: {
+	wrap: {
+		minHeight: height,
+		padding: 15,
+	},
+	mainTitleText: {
 		width: 250,
 		height: 61,
-		fontFamily: "AppleSDGothicNeoEB00",
+		fontFamily: 'Pretendard-Bold',
 		fontSize: 23,
-		fontWeight: "normal",
-		fontStyle: "normal",
 		lineHeight: 30,
-		color: "#333333"
+		color: '#D5CD9E',
 	},
-	bottomArea: {
-		backgroundColor: '#F6F7FE',
-		paddingHorizontal: 5,
-		paddingVertical: 15,
-		borderRadius: 20,
-	},
-	bottomText: {
-		fontFamily: "AppleSDGothicNeoM00",
-		fontSize: 13,
-		fontWeight: "normal",
-		fontStyle: "normal",
-		letterSpacing: 0,
-		textAlign: "center",
-		color: "#C7C7C7",
-		
-	}
+  titleArea: {
+    backgroundColor: '#445561',
+    borderRadius: 5,
+    padding: 15,
+  },
+  titleText: {
+    fontFamily: 'Pretendard-Medium',
+    color: '#D5CD9E',
+  },
+  contentsArea: {
+    backgroundColor: '#445561',
+    borderRadius: 5,
+    padding: 15,
+  },
+  contentsText: {
+    fontFamily: 'Pretendard-Medium',
+    color: '#E1DFD1',
+    height: height - 580,
+  },
+	// bottomArea: {
+	// 	paddingHorizontal: 5,
+	// 	paddingVertical: 15,
+	// 	borderRadius: 20,
+	// },
+	// bottomText: {
+	// 	fontFamily: 'Pretendard-Medium',
+	// 	fontSize: 13,
+	// 	color: '#E1DFD1',
+	// },
 });
 
 const modalStyleProduct = StyleSheet.create({
@@ -206,7 +234,6 @@ const modalStyleProduct = StyleSheet.create({
 	},
 	modalStyle1: {
 		width: width - 32,
-		backgroundColor: 'white',
 		borderRadius: 16,
 		height: 215,
 		paddingTop: 32,

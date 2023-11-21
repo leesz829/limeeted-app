@@ -42,14 +42,14 @@ export default function InterestSendPopup({ isVisible, closeModal, confirmFunc, 
     <Modal isVisible={isVisible} onRequestClose={() => { closeModal(); }}>
       <SafeAreaView style={_styles.container}>
 
-        <TouchableOpacity style={_styles.closeBtnArea} onPress={() => { closeModal(); }} hitSlop={commonStyle.hipSlop20}>
+        {/* <TouchableOpacity style={_styles.closeBtnArea} onPress={() => { closeModal(); }} hitSlop={commonStyle.hipSlop20}>
           <Image style={styles.iconSquareSize(25)} source={ICON.xBlueIcon} resizeMode={'contain'} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <View style={_styles.titleBox}>
-          <Image style={styles.iconSquareSize(20)} source={ICON.logoTransIcon} resizeMode={'contain'} />
+          {/* <Image style={styles.iconSquareSize(20)} source={ICON.logoTransIcon} resizeMode={'contain'} /> */}
           <Text style={_styles.titleText}>메시지 작성</Text>
-          <Text style={_styles.countText}>({message.length}/150)</Text>
+          {/* <Text style={_styles.countText}>({message.length}/150)</Text> */}
         </View>
         
         <View style={_styles.contentBody}>
@@ -61,7 +61,7 @@ export default function InterestSendPopup({ isVisible, closeModal, confirmFunc, 
               autoCapitalize="none"
               style={_styles.inputStyle}
               placeholder={'(선택)상대에게 전할 정성스러운 메시지를 작성해 보세요!'}
-              placeholderTextColor={'#c7c7c7'}
+              placeholderTextColor={'#E1DFD1'}
               editable={true}
               secureTextEntry={false}
               maxLength={150}
@@ -72,13 +72,24 @@ export default function InterestSendPopup({ isVisible, closeModal, confirmFunc, 
 
         <View style={_styles.bottomBox}>
           <TouchableOpacity 
+            style={[_styles.allButton, {backgroundColor: '#FFF'}]} 
+            onPress={() => {
+              closeModal();
+            }}>    
+
+            <Text style={_styles.allButtonText}>
+              취소하기
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
             style={_styles.allButton} 
             onPress={() => {
               confirmFunc(message);
-            }}>
+            }}>    
 
             <Text style={_styles.allButtonText}>
-              {!isFreeItemUse ? '패스 15개로 ' : ''}관심 보내기
+              {/* {!isFreeItemUse ? '패스 15개로 ' : ''}관심 보내기 */}
+              관심 보내기
             </Text>
           </TouchableOpacity>
         </View>
@@ -93,37 +104,36 @@ const _styles = StyleSheet.create({
   container: {
     width: '100%',
     borderRadius: 20,
-    backgroundColor: '#ffffff',
-    borderColor: '#ededed',
+    backgroundColor: '#3D4348',
+    //borderColor: '#ededed',
     flexDirection: 'column',
     justifyContent: 'space-between',
   },
   titleBox: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#ededed',
+    //borderBottomWidth: 1,
+    //borderBottomColor: '#ededed',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-start',
-    paddingVertical: 8,
-    backgroundColor: '#697AE6',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    backgroundColor: '#FFDD00',
     paddingHorizontal: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     overflow: 'hidden',
   },
   titleText: {
-    fontFamily: 'AppleSDGothicNeoR00',
-    fontSize: 14,
-    color: '#ffffff',
-    marginLeft: 5,
-    marginTop: -1,
+    fontFamily: 'Pretendard-Bold',
+    color: '#445561',
+    //marginLeft: 5,
+    //marginTop: -1,
   },
-  countText: {
-    fontFamily: 'AppleSDGothicNeoR00',
-    fontSize: 12,
-    color: '#ffffff',
-    marginLeft: 3,
-  },
+  // countText: {
+  //   fontFamily: 'AppleSDGothicNeoR00',
+  //   fontSize: 12,
+  //   color: '#ffffff',
+  //   marginLeft: 3,
+  // },
   contentBody: {
     flexDirection: 'column',
     alignItems: `center`,
@@ -158,35 +168,35 @@ const _styles = StyleSheet.create({
     overflow: 'hidden',
   },
   allButton: {
-    width: '100%',
+    width: '50%',
     height: 49,
-    backgroundColor: '#697ae6',
+    backgroundColor: '#FFDD00',
     flexDirection: `row`,
     alignItems: `center`,
     justifyContent: `center`,
   },
   allButtonText: {
-    fontFamily: 'AppleSDGothicNeoSB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 16,
-    color: '#ffffff',
+    color: '#3D4348',
   },
   inputStyle: {
     width: '100%',
     height: 100,
     maxHeight: 100,
-    borderWidth: 1,
+    //borderWidth: 1,
     borderRadius: 10,
     padding: 8,
     textAlignVertical: 'top',
-    backgroundColor: '#F6F7FE',
-    color: '#333333',
-    borderColor: "#EBE9EF",
+    backgroundColor: '#445561',
+    color: '#E1DFD1',
+    //borderColor: "#EBE9EF",
     fontSize: 12,
   },
-  closeBtnArea: {
-    position: 'absolute',
-    top: -8,
-    right: -5,
-    zIndex: 1,
-  },
+  // closeBtnArea: {
+  //   position: 'absolute',
+  //   top: -8,
+  //   right: -5,
+  //   zIndex: 1,
+  // },
 });
