@@ -395,6 +395,18 @@ export default function MatchDetail(props: Props) {
       <>
         <CommonHeader title={'열람 프로필'} />
 
+        <SpaceView viewStyle={_styles.btnWrap}>
+          <TouchableOpacity>
+            <Text style={_styles.btnText('REFUSE', '#656565')}>스킵</Text>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Text style={_styles.btnText('REQ', '#43ABAE')}>플러팅</Text>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Text style={_styles.btnText('ZZIM', '#43ABAE')}>찜하기</Text>
+          </TouchableOpacity>
+        </SpaceView>
+
         <ScrollView style={{ flex: 1, backgroundColor: '#FEBC4C' }}>
 
           <LinearGradient
@@ -413,7 +425,6 @@ export default function MatchDetail(props: Props) {
               <SpaceView viewStyle={_styles.profileImgWrap}>
                 <Image source={findSourcePath(data.profile_img_list[0]?.img_file_path)} style={_styles.profileImgStyle} />
               </SpaceView>
-
 
               {/* ######################### 버튼 영역 */}
               <View style={_styles.absoluteView}>
@@ -691,6 +702,7 @@ const _styles = StyleSheet.create({
   wrap: {
     minHeight: height,
     paddingTop: 10,
+    paddingBottom: 50,
   },
   profileImgWrap: {
     alignItems: 'center',
@@ -872,6 +884,36 @@ const _styles = StyleSheet.create({
     height: height * 0.7,
     borderRadius: 20,
   },
+  btnWrap: {
+    position: 'absolute',
+    bottom: 10,
+    left: 0,
+    right: 0,
+    zIndex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  btnText: (type:string, _fColor:string) => {
 
+    let ph = 30;
+
+    if(type == 'REQ') {
+      ph = 55;
+    } else if(type == 'ZZIM') {
+      ph = 15;
+    }
+    
+    return {
+      fontFamily: 'Pretendard-Bold',
+      fontSize: 20,
+      color: _fColor,
+      textAlign: 'center',
+      borderRadius: 10,
+      backgroundColor: '#fff',
+      paddingHorizontal: ph,
+      paddingVertical: 15,
+      marginHorizontal: type == 'REQ' ? 5 : 0,
+    };
+  },
   
 });
